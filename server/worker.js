@@ -39,7 +39,7 @@ if (typeof pdf !== 'function' && pdf.default) {
 }
 
 // Connect to the main Node.js process to trigger UI refreshes
-const socket = ioClient(`http://localhost:${process.env.PORT || 5005}`, { reconnection: true });
+const socket = ioClient(`http://localhost:${process.env.PORT || 5000}`, { reconnection: true });
 
 socket.on('connect', () => {
     console.log('[Worker] Terhubung ke server utama (IPC).');
@@ -312,27 +312,32 @@ async function processJob(job) {
                 }
                 extractedText = pdfText.trim();
 
-                // If text is thin, try OCR via direct image extraction
-                // Cek jika baris kurang dari 50 atau dipaksa OCR
+                // Always run OCR pipeline for all PDFs so scanned & image-only PDFs are handled.
+                // After OCR, keep whichever result contains more text.
                 const lineCount = extractedText.split(/\r\n|\r|\n/).length;
-                if (forceOcr || lineCount < 50) {
-                    console.log(`[Worker] Teks digital minim (${lineCount} baris). Memulai Penarikan Gambar Langsung (No-Canvas)...`);
+                console.log(`[Worker] PDF teks digital: ${lineCount} baris (${extractedText.length} karakter). Menjalankan OCR pipeline...`);
 
-                    try {
-                        // Use improved OCR pipeline for scanned PDFs
-                        const pipelineRes = await ocrPdf(filePath);
-                        if (pipelineRes && pipelineRes.results) {
-                            const combined = pipelineRes.results.map(r => r.text || '').join('\n');
-                            if (combined.trim().length > 10) {
-                                extractedText = `[OCR-PIPELINE]\n${combined.trim()}`;
-                                console.log(`[Worker] ✅ OCR Pipeline Selesai. Total karakter: ${extractedText.length}`);
+                try {
+                    // Use improved OCR pipeline for all PDFs (text + scanned)
+                    const pipelineRes = await ocrPdf(filePath);
+                    if (pipelineRes && pipelineRes.results) {
+                        const combined = pipelineRes.results.map(r => r.text || '').join('\n').trim();
+                        if (combined.length > 10) {
+                            // Prefer OCR result when it gives more content, or digital text is thin
+                            if (combined.length > extractedText.length || lineCount < 50) {
+                                extractedText = `[OCR-PIPELINE]\n${combined}`;
+                                console.log(`[Worker] ✅ OCR Pipeline Selesai. Pakai hasil OCR (${extractedText.length} karakter).`);
                             } else {
-                                console.log('[Worker] OCR Pipeline returned empty text.');
+                                // Append OCR to digital text so search index has both
+                                extractedText = `${extractedText}\n[OCR-PIPELINE]\n${combined}`;
+                                console.log(`[Worker] ✅ OCR Pipeline Selesai. Digabung dengan teks digital (${extractedText.length} karakter).`);
                             }
+                        } else {
+                            console.log('[Worker] OCR Pipeline tidak menghasilkan teks, tetap pakai teks digital.');
                         }
-                    } catch (err) {
-                        console.error('[Worker] OCR pipeline failed:', err);
                     }
+                } catch (err) {
+                    console.error('[Worker] OCR pipeline failed:', err);
                 }
             } else if (fileType.includes('spreadsheet') || fileType.includes('excel')) {
                 const workbook = XLSX.read(fs.readFileSync(filePath), { type: 'buffer' });

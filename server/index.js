@@ -310,6 +310,9 @@ app.get('/api/jobs', checkAuth, async (req, res) => {
             allowedUsers: JSON.parse(j.allowed_users || '[]'),
             allowedDepts: JSON.parse(j.allowed_depts || '[]'),
             issues: JSON.parse(j.issues || '[]'),
+            completedMonths: (() => {
+                try { return JSON.parse(j.completed_months || '[]'); } catch { return []; }
+            })(),
             assignedTo: j.assigned_to,
             dueDate: j.due_date,
             targetDept: j.target_dept,
@@ -324,6 +327,13 @@ app.get('/api/jobs', checkAuth, async (req, res) => {
 app.post('/api/jobs', checkAuth, async (req, res) => {
     try {
         const data = req.body;
+        const completedMonths = Array.isArray(data.completedMonths)
+            ? data.completedMonths
+            : (typeof data.completed_months === 'string'
+                ? (() => {
+                    try { return JSON.parse(data.completed_months); } catch { return []; }
+                })()
+                : []);
         const [id] = await knex('job_due_dates').insert({
             title: data.title,
             due_date: data.dueDate,
@@ -335,6 +345,7 @@ app.post('/api/jobs', checkAuth, async (req, res) => {
             target_dept: data.targetDept,
             owner: data.owner,
             status: data.status || 'pending',
+            completed_months: JSON.stringify(completedMonths),
             issues: JSON.stringify(data.issues || []),
             kendala: data.kendala,
             created_at: new Date(),
@@ -351,21 +362,35 @@ app.put('/api/jobs/:id', checkAuth, async (req, res) => {
     try {
         const { id } = req.params;
         const data = req.body;
-        await knex('job_due_dates').where({ id }).update({
-            title: data.title,
-            due_date: data.dueDate,
-            assigned_to: data.assignedTo,
-            privacy: data.privacy,
-            allowed_users: JSON.stringify(data.allowedUsers || []),
-            allowed_depts: JSON.stringify(data.allowedDepts || []),
-            type: data.type,
-            target_dept: data.targetDept,
-            status: data.status,
-            completed_at: data.completedAt,
-            issues: JSON.stringify(data.issues || []),
-            kendala: data.kendala,
-            updated_at: new Date()
-        });
+        const existing = await knex('job_due_dates').where({ id }).first();
+        if (!existing) return res.status(404).json({ error: 'Jadwal tidak ditemukan' });
+
+        const updateData = { updated_at: new Date() };
+
+        if (data.title !== undefined) updateData.title = data.title;
+        if (data.dueDate !== undefined) updateData.due_date = data.dueDate;
+        if (data.assignedTo !== undefined) updateData.assigned_to = data.assignedTo;
+        if (data.privacy !== undefined) updateData.privacy = data.privacy;
+        if (data.allowedUsers !== undefined) updateData.allowed_users = JSON.stringify(data.allowedUsers || []);
+        if (data.allowedDepts !== undefined) updateData.allowed_depts = JSON.stringify(data.allowedDepts || []);
+        if (data.type !== undefined) updateData.type = data.type;
+        if (data.targetDept !== undefined) updateData.target_dept = data.targetDept;
+        if (data.status !== undefined) updateData.status = data.status;
+        if (data.completedAt !== undefined) updateData.completed_at = data.completedAt;
+        if (data.issues !== undefined) updateData.issues = JSON.stringify(data.issues || []);
+        if (data.kendala !== undefined) updateData.kendala = data.kendala;
+
+        if (data.completedMonths !== undefined) {
+            updateData.completed_months = JSON.stringify(Array.isArray(data.completedMonths) ? data.completedMonths : []);
+        } else if (data.completed_months !== undefined) {
+            if (typeof data.completed_months === 'string') {
+                updateData.completed_months = data.completed_months;
+            } else {
+                updateData.completed_months = JSON.stringify(Array.isArray(data.completed_months) ? data.completed_months : []);
+            }
+        }
+
+        await knex('job_due_dates').where({ id }).update(updateData);
         io.emit('data:changed', { channel: 'jobs' });
         res.json({ message: 'Jadwal berhasil diperbarui' });
     } catch (err) {

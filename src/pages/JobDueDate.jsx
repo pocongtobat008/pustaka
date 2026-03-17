@@ -356,8 +356,19 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
         // Optimistic Update: Update UI dulu agar tidak kedip/delay
         setJobs(prev => prev.map(j => String(j.id) === String(jobId) ? updatedJob : j));
 
-        // Sanitize Payload: Hapus 'issues' agar tidak mengirim balik data corrupt yang menyebabkan error parsing di server
-        const { issues, ...payload } = updatedJob;
+        // For recurring jobs, send only month-completion fields to avoid unintended overwrites.
+        let payload;
+        if (job.type === 'recurring') {
+            payload = {
+                type: 'recurring',
+                completedMonths: updatedJob.completedMonths || [],
+                completed_months: updatedJob.completed_months || '[]'
+            };
+        } else {
+            // Sanitize payload: remove issues to avoid sending potentially malformed nested objects
+            const { issues, ...safePayload } = updatedJob;
+            payload = safePayload;
+        }
 
         try {
             await fetch(`/api/jobs/${jobId}`, {

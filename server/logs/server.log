@@ -11990,3 +11990,369 @@
 {"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-14 11:06:58"}
 {"level":"info","message":"Client connected: pl_Iito31VNxJtKVAAAB","timestamp":"2026-03-14 11:06:58"}
 {"level":"info","message":"Client connected: T2__6ww8EbyLQxhpAAAD","timestamp":"2026-03-14 11:06:58"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-16 08:03:43"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:03:44"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-16 08:03:44"}
+{"level":"info","message":"🧠 Memuat Vector Store ke RAM...","timestamp":"2026-03-16 08:03:44"}
+{"level":"info","message":"✅ AI Search siap digunakan.","timestamp":"2026-03-16 08:03:44"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:03:45"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:03:45"}
+{"level":"info","message":"Client connected: huKe0AFrI77h6kVMAAAC","timestamp":"2026-03-16 08:03:45"}
+{"level":"info","message":"Client connected: GKnuj3bncpBNZi8NAAAD","timestamp":"2026-03-16 08:03:45"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-16 08:11:13"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:11:13"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-16 08:11:13"}
+{"level":"info","message":"🧠 Memuat Vector Store ke RAM...","timestamp":"2026-03-16 08:11:13"}
+{"level":"info","message":"✅ AI Search siap digunakan.","timestamp":"2026-03-16 08:11:13"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:11:14"}
+{"level":"info","message":"Client connected: Bnx2Jao5bJj1wlRfAAAB","timestamp":"2026-03-16 08:11:14"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:11:14"}
+{"level":"info","message":"Client connected: 6TIheBR6ExEIA41-AAAD","timestamp":"2026-03-16 08:11:14"}
+{"level":"info","message":"\u001b[0mGET / \u001b[33m404\u001b[0m 2.025 ms - 139\u001b[0m","timestamp":"2026-03-16 08:11:21"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-16 08:29:50"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:29:50"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-16 08:29:50"}
+{"level":"info","message":"🧠 Memuat Vector Store ke RAM...","timestamp":"2026-03-16 08:29:50"}
+{"level":"info","message":"✅ AI Search siap digunakan.","timestamp":"2026-03-16 08:29:50"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:29:50"}
+{"level":"info","message":"Client connected: wPALk7T4EbUr6U9VAAAB","timestamp":"2026-03-16 08:29:50"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:29:51"}
+{"level":"info","message":"Client connected: flK-aGurNNmCRdj_AAAD","timestamp":"2026-03-16 08:29:51"}
+{"details":"User logged in with HttpOnly cookie","level":"info","message":"Login: User logged in with HttpOnly cookie","timestamp":"2026-03-16 08:31:27","user":"admin"}
+{"level":"info","message":"\u001b[0mPOST /api/login \u001b[32m200\u001b[0m 68.810 ms - 193\u001b[0m","timestamp":"2026-03-16 08:31:27"}
+{"details":"User logged in with HttpOnly cookie","level":"info","message":"Login: User logged in with HttpOnly cookie","timestamp":"2026-03-16 08:32:14","user":"admin"}
+{"level":"info","message":"\u001b[0mPOST /api/login \u001b[32m200\u001b[0m 64.933 ms - 193\u001b[0m","timestamp":"2026-03-16 08:32:14"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-16 08:32:15"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[32m200\u001b[0m 7.585 ms - 2\u001b[0m","timestamp":"2026-03-16 08:32:15"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[32m200\u001b[0m 2.368 ms - 1382\u001b[0m","timestamp":"2026-03-16 08:32:15"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[32m200\u001b[0m 2.828 ms - 2\u001b[0m","timestamp":"2026-03-16 08:32:15"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[32m200\u001b[0m 5.835 ms - 13993\u001b[0m","timestamp":"2026-03-16 08:32:15"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[32m200\u001b[0m 1.978 ms - 761\u001b[0m","timestamp":"2026-03-16 08:32:15"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[32m200\u001b[0m 1.717 ms - 257\u001b[0m","timestamp":"2026-03-16 08:32:15"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[32m200\u001b[0m 1.942 ms - 2\u001b[0m","timestamp":"2026-03-16 08:32:15"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[32m200\u001b[0m 3.563 ms - 2\u001b[0m","timestamp":"2026-03-16 08:32:15"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[32m200\u001b[0m 1.575 ms - 123\u001b[0m","timestamp":"2026-03-16 08:32:15"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[32m200\u001b[0m 2.000 ms - 2\u001b[0m","timestamp":"2026-03-16 08:32:15"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[32m200\u001b[0m 3.101 ms - 2\u001b[0m","timestamp":"2026-03-16 08:32:15"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.322 ms - -\u001b[0m","timestamp":"2026-03-16 08:32:15"}
+{"level":"info","message":"Client connected: CMjWYKqAtMidmjTfAAAF","timestamp":"2026-03-16 08:32:15"}
+{"level":"info","message":"[Queue] [HEAVY (MySQL Polling)] Job registered in MySQL -> process-ocr-lane-1: 1773649965639","timestamp":"2026-03-16 08:32:47"}
+{"details":"Mengunggah dokumen (Queued): \"PMF Eko Arif Faizal FY 2025.pdf\"","level":"info","message":"Upload: Mengunggah dokumen (Queued): \"PMF Eko Arif Faizal FY 2025.pdf\"","timestamp":"2026-03-16 08:32:47","user":"Administrator"}
+{"level":"info","message":"\u001b[0mPOST /api/documents \u001b[32m200\u001b[0m 26.586 ms - 338\u001b[0m","timestamp":"2026-03-16 08:32:47"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[32m200\u001b[0m 2.823 ms - 405\u001b[0m","timestamp":"2026-03-16 08:32:47"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 2.996 ms - -\u001b[0m","timestamp":"2026-03-16 08:32:47"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.808 ms - -\u001b[0m","timestamp":"2026-03-16 08:32:47"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 2.889 ms - -\u001b[0m","timestamp":"2026-03-16 08:32:50"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 2.564 ms - -\u001b[0m","timestamp":"2026-03-16 08:32:50"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[32m200\u001b[0m 3.618 ms - 399\u001b[0m","timestamp":"2026-03-16 08:32:50"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 4.374 ms - -\u001b[0m","timestamp":"2026-03-16 08:32:50"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.111 ms - -\u001b[0m","timestamp":"2026-03-16 08:32:50"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 1.776 ms - -\u001b[0m","timestamp":"2026-03-16 08:32:50"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.891 ms - -\u001b[0m","timestamp":"2026-03-16 08:32:50"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 2.019 ms - -\u001b[0m","timestamp":"2026-03-16 08:32:50"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 1.971 ms - -\u001b[0m","timestamp":"2026-03-16 08:32:50"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773649965639 \u001b[32m200\u001b[0m 2.346 ms - 397\u001b[0m","timestamp":"2026-03-16 08:32:53"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773649965639/stream \u001b[32m200\u001b[0m 3.179 ms - -\u001b[0m","timestamp":"2026-03-16 08:32:54"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773649965639/comments \u001b[32m200\u001b[0m 40.545 ms - 2\u001b[0m","timestamp":"2026-03-16 08:32:54"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[32m200\u001b[0m 2.023 ms - 399\u001b[0m","timestamp":"2026-03-16 08:34:14"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 1.978 ms - -\u001b[0m","timestamp":"2026-03-16 08:34:14"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[32m200\u001b[0m 34.966 ms - 2\u001b[0m","timestamp":"2026-03-16 08:34:16"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 2.140 ms - -\u001b[0m","timestamp":"2026-03-16 08:34:16"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[32m200\u001b[0m 4.715 ms - 2\u001b[0m","timestamp":"2026-03-16 08:34:16"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[32m200\u001b[0m 9.781 ms - 2\u001b[0m","timestamp":"2026-03-16 08:34:16"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[32m200\u001b[0m 5.355 ms - 2\u001b[0m","timestamp":"2026-03-16 08:34:16"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 2.092 ms - -\u001b[0m","timestamp":"2026-03-16 08:34:16"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.892 ms - -\u001b[0m","timestamp":"2026-03-16 08:34:16"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.277 ms - -\u001b[0m","timestamp":"2026-03-16 08:34:16"}
+{"level":"info","message":"\u001b[0mPOST /api/monitored-pics \u001b[32m200\u001b[0m 3.663 ms - 48\u001b[0m","timestamp":"2026-03-16 08:34:16"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[32m200\u001b[0m 2.410 ms - 206\u001b[0m","timestamp":"2026-03-16 08:34:17"}
+{"level":"info","message":"\u001b[0mPOST /api/monitored-pics \u001b[32m200\u001b[0m 4.569 ms - 48\u001b[0m","timestamp":"2026-03-16 08:34:17"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.488 ms - -\u001b[0m","timestamp":"2026-03-16 08:34:17"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.440 ms - -\u001b[0m","timestamp":"2026-03-16 08:34:17"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[32m200\u001b[0m 1.989 ms - 206\u001b[0m","timestamp":"2026-03-16 08:34:17"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.975 ms - -\u001b[0m","timestamp":"2026-03-16 08:34:17"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.459 ms - -\u001b[0m","timestamp":"2026-03-16 08:34:17"}
+{"level":"info","message":"\u001b[0mPOST /api/jobs \u001b[32m200\u001b[0m 3.184 ms - 43\u001b[0m","timestamp":"2026-03-16 08:34:27"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[32m200\u001b[0m 2.324 ms - 455\u001b[0m","timestamp":"2026-03-16 08:34:27"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[32m200\u001b[0m 1.815 ms - 206\u001b[0m","timestamp":"2026-03-16 08:34:27"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.586 ms - -\u001b[0m","timestamp":"2026-03-16 08:34:27"}
+{"level":"info","message":"\u001b[0mPUT /api/jobs/1 \u001b[32m200\u001b[0m 3.085 ms - 40\u001b[0m","timestamp":"2026-03-16 08:34:29"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[32m200\u001b[0m 1.799 ms - 455\u001b[0m","timestamp":"2026-03-16 08:34:30"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.945 ms - -\u001b[0m","timestamp":"2026-03-16 08:34:30"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.853 ms - -\u001b[0m","timestamp":"2026-03-16 08:34:30"}
+{"level":"info","message":"\u001b[0mPUT /api/jobs/1 \u001b[32m200\u001b[0m 2.947 ms - 40\u001b[0m","timestamp":"2026-03-16 08:34:31"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.708 ms - -\u001b[0m","timestamp":"2026-03-16 08:34:32"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[32m200\u001b[0m 1.913 ms - 455\u001b[0m","timestamp":"2026-03-16 08:34:32"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.423 ms - -\u001b[0m","timestamp":"2026-03-16 08:34:32"}
+{"level":"info","message":"Client disconnected: flK-aGurNNmCRdj_AAAD","timestamp":"2026-03-16 08:36:38"}
+{"level":"info","message":"Client disconnected: wPALk7T4EbUr6U9VAAAB","timestamp":"2026-03-16 08:36:38"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:36:39"}
+{"level":"info","message":"Client connected: vzo2SYssUA8gFAVfAAAH","timestamp":"2026-03-16 08:36:39"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:36:39"}
+{"level":"info","message":"Client connected: xOqKo5gkaROX9rmBAAAJ","timestamp":"2026-03-16 08:36:39"}
+{"level":"info","message":"Client disconnected: vzo2SYssUA8gFAVfAAAH","timestamp":"2026-03-16 08:36:50"}
+{"level":"info","message":"Client disconnected: xOqKo5gkaROX9rmBAAAJ","timestamp":"2026-03-16 08:36:50"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:36:52"}
+{"level":"info","message":"Client connected: bQNASLAxM7QLC_PXAAAL","timestamp":"2026-03-16 08:36:52"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:36:52"}
+{"level":"info","message":"Client connected: NjoOPToZdUsg5obBAAAN","timestamp":"2026-03-16 08:36:52"}
+{"details":"Menghapus dokumen: \"PMF Eko Arif Faizal FY 2025.pdf\"","level":"info","message":"Delete Document: Menghapus dokumen: \"PMF Eko Arif Faizal FY 2025.pdf\"","timestamp":"2026-03-16 08:37:11","user":null}
+{"level":"info","message":"\u001b[0mDELETE /api/documents/1773649965639 \u001b[32m200\u001b[0m 8.574 ms - 16\u001b[0m","timestamp":"2026-03-16 08:37:11"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[32m200\u001b[0m 2.298 ms - 2\u001b[0m","timestamp":"2026-03-16 08:37:11"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[32m200\u001b[0m 1.889 ms - 2\u001b[0m","timestamp":"2026-03-16 08:37:11"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 2.205 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:13"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.507 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:13"}
+{"level":"info","message":"[Queue] [HEAVY (MySQL Polling)] Job registered in MySQL -> process-ocr-lane-1: 1773650239332","timestamp":"2026-03-16 08:37:20"}
+{"details":"Mengunggah dokumen (Queued): \"Surat Kuasa Saijo.pdf\"","level":"info","message":"Upload: Mengunggah dokumen (Queued): \"Surat Kuasa Saijo.pdf\"","timestamp":"2026-03-16 08:37:20","user":"Administrator"}
+{"level":"info","message":"\u001b[0mPOST /api/documents \u001b[32m200\u001b[0m 50.593 ms - 308\u001b[0m","timestamp":"2026-03-16 08:37:20"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[32m200\u001b[0m 3.120 ms - 385\u001b[0m","timestamp":"2026-03-16 08:37:20"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[32m200\u001b[0m 2.082 ms - 385\u001b[0m","timestamp":"2026-03-16 08:37:20"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.654 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:21"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 1.941 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:21"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[32m200\u001b[0m 2.220 ms - 379\u001b[0m","timestamp":"2026-03-16 08:37:22"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 1.937 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:23"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[32m200\u001b[0m 2.153 ms - 379\u001b[0m","timestamp":"2026-03-16 08:37:23"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 2.145 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:23"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.722 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:23"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.220 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:23"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 1.238 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:23"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 1.925 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:23"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.635 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:25"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 2.057 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:25"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 1.904 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:25"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773650239332 \u001b[32m200\u001b[0m 2.356 ms - 377\u001b[0m","timestamp":"2026-03-16 08:37:35"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773650239332/stream \u001b[32m200\u001b[0m 2.926 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:36"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773650239332/comments \u001b[32m200\u001b[0m 2.158 ms - 2\u001b[0m","timestamp":"2026-03-16 08:37:36"}
+{"level":"info","message":"[Queue] [HEAVY (MySQL Polling)] Job registered in MySQL -> process-ocr-lane-1: 1773650253028","timestamp":"2026-03-16 08:37:37"}
+{"details":"Mengunggah dokumen (Queued): \"F-IT-01_Form Membawa Laptop Keluar Perusahaan.pdf\"","level":"info","message":"Upload: Mengunggah dokumen (Queued): \"F-IT-01_Form Membawa Laptop Keluar Perusahaan.pdf\"","timestamp":"2026-03-16 08:37:37","user":"Administrator"}
+{"level":"info","message":"\u001b[0mPOST /api/documents \u001b[32m200\u001b[0m 219.090 ms - 392\u001b[0m","timestamp":"2026-03-16 08:37:37"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[32m200\u001b[0m 2.362 ms - 819\u001b[0m","timestamp":"2026-03-16 08:37:38"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[32m200\u001b[0m 1.963 ms - 819\u001b[0m","timestamp":"2026-03-16 08:37:38"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773650239332/comments \u001b[36m304\u001b[0m 1.737 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:38"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773650239332/comments \u001b[36m304\u001b[0m 1.903 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:38"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 2.727 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:38"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.414 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:38"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[32m200\u001b[0m 2.442 ms - 11125\u001b[0m","timestamp":"2026-03-16 08:37:40"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773650239332/comments \u001b[36m304\u001b[0m 1.960 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:40"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 2.062 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:40"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773650239332/comments \u001b[36m304\u001b[0m 1.366 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:40"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[32m200\u001b[0m 2.581 ms - 11125\u001b[0m","timestamp":"2026-03-16 08:37:40"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.003 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:40"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.435 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:40"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 2.044 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:40"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 1.143 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:40"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 1.841 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:40"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.181 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:40"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 1.701 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:40"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 1.625 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:40"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773650253028 \u001b[32m200\u001b[0m 2.118 ms - 10745\u001b[0m","timestamp":"2026-03-16 08:37:42"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773650253028/comments \u001b[32m200\u001b[0m 2.993 ms - 2\u001b[0m","timestamp":"2026-03-16 08:37:43"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773650253028/stream \u001b[32m200\u001b[0m 2.781 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:43"}
+{"level":"info","message":"[Queue] [HEAVY (MySQL Polling)] Job registered in MySQL -> process-ocr-lane-1: 1773650274566","timestamp":"2026-03-16 08:37:56"}
+{"details":"Mengunggah dokumen (Queued): \"Surat Kuasa Saijo rotate.pdf\"","level":"info","message":"Upload: Mengunggah dokumen (Queued): \"Surat Kuasa Saijo rotate.pdf\"","timestamp":"2026-03-16 08:37:56","user":"Administrator"}
+{"level":"info","message":"\u001b[0mPOST /api/documents \u001b[32m200\u001b[0m 53.241 ms - 329\u001b[0m","timestamp":"2026-03-16 08:37:56"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[32m200\u001b[0m 2.102 ms - 11523\u001b[0m","timestamp":"2026-03-16 08:37:56"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[32m200\u001b[0m 1.776 ms - 11523\u001b[0m","timestamp":"2026-03-16 08:37:56"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.570 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:56"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 6.210 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:56"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[32m200\u001b[0m 2.041 ms - 11517\u001b[0m","timestamp":"2026-03-16 08:37:57"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 1.942 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:57"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.355 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:57"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.177 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:57"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 1.367 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:57"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[32m200\u001b[0m 1.556 ms - 11517\u001b[0m","timestamp":"2026-03-16 08:37:57"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 1.564 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:57"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 3.179 ms - -\u001b[0m","timestamp":"2026-03-16 08:37:58"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773650274566 \u001b[32m200\u001b[0m 1.940 ms - 391\u001b[0m","timestamp":"2026-03-16 08:37:59"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773650274566/stream \u001b[32m200\u001b[0m 1.894 ms - -\u001b[0m","timestamp":"2026-03-16 08:38:00"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773650274566/comments \u001b[32m200\u001b[0m 2.426 ms - 2\u001b[0m","timestamp":"2026-03-16 08:38:00"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 2.200 ms - -\u001b[0m","timestamp":"2026-03-16 08:38:00"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.394 ms - -\u001b[0m","timestamp":"2026-03-16 08:38:00"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 2.316 ms - -\u001b[0m","timestamp":"2026-03-16 08:38:00"}
+{"level":"info","message":"Client disconnected: bQNASLAxM7QLC_PXAAAL","timestamp":"2026-03-16 08:43:46"}
+{"level":"info","message":"Client disconnected: NjoOPToZdUsg5obBAAAN","timestamp":"2026-03-16 08:43:46"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:43:48"}
+{"level":"info","message":"Client connected: IGYpEfeVafndKEVcAAAP","timestamp":"2026-03-16 08:43:48"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:43:48"}
+{"level":"info","message":"Client connected: Lx4Qet80jZbSyaskAAAR","timestamp":"2026-03-16 08:43:48"}
+{"level":"info","message":"Client disconnected: IGYpEfeVafndKEVcAAAP","timestamp":"2026-03-16 08:46:16"}
+{"level":"info","message":"Client disconnected: Lx4Qet80jZbSyaskAAAR","timestamp":"2026-03-16 08:46:16"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:46:18"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:46:18"}
+{"level":"info","message":"Client connected: iHEX_PADkK7-KkZiAAAU","timestamp":"2026-03-16 08:46:19"}
+{"level":"info","message":"Client connected: 2yZWBhnp1IQqu_lmAAAV","timestamp":"2026-03-16 08:46:19"}
+{"level":"info","message":"Client disconnected: 2yZWBhnp1IQqu_lmAAAV","timestamp":"2026-03-16 08:46:20"}
+{"level":"info","message":"Client disconnected: iHEX_PADkK7-KkZiAAAU","timestamp":"2026-03-16 08:46:20"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:46:22"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:46:22"}
+{"level":"info","message":"Client connected: 5l4gM4ko4D7-vuOTAAAY","timestamp":"2026-03-16 08:46:22"}
+{"level":"info","message":"Client connected: R6F85cZvzw1a_AbWAAAZ","timestamp":"2026-03-16 08:46:22"}
+{"level":"info","message":"Client disconnected: 5l4gM4ko4D7-vuOTAAAY","timestamp":"2026-03-16 08:50:33"}
+{"level":"info","message":"Client disconnected: R6F85cZvzw1a_AbWAAAZ","timestamp":"2026-03-16 08:50:33"}
+{"level":"info","message":"\u001b[0mPOST /api/search/ai \u001b[32m200\u001b[0m 178.441 ms - 14\u001b[0m","timestamp":"2026-03-16 08:51:21"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:51:30"}
+{"level":"info","message":"Client connected: 48Fa28cjnlzivCLAAAAb","timestamp":"2026-03-16 08:51:30"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773650239332 \u001b[36m304\u001b[0m 2.027 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:08"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773650239332/stream \u001b[32m200\u001b[0m 2.251 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:08"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773650239332/comments \u001b[36m304\u001b[0m 1.987 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:08"}
+{"details":"Menghapus dokumen: \"Surat Kuasa Saijo rotate.pdf\"","level":"info","message":"Delete Document: Menghapus dokumen: \"Surat Kuasa Saijo rotate.pdf\"","timestamp":"2026-03-16 08:52:15","user":null}
+{"level":"info","message":"\u001b[0mDELETE /api/documents/1773650274566 \u001b[32m200\u001b[0m 14.010 ms - 16\u001b[0m","timestamp":"2026-03-16 08:52:15"}
+{"details":"Menghapus dokumen: \"Surat Kuasa Saijo.pdf\"","level":"info","message":"Delete Document: Menghapus dokumen: \"Surat Kuasa Saijo.pdf\"","timestamp":"2026-03-16 08:52:15","user":null}
+{"level":"info","message":"\u001b[0mDELETE /api/documents/1773650239332 \u001b[32m200\u001b[0m 12.994 ms - 16\u001b[0m","timestamp":"2026-03-16 08:52:15"}
+{"details":"Menghapus dokumen: \"F-IT-01_Form Membawa Laptop Keluar Perusahaan.pdf\"","level":"info","message":"Delete Document: Menghapus dokumen: \"F-IT-01_Form Membawa Laptop Keluar Perusahaan.pdf\"","timestamp":"2026-03-16 08:52:15","user":null}
+{"level":"info","message":"\u001b[0mDELETE /api/documents/1773650253028 \u001b[32m200\u001b[0m 11.078 ms - 16\u001b[0m","timestamp":"2026-03-16 08:52:15"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[32m200\u001b[0m 1.599 ms - 2\u001b[0m","timestamp":"2026-03-16 08:52:15"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 1.530 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:15"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[32m200\u001b[0m 2.165 ms - 2\u001b[0m","timestamp":"2026-03-16 08:52:15"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 1.314 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:15"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 1.413 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:15"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 1.810 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:15"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 1.833 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:16"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 0.931 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:16"}
+{"level":"info","message":"[Queue] [HEAVY (MySQL Polling)] Job registered in MySQL -> process-ocr-lane-1: doc-1773651147183-373","timestamp":"2026-03-16 08:52:27"}
+{"details":"Mengunggah dokumen (Queued): \"Surat Kuasa Saijo rotate.pdf\"","level":"info","message":"Upload: Mengunggah dokumen (Queued): \"Surat Kuasa Saijo rotate.pdf\"","timestamp":"2026-03-16 08:52:27","user":"Administrator"}
+{"level":"info","message":"\u001b[0mPOST /api/documents \u001b[32m200\u001b[0m 48.770 ms - 345\u001b[0m","timestamp":"2026-03-16 08:52:27"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[32m200\u001b[0m 2.390 ms - 407\u001b[0m","timestamp":"2026-03-16 08:52:27"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[32m200\u001b[0m 1.584 ms - 407\u001b[0m","timestamp":"2026-03-16 08:52:27"}
+{"level":"info","message":"[Queue] [HEAVY (MySQL Polling)] Job registered in MySQL -> process-ocr-lane-1: doc-1773651147682-290","timestamp":"2026-03-16 08:52:27"}
+{"details":"Mengunggah dokumen (Queued): \"PMF Eko Arif Faizal FY 2025 END.pdf\"","level":"info","message":"Upload: Mengunggah dokumen (Queued): \"PMF Eko Arif Faizal FY 2025 END.pdf\"","timestamp":"2026-03-16 08:52:27","user":"Administrator"}
+{"level":"info","message":"\u001b[0mPOST /api/documents \u001b[32m200\u001b[0m 20.157 ms - 366\u001b[0m","timestamp":"2026-03-16 08:52:27"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[32m200\u001b[0m 1.905 ms - 827\u001b[0m","timestamp":"2026-03-16 08:52:27"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[32m200\u001b[0m 1.771 ms - 827\u001b[0m","timestamp":"2026-03-16 08:52:27"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[32m200\u001b[0m 5.609 ms - 821\u001b[0m","timestamp":"2026-03-16 08:52:28"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.527 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:28"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[32m200\u001b[0m 2.222 ms - 821\u001b[0m","timestamp":"2026-03-16 08:52:28"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 2.048 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:28"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 7.684 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:29"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 7.768 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:29"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 3.053 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:29"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 2.966 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:29"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.114 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:29"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 1.878 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:29"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 2.073 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:30"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.444 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:30"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 1.541 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:30"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651147682-290 \u001b[32m200\u001b[0m 1.782 ms - 413\u001b[0m","timestamp":"2026-03-16 08:52:30"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651147682-290/stream \u001b[32m200\u001b[0m 3.649 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:30"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651147682-290/comments \u001b[32m200\u001b[0m 2.011 ms - 2\u001b[0m","timestamp":"2026-03-16 08:52:30"}
+{"level":"info","message":"[Queue] [HEAVY (MySQL Polling)] Job registered in MySQL -> process-ocr-lane-1: doc-1773651151273-415","timestamp":"2026-03-16 08:52:31"}
+{"details":"Mengunggah dokumen (Queued): \"F-IT-01_Form Membawa Laptop Keluar Perusahaan.pdf\"","level":"info","message":"Upload: Mengunggah dokumen (Queued): \"F-IT-01_Form Membawa Laptop Keluar Perusahaan.pdf\"","timestamp":"2026-03-16 08:52:31","user":"Administrator"}
+{"level":"info","message":"\u001b[0mPOST /api/documents \u001b[32m200\u001b[0m 257.909 ms - 408\u001b[0m","timestamp":"2026-03-16 08:52:31"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[32m200\u001b[0m 3.293 ms - 1269\u001b[0m","timestamp":"2026-03-16 08:52:31"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[32m200\u001b[0m 1.994 ms - 1269\u001b[0m","timestamp":"2026-03-16 08:52:31"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651147682-290/comments \u001b[36m304\u001b[0m 2.101 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:31"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651147682-290/comments \u001b[36m304\u001b[0m 1.679 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:31"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 1.864 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:31"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.197 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:31"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 2.010 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:31"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[32m200\u001b[0m 2.197 ms - 11575\u001b[0m","timestamp":"2026-03-16 08:52:33"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 2.286 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:33"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 2.737 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:33"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 4.024 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:33"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 2.224 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:33"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[32m200\u001b[0m 2.709 ms - 11575\u001b[0m","timestamp":"2026-03-16 08:52:33"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 3.315 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:33"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 1.776 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:34"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651151273-415 \u001b[32m200\u001b[0m 1.878 ms - 10753\u001b[0m","timestamp":"2026-03-16 08:52:34"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651151273-415/comments \u001b[32m200\u001b[0m 2.612 ms - 2\u001b[0m","timestamp":"2026-03-16 08:52:35"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651151273-415/stream \u001b[32m200\u001b[0m 4.258 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:35"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 3.141 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:35"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 1.922 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:35"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 2.232 ms - -\u001b[0m","timestamp":"2026-03-16 08:52:36"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651147183-373 \u001b[32m200\u001b[0m 1.827 ms - 405\u001b[0m","timestamp":"2026-03-16 08:53:17"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651147183-373/stream \u001b[32m200\u001b[0m 2.325 ms - -\u001b[0m","timestamp":"2026-03-16 08:53:17"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651147183-373/comments \u001b[32m200\u001b[0m 1.867 ms - 2\u001b[0m","timestamp":"2026-03-16 08:53:17"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[32m200\u001b[0m 2.253 ms - 21733\u001b[0m","timestamp":"2026-03-16 08:53:47"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.427 ms - -\u001b[0m","timestamp":"2026-03-16 08:53:48"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 1.376 ms - -\u001b[0m","timestamp":"2026-03-16 08:53:48"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[32m200\u001b[0m 2.156 ms - 21733\u001b[0m","timestamp":"2026-03-16 08:53:48"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 2.000 ms - -\u001b[0m","timestamp":"2026-03-16 08:53:48"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 1.207 ms - -\u001b[0m","timestamp":"2026-03-16 08:53:48"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 1.991 ms - -\u001b[0m","timestamp":"2026-03-16 08:53:48"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 1.772 ms - -\u001b[0m","timestamp":"2026-03-16 08:53:49"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.255 ms - -\u001b[0m","timestamp":"2026-03-16 08:53:50"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 1.943 ms - -\u001b[0m","timestamp":"2026-03-16 08:53:50"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 2.074 ms - -\u001b[0m","timestamp":"2026-03-16 08:53:51"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651147183-373 \u001b[32m200\u001b[0m 1.665 ms - 10563\u001b[0m","timestamp":"2026-03-16 08:53:55"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651147183-373/comments \u001b[36m304\u001b[0m 2.236 ms - -\u001b[0m","timestamp":"2026-03-16 08:53:55"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651147183-373/stream \u001b[32m200\u001b[0m 1.926 ms - -\u001b[0m","timestamp":"2026-03-16 08:53:55"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651151273-415 \u001b[36m304\u001b[0m 1.864 ms - -\u001b[0m","timestamp":"2026-03-16 08:53:59"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651151273-415/stream \u001b[32m200\u001b[0m 2.299 ms - -\u001b[0m","timestamp":"2026-03-16 08:54:00"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651151273-415/comments \u001b[36m304\u001b[0m 1.442 ms - -\u001b[0m","timestamp":"2026-03-16 08:54:00"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651147682-290 \u001b[36m304\u001b[0m 2.019 ms - -\u001b[0m","timestamp":"2026-03-16 08:54:04"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651147682-290/comments \u001b[36m304\u001b[0m 2.045 ms - -\u001b[0m","timestamp":"2026-03-16 08:54:04"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651147682-290/stream \u001b[32m200\u001b[0m 2.056 ms - -\u001b[0m","timestamp":"2026-03-16 08:54:04"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651147183-373 \u001b[36m304\u001b[0m 2.720 ms - -\u001b[0m","timestamp":"2026-03-16 08:54:10"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651147183-373/stream \u001b[32m200\u001b[0m 2.162 ms - -\u001b[0m","timestamp":"2026-03-16 08:54:11"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773651147183-373/comments \u001b[36m304\u001b[0m 2.052 ms - -\u001b[0m","timestamp":"2026-03-16 08:54:11"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.420 ms - -\u001b[0m","timestamp":"2026-03-16 08:56:12"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.331 ms - -\u001b[0m","timestamp":"2026-03-16 08:56:12"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.845 ms - -\u001b[0m","timestamp":"2026-03-16 08:56:12"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.399 ms - -\u001b[0m","timestamp":"2026-03-16 08:56:12"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.662 ms - -\u001b[0m","timestamp":"2026-03-16 08:56:12"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.354 ms - -\u001b[0m","timestamp":"2026-03-16 08:56:12"}
+{"level":"info","message":"\u001b[0mPUT /api/jobs/1 \u001b[32m200\u001b[0m 2.399 ms - 40\u001b[0m","timestamp":"2026-03-16 08:56:38"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.624 ms - -\u001b[0m","timestamp":"2026-03-16 08:56:38"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.237 ms - -\u001b[0m","timestamp":"2026-03-16 08:56:38"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[32m200\u001b[0m 1.621 ms - 455\u001b[0m","timestamp":"2026-03-16 08:56:38"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-16 08:58:51"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:58:51"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-16 08:58:51"}
+{"level":"info","message":"🧠 Memuat Vector Store ke RAM...","timestamp":"2026-03-16 08:58:51"}
+{"level":"info","message":"✅ AI Search siap digunakan.","timestamp":"2026-03-16 08:58:51"}
+{"level":"info","message":"Client connected: Sy4-Hp5UNJ5T3HZVAAAB","timestamp":"2026-03-16 08:58:51"}
+{"level":"info","message":"Client connected: b0BIoVnsdedjmu-6AAAD","timestamp":"2026-03-16 08:58:53"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-16 08:58:58"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:58:58"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-16 08:58:58"}
+{"level":"info","message":"🧠 Memuat Vector Store ke RAM...","timestamp":"2026-03-16 08:58:58"}
+{"level":"info","message":"✅ AI Search siap digunakan.","timestamp":"2026-03-16 08:58:58"}
+{"level":"info","message":"Client connected: 0BD1ID-DLZ4r_rscAAAB","timestamp":"2026-03-16 08:58:58"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-16 08:59:00"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:59:00"}
+{"level":"info","message":"Client connected: afYQvZlcKPk331Y7AAAB","timestamp":"2026-03-16 08:59:00"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-16 08:59:00"}
+{"level":"info","message":"🧠 Memuat Vector Store ke RAM...","timestamp":"2026-03-16 08:59:00"}
+{"level":"info","message":"✅ AI Search siap digunakan.","timestamp":"2026-03-16 08:59:00"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-16 08:59:02"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:59:02"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-16 08:59:02"}
+{"level":"info","message":"🧠 Memuat Vector Store ke RAM...","timestamp":"2026-03-16 08:59:02"}
+{"level":"info","message":"✅ AI Search siap digunakan.","timestamp":"2026-03-16 08:59:02"}
+{"level":"info","message":"Client connected: kb6by97Pbp9SVXMRAAAB","timestamp":"2026-03-16 08:59:02"}
+{"level":"info","message":"Client connected: unejBJ552SLFLGYxAAAD","timestamp":"2026-03-16 08:59:03"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-16 08:59:46"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:59:46"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-16 08:59:46"}
+{"level":"info","message":"🧠 Memuat Vector Store ke RAM...","timestamp":"2026-03-16 08:59:46"}
+{"level":"info","message":"✅ AI Search siap digunakan.","timestamp":"2026-03-16 08:59:46"}
+{"level":"info","message":"Client connected: VhYeEqKg6fn-YjF8AAAC","timestamp":"2026-03-16 08:59:47"}
+{"level":"info","message":"Client connected: 0k5UFEK1CfD09NkZAAAD","timestamp":"2026-03-16 08:59:47"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-16 08:59:50"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-16 08:59:50"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-16 08:59:50"}
+{"level":"info","message":"🧠 Memuat Vector Store ke RAM...","timestamp":"2026-03-16 08:59:50"}
+{"level":"info","message":"✅ AI Search siap digunakan.","timestamp":"2026-03-16 08:59:50"}
+{"level":"info","message":"Client connected: YOOf-KJHFIRRkix3AAAB","timestamp":"2026-03-16 08:59:51"}
+{"level":"info","message":"Client connected: zz1ogDYywPqmshW4AAAD","timestamp":"2026-03-16 08:59:52"}
+{"level":"info","message":"\u001b[0mPUT /api/jobs/1 \u001b[32m200\u001b[0m 9.867 ms - 40\u001b[0m","timestamp":"2026-03-16 09:00:14"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 4.703 ms - -\u001b[0m","timestamp":"2026-03-16 09:00:14"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[32m200\u001b[0m 5.484 ms - 520\u001b[0m","timestamp":"2026-03-16 09:00:14"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 2.812 ms - -\u001b[0m","timestamp":"2026-03-16 09:00:14"}
+{"level":"info","message":"\u001b[0mPUT /api/jobs/1 \u001b[32m200\u001b[0m 9.286 ms - 40\u001b[0m","timestamp":"2026-03-16 09:00:23"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.954 ms - -\u001b[0m","timestamp":"2026-03-16 09:00:23"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 2.518 ms - -\u001b[0m","timestamp":"2026-03-16 09:00:23"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[32m200\u001b[0m 2.117 ms - 500\u001b[0m","timestamp":"2026-03-16 09:00:23"}
+{"level":"info","message":"\u001b[0mPUT /api/jobs/1 \u001b[32m200\u001b[0m 5.517 ms - 40\u001b[0m","timestamp":"2026-03-16 09:00:24"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 5.957 ms - -\u001b[0m","timestamp":"2026-03-16 09:00:24"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[32m200\u001b[0m 2.686 ms - 520\u001b[0m","timestamp":"2026-03-16 09:00:24"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.684 ms - -\u001b[0m","timestamp":"2026-03-16 09:00:24"}
+{"level":"info","message":"\u001b[0mPUT /api/jobs/1 \u001b[32m200\u001b[0m 3.054 ms - 40\u001b[0m","timestamp":"2026-03-16 09:00:24"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 3.085 ms - -\u001b[0m","timestamp":"2026-03-16 09:00:24"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[32m200\u001b[0m 6.974 ms - 500\u001b[0m","timestamp":"2026-03-16 09:00:24"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 6.936 ms - -\u001b[0m","timestamp":"2026-03-16 09:00:24"}
+{"level":"info","message":"\u001b[0mPUT /api/jobs/1 \u001b[32m200\u001b[0m 6.212 ms - 40\u001b[0m","timestamp":"2026-03-16 09:00:25"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[32m200\u001b[0m 14.640 ms - 520\u001b[0m","timestamp":"2026-03-16 09:00:25"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 13.454 ms - -\u001b[0m","timestamp":"2026-03-16 09:00:25"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 13.877 ms - -\u001b[0m","timestamp":"2026-03-16 09:00:25"}
+{"level":"info","message":"Client disconnected: zz1ogDYywPqmshW4AAAD","timestamp":"2026-03-16 09:01:59"}

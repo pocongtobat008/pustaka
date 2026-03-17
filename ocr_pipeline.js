@@ -3,6 +3,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { pathToFileURL } from 'url';
 import { createWorker } from 'tesseract.js';
 import sharp from 'sharp';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
@@ -15,27 +16,83 @@ try { Canvas = (await import('canvas')).default; } catch (e) { Canvas = null; }
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// PDF.js standard fonts path — prevents hanging when PDFs reference embedded fonts
+const _standardFontsDir = path.resolve(path.dirname(__filename), 'node_modules/pdfjs-dist/standard_fonts/');
+const _standardFontDataUrl = fs.existsSync(_standardFontsDir)
+  ? pathToFileURL(_standardFontsDir).href + '/'
+  : undefined;
+
+// PDF.js shared options to prevent font-fetch hangs
+const PDFJS_OPTS = {
+  standardFontDataUrl: _standardFontDataUrl,
+  disableFontFace: true,
+  useWorkerFetch: false,
+  isEvalSupported: false,
+};
+
+/**
+ * Extract raw JPEG streams embedded in a PDF binary.
+ * Most scanner-produced PDFs store each page as a JPEG XObject.
+ * This approach is reliable and needs no canvas or PDF renderer.
+ */
+function extractRawJpegsFromPdf(pdfBuffer) {
+  const buf = Buffer.isBuffer(pdfBuffer) ? pdfBuffer : Buffer.from(pdfBuffer);
+  const images = [];
+  let offset = 0;
+  while (offset < buf.length - 3) {
+    // JPEG SOI: FF D8 FF
+    if (buf[offset] === 0xFF && buf[offset + 1] === 0xD8 && buf[offset + 2] === 0xFF) {
+      const start = offset;
+      // Find JPEG EOI: FF D9
+      let end = -1;
+      for (let j = offset + 2; j < buf.length - 1; j++) {
+        if (buf[j] === 0xFF && buf[j + 1] === 0xD9) { end = j + 2; break; }
+      }
+      if (end > start) {
+        const jpeg = buf.slice(start, end);
+        // Skip thumbnails and tiny icons; full-page scans are typically > 50 KB
+        if (jpeg.length > 50000) images.push(jpeg);
+        offset = end;
+      } else {
+        offset++;
+      }
+    } else {
+      offset++;
+    }
+  }
+  return images;
+}
+
 async function renderPdfToImages(pdfPath, maxPages = 50) {
   const data = fs.readFileSync(pdfPath);
-  const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(data) });
+
+  // ── Strategy 1: Direct raw JPEG extraction (fastest, works for all scanner PDFs)
+  const rawJpegs = extractRawJpegsFromPdf(data);
+  if (rawJpegs.length > 0) {
+    console.log(`[OCR] Found ${rawJpegs.length} raw JPEG stream(s) in PDF — using direct extraction.`);
+    const images = [];
+    for (let i = 0; i < Math.min(rawJpegs.length, maxPages); i++) {
+      try {
+        const buffer = await sharp(rawJpegs[i])
+          .resize({ width: 1654, withoutEnlargement: false })
+          .png()
+          .toBuffer();
+        images.push({ page: i + 1, buffer });
+      } catch (e) {
+        console.warn(`[OCR] JPEG ${i + 1} sharp convert failed: ${e.message}`);
+      }
+    }
+    if (images.length > 0) return images;
+  }
+
+  // ── Strategy 2: PDF.js operator-list image extraction (no canvas required)
+  const loadingTask = pdfjsLib.getDocument({ ...PDFJS_OPTS, data: new Uint8Array(data) });
   const pdf = await loadingTask.promise;
   const pages = Math.min(pdf.numPages, maxPages);
   const images = [];
 
   for (let i = 1; i <= pages; i++) {
     const page = await pdf.getPage(i);
-    const viewport = page.getViewport({ scale: 2.0 });
-
-    // Jika Canvas tersedia, render halaman penuh.
-    if (Canvas) {
-      const canvas = Canvas.createCanvas(viewport.width, viewport.height);
-      const ctx = canvas.getContext('2d');
-      const renderContext = { canvasContext: ctx, viewport };
-      await page.render(renderContext).promise;
-      const buffer = canvas.toBuffer('image/png');
-      images.push({ page: i, buffer });
-      continue;
-    }
 
     // Fallback: coba ekstrak image embedded dari operator list (image-only scanned PDFs)
     try {
@@ -161,7 +218,7 @@ async function ocrPdf(pdfPath, outDir, options = {}) {
   // Fast path: try extracting embedded text layer (much faster than OCR for digital PDFs)
   async function tryExtractText(rawData, maxPages = 50) {
     try {
-      const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(rawData) });
+      const loadingTask = pdfjsLib.getDocument({ ...PDFJS_OPTS, data: new Uint8Array(rawData) });
       const pdf = await loadingTask.promise;
       const pages = Math.min(pdf.numPages, maxPages);
       const texts = [];
