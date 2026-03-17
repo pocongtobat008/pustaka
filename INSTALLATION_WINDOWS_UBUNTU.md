@@ -55,6 +55,9 @@ DB_PASS=root123
 DB_NAME=pustaka
 PORT=5000
 JWT_SECRET=ganti_dengan_secret_acak_yang_panjang
+SESSION_TTL_MS=604800000
+ALLOW_DEV_TOKEN=false
+ALLOW_QUERY_TOKEN=false
 
 # Opsional Redis
 REDIS_HOST=127.0.0.1

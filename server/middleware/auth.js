@@ -1,9 +1,13 @@
 import { knex } from '../db.js';
 
 export const checkAuth = async (req, res, next) => {
-    // 1. Ekstrak token dari Cookie (HttpOnly), header Authorization, atau Query Parameter
+    const isProduction = process.env.NODE_ENV === 'production';
+    const allowQueryToken = process.env.ALLOW_QUERY_TOKEN === 'true' && !isProduction;
+    const allowDevToken = process.env.ALLOW_DEV_TOKEN === 'true' && !isProduction;
+
+    // 1. Ekstrak token dari Cookie (HttpOnly), header Authorization, atau Query Parameter (dev-only)
     const token = req.cookies?.token ||
-        (req.headers['authorization'] ? req.headers['authorization'].split(' ')[1] : req.query.token);
+        (req.headers['authorization'] ? req.headers['authorization'].split(' ')[1] : (allowQueryToken ? req.query.token : undefined));
     const userId = req.headers['x-user-id'];
 
     if (!token && !userId) {
@@ -15,11 +19,23 @@ export const checkAuth = async (req, res, next) => {
 
     try {
         let user;
-        if (token === 'dev-token') {
+        if (token === 'dev-token' && allowDevToken) {
             // Bypass khusus untuk mode development / admin fallback
             user = await knex('users').where('username', 'admin').first();
         } else if (token) {
             user = await knex('users').where('token', token).first();
+
+            // Enforce session expiry if expiry field is present
+            if (user?.token_expires_at) {
+                const expiresAt = new Date(user.token_expires_at).getTime();
+                if (Number.isFinite(expiresAt) && Date.now() > expiresAt) {
+                    await knex('users').where('id', user.id).update({
+                        token: null,
+                        token_expires_at: null
+                    });
+                    return res.status(401).json({ error: "Session expired" });
+                }
+            }
         } else {
             user = await knex('users').where('id', userId).first();
         }

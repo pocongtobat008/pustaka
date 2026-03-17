@@ -1,5 +1,6 @@
 import { knex } from '../db.js';
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 import { systemLog } from '../utils/logger.js';
 import { handleError } from '../utils/errorHandler.js';
 
@@ -27,16 +28,22 @@ export const login = async (req, res) => {
         }
 
         if (match) {
-            // Generate or refresh token
-            const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
-            await knex('users').where('id', user.id).update({ token });
+            // Generate cryptographically secure session token with explicit expiry
+            const sessionTtlMs = Number(process.env.SESSION_TTL_MS || (7 * 24 * 60 * 60 * 1000));
+            const token = crypto.randomBytes(32).toString('hex');
+            const tokenExpiresAt = new Date(Date.now() + sessionTtlMs);
+
+            await knex('users').where('id', user.id).update({
+                token,
+                token_expires_at: tokenExpiresAt
+            });
 
             // Set HttpOnly Cookie
             res.cookie('token', token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'lax', // Use 'lax' for dev stability on network IPs
-                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+                maxAge: sessionTtlMs
             });
 
             const { password: _, ...userWithoutPass } = user;
@@ -55,6 +62,14 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
     try {
         const username = req.user?.username || 'Unknown';
+
+        if (req.user?.id) {
+            await knex('users').where('id', req.user.id).update({
+                token: null,
+                token_expires_at: null
+            });
+        }
+
         res.clearCookie('token');
         await systemLog(username, "Logout", "User logged out (cookie cleared)");
         res.json({ message: "Logout successful" });

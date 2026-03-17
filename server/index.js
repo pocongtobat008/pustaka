@@ -756,8 +756,9 @@ app.delete('/api/sop-flows/:id', checkAuth, async (req, res) => {
 // Secure File Access
 
 app.get('/uploads/:filename', (req, res, next) => {
-    // Fallback: Izinkan token dari query parameter untuk akses langsung (preview/download)
-    if (req.query.token && !req.headers.authorization) {
+    // Fallback query-token hanya untuk dev bila diizinkan secara eksplisit
+    const allowQueryToken = process.env.ALLOW_QUERY_TOKEN === 'true' && process.env.NODE_ENV !== 'production';
+    if (allowQueryToken && req.query.token && !req.headers.authorization) {
         req.headers.authorization = `Bearer ${req.query.token}`;
     }
     next();
