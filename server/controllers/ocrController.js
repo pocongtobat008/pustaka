@@ -2,6 +2,10 @@ import { handleError } from '../utils/errorHandler.js';
 import { knex } from '../db.js';
 import { JOB_STATUS } from '../constants/status.js';
 
+// --- Helper Functions ---
+const isAdmin = (req) => String(req.user?.role || '').toLowerCase() === 'admin';
+const isOwnerOrAdmin = (req, owner) => isAdmin(req) || (owner && req.user?.username === owner);
+
 export const getOCRStatus = async (req, res) => {
     try {
         const counts = await knex('job_queue')
@@ -108,6 +112,18 @@ export const getLaneLoad = async (req, res) => {
 export const retryOCRJob = async (req, res) => {
     try {
         const { id } = req.params;
+        
+        // Get the job to check ownership
+        const job = await knex('job_queue').where('id', id).first();
+        if (!job) {
+            return res.status(404).json({ error: "Job not found" });
+        }
+
+        // Check if user is owner or admin
+        if (!isOwnerOrAdmin(req, job.owner)) {
+            return res.status(403).json({ error: 'Hanya owner job atau admin yang dapat mengulang job ini' });
+        }
+
         await knex('job_queue').where('id', id).update({
             status: JOB_STATUS.WAITING,
             progress: 0,
@@ -123,6 +139,11 @@ export const retryOCRJob = async (req, res) => {
 
 export const clearCompletedJobs = async (req, res) => {
     try {
+        // Only admin can clear completed jobs (maintenance operation)
+        if (!isAdmin(req)) {
+            return res.status(403).json({ error: 'Hanya admin yang dapat menghapus jobs yang sudah selesai' });
+        }
+
         await knex('job_queue').where('status', JOB_STATUS.COMPLETED).del();
         res.json({ success: true });
     } catch (err) {

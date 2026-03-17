@@ -104,13 +104,14 @@ const nodeTypes = {
 
 // --- Designer Component ---
 
-export default function WorkflowDesigner({ initialNodes = [], initialEdges = [], onSave, onClose, users = [] }) {
+export default function WorkflowDesigner({ initialNodes = [], initialEdges = [], accentColor = '#6366f1', onSave, onClose, users = [] }) {
     const [nodes, setNodes] = useState(initialNodes.length > 0 ? initialNodes : [
         { id: 'start', type: 'start', position: { x: 50, y: 150 }, data: { label: 'Start' } },
         { id: 'end', type: 'end', position: { x: 600, y: 150 }, data: { label: 'End' } },
     ]);
     const [edges, setEdges] = useState(initialEdges);
     const [selectedNode, setSelectedNode] = useState(null);
+    const [selectedEdgeId, setSelectedEdgeId] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
     const fileInputRef = useRef(null);
 
@@ -122,23 +123,45 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
         (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
         [setEdges]
     );
+    const resolvedAccentColor = accentColor || '#6366f1';
+
+    const edgePalette = ['#6366f1', '#10b981', '#f43f5e', '#f59e0b', '#3b82f6'];
+
     const onConnect = useCallback(
         (params) => setEdges((eds) => addEdge({
             ...params,
             animated: true,
             type: 'smoothstep',
-            markerEnd: { type: MarkerType.ArrowClosed, color: '#6366f1', width: 20, height: 20 },
-            style: { strokeWidth: 2.5, stroke: '#6366f1' }
+            markerEnd: { type: MarkerType.ArrowClosed, color: resolvedAccentColor, width: 20, height: 20 },
+            style: { strokeWidth: 2.5, stroke: resolvedAccentColor }
         }, eds)),
-        [setEdges]
+        [setEdges, resolvedAccentColor]
     );
 
     const handleEdgeClick = useCallback((event, edge) => {
         event.stopPropagation();
-        if (window.confirm('Hapus garis koneksi ini?')) {
-            setEdges((eds) => eds.filter((e) => e.id !== edge.id));
-        }
-    }, [setEdges]);
+        setSelectedNode(null);
+        setSelectedEdgeId(edge.id);
+    }, []);
+
+    const updateSelectedEdgeColor = useCallback((color) => {
+        if (!selectedEdgeId) return;
+        setEdges((eds) => eds.map((edge) => {
+            if (edge.id !== selectedEdgeId) return edge;
+            return {
+                ...edge,
+                style: { ...(edge.style || {}), strokeWidth: 2.5, stroke: color },
+                markerEnd: { type: MarkerType.ArrowClosed, color, width: 20, height: 20 }
+            };
+        }));
+    }, [selectedEdgeId]);
+
+    const deleteSelectedEdge = useCallback(() => {
+        if (!selectedEdgeId) return;
+        if (!window.confirm('Hapus garis koneksi ini?')) return;
+        setEdges((eds) => eds.filter((e) => e.id !== selectedEdgeId));
+        setSelectedEdgeId(null);
+    }, [selectedEdgeId]);
 
     const addApprover = () => {
         const id = `node_${Date.now()}`;
@@ -152,6 +175,7 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
     };
 
     const handleNodeClick = (event, node) => {
+        setSelectedEdgeId(null);
         if (node.type === 'approver') {
             setNodes(nds => {
                 const latestNode = nds.find(n => n.id === node.id);
@@ -234,6 +258,9 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
         onSave({ nodes, edges });
     };
 
+    const selectedEdge = edges.find((e) => e.id === selectedEdgeId) || null;
+    const selectedEdgeColor = selectedEdge?.style?.stroke || resolvedAccentColor;
+
     const isImage = (url) => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url);
 
     return (
@@ -258,6 +285,30 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
                         <User size={16} /> Tambah Approver
                     </button>
                 </div>
+
+                {selectedEdge && (
+                    <div className="space-y-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                        <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">Edge Properties</p>
+                        <p className="text-[10px] text-slate-500">Pilih warna untuk garis yang sedang dipilih.</p>
+                        <div className="flex items-center gap-2">
+                            {edgePalette.map((color) => (
+                                <button
+                                    key={color}
+                                    onClick={() => updateSelectedEdgeColor(color)}
+                                    className={`w-7 h-7 rounded-full border-2 transition-all ${selectedEdgeColor === color ? 'border-white dark:border-slate-900 ring-2 ring-indigo-500 scale-110' : 'border-transparent opacity-70 hover:opacity-100'}`}
+                                    style={{ backgroundColor: color }}
+                                    title={`Warna ${color}`}
+                                />
+                            ))}
+                        </div>
+                        <button
+                            onClick={deleteSelectedEdge}
+                            className="w-full py-2.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl text-[10px] font-black uppercase tracking-widest border border-red-100 dark:border-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/30"
+                        >
+                            Hapus Garis Terpilih
+                        </button>
+                    </div>
+                )}
 
                 {selectedNode && (
                     <div className="flex-1 min-h-0 overflow-y-auto space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-300 custom-scrollbar pr-1">
@@ -378,6 +429,10 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
                     onEdgeClick={handleEdgeClick}
                     nodeTypes={nodeTypes}
                     onNodeClick={handleNodeClick}
+                    onPaneClick={() => {
+                        setSelectedNode(null);
+                        setSelectedEdgeId(null);
+                    }}
                     connectionMode="loose"
                     deleteKeyCode="Delete"
                     fitView

@@ -1,6 +1,9 @@
 import { handleError } from '../utils/errorHandler.js';
 import { knex } from '../db.js';
 
+const isAdmin = (req) => String(req.user?.role || '').toLowerCase() === 'admin';
+const isOwnerOrAdmin = (req, owner) => isAdmin(req) || (owner && req.user?.username === owner);
+
 export const getGuides = async (req, res) => {
     try {
         const { category } = req.query;
@@ -36,7 +39,7 @@ export const getCategories = async (req, res) => {
 
 export const createGuide = async (req, res) => {
     try {
-        const { title, content, category, description, icon, privacy, allowed_depts, allowed_users, owner } = req.body;
+        const { title, content, category, description, icon, privacy, allowed_depts, allowed_users } = req.body;
         const [id] = await knex('pustaka_guides').insert({
             title,
             category,
@@ -45,7 +48,7 @@ export const createGuide = async (req, res) => {
             privacy,
             allowed_depts: JSON.stringify(allowed_depts || []),
             allowed_users: JSON.stringify(allowed_users || []),
-            owner
+            owner: req.user?.username || 'System'
         });
         req.app.get('io')?.emit('data:changed', { channel: 'pustaka' });
         res.json({ id });
@@ -58,6 +61,14 @@ export const updatePustakaGuide = async (req, res) => {
     try {
         const { id } = req.params;
         const { title, description, category, icon, privacy, allowed_depts, allowed_users } = req.body;
+
+        const existing = await knex('pustaka_guides').where('id', id).first();
+        if (!existing) return res.status(404).json({ error: 'Guide not found' });
+
+        const changingPrivacy = privacy !== undefined || allowed_depts !== undefined || allowed_users !== undefined;
+        if (changingPrivacy && !isOwnerOrAdmin(req, existing.owner)) {
+            return res.status(403).json({ error: 'Hanya owner panduan atau admin yang dapat mengubah pengaturan privasi' });
+        }
 
         await knex('pustaka_guides').where('id', id).update({
             title,

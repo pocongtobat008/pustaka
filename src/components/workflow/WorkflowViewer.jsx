@@ -288,7 +288,7 @@ function NodeDetailPopup({ node, onClose }) {
 
 // --- Main Viewer ---
 
-export default function WorkflowViewer({ nodes = [], edges = [], currentStepNodeId, approvalStatus, stepsStatus = [], sopMode = false }) {
+export default function WorkflowViewer({ nodes = [], edges = [], accentColor, currentStepNodeId, approvalStatus, stepsStatus = [], sopMode = false }) {
     const [detailNode, setDetailNode] = useState(null);
 
     const processedNodes = useMemo(() => {
@@ -328,14 +328,17 @@ export default function WorkflowViewer({ nodes = [], edges = [], currentStepNode
     }, [nodes, currentStepNodeId, approvalStatus, stepsStatus, sopMode]);
 
     const processedEdges = useMemo(() => {
-        return edges.map(edge => ({
+        return edges.map(edge => {
+            const finalColor = edge.style?.stroke || accentColor || '#6366f1';
+            return {
             ...edge,
             animated: true,
             type: 'smoothstep',
-            style: { strokeWidth: 2.5, stroke: '#6366f1' },
-            markerEnd: { type: MarkerType.ArrowClosed, color: '#6366f1', width: 20, height: 20 }
-        }));
-    }, [edges]);
+            style: { ...(edge.style || {}), strokeWidth: 2.5, stroke: finalColor },
+            markerEnd: { type: MarkerType.ArrowClosed, color: finalColor, width: 20, height: 20 }
+            };
+        });
+    }, [edges, accentColor]);
 
     const handleNodeClick = (event, node) => {
         if (node.type === 'approver') {

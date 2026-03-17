@@ -5,6 +5,7 @@ const Modal = ({ isOpen, onClose, title, children, size = 'max-w-4xl' }) => {
     if (!isOpen) return null;
     return (
         <div
+            data-app-modal="true"
             className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/40 backdrop-blur-md animate-in fade-in duration-300 pointer-events-auto"
             onClick={onClose}
         >

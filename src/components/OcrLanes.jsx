@@ -8,7 +8,25 @@ import { useInventoryStore } from '../store/useInventoryStore';
  */
 const OcrLanes = () => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isHiddenByModal, setIsHiddenByModal] = useState(false);
   const { ocrStats } = useInventoryStore();
+
+  useEffect(() => {
+    const checkModalState = () => {
+      setIsHiddenByModal(Boolean(document.querySelector('[data-app-modal="true"]')));
+    };
+
+    checkModalState();
+    const observer = new MutationObserver(checkModalState);
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['data-app-modal']
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   // Mengambil data asli dari store dan memetakannya ke 3 Lane
   const activeJobs = ocrStats?.activeJobs || [];
@@ -31,8 +49,10 @@ const OcrLanes = () => {
   // Total dokumen yang sedang diproses atau menunggu
   const totalActive = (ocrStats?.counts?.active || 0) + (ocrStats?.counts?.waiting || 0);
 
+  if (isHiddenByModal) return null;
+
   return (
-    <div className="fixed top-4 right-4 z-[9999] font-sans pointer-events-none">
+    <div className="fixed top-4 right-4 z-[40] font-sans pointer-events-none">
       <div 
         className={`pointer-events-auto bg-white/80 dark:bg-slate-900/90 backdrop-blur-xl border border-emerald-200/40 dark:border-emerald-500/20 rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] overflow-hidden ${
           isExpanded ? 'w-72' : 'w-14 h-14'

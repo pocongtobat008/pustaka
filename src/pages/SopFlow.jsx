@@ -67,15 +67,15 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
         const sanitizedVisualConfig = {
             nodes: updatedForm.visual_config?.nodes || [],
             edges: (updatedForm.visual_config?.edges || []).map(edge => {
-                const finalColor = updatedForm.accent_color || '#6366f1';
+                const finalColor = edge.style?.stroke || updatedForm.accent_color || '#6366f1';
                 return {
                     ...edge,
                     type: 'smoothstep',
-                    // Simpan warna ke dalam style edge agar tersimpan permanen di database
-                    style: { stroke: finalColor, strokeWidth: 2.5 },
+                    // Simpan style per-edge agar tiap garis bisa punya warna berbeda
+                    style: { ...(edge.style || {}), stroke: finalColor, strokeWidth: 2.5 },
                     markerEnd: {
                         type: 'arrowclosed',
-                        color: finalColor,
+                        color: edge.markerEnd?.color || finalColor,
                         width: 20,
                         height: 20
                     },
@@ -299,7 +299,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Warna Garis Alur</label>
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Warna Default Garis Baru</label>
                             <div className="flex gap-2 p-1.5 bg-slate-50 dark:bg-slate-800 rounded-2xl border-2 border-transparent h-[52px] items-center justify-around">
                                 {[
                                     { name: 'Indigo', hex: '#6366f1' },
@@ -317,6 +317,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                                     />
                                 ))}
                             </div>
+                            <p className="text-[10px] text-slate-400 ml-1">Klik garis di canvas untuk ubah warna per-line.</p>
                         </div>
 
                         {form.privacy_type === 'department' && (
@@ -448,16 +449,20 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                             const edgesWithArrows = (config.edges || [])
                                 .filter(edge => edge.source && edge.target)
                                 .map((edge, eIdx) => {
-                                    const finalColor = selectedFlow?.accent_color || edge.style?.stroke || '#6366f1';
+                                    const finalColor = edge.style?.stroke || selectedFlow?.accent_color || '#6366f1';
                                     return {
                                         ...edge,
                                         id: String(edge.id || `edge-${selectedFlow?.id}-${eIdx}`),
                                         source: String(edge.source),
                                         target: String(edge.target),
                                         type: 'smoothstep',
-                                        // Paksa warna menggunakan accent_color dari level SOP, menimpa style bawaan edge
-                                        style: { stroke: finalColor, strokeWidth: 2.5 },
-                                        markerEnd: { type: 'arrowclosed', color: finalColor, width: 20, height: 20 },
+                                        style: { ...(edge.style || {}), stroke: finalColor, strokeWidth: 2.5 },
+                                        markerEnd: {
+                                            type: 'arrowclosed',
+                                            color: edge.markerEnd?.color || finalColor,
+                                            width: 20,
+                                            height: 20
+                                        },
                                         sourceHandle: (edge.sourceHandle === null || edge.sourceHandle === "null") ? undefined : edge.sourceHandle,
                                         targetHandle: (edge.targetHandle === null || edge.targetHandle === "null") ? undefined : edge.targetHandle
                                     };
@@ -467,6 +472,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                                     key={selectedFlow?.id}
                                     nodes={nodesWithStrings}
                                     edges={edgesWithArrows}
+                                    accentColor={selectedFlow?.accent_color}
                                     sopMode={true}
                                 />
                             );

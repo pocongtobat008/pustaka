@@ -32,6 +32,7 @@ import searchRoutes from './routes/searchRoutes.js';
 import ocrRoutes from './routes/ocrRoutes.js';
 import pustakaRoutes from './routes/pustakaRoutes.js';
 import systemRoutes from './routes/systemRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
 import legacyRoutes from './routes/legacyRoutes.js';
 
 import { checkAuth } from './middleware/auth.js';
@@ -56,6 +57,76 @@ const io = new Server(server, {
     cors: { origin: "*", methods: ["GET", "POST"] }
 });
 app.set('io', io);
+
+const channelLabelMap = {
+    inventory: 'Inventory',
+    documents: 'Dokumen',
+    tax: 'Pajak',
+    approvals: 'Approval',
+    system: 'Sistem',
+    users: 'Pengguna',
+    jobs: 'Job Queue',
+    pustaka: 'Pustaka',
+    'sop-flows': 'SOP',
+    'tax-monitoring': 'Tax Monitoring',
+    'tax-summary': 'Tax Summary',
+    notifications: 'Notifikasi'
+};
+
+const lastAutoNotificationByKey = new Map();
+const AUTO_NOTIFICATION_THROTTLE_MS = 5000;
+const rawIoEmit = io.emit.bind(io);
+
+const createAutoNotificationFromDataChange = async (payload) => {
+    const channel = payload?.channel;
+    if (!channel || channel === 'notifications') return;
+
+    const targetType = payload?.targetType || 'general';
+    const targetValue = payload?.targetValue || null;
+    const throttleKey = `${channel}:${targetType}:${targetValue || 'all'}`;
+    const now = Date.now();
+    const lastAt = lastAutoNotificationByKey.get(throttleKey) || 0;
+
+    if (now - lastAt < AUTO_NOTIFICATION_THROTTLE_MS) return;
+    lastAutoNotificationByKey.set(throttleKey, now);
+
+    const label = channelLabelMap[channel] || channel;
+    const title = `Update ${label}`;
+    const message = payload?.message || `Ada perubahan data pada modul ${label}.`;
+    const type = payload?.type || 'info';
+
+    const [id] = await knex('notifications').insert({
+        title,
+        message,
+        type,
+        channel,
+        target_type: targetType,
+        target_value: targetValue,
+        created_by: payload?.actor || 'System',
+        meta: JSON.stringify({ source: 'auto:data-changed', channel }),
+        created_at: knex.fn.now()
+    });
+
+    rawIoEmit('notification:new', {
+        id,
+        title,
+        message,
+        type,
+        channel,
+        targetType,
+        targetValue
+    });
+    rawIoEmit('data:changed', { channel: 'notifications' });
+};
+
+io.emit = (event, payload) => {
+    if (event === 'data:changed') {
+        createAutoNotificationFromDataChange(payload).catch((err) => {
+            logger.warn(`[Notifications] Auto-create failed: ${err.message}`);
+        });
+    }
+    return rawIoEmit(event, payload);
+};
 
 const PORT = process.env.PORT || 5005;
 
@@ -107,6 +178,10 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 app.use('/api', authRoutes); // /api/login, /api/users
 app.use('/api', systemRoutes); // /api/logs, /api/roles, /api/departments, /api/folders
+app.use('/api', notificationRoutes); // /api/notifications
+
+const isAdminUser = (req) => String(req.user?.role || '').toLowerCase() === 'admin';
+const isOwnerOrAdmin = (req, owner) => isAdminUser(req) || (owner && req.user?.username === owner);
 
 // --- APPROVALS ROUTES (Override Legacy) ---
 app.get('/api/approvals', checkAuth, async (req, res) => {
@@ -343,7 +418,7 @@ app.post('/api/jobs', checkAuth, async (req, res) => {
             allowed_depts: JSON.stringify(data.allowedDepts || []),
             type: data.type || 'special',
             target_dept: data.targetDept,
-            owner: data.owner,
+            owner: req.user?.username || data.owner,
             status: data.status || 'pending',
             completed_months: JSON.stringify(completedMonths),
             issues: JSON.stringify(data.issues || []),
@@ -364,6 +439,11 @@ app.put('/api/jobs/:id', checkAuth, async (req, res) => {
         const data = req.body;
         const existing = await knex('job_due_dates').where({ id }).first();
         if (!existing) return res.status(404).json({ error: 'Jadwal tidak ditemukan' });
+
+        // Check if user is owner or admin for ANY update
+        if (!isOwnerOrAdmin(req, existing.owner)) {
+            return res.status(403).json({ error: 'Hanya owner My Job atau admin yang dapat mengubah jadwal ini' });
+        }
 
         const updateData = { updated_at: new Date() };
 
@@ -401,6 +481,17 @@ app.put('/api/jobs/:id', checkAuth, async (req, res) => {
 app.delete('/api/jobs/:id', checkAuth, async (req, res) => {
     try {
         const { id } = req.params;
+        const existing = await knex('job_due_dates').where({ id }).first();
+        
+        if (!existing) {
+            return res.status(404).json({ error: 'Jadwal tidak ditemukan' });
+        }
+
+        // Check if user is owner or admin
+        if (!isOwnerOrAdmin(req, existing.owner)) {
+            return res.status(403).json({ error: 'Hanya owner My Job atau admin yang dapat menghapus jadwal ini' });
+        }
+
         await knex('job_due_dates').where({ id }).delete();
         io.emit('data:changed', { channel: 'jobs' });
         res.json({ message: 'Jadwal berhasil dihapus' });
@@ -426,6 +517,12 @@ app.get('/api/monitored-pics', checkAuth, async (req, res) => {
 app.post('/api/monitored-pics', checkAuth, async (req, res) => {
     try {
         const data = req.body;
+        const existing = await knex('monitored_pics').where({ username: data.username }).first();
+        const picOwner = existing?.username || data.username;
+        if (!isAdminUser(req) && req.user?.username !== picOwner) {
+            return res.status(403).json({ error: 'Hanya owner PIC atau admin yang dapat mengubah pengaturan privasi' });
+        }
+
         await knex('monitored_pics').insert({
             username: data.username,
             privacy: data.privacy || 'public',
@@ -444,6 +541,9 @@ app.post('/api/monitored-pics', checkAuth, async (req, res) => {
 app.delete('/api/monitored-pics/:username', checkAuth, async (req, res) => {
     try {
         const { username } = req.params;
+        if (!isAdminUser(req) && req.user?.username !== username) {
+            return res.status(403).json({ error: 'Hanya owner PIC atau admin yang dapat menghapus data ini' });
+        }
         await knex('monitored_pics').where({ username }).delete();
         io.emit('data:changed', { channel: 'monitored-pics' });
         res.json({ message: 'PIC Monitoring berhasil dihapus' });
@@ -590,14 +690,14 @@ app.get('/api/sop-flows', checkAuth, async (req, res) => {
 
 app.post('/api/sop-flows', checkAuth, async (req, res) => {
     try {
-        const { title, description, category, steps, visual_config, owner, privacy_type, allowed_departments, allowed_users } = req.body;
+        const { title, description, category, steps, visual_config, privacy_type, allowed_departments, allowed_users } = req.body;
         const [id] = await knex('sop_flows').insert({
             title,
             description,
             category,
             steps: JSON.stringify(steps || []),
             visual_config: JSON.stringify(visual_config || {}),
-            owner,
+            owner: req.user?.username,
             privacy_type: privacy_type || 'public',
             allowed_departments: JSON.stringify(allowed_departments || []),
             allowed_users: JSON.stringify(allowed_users || []),
@@ -615,6 +715,14 @@ app.put('/api/sop-flows/:id', checkAuth, async (req, res) => {
     try {
         const { id } = req.params;
         const { title, description, category, steps, visual_config, privacy_type, allowed_departments, allowed_users } = req.body;
+        const existing = await knex('sop_flows').where({ id }).first();
+        if (!existing) return res.status(404).json({ error: "SOP Flow tidak ditemukan" });
+
+        const changingPrivacy = privacy_type !== undefined || allowed_departments !== undefined || allowed_users !== undefined;
+        if (changingPrivacy && !isOwnerOrAdmin(req, existing.owner)) {
+            return res.status(403).json({ error: 'Hanya owner SOP atau admin yang dapat mengubah pengaturan privasi' });
+        }
+
         const affected = await knex('sop_flows').where({ id }).update({
             title,
             description,

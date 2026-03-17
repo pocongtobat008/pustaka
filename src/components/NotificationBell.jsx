@@ -1,82 +1,111 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { Bell, X, AlertCircle, Clock, ShieldAlert, CheckCircle2, Trash2 } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Bell, X, AlertCircle, Clock, ShieldAlert, CheckCircle2, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useInventoryStore } from '../store/useInventoryStore';
-import { useDocStore } from '../store/useDocStore';
+import { db } from '../services/database';
+import { getSocket } from '../services/socketService';
+import { useAuthStore } from '../store/useAuthStore';
 
 /**
  * NotificationBell Component
  * Memberikan ringkasan hal-hal penting yang memerlukan perhatian user.
  */
-const NotificationBell = () => {
+const NotificationBell = ({ onOpenChannel }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [dismissedIds, setDismissedIds] = useState(new Set());
-    const { ocrStats, inventoryIssues } = useInventoryStore();
-    const { approvals } = useDocStore();
+    const [isHiddenByModal, setIsHiddenByModal] = useState(false);
+    const [notifications, setNotifications] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const { currentUser } = useAuthStore();
 
-    // Generate notifications dari state global
-    const notifications = useMemo(() => {
-        const list = [];
-
-        // 1. Kegagalan OCR
-        if (ocrStats?.counts?.failed > 0) {
-            list.push({
-                id: `ocr-failed-${ocrStats.counts.failed}`,
-                type: 'error',
-                title: 'Kegagalan OCR',
-                message: `${ocrStats.counts.failed} dokumen gagal diproses. Periksa log untuk detailnya.`,
-                icon: AlertCircle,
-                color: 'text-rose-500',
-                bg: 'bg-rose-50 dark:bg-rose-500/10'
-            });
+    const getTypeStyle = (type) => {
+        if (type === 'error') {
+            return { icon: AlertCircle, color: 'text-rose-500', bg: 'bg-rose-50 dark:bg-rose-500/10' };
         }
-
-        // 2. Persetujuan Menunggu (Approvals)
-        const pendingApprovals = (approvals || []).filter(a => a.status === 'Pending');
-        if (pendingApprovals.length > 0) {
-            list.push({
-                id: `approvals-pending-${pendingApprovals.length}`,
-                type: 'info',
-                title: 'Persetujuan Dokumen',
-                message: `Ada ${pendingApprovals.length} pengajuan yang menunggu keputusan Anda.`,
-                icon: Clock,
-                color: 'text-indigo-500',
-                bg: 'bg-indigo-50 dark:bg-indigo-500/10'
-            });
+        if (type === 'warning') {
+            return { icon: ShieldAlert, color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-500/10' };
         }
-
-        // 3. Masalah Inventaris (Box Nyangkut)
-        if (inventoryIssues?.length > 0) {
-            list.push({
-                id: `inv-issues-${inventoryIssues.length}`,
-                type: 'warning',
-                title: 'Masalah Inventaris',
-                message: `Terdeteksi ${inventoryIssues.length} box yang tidak sinkron (nyangkut).`,
-                icon: ShieldAlert,
-                color: 'text-amber-500',
-                bg: 'bg-amber-50 dark:bg-amber-500/10'
-            });
+        if (type === 'success') {
+            return { icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-500/10' };
         }
+        return { icon: Info, color: 'text-indigo-500', bg: 'bg-indigo-50 dark:bg-indigo-500/10' };
+    };
 
-        // Filter out dismissed notifications
-        return list.filter(n => !dismissedIds.has(n.id));
-    }, [ocrStats, approvals, inventoryIssues, dismissedIds]);
+    const fetchNotifications = useCallback(async () => {
+        if (!currentUser) return;
+        setIsLoading(true);
+        try {
+            const data = await db.getNotifications();
+            setNotifications(Array.isArray(data) ? data : []);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [currentUser]);
 
-    const handleDismiss = (e, id) => {
+    useEffect(() => {
+        const checkModalState = () => {
+            setIsHiddenByModal(Boolean(document.querySelector('[data-app-modal="true"]')));
+        };
+
+        checkModalState();
+        const observer = new MutationObserver(checkModalState);
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['data-app-modal']
+        });
+
+        return () => observer.disconnect();
+    }, []);
+
+    useEffect(() => {
+        fetchNotifications();
+    }, [fetchNotifications]);
+
+    useEffect(() => {
+        const socket = getSocket();
+        const handleNewNotification = () => fetchNotifications();
+        const handleDataChanged = (payload) => {
+            if (payload?.channel === 'notifications') {
+                fetchNotifications();
+            }
+        };
+
+        socket.on('notification:new', handleNewNotification);
+        socket.on('data:changed', handleDataChanged);
+
+        return () => {
+            socket.off('notification:new', handleNewNotification);
+            socket.off('data:changed', handleDataChanged);
+        };
+    }, [fetchNotifications]);
+
+    const handleDismiss = async (e, id) => {
         e.stopPropagation();
-        setDismissedIds(prev => new Set(prev).add(id));
+        await db.markNotificationRead(id);
+        setNotifications((prev) => prev.filter((n) => n.id !== id));
     };
 
-    const handleClearAll = () => {
-        const newDismissed = new Set(dismissedIds);
-        notifications.forEach(n => newDismissed.add(n.id));
-        setDismissedIds(newDismissed);
+    const handleOpenNotification = async (e, notification) => {
+        e.stopPropagation();
+        if (onOpenChannel && notification?.channel) {
+            onOpenChannel(notification.channel, notification);
+        }
+        await db.markNotificationRead(notification.id);
+        setNotifications((prev) => prev.filter((n) => n.id !== notification.id));
     };
 
-    const unreadCount = notifications.length;
+    const handleClearAll = async () => {
+        await db.markAllNotificationsRead();
+        setNotifications([]);
+    };
+
+    const unreadCount = notifications.filter((n) => !n.readAt).length;
+    const unreadNotifications = notifications.filter((n) => !n.readAt);
+
+    if (isHiddenByModal) return null;
 
     return (
-        <div className="fixed top-4 right-20 z-[9998] font-sans pointer-events-none">
+        <div className="fixed top-4 right-20 z-[40] font-sans pointer-events-none">
             <div className="pointer-events-auto relative">
                 {/* Bell Icon Button */}
                 <button 
@@ -103,7 +132,7 @@ const NotificationBell = () => {
                             <div className="p-6 border-b border-slate-50 dark:border-white/5 flex justify-between items-center">
                                 <h3 className="font-black text-slate-800 dark:text-white uppercase tracking-tight text-sm">Pusat Notifikasi</h3>
                                 <div className="flex items-center gap-2">
-                                    {notifications.length > 0 && (
+                                    {unreadNotifications.length > 0 && (
                                         <button 
                                             onClick={handleClearAll}
                                             className="text-[10px] font-bold text-rose-500 hover:text-rose-600 uppercase tracking-widest px-2 py-1 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-lg transition-colors"
@@ -116,7 +145,9 @@ const NotificationBell = () => {
                             </div>
                             
                             <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
-                                {notifications.length === 0 ? (
+                                {isLoading ? (
+                                    <div className="p-10 text-center text-xs text-slate-400">Memuat notifikasi...</div>
+                                ) : unreadNotifications.length === 0 ? (
                                     <div className="p-12 text-center">
                                         <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-4">
                                             <CheckCircle2 size={32} className="text-slate-200 dark:text-slate-700" />
@@ -126,8 +157,11 @@ const NotificationBell = () => {
                                     </div>
                                 ) : (
                                     <div className="divide-y divide-slate-50 dark:divide-white/5">
-                                        {notifications.map(n => (
-                                            <div key={n.id} className="p-5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors cursor-pointer group relative">
+                                        {unreadNotifications.map(n => {
+                                            const style = getTypeStyle(n.type);
+                                            const Icon = style.icon;
+                                            return (
+                                            <div key={n.id} className="p-5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors cursor-pointer group relative" onClick={(e) => handleOpenNotification(e, n)}>
                                                 <button 
                                                     onClick={(e) => handleDismiss(e, n.id)}
                                                     className="absolute top-4 right-4 p-1.5 text-slate-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all rounded-lg hover:bg-rose-50 dark:hover:bg-rose-500/10"
@@ -136,16 +170,20 @@ const NotificationBell = () => {
                                                     <X size={14} />
                                                 </button>
                                                 <div className="flex gap-4">
-                                                    <div className={`p-2.5 rounded-2xl shrink-0 h-fit ${n.bg} ${n.color}`}>
-                                                        <n.icon size={20} />
+                                                    <div className={`p-2.5 rounded-2xl shrink-0 h-fit ${style.bg} ${style.color}`}>
+                                                        <Icon size={20} />
                                                     </div>
                                                     <div className="flex-1 min-w-0">
                                                         <p className="text-sm font-black text-slate-800 dark:text-white leading-tight">{n.title}</p>
                                                         <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed mt-1">{n.message}</p>
+                                                        <p className="text-[10px] text-slate-400 mt-2 flex items-center gap-1">
+                                                            <Clock size={11} />
+                                                            {new Date(n.created_at || n.createdAt).toLocaleString('id-ID')}
+                                                        </p>
                                                     </div>
                                                 </div>
                                             </div>
-                                        ))}
+                                        )})}
                                     </div>
                                 )}
                             </div>

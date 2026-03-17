@@ -344,6 +344,68 @@ export const db = {
         } catch { return []; }
     },
 
+    async getNotifications() {
+        try {
+            const response = await fetch(`${API_URL}/notifications`, {
+                credentials: 'include'
+            });
+            if (!response.ok) throw new Error('Gagal mengambil notifikasi');
+            return await response.json();
+        } catch (e) {
+            console.error('Gagal mengambil notifikasi', e);
+            return [];
+        }
+    },
+
+    async markNotificationRead(id) {
+        try {
+            const response = await fetch(`${API_URL}/notifications/${id}/read`, {
+                method: 'POST',
+                credentials: 'include'
+            });
+            if (!response.ok) throw new Error('Gagal menandai notifikasi dibaca');
+            return await response.json();
+        } catch (e) {
+            console.error('Gagal menandai notifikasi', e);
+            return { success: false };
+        }
+    },
+
+    async markAllNotificationsRead() {
+        try {
+            const response = await fetch(`${API_URL}/notifications/read-all`, {
+                method: 'POST',
+                credentials: 'include'
+            });
+            if (!response.ok) throw new Error('Gagal menandai semua notifikasi');
+            return await response.json();
+        } catch (e) {
+            console.error('Gagal menandai semua notifikasi', e);
+            return { success: false, marked: 0 };
+        }
+    },
+
+    async createNotification(data) {
+        try {
+            const response = await fetch(`${API_URL}/notifications`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            if (!response.ok) {
+                const err = await response.json().catch(() => ({}));
+                throw new Error(err.error || 'Gagal membuat notifikasi');
+            }
+            return await response.json();
+        } catch (e) {
+            console.error('Gagal membuat notifikasi', e);
+            throw e;
+        }
+    },
+
     async createUser(data) {
         try {
             await fetch(`${API_URL}/users`, {

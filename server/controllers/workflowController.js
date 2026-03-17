@@ -6,6 +6,10 @@ import { UPLOADS_DIR } from '../config/upload.js';
 import path from 'path';
 import fs from 'fs';
 
+// --- Helper Functions ---
+const isAdmin = (req) => String(req.user?.role || '').toLowerCase() === 'admin';
+const isOwnerOrAdmin = (req, owner) => isAdmin(req) || (owner && req.user?.username === owner);
+
 export const getApprovalFlows = async (req, res) => {
     try {
         const flows = await knex('approval_flows').select('*');
@@ -17,14 +21,18 @@ export const getApprovalFlows = async (req, res) => {
 
 export const createApprovalFlow = async (req, res) => {
     try {
-        const { name, description, steps, visual_config } = req.body;
+        const { name, description, steps, visual_config, privacy, allowed_departments, allowed_users } = req.body;
         // steps is array of { username, name, nodeId } from frontend
 
         const [flowId] = await knex('approval_flows').insert({
             name,
             description,
             steps: JSON.stringify(steps || []),
-            visual_config: JSON.stringify(visual_config || { nodes: [], edges: [] })
+            visual_config: JSON.stringify(visual_config || { nodes: [], edges: [] }),
+            owner: req.user?.username || 'System',
+            privacy: privacy || 'private',
+            allowed_departments: JSON.stringify(allowed_departments || []),
+            allowed_users: JSON.stringify(allowed_users || [])
         });
 
         if (steps && steps.length > 0) {
@@ -38,7 +46,7 @@ export const createApprovalFlow = async (req, res) => {
             await knex('approval_steps').insert(inserts);
         }
 
-        await systemLog('Admin', "Create Workflow", `Created workflow: ${name}`);
+        await systemLog(req.user?.username || 'System', "Create Workflow", `Created workflow: ${name}`);
         res.json({ id: flowId });
     } catch (e) {
         handleError(res, e, "WORKFLOW Error");
@@ -223,6 +231,17 @@ export const updateApproval = async (req, res) => {
             return res.status(400).json({ error: "Missing required fields (title, steps)" });
         }
 
+        // Get existing approval to check if user is requester or admin
+        const existing = await knex('document_approvals').where('id', id).first();
+        if (!existing) {
+            return res.status(404).json({ error: "Approval not found" });
+        }
+
+        // Only requester or admin can update
+        if (existing.requester_username !== req.user?.username && !isAdmin(req)) {
+            return res.status(403).json({ error: 'Hanya pembuat persetujuan atau admin yang dapat mengubah persetujuan ini' });
+        }
+
         // Update document_approvals
         await knex('document_approvals').where('id', id).update({
             title,
@@ -250,7 +269,7 @@ export const updateApproval = async (req, res) => {
 
         await knex('approval_steps').insert(stepInserts);
 
-        await systemLog(requester_username || 'System', "Resubmit Approval", `Resubmitted approval: ${title} (ID: ${id})`);
+        await systemLog(req.user?.username || 'System', "Resubmit Approval", `Resubmitted approval: ${title} (ID: ${id})`);
         res.json({ success: true });
     } catch (e) {
         console.error("Update Approval Error:", e);
@@ -294,6 +313,17 @@ export const deleteApproval = async (req, res) => {
     try {
         const { approvalId } = req.params;
 
+        // Get existing approval to check if it's the requester or admin
+        const existing = await knex('document_approvals').where('id', approvalId).first();
+        if (!existing) {
+            return res.status(404).json({ error: "Approval not found" });
+        }
+
+        // Only requester or admin can delete
+        if (existing.requester_username !== req.user?.username && !isAdmin(req)) {
+            return res.status(403).json({ error: 'Hanya pembuat persetujuan atau admin yang dapat menghapus persetujuan ini' });
+        }
+
         // Deleting approval steps first
         await knex('approval_steps').where('approval_id', approvalId).del();
 
@@ -303,7 +333,7 @@ export const deleteApproval = async (req, res) => {
             return res.status(404).json({ error: "Approval not found" });
         }
 
-        await systemLog('Admin', "Delete Approval", `Deleted approval ID: ${approvalId}`);
+        await systemLog(req.user?.username || 'System', "Delete Approval", `Deleted approval ID: ${approvalId} (${existing.title})`);
         res.json({ success: true });
     } catch (e) {
         console.error("Delete Approval Error:", e);
@@ -315,6 +345,17 @@ export const deleteApprovalFlow = async (req, res) => {
     try {
         const { id } = req.params;
 
+        // Get existing flow to check ownership
+        const existing = await knex('approval_flows').where('id', id).first();
+        if (!existing) {
+            return res.status(404).json({ error: "Workflow template not found" });
+        }
+
+        // Check if user is owner or admin
+        if (!isOwnerOrAdmin(req, existing.owner)) {
+            return res.status(403).json({ error: 'Hanya owner SOP atau admin yang dapat menghapus SOP ini' });
+        }
+
         // First delete associated steps in approval_steps (where flow_id is matched)
         await knex('approval_steps').where('flow_id', id).del();
 
@@ -324,7 +365,7 @@ export const deleteApprovalFlow = async (req, res) => {
             return res.status(404).json({ error: "Flow template not found" });
         }
 
-        await systemLog('Admin', "Delete Workflow", `Deleted workflow template ID: ${id}`);
+        await systemLog(req.user?.username || 'System', "Delete Workflow", `Deleted workflow template ID: ${id} (${existing.name})`);
         res.json({ success: true });
     } catch (e) {
         console.error("Delete Approval Flow Error:", e);
@@ -335,13 +376,27 @@ export const deleteApprovalFlow = async (req, res) => {
 export const updateApprovalFlow = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, steps, visual_config } = req.body;
+        const { name, description, steps, visual_config, privacy, allowed_departments, allowed_users } = req.body;
+
+        // Get existing flow to check ownership
+        const existing = await knex('approval_flows').where('id', id).first();
+        if (!existing) {
+            return res.status(404).json({ error: "Workflow template not found" });
+        }
+
+        // Check if user is owner or admin
+        if (!isOwnerOrAdmin(req, existing.owner)) {
+            return res.status(403).json({ error: 'Hanya owner SOP atau admin yang dapat mengubah SOP ini' });
+        }
 
         await knex('approval_flows').where('id', id).update({
             name,
             description,
             steps: JSON.stringify(steps || []),
-            visual_config: JSON.stringify(visual_config || { nodes: [], edges: [] })
+            visual_config: JSON.stringify(visual_config || { nodes: [], edges: [] }),
+            privacy: privacy !== undefined ? privacy : existing.privacy,
+            allowed_departments: allowed_departments ? JSON.stringify(allowed_departments) : existing.allowed_departments,
+            allowed_users: allowed_users ? JSON.stringify(allowed_users) : existing.allowed_users
         });
 
         if (steps) {
@@ -359,7 +414,7 @@ export const updateApprovalFlow = async (req, res) => {
             }
         }
 
-        await systemLog('Admin', "Update Workflow", `Updated workflow template: ${name}`);
+        await systemLog(req.user?.username || 'System', "Update Workflow", `Updated workflow template: ${name} (ID: ${id})`);
         res.json({ success: true });
     } catch (e) {
         console.error("Update Approval Flow Error:", e);

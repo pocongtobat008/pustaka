@@ -1,6 +1,9 @@
 import { handleError } from '../utils/errorHandler.js';
 import { knex } from '../db.js';
 
+const isAdmin = (req) => String(req.user?.role || '').toLowerCase() === 'admin';
+const isOwnerOrAdmin = (req, owner) => isAdmin(req) || (owner && req.user?.username === owner);
+
 // --- LOGS ---
 export const getLogs = async (req, res) => {
     try {
@@ -150,14 +153,14 @@ export const getFolderById = async (req, res) => {
 
 export const createFolder = async (req, res) => {
     try {
-        const { name, parentId, privacy, allowedDepts, allowedUsers, owner } = req.body;
+        const { name, parentId, privacy, allowedDepts, allowedUsers } = req.body;
         const [id] = await knex('folders').insert({
             name,
             parentId: parentId || null,
             privacy: privacy || 'public',
             allowedDepts: JSON.stringify(allowedDepts || []),
             allowedUsers: JSON.stringify(allowedUsers || []),
-            owner: owner || 'System',
+            owner: req.user?.username || 'System',
             createdAt: knex.fn.now()
         });
         req.app.get('io')?.emit('data:changed', { channel: 'system' });
@@ -171,6 +174,14 @@ export const updateFolder = async (req, res) => {
     try {
         const { id } = req.params;
         const { name, parentId, privacy, allowedDepts, allowedUsers } = req.body;
+        const existing = await knex('folders').where('id', id).first();
+        if (!existing) return res.status(404).json({ error: "Folder not found" });
+
+        const changingPrivacy = privacy !== undefined || allowedDepts !== undefined || allowedUsers !== undefined;
+        if (changingPrivacy && !isOwnerOrAdmin(req, existing.owner)) {
+            return res.status(403).json({ error: 'Hanya owner folder atau admin yang dapat mengubah pengaturan privasi' });
+        }
+
         await knex('folders').where('id', id).update({
             name,
             parentId: parentId || null,
@@ -188,6 +199,18 @@ export const updateFolder = async (req, res) => {
 export const deleteFolder = async (req, res) => {
     try {
         const { id } = req.params;
+        
+        // Get existing folder to check ownership
+        const existing = await knex('folders').where('id', id).first();
+        if (!existing) {
+            return res.status(404).json({ error: "Folder not found" });
+        }
+
+        // Check if user is owner or admin
+        if (!isOwnerOrAdmin(req, existing.owner)) {
+            return res.status(403).json({ error: 'Hanya owner folder atau admin yang dapat menghapus folder ini' });
+        }
+
         await knex('folders').where('id', id).del();
         // Optionally handle recursive delete or move children to root
         req.app.get('io')?.emit('data:changed', { channel: 'system' });
@@ -200,6 +223,18 @@ export const deleteFolder = async (req, res) => {
 export const moveFolder = async (req, res) => {
     try {
         const { id, targetParentId } = req.body;
+        
+        // Get existing folder to check ownership
+        const existing = await knex('folders').where('id', id).first();
+        if (!existing) {
+            return res.status(404).json({ error: "Folder not found" });
+        }
+
+        // Check if user is owner or admin
+        if (!isOwnerOrAdmin(req, existing.owner)) {
+            return res.status(403).json({ error: 'Hanya owner folder atau admin yang dapat memindahkan folder ini' });
+        }
+
         await knex('folders').where('id', id).update({
             parentId: targetParentId || null
         });
@@ -216,11 +251,17 @@ export const copyFolder = async (req, res) => {
         const folder = await knex('folders').where('id', id).first();
         if (!folder) return res.status(404).json({ error: "Source folder not found" });
 
+        // Check if user is owner or admin (of source folder)
+        if (!isOwnerOrAdmin(req, folder.owner)) {
+            return res.status(403).json({ error: 'Hanya owner folder atau admin yang dapat menyalin folder ini' });
+        }
+
         const [newId] = await knex('folders').insert({
             ...folder,
             id: undefined, // Let DB generate new ID
             name: `Copy of ${folder.name}`,
             parentId: targetParentId || null,
+            owner: req.user?.username || 'System', // New copy is owned by current user
             createdAt: knex.fn.now()
         });
         req.app.get('io')?.emit('data:changed', { channel: 'system' });

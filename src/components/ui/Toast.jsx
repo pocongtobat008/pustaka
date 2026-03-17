@@ -118,7 +118,7 @@ const TOAST_CONFIG = {
 // ─── Toast Container Component ─────────────────────────────
 export function ToastContainer({ toasts, onRemove }) {
     return (
-        <div className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none max-w-sm w-full">
+        <div className="fixed bottom-6 right-6 z-[40] flex flex-col gap-3 pointer-events-none max-w-sm w-full">
             <AnimatePresence mode="popLayout">
                 {toasts.map((toast) => {
                     const config = TOAST_CONFIG[toast.type] || TOAST_CONFIG.info;

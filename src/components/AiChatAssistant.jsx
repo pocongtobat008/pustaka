@@ -3,8 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     MessageCircle, X, Send, FileText, FileSpreadsheet,
     Package, Sparkles, Search, ArrowRight, Loader2,
-    ChevronDown, Bot, User, Eye
+    ChevronDown, Bot, User, Eye, TrendingUp, BarChart3, AlertCircle, CheckCircle2, Zap
 } from 'lucide-react';
+import { SemanticAnalyzer, isTaxQuery, getResponseTemplate } from '../utils/semanticAnalyzer.js';
 
 const getApiUrl = () => {
     if (window.location.protocol === 'file:') {
@@ -192,19 +193,29 @@ const MarkdownRenderer = ({ content, isDarkMode }) => {
     return <div className="markdown-content">{lines.map((line, i) => renderLine(line, i))}</div>;
 };
 
-// Quick action suggestions
+// Quick action suggestions - Enhanced with semantic variety
 const quickActions = [
-    "Bandingkan PPN bulan ini vs bulan lalu",
-    "Berapa total PPN masukan tahun ini",
-    "Kapan terakhir kali kurang bayar?",
-    "Status pemeriksaan pajak",
+    { text: "Bandingkan PPN bulan ini vs bulan lalu", icon: "⚖️" },
+    { text: "Berapa total PPN masukan tahun ini", icon: "📊" },
+    { text: "Kapan terakhir kali kurang bayar?", icon: "📅" },
+    { text: "Tren PPh 6 bulan terakhir", icon: "📈" },
+    { text: "Status kepatuhan pajak saat ini", icon: "✅" },
+    { text: "Proyeksi pajak untuk bulan depan", icon: "🔮" },
+    { text: "Apakah ada anomali dalam reporting?", icon: "⚠️" },
+    { text: "Ringkasan pajak Q1 2026", icon: "📋" },
 ];
 
-// --- AI TAX ANALYSIS ENGINE ---
+// --- AI TAX ANALYSIS ENGINE - Enhanced with Semantic Understanding ---
 const analyzeTaxData = (query, summaries, config) => {
     if (!summaries || summaries.length === 0) return null;
-    const safeConfig = { pphTypes: config?.pphTypes || [], ppnInTypes: config?.ppnInTypes || [], ppnOutTypes: config?.ppnOutTypes || [] };
     
+    // Use semantic analyzer for intent detection
+    const semanticAnalyzer = new SemanticAnalyzer();
+    const analysis = semanticAnalyzer.analyze(query);
+    
+    if (!isTaxQuery(query)) return null;
+    
+    const safeConfig = { pphTypes: config?.pphTypes || [], ppnInTypes: config?.ppnInTypes || [], ppnOutTypes: config?.ppnOutTypes || [] };
     const q = query.toLowerCase();
     const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
     
@@ -218,21 +229,11 @@ const analyzeTaxData = (query, summaries, config) => {
         return 0;
     };
 
-    const isComparison = q.includes('banding') || q.includes('vs') || q.includes('perbandingan');
-    const isTrend = q.includes('tren') || q.includes('perkembangan') || q.includes('grafik') || q.includes('statistik');
-    const isPPh = q.includes('pph');
-    const isPPN = q.includes('ppn');
-    const isTaxQuery = isPPh || isPPN || q.includes('pajak') || q.includes('spt');
-
-    // Jika tidak ada kata kunci pajak eksplisit, namun ada instruksi perbandingan dan nama bulan, 
-    // kita asumsikan ini adalah permintaan analisis pajak.
-    const monthAbbrs = ["jan", "feb", "mar", "apr", "mei", "jun", "jul", "ags", "agu", "sep", "okt", "nov", "des"];
-    const hasMonths = months.some(m => q.includes(m.toLowerCase())) || 
-                      monthAbbrs.some(abbr => q.includes(abbr)) ||
-                      q.includes('bulan ini') || q.includes('bulan lalu');
+    // Detect intent types with enhanced semantic
+    const primaryIntent = analysis.intent[0] || 'status';
+    const isPPh = analysis.taxTypes.includes('pph');
+    const isPPN = analysis.taxTypes.includes('ppn');
     
-    if (!isTaxQuery && !(isComparison && hasMonths)) return null;
-
     const now = new Date();
     const currentMonthIdx = now.getMonth();
     const lastMonthIdx = (currentMonthIdx - 1 + 12) % 12;
@@ -256,8 +257,8 @@ const analyzeTaxData = (query, summaries, config) => {
     const foundYears = [...new Set(summaries.map(s => String(s.year)))].filter(y => q.includes(y));
     const targetYear = foundYears.length > 0 ? parseInt(foundYears[0]) : now.getFullYear();
 
-    // 1. Analisis Perbandingan
-    if (isComparison && foundMonths.length >= 2) {
+    // 1. Analisis Perbandingan / Comparison Analysis
+    if (analysis.intent.includes('comparison') && foundMonths.length >= 2) {
         const m1 = foundMonths[0];
         const m2 = foundMonths[1];
 
@@ -318,7 +319,7 @@ const analyzeTaxData = (query, summaries, config) => {
     }
 
     // 2. Analisis Tren / Ringkasan Tahunan
-    if (isTrend || q.includes('ringkasan') || q.includes('total')) {
+    if (analysis.intent.includes('trend') || analysis.intent.includes('summary')) {
         const yearData = summaries.filter(s => s.year === targetYear);
         if (yearData.length === 0) return `Saya tidak menemukan data pajak untuk tahun ${targetYear}.`;
 
@@ -337,6 +338,123 @@ const analyzeTaxData = (query, summaries, config) => {
         const peakMonth = yearData.find(s => safeConfig.pphTypes.reduce((sum, t) => sum + getVal(s, t, 'pph'), 0) === maxPPh)?.month;
 
         response += `> [!TIP]\n> Lonjakan pembayaran pajak tertinggi terjadi pada bulan **${peakMonth}**. Pastikan arus kas perusahaan siap untuk periode tersebut di tahun mendatang.`;
+        
+        return response;
+    }
+
+    // 3. Analisis Underpayment / Kurang Bayar
+    if (analysis.intent.includes('underpayment') || analysis.intent.includes('overpayment')) {
+        const recentMonths = summaries
+            .sort((a, b) => new Date(`${b.month} 1, ${b.year}`) - new Date(`${a.month} 1, ${a.year}`))
+            .slice(0, 3);
+        
+        if (recentMonths.length === 0) return `Saya tidak menemukan data pajak untuk analisis kurang/lebih bayar.`;
+        
+        let response = `### 💰 Analisis Status Pembayaran Pajak\n\n`;
+        
+        recentMonths.forEach(record => {
+            if (record.type === 'PPN') {
+                const ppnIn = safeConfig.ppnInTypes.reduce((sum, t) => sum + getVal(record, t, 'ppnIn'), 0);
+                const ppnOut = safeConfig.ppnOutTypes.reduce((sum, t) => sum + getVal(record, t, 'ppnOut'), 0);
+                const net = ppnOut - ppnIn;
+                const status = net > 0 ? '🔴 **Kurang Bayar (KB)**' : '🟢 **Lebih Bayar (LB)**';
+                response += `#### ${record.month} ${record.year}\n`;
+                response += `- PPN Status: ${status} → ${formatRupiah(Math.abs(net))}\n`;
+            }
+        });
+        
+        response += `\n> [!IMPORTANT]\n> Pastikan pembayaran pajak kurang bayar dilakukan sebelum jatuh tempo untuk menghindari penalti dan bunga.\n`;
+        return response;
+    }
+
+    // 4. Analisis History / Riwayat
+    if (analysis.intent.includes('history')) {
+        const sortedData = [...summaries]
+            .sort((a, b) => new Date(`${b.month} 1, ${b.year}`) - new Date(`${a.month} 1, ${a.year}`))
+            .slice(0, 6);
+        
+        if (sortedData.length === 0) return `Tidak ada riwayat pajak yang ditemukan.`;
+        
+        let response = `### 📜 Riwayat Pajak (6 Bulan Terakhir)\n\n`;
+        response += `| Periode | PPh | PPN Netto | Status |\n| :--- | :--- | :--- | :--- |\n`;
+        
+        sortedData.forEach(record => {
+            const pph = safeConfig.pphTypes.reduce((sum, t) => sum + getVal(record, t, 'pph'), 0);
+            const ppnIn = record.type === 'PPN' ? safeConfig.ppnInTypes.reduce((sum, t) => sum + getVal(record, t, 'ppnIn'), 0) : 0;
+            const ppnOut = record.type === 'PPN' ? safeConfig.ppnOutTypes.reduce((sum, t) => sum + getVal(record, t, 'ppnOut'), 0) : 0;
+            const ppnNet = ppnOut - ppnIn;
+            response += `| ${record.month} ${record.year} | ${formatRupiah(pph)} | ${formatRupiah(ppnNet)} | ${ppnNet > 0 ? 'KB' : 'LB'} |\n`;
+        });
+        
+        return response;
+    }
+
+    // 5. Analisis Anomali / Ketidakwajaran
+    if (analysis.intent.includes('anomaly')) {
+        const yearData = summaries.filter(s => s.year === targetYear);
+        if (yearData.length < 3) return `Tidak cukup data untuk analisis anomali. Minimum 3 bulan data diperlukan.`;
+        
+        const pphValues = yearData.map(s => safeConfig.pphTypes.reduce((sum, t) => sum + getVal(s, t, 'pph'), 0));
+        const avgPPh = pphValues.reduce((a, b) => a + b, 0) / pphValues.length;
+        const stdDev = Math.sqrt(pphValues.reduce((sum, val) => sum + Math.pow(val - avgPPh, 2), 0) / pphValues.length);
+        
+        let response = `### ⚠️ Deteksi Anomali Pajak\n\n`;
+        response += `Rata-rata PPh: ${formatRupiah(avgPPh)}\nStandar Deviasi: ${formatRupiah(stdDev)}\n\n`;
+        
+        response += `#### 🚨 Data Anomali Terdeteksi:\n`;
+        yearData.forEach(record => {
+            const pph = safeConfig.pphTypes.reduce((sum, t) => sum + getVal(record, t, 'pph'), 0);
+            if (Math.abs(pph - avgPPh) > 2 * stdDev) {
+                response += `- **${record.month}**: ${formatRupiah(pph)} *(Deviasi: ${formatRupiah(Math.abs(pph - avgPPh))})*\n`;
+            }
+        });
+        
+        response += `\n> [!CAUTION]\n> Data anomali mungkin indikasi kesalahan pencatatan atau perubahan bisnis signifikan. Verifikasi dengan data sumber.`;
+        return response;
+    }
+
+    // 6. Status Kepatuhan / Compliance
+    if (analysis.intent.includes('status') || analysis.intent.includes('compliance')) {
+        const latestPPN = summaries
+            .filter(s => s.type === 'PPN')
+            .sort((a, b) => new Date(`${b.month} 1, ${b.year}`) - new Date(`${a.month} 1, ${a.year}`))
+            .slice(0, 1)[0];
+        
+        let response = `### ✅ Status Kepatuhan Pajak Terkini\n\n`;
+        
+        if (latestPPN) {
+            const ppnIn = safeConfig.ppnInTypes.reduce((sum, t) => sum + getVal(latestPPN, t, 'ppnIn'), 0);
+            const ppnOut = safeConfig.ppnOutTypes.reduce((sum, t) => sum + getVal(latestPPN, t, 'ppnOut'), 0);
+            const net = ppnOut - ppnIn;
+            
+            response += `#### Periode: ${latestPPN.month} ${latestPPN.year}\n`;
+            response += `- **Status PPN**: ${net > 0 ? '🔴 Kurang Bayar' : '🟢 Lebih Bayar'}\n`;
+            response += `- **Jumlah**: ${formatRupiah(Math.abs(net))}\n`;
+            response += `- **Laporan**: Sesuai SPT Periodik\n\n`;
+        }
+        
+        response += `> [!NOTE]\n> Catatan: Status kepatuhan didasarkan pada data pajak terbaru. Selalu verifikasi dengan laporan resmi pemerintah.`;
+        return response;
+    }
+
+    // 7. Analisis Perkiraan / Forecast
+    if (analysis.intent.includes('forecast')) {
+        const recentMonths = summaries
+            .filter(s => s.year === targetYear)
+            .sort((a, b) => new Date(`${b.month} 1, ${b.year}`) - new Date(`${a.month} 1, ${a.year}`))
+            .slice(0, 3);
+        
+        if (recentMonths.length < 2) return `Tidak cukup data historis untuk proyeksi. Minimum 2 bulan diperlukan.`;
+        
+        const avgPPh = recentMonths.reduce((sum, s) => sum + safeConfig.pphTypes.reduce((pSum, t) => pSum + getVal(s, t, 'pph'), 0), 0) / recentMonths.length;
+        const nextMonth = months[(new Date().getMonth()) % 12];
+        
+        let response = `### 🔮 Proyeksi Pajak Bulan Depan\n\n`;
+        response += `Berdasarkan rata-rata 3 bulan terakhir:\n\n`;
+        response += `- **Estimasi PPh**: ${formatRupiah(avgPPh)}\n`;
+        response += `- **Periode**: ${nextMonth}\n`;
+        response += `- **Kepercayaan**: Medium (berdasarkan tren historis)\n\n`;
+        response += `> [!IMPORTANT]\n> Proyeksi ini hanya estimasi. Faktor eksternal dapat mempengaruhi realisasi aktual.`;
         
         return response;
     }
@@ -664,6 +782,15 @@ export default function AiChatAssistant({
                                             <MarkdownRenderer content={msg.text} isDarkMode={isDarkMode} />
                                         </div>
 
+                                        {/* Semantic analysis metadata - Tax analysis indicator */}
+                                        {msg.isAnalysis && (
+                                            <div className="flex flex-wrap gap-1 px-1">
+                                                <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide ${isDarkMode ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'bg-purple-100 text-purple-700 border border-purple-200'}`}>
+                                                    ✨ AI Analysis
+                                                </span>
+                                            </div>
+                                        )}
+
                                         {/* Intent badges */}
                                         {msg.intent && (msg.intent.vendor || msg.intent.minAmount || msg.intent.maxAmount) && (
                                             <div className="flex flex-wrap gap-1 px-1">
@@ -724,13 +851,14 @@ export default function AiChatAssistant({
                                 {quickActions.map((qa, i) => (
                                     <button
                                         key={i}
-                                        onClick={() => handleSend(qa)}
-                                        className={`text-[11px] px-3 py-1.5 rounded-full font-medium transition-all ${isDarkMode
+                                        onClick={() => handleSend(qa.text || qa)}
+                                        className={`text-[11px] px-3 py-1.5 rounded-full font-medium transition-all flex items-center gap-1.5 ${isDarkMode
                                             ? 'bg-white/5 text-white/60 hover:bg-indigo-500/20 hover:text-indigo-300 border border-white/5'
                                             : 'bg-slate-100 text-slate-500 hover:bg-indigo-100 hover:text-indigo-700'
                                             }`}
                                     >
-                                        {qa}
+                                        <span>{qa.icon || '💬'}</span>
+                                        <span>{qa.text || qa}</span>
                                     </button>
                                 ))}
                             </div>

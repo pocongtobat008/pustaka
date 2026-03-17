@@ -42,5 +42,6 @@ export const APP_MODULES = {
     approvals: { id: 'approvals', label: 'Document Approval' },
     pustaka: { id: 'pustaka', label: 'Pustaka Pengetahuan' },
     flow: { id: 'flow', label: 'SOP' },
-    'job-due-date': { id: 'job-due-date', label: 'My Job' }
+    'job-due-date': { id: 'job-due-date', label: 'My Job' },
+    'ai-chat': { id: 'ai-chat', label: 'AI Chat Assistant' }
 };

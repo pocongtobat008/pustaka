@@ -455,6 +455,27 @@ export default function App() {
   const [inventorySearchQuery, setInventorySearchQuery] = useState('');
   const [userSearchQuery, setUserSearchQuery] = useState('');
 
+  const handleOpenNotificationChannel = useCallback((channel) => {
+    const channelToTab = {
+      documents: 'documents',
+      inventory: 'inventory',
+      tax: 'tax-monitoring',
+      approvals: 'approvals',
+      system: 'master',
+      users: 'master',
+      jobs: 'job-due-date',
+      pustaka: 'pustaka',
+      'sop-flows': 'flow',
+      'tax-monitoring': 'tax-monitoring',
+      'tax-summary': 'tax-summary'
+    };
+
+    const targetTab = channelToTab[channel];
+    if (targetTab) {
+      setActiveTab(targetTab);
+    }
+  }, [setActiveTab]);
+
   // Warehouse Form State
   const [boxForm, setBoxForm] = useState({
     boxId: '',
@@ -3610,11 +3631,11 @@ export default function App() {
 
       {/* Toast Notification System */}
       <ToastContainer toasts={toasts} onRemove={removeToast} />
-      <NotificationBell />
+      <NotificationBell onOpenChannel={handleOpenNotificationChannel} />
       <OcrLanes />
 
-      {/* Floating AI Chat Assistant */}
-      {currentUser && activeTab !== 'pustaka' && (
+      {/* Floating AI Chat Assistant - Dengan kontrol visibility untuk guest/viewer */}
+      {currentUser && activeTab !== 'pustaka' && checkPermission(currentUser, roles, 'ai-chat', 'view') && (
         <AiChatAssistant
           isDarkMode={isDarkMode}
           onNavigateToDoc={handleViewDoc}
