@@ -23,6 +23,7 @@ import WorkflowDesigner from './components/workflow/WorkflowDesigner';
 import UploadModal from './components/modals/UploadModal';
 import OcrQueueModal from './components/modals/OcrQueueModal';
 import InitialLandingPage from './components/layout/InitialLandingPage';
+import MenuLandingSection from './components/layout/MenuLandingSection';
 import WorkflowModal from './components/modals/WorkflowModal';
 import RestoreBoxModal from './components/modals/RestoreBoxModal';
 import ExternalTransferModal from './components/modals/ExternalTransferModal';
@@ -203,6 +204,7 @@ export default function App() {
 
   const handleCloseLanding = () => setShowInitialLanding(false);
   const handleOpenLanding = () => setShowInitialLanding(true);
+  const [showMenuLandingPopup, setShowMenuLandingPopup] = useState(false);
 
   // Fungsi pembantu untuk menyalin teks ke clipboard dengan notifikasi
   const handleCopyToClipboard = (text, label = "Data") => {
@@ -3031,8 +3033,16 @@ export default function App() {
               </p>
             </div>
 
-          </div>
+            <button
+              type="button"
+              onClick={() => setShowMenuLandingPopup(true)}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-slate-900 to-indigo-700 text-white text-xs font-black uppercase tracking-[0.14em] shadow-lg hover:opacity-95 transition-opacity"
+            >
+              <Sparkles size={14} />
+              Info Menu
+            </button>
 
+          </div>
 
 
           <div key={activeTab}>
@@ -3244,6 +3254,16 @@ export default function App() {
 
         {/* NOTIFIKASI COPY GLOBAL (STARTUP STYLE) */}
         <AnimatePresence>
+          {showMenuLandingPopup && (
+            <MenuLandingSection
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              onOpenVision={handleOpenLanding}
+              isOpen={showMenuLandingPopup}
+              onClose={() => setShowMenuLandingPopup(false)}
+            />
+          )}
+
           {showInitialLanding && (
             <InitialLandingPage onClose={handleCloseLanding} />
           )}
