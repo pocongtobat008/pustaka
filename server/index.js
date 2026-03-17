@@ -38,6 +38,7 @@ import legacyRoutes from './routes/legacyRoutes.js';
 import { checkAuth } from './middleware/auth.js';
 import { UPLOADS_DIR, upload } from './config/upload.js';
 import { logger } from './utils/logger.js';
+import { parseJsonArraySafe } from './utils/jsonSafe.js';
 import { uploadDocument } from './controllers/documentController.js';
 import { vectorStore } from './ai_search.js';
 
@@ -179,6 +180,12 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use('/api', authRoutes); // /api/login, /api/users
 app.use('/api', systemRoutes); // /api/logs, /api/roles, /api/departments, /api/folders
 app.use('/api', notificationRoutes); // /api/notifications
+
+app.get('/api/system/ai-status', checkAuth, (req, res) => {
+    res.json({
+        vectorStore: vectorStore.getStatus()
+    });
+});
 
 const isAdminUser = (req) => String(req.user?.role || '').toLowerCase() === 'admin';
 const isOwnerOrAdmin = (req, owner) => isAdminUser(req) || (owner && req.user?.username === owner);
@@ -382,12 +389,10 @@ app.get('/api/jobs', checkAuth, async (req, res) => {
         const jobs = await knex('job_due_dates').select('*').orderBy('created_at', 'desc');
         const parsed = jobs.map(j => ({
             ...j,
-            allowedUsers: JSON.parse(j.allowed_users || '[]'),
-            allowedDepts: JSON.parse(j.allowed_depts || '[]'),
-            issues: JSON.parse(j.issues || '[]'),
-            completedMonths: (() => {
-                try { return JSON.parse(j.completed_months || '[]'); } catch { return []; }
-            })(),
+            allowedUsers: parseJsonArraySafe(j.allowed_users),
+            allowedDepts: parseJsonArraySafe(j.allowed_depts),
+            issues: parseJsonArraySafe(j.issues),
+            completedMonths: parseJsonArraySafe(j.completed_months),
             assignedTo: j.assigned_to,
             dueDate: j.due_date,
             targetDept: j.target_dept,
@@ -405,9 +410,7 @@ app.post('/api/jobs', checkAuth, async (req, res) => {
         const completedMonths = Array.isArray(data.completedMonths)
             ? data.completedMonths
             : (typeof data.completed_months === 'string'
-                ? (() => {
-                    try { return JSON.parse(data.completed_months); } catch { return []; }
-                })()
+                ? parseJsonArraySafe(data.completed_months)
                 : []);
         const [id] = await knex('job_due_dates').insert({
             title: data.title,
@@ -865,9 +868,20 @@ const startServer = async () => {
                     await initDb();
                     logger.info("✅ Database & Migrasi Selesai.");
 
-                    logger.info("🧠 Memuat Vector Store ke RAM...");
-                    await vectorStore.initialize();
-                    logger.info("✅ AI Search siap digunakan.");
+                    const lazyVectorInit = process.env.AI_VECTOR_LAZY_INIT !== 'false';
+                    const vectorBatchSize = Number(process.env.AI_VECTOR_INIT_BATCH_SIZE || 250);
+
+                    logger.info(`🧠 Memulai Vector Store (lazy=${lazyVectorInit}, batch=${vectorBatchSize})...`);
+                    await vectorStore.initialize({
+                        lazy: lazyVectorInit,
+                        batchSize: vectorBatchSize
+                    });
+
+                    if (lazyVectorInit) {
+                        logger.info("🟡 AI Search warming up di background. Cek /api/system/ai-status.");
+                    } else {
+                        logger.info("✅ AI Search siap digunakan.");
+                    }
                 } catch (innerErr) {
                     logger.error("❌ Gagal inisialisasi layanan latar belakang (DB/AI):", innerErr.message);
                     console.error("❌ Background Service Error:", innerErr);

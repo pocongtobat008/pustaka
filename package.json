@@ -58,7 +58,7 @@
     "vitest": "^1.0.0"
   },
   "scripts": {
-    "dev": "npx knex migrate:latest && concurrently \"vite --host 0.0.0.0 --port 5173\" \"node --watch server/index.js\" \"npm run worker:bullmq\" \"npm run worker:polling\"",
+    "dev": "npx knex migrate:latest && concurrently \"node --watch server/index.js\" \"npm run worker:bullmq\" \"npm run worker:polling\" \"npx wait-on tcp:127.0.0.1:5000 && vite --host 0.0.0.0 --port 5173\"",
     "db:reset": "npx knex migrate:rollback --all && npx knex migrate:latest",
     "db:wipe": "node server/wipeDb.js",
     "server": "node --watch server/index.js",

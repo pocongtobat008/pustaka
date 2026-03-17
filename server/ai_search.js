@@ -363,44 +363,101 @@ class InMemoryVectorStore {
     constructor() {
         this.cache = new Map(); // key: id, value: { id, title, type, date, size, ocrContent, vector: Float32Array }
         this.isInitialized = false;
+        this.isInitializing = false;
+        this.initPromise = null;
+        this.lastError = null;
+        this.initializedAt = null;
+        this.totalScanned = 0;
     }
 
-    async initialize() {
+    async initialize(options = {}) {
+        const lazy = options.lazy === true;
+        const envBatchSize = globalThis?.process?.env?.AI_VECTOR_INIT_BATCH_SIZE;
+        const batchSize = Math.max(50, Number(options.batchSize || envBatchSize || 250));
+
         if (this.isInitialized) return;
-        console.log('[AI Search] Initializing Fast In-Memory Vector Store...');
-        const startTime = Date.now();
 
-        try {
-            // Load all documents that have vectors
-            const docs = await knex('documents').whereNotNull('vector').andWhereNot('vector', '');
-            let count = 0;
+        if (!this.initPromise) {
+            console.log(`[AI Search] Initializing Fast In-Memory Vector Store in batches of ${batchSize}...`);
+            const startTime = Date.now();
 
-            for (const d of docs) {
+            this.isInitializing = true;
+            this.lastError = null;
+
+            this.initPromise = (async () => {
+                let offset = 0;
+                let count = 0;
+                let scanned = 0;
+
                 try {
-                    const parsedArray = typeof d.vector === 'string' ? JSON.parse(d.vector) : d.vector;
-                    if (Array.isArray(parsedArray)) {
-                        this.cache.set(d.id, {
-                            id: d.id,
-                            title: d.title,
-                            type: d.category || (d.title && d.title.toLowerCase().includes('invoice') ? 'invoice' : 'document'),
-                            date: d.uploadDate,
-                            size: d.size,
-                            ocrContent: d.ocrContent, // Kept small snippet for search matching
-                            folderId: d.folderId,
-                            vector: new Float32Array(parsedArray) // High performance RAM array
-                        });
-                        count++;
+                    while (true) {
+                        const docs = await knex('documents')
+                            .select('id', 'title', 'type', 'uploadDate', 'size', 'ocrContent', 'folderId', 'vector')
+                            .whereNotNull('vector')
+                            .andWhereNot('vector', '')
+                            .orderBy('id', 'asc')
+                            .limit(batchSize)
+                            .offset(offset);
+
+                        if (!docs.length) break;
+
+                        for (const d of docs) {
+                            scanned++;
+                            try {
+                                const parsedArray = typeof d.vector === 'string' ? JSON.parse(d.vector) : d.vector;
+                                if (Array.isArray(parsedArray)) {
+                                    this.cache.set(d.id, {
+                                        id: d.id,
+                                        title: d.title,
+                                        type: d.type || (d.title && d.title.toLowerCase().includes('invoice') ? 'invoice' : 'document'),
+                                        date: d.uploadDate,
+                                        size: d.size,
+                                        ocrContent: d.ocrContent,
+                                        folderId: d.folderId,
+                                        vector: new Float32Array(parsedArray)
+                                    });
+                                    count++;
+                                }
+                            } catch {
+                                console.warn(`[AI Search] Failed to parse vector for doc ${d.id}`);
+                            }
+                        }
+
+                        offset += docs.length;
+                        this.totalScanned = scanned;
+
+                        // Yield to the event loop to avoid long startup stalls on large datasets.
+                        await new Promise((resolve) => setTimeout(resolve, 0));
                     }
-                } catch (e) {
-                    console.warn(`[AI Search] Failed to parse vector for doc ${d.id}`);
+
+                    this.isInitialized = true;
+                    this.initializedAt = new Date().toISOString();
+                    const duration = Date.now() - startTime;
+                    console.log(`[AI Search] Vector Store initialized. Cached ${count} vectors in ${duration}ms.`);
+                } catch (err) {
+                    this.lastError = err.message;
+                    console.error('[AI Search] Failed to initialize Vector Store:', err);
+                } finally {
+                    this.isInitializing = false;
+                    this.initPromise = null;
                 }
-            }
-            this.isInitialized = true;
-            const duration = Date.now() - startTime;
-            console.log(`[AI Search] Vector Store initialized. Cached ${count} vectors in ${duration}ms.`);
-        } catch (err) {
-            console.error('[AI Search] Failed to initialize Vector Store:', err);
+            })();
         }
+
+        if (!lazy) {
+            await this.initPromise;
+        }
+    }
+
+    getStatus() {
+        return {
+            initialized: this.isInitialized,
+            initializing: this.isInitializing,
+            cachedVectors: this.cache.size,
+            totalScanned: this.totalScanned,
+            initializedAt: this.initializedAt,
+            lastError: this.lastError
+        };
     }
 
     // Add or update a document in the cache instantly
@@ -428,7 +485,12 @@ class InMemoryVectorStore {
     // Ultra-fast pure mathematical search across RAM
     searchNearest(queryVectorArray, minScore = 0.4, limit = 15) {
         if (!this.isInitialized) {
-            console.warn('[AI Search] Vector Store accessed before initialization.');
+            if (!this.isInitializing) {
+                this.initialize({ lazy: true }).catch((err) => {
+                    console.error('[AI Search] Lazy initialization failed:', err.message);
+                });
+            }
+            console.warn('[AI Search] Vector Store accessed before initialization. Returning empty result temporarily.');
             return [];
         }
 
@@ -437,7 +499,7 @@ class InMemoryVectorStore {
         const results = [];
 
         // O(N) but massively optimized since we avoid I/O, JSON.parse, and JS Array wrappers
-        for (const [id, doc] of this.cache.entries()) {
+        for (const [, doc] of this.cache.entries()) {
             const v2 = doc.vector;
             if (v2.length !== dimension) continue;
 
