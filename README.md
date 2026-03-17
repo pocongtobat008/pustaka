@@ -2,6 +2,10 @@
 
 Archive-OS adalah sistem manajemen dokumen digital yang tangguh, dilengkapi dengan teknologi **AI Semantic Search** dan **OCR (Optical Character Recognition)** otomatis. Proyek ini dirancang untuk memudahkan pengarsipan, pencarian cerdas berbasis makna, serta alur persetujuan (*approval flows*) dokumen secara terintegrasi.
 
+## 📘 Dokumentasi Instalasi Lengkap
+- Panduan lengkap Windows, Ubuntu, versi lokal (React + Node.js), dan versi Docker:
+   - [INSTALLATION_WINDOWS_UBUNTU.md](INSTALLATION_WINDOWS_UBUNTU.md)
+
 ## ✨ Fitur Utama
 - **AI Semantic Search**: Pencarian berbasis makna menggunakan *embedding* vektor (berjalan super cepat di RAM).
 - **Automated OCR**: Ekstraksi teks otomatis dari PDF dan Gambar menggunakan Tesseract.js.

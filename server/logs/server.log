@@ -13561,3 +13561,22 @@
 {"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.425 ms - -\u001b[0m","timestamp":"2026-03-17 06:39:25"}
 {"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.720 ms - -\u001b[0m","timestamp":"2026-03-17 06:39:25"}
 {"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.970 ms - -\u001b[0m","timestamp":"2026-03-17 06:39:25"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 07:16:31"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-17 07:16:31"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 07:16:31"}
+{"level":"info","message":"🧠 Memuat Vector Store ke RAM...","timestamp":"2026-03-17 07:16:31"}
+{"level":"info","message":"✅ AI Search siap digunakan.","timestamp":"2026-03-17 07:16:31"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-17 07:16:35"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-17 07:16:35"}
+{"level":"info","message":"Client connected: M9Vf3sdFtgu2OrSFAAAC","timestamp":"2026-03-17 07:16:35"}
+{"level":"info","message":"Client connected: Wc-riWnSzT7cR2P-AAAD","timestamp":"2026-03-17 07:16:35"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 07:22:13"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-17 07:22:13"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 07:22:13"}
+{"level":"info","message":"🧠 Memuat Vector Store ke RAM...","timestamp":"2026-03-17 07:22:13"}
+{"level":"info","message":"✅ AI Search siap digunakan.","timestamp":"2026-03-17 07:22:13"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-17 07:22:13"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-17 07:22:13"}
+{"level":"info","message":"Client connected: yC87DwoDIan6be9hAAAC","timestamp":"2026-03-17 07:22:13"}
+{"level":"info","message":"Client connected: Dy8P5WBNcTORUuqJAAAD","timestamp":"2026-03-17 07:22:13"}
+{"level":"info","message":"Client connected: IkTBIe891sZIyNsDAAAF","timestamp":"2026-03-17 07:22:24"}
