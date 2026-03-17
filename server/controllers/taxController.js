@@ -4,6 +4,16 @@ import { systemLog } from '../utils/logger.js';
 import XLSX from 'xlsx';
 import fs from 'fs';
 import { addOcrJob } from '../utils/queue.js';
+import { parseJsonArraySafe, parseJsonObjectSafe } from '../utils/jsonSafe.js';
+import {
+    taxObjectUpsertSchema,
+    taxAuditUpsertSchema,
+    taxAuditStatusSchema,
+    taxSummaryUpsertSchema,
+    taxWpUpsertSchema,
+    taxAuditNoteSchema,
+    validateRequestBody
+} from '../utils/requestValidation.js';
 
 // --- TAX OBJECTS ---
 export const getTaxObjects = async (req, res) => {
@@ -17,7 +27,10 @@ export const getTaxObjects = async (req, res) => {
 
 export const createTaxObject = async (req, res) => {
     try {
-        const { code, name, tax_type, rate, note, is_pph21_bukan_pegawai, use_ppn, markup_mode } = req.body;
+        const data = validateRequestBody(taxObjectUpsertSchema, req, res);
+        if (!data) return;
+
+        const { code, name, tax_type, rate, note, is_pph21_bukan_pegawai, use_ppn, markup_mode } = data;
         const [id] = await knex('master_tax_objects').insert({
             code, name, tax_type,
             rate: parseFloat(rate) || 0,
@@ -37,7 +50,10 @@ export const createTaxObject = async (req, res) => {
 export const updateTaxObject = async (req, res) => {
     try {
         const { id } = req.params;
-        const { code, name, tax_type, rate, note, is_pph21_bukan_pegawai, use_ppn, markup_mode } = req.body;
+        const data = validateRequestBody(taxObjectUpsertSchema, req, res);
+        if (!data) return;
+
+        const { code, name, tax_type, rate, note, is_pph21_bukan_pegawai, use_ppn, markup_mode } = data;
         await knex('master_tax_objects').where('id', id).update({
             code, name, tax_type,
             rate: parseFloat(rate) || 0,
@@ -74,7 +90,7 @@ export const getTaxAudits = async (req, res) => {
         // Parse steps JSON if it's a string
         const parsedAudits = audits.map(a => ({
             ...a,
-            steps: typeof a.steps === 'string' ? JSON.parse(a.steps) : (a.steps || [])
+            steps: parseJsonArraySafe(a.steps)
         }));
         res.json(parsedAudits);
     } catch (err) {
@@ -84,7 +100,10 @@ export const getTaxAudits = async (req, res) => {
 
 export const createTaxAudit = async (req, res) => {
     try {
-        const data = { ...req.body };
+        const validated = validateRequestBody(taxAuditUpsertSchema, req, res);
+        if (!validated) return;
+
+        const data = { ...validated };
 
         // Handle object fields
         if (data.steps && typeof data.steps !== 'string') {
@@ -103,7 +122,10 @@ export const createTaxAudit = async (req, res) => {
 export const updateAuditStatus = async (req, res) => {
     try {
         const { id } = req.params;
-        const { status, remarks } = req.body;
+        const data = validateRequestBody(taxAuditStatusSchema, req, res);
+        if (!data) return;
+
+        const { status, remarks } = data;
         await knex('tax_audits').where('id', id).update({
             status,
             notes: remarks ? knex.raw('CONCAT(notes, ?)', [`\n[${new Date().toISOString()}] ${remarks}`]) : undefined
@@ -118,7 +140,10 @@ export const updateAuditStatus = async (req, res) => {
 export const updateTaxAudit = async (req, res) => {
     try {
         const { id } = req.params;
-        const data = { ...req.body };
+        const validated = validateRequestBody(taxAuditUpsertSchema, req, res);
+        if (!validated) return;
+
+        const data = { ...validated };
 
         // Flatten steps if they are provided as an object/array
         if (data.steps && typeof data.steps !== 'string') {
@@ -154,7 +179,7 @@ export const getTaxSummaries = async (req, res) => {
         const items = await knex('tax_summaries').select('*');
         const parsedItems = items.map(item => ({
             ...item,
-            data: typeof item.data === 'string' ? JSON.parse(item.data) : (item.data || {})
+            data: parseJsonObjectSafe(item.data, {})
         }));
         res.json(parsedItems);
     } catch (err) {
@@ -221,7 +246,7 @@ export const compareTaxSummaries = async (req, res) => {
             if (period < startKey || period > endKey) continue;
             if (pembetulan !== 'all' && String(r.pembetulan || 0) !== String(pembetulan)) continue;
 
-            const data = typeof r.data === 'string' ? JSON.parse(r.data) : (r.data || {});
+            const data = parseJsonObjectSafe(r.data, {});
 
             // compute sums
             const pph_total = Object.values(data.pph || {}).reduce((a, b) => a + (Number(b) || 0), 0);
@@ -328,7 +353,7 @@ export const getOverUnderHistory = async (req, res) => {
             if (period < startKey || period > endKey) continue;
             if (pembetulan !== 'all' && String(r.pembetulan || 0) !== String(pembetulan)) continue;
 
-            const data = typeof r.data === 'string' ? JSON.parse(r.data) : (r.data || {});
+            const data = parseJsonObjectSafe(r.data, {});
 
             if (metric === 'ppn') {
                 const ppn_in = Object.values(data.ppnIn || {}).reduce((a, b) => a + (Number(b) || 0), 0);
@@ -361,7 +386,10 @@ export const getOverUnderHistory = async (req, res) => {
 
 export const upsertTaxSummary = async (req, res) => {
     try {
-        const { id, type, month, year, pembetulan, data } = req.body;
+        const payload = validateRequestBody(taxSummaryUpsertSchema, req, res);
+        if (!payload) return;
+
+        const { id, type, month, year, pembetulan, data } = payload;
 
         // Stringify data if it's an object
         const finalData = typeof data === 'string' ? data : JSON.stringify(data || {});
@@ -427,8 +455,11 @@ export const getTaxWp = async (req, res) => {
 
 export const createTaxWp = async (req, res) => {
     try {
-        const [id] = await knex('tax_objects').insert(req.body);
-        await systemLog('Admin', "Create Tax WP", `Created entry for: ${req.body.name}`);
+        const payload = validateRequestBody(taxWpUpsertSchema, req, res);
+        if (!payload) return;
+
+        const [id] = await knex('tax_objects').insert(payload);
+        await systemLog('Admin', "Create Tax WP", `Created entry for: ${payload.name || '-'}`);
         req.app.get('io')?.emit('data:changed', { channel: 'tax' });
         res.json({ id });
     } catch (e) {
@@ -439,7 +470,10 @@ export const createTaxWp = async (req, res) => {
 export const updateTaxWp = async (req, res) => {
     try {
         const { id } = req.params;
-        await knex('tax_objects').where('id', id).update(req.body);
+        const payload = validateRequestBody(taxWpUpsertSchema, req, res);
+        if (!payload) return;
+
+        await knex('tax_objects').where('id', id).update(payload);
         await systemLog('Admin', "Update Tax WP", `Updated ID: ${id}`);
         req.app.get('io')?.emit('data:changed', { channel: 'tax' });
         res.json({ success: true });
@@ -485,7 +519,10 @@ export const getAuditNotes = async (req, res) => {
 export const addAuditNote = async (req, res) => {
     try {
         const { id, stepIndex } = req.params;
-        const { user, text } = req.body;
+        const data = validateRequestBody(taxAuditNoteSchema, req, res);
+        if (!data) return;
+
+        const { user, text } = data;
 
         let attachmentUrl = null;
         let attachmentName = null;

@@ -1,4 +1,5 @@
 import { knex } from '../db.js';
+import { parseJsonSafe } from '../utils/jsonSafe.js';
 
 const isAdmin = (req) => String(req.user?.role || '').toLowerCase() === 'admin';
 
@@ -46,10 +47,7 @@ export const getNotifications = async (req, res) => {
         const result = notifications.map((n) => ({
             ...n,
             readAt: readMap.get(n.id) || null,
-            meta: (() => {
-                if (!n.meta) return null;
-                try { return JSON.parse(n.meta); } catch (e) { return null; }
-            })()
+            meta: parseJsonSafe(n.meta, null)
         }));
 
         res.json(result);

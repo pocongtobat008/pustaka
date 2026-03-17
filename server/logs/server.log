@@ -14080,3 +14080,297 @@
 {"level":"info","message":"Client connected: BBM_DhEzVd5pV_ACAAAB","timestamp":"2026-03-17 07:45:42"}
 {"level":"info","message":"Client connected: a_f7DKUXwGSHPCkNAAAD","timestamp":"2026-03-17 07:45:43"}
 {"level":"info","message":"Client connected: FO6eiGUeVa61wMtdAAAF","timestamp":"2026-03-17 07:45:44"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 07:50:16"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 07:50:16"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 07:50:16"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 07:50:16"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 07:50:16"}
+{"level":"info","message":"Client connected: m6t0S7Q_kgzqMc35AAAB","timestamp":"2026-03-17 07:50:16"}
+{"level":"info","message":"Client connected: Fe2gTtaZSrGvTTHQAAAD","timestamp":"2026-03-17 07:50:16"}
+{"level":"info","message":"Client connected: QrYa7yd4vq7_R9doAAAF","timestamp":"2026-03-17 07:50:16"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 07:54:51"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 07:54:51"}
+{"level":"info","message":"Client connected: 6Cktc57FEGPRsVu-AAAB","timestamp":"2026-03-17 07:54:51"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 07:54:51"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 07:54:51"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 07:54:51"}
+{"level":"info","message":"Client connected: XpkDbtPs7Bs1ZoThAAAD","timestamp":"2026-03-17 07:54:52"}
+{"level":"info","message":"Client connected: oydlcwZm0EhbvjmCAAAF","timestamp":"2026-03-17 07:54:55"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 07:56:16"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 07:56:16"}
+{"level":"info","message":"Client connected: gh0pAgXTYbKf8VmrAAAB","timestamp":"2026-03-17 07:56:16"}
+{"level":"info","message":"Client connected: ghHWMEXkmOhe8gufAAAD","timestamp":"2026-03-17 07:56:16"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 07:56:16"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 07:56:16"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 07:56:16"}
+{"level":"info","message":"Client connected: KvKlGXDPkFr6nUeCAAAF","timestamp":"2026-03-17 07:56:20"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:02:53"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:02:54"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:02:54"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:02:54"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:02:54"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:02:54"}
+{"level":"info","message":"Client connected: eLBqx35NYeksFNewAAAC","timestamp":"2026-03-17 08:02:54"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:02:54"}
+{"level":"info","message":"Client connected: KxijvBEUEg56GHZMAAAD","timestamp":"2026-03-17 08:02:54"}
+{"level":"info","message":"Client connected: Z-GDWGn_2mBooJAwAAAF","timestamp":"2026-03-17 08:02:58"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:10:11"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:10:11"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:10:11"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:10:11"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:10:11"}
+{"level":"info","message":"Client connected: _UD3-06xQ--f24YkAAAB","timestamp":"2026-03-17 08:10:11"}
+{"level":"info","message":"Client connected: 3VoKXdYvzHhLPX6rAAAD","timestamp":"2026-03-17 08:10:13"}
+{"level":"info","message":"Client connected: cUR48Du-2-Q16v8oAAAF","timestamp":"2026-03-17 08:10:13"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:10:22"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:10:52"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:10:52"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:10:52"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:10:52"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:10:52"}
+{"level":"info","message":"Client connected: 5KWlvpwRfy3r0OSqAAAB","timestamp":"2026-03-17 08:10:52"}
+{"level":"info","message":"Client connected: OIRQK3y12KpRnf9MAAAD","timestamp":"2026-03-17 08:10:53"}
+{"level":"info","message":"Client connected: NOqbKx-4K1zqr7EqAAAF","timestamp":"2026-03-17 08:10:56"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:33:31"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:33:31"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:33:31"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:33:31"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:33:31"}
+{"level":"info","message":"Client connected: oV2NQCaEO7CWeQnnAAAB","timestamp":"2026-03-17 08:33:31"}
+{"level":"info","message":"Client connected: ZUWp3U47uZaNRLFiAAAD","timestamp":"2026-03-17 08:33:33"}
+{"level":"info","message":"Client connected: ecW2YaBsHJRQNmG9AAAF","timestamp":"2026-03-17 08:33:33"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:33:36"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:33:36"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:33:36"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:33:36"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:33:36"}
+{"level":"info","message":"Client connected: OvzpQX1sJFSXnCXiAAAB","timestamp":"2026-03-17 08:33:36"}
+{"level":"info","message":"Client connected: WBhRfCcdwFCvDrQTAAAD","timestamp":"2026-03-17 08:33:37"}
+{"level":"info","message":"Client connected: S7QfshQTw3_LeXGPAAAF","timestamp":"2026-03-17 08:33:38"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:34:09"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:34:09"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:34:09"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:34:09"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:34:09"}
+{"level":"info","message":"Client connected: Q7XIdzlK08QWK4gAAAAB","timestamp":"2026-03-17 08:34:09"}
+{"level":"info","message":"Client connected: K470hH8IlonkANglAAAD","timestamp":"2026-03-17 08:34:11"}
+{"level":"info","message":"Client connected: NVuQipb-ZQCZ5qh7AAAF","timestamp":"2026-03-17 08:34:11"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:34:33"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:34:33"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:34:33"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:34:33"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:34:33"}
+{"level":"info","message":"Client connected: KIitV77zl3vYW4kvAAAB","timestamp":"2026-03-17 08:34:33"}
+{"level":"info","message":"Client connected: 7W7kR9AvKCYtAeKMAAAD","timestamp":"2026-03-17 08:34:35"}
+{"level":"info","message":"Client connected: QrNF9sxeEUksRpEcAAAF","timestamp":"2026-03-17 08:34:35"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:34:42"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:34:42"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:34:42"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:34:42"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:34:42"}
+{"level":"info","message":"Client connected: UjQe7hku7slZWjk8AAAB","timestamp":"2026-03-17 08:34:42"}
+{"level":"info","message":"Client connected: X8GEp3W1vvLxbUq3AAAD","timestamp":"2026-03-17 08:34:42"}
+{"level":"info","message":"Client connected: yK_rrpd6GbgW_UKGAAAF","timestamp":"2026-03-17 08:34:43"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:35:22"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:35:22"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:35:22"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:35:22"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:35:22"}
+{"level":"info","message":"Client connected: cTq51KsDXRGNOamqAAAB","timestamp":"2026-03-17 08:35:22"}
+{"level":"info","message":"Client connected: sAk3rMaNtqQS3BedAAAD","timestamp":"2026-03-17 08:35:23"}
+{"level":"info","message":"Client connected: DxyOEGGGwe-tLZhaAAAF","timestamp":"2026-03-17 08:35:23"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:35:38"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:35:38"}
+{"level":"info","message":"Client connected: SRtZOpQHlWQK6lBtAAAB","timestamp":"2026-03-17 08:35:38"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:35:38"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:35:38"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:35:38"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:35:40"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:35:40"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:35:40"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:35:40"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:35:40"}
+{"level":"info","message":"Client connected: _WXpmJIh6sS8o0f4AAAB","timestamp":"2026-03-17 08:35:42"}
+{"level":"info","message":"Client connected: G82Xqe4aF4uJWuKbAAAD","timestamp":"2026-03-17 08:35:42"}
+{"level":"info","message":"Client connected: GPZ3tjqNcJRHMpN4AAAF","timestamp":"2026-03-17 08:35:43"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:36:12"}
+{"level":"info","message":"Client disconnected: G82Xqe4aF4uJWuKbAAAD","timestamp":"2026-03-17 08:36:27"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 36.940 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 170.453 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 173.991 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 164.270 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 162.662 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 205.624 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 187.471 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 187.850 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 123.930 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 196.899 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 32.751 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 1.343 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 3.553 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 5.149 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 1.262 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 1.451 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.648 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 6.294 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 5.667 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 6.744 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 5.008 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 2.280 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 7.301 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 6.132 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 4.229 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:30"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 3.711 ms - -\u001b[0m","timestamp":"2026-03-17 08:36:31"}
+{"level":"info","message":"Client connected: g4yikf2qTDimVoc6AAAH","timestamp":"2026-03-17 08:36:31"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:36:58"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:40:34"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:40:34"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:40:34"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:40:34"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:40:34"}
+{"level":"info","message":"Client connected: UN32uls3q6ublnfnAAAB","timestamp":"2026-03-17 08:40:34"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:40:36"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:40:36"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:40:36"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:40:36"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:40:36"}
+{"level":"info","message":"Client connected: cRpdaUspw54tU25fAAAB","timestamp":"2026-03-17 08:40:37"}
+{"level":"info","message":"Client connected: 1f6HbziRitlUCZN-AAAD","timestamp":"2026-03-17 08:40:39"}
+{"level":"info","message":"Client connected: K3OqUuCqQxJGp0rfAAAF","timestamp":"2026-03-17 08:40:39"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:40:53"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:40:53"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:40:53"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:40:53"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:40:53"}
+{"level":"info","message":"Client connected: 7ZQNc-lkuhePd3n-AAAB","timestamp":"2026-03-17 08:40:53"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:40:54"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:40:54"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:40:54"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:40:54"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:40:54"}
+{"level":"info","message":"Client connected: RqGNtlcp6pYAvjTgAAAB","timestamp":"2026-03-17 08:40:56"}
+{"level":"info","message":"Client connected: jfyLUAEoAEv8vmBPAAAD","timestamp":"2026-03-17 08:40:56"}
+{"level":"info","message":"Client connected: nEDpIBNmmLSQzKTKAAAF","timestamp":"2026-03-17 08:40:57"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:41:32"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:41:32"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:41:32"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:41:32"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:41:32"}
+{"level":"info","message":"Client connected: k0qFL4blJcD_xB5xAAAB","timestamp":"2026-03-17 08:41:32"}
+{"level":"info","message":"Client connected: OH9qy2A5QO4fksCSAAAD","timestamp":"2026-03-17 08:41:32"}
+{"level":"info","message":"Client connected: HdCSOTUjXO16zqAaAAAF","timestamp":"2026-03-17 08:41:34"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:41:39"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 5.676 ms - -\u001b[0m","timestamp":"2026-03-17 08:41:39"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 2.918 ms - -\u001b[0m","timestamp":"2026-03-17 08:41:39"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 3.231 ms - -\u001b[0m","timestamp":"2026-03-17 08:41:44"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 3.994 ms - -\u001b[0m","timestamp":"2026-03-17 08:41:44"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:42:03"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:42:03"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:42:03"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:42:03"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:42:03"}
+{"level":"info","message":"Client connected: ed0fghbO8PHC0j46AAAB","timestamp":"2026-03-17 08:42:03"}
+{"level":"info","message":"Client connected: njpom1_Yoxv1Qqy_AAAD","timestamp":"2026-03-17 08:42:03"}
+{"level":"info","message":"Client connected: pnK606ByhC9HshbcAAAF","timestamp":"2026-03-17 08:42:04"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:44:01"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:44:02"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:44:02"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:44:02"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:44:02"}
+{"level":"info","message":"Client connected: typb_Qhy9CtOVTrrAAAB","timestamp":"2026-03-17 08:44:03"}
+{"level":"info","message":"Client connected: 0vaqNQjTWOK6-YScAAAD","timestamp":"2026-03-17 08:44:03"}
+{"level":"info","message":"Client connected: Nlw8RY-oAyf5G7fDAAAF","timestamp":"2026-03-17 08:44:04"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:44:06"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:44:06"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:44:06"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:44:06"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:44:06"}
+{"level":"info","message":"Client connected: eniOfqh6lo-8j438AAAB","timestamp":"2026-03-17 08:44:06"}
+{"level":"info","message":"Client connected: pDWhVmHdDqGdfIW-AAAD","timestamp":"2026-03-17 08:44:07"}
+{"level":"info","message":"Client connected: nnbcxnmL8FPs6d1tAAAF","timestamp":"2026-03-17 08:44:08"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:44:14"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:44:14"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:44:14"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:44:14"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:44:14"}
+{"level":"info","message":"Client connected: Rz20Yfy9bAgv1-77AAAB","timestamp":"2026-03-17 08:44:15"}
+{"level":"info","message":"Client connected: bZlm5n0meSVp5YC1AAAD","timestamp":"2026-03-17 08:44:15"}
+{"level":"info","message":"Client connected: CSUfYIhQzWogsUGbAAAF","timestamp":"2026-03-17 08:44:16"}
+{"details":"INVENTORY Error: this.set is not a function","level":"error","message":"System Error: INVENTORY Error: this.set is not a function","timestamp":"2026-03-17 08:44:56","user":"System"}
+{"details":"INVENTORY Error: insert into `external_items` (`boxData`, `boxId`, `destination`, `history`, `sender`, `sentDate`) values ('{}', DEFAULT, DEFAULT, '[]', DEFAULT, CURRENT_TIMESTAMP) - Field 'boxId' doesn't have a default value","level":"error","message":"System Error: INVENTORY Error: insert into `external_items` (`boxData`, `boxId`, `destination`, `history`, `sender`, `sentDate`) values ('{}', DEFAULT, DEFAULT, '[]', DEFAULT, CURRENT_TIMESTAMP) - Field 'boxId' doesn't have a default value","timestamp":"2026-03-17 08:44:56","user":"System"}
+{"details":"INVENTORY Error: Cannot set headers after they are sent to the client","level":"error","message":"System Error: INVENTORY Error: Cannot set headers after they are sent to the client","timestamp":"2026-03-17 08:44:56","user":"System"}
+{"details":"PUSTAKA Error: insert into `pustaka_guides` (`allowed_depts`, `allowed_users`, `category`, `description`, `icon`, `owner`, `privacy`, `title`) values ('[]', '[]', DEFAULT, '', DEFAULT, 'System', DEFAULT, DEFAULT) - Field 'title' doesn't have a default value","level":"error","message":"System Error: PUSTAKA Error: insert into `pustaka_guides` (`allowed_depts`, `allowed_users`, `category`, `description`, `icon`, `owner`, `privacy`, `title`) values ('[]', '[]', DEFAULT, '', DEFAULT, 'System', DEFAULT, DEFAULT) - Field 'title' doesn't have a default value","timestamp":"2026-03-17 08:44:56","user":"System"}
+{"details":"PUSTAKA Error: Cannot set headers after they are sent to the client","level":"error","message":"System Error: PUSTAKA Error: Cannot set headers after they are sent to the client","timestamp":"2026-03-17 08:44:56","user":"System"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:44:57"}
+{"details":"Created: undefined (undefined)","level":"info","message":"Create Tax Object: Created: undefined (undefined)","timestamp":"2026-03-17 08:44:57","user":"Admin"}
+{"details":"TAX Error: Converting circular structure to JSON\n    --> starting at object with constructor 'Timeout'\n    |     property '_idlePrev' -> object with constructor 'TimersList'\n    --- property '_idleNext' closes the circle","level":"error","message":"System Error: TAX Error: Converting circular structure to JSON\n    --> starting at object with constructor 'Timeout'\n    |     property '_idlePrev' -> object with constructor 'TimersList'\n    --- property '_idleNext' closes the circle","timestamp":"2026-03-17 08:44:57","user":"System"}
+{"details":"TAX Error: Cannot set headers after they are sent to the client","level":"error","message":"System Error: TAX Error: Cannot set headers after they are sent to the client","timestamp":"2026-03-17 08:44:57","user":"System"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:45:24"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:45:24"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:45:24"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:45:24"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:45:24"}
+{"level":"info","message":"Client connected: F7W2FPmfeZcff3tJAAAB","timestamp":"2026-03-17 08:45:24"}
+{"level":"info","message":"Client connected: UjPhL38fKyxEqp9kAAAD","timestamp":"2026-03-17 08:45:25"}
+{"level":"info","message":"Client connected: o1C-v3Pwen53xB-9AAAF","timestamp":"2026-03-17 08:45:28"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:45:31"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:47:59"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:47:59"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:47:59"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:47:59"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:47:59"}
+{"level":"info","message":"Client connected: qt-dwo7GGpcS8E3VAAAB","timestamp":"2026-03-17 08:48:00"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:48:02"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:48:02"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:48:02"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:48:02"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:48:02"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:48:05"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:48:05"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:48:05"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:48:05"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:48:05"}
+{"level":"info","message":"Client connected: FZ2h2zOl4rW4SfZpAAAB","timestamp":"2026-03-17 08:48:08"}
+{"level":"info","message":"Client connected: 8bIXvLwcukB5tEn0AAAD","timestamp":"2026-03-17 08:48:08"}
+{"level":"info","message":"Client connected: oMWi-5lOP3XpISDcAAAF","timestamp":"2026-03-17 08:48:09"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:48:45"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:48:45"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:48:45"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:48:45"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:48:45"}
+{"level":"info","message":"Client connected: VEitEt8Qd0wxovyVAAAB","timestamp":"2026-03-17 08:48:45"}
+{"level":"info","message":"Client connected: ecfgOfQUlUAroBA1AAAD","timestamp":"2026-03-17 08:48:46"}
+{"level":"info","message":"Client connected: xXg74VLRcdtVdpVRAAAF","timestamp":"2026-03-17 08:48:47"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:49:06"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:49:06"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:49:06"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:49:06"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:49:06"}
+{"level":"info","message":"Client connected: BJ2r6COz1yO1NHomAAAB","timestamp":"2026-03-17 08:49:06"}
+{"level":"info","message":"Client connected: 2dn2rqtXENbL1nSDAAAD","timestamp":"2026-03-17 08:49:06"}
+{"level":"info","message":"Client connected: Pru3PQXp7dKs9u6DAAAF","timestamp":"2026-03-17 08:49:08"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:49:11"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:49:11"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:49:11"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:49:11"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:49:11"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:49:11"}
+{"level":"info","message":"Client connected: 2MvblQc5th7h3OZiAAAB","timestamp":"2026-03-17 08:49:11"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:49:11"}
+{"level":"info","message":"Client connected: WvL9qAeN2_ahmzh2AAAD","timestamp":"2026-03-17 08:49:11"}
+{"level":"info","message":"Client connected: 2MP9XzSjEnVNrWfzAAAF","timestamp":"2026-03-17 08:49:11"}
+{"level":"info","message":"Client disconnected: 2MvblQc5th7h3OZiAAAB","timestamp":"2026-03-17 08:49:26"}
+{"level":"info","message":"Client disconnected: WvL9qAeN2_ahmzh2AAAD","timestamp":"2026-03-17 08:49:26"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-17 08:49:28"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:49:28"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-17 08:49:28"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-17 08:49:28"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-17 08:49:28"}
+{"level":"info","message":"Client connected: 8Gru4eDSMeaopAQgAAAB","timestamp":"2026-03-17 08:49:28"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:49:28"}
+{"level":"info","message":"Client connected: Xb11gePbUeVb0SASAAAD","timestamp":"2026-03-17 08:49:28"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:49:28"}
+{"level":"info","message":"Client connected: 6YNU1iyx9yRQF2zGAAAF","timestamp":"2026-03-17 08:49:28"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-17 08:50:40"}

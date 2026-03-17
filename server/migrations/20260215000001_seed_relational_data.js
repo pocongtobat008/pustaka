@@ -1,3 +1,5 @@
+import { parseJsonObjectSafe } from '../utils/jsonSafe.js';
+
 export const up = async (knex) => {
     const boxCount = await knex('boxes').count('id as count').first();
     if (boxCount.count > 0) return; // Already populated
@@ -7,10 +9,7 @@ export const up = async (knex) => {
 
     for (const row of inventoryRows) {
         if (!row.box_data) continue;
-        let data;
-        try {
-            data = typeof row.box_data === 'string' ? JSON.parse(row.box_data) : row.box_data;
-        } catch (e) { continue; }
+        const data = parseJsonObjectSafe(row.box_data, null);
 
         if (!data || !data.id) continue;
 

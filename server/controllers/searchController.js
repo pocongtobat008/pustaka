@@ -5,6 +5,7 @@ import { addAiChatJob } from '../queue.js';
 import { generateEmbedding, vectorStore } from '../ai_search.js';
 import path from 'path';
 import { UPLOADS_DIR } from '../config/upload.js';
+import { parseJsonSafe } from '../utils/jsonSafe.js';
 
 export const getJobStatus = async (req, res) => {
     try {
@@ -12,7 +13,7 @@ export const getJobStatus = async (req, res) => {
         const job = await knex('job_queue').where('id', id).first();
         if (!job) return res.status(404).json({ error: "Job not found" });
 
-        const result = job.result ? JSON.parse(job.result) : null;
+        const result = parseJsonSafe(job.result, null);
         res.json({
             id: job.id,
             status: job.status,

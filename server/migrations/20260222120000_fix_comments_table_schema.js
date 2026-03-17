@@ -1,3 +1,5 @@
+import { parseJsonObjectSafe } from '../utils/jsonSafe.js';
+
 export const up = async (knex) => {
     // 1. Add 'attachment' column if it doesn't exist
     const hasAttachment = await knex.schema.hasColumn('comments', 'attachment');
@@ -85,15 +87,15 @@ export const down = async (knex) => {
         const rows = await knex('comments').select('*');
         for (const row of rows) {
             if (row.attachment) {
-                try {
-                    const data = JSON.parse(row.attachment);
+                const data = parseJsonObjectSafe(row.attachment, null);
+                if (data) {
                     await knex('comments').where('id', row.id).update({
                         attachmentUrl: data.url,
                         attachmentName: data.name,
                         attachmentType: data.type,
                         attachmentSize: data.size
                     });
-                } catch (e) { }
+                }
             }
         }
 

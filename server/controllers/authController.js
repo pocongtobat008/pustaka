@@ -3,10 +3,18 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { systemLog } from '../utils/logger.js';
 import { handleError } from '../utils/errorHandler.js';
+import {
+    loginSchema,
+    userCreateSchema,
+    userUpdateSchema,
+    profileUpdateSchema,
+    validateRequestBody
+} from '../utils/requestValidation.js';
 
 export const login = async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { username, password } = validateRequestBody(loginSchema, req, res) || {};
+        if (!username || !password) return;
         const user = await knex('users').where('username', username).first();
 
         if (!user) return res.status(401).json({ error: "Invalid credentials" });
@@ -89,7 +97,10 @@ export const getUsers = async (req, res) => {
 
 export const createUser = async (req, res) => {
     try {
-        const { username, password, name, role, department } = req.body;
+        const data = validateRequestBody(userCreateSchema, req, res);
+        if (!data) return;
+
+        const { username, password, name, role, department } = data;
         const hashedPassword = await bcrypt.hash(password, 10);
         const [id] = await knex('users').insert({
             username,
@@ -109,8 +120,16 @@ export const createUser = async (req, res) => {
 export const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const { username, password, name, role, department } = req.body;
-        const updateData = { username, name, role, department };
+        const data = validateRequestBody(userUpdateSchema, req, res);
+        if (!data) return;
+
+        const { username, password, name, role, department } = data;
+        const updateData = {};
+
+        if (username !== undefined) updateData.username = username;
+        if (name !== undefined) updateData.name = name;
+        if (role !== undefined) updateData.role = role;
+        if (department !== undefined) updateData.department = department;
 
         if (password) {
             updateData.password = await bcrypt.hash(password, 10);
@@ -152,7 +171,10 @@ export const getProfile = async (req, res) => {
 export const updateProfile = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, password, currentPassword } = req.body;
+        const data = validateRequestBody(profileUpdateSchema, req, res);
+        if (!data) return;
+
+        const { name, password, currentPassword } = data;
 
         const user = await knex('users').where('id', id).first();
         if (!user) return res.status(404).json({ error: "User not found" });
@@ -164,7 +186,8 @@ export const updateProfile = async (req, res) => {
             if (!match) return res.status(401).json({ error: "Incorrect current password" });
         }
 
-        const updateData = { name };
+        const updateData = {};
+        if (name !== undefined) updateData.name = name;
         if (password) {
             updateData.password = await bcrypt.hash(password, 10);
         }

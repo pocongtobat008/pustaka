@@ -9,6 +9,18 @@ app.use(bodyParser.json());
 app.use('/api/tax', taxRoutes);
 
 describe('TaxController compare & overunder endpoints', () => {
+  it('create tax object rejects missing required fields', async () => {
+    const res = await request(app).post('/api/tax/objects').send({});
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBeDefined();
+  });
+
+  it('update audit status rejects empty status', async () => {
+    const res = await request(app).put('/api/tax/audits/1/status').send({});
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBeDefined();
+  });
+
   it('compare endpoint rejects invalid metric', async () => {
     const res = await request(app).get('/api/tax/compare').query({ metrics: 'abc' });
     expect(res.status).toBe(400);

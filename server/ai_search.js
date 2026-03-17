@@ -358,6 +358,7 @@ Answer:`;
  * Stores embeddings in RAM as Float32Array for <5ms cosine similarity searches across 10k+ docs.
  */
 import { knex } from './db.js';
+import { parseJsonArraySafe } from './utils/jsonSafe.js';
 
 class InMemoryVectorStore {
     constructor() {
@@ -404,7 +405,7 @@ class InMemoryVectorStore {
                         for (const d of docs) {
                             scanned++;
                             try {
-                                const parsedArray = typeof d.vector === 'string' ? JSON.parse(d.vector) : d.vector;
+                                const parsedArray = parseJsonArraySafe(d.vector);
                                 if (Array.isArray(parsedArray)) {
                                     this.cache.set(d.id, {
                                         id: d.id,

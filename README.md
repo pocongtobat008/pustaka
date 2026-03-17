@@ -1,6 +1,6 @@
-# 📁 Archive-OS (Professional Document Management System)
+# 📁 Pustaka-OS (Professional Document Management System)
 
-Archive-OS adalah sistem manajemen dokumen digital yang tangguh, dilengkapi dengan teknologi **AI Semantic Search** dan **OCR (Optical Character Recognition)** otomatis. Proyek ini dirancang untuk memudahkan pengarsipan, pencarian cerdas berbasis makna, serta alur persetujuan (*approval flows*) dokumen secara terintegrasi.
+Pustaka-OS adalah sistem manajemen dokumen digital yang tangguh, dilengkapi dengan teknologi **AI Semantic Search** dan **OCR (Optical Character Recognition)** otomatis. Proyek ini dirancang untuk memudahkan pengarsipan, pencarian cerdas berbasis makna, serta alur persetujuan (*approval flows*) dokumen secara terintegrasi.
 
 ## 📘 Dokumentasi Instalasi Lengkap
 - Panduan lengkap Windows, Ubuntu, versi lokal (React + Node.js), dan versi Docker:
@@ -30,6 +30,8 @@ Archive-OS dirancang untuk dapat berjalan dengan konfigurasi minimal (*default*)
 2. **Install Dependencies**
    ```bash
    npm install
+   curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+   sudo apt install -y nodejs
    npm install cookie-parser
    npm install pdf-parse
    npm install sharp

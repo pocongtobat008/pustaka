@@ -38,7 +38,17 @@ import legacyRoutes from './routes/legacyRoutes.js';
 import { checkAuth } from './middleware/auth.js';
 import { UPLOADS_DIR, upload } from './config/upload.js';
 import { logger } from './utils/logger.js';
-import { parseJsonArraySafe } from './utils/jsonSafe.js';
+import { parseJsonArraySafe, parseJsonObjectSafe } from './utils/jsonSafe.js';
+import {
+    validateRequestBody,
+    jobCreateSchema,
+    jobUpdateSchema,
+    monitoredPicUpsertSchema,
+    independentIssueCreateSchema,
+    independentIssueUpdateSchema,
+    sopFlowCreateSchema,
+    sopFlowUpdateSchema
+} from './utils/requestValidation.js';
 import { uploadDocument } from './controllers/documentController.js';
 import { vectorStore } from './ai_search.js';
 
@@ -406,7 +416,9 @@ app.get('/api/jobs', checkAuth, async (req, res) => {
 
 app.post('/api/jobs', checkAuth, async (req, res) => {
     try {
-        const data = req.body;
+        const data = validateRequestBody(jobCreateSchema, req, res);
+        if (!data) return;
+
         const completedMonths = Array.isArray(data.completedMonths)
             ? data.completedMonths
             : (typeof data.completed_months === 'string'
@@ -439,7 +451,9 @@ app.post('/api/jobs', checkAuth, async (req, res) => {
 app.put('/api/jobs/:id', checkAuth, async (req, res) => {
     try {
         const { id } = req.params;
-        const data = req.body;
+        const data = validateRequestBody(jobUpdateSchema, req, res);
+        if (!data) return;
+
         const existing = await knex('job_due_dates').where({ id }).first();
         if (!existing) return res.status(404).json({ error: 'Jadwal tidak ditemukan' });
 
@@ -508,8 +522,8 @@ app.get('/api/monitored-pics', checkAuth, async (req, res) => {
         const pics = await knex('monitored_pics').select('*');
         const parsed = pics.map(p => ({
             ...p,
-            allowedUsers: JSON.parse(p.allowed_users || '[]'),
-            allowedDepts: JSON.parse(p.allowed_depts || '[]')
+            allowedUsers: parseJsonArraySafe(p.allowed_users),
+            allowedDepts: parseJsonArraySafe(p.allowed_depts)
         }));
         res.json(parsed);
     } catch (err) {
@@ -519,7 +533,9 @@ app.get('/api/monitored-pics', checkAuth, async (req, res) => {
 
 app.post('/api/monitored-pics', checkAuth, async (req, res) => {
     try {
-        const data = req.body;
+        const data = validateRequestBody(monitoredPicUpsertSchema, req, res);
+        if (!data) return;
+
         const existing = await knex('monitored_pics').where({ username: data.username }).first();
         const picOwner = existing?.username || data.username;
         if (!isAdminUser(req) && req.user?.username !== picOwner) {
@@ -558,24 +574,12 @@ app.delete('/api/monitored-pics/:username', checkAuth, async (req, res) => {
 app.get('/api/independent-issues', checkAuth, async (req, res) => {
     try {
         const issues = await knex('independent_issues').select('*').orderBy('created_at', 'desc');
-        const parsed = issues.map(i => {
-            let history = [];
-            let assignedTo = [];
-            
-            try {
-                history = typeof i.history === 'string' ? JSON.parse(i.history || '[]') : (i.history || []);
-                assignedTo = typeof i.assigned_to === 'string' ? JSON.parse(i.assigned_to || '[]') : (i.assigned_to || []);
-            } catch (e) {
-                console.error(`[JSON Parse Error] Issue ID ${i.id}:`, e.message);
-            }
-
-            return {
-                ...i,
-                history,
-                assignedTo,
-                resolvedAt: i.resolved_at
-            };
-        });
+        const parsed = issues.map(i => ({
+            ...i,
+            history: parseJsonArraySafe(i.history),
+            assignedTo: parseJsonArraySafe(i.assigned_to),
+            resolvedAt: i.resolved_at
+        }));
         res.json(parsed);
     } catch (err) {
         console.error("CRITICAL ERROR GET /api/independent-issues:", err.message);
@@ -588,7 +592,9 @@ app.get('/api/independent-issues', checkAuth, async (req, res) => {
 
 app.post('/api/independent-issues', checkAuth, async (req, res) => {
     try {
-        const data = req.body;
+        const data = validateRequestBody(independentIssueCreateSchema, req, res);
+        if (!data) return;
+
         const [id] = await knex('independent_issues').insert({
             note: data.note,
             detail: data.detail,
@@ -610,7 +616,9 @@ app.post('/api/independent-issues', checkAuth, async (req, res) => {
 app.put('/api/independent-issues/:id', checkAuth, async (req, res) => {
     try {
         const { id } = req.params;
-        const data = req.body;
+        const data = validateRequestBody(independentIssueUpdateSchema, req, res);
+        if (!data) return;
+
         await knex('independent_issues').where({ id }).update({
             note: data.note,
             detail: data.detail,
@@ -680,10 +688,10 @@ app.get('/api/sop-flows', checkAuth, async (req, res) => {
         const flows = await query.orderBy('created_at', 'desc');
         const parsed = flows.map(f => ({
             ...f,
-            steps: typeof f.steps === 'string' ? JSON.parse(f.steps || '[]') : (f.steps || []),
-            visual_config: typeof f.visual_config === 'string' ? JSON.parse(f.visual_config || '{"nodes":[],"edges":[]}') : (f.visual_config || { nodes: [], edges: [] }),
-            allowed_departments: typeof f.allowed_departments === 'string' ? JSON.parse(f.allowed_departments || '[]') : (f.allowed_departments || []),
-            allowed_users: typeof f.allowed_users === 'string' ? JSON.parse(f.allowed_users || '[]') : (f.allowed_users || [])
+            steps: parseJsonArraySafe(f.steps),
+            visual_config: parseJsonObjectSafe(f.visual_config, { nodes: [], edges: [] }),
+            allowed_departments: parseJsonArraySafe(f.allowed_departments),
+            allowed_users: parseJsonArraySafe(f.allowed_users)
         }));
         res.json(parsed);
     } catch (err) {
@@ -693,7 +701,10 @@ app.get('/api/sop-flows', checkAuth, async (req, res) => {
 
 app.post('/api/sop-flows', checkAuth, async (req, res) => {
     try {
-        const { title, description, category, steps, visual_config, privacy_type, allowed_departments, allowed_users } = req.body;
+        const data = validateRequestBody(sopFlowCreateSchema, req, res);
+        if (!data) return;
+
+        const { title, description, category, steps, visual_config, privacy_type, allowed_departments, allowed_users } = data;
         const [id] = await knex('sop_flows').insert({
             title,
             description,
@@ -717,7 +728,10 @@ app.post('/api/sop-flows', checkAuth, async (req, res) => {
 app.put('/api/sop-flows/:id', checkAuth, async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, description, category, steps, visual_config, privacy_type, allowed_departments, allowed_users } = req.body;
+        const data = validateRequestBody(sopFlowUpdateSchema, req, res);
+        if (!data) return;
+
+        const { title, description, category, steps, visual_config, privacy_type, allowed_departments, allowed_users } = data;
         const existing = await knex('sop_flows').where({ id }).first();
         if (!existing) return res.status(404).json({ error: "SOP Flow tidak ditemukan" });
 

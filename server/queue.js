@@ -1,5 +1,6 @@
 import { knex } from './db.js';
 import { JOB_STATUS } from './constants/status.js';
+import { parseJsonObjectSafe } from './utils/jsonSafe.js';
 
 // Simple MySQL-based Queue Replacement for BullMQ
 class DbQueue {
@@ -57,7 +58,7 @@ class DbQueue {
 
             return rows.map(r => ({
                 id: r.id,
-                data: typeof r.data === 'string' ? JSON.parse(r.data) : r.data,
+                data: parseJsonObjectSafe(r.data, {}),
                 progress: r.progress || 0,
                 status: r.status,
                 finishedOn: r.finished_at ? new Date(r.finished_at).getTime() : null,
@@ -112,7 +113,7 @@ export const addOCRJob = async (docId, filePath, fileType, originalName, context
             return {
                 id: existing.id,
                 name: 'process-ocr',
-                data: typeof existing.data === 'string' ? JSON.parse(existing.data) : existing.data,
+                data: parseJsonObjectSafe(existing.data, {}),
                 deduplicated: true
             };
         }
@@ -175,7 +176,7 @@ export const addOCRJobRouted = async (docId, filePath, fileType, originalName, c
             return {
                 id: existing.id,
                 name: existing.name,
-                data: typeof existing.data === 'string' ? JSON.parse(existing.data) : existing.data,
+                data: parseJsonObjectSafe(existing.data, {}),
                 deduplicated: true
             };
         }

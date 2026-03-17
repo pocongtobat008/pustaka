@@ -8,11 +8,10 @@ export const checkAuth = async (req, res, next) => {
     // 1. Ekstrak token dari Cookie (HttpOnly), header Authorization, atau Query Parameter (dev-only)
     const token = req.cookies?.token ||
         (req.headers['authorization'] ? req.headers['authorization'].split(' ')[1] : (allowQueryToken ? req.query.token : undefined));
-    const userId = req.headers['x-user-id'];
 
-    if (!token && !userId) {
+    if (!token) {
         const hasCookies = req.cookies ? Object.keys(req.cookies).length : 0;
-        console.warn(`[Auth] Blocked: No token or userId. IP: ${req.ip} URL: ${req.originalUrl}. Cookies count: ${hasCookies}`);
+        console.warn(`[Auth] Blocked: No token. IP: ${req.ip} URL: ${req.originalUrl}. Cookies count: ${hasCookies}`);
         if (hasCookies > 0) console.log(`[Auth] Cookies present: ${Object.keys(req.cookies).join(', ')}`);
         return res.status(401).json({ error: "Authentication required" });
     }
@@ -22,7 +21,7 @@ export const checkAuth = async (req, res, next) => {
         if (token === 'dev-token' && allowDevToken) {
             // Bypass khusus untuk mode development / admin fallback
             user = await knex('users').where('username', 'admin').first();
-        } else if (token) {
+        } else {
             user = await knex('users').where('token', token).first();
 
             // Enforce session expiry if expiry field is present
@@ -36,8 +35,6 @@ export const checkAuth = async (req, res, next) => {
                     return res.status(401).json({ error: "Session expired" });
                 }
             }
-        } else {
-            user = await knex('users').where('id', userId).first();
         }
 
         if (!user) return res.status(401).json({ error: "Invalid user session" });

@@ -7,6 +7,7 @@ import { systemLog } from '../utils/logger.js';
 import { addOcrJob } from '../utils/queue.js';
 import { UPLOADS_DIR } from '../config/upload.js';
 import { vectorStore } from '../ai_search.js';
+import { parseJsonArraySafe, parseJsonObjectSafe } from '../utils/jsonSafe.js';
 
 // Helper: Convert ISO 8601 datetime to MySQL-compatible format
 const toMySQLDate = (isoOrDate) => {
@@ -70,8 +71,7 @@ export const uploadDocument = async (req, res) => {
         if (existingDoc) {
             console.log(`Duplicate found: ${title}. Creating revision.`);
 
-            let versionsHistory = [];
-            try { versionsHistory = existingDoc.versionsHistory ? JSON.parse(existingDoc.versionsHistory) : []; } catch (e) { }
+            const versionsHistory = parseJsonArraySafe(existingDoc.versionsHistory);
 
             // Archive current version
             let archivedUrl = existingDoc.url;
@@ -355,8 +355,7 @@ export const restoreVersion = async (req, res) => {
         const doc = await knex('documents').where('id', id).first();
         if (!doc) return res.status(404).json({ error: "Document not found" });
 
-        let history = [];
-        try { history = JSON.parse(doc.versionsHistory || '[]'); } catch (e) { }
+        let history = parseJsonArraySafe(doc.versionsHistory);
 
         const versionToRestore = history.find(v => v.timestamp === actualTimestamp);
         if (!versionToRestore) {
@@ -436,8 +435,7 @@ export const updateDocument = async (req, res) => {
             console.log(`[Update] Revision for: ${existingDoc.title}. New file: ${req.file.originalname}`);
 
             // 1. Archive Old File
-            let versionsHistory = [];
-            try { versionsHistory = existingDoc.versionsHistory ? JSON.parse(existingDoc.versionsHistory) : []; } catch (e) { }
+            let versionsHistory = parseJsonArraySafe(existingDoc.versionsHistory);
 
             let archivedUrl = existingDoc.url;
             if (existingDoc.url && existingDoc.url.startsWith('/uploads/')) {
@@ -509,8 +507,8 @@ export const getComments = async (req, res) => {
         // Flatten JSON attachment for frontend compatibility
         const processedComments = comments.map(c => {
             if (c.attachment) {
-                try {
-                    const att = JSON.parse(c.attachment);
+                const att = parseJsonObjectSafe(c.attachment, null);
+                if (att && att.url) {
                     return {
                         ...c,
                         attachmentUrl: att.url,
@@ -518,8 +516,6 @@ export const getComments = async (req, res) => {
                         attachmentType: att.type,
                         attachmentSize: att.size || '-'
                     };
-                } catch (e) {
-                    console.error("JSON parse error for comment attachment:", e);
                 }
             }
             return c;
@@ -560,13 +556,13 @@ export const addComment = async (req, res) => {
         // Return flattened version for immediate frontend update
         let responseComment = { ...newComment };
         if (newComment.attachment) {
-            try {
-                const att = JSON.parse(newComment.attachment);
+            const att = parseJsonObjectSafe(newComment.attachment, null);
+            if (att) {
                 responseComment.attachmentUrl = att.url;
                 responseComment.attachmentName = att.name;
                 responseComment.attachmentType = att.type;
                 responseComment.attachmentSize = att.size;
-            } catch (e) { }
+            }
         }
 
         req.app.get('io')?.emit('data:changed', { channel: 'documents' });
@@ -587,13 +583,15 @@ export const promoteCommentAttachment = async (req, res) => {
             return res.status(404).json({ error: "Comment or attachment not found" });
         }
 
-        const attachment = JSON.parse(comment.attachment);
+        const attachment = parseJsonObjectSafe(comment.attachment, null);
+        if (!attachment?.url) {
+            return res.status(400).json({ error: "Comment attachment invalid" });
+        }
         const doc = await knex('documents').where('id', docId).first();
         if (!doc) return res.status(404).json({ error: "Document not found" });
 
         // ARCHIVE CURRENT VERSION (Revision Logic)
-        let versionsHistory = [];
-        try { versionsHistory = doc.versionsHistory ? JSON.parse(doc.versionsHistory) : []; } catch (e) { }
+        let versionsHistory = parseJsonArraySafe(doc.versionsHistory);
 
         let archivedUrl = doc.url;
         if (doc.url && doc.url.startsWith('/uploads/')) {

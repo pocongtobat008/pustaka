@@ -1,5 +1,12 @@
 import { handleError } from '../utils/errorHandler.js';
 import { knex } from '../db.js';
+import { parseJsonArraySafe } from '../utils/jsonSafe.js';
+import {
+    pustakaGuideCreateSchema,
+    pustakaGuideUpdateSchema,
+    pustakaSlideCreateSchema,
+    validateRequestBody
+} from '../utils/requestValidation.js';
 
 const isAdmin = (req) => String(req.user?.role || '').toLowerCase() === 'admin';
 const isOwnerOrAdmin = (req, owner) => isAdmin(req) || (owner && req.user?.username === owner);
@@ -16,8 +23,8 @@ export const getGuides = async (req, res) => {
         // Parse JSON fields
         const parsedRows = rows.map(row => ({
             ...row,
-            allowed_depts: typeof row.allowed_depts === 'string' ? JSON.parse(row.allowed_depts || '[]') : (row.allowed_depts || []),
-            allowed_users: typeof row.allowed_users === 'string' ? JSON.parse(row.allowed_users || '[]') : (row.allowed_users || [])
+            allowed_depts: parseJsonArraySafe(row.allowed_depts),
+            allowed_users: parseJsonArraySafe(row.allowed_users)
         }));
 
         res.json(parsedRows);
@@ -39,7 +46,10 @@ export const getCategories = async (req, res) => {
 
 export const createGuide = async (req, res) => {
     try {
-        const { title, content, category, description, icon, privacy, allowed_depts, allowed_users } = req.body;
+        const data = validateRequestBody(pustakaGuideCreateSchema, req, res);
+        if (!data) return;
+
+        const { title, content, category, description, icon, privacy, allowed_depts, allowed_users } = data;
         const [id] = await knex('pustaka_guides').insert({
             title,
             category,
@@ -60,7 +70,10 @@ export const createGuide = async (req, res) => {
 export const updatePustakaGuide = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, description, category, icon, privacy, allowed_depts, allowed_users } = req.body;
+        const data = validateRequestBody(pustakaGuideUpdateSchema, req, res);
+        if (!data) return;
+
+        const { title, description, category, icon, privacy, allowed_depts, allowed_users } = data;
 
         const existing = await knex('pustaka_guides').where('id', id).first();
         if (!existing) return res.status(404).json({ error: 'Guide not found' });
@@ -117,7 +130,10 @@ export const getGuideSlides = async (req, res) => {
 
 export const createPustakaSlide = async (req, res) => {
     try {
-        const { guide_id, title, content, image_url, image, order_index } = req.body;
+        const data = validateRequestBody(pustakaSlideCreateSchema, req, res);
+        if (!data) return;
+
+        const { guide_id, title, content, image_url, image, order_index } = data;
         const [id] = await knex('pustaka_slides').insert({
             guide_id,
             title,

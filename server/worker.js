@@ -26,6 +26,7 @@ import { generateEmbedding, parseIntent, generateAnswer, vectorStore } from './a
 import { Worker } from 'bullmq';
 import { connection, USE_BULLMQ } from './utils/queue.js';
 import { io as ioClient } from 'socket.io-client';
+import { parseJsonObjectSafe } from './utils/jsonSafe.js';
 
 // Load PDF.js dynamically to ensure polyfills are applied first
 const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
@@ -380,7 +381,7 @@ async function processJob(job) {
             if (slotId && invoiceId) {
                 const row = await knex('inventory').select('box_data').where('id', slotId).first();
                 if (row) {
-                    let box = typeof row.box_data === 'string' ? JSON.parse(row.box_data) : row.box_data;
+                    let box = parseJsonObjectSafe(row.box_data, {});
                     let changed = false;
                     box.ordners?.forEach(ord => ord.invoices?.forEach(inv => {
                         if (inv.id == invoiceId) {
@@ -480,7 +481,7 @@ async function startPolling() {
                     const job = {
                         id: row.id,
                         name: row.name,
-                        data: JSON.parse(row.data || '{}'),
+                        data: parseJsonObjectSafe(row.data, {}),
                         updateProgress: async (p) => await knex('job_queue').where('id', row.id).update({ progress: p })
                     };
 

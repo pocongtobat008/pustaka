@@ -5,6 +5,15 @@ import { addOCRJob } from '../queue.js';
 import { UPLOADS_DIR } from '../config/upload.js';
 import path from 'path';
 import fs from 'fs';
+import {
+    approvalFlowCreateSchema,
+    approvalFlowUpdateSchema,
+    approvalInitiateSchema,
+    approvalActionSchema,
+    approvalUpdateSchema,
+    approvalResetStepSchema,
+    validateRequestBody
+} from '../utils/requestValidation.js';
 
 // --- Helper Functions ---
 const isAdmin = (req) => String(req.user?.role || '').toLowerCase() === 'admin';
@@ -21,7 +30,10 @@ export const getApprovalFlows = async (req, res) => {
 
 export const createApprovalFlow = async (req, res) => {
     try {
-        const { name, description, steps, visual_config, privacy, allowed_departments, allowed_users } = req.body;
+        const data = validateRequestBody(approvalFlowCreateSchema, req, res);
+        if (!data) return;
+
+        const { name, description, steps, visual_config, privacy, allowed_departments, allowed_users } = data;
         // steps is array of { username, name, nodeId } from frontend
 
         const [flowId] = await knex('approval_flows').insert({
@@ -68,18 +80,16 @@ export const getDocumentApprovals = async (req, res) => {
 
 export const initiateApproval = async (req, res) => {
     try {
+        const data = validateRequestBody(approvalInitiateSchema, req, res);
+        if (!data) return;
+
         // Handle payload from DocumentApproval.jsx
         const {
             title, description, division,
             requester_name, requester_username,
             attachment_url, attachment_name,
             steps, flow_id
-        } = req.body;
-
-        // Validation
-        if (!title || !requester_username || !steps || steps.length === 0) {
-            return res.status(400).json({ error: "Missing required fields (title, requester, steps)" });
-        }
+        } = data;
 
         // Insert into document_approvals
         const [approvalId] = await knex('document_approvals').insert({
@@ -128,8 +138,11 @@ export const initiateApproval = async (req, res) => {
 
 export const approveStep = async (req, res) => {
     try {
+        const data = validateRequestBody(approvalActionSchema, req, res);
+        if (!data) return;
+
         const { approvalId } = req.params;
-        const { username, action, note, file } = req.body; // action: 'Approve' | 'Reject'
+        const { username, action, note } = data; // action: 'Approve' | 'Reject'
 
         const approval = await knex('document_approvals').where('id', approvalId).first();
         if (!approval) return res.status(404).json({ error: "Approval not found" });
@@ -218,18 +231,16 @@ export const approveStep = async (req, res) => {
 
 export const updateApproval = async (req, res) => {
     try {
+        const data = validateRequestBody(approvalUpdateSchema, req, res);
+        if (!data) return;
+
         const { id } = req.params;
         const {
             title, description, division,
             requester_name, requester_username,
             attachment_url, attachment_name,
             steps, flow_id
-        } = req.body;
-
-        // Validation
-        if (!title || !steps || steps.length === 0) {
-            return res.status(400).json({ error: "Missing required fields (title, steps)" });
-        }
+        } = data;
 
         // Get existing approval to check if user is requester or admin
         const existing = await knex('document_approvals').where('id', id).first();
@@ -375,8 +386,11 @@ export const deleteApprovalFlow = async (req, res) => {
 
 export const updateApprovalFlow = async (req, res) => {
     try {
+        const data = validateRequestBody(approvalFlowUpdateSchema, req, res);
+        if (!data) return;
+
         const { id } = req.params;
-        const { name, description, steps, visual_config, privacy, allowed_departments, allowed_users } = req.body;
+        const { name, description, steps, visual_config, privacy, allowed_departments, allowed_users } = data;
 
         // Get existing flow to check ownership
         const existing = await knex('approval_flows').where('id', id).first();
@@ -424,8 +438,11 @@ export const updateApprovalFlow = async (req, res) => {
 
 export const resetApprovalStep = async (req, res) => {
     try {
+        const data = validateRequestBody(approvalResetStepSchema, req, res);
+        if (!data) return;
+
         const { id } = req.params;
-        const { stepIndex } = req.body;
+        const { stepIndex, username } = data;
 
         const approval = await knex('document_approvals').where('id', id).first();
         if (!approval) return res.status(404).json({ error: "Approval not found" });
@@ -448,7 +465,7 @@ export const resetApprovalStep = async (req, res) => {
                 status: 'Pending'
             });
 
-        await systemLog(req.body.username || 'System', "Reset Step", `Reset approval ${id} from step ${stepIndex}`);
+        await systemLog(username || 'System', "Reset Step", `Reset approval ${id} from step ${stepIndex}`);
         res.json({ success: true });
     } catch (e) {
         console.error("Reset Approval Step Error:", e);

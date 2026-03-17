@@ -1,6 +1,7 @@
 import { handleError } from '../utils/errorHandler.js';
 import { knex } from '../db.js';
 import { JOB_STATUS } from '../constants/status.js';
+import { parseJsonObjectSafe } from '../utils/jsonSafe.js';
 
 // --- Helper Functions ---
 const isAdmin = (req) => String(req.user?.role || '').toLowerCase() === 'admin';
@@ -32,7 +33,7 @@ export const getOCRStatus = async (req, res) => {
             id: j.id,
             status: j.status,
             progress: j.progress || 0,
-            data: typeof j.data === 'string' ? JSON.parse(j.data) : j.data,
+            data: parseJsonObjectSafe(j.data, {}),
             created_at: j.created_at
         }));
 
@@ -54,12 +55,12 @@ export const getOCRQueue = async (req, res) => {
 
         const active = jobs.filter(j => j.status === JOB_STATUS.ACTIVE).map(j => ({
             ...j,
-            data: typeof j.data === 'string' ? JSON.parse(j.data) : j.data
+            data: parseJsonObjectSafe(j.data, {})
         }));
 
         const waiting = jobs.filter(j => j.status === JOB_STATUS.WAITING).map(j => ({
             ...j,
-            data: typeof j.data === 'string' ? JSON.parse(j.data) : j.data
+            data: parseJsonObjectSafe(j.data, {})
         }));
 
         res.json({

@@ -1,6 +1,14 @@
 import { handleError } from '../utils/errorHandler.js';
 import { knex } from '../db.js';
 import { systemLog } from '../utils/logger.js';
+import { parseJsonArraySafe } from '../utils/jsonSafe.js';
+import {
+    createBoxSchema,
+    updateInventoryItemSchema,
+    createExternalItemSchema,
+    moveInventoryItemSchema,
+    validateRequestBody
+} from '../utils/requestValidation.js';
 
 export const getInventory = async (req, res) => {
     try {
@@ -34,7 +42,10 @@ export const getBoxes = async (req, res) => {
 
 export const createBox = async (req, res) => {
     try {
-        const { box_id, description, location } = req.body;
+        const data = validateRequestBody(createBoxSchema, req, res);
+        if (!data) return;
+
+        const { box_id, description, location } = data;
         const [id] = await knex('boxes').insert({
             box_id,
             description,
@@ -51,7 +62,10 @@ export const createBox = async (req, res) => {
 export const updateInventoryItem = async (req, res) => {
     try {
         const { id } = req.params;
-        const { status, box_data, history, lastUpdated } = req.body;
+        const data = validateRequestBody(updateInventoryItemSchema, req, res);
+        if (!data) return;
+
+        const { status, box_data, history, lastUpdated } = data;
 
         const updateData = {
             status,
@@ -106,7 +120,10 @@ export const getExternalInventory = async (req, res) => {
 
 export const createExternalItem = async (req, res) => {
     try {
-        const { boxId, destination, sentDate, sender, boxData, history } = req.body;
+        const data = validateRequestBody(createExternalItemSchema, req, res);
+        if (!data) return;
+
+        const { boxId, destination, sentDate, sender, boxData, history } = data;
         const [id] = await knex('external_items').insert({
             boxId,
             destination,
@@ -137,7 +154,10 @@ export const deleteExternalItem = async (req, res) => {
 
 export const moveInventoryItem = async (req, res) => {
     try {
-        const { sourceId, targetId, user } = req.body;
+        const data = validateRequestBody(moveInventoryItemSchema, req, res);
+        if (!data) return;
+
+        const { sourceId, targetId, user } = data;
 
         if (!sourceId || !targetId) {
             return res.status(400).json({ error: "Source ID and Target ID are required." });
@@ -161,7 +181,7 @@ export const moveInventoryItem = async (req, res) => {
         // 2. Transact the move
         await knex.transaction(async (trx) => {
             // Update target
-            const targetHistory = typeof targetSlot.history === 'string' ? JSON.parse(targetSlot.history) : (targetSlot.history || []);
+            const targetHistory = parseJsonArraySafe(targetSlot.history);
             const sourceBoxData = sourceSlot.box_data; // Keep raw string or object
 
             await trx('inventory').where('id', targetId).update({
@@ -175,7 +195,7 @@ export const moveInventoryItem = async (req, res) => {
             });
 
             // Update source to empty
-            const sourceHistory = typeof sourceSlot.history === 'string' ? JSON.parse(sourceSlot.history) : (sourceSlot.history || []);
+            const sourceHistory = parseJsonArraySafe(sourceSlot.history);
             await trx('inventory').where('id', sourceId).update({
                 status: 'EMPTY',
                 box_data: null,
