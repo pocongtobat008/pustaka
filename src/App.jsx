@@ -114,6 +114,7 @@ import CommandPalette from './components/ui/CommandPalette';
 import AiChatAssistant from './components/AiChatAssistant';
 import OcrLanes from './components/OcrLanes';
 import NotificationBell from './components/NotificationBell';
+import { useLanguage } from './contexts/LanguageContext';
 
 
 // --- API URL (Keep for local explicit use if needed, but db uses it internally) ---
@@ -134,6 +135,111 @@ const API_BASE = API_URL;
 export default function App() {
   // Toast Notification System
   const { toasts, toast, removeToast, updateToast } = useToast();
+  const { language } = useLanguage();
+
+  const tabTextMap = useMemo(() => {
+    if (language === 'en') {
+      return {
+        dashboard: { title: 'Executive Dashboard', subtitle: 'Dashboard' },
+        inventory: { title: 'Rack Management', subtitle: 'Main Archive Warehouse - Floor 1' },
+        documents: { title: 'Digital Documents', subtitle: 'Secure Digital Storage' },
+        'tax-monitoring': { title: 'Audit Monitoring', subtitle: 'Tax Audit Monitoring System' },
+        'tax-summary': { title: 'Tax Compliance', subtitle: 'Compliance & Payment Summary' },
+        'tax-calculation': { title: 'Tax Calculation', subtitle: 'Tax Calculation & Reporting' },
+        master: { title: 'Master Data', subtitle: 'System Settings' },
+        approvals: { title: 'Document Approval', subtitle: 'Multi-level Document Approval System' },
+        pustaka: { title: 'Knowledge Library', subtitle: 'Learning Center & Work Guidelines' },
+        flow: { title: 'SOP List Menu', subtitle: 'Standard Operating Procedure' },
+        'job-due-date': { title: 'Job Due Date Monitoring', subtitle: 'Task Deadline & Issue Monitoring' },
+      };
+    }
+
+    return {
+      dashboard: { title: 'Dashboard Ikhtisar', subtitle: 'Dashboard' },
+      inventory: { title: 'Manajemen Rak', subtitle: 'Gudang Arsip Utama - Lantai 1' },
+      documents: { title: 'Dokumen Digital', subtitle: 'Secure Digital Storage' },
+      'tax-monitoring': { title: 'Monitoring Pemeriksaan', subtitle: 'Sistem Monitoring Pemeriksaan Pajak' },
+      'tax-summary': { title: 'Kepatuhan Pajak', subtitle: 'Ringkasan Kepatuhan & Pembayaran' },
+      'tax-calculation': { title: 'Kalkulasi Pajak', subtitle: 'Kalkulasi & Pelaporan Pajak' },
+      master: { title: 'Master Data', subtitle: 'Pengaturan Sistem' },
+      approvals: { title: 'Document Approval', subtitle: 'Sistem Persetujuan Dokumen Berjenjang' },
+      pustaka: { title: 'Pustaka Pengetahuan', subtitle: 'Pusat Edukasi & Panduan Kerja' },
+      flow: { title: 'SOP List Menu', subtitle: 'Standar Operasional Prosedur' },
+      'job-due-date': { title: 'Job Due Date Monitoring', subtitle: 'Pemantauan Tenggat Waktu & Issue Kerja' },
+    };
+  }, [language]);
+
+  const commandTextMap = useMemo(() => {
+    if (language === 'en') {
+      return {
+        groups: {
+          general: 'General',
+          documents: 'Documents',
+          tax: 'Tax',
+          system: 'System',
+        },
+        items: {
+          dashboard: { label: 'Dashboard', description: 'System overview' },
+          'job-due-date': { label: 'My Job', description: 'Issue and due date monitoring' },
+          pustaka: { label: 'Manual Book', description: 'Work guidelines and knowledge center' },
+          flow: { label: 'SOP Flow', description: 'Interactive SOP flow' },
+          inventory: { label: 'Inventory', description: 'Internal and external archive warehouse' },
+          documents: { label: 'Documents', description: 'Digital documents' },
+          approvals: { label: 'Approvals', description: 'Document approvals' },
+          'tax-monitoring': { label: 'Tax Monitoring', description: 'Tax audit monitoring' },
+          'tax-calculation': { label: 'Tax Calculation', description: 'Tax calculations' },
+          'tax-summary': { label: 'Tax Summary', description: 'Tax compliance summary' },
+          master: { label: 'Master Data', description: 'Users, roles, and reference data settings' },
+          profile: { label: 'Profile', description: 'User profile' },
+        },
+        actions: {
+          upload: { label: 'Upload Document', description: 'Open upload document modal' },
+          ocrQueue: { label: 'View OCR Queue', description: 'Open OCR queue status' },
+          themeLight: 'Switch to Light Mode',
+          themeDark: 'Switch to Dark Mode',
+          themeDescription: 'Switch app theme',
+        },
+        labels: {
+          loading: 'Loading Database...',
+          infoMenu: 'Menu Info',
+        },
+      };
+    }
+
+    return {
+      groups: {
+        general: 'General',
+        documents: 'Documents',
+        tax: 'Tax',
+        system: 'System',
+      },
+      items: {
+        dashboard: { label: 'Dashboard', description: 'Ikhtisar sistem' },
+        'job-due-date': { label: 'My Job', description: 'Monitoring issue dan due date' },
+        pustaka: { label: 'Manual Book', description: 'Panduan kerja dan pengetahuan' },
+        flow: { label: 'SOP Flow', description: 'Alur SOP interaktif' },
+        inventory: { label: 'Inventory', description: 'Gudang arsip internal dan eksternal' },
+        documents: { label: 'Documents', description: 'Dokumen digital' },
+        approvals: { label: 'Approvals', description: 'Persetujuan dokumen' },
+        'tax-monitoring': { label: 'Tax Monitoring', description: 'Monitoring pemeriksaan pajak' },
+        'tax-calculation': { label: 'Tax Calculation', description: 'Perhitungan pajak' },
+        'tax-summary': { label: 'Tax Summary', description: 'Ringkasan kepatuhan pajak' },
+        master: { label: 'Master Data', description: 'Pengaturan user, role, dan data referensi' },
+        profile: { label: 'Profile', description: 'Profil pengguna' },
+      },
+      actions: {
+        upload: { label: 'Upload Dokumen', description: 'Buka modal upload dokumen' },
+        ocrQueue: { label: 'Lihat OCR Queue', description: 'Buka status antrian OCR' },
+        themeLight: 'Switch ke Light Mode',
+        themeDark: 'Switch ke Dark Mode',
+        themeDescription: 'Ganti tema tampilan',
+      },
+      labels: {
+        loading: 'Memuat Database...',
+        infoMenu: 'Info Menu',
+      },
+    };
+  }, [language]);
 
   // --- ZUSTAND GLOBAL STORES ---
   const {
@@ -2944,32 +3050,32 @@ export default function App() {
 
   const commandItems = useMemo(() => {
     const items = [
-      { id: 'dashboard', tab: 'dashboard', label: 'Dashboard', description: 'Ikhtisar sistem', group: 'General', icon: LayoutDashboard, keywords: 'home statistik ringkasan' },
-      { id: 'job-due-date', tab: 'job-due-date', label: 'My Job', description: 'Monitoring issue dan due date', group: 'General', icon: ClipboardCheck, keywords: 'task issue deadline' },
-      { id: 'pustaka', tab: 'pustaka', label: 'Manual Book', description: 'Panduan kerja dan pengetahuan', group: 'General', icon: BookOpen, keywords: 'wiki guide docs' },
-      { id: 'flow', tab: 'flow', label: 'SOP Flow', description: 'Alur SOP interaktif', group: 'General', icon: FileCheck, keywords: 'sop workflow' },
-      { id: 'inventory', tab: 'inventory', label: 'Inventory', description: 'Gudang arsip internal dan eksternal', group: 'Documents', icon: Grid3x3, keywords: 'rak box warehouse' },
-      { id: 'documents', tab: 'documents', label: 'Documents', description: 'Dokumen digital', group: 'Documents', icon: FileStack, keywords: 'files upload folder' },
-      { id: 'approvals', tab: 'approvals', label: 'Approvals', description: 'Persetujuan dokumen', group: 'Documents', icon: ShieldCheck, keywords: 'approval workflow review' },
-      { id: 'tax-monitoring', tab: 'tax-monitoring', label: 'Tax Monitoring', description: 'Monitoring pemeriksaan pajak', group: 'Tax', icon: Shield, keywords: 'audit pemeriksaan pajak' },
-      { id: 'tax-calculation', tab: 'tax-calculation', label: 'Tax Calculation', description: 'Perhitungan pajak', group: 'Tax', icon: Calculator, keywords: 'ppn pph hitung' },
-      { id: 'tax-summary', tab: 'tax-summary', label: 'Tax Summary', description: 'Ringkasan kepatuhan pajak', group: 'Tax', icon: PieChart, keywords: 'summary compliance reporting' },
-      { id: 'master', tab: 'master', label: 'Master Data', description: 'Pengaturan user, role, dan data referensi', group: 'System', icon: Settings, keywords: 'admin settings role' },
-      { id: 'profile', tab: 'profile', label: 'Profile', description: 'Profil pengguna', group: 'System', icon: User, keywords: 'akun user' }
+      { id: 'dashboard', tab: 'dashboard', label: commandTextMap.items.dashboard.label, description: commandTextMap.items.dashboard.description, group: commandTextMap.groups.general, icon: LayoutDashboard, keywords: 'home statistik ringkasan' },
+      { id: 'job-due-date', tab: 'job-due-date', label: commandTextMap.items['job-due-date'].label, description: commandTextMap.items['job-due-date'].description, group: commandTextMap.groups.general, icon: ClipboardCheck, keywords: 'task issue deadline' },
+      { id: 'pustaka', tab: 'pustaka', label: commandTextMap.items.pustaka.label, description: commandTextMap.items.pustaka.description, group: commandTextMap.groups.general, icon: BookOpen, keywords: 'wiki guide docs' },
+      { id: 'flow', tab: 'flow', label: commandTextMap.items.flow.label, description: commandTextMap.items.flow.description, group: commandTextMap.groups.general, icon: FileCheck, keywords: 'sop workflow' },
+      { id: 'inventory', tab: 'inventory', label: commandTextMap.items.inventory.label, description: commandTextMap.items.inventory.description, group: commandTextMap.groups.documents, icon: Grid3x3, keywords: 'rak box warehouse' },
+      { id: 'documents', tab: 'documents', label: commandTextMap.items.documents.label, description: commandTextMap.items.documents.description, group: commandTextMap.groups.documents, icon: FileStack, keywords: 'files upload folder' },
+      { id: 'approvals', tab: 'approvals', label: commandTextMap.items.approvals.label, description: commandTextMap.items.approvals.description, group: commandTextMap.groups.documents, icon: ShieldCheck, keywords: 'approval workflow review' },
+      { id: 'tax-monitoring', tab: 'tax-monitoring', label: commandTextMap.items['tax-monitoring'].label, description: commandTextMap.items['tax-monitoring'].description, group: commandTextMap.groups.tax, icon: Shield, keywords: 'audit pemeriksaan pajak' },
+      { id: 'tax-calculation', tab: 'tax-calculation', label: commandTextMap.items['tax-calculation'].label, description: commandTextMap.items['tax-calculation'].description, group: commandTextMap.groups.tax, icon: Calculator, keywords: 'ppn pph hitung' },
+      { id: 'tax-summary', tab: 'tax-summary', label: commandTextMap.items['tax-summary'].label, description: commandTextMap.items['tax-summary'].description, group: commandTextMap.groups.tax, icon: PieChart, keywords: 'summary compliance reporting' },
+      { id: 'master', tab: 'master', label: commandTextMap.items.master.label, description: commandTextMap.items.master.description, group: commandTextMap.groups.system, icon: Settings, keywords: 'admin settings role' },
+      { id: 'profile', tab: 'profile', label: commandTextMap.items.profile.label, description: commandTextMap.items.profile.description, group: commandTextMap.groups.system, icon: User, keywords: 'akun user' }
     ];
 
     return items.filter((item) => {
       if (item.id === 'profile') return true;
       return hasPermission(item.id, 'view');
     });
-  }, [hasPermission]);
+  }, [hasPermission, commandTextMap]);
 
   const commandQuickActions = useMemo(() => {
     const actions = [
       {
         id: 'quick-upload',
-        label: 'Upload Dokumen',
-        description: 'Buka modal upload dokumen',
+        label: commandTextMap.actions.upload.label,
+        description: commandTextMap.actions.upload.description,
         icon: UploadCloud,
         keywords: 'unggah upload file dokumen',
         visible: hasPermission('documents', 'create'),
@@ -2980,8 +3086,8 @@ export default function App() {
       },
       {
         id: 'quick-ocr-queue',
-        label: 'Lihat OCR Queue',
-        description: 'Buka status antrian OCR',
+        label: commandTextMap.actions.ocrQueue.label,
+        description: commandTextMap.actions.ocrQueue.description,
         icon: ScanLine,
         keywords: 'ocr queue status',
         visible: true,
@@ -2992,8 +3098,8 @@ export default function App() {
       },
       {
         id: 'quick-theme',
-        label: isDarkMode ? 'Switch ke Light Mode' : 'Switch ke Dark Mode',
-        description: 'Ganti tema tampilan',
+        label: isDarkMode ? commandTextMap.actions.themeLight : commandTextMap.actions.themeDark,
+        description: commandTextMap.actions.themeDescription,
         icon: isDarkMode ? Sun : Moon,
         keywords: 'theme dark light mode',
         visible: true,
@@ -3002,7 +3108,7 @@ export default function App() {
     ];
 
     return actions.filter((action) => action.visible);
-  }, [hasPermission, isDarkMode, setIsDarkMode, setIsModalOpen, setModalTab]);
+  }, [hasPermission, isDarkMode, setIsDarkMode, setIsModalOpen, setModalTab, commandTextMap]);
 
   const isPopupInteractionLocked = isModalOpen || showRestoreForm || showExternalForm || showMenuLandingPopup || isFlowModalOpen;
 
@@ -3013,7 +3119,7 @@ export default function App() {
       <div className="h-screen w-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-gray-500 dark:text-slate-400 font-medium">Memuat Database...</p>
+          <p className="text-gray-500 dark:text-slate-400 font-medium">{commandTextMap.labels.loading}</p>
         </div>
       </div>
     );
@@ -3071,30 +3177,10 @@ export default function App() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
-                {activeTab === 'dashboard' ? 'Dashboard Ikhtisar' :
-                  activeTab === 'inventory' ? 'Manajemen Rak' :
-                    activeTab === 'documents' ? 'Dokumen Digital' :
-                      activeTab === 'tax-monitoring' ? 'Monitoring Pemeriksaan' :
-                        activeTab === 'tax-summary' ? 'Kepatuhan Pajak' :
-                          activeTab === 'tax-calculation' ? 'Kalkulasi Pajak' :
-                            activeTab === 'master' ? 'Master Data' :
-                              activeTab === 'approvals' ? 'Document Approval' :
-                                activeTab === 'pustaka' ? 'Pustaka Pengetahuan' :
-                                  activeTab === 'flow' ? 'SOP List Menu' : 
-                                    activeTab === 'job-due-date' ? 'Job Due Date Monitoring' : 'Digital Vault'}
+                {tabTextMap[activeTab]?.title || 'Digital Vault'}
               </h1>
               <p className="text-gray-500 dark:text-slate-400">
-                {activeTab === 'dashboard' ? 'Dashboard' :
-                  activeTab === 'inventory' ? 'Gudang Arsip Utama â€¢ Lantai 1' :
-                    activeTab === 'documents' ? 'Secure Digital Storage' :
-                      activeTab === 'tax-monitoring' ? 'Sistem Monitoring Pemeriksaan Pajak' :
-                        activeTab === 'tax-summary' ? 'Ringkasan Kepatuhan & Pembayaran' :
-                          activeTab === 'tax-calculation' ? 'Kalkulasi & Pelaporan Pajak' :
-                            activeTab === 'master' ? 'Pengaturan Sistem' :
-                              activeTab === 'approvals' ? 'Sistem Persetujuan Dokumen Berjenjang' :
-                                activeTab === 'pustaka' ? 'Pusat Edukasi & Panduan Kerja' :
-                                  activeTab === 'flow' ? 'Standar Operasional Prosedur' : 
-                                    activeTab === 'job-due-date' ? 'Pemantauan Tenggat Waktu & Issue Kerja' : 'Gudang Arsip Utama'}
+                {tabTextMap[activeTab]?.subtitle || (language === 'en' ? 'Main Archive Warehouse' : 'Gudang Arsip Utama')}
               </p>
             </div>
 
@@ -3120,7 +3206,7 @@ export default function App() {
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-slate-900 to-indigo-700 text-white text-xs font-black uppercase tracking-[0.14em] shadow-lg hover:opacity-95 transition-opacity"
               >
                 <Sparkles size={14} />
-                Info Menu
+                {commandTextMap.labels.infoMenu}
               </button>
             </div>
 
@@ -3351,6 +3437,7 @@ export default function App() {
               onOpenVision={handleOpenLanding}
               isOpen={showMenuLandingPopup}
               onClose={() => setShowMenuLandingPopup(false)}
+              language={language}
             />
           )}
 

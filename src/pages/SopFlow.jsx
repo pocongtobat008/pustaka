@@ -6,8 +6,95 @@ import { parseApiError } from '../utils/errorHandler';
 import Modal from '../components/common/Modal';
 import WorkflowDesigner from '../components/workflow/WorkflowDesigner';
 import WorkflowViewer from '../components/workflow/WorkflowViewer';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function SopFlow({ currentUser, hasPermission, users = [], departments = [], syncSopFolder }) {
+    const { language } = useLanguage();
+    const isEnglish = language === 'en';
+    const text = isEnglish
+        ? {
+            requiredTitle: 'SOP title is required!',
+            confirmDelete: 'Delete this SOP?',
+            searchPlaceholder: 'Search work standards...',
+            createFlow: 'Create SOP Flow',
+            cards: {
+                total: 'Total SOP',
+                public: 'Public SOP',
+                private: 'Private SOP',
+                restricted: 'Restricted',
+            },
+            privacyBadge: {
+                public: 'PUBLIC',
+                private: 'PRIVATE',
+                department: 'DEPARTMENT',
+                user: 'SELECTED USERS',
+            },
+            editFlow: 'Edit Flow',
+            deleteSop: 'Delete SOP',
+            modalCreateTitle: 'Create Work Standard (SOP)',
+            modalEditPrefix: 'Edit SOP:',
+            sopTitle: 'SOP Title',
+            sopTitlePlaceholder: 'Example: Invoice Archiving Flow',
+            category: 'Category',
+            privacy: 'Privacy',
+            privacyOptions: {
+                public: 'Public',
+                private: 'Private',
+                department: 'Department',
+                specific_users: 'Selected Users',
+            },
+            edgeColor: 'Default New Line Color',
+            edgeHint: 'Click line in canvas to change per-line color.',
+            allowedDepartments: 'Allowed Departments',
+            allowedUsers: 'Allowed Users',
+            detailTitle: 'SOP Detail:',
+            defaultCategory: 'Operational',
+            steps: 'Steps',
+            viewerHint: 'Click approver block to view instruction details & attachments',
+            noVisualization: 'Visualization not available',
+        }
+        : {
+            requiredTitle: 'Judul SOP wajib diisi!',
+            confirmDelete: 'Hapus SOP ini?',
+            searchPlaceholder: 'Cari standarisasi kerja...',
+            createFlow: 'Buat Flow SOP',
+            cards: {
+                total: 'Total SOP',
+                public: 'SOP Publik',
+                private: 'SOP Pribadi',
+                restricted: 'Terbatas',
+            },
+            privacyBadge: {
+                public: 'PUBLIK',
+                private: 'PRIBADI',
+                department: 'DEPARTEMEN',
+                user: 'USER PILIHAN',
+            },
+            editFlow: 'Edit Flow',
+            deleteSop: 'Hapus SOP',
+            modalCreateTitle: 'Buat Standarisasi Kerja (SOP)',
+            modalEditPrefix: 'Edit SOP:',
+            sopTitle: 'Judul SOP',
+            sopTitlePlaceholder: 'Contoh: Alur Pengarsipan Invoice',
+            category: 'Kategori',
+            privacy: 'Privacy',
+            privacyOptions: {
+                public: 'Publik',
+                private: 'Pribadi',
+                department: 'Departemen',
+                specific_users: 'User Pilihan',
+            },
+            edgeColor: 'Warna Default Garis Baru',
+            edgeHint: 'Klik garis di canvas untuk ubah warna per-line.',
+            allowedDepartments: 'Departemen yang Diizinkan',
+            allowedUsers: 'User yang Diizinkan',
+            detailTitle: 'Detail SOP:',
+            defaultCategory: 'Operasional',
+            steps: 'Langkah',
+            viewerHint: 'Klik blok approver untuk melihat detail instruksi & lampiran',
+            noVisualization: 'Visualisasi tidak tersedia',
+        };
+
     const [flows, setFlows] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingFlow, setEditingFlow] = useState(null);
@@ -58,7 +145,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
     }, []);
 
     const handleSaveVisual = async (updatedForm) => {
-        if (!updatedForm.title) return alert("Judul SOP wajib diisi!");
+        if (!updatedForm.title) return alert(text.requiredTitle);
 
         const oldTitle = flows.find(f => f.id === editingFlow?.id)?.title;
         await syncSopFolder(updatedForm.title, oldTitle);
@@ -109,7 +196,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
             e.preventDefault();
             e.stopPropagation();
         }
-        if (!window.confirm("Hapus SOP ini?")) return;
+        if (!window.confirm(text.confirmDelete)) return;
         try {
             await sopService.deleteFlow(id);
             fetchFlows();
@@ -137,7 +224,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                     <input
                         className="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white"
-                        placeholder="Cari standarisasi kerja..."
+                        placeholder={text.searchPlaceholder}
                         value={searchQuery}
                         onChange={e => setSearchQuery(e.target.value)}
                     />
@@ -161,7 +248,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                         }}
                         className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold flex items-center gap-2 hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-500/20"
                     >
-                        <Plus size={18} /> Buat Flow SOP
+                        <Plus size={18} /> {text.createFlow}
                     </button>
                 )}
             </div>
@@ -169,10 +256,10 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
             {/* SUMMARY CARDS */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-in slide-in-from-bottom-4 duration-700">
                 {[
-                    { label: 'Total SOP', value: stats.total, icon: GitBranch, bg: 'bg-indigo-50', darkBg: 'dark:bg-indigo-900/30', text: 'text-indigo-600', border: 'border-indigo-100' },
-                    { label: 'SOP Publik', value: stats.public, icon: Globe, bg: 'bg-emerald-50', darkBg: 'dark:bg-emerald-900/30', text: 'text-emerald-600', border: 'border-emerald-100' },
-                    { label: 'SOP Pribadi', value: stats.private, icon: Lock, bg: 'bg-orange-50', darkBg: 'dark:bg-orange-900/30', text: 'text-orange-600', border: 'border-orange-100' },
-                    { label: 'Terbatas', value: stats.restricted, icon: Shield, bg: 'bg-blue-50', darkBg: 'dark:bg-blue-900/30', text: 'text-blue-600', border: 'border-blue-100' }
+                    { label: text.cards.total, value: stats.total, icon: GitBranch, bg: 'bg-indigo-50', darkBg: 'dark:bg-indigo-900/30', text: 'text-indigo-600', border: 'border-indigo-100' },
+                    { label: text.cards.public, value: stats.public, icon: Globe, bg: 'bg-emerald-50', darkBg: 'dark:bg-emerald-900/30', text: 'text-emerald-600', border: 'border-emerald-100' },
+                    { label: text.cards.private, value: stats.private, icon: Lock, bg: 'bg-orange-50', darkBg: 'dark:bg-orange-900/30', text: 'text-orange-600', border: 'border-orange-100' },
+                    { label: text.cards.restricted, value: stats.restricted, icon: Shield, bg: 'bg-blue-50', darkBg: 'dark:bg-blue-900/30', text: 'text-blue-600', border: 'border-blue-100' }
                 ].map((stat, idx) => (
                     <div key={idx} className={`bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl p-4 rounded-[2rem] border ${stat.border} dark:border-slate-800/50 shadow-sm flex items-center gap-4 transition-all hover:shadow-xl hover:shadow-indigo-500/5 hover:-translate-y-1 group`}>
                         <div className={`w-12 h-12 rounded-2xl ${stat.bg} ${stat.darkBg} flex items-center justify-center ${stat.text} transform transition-transform group-hover:rotate-12`}>
@@ -205,9 +292,9 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                                             flow.privacy_type === 'department' ? 'bg-blue-100 text-blue-700' :
                                                 'bg-amber-100 text-amber-700'
                                         }`}>
-                                        {flow.privacy_type === 'public' ? 'PUBLIK' :
-                                            flow.privacy_type === 'private' ? 'PRIBADI' :
-                                                flow.privacy_type === 'department' ? 'DEPARTEMEN' : 'USER PILIHAN'}
+                                        {flow.privacy_type === 'public' ? text.privacyBadge.public :
+                                            flow.privacy_type === 'private' ? text.privacyBadge.private :
+                                                flow.privacy_type === 'department' ? text.privacyBadge.department : text.privacyBadge.user}
                                     </span>
                                 </div>
                             </div>
@@ -237,7 +324,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                                     }}
                                     className="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-indigo-500 transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20 active:scale-95"
                                 >
-                                    <Edit3 size={16} /> Edit Flow
+                                    <Edit3 size={16} /> {text.editFlow}
                             </button>
                             )}
                             {hasPermission('flow', 'delete') && (
@@ -245,7 +332,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                                     type="button"
                                     onClick={(e) => handleDelete(e, flow.id)}
                                     className="px-4 py-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-100 transition-all border border-red-100 dark:border-red-900/30 active:scale-95"
-                                    title="Hapus SOP"
+                                    title={text.deleteSop}
                                 >
                                     <Trash2 size={18} />
                                 </button>
@@ -259,47 +346,47 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
             <Modal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                title={editingFlow ? `Edit SOP: ${form.title}` : "Buat Standarisasi Kerja (SOP)"}
+                title={editingFlow ? `${text.modalEditPrefix} ${form.title}` : text.modalCreateTitle}
                 size="max-w-7xl"
                 noPadding
             >
                 <div className="flex h-full min-h-0 flex-col">
                     <div className="p-6 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div className="space-y-2 lg:col-span-1">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Judul SOP</label>
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.sopTitle}</label>
                             <input
                                 className="w-full px-5 py-3 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-indigo-500 rounded-2xl outline-none dark:text-white font-black"
-                                placeholder="Contoh: Alur Pengarsipan Invoice"
+                                placeholder={text.sopTitlePlaceholder}
                                 value={form.title}
                                 onChange={e => setForm({ ...form, title: e.target.value })}
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Kategori</label>
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.category}</label>
                             <select
                                 className="w-full px-5 py-3 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-indigo-500 rounded-2xl outline-none dark:text-white font-bold appearance-none"
                                 value={form.category}
                                 onChange={e => setForm({ ...form, category: e.target.value })}
                             >
-                                <option>Operasional</option><option>Finance</option><option>HR</option><option>IT</option>
+                                <option>{text.defaultCategory}</option><option>Finance</option><option>HR</option><option>IT</option>
                             </select>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Privacy</label>
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.privacy}</label>
                             <select
                                 className="w-full px-5 py-3 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-indigo-500 rounded-2xl outline-none dark:text-white font-bold appearance-none"
                                 value={form.privacy_type}
                                 onChange={e => setForm({ ...form, privacy_type: e.target.value })}
                             >
-                                <option value="public">Publik</option>
-                                <option value="private">Pribadi</option>
-                                <option value="department">Departemen</option>
-                                <option value="specific_users">User Pilihan</option>
+                                <option value="public">{text.privacyOptions.public}</option>
+                                <option value="private">{text.privacyOptions.private}</option>
+                                <option value="department">{text.privacyOptions.department}</option>
+                                <option value="specific_users">{text.privacyOptions.specific_users}</option>
                             </select>
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Warna Default Garis Baru</label>
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.edgeColor}</label>
                             <div className="flex gap-2 p-1.5 bg-slate-50 dark:bg-slate-800 rounded-2xl border-2 border-transparent h-[52px] items-center justify-around">
                                 {[
                                     { name: 'Indigo', hex: '#6366f1' },
@@ -317,12 +404,12 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                                     />
                                 ))}
                             </div>
-                            <p className="text-[10px] text-slate-400 ml-1">Klik garis di canvas untuk ubah warna per-line.</p>
+                            <p className="text-[10px] text-slate-400 ml-1">{text.edgeHint}</p>
                         </div>
 
                         {form.privacy_type === 'department' && (
                             <div className="lg:col-span-4 space-y-2 animate-in fade-in slide-in-from-top-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Departemen yang Diizinkan</label>
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.allowedDepartments}</label>
                                 <div className="flex flex-wrap gap-2 p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border-2 border-transparent">
                                     {(departments || []).map(dept => {
                                         const isSelected = (form.allowed_departments || []).includes(dept.name);
@@ -351,7 +438,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
 
                         {form.privacy_type === 'specific_users' && (
                             <div className="lg:col-span-4 space-y-2 animate-in fade-in slide-in-from-top-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">User yang Diizinkan</label>
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.allowedUsers}</label>
                                 <div className="flex flex-wrap gap-2 p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border-2 border-transparent">
                                     {(users || []).map(user => {
                                         const isSelected = (form.allowed_users || []).includes(user.username);
@@ -410,7 +497,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
             <Modal
                 isOpen={!!selectedFlow}
                 onClose={() => setSelectedFlow(null)}
-                title={`Detail SOP: ${selectedFlow?.title}`}
+                title={`${text.detailTitle} ${selectedFlow?.title}`}
                 size="max-w-6xl"
                 noPadding
             >
@@ -424,15 +511,15 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                             </div>
                             <div className="flex items-center gap-2">
                                 <span className="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 rounded-lg text-[10px] font-black uppercase">
-                                    {selectedFlow?.category || 'Operasional'}
+                                    {selectedFlow?.category || text.defaultCategory}
                                 </span>
                                 <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-lg text-[10px] font-bold">
-                                    {selectedFlow?.steps?.length || 0} Langkah
+                                    {selectedFlow?.steps?.length || 0} {text.steps}
                                 </span>
                             </div>
                         </div>
                         <p className="text-[10px] text-slate-400 mt-3 font-bold flex items-center gap-1">
-                            💡 Klik blok approver untuk melihat detail instruksi & lampiran
+                            💡 {text.viewerHint}
                         </p>
                     </div>
 
@@ -479,7 +566,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                         })() : (
                             <div className="flex flex-col items-center justify-center h-full text-slate-400">
                                 <Info size={48} className="mb-4 opacity-20" />
-                                <p className="text-sm font-bold uppercase tracking-widest">Visualisasi tidak tersedia</p>
+                                <p className="text-sm font-bold uppercase tracking-widest">{text.noVisualization}</p>
                             </div>
                         )}
                     </div>

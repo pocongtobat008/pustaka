@@ -9,6 +9,7 @@ import WarehouseMap from '../components/WarehouseMap';
 import TaxAnalytics from '../components/TaxAnalytics';
 import { API_URL } from '../services/database';
 import { parseApiError } from '../utils/errorHandler';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Dashboard({
     stats: propStats,
@@ -34,6 +35,151 @@ export default function Dashboard({
     ocrStats = {},
     inventory = [] // Prop baru
 }) {
+    // Language Context
+    const { language } = useLanguage();
+    const isEnglish = language === 'en';
+
+    // Dashboard Translations
+    const text = isEnglish
+        ? {
+            greetingMorning: 'Good Morning',
+            greetingSoon: 'Good Afternoon',
+            greetingEvening: 'Good Evening',
+            greetingNight: 'Good Night',
+            welcome: 'Welcome back to ',
+            makeProductive: "Let's make your day more productive!",
+            visionSystem: 'System Vision',
+            aiSemanticSearch: 'AI Semantic Search',
+            searchPlaceholder: "Search anything (examples: 'File management SOP', 'Tax notes last month', 'Pending approval')...",
+            resetSearch: 'Reset Search',
+            semanticAnalysis: 'Semantic Analysis Results',
+            beta: 'Beta',
+            systemData: 'System Data',
+            metadata: 'Metadata',
+            viewContext: 'View Context',
+            preview: 'Preview',
+            download: 'Download',
+            databaseWp: 'WP Database',
+            pemeriksaan: 'Audit',
+            diskusi: 'Discussion',
+            approval: 'Approval',
+            pustaka: 'Knowledge Base',
+            storageCenter: 'Storage Command Center',
+            storageDesc: 'Control archive capacity and speed up module navigation.',
+            live: 'Live',
+            occupancy: 'Occupancy',
+            usedSlots: 'Used Slots',
+            externalBox: 'External Box',
+            available: 'Available',
+            openInventory: 'Open Inventory',
+            viewDocuments: 'View Documents',
+            taxSummaryTab: 'Tax Summary',
+            taxControl: 'Tax Control',
+            taxControlDesc: 'Audit status and compliance reporting.',
+            auditRunning: 'Active Audits',
+            taxSummaryCount: 'Tax Summary',
+            ocrPipeline: 'OCR Pipeline',
+            ocrDesc: 'Real-time OCR queue.',
+            ocrActive: 'Active',
+            ocrWaiting: 'Waiting',
+            ocrSuccess: 'Success',
+            ocrFailed: 'Failed',
+            recentDocs: 'Recent Documents',
+            recentDocsDesc: 'Quick access to new files without leaving dashboard.',
+            noRecentDocs: 'No recent documents yet.',
+            activityFeed: 'Activity Feed',
+            activityDesc: 'Latest audit trail snapshot.',
+            noActivity: 'No activity yet.',
+            storageDistribution: 'Storage Distribution',
+            stored: 'Stored',
+            borrowed: 'Borrowed',
+            audit: 'Audit',
+            empty: 'Empty',
+            noDocuments: 'No documents yet.',
+            auditLog: 'Activity Log (Audit Trail)',
+            system: 'System',
+            auditBadge: 'AUDIT',
+            before: 'BEFORE',
+            after: 'AFTER',
+            match: 'Match',
+            workLabel: 'Work Suggestion',
+            workSuggestion1: 'Check the latest documents that came in today!',
+            workSuggestion2: 'There are several OCR queues waiting for your attention.',
+            workSuggestion3: 'Time to organize the folder structure for better efficiency.',
+            workSuggestion4: 'Don\'t forget to check the status of the running tax audits.',
+            workSuggestion5: 'Check warehouse capacity, there might be slots to optimize.',
+            workSuggestion6: 'Review today\'s activity log to ensure everything is secure.'
+        }
+        : {
+            greetingMorning: 'Selamat Pagi',
+            greetingSoon: 'Selamat Siang',
+            greetingEvening: 'Selamat Sore',
+            greetingNight: 'Selamat Malam',
+            welcome: 'Selamat datang kembali di ',
+            makeProductive: 'Mari buat Pekerjaan hari ini lebih produktif!',
+            visionSystem: 'Visi Sistem',
+            aiSemanticSearch: 'AI Semantic Search',
+            searchPlaceholder: "Cari apa saja (contoh: 'SOP pengarsipan', 'Catatan pajak bulan lalu', 'Approval tertunda')...",
+            resetSearch: 'Reset Pencarian',
+            semanticAnalysis: 'Hasil Analisis Semantik',
+            beta: 'Beta',
+            systemData: 'System Data',
+            metadata: 'Metadata',
+            viewContext: 'Lihat Konteks',
+            preview: 'Preview',
+            download: 'Download',
+            databaseWp: 'Database WP',
+            pemeriksaan: 'Pemeriksaan',
+            diskusi: 'Diskusi',
+            approval: 'Approval',
+            pustaka: 'Pustaka',
+            storageCenter: 'Storage Command Center',
+            storageDesc: 'Kontrol kapasitas arsip dan percepat navigasi modul.',
+            live: 'Live',
+            occupancy: 'Occupancy',
+            usedSlots: 'Used Slots',
+            externalBox: 'External Box',
+            available: 'Available',
+            openInventory: 'Buka Inventory',
+            viewDocuments: 'Lihat Documents',
+            taxSummaryTab: 'Tax Summary',
+            taxControl: 'Tax Control',
+            taxControlDesc: 'Status audit dan laporan kepatuhan.',
+            auditRunning: 'Audit Berjalan',
+            taxSummaryCount: 'Tax Summary',
+            ocrPipeline: 'OCR Pipeline',
+            ocrDesc: 'Antrian OCR realtime.',
+            ocrActive: 'Aktif',
+            ocrWaiting: 'Menunggu',
+            ocrSuccess: 'Sukses',
+            ocrFailed: 'Gagal',
+            recentDocs: 'Dokumen Terbaru',
+            recentDocsDesc: 'Akses cepat file baru tanpa keluar dari dashboard.',
+            noRecentDocs: 'Belum ada dokumen terbaru.',
+            activityFeed: 'Activity Feed',
+            activityDesc: 'Snapshot audit trail terbaru.',
+            noActivity: 'Belum ada aktivitas.',
+            storageDistribution: 'Distribusi Penyimpanan',
+            stored: 'Tersimpan',
+            borrowed: 'Dipinjam',
+            audit: 'Audit',
+            empty: 'Kosong',
+            noDocuments: 'Belum ada dokumen.',
+            auditLog: 'Log Aktivitas (Audit Trail)',
+            system: 'System',
+            auditBadge: 'AUDIT',
+            before: 'SEBELUM (BEFORE)',
+            after: 'SESUDAH (AFTER)',
+            match: 'Match',
+            workLabel: 'Saran Kerja Hari Ini',
+            workSuggestion1: 'Ayo cek dokumen terbaru yang masuk hari ini!',
+            workSuggestion2: 'Ada beberapa antrian OCR yang menunggu perhatianmu.',
+            workSuggestion3: 'Waktunya merapikan struktur folder agar lebih efisien.',
+            workSuggestion4: 'Jangan lupa periksa status audit pajak yang sedang berjalan.',
+            workSuggestion5: 'Cek kapasitas gudang, mungkin ada slot yang bisa dioptimalkan.',
+            workSuggestion6: 'Review log aktivitas hari ini untuk memastikan semua aman.'
+        };
+
     // Defensive Defaults
     const stats = propStats || { occupancy: 0, stored: 0, borrowed: 0, audit: 0, empty: 0 };
     const docList = Array.isArray(propDocList) ? propDocList : [];
@@ -102,22 +248,23 @@ export default function Dashboard({
         setExpandedLogId(expandedLogId === id ? null : id);
     };
 
+    // Get Greeting based on time
     const getGreeting = () => {
         const hour = new Date().getHours();
-        if (hour < 11) return 'Selamat Pagi';
-        if (hour < 15) return 'Selamat Siang';
-        if (hour < 18) return 'Selamat Sore';
-        return 'Selamat Malam';
+        if (hour < 11) return text.greetingMorning;
+        if (hour < 15) return text.greetingSoon;
+        if (hour < 18) return text.greetingEvening;
+        return text.greetingNight;
     };
 
     const getWorkSuggestion = () => {
         const suggestions = [
-            "Ayo cek dokumen terbaru yang masuk hari ini!",
-            "Ada beberapa antrian OCR yang menunggu perhatianmu.",
-            "Waktunya merapikan struktur folder agar lebih efisien.",
-            "Jangan lupa periksa status audit pajak yang sedang berjalan.",
-            "Cek kapasitas gudang, mungkin ada slot yang bisa dioptimalkan.",
-            "Review log aktivitas hari ini untuk memastikan semua aman."
+            text.workSuggestion1,
+            text.workSuggestion2,
+            text.workSuggestion3,
+            text.workSuggestion4,
+            text.workSuggestion5,
+            text.workSuggestion6
         ];
         const dayIndex = new Date().getDate() % suggestions.length;
         return suggestions[dayIndex];
@@ -163,7 +310,7 @@ export default function Dashboard({
                             >
                                 <div className="absolute inset-0 bg-white/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity animate-pulse"></div>
                                 <Sparkles size={14} className="relative z-10 animate-pulse" />
-                                <span className="relative z-10">Visi Sistem</span>
+                                <span className="relative z-10">{text.visionSystem}</span>
                                 <ArrowRight size={14} className="relative z-10 group-hover:translate-x-1 transition-transform" />
                             </button>
                         </div>
@@ -171,7 +318,7 @@ export default function Dashboard({
                             {getGreeting()}, <span className="text-indigo-600">{currentUser?.name?.split(' ')[0] || 'User'}</span>
                         </h1>
                         <p className="text-lg text-slate-500 dark:text-slate-400 font-medium max-w-xl leading-relaxed">
-                            Selamat datang kembali di <span className="font-bold text-indigo-500">Pustaka</span>. Mari buat Pekerjaan hari ini lebih produktif!
+                            {text.welcome}<span className="font-bold text-indigo-500">Pustaka</span>. {text.makeProductive}
                         </p>
                     </div>
 
@@ -180,7 +327,7 @@ export default function Dashboard({
                             <div className="p-2 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-500/30">
                                 <Sparkles size={18} />
                             </div>
-                            <span className="font-black text-[10px] uppercase tracking-widest text-indigo-600 dark:text-indigo-400">Saran Kerja Hari Ini</span>
+                            <span className="font-black text-[10px] uppercase tracking-widest text-indigo-600 dark:text-indigo-400">{text.workLabel}</span>
                         </div>
                         <p className="text-sm font-bold text-slate-700 dark:text-slate-200 leading-snug italic">"{getWorkSuggestion()}"</p>
                     </div>
@@ -192,7 +339,7 @@ export default function Dashboard({
                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
 
                 <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 mb-4 flex items-center gap-2">
-                    <ScanLine className="text-indigo-500" /> AI Semantic Search
+                    <ScanLine className="text-indigo-500" /> {text.aiSemanticSearch}
                 </h2>
 
                 <form onSubmit={handleSearch} className="relative z-10">
@@ -201,7 +348,7 @@ export default function Dashboard({
                             type="text"
                             value={semanticQuery}
                             onChange={(e) => setSemanticQuery(e.target.value)}
-                            placeholder="Cari apa saja (contoh: 'SOP pengarsipan', 'Catatan pajak bulan lalu', 'Approval tertunda')..."
+                            placeholder={text.searchPlaceholder}
                             className="w-full pl-5 pr-24 py-4 rounded-2xl bg-white dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium text-slate-700 dark:text-slate-200 shadow-sm"
                         />
                         {semanticQuery && (
@@ -209,7 +356,7 @@ export default function Dashboard({
                                 type="button"
                                 onClick={handleResetSearch}
                                 className="absolute right-14 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-red-500 transition-colors"
-                                title="Reset Pencarian"
+                                title={text.resetSearch}
                             >
                                 <X size={20} />
                             </button>
@@ -232,8 +379,8 @@ export default function Dashboard({
                 {(searchResults.length > 0 || isSearching) && (
                     <div className="mt-6 space-y-3 animate-in fade-in slide-in-from-top-4 relative z-10">
                         <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                            Hasil Analisis Semantik
-                            <span className="text-[10px] bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded-full">Beta</span>
+                            {text.semanticAnalysis}
+                            <span className="text-[10px] bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded-full">{text.beta}</span>
                         </h3>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -276,7 +423,7 @@ export default function Dashboard({
                                         {doc.title}
                                     </h4>
                                     <p className="text-xs text-slate-500 dark:text-slate-400 relative z-10 mb-3 block truncate">
-                                        {doc.uploadDate ? new Date(doc.uploadDate).toLocaleDateString() : 'System Data'} • {doc.size || doc.category || 'Metadata'}
+                                        {doc.uploadDate ? new Date(doc.uploadDate).toLocaleDateString() : text.systemData} • {doc.size || doc.category || text.metadata}
                                     </p>
 
                                     {/* OCR Snippet Result */}
@@ -291,7 +438,7 @@ export default function Dashboard({
                                             onClick={(e) => { e.stopPropagation(); handleViewDoc(doc); }}
                                             className="flex-1 text-xs bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 py-2 rounded-lg transition-all font-bold flex items-center justify-center gap-1.5 border border-indigo-100 dark:border-indigo-800 hover:bg-indigo-100"
                                         >
-                                            <Eye size={14} /> {doc.matchType === 'note' ? 'Lihat Konteks' : 'Preview'}
+                                            <Eye size={14} /> {doc.matchType === 'note' ? text.viewContext : text.preview}
                                         </button>
                                         {doc.matchType !== 'pustaka' && doc.matchType !== 'note' && (
                                             <button
@@ -305,7 +452,7 @@ export default function Dashboard({
                                                 }}
                                                 className="flex-1 text-xs bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-all font-medium flex items-center justify-center gap-1.5 shadow-sm active:scale-95"
                                             >
-                                                <Download size={14} /> Download
+                                                <Download size={14} /> {text.download}
                                             </button>
                                         )}
                                     </div>
@@ -357,11 +504,11 @@ export default function Dashboard({
                                             {doc.matchType === 'invoice' ? `📦 ${doc.folderName}` :
                                                 doc.matchType === 'external_item' ? `🚚 ${doc.folderName}` :
                                                     doc.matchType === 'tax_summary' ? `📊 ${doc.folderName}` :
-                                                        doc.matchType === 'tax_monitoring' ? `🔍 ${doc.folderName || 'Pemeriksaan'}` :
-                                                            doc.matchType === 'note' ? `💬 ${doc.folderName || 'Diskusi'}` :
-                                                                doc.matchType === 'approval' ? `✅ ${doc.folderName || 'Approval'}` :
-                                                                    doc.matchType === 'pustaka' ? `📚 ${doc.folderName || 'Pustaka'}` :
-                                                                        doc.matchType === 'tax_object' ? `👥 ${doc.folderName || 'Database WP'}` :
+                                                        doc.matchType === 'tax_monitoring' ? `🔍 ${doc.folderName || text.pemeriksaan}` :
+                                                            doc.matchType === 'note' ? `💬 ${doc.folderName || text.diskusi}` :
+                                                                doc.matchType === 'approval' ? `✅ ${doc.folderName || text.approval}` :
+                                                                    doc.matchType === 'pustaka' ? `📚 ${doc.folderName || text.pustaka}` :
+                                                                        doc.matchType === 'tax_object' ? `👥 ${doc.folderName || text.databaseWp}` :
                                                                             doc.matchType === 'inventory' ? `📦 internal: ${doc.size || 'Slot'}` :
                                                                                 `📂 ${doc.folderName || 'General'}`}
                                         </button>
@@ -424,35 +571,35 @@ export default function Dashboard({
                         <CardHeader>
                             <div className="flex items-center justify-between gap-3">
                                 <div>
-                                    <CardTitle className="text-xl">Storage Command Center</CardTitle>
-                                    <CardDescription>Kontrol kapasitas arsip dan percepat navigasi modul.</CardDescription>
+                                    <CardTitle className="text-xl">{text.storageCenter}</CardTitle>
+                                    <CardDescription>{text.storageDesc}</CardDescription>
                                 </div>
-                                <Badge variant="success">Live</Badge>
+                                <Badge variant="success">{text.live}</Badge>
                             </div>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                                 <div className="rounded-xl border border-slate-200 bg-white/80 p-3 dark:border-slate-800 dark:bg-slate-900/80">
-                                    <p className="text-[11px] uppercase tracking-wide text-slate-500">Occupancy</p>
+                                    <p className="text-[11px] uppercase tracking-wide text-slate-500">{text.occupancy}</p>
                                     <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{bentoStats.occupancyPercent}%</p>
                                 </div>
                                 <div className="rounded-xl border border-slate-200 bg-white/80 p-3 dark:border-slate-800 dark:bg-slate-900/80">
-                                    <p className="text-[11px] uppercase tracking-wide text-slate-500">Used Slots</p>
+                                    <p className="text-[11px] uppercase tracking-wide text-slate-500">{text.usedSlots}</p>
                                     <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{bentoStats.usedSlots}</p>
                                 </div>
                                 <div className="rounded-xl border border-slate-200 bg-white/80 p-3 dark:border-slate-800 dark:bg-slate-900/80">
-                                    <p className="text-[11px] uppercase tracking-wide text-slate-500">External Box</p>
+                                    <p className="text-[11px] uppercase tracking-wide text-slate-500">{text.externalBox}</p>
                                     <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{externalItems?.length || 0}</p>
                                 </div>
                                 <div className="rounded-xl border border-slate-200 bg-white/80 p-3 dark:border-slate-800 dark:bg-slate-900/80">
-                                    <p className="text-[11px] uppercase tracking-wide text-slate-500">Available</p>
+                                    <p className="text-[11px] uppercase tracking-wide text-slate-500">{text.available}</p>
                                     <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{stats?.empty || 0}</p>
                                 </div>
                             </div>
                             <div className="flex flex-wrap gap-2">
-                                <button onClick={() => setActiveTab('inventory')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">Buka Inventory</button>
-                                <button onClick={() => setActiveTab('documents')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">Lihat Documents</button>
-                                <button onClick={() => setActiveTab('tax-summary')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">Tax Summary</button>
+                                <button onClick={() => setActiveTab('inventory')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">{text.openInventory}</button>
+                                <button onClick={() => setActiveTab('documents')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">{text.viewDocuments}</button>
+                                <button onClick={() => setActiveTab('tax-summary')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">{text.taxSummaryTab}</button>
                             </div>
                         </CardContent>
                     </ShadCard>
@@ -461,16 +608,16 @@ export default function Dashboard({
                 <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
                     <ShadCard className="h-full">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-base"><FileSearch size={16} /> Tax Control</CardTitle>
-                            <CardDescription>Status audit dan laporan kepatuhan.</CardDescription>
+                            <CardTitle className="flex items-center gap-2 text-base"><FileSearch size={16} /> {text.taxControl}</CardTitle>
+                            <CardDescription>{text.taxControlDesc}</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-3">
                             <div className="rounded-lg bg-amber-50 p-3 dark:bg-amber-950/20">
-                                <p className="text-xs text-amber-700 dark:text-amber-300">Audit Berjalan</p>
+                                <p className="text-xs text-amber-700 dark:text-amber-300">{text.auditRunning}</p>
                                 <p className="text-2xl font-bold text-amber-800 dark:text-amber-200">{bentoStats.activeAudits}</p>
                             </div>
                             <div className="rounded-lg bg-violet-50 p-3 dark:bg-violet-950/20">
-                                <p className="text-xs text-violet-700 dark:text-violet-300">Tax Summary</p>
+                                <p className="text-xs text-violet-700 dark:text-violet-300">{text.taxSummaryCount}</p>
                                 <p className="text-2xl font-bold text-violet-800 dark:text-violet-200">{taxSummaries?.length || 0}</p>
                             </div>
                         </CardContent>
@@ -480,15 +627,15 @@ export default function Dashboard({
                 <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
                     <ShadCard className="h-full">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-base"><ScanLine size={16} /> OCR Pipeline</CardTitle>
-                            <CardDescription>Antrian OCR realtime.</CardDescription>
+                            <CardTitle className="flex items-center gap-2 text-base"><ScanLine size={16} /> {text.ocrPipeline}</CardTitle>
+                            <CardDescription>{text.ocrDesc}</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-2 text-sm">
-                                <div className="flex items-center justify-between rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-900"><span>Aktif</span><span className="font-semibold">{bentoStats.active}</span></div>
-                                <div className="flex items-center justify-between rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-900"><span>Menunggu</span><span className="font-semibold">{bentoStats.waiting}</span></div>
-                                <div className="flex items-center justify-between rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-900"><span>Sukses</span><span className="font-semibold">{bentoStats.completed}</span></div>
-                                <div className="flex items-center justify-between rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-900"><span>Gagal</span><span className="font-semibold">{bentoStats.failed}</span></div>
+                                <div className="flex items-center justify-between rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-900"><span>{text.ocrActive}</span><span className="font-semibold">{bentoStats.active}</span></div>
+                                <div className="flex items-center justify-between rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-900"><span>{text.ocrWaiting}</span><span className="font-semibold">{bentoStats.waiting}</span></div>
+                                <div className="flex items-center justify-between rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-900"><span>{text.ocrSuccess}</span><span className="font-semibold">{bentoStats.completed}</span></div>
+                                <div className="flex items-center justify-between rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-900"><span>{text.ocrFailed}</span><span className="font-semibold">{bentoStats.failed}</span></div>
                             </div>
                         </CardContent>
                     </ShadCard>
@@ -497,8 +644,8 @@ export default function Dashboard({
                 <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="md:col-span-2">
                     <ShadCard className="h-full">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-base"><FileText size={16} /> Dokumen Terbaru</CardTitle>
-                            <CardDescription>Akses cepat file baru tanpa keluar dari dashboard.</CardDescription>
+                            <CardTitle className="flex items-center gap-2 text-base"><FileText size={16} /> {text.recentDocs}</CardTitle>
+                            <CardDescription>{text.recentDocsDesc}</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-2">
                             {docList.slice(0, 4).map((doc) => (
@@ -512,7 +659,7 @@ export default function Dashboard({
                                     </div>
                                 </button>
                             ))}
-                            {docList.length === 0 && <p className="text-sm text-slate-500">Belum ada dokumen terbaru.</p>}
+                            {docList.length === 0 && <p className="text-sm text-slate-500">{text.noRecentDocs}</p>}
                         </CardContent>
                     </ShadCard>
                 </motion.div>
@@ -520,8 +667,8 @@ export default function Dashboard({
                 <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="md:col-span-2 xl:col-span-1">
                     <ShadCard className="h-full">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-base"><History size={16} /> Activity Feed</CardTitle>
-                            <CardDescription>Snapshot audit trail terbaru.</CardDescription>
+                            <CardTitle className="flex items-center gap-2 text-base"><History size={16} /> {text.activityFeed}</CardTitle>
+                            <CardDescription>{text.activityDesc}</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-2">
                             {logs.slice(0, 4).map((log) => (
@@ -530,7 +677,7 @@ export default function Dashboard({
                                     <p className="truncate text-[11px] text-slate-500 dark:text-slate-400">{log.details}</p>
                                 </div>
                             ))}
-                            {logs.length === 0 && <p className="text-sm text-slate-500">Belum ada aktivitas.</p>}
+                            {logs.length === 0 && <p className="text-sm text-slate-500">{text.noActivity}</p>}
                         </CardContent>
                     </ShadCard>
                 </motion.div>
@@ -548,7 +695,7 @@ export default function Dashboard({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
                     <h3 className="font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
-                        <PieChart size={20} className="text-indigo-500" /> Distribusi Penyimpanan
+                        <PieChart size={20} className="text-indigo-500" /> {text.storageDistribution}
                     </h3>
                     <div className="space-y-4">
                         <div className="w-full bg-gray-100 dark:bg-slate-800 rounded-full h-6 overflow-hidden flex shadow-inner">
@@ -557,17 +704,17 @@ export default function Dashboard({
                             <div className="bg-purple-500 h-full transition-all duration-500" style={{ width: `${((stats?.audit || 0) / (TOTAL_SLOTS || 1)) * 100}%` }} title={`Audit: ${stats?.audit || 0}`}></div>
                         </div>
                         <div className="grid grid-cols-2 gap-4 text-sm">
-                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500"></div><span className="text-gray-600 dark:text-slate-400">Tersimpan ({stats?.stored || 0})</span></div>
-                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-amber-500"></div><span className="text-gray-600 dark:text-slate-400">Dipinjam ({stats?.borrowed || 0})</span></div>
-                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-purple-500"></div><span className="text-gray-600 dark:text-slate-400">Audit ({stats?.audit || 0})</span></div>
-                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-gray-200 dark:bg-slate-700"></div><span className="text-gray-600 dark:text-slate-400">Kosong ({stats?.empty || 0})</span></div>
+                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500"></div><span className="text-gray-600 dark:text-slate-400">{text.stored} ({stats?.stored || 0})</span></div>
+                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-amber-500"></div><span className="text-gray-600 dark:text-slate-400">{text.borrowed} ({stats?.borrowed || 0})</span></div>
+                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-purple-500"></div><span className="text-gray-600 dark:text-slate-400">{text.audit} ({stats?.audit || 0})</span></div>
+                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-gray-200 dark:bg-slate-700"></div><span className="text-gray-600 dark:text-slate-400">{text.empty} ({stats?.empty || 0})</span></div>
                         </div>
                     </div>
                 </Card>
 
                 <Card>
                     <h3 className="font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
-                        <FileText size={20} className="text-blue-500" /> Dokumen Terbaru
+                        <FileText size={20} className="text-blue-500" /> {text.recentDocs}
                     </h3>
                     <div className="space-y-3">
                         {docList.slice(0, 3).map(doc => (
@@ -581,7 +728,7 @@ export default function Dashboard({
                                 </div>
                             </div>
                         ))}
-                        {docList.length === 0 && <p className="text-sm text-gray-500 italic">Belum ada dokumen.</p>}
+                        {docList.length === 0 && <p className="text-sm text-gray-500 italic">{text.noDocuments}</p>}
                     </div>
                 </Card>
             </div>
@@ -589,7 +736,7 @@ export default function Dashboard({
             <Card className="max-h-[400px] overflow-y-auto relative p-0">
                 <div className="sticky top-0 bg-white dark:bg-slate-900 z-10 p-6 pb-2 border-b border-slate-100 dark:border-slate-800">
                     <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                        <History size={20} className="text-purple-500" /> Log Aktivitas (Audit Trail)
+                        <History size={20} className="text-purple-500" /> {text.auditLog}
                     </h3>
                 </div>
                 <div className="p-6 pt-2 space-y-3">
@@ -602,11 +749,11 @@ export default function Dashboard({
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <span className="font-semibold text-indigo-600 dark:text-indigo-400">{log.action}</span>
-                                        {log.oldValue && <span className="text-[10px] bg-amber-100 text-amber-600 px-1.5 py-0.5 rounded border border-amber-200">AUDIT</span>}
+                                        {log.oldValue && <span className="text-[10px] bg-amber-100 text-amber-600 px-1.5 py-0.5 rounded border border-amber-200">{text.auditBadge}</span>}
                                     </div>
                                     <p className="text-gray-500">{log.details}</p>
                                     <div className="text-[10px] text-gray-400 flex items-center gap-1 mt-1">
-                                        <span>{log.user || 'System'}</span> • <span>{new Date(log.timestamp).toLocaleString()}</span>
+                                        <span>{log.user || text.system}</span> • <span>{new Date(log.timestamp).toLocaleString()}</span>
                                     </div>
                                 </div>
                                 <div className="text-gray-400 flex items-center">
@@ -619,13 +766,13 @@ export default function Dashboard({
                                     <div className="grid grid-cols-1 gap-2">
                                         {log.oldValue && (
                                             <div className="bg-red-50 dark:bg-red-900/10 p-2 rounded border border-red-100 dark:border-red-900/20 text-red-700 dark:text-red-400 overflow-x-auto">
-                                                <div className="font-bold mb-1 border-b border-red-200 dark:border-red-900/30 pb-1">SEBELUM (BEFORE)</div>
+                                                <div className="font-bold mb-1 border-b border-red-200 dark:border-red-900/30 pb-1">{text.before}</div>
                                                 <pre className="whitespace-pre-wrap">{log.oldValue.startsWith('{') ? JSON.stringify(JSON.parse(log.oldValue), null, 2) : log.oldValue}</pre>
                                             </div>
                                         )}
                                         {log.newValue && (
                                             <div className="bg-emerald-50 dark:bg-emerald-900/10 p-2 rounded border border-emerald-100 dark:border-emerald-900/20 text-emerald-700 dark:text-emerald-400 overflow-x-auto">
-                                                <div className="font-bold mb-1 border-b border-emerald-200 dark:border-emerald-900/30 pb-1">SESUDAH (AFTER)</div>
+                                                <div className="font-bold mb-1 border-b border-emerald-200 dark:border-emerald-900/30 pb-1">{text.after}</div>
                                                 <pre className="whitespace-pre-wrap">{log.newValue.startsWith('{') ? JSON.stringify(JSON.parse(log.newValue), null, 2) : log.newValue}</pre>
                                             </div>
                                         )}

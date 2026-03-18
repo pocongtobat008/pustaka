@@ -14,6 +14,7 @@ import { getFullUrl } from '../utils/urlHelper';
 import Modal from '../components/common/Modal';
 import PdfViewer from '../components/ui/PdfViewer';
 import { useDocStore } from '../store/useDocStore';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Documents({
     docList, folders, currentFolderId, setCurrentFolderId,
@@ -31,6 +32,55 @@ export default function Documents({
         deleteDocument, copyDocument, moveDocument, restoreDocumentVersion,
         promoteCommentAttachment, addComment
     } = useDocStore();
+    const { language } = useLanguage();
+    const isEnglish = language === 'en';
+    const text = isEnglish
+        ? {
+            failedSendComment: 'Failed to send comment: ',
+            confirmPromoteRevision: 'Set this attachment as latest document revision? OCR will run.',
+            promoteSuccess: 'Revision applied successfully. Document is now in OCR processing.',
+            systemFolderProtected: "System folder 'DataBox' cannot be moved or copied.",
+            operationFailed: 'Operation failed: ',
+            confirmRestoreVersion: 'Restore document to this version? Current version will be saved as a new revision.',
+            restoreFailed: 'Failed to restore version: ',
+            confirmDeleteItems: (count) => `Are you sure you want to delete ${count} selected items?`,
+            confirmDeleteFoldersWarning: (count) => `\nWARNING: ${count} folders will be deleted permanently together with all contents.`,
+            bulkDeleteSuccess: (count) => `Successfully deleted ${count} items.`,
+            bulkDeleteFailed: 'Failed to delete some items: ',
+            insightSearch: (matches) => `Search Analysis: Found ${matches} relevant documents. AI matched title and OCR content.`,
+            insightQueue: (totalPending) => `OCR Queue: ${totalPending} documents are being processed. You can keep working while content updates automatically.`,
+            insightSecurity: (publicFolders) => `Security Suggestion: There are ${publicFolders} public folders. Consider restricting access for sensitive folders using department controls.`,
+            insightStorage: (totalSize) => `Storage Optimization: Digital documents reached ${totalSize.toFixed(1)} MB. Use 'Revision History' to remove old versions.`,
+            tips: [
+                "AI Tip: Use 'Copy/Move' to reorganize archive structure without re-uploading files.",
+                'Info: Uploaded documents are indexed by AI for more accurate semantic search.',
+                'Suggestion: Use consistent file naming (example: YYYY-MM-DD_Title) for easier sorting.',
+                'Security: Review activity logs regularly to monitor sensitive document access.'
+            ]
+        }
+        : {
+            failedSendComment: 'Gagal mengirim komentar: ',
+            confirmPromoteRevision: 'Jadikan file lampiran ini sebagai revisi terbaru dokumen? Proses OCR akan dijalankan.',
+            promoteSuccess: 'Berhasil menjadikan revisi. Dokumen sedang diproses OCR.',
+            systemFolderProtected: "Folder sistem 'DataBox' tidak dapat dipindahkan atau disalin.",
+            operationFailed: 'Operasi gagal: ',
+            confirmRestoreVersion: 'Yakin ingin mengembalikan dokumen ke versi ini? Versi saat ini akan disimpan sebagai revisi baru.',
+            restoreFailed: 'Gagal mengembalikan versi: ',
+            confirmDeleteItems: (count) => `Yakin ingin menghapus ${count} item terpilih?`,
+            confirmDeleteFoldersWarning: (count) => `\nPERINGATAN: ${count} folder akan dihapus beserta seluruh isinya secara permanen.`,
+            bulkDeleteSuccess: (count) => `Berhasil menghapus ${count} item.`,
+            bulkDeleteFailed: 'Gagal menghapus beberapa item: ',
+            insightSearch: (matches) => `Analisis Pencarian: Ditemukan ${matches} dokumen yang relevan. AI mendeteksi kecocokan pada judul dan isi konten OCR.`,
+            insightQueue: (totalPending) => `Antrian OCR: ${totalPending} dokumen sedang dalam proses ekstraksi teks. Anda dapat terus bekerja, sistem akan memperbarui konten secara otomatis.`,
+            insightSecurity: (publicFolders) => `Saran Keamanan: Terdapat ${publicFolders} folder dengan akses publik. Pertimbangkan untuk membatasi akses pada folder sensitif menggunakan fitur 'Unit Kerja'.`,
+            insightStorage: (totalSize) => `Optimasi Penyimpanan: Total dokumen digital mencapai ${totalSize.toFixed(1)} MB. Gunakan fitur 'Riwayat Revisi' untuk menghapus versi lama yang tidak diperlukan.`,
+            tips: [
+                "Tips AI: Gunakan fitur 'Salin/Pindah' untuk merapikan struktur arsip tanpa harus upload ulang.",
+                'Info: Dokumen yang di upload otomatis di indeks oleh AI untuk pencarian semantik yang lebih akurat.',
+                'Saran: Lakukan penamaan file yang konsisten (Contoh: YYYY-MM-DD_Judul) untuk memudahkan sortir.',
+                'Keamanan: Selalu periksa log aktivitas untuk memantau siapa saja yang mengakses dokumen sensitif.'
+            ]
+        };
 
     const [showHistory, setShowHistory] = useState(false);
     const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
@@ -250,16 +300,16 @@ export default function Documents({
         } catch (e) {
             setComments(previousComments);
             const msg = await parseApiError(e);
-            alert("Gagal mengirim komentar: " + msg);
+            alert(text.failedSendComment + msg);
         }
         setIsPostingComment(false);
     };
 
     const handlePromoteAttachment = async (commentId) => {
-        if (!window.confirm("Jadikan file lampiran ini sebagai revisi terbaru dokumen? Proses OCR akan dijalankan.")) return;
+        if (!window.confirm(text.confirmPromoteRevision)) return;
         const res = await promoteCommentAttachment(selectedDocPreview.id, commentId);
         if (res.success) {
-            alert("Berhasil menjadikan revisi. Dokumen sedang diproses OCR.");
+            alert(text.promoteSuccess);
             setSelectedDocPreview(null);
             // onRefresh() is now handled by store
         }
@@ -275,7 +325,7 @@ export default function Documents({
 
         // Proteksi folder DataBox agar tidak bisa dipindah/disalin
         if (mgmtOp.itemType === 'folder' && (['DataBox', 'TaxAudit', 'PUSTAKA', 'ApprovalDoc', 'SOP'].includes(mgmtOp.item.name))) {
-            alert("Folder sistem 'DataBox' tidak dapat dipindahkan atau disalin.");
+            alert(text.systemFolderProtected);
             setIsMgmtModalOpen(false);
             setMgmtOp(null);
             return;
@@ -311,14 +361,14 @@ export default function Documents({
             }, 500);
         } catch (e) {
             const msg = await parseApiError(e);
-            alert("Operasi gagal: " + msg);
+            alert(text.operationFailed + msg);
             setIsExecutingOp(false);
             setOpProgress(0);
         }
     };
 
     const handleRestoreVersion = async (docId, versionTimestamp) => {
-        if (!window.confirm("Yakin ingin mengembalikan dokumen ke versi ini? Versi saat ini akan disimpan sebagai revisi baru.")) return;
+        if (!window.confirm(text.confirmRestoreVersion)) return;
 
         setIsRestoring(true);
         try {
@@ -327,7 +377,7 @@ export default function Documents({
             // onRefresh() is now handled by store
         } catch (e) {
             const msg = await parseApiError(e);
-            alert("Gagal mengembalikan versi: " + msg);
+            alert(text.restoreFailed + msg);
         } finally {
             setIsRestoring(false);
         }
@@ -424,9 +474,9 @@ export default function Documents({
         const totalItems = selectedDocIds.size + selectedFolderIds.size;
         if (totalItems === 0) return;
 
-        let confirmMsg = `Yakin ingin menghapus ${totalItems} item terpilih?`;
+        let confirmMsg = text.confirmDeleteItems(totalItems);
         if (selectedFolderIds.size > 0) {
-            confirmMsg += `\nPERINGATAN: ${selectedFolderIds.size} folder akan dihapus beserta seluruh contributes isinya secara permanen.`;
+            confirmMsg += text.confirmDeleteFoldersWarning(selectedFolderIds.size);
         }
 
         if (!window.confirm(confirmMsg)) return;
@@ -448,10 +498,10 @@ export default function Documents({
 
             setSelectedDocIds(new Set());
             setSelectedFolderIds(new Set());
-            alert(`Berhasil menghapus ${totalItems} item.`);
+            alert(text.bulkDeleteSuccess(totalItems));
         } catch (e) {
             const msg = await parseApiError(e);
-            alert("Gagal menghapus beberapa item: " + msg);
+            alert(text.bulkDeleteFailed + msg);
         } finally {
             setIsBulkDeleting(false);
         }
@@ -467,7 +517,7 @@ export default function Documents({
         if (searchQuery) {
             const matches = docList.filter(d => d.title.toLowerCase().includes(searchQuery.toLowerCase()) || (d.ocrContent || '').toLowerCase().includes(searchQuery.toLowerCase())).length;
             return {
-                text: `Analisis Pencarian: Ditemukan ${matches} dokumen yang relevan. AI mendeteksi kecocokan pada judul dan isi konten OCR.`,
+                text: text.insightSearch(matches),
                 icon: <Search className="text-indigo-500" size={20} />,
                 color: "border-indigo-200 dark:border-indigo-800/50 bg-indigo-50/50 dark:bg-indigo-900/10 text-indigo-800 dark:text-indigo-200"
             };
@@ -477,7 +527,7 @@ export default function Documents({
         const totalPending = (ocrStats?.counts?.active || 0) + (ocrStats?.counts?.waiting || 0);
         if (totalPending > 0) {
             return {
-                text: `Antrian OCR: ${totalPending} dokumen sedang dalam proses ekstraksi teks. Anda dapat terus bekerja, sistem akan memperbarui konten secara otomatis.`,
+                text: text.insightQueue(totalPending),
                 icon: <RefreshCw className="text-amber-500 animate-spin" size={20} />,
                 color: "border-amber-200 dark:border-amber-800/50 bg-amber-50/50 dark:bg-amber-900/10 text-amber-800 dark:text-amber-200"
             };
@@ -487,7 +537,7 @@ export default function Documents({
         const publicFolders = folders.filter(f => f.privacy === 'public').length;
         if (publicFolders > 15) {
             return {
-                text: `Saran Keamanan: Terdapat ${publicFolders} folder dengan akses publik. Pertimbangkan untuk membatasi akses pada folder sensitif menggunakan fitur 'Unit Kerja'.`,
+                text: text.insightSecurity(publicFolders),
                 icon: <ShieldCheck className="text-emerald-500" size={20} />,
                 color: "border-emerald-200 dark:border-emerald-800/50 bg-emerald-50/50 dark:bg-emerald-900/10 text-emerald-800 dark:text-emerald-200"
             };
@@ -497,21 +547,14 @@ export default function Documents({
         const totalSize = parseFloat(docStats?.totalSizeMB || 0);
         if (totalSize > 500) {
             return {
-                text: `Optimasi Penyimpanan: Total dokumen digital mencapai ${totalSize.toFixed(1)} MB. Gunakan fitur 'Riwayat Revisi' untuk menghapus versi lama yang tidak diperlukan.`,
+                text: text.insightStorage(totalSize),
                 icon: <TrendingUp className="text-blue-500" size={20} />,
                 color: "border-blue-200 dark:border-blue-800/50 bg-blue-50/50 dark:bg-blue-900/10 text-blue-800 dark:text-blue-200"
             };
         }
 
-        // 5. Default Tips
-        const tips = [
-            "Tips AI: Gunakan fitur 'Salin/Pindah' untuk merapikan struktur arsip tanpa harus upload ulang.",
-            "Info: Dokumen yang di upload otomatis di indeks oleh AI untuk pencarian semantik yang lebih akurat.",
-            "Saran: Lakukan penamaan file yang konsisten (Contoh: YYYY-MM-DD_Judul) untuk memudahkan sortir.",
-            "Keamanan: Selalu periksa log aktivitas untuk memantau siapa saja yang mengakses dokumen sensitif."
-        ];
         return {
-            text: tips[new Date().getHours() % tips.length],
+            text: text.tips[new Date().getHours() % text.tips.length],
             icon: <Sparkles className="text-indigo-500" size={20} />,
             color: "border-indigo-200 dark:border-indigo-800/50 bg-indigo-50/50 dark:bg-indigo-900/10 text-indigo-800 dark:text-indigo-200"
         };
@@ -525,19 +568,19 @@ export default function Documents({
                 {/* SUMMARY CARDS FOR DOCUMENTS */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
                     <SummaryCard
-                        title="Total Dokumen"
+                        title={isEnglish ? 'Total Documents' : 'Total Dokumen'}
                         value={(docList || []).length}
                         icon={FileText}
                         colorClass="bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
                     />
                     <SummaryCard
-                        title="Total Folder"
+                        title={isEnglish ? 'Total Folders' : 'Total Folder'}
                         value={(folders || []).length}
                         icon={FolderOpen}
                         colorClass="bg-amber-100 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400"
                     />
                     <SummaryCard
-                        title="Total Revisi"
+                        title={isEnglish ? 'Total Revisions' : 'Total Revisi'}
                         value={docStats?.totalRevisions || 0}
                         icon={History}
                         colorClass="bg-indigo-100 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400"
@@ -551,9 +594,9 @@ export default function Documents({
                     </div>
                     <div className="flex-1">
                         <div className="flex items-center gap-2 mb-0.5">
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Smart Assistant</span>
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">{isEnglish ? 'Smart Assistant' : 'Smart Assistant'}</span>
                             <div className="w-1 h-1 rounded-full bg-current opacity-40"></div>
-                            <span className="text-[10px] font-bold opacity-60">Document Analysis</span>
+                            <span className="text-[10px] font-bold opacity-60">{isEnglish ? 'Document Analysis' : 'Document Analysis'}</span>
                         </div>
                         <p className="text-sm font-bold leading-relaxed">{insight.text}</p>
                     </div>
@@ -575,7 +618,7 @@ export default function Documents({
                         {currentFolderId && (
                             <>
                                 <ChevronRight size={16} className="text-gray-400" />
-                                <span className="font-bold text-gray-700 dark:text-white">{folders.find(f => String(f.id) === String(currentFolderId))?.name || 'Unknown'}</span>
+                                <span className="font-bold text-gray-700 dark:text-white">{folders.find(f => String(f.id) === String(currentFolderId))?.name || (isEnglish ? 'Unknown' : 'Unknown')}</span>
                             </>
                         )}
                     </div>
@@ -587,7 +630,7 @@ export default function Documents({
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Cari dokumen..."
+                                placeholder={isEnglish ? 'Search documents...' : 'Cari dokumen...'}
                                 className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:text-white"
                             />
                         </div>
@@ -599,18 +642,18 @@ export default function Documents({
                                     onChange={(e) => setStatusFilter(e.target.value)}
                                     className="bg-transparent py-2 text-xs font-bold text-gray-600 dark:text-slate-300 focus:outline-none cursor-pointer"
                                 >
-                                    <option value="all">Semua Status</option>
-                                    <option value="active">Normal (Gudang)</option>
-                                    <option value="removed">Dihapus (RM_)</option>
-                                    <option value="external">Indoarsip (TR_)</option>
-                                    <option value="moved">Pindah Slot (MV_)</option>
-                                    <option value="renamed">Diedit (ED_)</option>
-                                    <option value="borrowed">Dipinjam</option>
+                                    <option value="all">{isEnglish ? 'All Statuses' : 'Semua Status'}</option>
+                                    <option value="active">{isEnglish ? 'Normal (Warehouse)' : 'Normal (Gudang)'}</option>
+                                    <option value="removed">{isEnglish ? 'Removed (RM_)' : 'Dihapus (RM_)'}</option>
+                                    <option value="external">{isEnglish ? 'Indoarsip (TR_)' : 'Indoarsip (TR_)'}</option>
+                                    <option value="moved">{isEnglish ? 'Moved Slot (MV_)' : 'Pindah Slot (MV_)'}</option>
+                                    <option value="renamed">{isEnglish ? 'Edited (ED_)' : 'Diedit (ED_)'}</option>
+                                    <option value="borrowed">{isEnglish ? 'Borrowed' : 'Dipinjam'}</option>
                                     <option value="audit">Audit</option>
                                 </select>
                             </div>
                         )}
-                        <button onClick={onRefresh} className="group px-3 py-2 rounded-lg border bg-white text-gray-600 border-gray-200 hover:bg-gray-50 flex items-center gap-2" title="Refresh Data">
+                        <button onClick={onRefresh} className="group px-3 py-2 rounded-lg border bg-white text-gray-600 border-gray-200 hover:bg-gray-50 flex items-center gap-2" title={isEnglish ? 'Refresh Data' : 'Refresh Data'}>
                             <RefreshCw size={18} className="group-hover:rotate-180 transition-transform duration-500" />
                         </button>
                         <div className="flex bg-white rounded-lg border border-gray-200 p-1">
@@ -628,7 +671,7 @@ export default function Documents({
                                     }
                                 }}
                                 className={`group p-1.5 rounded-md transition-all ${(selectedDocIds.size > 0 || selectedFolderIds.size > 0) ? 'bg-indigo-100 text-indigo-600 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-                                title="Pilih Semua (Select All)"
+                                title={isEnglish ? 'Select All' : 'Pilih Semua (Select All)'}
                             >
                                 <Check size={18} className="group-hover:scale-110 transition-transform" />
                             </button>
@@ -637,14 +680,14 @@ export default function Documents({
                             <button
                                 onClick={() => setViewMode('grid')}
                                 className={`group p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-indigo-100 text-indigo-600 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-                                title="Grid View"
+                                title={isEnglish ? 'Grid View' : 'Grid View'}
                             >
                                 <LayoutGrid size={18} className="group-hover:scale-110 transition-transform" />
                             </button>
                             <button
                                 onClick={() => setViewMode('list')}
                                 className={`group p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-indigo-100 text-indigo-600 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-                                title="List View"
+                                title={isEnglish ? 'List View' : 'List View'}
                             >
                                 <List size={18} className="group-hover:scale-110 transition-transform" />
                             </button>
@@ -664,7 +707,7 @@ export default function Documents({
                                 <button
                                     onClick={() => bulkInputRef.current.click()}
                                     className="group px-4 py-2 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 rounded-lg font-medium flex items-center justify-center gap-2 transition-all"
-                                    title="Upload Banyak File Sekaligus"
+                                    title={isEnglish ? 'Upload Multiple Files' : 'Upload Banyak File Sekaligus'}
                                 >
                                     <FileStack size={18} className="group-hover:scale-110 transition-transform" /> Bulk
                                 </button>
@@ -699,7 +742,7 @@ export default function Documents({
                 {/* HISTORY PANEL */}
                 {showHistory && (
                     <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl p-4 animate-in slide-in-from-top-2">
-                        <h3 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2"><History size={18} /> Riwayat Aktivitas Dokumen</h3>
+                        <h3 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2"><History size={18} /> {isEnglish ? 'Document Activity History' : 'Riwayat Aktivitas Dokumen'}</h3>
                         <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
                             {docLogs.slice(0, 20).map(log => (
                                 <div key={log.id} className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-slate-800/50 rounded-lg border border-gray-100 dark:border-slate-800">
@@ -716,7 +759,7 @@ export default function Documents({
                                     </div>
                                 </div>
                             ))}
-                            {docLogs.length === 0 && <p className="text-center text-gray-400 italic py-4">Belum ada riwayat aktivitas.</p>}
+                            {docLogs.length === 0 && <p className="text-center text-gray-400 italic py-4">{isEnglish ? 'No activity history yet.' : 'Belum ada riwayat aktivitas.'}</p>}
                         </div>
                     </div>
                 )}
@@ -732,7 +775,7 @@ export default function Documents({
                         return String(f.parentId) === String(currentFolderId);
                     }) && (
                             <div className="flex items-center justify-between mb-3">
-                                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Folders</h3>
+                                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">{isEnglish ? 'Folders' : 'Folders'}</h3>
                                 <span className="text-xs text-red-500 font-mono">
 
                                 </span>
@@ -861,7 +904,7 @@ export default function Documents({
                                         )}
                                         {/* System Lock Badge */}
                                         {(['DataBox', 'TaxAudit', 'PUSTAKA', 'ApprovalDoc'].includes(folder.name)) && (
-                                            <div className="absolute -top-1 -left-1 w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center border-2 border-white dark:border-slate-800 shadow-sm" title="System Folder">
+                                            <div className="absolute -top-1 -left-1 w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center border-2 border-white dark:border-slate-800 shadow-sm" title={isEnglish ? 'System Folder' : 'Folder Sistem'}>
                                                 <Lock size={10} className="text-white" />
                                             </div>
                                         )}
@@ -872,7 +915,7 @@ export default function Documents({
                                         </span>
                                         {/* Creator Info Tooltip/Text */}
                                         <div className="text-[10px] text-gray-400 mt-1 truncate">
-                                            Author: {folder.owner || 'Unknown'}
+                                            {isEnglish ? 'Author' : 'Author'}: {folder.owner || (isEnglish ? 'Unknown' : 'Unknown')}
                                         </div>
                                     </div>
 
@@ -914,7 +957,7 @@ export default function Documents({
                                                             ) : (
                                                                 <PenLine size={14} className="group-hover:rotate-12 transition-transform" />
                                                             )}
-                                                            {(['DataBox', 'TaxAudit', 'PUSTAKA', 'ApprovalDoc'].includes(folder.name)) ? 'Akses Kontrol' : 'Edit'}
+                                                            {(['DataBox', 'TaxAudit', 'PUSTAKA', 'ApprovalDoc'].includes(folder.name)) ? (isEnglish ? 'Access Control' : 'Akses Kontrol') : (isEnglish ? 'Edit' : 'Edit')}
                                                         </button>
                                                     )}
 
@@ -922,12 +965,12 @@ export default function Documents({
                                                         <>
                                                             {hasPermission('documents', 'create') && (
                                                                 <button onClick={(e) => { e.stopPropagation(); startMgmtOp('copy', 'folder', folder); setActiveFolderMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
-                                                                    <Copy size={14} className="group-hover:scale-110 group-hover:text-indigo-500 transition-all" /> Salin
+                                                                    <Copy size={14} className="group-hover:scale-110 group-hover:text-indigo-500 transition-all" /> {isEnglish ? 'Copy' : 'Salin'}
                                                                 </button>
                                                             )}
                                                             {hasPermission('documents', 'edit') && (
                                                                 <button onClick={(e) => { e.stopPropagation(); startMgmtOp('move', 'folder', folder); setActiveFolderMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
-                                                                    <Move size={14} className="group-hover:translate-x-1 transition-transform" /> Pindah
+                                                                    <Move size={14} className="group-hover:translate-x-1 transition-transform" /> {isEnglish ? 'Move' : 'Pindah'}
                                                                 </button>
                                                             )}
                                                             {hasPermission('documents', 'delete') && (
@@ -937,7 +980,7 @@ export default function Documents({
                                                                         onClick={(e) => { handleDeleteFolder(e, folder.id); setActiveFolderMenuId(null); }}
                                                                         className="group w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-2"
                                                                     >
-                                                                        <Trash2 size={14} className="group-hover:scale-110 transition-transform" /> Hapus
+                                                                        <Trash2 size={14} className="group-hover:scale-110 transition-transform" /> {isEnglish ? 'Delete' : 'Hapus'}
                                                                     </button>
                                                                 </>
                                                             )}
@@ -960,7 +1003,7 @@ export default function Documents({
                         if (searchQuery) return matchesSearch;
                         return (String(d.folderId) === String(currentFolderId) || ((!d.folderId || d.folderId === 'null') && (currentFolderId === null || currentFolderId === 'null')));
                     }) && (
-                            <h3 className="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wider mt-6">Files</h3>
+                            <h3 className="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wider mt-6">{isEnglish ? 'Files' : 'Files'}</h3>
                         )}
                     {viewMode === 'grid' ? (
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -1038,7 +1081,7 @@ export default function Documents({
                                                 >
                                                     <div className="py-1">
                                                         <button onClick={(e) => { e.stopPropagation(); handlePreview(doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
-                                                            <Eye size={14} className="text-blue-500 group-hover:scale-110 transition-transform" /> Lihat Detail
+                                                            <Eye size={14} className="text-blue-500 group-hover:scale-110 transition-transform" /> {isEnglish ? 'View Detail' : 'Lihat Detail'}
                                                         </button>
                                                         <button onClick={(e) => { e.stopPropagation(); handleDownload(doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
                                                             <Download size={14} className="text-green-500 group-hover:translate-y-0.5 transition-transform" /> Download
@@ -1052,25 +1095,25 @@ export default function Documents({
                                                             }}
                                                             className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2"
                                                         >
-                                                            <History size={14} className="text-indigo-500 group-hover:rotate-[-20deg] transition-transform" /> Riwayat Revisi
+                                                            <History size={14} className="text-indigo-500 group-hover:rotate-[-20deg] transition-transform" /> {isEnglish ? 'Revision History' : 'Riwayat Revisi'}
                                                         </button>
                                                         <div className="h-px bg-gray-100 dark:bg-slate-800 my-1" />
 
                                                         {hasPermission('documents', 'create') && (
                                                             <button onClick={(e) => { e.stopPropagation(); startMgmtOp('copy', 'file', doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
-                                                                <Copy size={14} className="group-hover:scale-110 transition-transform" /> Salin
+                                                                <Copy size={14} className="group-hover:scale-110 transition-transform" /> {isEnglish ? 'Copy' : 'Salin'}
                                                             </button>
                                                         )}
                                                         {hasPermission('documents', 'edit') && (
                                                             <>
                                                                 <button onClick={(e) => { e.stopPropagation(); startMgmtOp('move', 'file', doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
-                                                                    <Move size={14} className="group-hover:translate-x-1 transition-transform" /> Pindah
+                                                                    <Move size={14} className="group-hover:translate-x-1 transition-transform" /> {isEnglish ? 'Move' : 'Pindah'}
                                                                 </button>
                                                                 <button onClick={(e) => { handleRenameDoc(e, doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
-                                                                    <PenLine size={14} className="group-hover:rotate-12 transition-transform" /> Ganti Nama
+                                                                    <PenLine size={14} className="group-hover:rotate-12 transition-transform" /> {isEnglish ? 'Rename' : 'Ganti Nama'}
                                                                 </button>
                                                                 <button onClick={(e) => { handleEditDoc(e, doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
-                                                                    <UploadCloud size={14} className="group-hover:-translate-y-1 transition-transform" /> Update File
+                                                                    <UploadCloud size={14} className="group-hover:-translate-y-1 transition-transform" /> {isEnglish ? 'Update File' : 'Update File'}
                                                                 </button>
                                                             </>
                                                         )}
@@ -1078,7 +1121,7 @@ export default function Documents({
                                                             <>
                                                                 <div className="h-px bg-gray-100 dark:bg-slate-800 my-1" />
                                                                 <button onClick={(e) => { handleDeleteDoc(e, doc.id); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-2">
-                                                                    <Trash2 size={14} className="group-hover:scale-110 transition-transform" /> Hapus
+                                                                    <Trash2 size={14} className="group-hover:scale-110 transition-transform" /> {isEnglish ? 'Delete' : 'Hapus'}
                                                                 </button>
                                                             </>
                                                         )}
@@ -1089,13 +1132,13 @@ export default function Documents({
 
                                         {/* Quick Actions (Hover Only) */}
                                         <div className="absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-10">
-                                            <button onClick={(e) => { e.stopPropagation(); handlePreview(doc); }} className="p-2 bg-white dark:bg-slate-800 text-gray-500 hover:text-blue-600 rounded-full shadow-md border border-gray-100 dark:border-slate-700" title="Lihat">
+                                            <button onClick={(e) => { e.stopPropagation(); handlePreview(doc); }} className="p-2 bg-white dark:bg-slate-800 text-gray-500 hover:text-blue-600 rounded-full shadow-md border border-gray-100 dark:border-slate-700" title={isEnglish ? 'View' : 'Lihat'}>
                                                 <Eye size={16} />
                                             </button>
                                             <button onClick={(e) => { e.stopPropagation(); handleDownload(doc); }} className="p-2 bg-white dark:bg-slate-800 text-gray-500 hover:text-green-600 rounded-full shadow-md border border-gray-100 dark:border-slate-700" title="Download">
                                                 <Download size={16} />
                                             </button>
-                                            <button onClick={(e) => { e.stopPropagation(); setSelectedDocForRevision(doc); setIsRevisionModalOpen(true); }} className="p-2 bg-white dark:bg-slate-800 text-gray-500 hover:text-indigo-600 rounded-full shadow-md border border-gray-100 dark:border-slate-700" title="Riwayat Revisi">
+                                            <button onClick={(e) => { e.stopPropagation(); setSelectedDocForRevision(doc); setIsRevisionModalOpen(true); }} className="p-2 bg-white dark:bg-slate-800 text-gray-500 hover:text-indigo-600 rounded-full shadow-md border border-gray-100 dark:border-slate-700" title={isEnglish ? 'Revision History' : 'Riwayat Revisi'}>
                                                 <History size={16} />
                                             </button>
                                         </div>
@@ -1117,9 +1160,9 @@ export default function Documents({
                                             <div className="flex items-center justify-between text-[10px] text-gray-400 dark:text-slate-500 mt-auto">
                                                 <span className="font-mono bg-gray-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">{doc.size}</span>
                                                 {doc.status === 'processing' || doc.status === 'waiting' ? (
-                                                    <span className="text-amber-500 font-bold animate-pulse">PROSES OCR...</span>
+                                                    <span className="text-amber-500 font-bold animate-pulse">{isEnglish ? 'OCR PROCESSING...' : 'PROSES OCR...'}</span>
                                                 ) : doc.status === 'failed' ? (
-                                                    <span className="text-red-500 font-bold">OCR GAGAL</span>
+                                                    <span className="text-red-500 font-bold">{isEnglish ? 'OCR FAILED' : 'OCR GAGAL'}</span>
                                                 ) : (
                                                     <div className="flex flex-col items-end">
                                                         <span className="font-bold text-indigo-500">v{doc.version}</span>
@@ -1133,13 +1176,13 @@ export default function Documents({
                                             {searchQuery && (
                                                 <div className="mt-1 text-[10px] text-gray-400 flex items-center gap-1">
                                                     <FolderOpen size={10} />
-                                                    <span className="truncate max-w-[100px]">{(folders || []).find(f => f.id === doc.folderId)?.name || 'Root'}</span>
+                                                    <span className="truncate max-w-[100px]">{(folders || []).find(f => f.id === doc.folderId)?.name || (isEnglish ? 'Root' : 'Root')}</span>
                                                 </div>
                                             )}
 
                                             {isContentMatch && (
                                                 <div className="mt-2 p-1.5 bg-yellow-50 dark:bg-yellow-900/10 rounded border border-yellow-100 dark:border-yellow-900/20 text-[10px] text-gray-600 dark:text-slate-300">
-                                                    <span className="flex items-center gap-1 font-bold text-yellow-700 dark:text-yellow-500 mb-0.5"><Highlighter size={10} /> Match:</span>
+                                                    <span className="flex items-center gap-1 font-bold text-yellow-700 dark:text-yellow-500 mb-0.5"><Highlighter size={10} /> {isEnglish ? 'Match:' : 'Match:'}</span>
                                                     <p className="line-clamp-2 italic leading-tight opacity-90">"{getSearchSnippet(doc.ocrContent, searchQuery)}"</p>
                                                 </div>
                                             )}
@@ -1152,10 +1195,10 @@ export default function Documents({
                         // --- LIST VIEW ---
                         <div className="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 shadow-sm">
                             <div className="grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800 text-xs font-bold text-gray-500 uppercase tracking-wider">
-                                <div className="col-span-6 md:col-span-5">Nama Dokumen</div>
-                                <div className="col-span-2 hidden md:block">Ukuran</div>
-                                <div className="col-span-2 hidden md:block">Versi</div>
-                                <div className="col-span-2 md:col-span-3 text-right">Aksi</div>
+                                <div className="col-span-6 md:col-span-5">{isEnglish ? 'Document Name' : 'Nama Dokumen'}</div>
+                                <div className="col-span-2 hidden md:block">{isEnglish ? 'Size' : 'Ukuran'}</div>
+                                <div className="col-span-2 hidden md:block">{isEnglish ? 'Version' : 'Versi'}</div>
+                                <div className="col-span-2 md:col-span-3 text-right">{isEnglish ? 'Actions' : 'Aksi'}</div>
                             </div>
                             <div className="divide-y divide-gray-100 dark:divide-slate-800">
                                 {/* Folders in List View */}
@@ -1333,7 +1376,7 @@ export default function Documents({
                             </div>
                             {(docList || []).filter(d => (String(d.folderId) === String(currentFolderId) || (!d.folderId && currentFolderId === null))).length === 0 && (
                                 <div className="p-8 text-center text-gray-400 italic">
-                                    Folder ini kosong.
+                                    {isEnglish ? 'This folder is empty.' : 'Folder ini kosong.'}
                                 </div>
                             )}
                         </div>
@@ -1358,7 +1401,7 @@ export default function Documents({
             <Modal
                 isOpen={isMgmtModalOpen}
                 onClose={() => !isExecutingOp && setIsMgmtModalOpen(false)}
-                title={mgmtOp?.type === 'copy' ? 'Salin Dokumen' : 'Pindah Dokumen'}
+                title={mgmtOp?.type === 'copy' ? (isEnglish ? 'Copy Document' : 'Salin Dokumen') : (isEnglish ? 'Move Document' : 'Pindah Dokumen')}
                 size="max-w-md"
             >
                 <div className="flex flex-col relative pt-4">
@@ -1369,9 +1412,9 @@ export default function Documents({
                             </div>
                             <div>
                                 <h4 className="font-black text-slate-800 dark:text-white uppercase tracking-tight">
-                                    {mgmtOp?.type === 'copy' ? 'Salin' : 'Pindah'} <span className="opacity-50">{mgmtOp?.itemType === 'file' ? 'File' : 'Folder'}</span>
+                                    {mgmtOp?.type === 'copy' ? (isEnglish ? 'Copy' : 'Salin') : (isEnglish ? 'Move' : 'Pindah')} <span className="opacity-50">{mgmtOp?.itemType === 'file' ? (isEnglish ? 'File' : 'File') : (isEnglish ? 'Folder' : 'Folder')}</span>
                                 </h4>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pilih Folder Tujuan</p>
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{isEnglish ? 'Choose Destination Folder' : 'Pilih Folder Tujuan'}</p>
                             </div>
                         </div>
                         <div className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
@@ -1389,7 +1432,7 @@ export default function Documents({
                             <div className="p-2.5 bg-slate-100 dark:bg-slate-700/50 rounded-xl group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/40 text-slate-500 group-hover:text-indigo-600 transition-colors">
                                 <HardDrive size={20} />
                             </div>
-                            <span className="font-bold text-slate-700 dark:text-slate-200">Semua Dokumen (Root)</span>
+                            <span className="font-bold text-slate-700 dark:text-slate-200">{isEnglish ? 'All Documents (Root)' : 'Semua Dokumen (Root)'}</span>
                         </button>
 
                         {folders.filter(f => mgmtOp?.item && String(f.id) !== String(mgmtOp.item.id)).map(folder => (
@@ -1412,7 +1455,7 @@ export default function Documents({
                     {isExecutingOp && (
                         <div className="pt-4 border-t border-white/20 dark:border-white/5">
                             <div className="flex justify-between text-[10px] font-black uppercase tracking-widest mb-2 px-1">
-                                <span className="text-indigo-600 animate-pulse">Menghubungkan...</span>
+                                <span className="text-indigo-600 animate-pulse">{isEnglish ? 'Connecting...' : 'Menghubungkan...'}</span>
                                 <span className="text-slate-500">{opProgress}%</span>
                             </div>
                             <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
@@ -1430,30 +1473,30 @@ export default function Documents({
             <Modal
                 isOpen={isFolderModalOpen}
                 onClose={() => setIsFolderModalOpen(false)}
-                title={folderForm.id ? 'Edit Konfigurasi Folder' : 'Buat Folder Baru'}
+                title={folderForm.id ? (isEnglish ? 'Edit Folder Configuration' : 'Edit Konfigurasi Folder') : (isEnglish ? 'Create New Folder' : 'Buat Folder Baru')}
                 size="max-w-md"
             >
                 <div className="space-y-6 px-1 pt-4 custom-scrollbar">
                     <div>
-                        <label className="block text-[10px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest ml-1">Nama Folder</label>
+                        <label className="block text-[10px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest ml-1">{isEnglish ? 'Folder Name' : 'Nama Folder'}</label>
                         <input
                             value={folderForm.name}
                             onChange={(e) => setFolderForm({ ...folderForm, name: e.target.value })}
                             disabled={['DataBox', 'TaxAudit', 'PUSTAKA', 'ApprovalDoc'].includes(folderForm.name)}
                             className={`w-full px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-800 rounded-2xl focus:border-indigo-500 transition-all outline-none dark:text-white font-black ${folderForm.name === 'DataBox' || folderForm.name === 'TaxAudit' || folderForm.name === 'ApprovalDoc' ? 'opacity-50 cursor-not-allowed' : ''}`}
-                            placeholder="Contoh: Laporan Keuangan"
+                            placeholder={isEnglish ? 'Example: Financial Report' : 'Contoh: Laporan Keuangan'}
                             autoFocus
                         />
                     </div>
 
                     <div>
-                        <label className="block text-[10px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest ml-1">Privasi & Akses Kontrol</label>
+                        <label className="block text-[10px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest ml-1">{isEnglish ? 'Privacy & Access Control' : 'Privasi & Akses Kontrol'}</label>
                         <div className="grid grid-cols-2 gap-3">
                             {[
-                                { id: 'public', label: 'Umum', icon: Users, desc: 'Akses Publik' },
-                                { id: 'private', label: 'Pribadi', icon: Lock, desc: 'Akses Terbatas' },
-                                { id: 'dept', label: 'Unit Kerja', icon: Building, desc: 'Departemen' },
-                                { id: 'user', label: 'Spesifik', icon: User, desc: 'User Terpilih' }
+                                { id: 'public', label: isEnglish ? 'Public' : 'Umum', icon: Users, desc: isEnglish ? 'Public Access' : 'Akses Publik' },
+                                { id: 'private', label: isEnglish ? 'Private' : 'Pribadi', icon: Lock, desc: isEnglish ? 'Restricted Access' : 'Akses Terbatas' },
+                                { id: 'dept', label: isEnglish ? 'Department' : 'Unit Kerja', icon: Building, desc: isEnglish ? 'Department' : 'Departemen' },
+                                { id: 'user', label: isEnglish ? 'Specific' : 'Spesifik', icon: User, desc: isEnglish ? 'Selected Users' : 'User Terpilih' }
                             ].map(type => (
                                 <button
                                     key={type.id}
@@ -1480,7 +1523,7 @@ export default function Documents({
                     {/* Conditional Inputs */}
                     {folderForm.privacy === 'dept' && (
                         <div className="p-5 bg-indigo-50/50 dark:bg-indigo-900/20 rounded-[2rem] border border-indigo-100 dark:border-indigo-800/50 animate-in slide-in-from-top-2">
-                            <label className="block text-[10px] font-black text-indigo-700 dark:text-indigo-300 mb-3 uppercase tracking-widest">Pilih Departemen Terdaftar</label>
+                            <label className="block text-[10px] font-black text-indigo-700 dark:text-indigo-300 mb-3 uppercase tracking-widest">{isEnglish ? 'Select Registered Departments' : 'Pilih Departemen Terdaftar'}</label>
                             <div className="max-h-40 overflow-y-auto pr-2 custom-scrollbar space-y-1.5">
                                 {(departments || []).map(dept => (
                                     <label key={dept.id} className="flex items-center gap-3 p-3 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 rounded-2xl cursor-pointer transition-all border border-transparent hover:border-indigo-200">
@@ -1504,7 +1547,7 @@ export default function Documents({
 
                     {folderForm.privacy === 'user' && (
                         <div className="p-5 bg-purple-50/50 dark:bg-purple-900/20 rounded-[2rem] border border-purple-100 dark:border-purple-800/50 animate-in slide-in-from-top-2">
-                            <label className="block text-[10px] font-black text-purple-700 dark:text-purple-300 mb-3 uppercase tracking-widest">Akses Pengguna Spesifik</label>
+                            <label className="block text-[10px] font-black text-purple-700 dark:text-purple-300 mb-3 uppercase tracking-widest">{isEnglish ? 'Specific User Access' : 'Akses Pengguna Spesifik'}</label>
                             <div className="max-h-40 overflow-y-auto pr-2 custom-scrollbar space-y-1.5">
                                 {(users || []).filter(u => u.username !== currentUser?.username).map(user => (
                                     <label key={user.id} className="flex items-center gap-3 p-3 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 rounded-2xl cursor-pointer transition-all border border-transparent hover:border-purple-200">
@@ -1530,7 +1573,7 @@ export default function Documents({
                     )}
 
                     <div className="flex gap-3 pt-6 border-t border-slate-100 dark:border-slate-800 mt-2">
-                        <button onClick={() => setIsFolderModalOpen(false)} className="flex-1 py-4 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white text-xs font-black uppercase tracking-widest transition-all">Batalkan</button>
+                        <button onClick={() => setIsFolderModalOpen(false)} className="flex-1 py-4 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white text-xs font-black uppercase tracking-widest transition-all">{isEnglish ? 'Cancel' : 'Batalkan'}</button>
                         <button
                             onClick={() => {
                                 if (folderForm.id) {
@@ -1543,7 +1586,7 @@ export default function Documents({
                             disabled={!folderForm.name}
                             className="flex-[2] py-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white text-xs font-black uppercase tracking-widest rounded-[1.25rem] shadow-xl shadow-indigo-600/30 hover:shadow-indigo-600/50 hover:-translate-y-0.5 transition-all active:scale-95 disabled:opacity-50"
                         >
-                            {folderForm.id ? 'Simpan Perubahan' : 'Buat Folder Sekarang'}
+                            {folderForm.id ? (isEnglish ? 'Save Changes' : 'Simpan Perubahan') : (isEnglish ? 'Create Folder Now' : 'Buat Folder Sekarang')}
                         </button>
                     </div>
                 </div>
@@ -1553,14 +1596,14 @@ export default function Documents({
                 (selectedDocIds.size > 0 || selectedFolderIds.size > 0) && (
                     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white/70 dark:bg-slate-900/80 backdrop-blur-3xl shadow-2xl rounded-full px-6 py-3 flex items-center gap-4 z-50 border border-white/40 dark:border-white/10 animate-in slide-in-from-bottom-4 duration-300 ring-1 ring-black/5">
                         <span className="text-sm font-bold text-slate-700 dark:text-gray-200 pl-2 border-r border-slate-200 dark:border-slate-700 pr-5">
-                            {selectedDocIds.size + selectedFolderIds.size} item dipilih
+                            {selectedDocIds.size + selectedFolderIds.size} {isEnglish ? 'items selected' : 'item dipilih'}
                         </span>
 
                         <button
                             onClick={handleDeselectAll}
                             className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white text-sm font-medium transition-colors"
                         >
-                            Batal
+                            {isEnglish ? 'Cancel' : 'Batal'}
                         </button>
 
                         <button
@@ -1571,12 +1614,12 @@ export default function Documents({
                             {isBulkDeleting ? (
                                 <>
                                     <div className="w-4 h-4 border-2 border-white rounded-full animate-spin border-t-transparent" />
-                                    Menghapus...
+                                    {isEnglish ? 'Deleting...' : 'Menghapus...'}
                                 </>
                             ) : (
                                 <>
                                     <Trash2 size={16} />
-                                    Hapus ({selectedDocIds.size + selectedFolderIds.size})
+                                    {isEnglish ? 'Delete' : 'Hapus'} ({selectedDocIds.size + selectedFolderIds.size})
                                 </>
                             )}
                         </button>
@@ -1588,7 +1631,7 @@ export default function Documents({
             <Modal
                 isOpen={isRevisionModalOpen}
                 onClose={() => setIsRevisionModalOpen(false)}
-                title="Riwayat Revisi Dokumen"
+                title={isEnglish ? 'Document Revision History' : 'Riwayat Revisi Dokumen'}
                 size="max-w-xl"
             >
                 <div className="space-y-4 pt-4">
@@ -1598,7 +1641,7 @@ export default function Documents({
                         </div>
                         <div>
                             <h4 className="font-bold text-slate-800 dark:text-white truncate max-w-[300px]">{selectedDocForRevision?.title}</h4>
-                            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest">ID: {selectedDocForRevision?.id} • Versi Saat Ini: v{selectedDocForRevision?.version}</p>
+                            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest">ID: {selectedDocForRevision?.id} • {isEnglish ? 'Current Version' : 'Versi Saat Ini'}: v{selectedDocForRevision?.version}</p>
                         </div>
                     </div>
 
@@ -1614,7 +1657,7 @@ export default function Documents({
                             if (history.length === 0) {
                                 return (
                                     <div className="py-12 text-center text-slate-400 italic bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700">
-                                        Belum ada riwayat revisi untuk dokumen ini.
+                                        {isEnglish ? 'No revision history for this document yet.' : 'Belum ada riwayat revisi untuk dokumen ini.'}
                                     </div>
                                 );
                             }
@@ -1623,10 +1666,10 @@ export default function Documents({
                                 <div key={idx} className="group flex items-center gap-4 p-4 bg-white dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 rounded-2xl hover:border-indigo-200 dark:hover:border-indigo-800 transition-all">
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 mb-1">
-                                            <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] font-bold rounded uppercase">Revisi</span>
+                                            <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] font-bold rounded uppercase">{isEnglish ? 'Revision' : 'Revisi'}</span>
                                             <span className="text-xs font-bold text-slate-700 dark:text-slate-200">{new Date(rev.timestamp).toLocaleString()}</span>
                                         </div>
-                                        <p className="text-[10px] text-slate-400 font-medium truncate">Diunggah oleh: <span className="text-indigo-600 dark:text-indigo-400">{rev.user}</span> • Ukuran: {rev.size}</p>
+                                        <p className="text-[10px] text-slate-400 font-medium truncate">{isEnglish ? 'Uploaded by' : 'Diunggah oleh'}: <span className="text-indigo-600 dark:text-indigo-400">{rev.user}</span> • {isEnglish ? 'Size' : 'Ukuran'}: {rev.size}</p>
                                     </div>
                                     <div className="flex gap-2">
                                         <a
@@ -1634,7 +1677,7 @@ export default function Documents({
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="p-2 bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-blue-600 rounded-xl transition-colors"
-                                            title="Lihat Versi Ini"
+                                            title={isEnglish ? 'View This Version' : 'Lihat Versi Ini'}
                                         >
                                             <Eye size={16} />
                                         </a>
@@ -1644,7 +1687,7 @@ export default function Documents({
                                             className="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-indigo-600/20 transition-all flex items-center gap-1.5 active:scale-95 disabled:opacity-50"
                                         >
                                             <RefreshCw size={14} className={isRestoring ? 'animate-spin' : ''} />
-                                            Restore
+                                            {isEnglish ? 'Restore' : 'Restore'}
                                         </button>
                                     </div>
                                 </div>
@@ -1661,7 +1704,7 @@ export default function Documents({
                     setSelectedDocPreview(null);
                     setPdfBlobUrl(null);
                 }}
-                title="Preview Dokumen & OCR"
+                title={isEnglish ? 'Document Preview & OCR' : 'Preview Dokumen & OCR'}
                 size="max-w-[95vw]"
             >
                 <div className="flex h-full min-h-0 flex-col gap-4 pt-4 lg:flex-row">
@@ -1670,7 +1713,7 @@ export default function Documents({
                         {isGeneratingPreview ? (
                             <div className="flex flex-col items-center gap-3">
                                 <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-                                <p className="text-sm font-bold text-slate-500 animate-pulse">Menyiapkan Preview...</p>
+                                <p className="text-sm font-bold text-slate-500 animate-pulse">{isEnglish ? 'Preparing Preview...' : 'Menyiapkan Preview...'}</p>
                             </div>
                         ) : previewFile?.type?.toLowerCase()?.startsWith('image/') ? (
                             <img src={previewFile?.fileData || previewFile?.file_data || previewFile?.filedata || getFullUrl(previewFile?.url) || undefined} alt="Preview" className="max-w-full max-h-full object-contain" onError={(e) => { e.target.style.display = 'none'; }} />
@@ -1680,9 +1723,9 @@ export default function Documents({
                             ) : (
                                 <div className="flex flex-col items-center gap-3">
                                     <FileText size={64} className="text-slate-300" />
-                                    <p className="text-sm font-bold text-slate-500">Data PDF tidak tersedia</p>
-                                    <p className="text-[10px] text-slate-400">File mungkin belum diunggah ulang ke server.</p>
-                                    <button onClick={() => handleDownload(selectedDocPreview)} className="px-6 py-2 bg-indigo-600 text-white rounded-xl text-xs font-black shadow-lg hover:scale-105 transition-all">DOWNLOAD PDF</button>
+                                    <p className="text-sm font-bold text-slate-500">{isEnglish ? 'PDF data unavailable' : 'Data PDF tidak tersedia'}</p>
+                                    <p className="text-[10px] text-slate-400">{isEnglish ? 'File may not have been re-uploaded to the server.' : 'File mungkin belum diunggah ulang ke server.'}</p>
+                                    <button onClick={() => handleDownload(selectedDocPreview)} className="px-6 py-2 bg-indigo-600 text-white rounded-xl text-xs font-black shadow-lg hover:scale-105 transition-all">{isEnglish ? 'DOWNLOAD PDF' : 'DOWNLOAD PDF'}</button>
                                 </div>
                             )
                         ) : previewHtml ? (
@@ -1690,9 +1733,9 @@ export default function Documents({
                         ) : (
                             <div className="text-center p-10 text-slate-400">
                                 <FileText size={64} className="mx-auto mb-4 opacity-20" />
-                                <p className="font-bold uppercase tracking-widest text-xs">Preview Terbatas</p>
-                                <p className="text-[10px] mt-2 opacity-60">Format ini tidak mendukung preview langsung.<br />Gunakan tombol Download untuk melihat file.</p>
-                                <button onClick={() => handleDownload(selectedDocPreview)} className="mt-6 px-6 py-2 bg-indigo-600 text-white rounded-xl text-xs font-black shadow-lg shadow-indigo-500/20 hover:scale-105 transition-all">DOWNLOAD FILE</button>
+                                <p className="font-bold uppercase tracking-widest text-xs">{isEnglish ? 'Limited Preview' : 'Preview Terbatas'}</p>
+                                <p className="text-[10px] mt-2 opacity-60">{isEnglish ? 'This format does not support direct preview.' : 'Format ini tidak mendukung preview langsung.'}<br />{isEnglish ? 'Use Download button to view the file.' : 'Gunakan tombol Download untuk melihat file.'}</p>
+                                <button onClick={() => handleDownload(selectedDocPreview)} className="mt-6 px-6 py-2 bg-indigo-600 text-white rounded-xl text-xs font-black shadow-lg shadow-indigo-500/20 hover:scale-105 transition-all">{isEnglish ? 'DOWNLOAD FILE' : 'DOWNLOAD FILE'}</button>
                             </div>
                         )}
                     </div>
@@ -1714,7 +1757,7 @@ export default function Documents({
                         {/* Chat Messages */}
                         <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
                             <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 flex items-center gap-2 shrink-0">
-                                <MoreVertical size={12} className="text-indigo-500" /> Riwayat Koordinasi
+                                <MoreVertical size={12} className="text-indigo-500" /> {isEnglish ? 'Coordination History' : 'Riwayat Koordinasi'}
                             </h4>
                             <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-1 bg-slate-50/30 dark:bg-slate-900/30 rounded-2xl p-2">
                                 <div className="space-y-4 flex flex-col">
@@ -1742,7 +1785,7 @@ export default function Documents({
                                                             <div className="flex gap-2 shrink-0 ml-2">
                                                                 <button onClick={() => handlePreview({ id: 'att-' + c.id, url: c.attachmentUrl, title: c.attachmentName, type: c.attachmentType, fileData: null }, true)} className={`text-[9px] font-black uppercase hover:underline ${isMe ? 'text-white' : 'text-indigo-600'}`}>Preview</button>
                                                                 {hasPermission('documents', 'edit') && (
-                                                                    <button onClick={() => handlePromoteAttachment(c.id)} className={`text-[9px] font-black uppercase hover:underline ${isMe ? 'text-emerald-300' : 'text-emerald-600'}`}>Revisi</button>
+                                                                    <button onClick={() => handlePromoteAttachment(c.id)} className={`text-[9px] font-black uppercase hover:underline ${isMe ? 'text-emerald-300' : 'text-emerald-600'}`}>{isEnglish ? 'Revise' : 'Revisi'}</button>
                                                                 )}
                                                             </div>
                                                         </div>
@@ -1760,7 +1803,7 @@ export default function Documents({
                         <div className="space-y-2 shrink-0">
                             <textarea
                                 value={newComment} onChange={e => setNewComment(e.target.value)}
-                                placeholder="Tulis komentar..."
+                                placeholder={isEnglish ? 'Write a comment...' : 'Tulis komentar...'}
                                 className="w-full p-3 text-xs bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none dark:text-white resize-none"
                                 rows="2"
                             />
@@ -1769,17 +1812,17 @@ export default function Documents({
                                     <div className={`p-2 rounded-lg ${commentAttachment ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
                                         <Paperclip size={14} />
                                     </div>
-                                    <span className="text-[10px] font-bold text-slate-500 truncate max-w-[100px]">{commentAttachment ? commentAttachment.name : 'Lampiran'}</span>
+                                    <span className="text-[10px] font-bold text-slate-500 truncate max-w-[100px]">{commentAttachment ? commentAttachment.name : (isEnglish ? 'Attachment' : 'Lampiran')}</span>
                                     <input type="file" className="hidden" onChange={e => setCommentAttachment(e.target.files[0])} />
                                 </label>
-                                <button onClick={handlePostComment} disabled={isPostingComment || (!newComment.trim() && !commentAttachment)} className="px-4 py-2 bg-indigo-600 text-white text-[10px] font-black uppercase rounded-lg disabled:opacity-50">Kirim</button>
+                                <button onClick={handlePostComment} disabled={isPostingComment || (!newComment.trim() && !commentAttachment)} className="px-4 py-2 bg-indigo-600 text-white text-[10px] font-black uppercase rounded-lg disabled:opacity-50">{isEnglish ? 'Send' : 'Kirim'}</button>
                             </div>
                         </div>
 
                         {/* Action Buttons */}
                         <div className="flex gap-3 shrink-0">
-                            <button onClick={() => setSelectedDocPreview(null)} className="flex-1 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all">Tutup</button>
-                            <button onClick={() => handleDownload(selectedDocPreview)} className="flex-[2] py-2.5 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-indigo-500/20 hover:bg-indigo-500 transition-all flex items-center justify-center gap-2"><Download size={14} /> Download</button>
+                            <button onClick={() => setSelectedDocPreview(null)} className="flex-1 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all">{isEnglish ? 'Close' : 'Tutup'}</button>
+                            <button onClick={() => handleDownload(selectedDocPreview)} className="flex-[2] py-2.5 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-indigo-500/20 hover:bg-indigo-500 transition-all flex items-center justify-center gap-2"><Download size={14} /> {isEnglish ? 'Download' : 'Download'}</button>
                         </div>
                     </div>
 
@@ -1787,10 +1830,10 @@ export default function Documents({
                     <div className="flex-1 flex flex-col h-full min-w-[280px] overflow-hidden">
                         <div className="flex items-center gap-2 mb-2 shrink-0">
                             <Sparkles size={14} className="text-indigo-500" />
-                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Hasil Ekstraksi Teks (OCR)</h4>
+                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{isEnglish ? 'Text Extraction Result (OCR)' : 'Hasil Ekstraksi Teks (OCR)'}</h4>
                         </div>
                         <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar w-full bg-slate-50 dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-4 text-xs font-mono text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-wrap shadow-inner">
-                            {selectedDocPreview?.ocrContent || "Tidak ada data teks yang terdeteksi."}
+                            {selectedDocPreview?.ocrContent || (isEnglish ? 'No detected text data.' : 'Tidak ada data teks yang terdeteksi.')}
                         </div>
                     </div>
                 </div>

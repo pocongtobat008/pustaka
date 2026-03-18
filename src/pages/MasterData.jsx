@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Plus, Edit3, Trash2, Building2, GitCommit, ShieldCheck, ChevronRight, ChevronLeft, Users, User, Shield, History, Search, Clock, ChevronDown, ChevronUp, AlertCircle, FileText, Activity } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { APP_MODULES } from '../utils/permissions';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function MasterData({
     users, roles, departments, flows = [], logs = [],
@@ -15,6 +16,106 @@ export default function MasterData({
     setIsModalOpen, setModalTab,
     hasPermission
 }) {
+    const { language } = useLanguage();
+    const isEnglish = language === 'en';
+    const dateLocale = isEnglish ? 'en-US' : 'id-ID';
+    const text = isEnglish
+        ? {
+            tabs: {
+                users: 'Users',
+                roles: 'Roles',
+                departments: 'Departments',
+                flows: 'Flows',
+                logs: 'Logs',
+            },
+            noDepartment: 'No Department',
+            usersManagement: 'User Management',
+            searchUser: 'Search user...',
+            newUser: 'New User',
+            userNotFound: 'User not found.',
+            registeredMembers: 'Registered Members',
+            roleAccessManagement: 'Role & Access Management',
+            newRole: 'New Role',
+            moduleAccess: 'Module Access',
+            noPermissionSet: 'No access rights configured yet.',
+            approvalFlowMaster: 'Approval Flow Master',
+            newFlow: 'New Flow',
+            editFlow: 'Edit Flow',
+            deleteFlow: 'Delete Flow',
+            auditTrailSystem: 'Audit Trail System',
+            systemLogFile: 'System Log',
+            serverLogs: 'Server Logs',
+            errors: 'Errors',
+            ocrFailures: 'OCR Failures',
+            searchLogs: 'Search action, user, or details...',
+            time: 'Time',
+            user: 'User',
+            action: 'Action',
+            detail: 'Detail',
+            data: 'Data',
+            noActivity: 'No activity records found.',
+            system: 'System',
+            beforeOld: 'Before (Old)',
+            afterNew: 'After (New)',
+            showing: 'Showing',
+            to: 'to',
+            of: 'of',
+            logsWord: 'logs',
+            loadingLogFile: 'Loading Log File...',
+            noServerLog: 'No server log (empty file).',
+            noSystemError: 'No system errors (empty file).',
+            noOcrFailure: 'No OCR failures (empty file).',
+            departmentList: 'Department List',
+            newDepartment: 'New Department',
+        }
+        : {
+            tabs: {
+                users: 'Users',
+                roles: 'Roles',
+                departments: 'Departments',
+                flows: 'Flows',
+                logs: 'Logs',
+            },
+            noDepartment: 'Tanpa Departemen',
+            usersManagement: 'Manajemen User',
+            searchUser: 'Cari user...',
+            newUser: 'User Baru',
+            userNotFound: 'User tidak ditemukan.',
+            registeredMembers: 'Anggota Terdaftar',
+            roleAccessManagement: 'Manajemen Role & Hak Akses',
+            newRole: 'Role Baru',
+            moduleAccess: 'Hak Akses Modul',
+            noPermissionSet: 'Belum ada hak akses yang diatur.',
+            approvalFlowMaster: 'Master Alur Persetujuan',
+            newFlow: 'Flow Baru',
+            editFlow: 'Edit Flow',
+            deleteFlow: 'Hapus Flow',
+            auditTrailSystem: 'Audit Trail System',
+            systemLogFile: 'System Log',
+            serverLogs: 'Server Logs',
+            errors: 'Errors',
+            ocrFailures: 'OCR Failures',
+            searchLogs: 'Cari aksi, user, atau detail...',
+            time: 'Waktu',
+            user: 'Pengguna',
+            action: 'Aksi',
+            detail: 'Detail',
+            data: 'Data',
+            noActivity: 'Tidak ada catatan aktivitas ditemukan.',
+            system: 'System',
+            beforeOld: 'Sebelum (Old)',
+            afterNew: 'Sesudah (New)',
+            showing: 'Menampilkan',
+            to: '-',
+            of: 'dari',
+            logsWord: 'log',
+            loadingLogFile: 'Memuat Log File...',
+            noServerLog: 'Tidak ada log server (File kosong).',
+            noSystemError: 'Tidak ada error system (File kosong).',
+            noOcrFailure: 'Tidak ada kegagalan OCR (File kosong).',
+            departmentList: 'Daftar Departemen',
+            newDepartment: 'Departemen Baru',
+        };
     const [masterTab, setMasterTab] = useState('users');
     const [userSearchQuery, setUserSearchQuery] = useState('');
     const [logSearchQuery, setLogSearchQuery] = useState('');
@@ -60,12 +161,12 @@ export default function MasterData({
             (u.department || '').toLowerCase().includes(userSearchQuery.toLowerCase())
         );
         return filtered.reduce((acc, user) => {
-            const dept = user.department || 'Tanpa Departemen';
+            const dept = user.department || text.noDepartment;
             if (!acc[dept]) acc[dept] = [];
             acc[dept].push(user);
             return acc;
         }, {});
-    }, [users, userSearchQuery]);
+    }, [users, userSearchQuery, text.noDepartment]);
 
     const filteredLogs = useMemo(() => {
         return logs.filter(l =>
@@ -90,7 +191,7 @@ export default function MasterData({
                         onClick={() => setMasterTab(tab)}
                         className={`px-4 py-2 rounded-lg capitalize text-sm font-bold transition-all ${masterTab === tab ? 'bg-white dark:bg-slate-700 text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:hover:text-slate-300'}`}
                     >
-                        {tab}
+                        {text.tabs[tab] || tab}
                     </button>
                 ))}
             </div>
@@ -98,10 +199,10 @@ export default function MasterData({
             {masterTab === 'users' && (
                 <Card>
                     <div className="flex justify-between items-center mb-6">
-                        <h3 className="font-bold text-lg dark:text-white">Manajemen User</h3>
+                        <h3 className="font-bold text-lg dark:text-white">{text.usersManagement}</h3>
                         <div className="flex gap-2">
                             <input
-                                type="text" placeholder="Cari user..." className="px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                type="text" placeholder={text.searchUser} className="px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
                                 value={userSearchQuery} onChange={(e) => setUserSearchQuery(e.target.value)}
                             />
                             {hasPermission('master', 'create') && (
@@ -109,14 +210,14 @@ export default function MasterData({
                                     onClick={handleCreateUser}
                                     className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-indigo-700 transition-colors"
                                 >
-                                    <Plus size={16} /> User Baru
+                                    <Plus size={16} /> {text.newUser}
                                 </button>
                             )}
                         </div>
                     </div>
                     <div className="space-y-4">
                         {Object.keys(groupedUsers).length === 0 ? (
-                            <div className="text-center py-10 text-slate-400 italic">User tidak ditemukan.</div>
+                            <div className="text-center py-10 text-slate-400 italic">{text.userNotFound}</div>
                         ) : (
                             Object.entries(groupedUsers).map(([deptName, deptUsers]) => (
                                 <div key={deptName} className="space-y-2">
@@ -130,7 +231,7 @@ export default function MasterData({
                                             </div>
                                             <div className="text-left">
                                                 <h4 className="font-black text-slate-800 dark:text-white text-sm uppercase tracking-wider">{deptName}</h4>
-                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{deptUsers.length} Anggota Terdaftar</p>
+                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{deptUsers.length} {text.registeredMembers}</p>
                                             </div>
                                         </div>
                                         <div className={`p-2 rounded-xl transition-all ${expandedDepts[deptName] ? 'bg-indigo-600 text-white rotate-90' : 'bg-slate-50 dark:bg-slate-800 text-slate-400 group-hover:text-indigo-600'}`}>
@@ -181,13 +282,13 @@ export default function MasterData({
             {masterTab === 'roles' && (
                 <Card>
                     <div className="flex justify-between items-center mb-6">
-                        <h3 className="font-bold text-lg dark:text-white">Manajemen Role & Hak Akses</h3>
+                        <h3 className="font-bold text-lg dark:text-white">{text.roleAccessManagement}</h3>
                         {hasPermission('master', 'create') && (
                             <button
                                 onClick={handleCreateRole}
                                 className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-indigo-700 transition-colors"
                             >
-                                <Plus size={16} /> Role Baru
+                                <Plus size={16} /> {text.newRole}
                             </button>
                         )}
                     </div>
@@ -202,7 +303,7 @@ export default function MasterData({
                                     <div className="flex justify-between items-start mb-4">
                                         <div>
                                             <div className="font-bold text-lg dark:text-white">{r.label || r.name}</div>
-                                            <div className="text-xs text-gray-500 mt-1 uppercase tracking-wider">Hak Akses Modul</div>
+                                            <div className="text-xs text-gray-500 mt-1 uppercase tracking-wider">{text.moduleAccess}</div>
                                         </div>
                                         <div className="flex gap-1">
                                             {hasPermission('master', 'edit') && (
@@ -223,7 +324,7 @@ export default function MasterData({
                                             </div>
                                         ))}
                                         {Object.keys(perms).length === 0 && (
-                                            <span className="text-[10px] text-slate-400 italic">Belum ada hak akses yang diatur.</span>
+                                            <span className="text-[10px] text-slate-400 italic">{text.noPermissionSet}</span>
                                         )}
                                     </div>
                                 </div>
@@ -236,10 +337,10 @@ export default function MasterData({
             {masterTab === 'flows' && (
                 <Card>
                     <div className="flex justify-between items-center mb-6">
-                        <h3 className="font-bold text-lg dark:text-white">Master Alur Persetujuan</h3>
+                        <h3 className="font-bold text-lg dark:text-white">{text.approvalFlowMaster}</h3>
                         {hasPermission('master', 'create') && (
                             <button onClick={() => handleCreateFlow()} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-indigo-700 transition-colors">
-                                <Plus size={16} /> Flow Baru
+                                <Plus size={16} /> {text.newFlow}
                             </button>
                         )}
                     </div>
@@ -253,10 +354,10 @@ export default function MasterData({
                                     </div>
                                     <div className="flex gap-1">
                                         {hasPermission('master', 'edit') && (
-                                            <button onClick={() => handleEditFlow(f)} className="p-2 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg" title="Edit Flow"><Edit3 size={16} /></button>
+                                            <button onClick={() => handleEditFlow(f)} className="p-2 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg" title={text.editFlow}><Edit3 size={16} /></button>
                                         )}
                                         {hasPermission('master', 'delete') && (
-                                            <button onClick={() => handleDeleteFlow(f.id)} className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg" title="Hapus Flow"><Trash2 size={16} /></button>
+                                            <button onClick={() => handleDeleteFlow(f.id)} className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg" title={text.deleteFlow}><Trash2 size={16} /></button>
                                         )}
                                     </div>
                                 </div>
@@ -280,7 +381,7 @@ export default function MasterData({
                         <div>
                             <h3 className="font-bold text-lg dark:text-white flex items-center gap-2 lowercase">
                                 <History size={20} className="text-indigo-500" />
-                                {logSource === 'database' ? 'Audit Trail System' : `System Log: ${logSource.split('_')[0].toUpperCase()} File`}
+                                {logSource === 'database' ? text.auditTrailSystem : `${text.systemLogFile}: ${logSource.split('_')[0].toUpperCase()} File`}
                             </h3>
                             <div className="flex bg-gray-100 dark:bg-slate-900 p-1 rounded-xl mt-3 w-fit border border-slate-200 dark:border-slate-700">
                                 <button
@@ -293,19 +394,19 @@ export default function MasterData({
                                     onClick={() => setLogSource('server_file')}
                                     className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'server_file' ? 'bg-white dark:bg-slate-800 text-teal-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                                 >
-                                    <Activity size={12} /> Server Logs
+                                    <Activity size={12} /> {text.serverLogs}
                                 </button>
                                 <button
                                     onClick={() => setLogSource('error_file')}
                                     className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'error_file' ? 'bg-white dark:bg-slate-800 text-red-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                                 >
-                                    <AlertCircle size={12} /> Errors
+                                    <AlertCircle size={12} /> {text.errors}
                                 </button>
                                 <button
                                     onClick={() => setLogSource('ocr_file')}
                                     className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'ocr_file' ? 'bg-white dark:bg-slate-800 text-orange-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                                 >
-                                    <FileText size={12} /> OCR Failures
+                                    <FileText size={12} /> {text.ocrFailures}
                                 </button>
                             </div>
                         </div>
@@ -314,7 +415,7 @@ export default function MasterData({
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                                 <input
                                     type="text"
-                                    placeholder="Cari aksi, user, atau detail..."
+                                    placeholder={text.searchLogs}
                                     className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white"
                                     value={logSearchQuery}
                                     onChange={(e) => setLogSearchQuery(e.target.value)}
@@ -328,17 +429,17 @@ export default function MasterData({
                                 <table className="w-full text-sm text-left">
                                     <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 font-black uppercase tracking-widest text-[10px]">
                                         <tr>
-                                            <th className="px-6 py-4">Waktu</th>
-                                            <th className="px-6 py-4">Pengguna</th>
-                                            <th className="px-6 py-4">Aksi</th>
-                                            <th className="px-6 py-4">Detail</th>
-                                            <th className="px-6 py-4 text-right">Data</th>
+                                            <th className="px-6 py-4">{text.time}</th>
+                                            <th className="px-6 py-4">{text.user}</th>
+                                            <th className="px-6 py-4">{text.action}</th>
+                                            <th className="px-6 py-4">{text.detail}</th>
+                                            <th className="px-6 py-4 text-right">{text.data}</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
                                         {paginatedLogs.length === 0 ? (
                                             <tr>
-                                                <td colSpan="5" className="px-6 py-10 text-center text-slate-400 italic">Tidak ada catatan aktivitas ditemukan.</td>
+                                                <td colSpan="5" className="px-6 py-10 text-center text-slate-400 italic">{text.noActivity}</td>
                                             </tr>
                                         ) : (
                                             paginatedLogs.map((log) => (
@@ -347,10 +448,10 @@ export default function MasterData({
                                                         <td className="px-6 py-4 whitespace-nowrap text-slate-500 dark:text-slate-400 font-medium">
                                                             <div className="flex items-center gap-2">
                                                                 <Clock size={12} />
-                                                                {new Date(log.timestamp).toLocaleString('id-ID', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                                                                {new Date(log.timestamp).toLocaleString(dateLocale, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
                                                             </div>
                                                         </td>
-                                                        <td className="px-6 py-4 font-bold text-slate-700 dark:text-slate-200">{log.user || 'System'}</td>
+                                                        <td className="px-6 py-4 font-bold text-slate-700 dark:text-slate-200">{log.user || text.system}</td>
                                                         <td className="px-6 py-4">
                                                             <span className="px-2 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-lg text-[10px] font-black uppercase tracking-wider border border-indigo-100 dark:border-indigo-800">
                                                                 {log.action}
@@ -372,8 +473,8 @@ export default function MasterData({
                                                         <tr>
                                                             <td colSpan="5" className="px-6 pb-4 pt-0">
                                                                 <div className="bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-4 border border-slate-100 dark:border-slate-800 grid grid-cols-1 md:grid-cols-2 gap-4 animate-in slide-in-from-top-2">
-                                                                    {log.oldValue && <div className="space-y-1"><p className="text-[9px] font-black text-red-500 uppercase ml-1">Sebelum (Old)</p><pre className="text-[10px] font-mono p-3 bg-red-50/50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 rounded-xl text-red-700 dark:text-red-400 overflow-x-auto">{log.oldValue.startsWith('{') ? JSON.stringify(JSON.parse(log.oldValue), null, 2) : log.oldValue}</pre></div>}
-                                                                    {log.newValue && <div className="space-y-1"><p className="text-[9px] font-black text-emerald-500 uppercase ml-1">Sesudah (New)</p><pre className="text-[10px] font-mono p-3 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/20 rounded-xl text-emerald-700 dark:text-emerald-400 overflow-x-auto">{log.newValue.startsWith('{') ? JSON.stringify(JSON.parse(log.newValue), null, 2) : log.newValue}</pre></div>}
+                                                                    {log.oldValue && <div className="space-y-1"><p className="text-[9px] font-black text-red-500 uppercase ml-1">{text.beforeOld}</p><pre className="text-[10px] font-mono p-3 bg-red-50/50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 rounded-xl text-red-700 dark:text-red-400 overflow-x-auto">{log.oldValue.startsWith('{') ? JSON.stringify(JSON.parse(log.oldValue), null, 2) : log.oldValue}</pre></div>}
+                                                                    {log.newValue && <div className="space-y-1"><p className="text-[9px] font-black text-emerald-500 uppercase ml-1">{text.afterNew}</p><pre className="text-[10px] font-mono p-3 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/20 rounded-xl text-emerald-700 dark:text-emerald-400 overflow-x-auto">{log.newValue.startsWith('{') ? JSON.stringify(JSON.parse(log.newValue), null, 2) : log.newValue}</pre></div>}
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -389,7 +490,7 @@ export default function MasterData({
                             {totalLogPages > 1 && (
                                 <div className="px-6 py-4 flex items-center justify-between border-t border-slate-50 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-900/30 rounded-b-2xl">
                                     <div className="text-xs text-slate-500 dark:text-slate-400">
-                                        Menampilkan <span className="font-bold text-indigo-600">{(logCurrentPage - 1) * logsPerPage + 1}</span> - <span className="font-bold text-indigo-600">{Math.min(logCurrentPage * logsPerPage, filteredLogs.length)}</span> dari <span className="font-bold text-indigo-600">{filteredLogs.length}</span> log
+                                        {text.showing} <span className="font-bold text-indigo-600">{(logCurrentPage - 1) * logsPerPage + 1}</span> {text.to} <span className="font-bold text-indigo-600">{Math.min(logCurrentPage * logsPerPage, filteredLogs.length)}</span> {text.of} <span className="font-bold text-indigo-600">{filteredLogs.length}</span> {text.logsWord}
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <button
@@ -436,7 +537,7 @@ export default function MasterData({
                                 <div className="absolute inset-0 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm rounded-2xl">
                                     <div className="flex flex-col items-center gap-3">
                                         <Activity className="w-8 h-8 text-indigo-500 animate-spin" />
-                                        <div className="text-sm font-bold text-slate-300">Memuat Log File...</div>
+                                        <div className="text-sm font-bold text-slate-300">{text.loadingLogFile}</div>
                                     </div>
                                 </div>
                             ) : (
@@ -444,9 +545,9 @@ export default function MasterData({
                                     {logSource === 'server_file' && fileLogs.server}
                                     {logSource === 'error_file' && fileLogs.error}
                                     {logSource === 'ocr_file' && fileLogs.ocr}
-                                    {(!fileLogs.server && logSource === 'server_file') && "Tidak ada log server (File kosong)."}
-                                    {(!fileLogs.error && logSource === 'error_file') && "Tidak ada error system (File kosong)."}
-                                    {(!fileLogs.ocr && logSource === 'ocr_file') && "Tidak ada kegagalan OCR (File kosong)."}
+                                    {(!fileLogs.server && logSource === 'server_file') && text.noServerLog}
+                                    {(!fileLogs.error && logSource === 'error_file') && text.noSystemError}
+                                    {(!fileLogs.ocr && logSource === 'ocr_file') && text.noOcrFailure}
                                 </pre>
                             )}
                         </div>
@@ -459,9 +560,9 @@ export default function MasterData({
                 masterTab === 'departments' && (
                     <Card>
                         <div className="flex justify-between items-center mb-6">
-                            <h3 className="font-bold text-lg dark:text-white">Daftar Departemen</h3>
+                            <h3 className="font-bold text-lg dark:text-white">{text.departmentList}</h3>
                             {hasPermission('master', 'create') && (
-                                <button onClick={handleCreateDept} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-indigo-700 transition-colors"><Plus size={16} /> Departemen Baru</button>
+                                <button onClick={handleCreateDept} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-indigo-700 transition-colors"><Plus size={16} /> {text.newDepartment}</button>
                             )}
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

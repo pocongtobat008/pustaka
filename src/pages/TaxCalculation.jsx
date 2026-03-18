@@ -10,9 +10,163 @@ import { parseApiError } from '../utils/errorHandler';
 import TaxWpDatabase from '../components/tax/TaxWpDatabase';
 import { useToast } from '../components/ui/Toast';
 import MasterTaxObjectsTab from '../components/tax/MasterTaxObjectsTab';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function TaxCalculation({ onCopy, hasPermission }) {
     const { toast, updateToast } = useToast();
+    const { language } = useLanguage();
+    const isEnglish = language === 'en';
+    const text = isEnglish
+        ? {
+            validatingRequired: 'Tax ID number and taxpayer name are required.',
+            validatingIdentityLength: 'Tax ID number (NPWP/NIK) must be 16 digits.',
+            saveSuccess: (isEdit) => `Data successfully ${isEdit ? 'updated' : 'saved'} to WP Database!`,
+            saveFailed: 'Failed to save: ',
+            noDeletePermission: 'You do not have permission to delete data.',
+            confirmDeleteAll: 'WARNING: You are about to delete ALL data in WP Database. This action cannot be undone. Continue?',
+            deleteAllSuccess: 'All WP Database records were deleted successfully.',
+            deleteAllFailed: (status, detail) => `Delete failed (Status ${status}): ${detail}`,
+            deleteAllSystemError: 'A system error occurred while deleting data.',
+            apiNotFound: 'API /tax/wp-all was not found.',
+            confirmDeleteOne: 'Are you sure you want to delete this record?',
+            deleteFailed: 'Failed to delete data: ',
+            masterAddSuccess: 'Tax object added successfully!',
+            masterAddFailed: 'Failed to add tax object: ',
+            masterUpdateSuccess: 'Tax object updated successfully!',
+            masterUpdateFailed: 'Failed to update tax object: ',
+            masterDeleteSuccess: 'Tax object deleted successfully!',
+            masterDeleteFailed: 'Failed to delete tax object: ',
+            insightSearch: (count, q) => `Search Analysis: Showing ${count} result(s) for "${q}". AI scans taxpayer name, identity number, and tax object name.`,
+            insightMasterEmpty: "Master Data is empty: Use 'Import Master' to load official tax object codes for faster and more accurate input.",
+            insightCalc: (pph) => `Calculation Detected: You have a PPh result of ${pph}. Use the 'Tax Object' tab to save this record to database.`,
+            insightDb: (count) => `Database Optimization: There are ${count} taxpayer records. Use 'Export Excel' regularly for offline backup.`,
+            tips: [
+                'Efficiency Tip: Search tax objects by code (e.g. 21-100-01) or description name.',
+                'AI Info: The system auto-detects applicable tax rate based on selected object code.',
+                'Suggestion: Ensure NPWP/NIK is valid to avoid errors in e-Bupot reporting.',
+                'System Optimal: WP Database is synced in real-time with tax reporting module.'
+            ],
+            importingDatabase: 'Processing Database',
+            importingMessage: 'Importing taxpayer records into the system.',
+            importingWarning: 'Please do not close or refresh this page.',
+            title: 'Tax Calculation',
+            tabs: {
+                simulation: 'PPh Simulation',
+                object: 'Tax Object',
+                database: 'WP Database',
+                master: 'Master Object',
+            },
+            smartAssistant: 'Smart Assistant',
+            taxIntelligence: 'Tax Intelligence',
+            infoTitle: 'Tax Information',
+            infoBody: 'Use this calculator to estimate PPh based on DPP and applicable rates. This calculation is simulation-only and not an official withholding slip.',
+            subjectObjectData: 'Tax Subject & Object Data',
+            templateMaster: 'Master Template',
+            importMaster: 'Import Master',
+            idType: 'Identity Type',
+            idNumber: 'Identity Number',
+            idPlaceholder: '16-digit number',
+            taxPayerName: 'Taxpayer Name',
+            taxPayerNamePlaceholder: 'Full Name / Company Name',
+            taxPayerEmail: 'Taxpayer Email',
+            taxType: 'Tax Type',
+            objectCode: 'Tax Object Code',
+            objectCodePlaceholder: 'Auto-filled from object name',
+            objectNameSearch: 'Tax Object Name (Search & Select)',
+            objectNamePlaceholder: 'Type to search tax object...',
+            emptyObject: 'No data found.',
+            importMasterNow: 'Import master data now?',
+            taxCalculation: 'Tax Calculation',
+            cancelEdit: 'Cancel Edit',
+            saving: 'Saving...',
+            updateData: 'Update Data',
+            saveToDb: 'Save Data to WP Database',
+            summaryTitle: 'Data Summary',
+            summaryHint: 'Fill the form and calculate to see summary here.',
+            summaryName: 'Name',
+            summaryType: 'Type',
+            summaryRate: 'Rate',
+            summaryGrossUp: 'Gross Up',
+            summaryCategory: 'Category',
+            nonEmployee: 'Non Employee',
+            summaryBooked: 'Total Booked',
+            summaryReceived: 'Total Received',
+        }
+        : {
+            validatingRequired: 'Nomor Identitas dan Nama Wajib Pajak wajib diisi!',
+            validatingIdentityLength: 'Nomor Identitas (NPWP/NIK) harus berjumlah 16 digit angka!',
+            saveSuccess: (isEdit) => `Data berhasil ${isEdit ? 'diperbarui' : 'disimpan'} ke Database WP!`,
+            saveFailed: 'Gagal menyimpan: ',
+            noDeletePermission: 'Anda tidak memiliki izin untuk menghapus data.',
+            confirmDeleteAll: 'PERINGATAN: Anda akan menghapus SELURUH data di Database WP. Tindakan ini tidak dapat dibatalkan. Lanjutkan?',
+            deleteAllSuccess: 'Seluruh data Database WP berhasil dihapus.',
+            deleteAllFailed: (status, detail) => `Gagal menghapus (Status ${status}): ${detail}`,
+            deleteAllSystemError: 'Terjadi kesalahan saat menghapus data.',
+            apiNotFound: 'API /tax/wp-all tidak ditemukan.',
+            confirmDeleteOne: 'Yakin ingin menghapus data ini?',
+            deleteFailed: 'Gagal menghapus data: ',
+            masterAddSuccess: 'Berhasil menambah objek pajak baru!',
+            masterAddFailed: 'Gagal menambah objek: ',
+            masterUpdateSuccess: 'Berhasil memperbarui objek pajak!',
+            masterUpdateFailed: 'Gagal memperbarui: ',
+            masterDeleteSuccess: 'Berhasil menghapus objek pajak!',
+            masterDeleteFailed: 'Gagal menghapus: ',
+            insightSearch: (count, q) => `Analisis Pencarian: Menampilkan ${count} hasil untuk "${q}". AI memindai nama WP, nomor identitas, dan nama objek pajak.`,
+            insightMasterEmpty: "Data Master Kosong: Gunakan fitur 'Import Master' untuk memuat daftar kode objek pajak resmi agar pengisian data lebih cepat dan akurat.",
+            insightCalc: (pph) => `Kalkulasi Terdeteksi: Anda memiliki perhitungan PPh senilai ${pph}. Gunakan tab 'Objek Pajak' untuk menyimpan data ini ke database.`,
+            insightDb: (count) => `Optimasi Database: Terdapat ${count} record Wajib Pajak. Gunakan fitur 'Export Excel' secara berkala untuk backup data offline.`,
+            tips: [
+                'Tips Efisiensi: Anda dapat mencari objek pajak berdasarkan kode (misal: 21-100-01) atau nama deskripsi.',
+                'Info AI: Sistem otomatis mendeteksi tarif pajak yang berlaku berdasarkan kode objek yang Anda pilih.',
+                'Saran: Pastikan nomor NPWP/NIK valid untuk menghindari kesalahan pelaporan pada sistem e-Bupot.',
+                'Sistem Optimal: Database WP tersinkronisasi secara real-time dengan modul pelaporan pajak.'
+            ],
+            importingDatabase: 'Memproses Database',
+            importingMessage: 'Sedang mengimport ratusan data Wajib Pajak ke sistem.',
+            importingWarning: 'Mohon jangan tutup atau refresh halaman ini.',
+            title: 'Tax Calculation',
+            tabs: {
+                simulation: 'Simulasi PPh',
+                object: 'Objek Pajak',
+                database: 'Database WP',
+                master: 'Master Objek',
+            },
+            smartAssistant: 'Smart Assistant',
+            taxIntelligence: 'Tax Intelligence',
+            infoTitle: 'Informasi Pajak',
+            infoBody: 'Gunakan kalkulator ini untuk melakukan estimasi perhitungan PPh berdasarkan DPP dan tarif yang berlaku. Perhitungan ini hanya simulasi dan bukan merupakan bukti potong resmi.',
+            subjectObjectData: 'Data Subjek & Objek Pajak',
+            templateMaster: 'Template Master',
+            importMaster: 'Import Master',
+            idType: 'Jenis Identitas',
+            idNumber: 'Nomor Identitas',
+            idPlaceholder: '16 digit angka',
+            taxPayerName: 'Nama Wajib Pajak',
+            taxPayerNamePlaceholder: 'Nama Lengkap / Badan Usaha',
+            taxPayerEmail: 'Email Wajib Pajak',
+            taxType: 'Jenis Pajak',
+            objectCode: 'Kode Objek Pajak',
+            objectCodePlaceholder: 'Auto-fill dari Nama Objek',
+            objectNameSearch: 'Nama Objek Pajak (Cari & Pilih)',
+            objectNamePlaceholder: 'Ketik untuk mencari objek pajak...',
+            emptyObject: 'Tidak ada data ditemukan.',
+            importMasterNow: 'Import Master Data Sekarang?',
+            taxCalculation: 'Perhitungan Pajak',
+            cancelEdit: 'Batal Edit',
+            saving: 'Menyimpan...',
+            updateData: 'Update Data',
+            saveToDb: 'Simpan Data ke Database WP',
+            summaryTitle: 'Summary Data',
+            summaryHint: 'Isi formulir dan lakukan perhitungan untuk melihat ringkasan disini.',
+            summaryName: 'Nama',
+            summaryType: 'Jenis',
+            summaryRate: 'Tarif',
+            summaryGrossUp: 'Gross Up',
+            summaryCategory: 'Kategori',
+            nonEmployee: 'Bukan Pegawai',
+            summaryBooked: 'Total Dibukukan',
+            summaryReceived: 'Total Diterima',
+        };
     const [activeTab, setActiveTab] = useState('simulation'); // 'simulation', 'object', 'database', 'master'
     const [isLoading, setIsLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -148,15 +302,15 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
         const file = e.target.files[0];
         if (!file) return;
 
-        const tid = toast.loading(`Menyiapkan file "${file.name}"...`);
+        const tid = toast.loading(isEnglish ? `Preparing file "${file.name}"...` : `Menyiapkan file "${file.name}"...`);
         setIsImporting(true);
 
         try {
-            updateToast(tid, { message: "Mengunggah file ke server...", progress: 30 });
+            updateToast(tid, { message: isEnglish ? 'Uploading file to server...' : 'Mengunggah file ke server...', progress: 30 });
             const result = await taxService.importWpExcel(file);
 
             if (result && !result.error) {
-                updateToast(tid, { message: "Sinkronisasi data & indexing...", progress: 70 });
+                updateToast(tid, { message: isEnglish ? 'Syncing data & indexing...' : 'Sinkronisasi data & indexing...', progress: 70 });
 
                 // Berikan jeda agar DB commit selesai, lalu verifikasi data
                 setTimeout(async () => {
@@ -172,7 +326,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                     } else {
                         updateToast(tid, {
                             type: 'success',
-                            message: `Berhasil! ${finalCount} data Wajib Pajak telah disinkronkan.`,
+                            message: isEnglish ? `Success! ${finalCount} taxpayer records have been synchronized.` : `Berhasil! ${finalCount} data Wajib Pajak telah disinkronkan.`,
                             progress: 100
                         });
                     }
@@ -184,7 +338,9 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
             console.error("Import Error Detail:", error);
             updateToast(tid, {
                 type: 'error',
-                message: `Gagal Import: ${error.message}. Pastikan kolom Excel sudah sesuai template.`
+                message: isEnglish
+                    ? `Import failed: ${error.message}. Please ensure Excel columns match the template.`
+                    : `Gagal Import: ${error.message}. Pastikan kolom Excel sudah sesuai template.`
             });
         } finally {
             setIsImporting(false);
@@ -196,22 +352,22 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
         const file = e.target.files[0];
         if (!file) return;
 
-        const tid = toast.loading(`Mengimport Master Objek Pajak...`);
+        const tid = toast.loading(isEnglish ? 'Importing Master Tax Objects...' : 'Mengimport Master Objek Pajak...');
         setIsImporting(true);
 
         try {
-            updateToast(tid, { message: "Memproses file master...", progress: 40 });
+            updateToast(tid, { message: isEnglish ? 'Processing master file...' : 'Memproses file master...', progress: 40 });
             const result = await taxService.importMasterExcel(file);
 
             if (result && !result.error) {
-                updateToast(tid, { message: "Memperbarui daftar objek...", progress: 80 });
+                updateToast(tid, { message: isEnglish ? 'Refreshing object list...' : 'Memperbarui daftar objek...', progress: 80 });
                 await fetchMasterData();
-                updateToast(tid, { type: 'success', message: 'Master Objek Pajak berhasil diperbarui!', progress: 100 });
+                updateToast(tid, { type: 'success', message: isEnglish ? 'Master Tax Objects updated successfully!' : 'Master Objek Pajak berhasil diperbarui!', progress: 100 });
             } else {
-                updateToast(tid, { type: 'error', message: 'Gagal import master: ' + (result?.error || 'Terjadi kesalahan') });
+                updateToast(tid, { type: 'error', message: (isEnglish ? 'Failed to import master: ' : 'Gagal import master: ') + (result?.error || (isEnglish ? 'Unknown error' : 'Terjadi kesalahan')) });
             }
         } catch (error) {
-            updateToast(tid, { type: 'error', message: 'Gagal import master: ' + error.message });
+            updateToast(tid, { type: 'error', message: (isEnglish ? 'Failed to import master: ' : 'Gagal import master: ') + error.message });
         } finally {
             setIsImporting(false);
             e.target.value = null; // Reset input
@@ -241,12 +397,12 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
 
     const handleSave = async () => {
         if (!formData.identityNumber || !formData.name) {
-            alert('Nomor Identitas dan Nama Wajib Pajak wajib diisi!');
+            alert(text.validatingRequired);
             return;
         }
 
         if (formData.identityNumber.length !== 16) {
-            alert('Nomor Identitas (NPWP/NIK) harus berjumlah 16 digit angka!');
+            alert(text.validatingIdentityLength);
             return;
         }
 
@@ -279,7 +435,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
             }
 
             if (result) {
-                alert(`Data berhasil ${editingId ? 'diperbarui' : 'disimpan'} ke Database WP!`);
+                alert(text.saveSuccess(!!editingId));
                 setEditingId(null);
                 setFormData({
                     idType: 'NPWP',
@@ -300,7 +456,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
             setSavedData(previousData);
             console.error("Error saving data:", error);
             const msg = await parseApiError(error);
-            alert('Gagal menyimpan: ' + msg);
+            alert(text.saveFailed + msg);
         } finally {
             setIsLoading(false);
         }
@@ -339,8 +495,8 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
     };
 
     const handleDeleteAll = async () => {
-        if (!window.confirm('PERINGATAN: Anda akan menghapus SELURUH data di Database WP. Tindakan ini tidak dapat dibatalkan. Lanjutkan?')) return; // Use window.confirm
-        if (!canDelete) return alert('Anda tidak memiliki izin untuk menghapus data.');
+        if (!window.confirm(text.confirmDeleteAll)) return; // Use window.confirm
+        if (!canDelete) return alert(text.noDeletePermission);
 
         setIsLoading(true);
         try {
@@ -349,24 +505,24 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                 credentials: 'include'
             });
             if (res.ok) {
-                alert('Seluruh data Database WP berhasil dihapus.');
+                alert(text.deleteAllSuccess);
                 fetchDatabase();
             } else {
                 const errorText = await res.text();
                 const isHtml = errorText.includes('<!DOCTYPE');
-                alert(`Gagal menghapus (Status ${res.status}): ${isHtml ? 'API /tax/wp-all tidak ditemukan.' : errorText}`);
+                alert(text.deleteAllFailed(res.status, isHtml ? text.apiNotFound : errorText));
             }
         } catch (error) {
             console.error("Delete all error:", error);
-            alert('Terjadi kesalahan saat menghapus data.');
+            alert(text.deleteAllSystemError);
         } finally {
             setIsLoading(false);
         }
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm('Yakin ingin menghapus data ini?')) return; // Use window.confirm
-        if (!canDelete) return alert('Anda tidak memiliki izin untuk menghapus data.');
+        if (!window.confirm(text.confirmDeleteOne)) return; // Use window.confirm
+        if (!canDelete) return alert(text.noDeletePermission);
 
         const previousData = [...savedData];
         setSavedData(savedData.filter(d => d.id !== id));
@@ -376,7 +532,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
         } catch (error) {
             setSavedData(previousData);
             const msg = await parseApiError(error);
-            alert('Gagal menghapus data: ' + msg);
+            alert(text.deleteFailed + msg);
         }
     };
 
@@ -384,33 +540,33 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
     const handleSaveMaster = async (data) => {
         try {
             await taxService.createTaxObject(data);
-            alert('Berhasil menambah objek pajak baru!');
+            alert(text.masterAddSuccess);
             fetchMasterData();
         } catch (error) {
             const msg = await parseApiError(error);
-            alert('Gagal menambah objek: ' + msg);
+            alert(text.masterAddFailed + msg);
         }
     };
 
     const handleUpdateMaster = async (id, data) => {
         try {
             await taxService.updateTaxObject(id, data);
-            alert('Berhasil memperbarui objek pajak!');
+            alert(text.masterUpdateSuccess);
             fetchMasterData();
         } catch (error) {
             const msg = await parseApiError(error);
-            alert('Gagal memperbarui: ' + msg);
+            alert(text.masterUpdateFailed + msg);
         }
     };
 
     const handleDeleteMaster = async (id) => {
         try {
             await taxService.deleteTaxObject(id);
-            alert('Berhasil menghapus objek pajak!');
+            alert(text.masterDeleteSuccess);
             fetchMasterData();
         } catch (error) {
             const msg = await parseApiError(error);
-            alert('Gagal menghapus: ' + msg);
+            alert(text.masterDeleteFailed + msg);
         }
     };
 
@@ -435,7 +591,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
         // 1. Konteks Pencarian
         if (searchTerm) {
             return {
-                text: `Analisis Pencarian: Menampilkan ${filteredData.length} hasil untuk "${searchTerm}". AI memindai nama WP, nomor identitas, dan nama objek pajak.`,
+                text: text.insightSearch(filteredData.length, searchTerm),
                 icon: <Search className="text-indigo-500" size={20} />,
                 color: "border-indigo-200 dark:border-indigo-800/50 bg-indigo-50/50 dark:bg-indigo-900/10 text-indigo-800 dark:text-indigo-200"
             };
@@ -444,7 +600,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
         // 2. Analisis Master Data
         if (masterData.length === 0) {
             return {
-                text: `Data Master Kosong: Gunakan fitur 'Import Master' untuk memuat daftar kode objek pajak resmi agar pengisian data lebih cepat dan akurat.`,
+                text: text.insightMasterEmpty,
                 icon: <AlertCircle className="text-amber-500" size={20} />,
                 color: "border-amber-200 dark:border-amber-800/50 bg-amber-50/50 dark:bg-amber-900/10 text-amber-800 dark:text-amber-200"
             };
@@ -453,7 +609,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
         // 3. Analisis Kalkulasi Aktif
         if (calcData.pph > 0) {
             return {
-                text: `Kalkulasi Terdeteksi: Anda memiliki perhitungan PPh senilai ${formatCurrency(calcData.pph)}. Gunakan tab 'Objek Pajak' untuk menyimpan data ini ke database.`,
+                text: text.insightCalc(formatCurrency(calcData.pph)),
                 icon: <TrendingUp className="text-emerald-500" size={20} />,
                 color: "border-emerald-200 dark:border-emerald-800/50 bg-emerald-50/50 dark:bg-emerald-900/10 text-emerald-800 dark:text-emerald-200"
             };
@@ -462,21 +618,15 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
         // 4. Analisis Kapasitas Database
         if (savedData.length > 50) {
             return {
-                text: `Optimasi Database: Terdapat ${savedData.length} record Wajib Pajak. Gunakan fitur 'Export Excel' secara berkala untuk backup data offline.`,
+                text: text.insightDb(savedData.length),
                 icon: <Database className="text-blue-500" size={20} />,
                 color: "border-blue-200 dark:border-blue-800/50 bg-blue-50/50 dark:bg-blue-900/10 text-blue-800 dark:text-blue-200"
             };
         }
 
         // 5. Default Tips
-        const tips = [
-            "Tips Efisiensi: Anda dapat mencari objek pajak berdasarkan kode (misal: 21-100-01) atau nama deskripsi.",
-            "Info AI: Sistem otomatis mendeteksi tarif pajak yang berlaku berdasarkan kode objek yang Anda pilih.",
-            "Saran: Pastikan nomor NPWP/NIK valid untuk menghindari kesalahan pelaporan pada sistem e-Bupot.",
-            "Sistem Optimal: Database WP tersinkronisasi secara real-time dengan modul pelaporan pajak."
-        ];
         return {
-            text: tips[new Date().getHours() % tips.length],
+            text: text.tips[new Date().getHours() % text.tips.length],
             icon: <Sparkles className="text-indigo-500" size={20} />,
             color: "border-indigo-200 dark:border-indigo-800/50 bg-indigo-50/50 dark:bg-indigo-900/10 text-indigo-800 dark:text-indigo-200"
         };
@@ -495,10 +645,10 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                             <div className="w-24 h-24 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
                             <Database className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-indigo-600 animate-pulse" size={32} />
                         </div>
-                        <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-3 uppercase tracking-tight">Memproses Database</h3>
+                        <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-3 uppercase tracking-tight">{text.importingDatabase}</h3>
                         <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                            Sedang mengimport ratusan data Wajib Pajak ke sistem. <br />
-                            <span className="font-bold text-indigo-500">Mohon jangan tutup atau refresh halaman ini.</span>
+                            {text.importingMessage} <br />
+                            <span className="font-bold text-indigo-500">{text.importingWarning}</span>
                         </p>
                     </div>
                 </div>
@@ -507,17 +657,17 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                     <Calculator className="text-indigo-600" />
-                    Tax Calculation
+                    {text.title}
                 </h2>
 
                 {/* Tabs */}
                 {/* Tabs */}
                 <div className="flex bg-gray-100 dark:bg-slate-800 p-1 rounded-xl overflow-x-auto">
                     {[
-                        { id: 'simulation', label: 'Simulasi PPh', icon: Calculator },
-                        { id: 'object', label: 'Objek Pajak', icon: FileText },
-                        { id: 'database', label: 'Database WP', icon: Database },
-                        { id: 'master', label: 'Master Objek', icon: Book },
+                        { id: 'simulation', label: text.tabs.simulation, icon: Calculator },
+                        { id: 'object', label: text.tabs.object, icon: FileText },
+                        { id: 'database', label: text.tabs.database, icon: Database },
+                        { id: 'master', label: text.tabs.master, icon: Book },
                     ].map(tab => (
                         <button
                             key={tab.id}
@@ -541,9 +691,9 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                 </div>
                 <div className="flex-1">
                     <div className="flex items-center gap-2 mb-0.5">
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Smart Assistant</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">{text.smartAssistant}</span>
                         <div className="w-1 h-1 rounded-full bg-current opacity-40"></div>
-                        <span className="text-[10px] font-bold opacity-60">Tax Intelligence</span>
+                        <span className="text-[10px] font-bold opacity-60">{text.taxIntelligence}</span>
                     </div>
                     <p className="text-sm font-bold leading-relaxed">{insight.text}</p>
                 </div>
@@ -563,10 +713,9 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
 
                     {/* Information Card */}
                     <Card className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white border-none h-full">
-                        <h3 className="text-xl font-bold mb-4">Informasi Pajak</h3>
+                        <h3 className="text-xl font-bold mb-4">{text.infoTitle}</h3>
                         <p className="text-white/80 mb-6">
-                            Gunakan kalkulator ini untuk melakukan estimasi perhitungan PPh berdasarkan DPP dan tarif yang berlaku.
-                            Perhitungan ini hanya simulasi dan bukan merupakan bukti potong resmi.
+                            {text.infoBody}
                         </p>
                     </Card>
                 </div>
@@ -593,7 +742,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                             <div className="flex justify-between items-center mb-6 border-b pb-2 dark:border-gray-700">
                                 <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
                                     <User size={20} className="text-indigo-600" />
-                                    Data Subjek & Objek Pajak
+                                    {text.subjectObjectData}
                                 </h3>
                                 <div className="flex gap-2">
                                     <button
@@ -601,14 +750,14 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         className="text-xs flex items-center gap-1 text-gray-500 hover:text-indigo-600 transition-colors"
                                         title="Download Template Master Objek Pajak"
                                     >
-                                        <Download size={14} /> Template Master
+                                        <Download size={14} /> {text.templateMaster}
                                     </button>
                                     {canCreate && <button
                                         onClick={() => masterFileInputRef.current.click()}
                                         className="text-xs flex items-center gap-1 text-gray-500 hover:text-indigo-600 transition-colors"
                                         title="Import Master Objek Pajak"
                                     >
-                                        <Upload size={14} /> Import Master
+                                        <Upload size={14} /> {text.importMaster}
                                     </button>}
                                     <input type="file" ref={masterFileInputRef} onChange={handleImportMaster} accept=".xlsx, .xls" className="hidden" />
                                 </div>
@@ -618,7 +767,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                 {/* Identity Type */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                        Jenis Identitas
+                                        {text.idType}
                                     </label>
                                     <select
                                         name="idType"
@@ -635,7 +784,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                 {/* Identity Number */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                        Nomor Identitas
+                                        {text.idNumber}
                                     </label>
                                     <input
                                         type="text"
@@ -645,7 +794,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         disabled={isReadOnly}
                                         maxLength={16}
                                         inputMode="numeric"
-                                        placeholder="16 digit angka"
+                                        placeholder={text.idPlaceholder}
                                         className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
                                     />
                                 </div>
@@ -653,7 +802,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                 {/* Name */}
                                 <div className="md:col-span-2">
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                        Nama Wajib Pajak
+                                        {text.taxPayerName}
                                     </label>
                                     <input
                                         type="text"
@@ -662,14 +811,14 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         onChange={handleInputChange}
                                         disabled={isReadOnly}
                                         className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
-                                        placeholder="Nama Lengkap / Badan Usaha"
+                                        placeholder={text.taxPayerNamePlaceholder}
                                     />
                                 </div>
 
                                 {/* Email */}
                                 <div className="md:col-span-2">
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                        Email Wajib Pajak
+                                        {text.taxPayerEmail}
                                     </label>
                                     <input
                                         type="email"
@@ -685,7 +834,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                 {/* Tax Type */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                        Jenis Pajak
+                                        {text.taxType}
                                     </label>
                                     <select
                                         name="taxType"
@@ -704,7 +853,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                 {/* Tax Object Code */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                        Kode Objek Pajak
+                                        {text.objectCode}
                                     </label>
                                     <input
                                         type="text"
@@ -712,7 +861,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         value={formData.taxObjectCode}
                                         onChange={handleInputChange}
                                         className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-gray-300 cursor-not-allowed"
-                                        placeholder="Auto-fill dari Nama Objek"
+                                        placeholder={text.objectCodePlaceholder}
                                         readOnly
                                     />
                                 </div>
@@ -720,7 +869,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                 {/* Tax Object Name (Searchable Dropdown) */}
                                 <div className="md:col-span-2 relative">
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                        Nama Objek Pajak (Cari & Pilih)
+                                        {text.objectNameSearch}
                                     </label>
                                     <input
                                         type="text"
@@ -734,7 +883,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         onFocus={() => !isReadOnly && setShowObjectDropdown(true)}
                                         onBlur={() => setTimeout(() => setShowObjectDropdown(false), 200)}
                                         className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
-                                        placeholder="Ketik untuk mencari objek pajak..."
+                                        placeholder={text.objectNamePlaceholder}
                                         autoComplete="off"
                                     />
 
@@ -748,9 +897,9 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                                 ) && !(formData.idType === 'KTP' && String(item.taxType) === '23')
                                             ).length === 0 ? (
                                                 <div className="px-4 py-3 text-sm text-gray-500 text-center">
-                                                    Tidak ada data ditemukan. <br />
+                                                    {text.emptyObject} <br />
                                                     <button onClick={() => masterFileInputRef.current.click()} className="text-indigo-600 hover:underline mt-1">
-                                                        Import Master Data Sekarang?
+                                                        {text.importMasterNow}
                                                     </button>
                                                 </div>
                                             ) : (
@@ -808,7 +957,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
 
                         {/* Reusable Calculator Section */}
                         <TaxCalculator
-                            title="Perhitungan Pajak"
+                            title={text.taxCalculation}
                             onCalculate={setCalcData}
                             initialDpp={calcData.dpp || ''}
                             initialRate={calcData.rate || ''}
@@ -841,7 +990,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                     }}
                                     className="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-xl transition-all"
                                 >
-                                    Batal Edit
+                                    {text.cancelEdit}
                                 </button>
                             )}
                             <button
@@ -850,7 +999,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                 className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl flex items-center gap-2 shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
                             >
                                 <Save size={20} />
-                                {isLoading ? 'Menyimpan...' : editingId ? 'Update Data' : 'Simpan Data to Database WP'}
+                                {isLoading ? text.saving : editingId ? text.updateData : text.saveToDb}
                             </button>
                         </div>}
                     </div>
@@ -859,45 +1008,45 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                     <div className="space-y-6">
                         <Card className="bg-slate-50 dark:bg-slate-900 border-dashed border-2 border-slate-200 dark:border-slate-700 h-full flex flex-col justify-center items-center text-center p-8 text-gray-500">
                             <FileText size={48} className="mb-4 text-slate-300" />
-                            <p className="font-medium">Summary Data</p>
+                            <p className="font-medium">{text.summaryTitle}</p>
                             <p className="text-sm mt-2 mb-4">
-                                Isi formulir dan lakukan perhitungan untuk melihat ringkasan disini.
+                                {text.summaryHint}
                             </p>
 
                             {(calcData.dpp > 0 || formData.name) && (
                                 <div className="w-full text-left bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm border border-gray-100 dark:border-slate-700 text-sm space-y-2">
                                     <div className="flex justify-between">
-                                        <span className="text-gray-500">Nama:</span>
+                                        <span className="text-gray-500">{text.summaryName}:</span>
                                         <span className="font-medium">{formData.name || '-'}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-gray-500">Jenis:</span>
+                                        <span className="text-gray-500">{text.summaryType}:</span>
                                         <span className="font-medium">PPh {formData.taxType}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-gray-500">Tarif:</span>
+                                        <span className="text-gray-500">{text.summaryRate}:</span>
                                         <span className="font-medium">{calcData.rate}%</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-gray-500">Gross Up:</span>
+                                        <span className="text-gray-500">{text.summaryGrossUp}:</span>
                                         <span className={`font-bold uppercase ${calcData.markupMode !== 'none' ? 'text-indigo-600' : 'text-gray-500'}`}>
                                             {calcData.markupMode}
                                         </span>
                                     </div>
                                     {calcData.isPph21BukanPegawai && (
                                         <div className="flex justify-between">
-                                            <span className="text-gray-500">Kategori:</span>
-                                            <span className="font-black text-amber-600 text-[10px] uppercase">Bukan Pegawai</span>
+                                            <span className="text-gray-500">{text.summaryCategory}:</span>
+                                            <span className="font-black text-amber-600 text-[10px] uppercase">{text.nonEmployee}</span>
                                         </div>
                                     )}
                                     {calcData.markupMode !== 'none' && (
                                         <div className="flex justify-between">
-                                            <span className="text-gray-500">Total Dibukukan:</span>
+                                            <span className="text-gray-500">{text.summaryBooked}:</span>
                                             <span className="font-bold text-indigo-600">{new Intl.NumberFormat('id-ID').format(Math.round(calcData.totalDibukukan || 0))}</span>
                                         </div>
                                     )}
                                     <div className="flex justify-between">
-                                        <span className="text-gray-500">Total Diterima:</span>
+                                        <span className="text-gray-500">{text.summaryReceived}:</span>
                                         <span className="font-bold text-emerald-600">{formatCurrency(calcData.totalPayable)}</span>
                                     </div>
                                     <div className="flex justify-between border-t border-gray-100 dark:border-slate-700 pt-2 mt-1">

@@ -11,6 +11,7 @@ import { pustakaService } from '../services/pustakaService';
 import { parseApiError } from '../utils/errorHandler';
 import { getFullUrl } from '../utils/urlHelper';
 import { db as api } from '../services/database'; // Keep for uploadFile
+import { useLanguage } from '../contexts/LanguageContext';
 
 const GuideAssistant = ({ message, isExplaining, onClick }) => (
     <motion.div
@@ -294,12 +295,117 @@ const SlideViewer = ({ guide, slides, currentIdx, onNext, onPrev, onClose, setZo
 };
 
 export default function Pustaka({ currentUser, hasPermission, users = [], departments = [], syncPustakaFolder }) {
+    const { language } = useLanguage();
+    const isEnglish = language === 'en';
+    const i18n = isEnglish
+        ? {
+            assistantInitial: 'Hello! I am your Pustaka assistant. Choose a guide to start learning.',
+            assistantGuideStart: (title) => `Great! Let us learn about ${title}.`,
+            assistantNext: 'The next step is very important, please pay attention.',
+            assistantDone: 'Excellent! You have completed this guide.',
+            emptySlideTitle: 'No slide yet',
+            emptySlideContent: 'This guide does not have content yet.',
+            totalGuides: 'Total Guides',
+            categories: 'Categories',
+            myGuides: 'My Guides',
+            publicAccess: 'Public Access',
+            filterCategory: 'Category Filter',
+            allGuides: 'All Guides',
+            addGuide: 'Add Guide',
+            knowledgeCenter: 'Knowledge Center',
+            knowledgeCenterDesc: 'Choose one module on the left to start an interactive tutorial.',
+            updateGuidePrompt: (title) => `Let us update guide "${title}".`,
+            deleteGuideConfirm: 'Delete this guide permanently?',
+            guideDeleted: 'Guide has been removed from the library.',
+            deleteFailed: (msg) => `Failed to delete: ${msg || 'Unknown error'}`,
+            guideValidation: 'Please fill in the guide title and all slide titles.',
+            savingGuide: 'Saving your guide to the digital shelf...',
+            saveSuccessEdit: 'Changes saved successfully!',
+            saveSuccessNew: 'Great! New guide published successfully.',
+            saveFailedGetId: 'Failed to get guide ID. Please try again.',
+            saveFailed: (msg) => `Failed to save: ${msg || 'System error.'}`,
+            createGuidePrompt: 'You want to create a new guide? I am ready to help!',
+            editGuideTitle: 'Edit Guide',
+            newGuideEditor: 'New Guide Editor',
+            editGuideDesc: 'Update existing work steps',
+            newGuideDesc: 'Arrange interactive work steps',
+            guideTitle: 'Guide Title',
+            guideTitlePlaceholder: 'Example: How to Use the Scanner',
+            category: 'Category',
+            privacyAccess: 'Privacy & Access',
+            privacyPublic: 'Public',
+            privacyPrivate: 'Private',
+            privacyDepartment: 'Department',
+            privacySpecificUser: 'Specific User',
+            slidesSteps: 'Steps (Slides)',
+            addSlide: 'ADD SLIDE',
+            duplicateSlide: 'Duplicate Slide',
+            deleteSlide: 'Delete Slide',
+            slideTitlePlaceholder: 'Step Title...',
+            slideContentPlaceholder: 'Detailed explanation of work steps...',
+            uploadPaste: 'Upload / Paste',
+            cancel: 'Cancel',
+            saving: 'Saving...',
+            saveChanges: 'Save Changes',
+            publishGuide: 'Publish Guide',
+        }
+        : {
+            assistantInitial: 'Halo! Saya asisten Pustaka. Pilih panduan untuk mulai belajar.',
+            assistantGuideStart: (title) => `Bagus! Mari kita pelajari tentang ${title}.`,
+            assistantNext: 'Langkah selanjutnya sangat penting, perhatikan ya!',
+            assistantDone: 'Luar biasa! Anda telah menyelesaikan panduan ini.',
+            emptySlideTitle: 'Belum ada slide',
+            emptySlideContent: 'Panduan ini belum memiliki konten.',
+            totalGuides: 'Total Panduan',
+            categories: 'Kategori',
+            myGuides: 'Panduan Saya',
+            publicAccess: 'Akses Publik',
+            filterCategory: 'Filter Kategori',
+            allGuides: 'Semua Panduan',
+            addGuide: 'Tambah Panduan',
+            knowledgeCenter: 'Pusat Pengetahuan',
+            knowledgeCenterDesc: 'Pilih salah satu modul di sebelah kiri untuk memulai tutorial interaktif.',
+            updateGuidePrompt: (title) => `Mari kita perbarui panduan "${title}".`,
+            deleteGuideConfirm: 'Hapus panduan ini secara permanen?',
+            guideDeleted: 'Panduan telah dihapus dari perpustakaan.',
+            deleteFailed: (msg) => `Gagal menghapus: ${msg || 'Terjadi kesalahan'}`,
+            guideValidation: 'Ups! Pastikan judul panduan dan semua judul slide sudah diisi ya.',
+            savingGuide: 'Sedang menyimpan panduan baru Anda ke rak buku digital...',
+            saveSuccessEdit: 'Perubahan berhasil disimpan!',
+            saveSuccessNew: 'Hore! Panduan baru berhasil diterbitkan.',
+            saveFailedGetId: 'Gagal mendapatkan ID panduan. Silakan coba lagi.',
+            saveFailed: (msg) => `Gagal menyimpan: ${msg || 'Terjadi kesalahan sistem.'}`,
+            createGuidePrompt: 'Wah, Anda ingin membuat panduan baru? Saya siap membantu!',
+            editGuideTitle: 'Edit Panduan',
+            newGuideEditor: 'Editor Panduan Baru',
+            editGuideDesc: 'Perbarui langkah kerja yang sudah ada',
+            newGuideDesc: 'Susun langkah kerja secara interaktif',
+            guideTitle: 'Judul Panduan',
+            guideTitlePlaceholder: 'Contoh: Cara Menggunakan Scanner',
+            category: 'Kategori',
+            privacyAccess: 'Privasi & Akses',
+            privacyPublic: 'Umum',
+            privacyPrivate: 'Pribadi',
+            privacyDepartment: 'Departemen',
+            privacySpecificUser: 'User Khusus',
+            slidesSteps: 'Langkah-langkah (Slides)',
+            addSlide: 'TAMBAH SLIDE',
+            duplicateSlide: 'Duplikat Slide',
+            deleteSlide: 'Hapus Slide',
+            slideTitlePlaceholder: 'Judul Langkah...',
+            slideContentPlaceholder: 'Penjelasan detail langkah kerja...',
+            uploadPaste: 'Upload / Paste',
+            cancel: 'Batalkan',
+            saving: 'Menyimpan...',
+            saveChanges: 'Simpan Perubahan',
+            publishGuide: 'Terbitkan Panduan',
+        };
     const [guides, setGuides] = useState([]);
     const [categories, setCategories] = useState([]);
     const [selectedGuide, setSelectedGuide] = useState(null);
     const [slides, setSlides] = useState([]);
     const [currentSlideIdx, setCurrentSlideIdx] = useState(0);
-    const [assistantMsg, setAssistantMsg] = useState("Halo! Saya asisten Pustaka. Pilih panduan untuk mulai belajar.");
+    const [assistantMsg, setAssistantMsg] = useState(i18n.assistantInitial);
     const [isCreating, setIsCreating] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [isUploading, setIsUploading] = useState(null); // Index slide yang sedang upload
@@ -374,12 +480,12 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
         setSelectedGuide(guide);
         setIsCreating(false);
         setCurrentSlideIdx(0);
-        setAssistantMsg(`Bagus! Mari kita pelajari tentang ${guide.title}.`);
+        setAssistantMsg(i18n.assistantGuideStart(guide.title));
 
         const data = await api.getGuideSlides(guide.id);
         if (data.length === 0) {
             // No slides available - show empty state instead of confusing mock data
-            setSlides([{ title: 'Belum ada slide', content: 'Panduan ini belum memiliki konten.', image: '' }]);
+            setSlides([{ title: i18n.emptySlideTitle, content: i18n.emptySlideContent, image: '' }]);
         } else {
             setSlides(data);
         }
@@ -388,9 +494,9 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
     const nextSlide = () => {
         if (currentSlideIdx < slides.length - 1) {
             setCurrentSlideIdx(prev => prev + 1);
-            setAssistantMsg("Langkah selanjutnya sangat penting, perhatikan ya!");
+            setAssistantMsg(i18n.assistantNext);
         } else {
-            setAssistantMsg("Luar biasa! Anda telah menyelesaikan panduan ini.");
+            setAssistantMsg(i18n.assistantDone);
             setSelectedGuide(null); // Auto close on finish
         }
     };
@@ -498,12 +604,12 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                 }))
                 : [{ title: '', content: '', image: '' }]
         });
-        setAssistantMsg(`Mari kita perbarui panduan "${guide.title}".`);
+        setAssistantMsg(i18n.updateGuidePrompt(guide.title));
     };
 
     const handleDeleteGuide = async (id, e) => {
         e.stopPropagation();
-        if (!window.confirm("Hapus panduan ini secara permanen?")) return;
+        if (!window.confirm(i18n.deleteGuideConfirm)) return;
 
         const previousGuides = [...guides];
         // Optimistic Update
@@ -511,23 +617,23 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
 
         try {
             await api.deletePustakaGuide(id);
-            setAssistantMsg("Panduan telah dihapus dari perpustakaan.");
+            setAssistantMsg(i18n.guideDeleted);
             if (selectedGuide?.id === id) setSelectedGuide(null);
         } catch (error) {
             setGuides(previousGuides);
             console.error("Delete Error:", error);
-            setAssistantMsg(`Gagal menghapus: ${error.message || "Terjadi kesalahan"}`);
+            setAssistantMsg(i18n.deleteFailed(error.message));
         }
     };
 
     const handleSaveGuide = async () => {
         if (!newGuide.title || newGuide.slides.some(s => !s.title)) {
-            setAssistantMsg("Ups! Pastikan judul panduan dan semua judul slide sudah diisi ya.");
+            setAssistantMsg(i18n.guideValidation);
             return;
         }
 
         setIsSaving(true);
-        setAssistantMsg("Sedang menyimpan panduan baru Anda ke rak buku digital...");
+        setAssistantMsg(i18n.savingGuide);
 
         const oldTitle = guides.find(g => g.id === editingGuideId)?.title;
 
@@ -607,18 +713,18 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                 });
                 await Promise.all(slidePromises);
 
-                setAssistantMsg(editingGuideId ? "Perubahan berhasil disimpan!" : "Hore! Panduan baru berhasil diterbitkan.");
+                setAssistantMsg(editingGuideId ? i18n.saveSuccessEdit : i18n.saveSuccessNew);
                 setIsCreating(false);
                 setEditingGuideId(null);
                 setNewGuide({ title: '', category: 'Operasional', description: '', icon: 'BookOpen', privacy: 'public', allowed_depts: [], allowed_users: [], slides: [{ title: '', content: '', image: '' }] });
                 fetchGuides();
             } else {
-                throw new Error("Gagal mendapatkan ID panduan. Silakan coba lagi.");
+                throw new Error(i18n.saveFailedGetId);
             }
         } catch (e) {
             setGuides(previousGuides);
             console.error("Save Guide Error:", e);
-            setAssistantMsg(`Gagal menyimpan: ${e.message || "Terjadi kesalahan sistem."}`);
+            setAssistantMsg(i18n.saveFailed(e.message));
         } finally {
             setIsSaving(false);
         }
@@ -653,25 +759,25 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
             {/* Header Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 <SummaryCard
-                    title="Total Panduan"
+                    title={i18n.totalGuides}
                     value={stats.total}
                     icon={BookOpen}
                     colorClass="bg-indigo-100 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400"
                 />
                 <SummaryCard
-                    title="Kategori"
+                    title={i18n.categories}
                     value={stats.categories}
                     icon={Layout}
                     colorClass="bg-purple-100 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400"
                 />
                 <SummaryCard
-                    title="Panduan Saya"
+                    title={i18n.myGuides}
                     value={stats.myGuides}
                     icon={User}
                     colorClass="bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
                 />
                 <SummaryCard
-                    title="Akses Publik"
+                    title={i18n.publicAccess}
                     value={stats.public}
                     icon={Globe}
                     colorClass="bg-emerald-100 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400"
@@ -695,8 +801,8 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                     <Layout size={18} />
                                 </div>
                                 <div className="text-left">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Filter Kategori</p>
-                                    <p className="text-sm font-bold text-slate-700 dark:text-white">{selectedCategory === 'All' ? 'Semua Panduan' : selectedCategory}</p>
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{i18n.filterCategory}</p>
+                                    <p className="text-sm font-bold text-slate-700 dark:text-white">{selectedCategory === 'All' ? i18n.allGuides : selectedCategory}</p>
                                 </div>
                             </div>
                             <ChevronRight size={18} className={`text-slate-400 transition-transform duration-300 ${isFilterOpen ? 'rotate-90' : ''}`} />
@@ -718,7 +824,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                         >
                                             <div className="flex items-center gap-3">
                                                 <Globe size={16} className={selectedCategory === 'All' ? 'text-white' : 'text-indigo-500'} />
-                                                <span className="font-bold text-sm">Semua Panduan</span>
+                                                <span className="font-bold text-sm">{i18n.allGuides}</span>
                                             </div>
                                             <span className={`text-[10px] font-black px-2 py-0.5 rounded-lg ${selectedCategory === 'All' ? 'bg-white/20' : 'bg-slate-100 dark:bg-slate-800'}`}>{guides.length}</span>
                                         </button>
@@ -761,7 +867,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                     allowed_users: [],
                                     slides: [{ title: '', content: '', image: '' }]
                                 });
-                                setAssistantMsg("Wah, Anda ingin membuat panduan baru? Saya siap membantu!");
+                                setAssistantMsg(i18n.createGuidePrompt);
                             }}
                             className={`w-full p-5 rounded-[2rem] border-2 border-dashed transition-all flex items-center gap-4 group ${isCreating
                                 ? 'bg-indigo-600 border-indigo-600 text-white shadow-xl'
@@ -772,7 +878,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                 }`}>
                                 <Plus size={24} />
                             </div>
-                            <span className="font-black uppercase tracking-widest text-xs">Tambah Panduan</span>
+                            <span className="font-black uppercase tracking-widest text-xs">{i18n.addGuide}</span>
                         </button>
                     )}
 
@@ -836,8 +942,8 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                             <Layout size={24} />
                                         </div>
                                         <div>
-                                            <h3 className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tight">{editingGuideId ? 'Edit Panduan' : 'Editor Panduan Baru'}</h3>
-                                            <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">{editingGuideId ? 'Perbarui langkah kerja yang sudah ada' : 'Susun langkah kerja secara interaktif'}</p>
+                                            <h3 className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tight">{editingGuideId ? i18n.editGuideTitle : i18n.newGuideEditor}</h3>
+                                            <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">{editingGuideId ? i18n.editGuideDesc : i18n.newGuideDesc}</p>
                                         </div>
                                     </div>
                                     <button onClick={() => setIsCreating(false)} className="p-3 hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-2xl transition-all">
@@ -849,16 +955,16 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                     {/* Guide Metadata */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Judul Panduan</label>
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{i18n.guideTitle}</label>
                                             <input
                                                 className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-indigo-500 rounded-2xl outline-none dark:text-white font-bold"
-                                                placeholder="Contoh: Cara Menggunakan Scanner"
+                                                placeholder={i18n.guideTitlePlaceholder}
                                                 value={newGuide.title}
                                                 onChange={e => setNewGuide({ ...newGuide, title: e.target.value })}
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Kategori</label>
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{i18n.category}</label>
                                             <div className="flex gap-2">
                                                 <select
                                                     className="flex-1 px-6 py-4 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-indigo-500 rounded-2xl outline-none dark:text-white font-bold appearance-none"
@@ -878,13 +984,13 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
 
                                     {/* Privacy Settings */}
                                     <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Privasi & Akses</label>
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{i18n.privacyAccess}</label>
                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                                             {[
-                                                { id: 'public', label: 'Umum', icon: Users },
-                                                { id: 'private', label: 'Pribadi', icon: Lock },
-                                                { id: 'dept', label: 'Departemen', icon: Building },
-                                                { id: 'user', label: 'User Khusus', icon: User }
+                                                { id: 'public', label: i18n.privacyPublic, icon: Users },
+                                                { id: 'private', label: i18n.privacyPrivate, icon: Lock },
+                                                { id: 'dept', label: i18n.privacyDepartment, icon: Building },
+                                                { id: 'user', label: i18n.privacySpecificUser, icon: User }
                                             ].map(type => (
                                                 <button
                                                     key={type.id}
@@ -949,9 +1055,9 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                     {/* Slides Editor */}
                                     <div className="space-y-4">
                                         <div className="flex justify-between items-center">
-                                            <h4 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-widest">Langkah-langkah (Slides)</h4>
+                                            <h4 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-widest">{i18n.slidesSteps}</h4>
                                             <button onClick={handleAddSlide} className="flex items-center gap-2 text-xs font-black text-indigo-600 hover:text-indigo-700">
-                                                <Plus size={16} /> TAMBAH SLIDE
+                                                <Plus size={16} /> {i18n.addSlide}
                                             </button>
                                         </div>
 
@@ -960,11 +1066,11 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                                 <div key={idx} onPaste={(e) => handlePaste(e, idx)} className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-[2rem] border border-slate-100 dark:border-slate-800 relative group/slide">
                                                     <div className="absolute -left-3 top-6 w-8 h-8 bg-indigo-600 text-white rounded-xl flex items-center justify-center text-xs font-black shadow-lg">{idx + 1}</div>
                                                     <div className="absolute -right-2 -top-2 flex gap-1.5 opacity-0 group-hover/slide:opacity-100 transition-opacity">
-                                                        <button onClick={() => handleCopySlide(idx)} className="p-2 bg-white dark:bg-slate-700 text-blue-500 rounded-full shadow-md" title="Duplikat Slide">
+                                                        <button onClick={() => handleCopySlide(idx)} className="p-2 bg-white dark:bg-slate-700 text-blue-500 rounded-full shadow-md" title={i18n.duplicateSlide}>
                                                             <Copy size={14} />
                                                         </button>
                                                         {newGuide.slides.length > 1 && (
-                                                            <button onClick={() => handleRemoveSlide(idx)} className="p-2 bg-white dark:bg-slate-700 text-red-500 rounded-full shadow-md" title="Hapus Slide">
+                                                            <button onClick={() => handleRemoveSlide(idx)} className="p-2 bg-white dark:bg-slate-700 text-red-500 rounded-full shadow-md" title={i18n.deleteSlide}>
                                                                 <Trash2 size={14} />
                                                             </button>
                                                         )}
@@ -973,7 +1079,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                                         <div className="md:col-span-2 space-y-4">
                                                             <input
                                                                 className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl outline-none dark:text-white font-bold text-sm"
-                                                                placeholder="Judul Langkah..."
+                                                                placeholder={i18n.slideTitlePlaceholder}
                                                                 value={slide.title}
                                                                 onChange={e => {
                                                                     const updated = [...newGuide.slides];
@@ -983,7 +1089,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                                             />
                                                             <textarea
                                                                 className="w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl outline-none dark:text-white text-xs min-h-[80px] resize-none"
-                                                                placeholder="Penjelasan detail langkah kerja..."
+                                                                placeholder={i18n.slideContentPlaceholder}
                                                                 value={slide.content}
                                                                 onChange={e => {
                                                                     const updated = [...newGuide.slides];
@@ -1001,7 +1107,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                                                 ) : (
                                                                     <>
                                                                         <Upload size={24} className="mb-1 group-hover:text-indigo-500" />
-                                                                        <span className="text-[8px] font-black uppercase">Upload / Paste</span>
+                                                                        <span className="text-[8px] font-black uppercase">{i18n.uploadPaste}</span>
                                                                     </>
                                                                 )}
                                                                 <input
@@ -1034,7 +1140,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                         onClick={() => setIsCreating(false)}
                                         className="px-8 py-4 text-slate-500 font-black uppercase text-xs tracking-widest hover:text-slate-800 transition-colors"
                                     >
-                                        Batalkan
+                                        {i18n.cancel}
                                     </button>
                                     <button
                                         onClick={handleSaveGuide}
@@ -1042,7 +1148,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                         className="px-12 py-4 bg-indigo-600 text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-indigo-500/20 hover:bg-indigo-500 transition-all active:scale-95 flex items-center gap-3 disabled:opacity-50"
                                     >
                                         {isSaving ? <RefreshCw size={18} className="animate-spin" /> : <Save size={18} />}
-                                        {isSaving ? 'Menyimpan...' : editingGuideId ? 'Simpan Perubahan' : 'Terbitkan Panduan'}
+                                        {isSaving ? i18n.saving : editingGuideId ? i18n.saveChanges : i18n.publishGuide}
                                     </button>
                                 </div>
                             </motion.div>
@@ -1055,8 +1161,8 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                 <div className="w-20 h-20 bg-indigo-50 dark:bg-indigo-900/20 rounded-full flex items-center justify-center mb-6">
                                     <Lightbulb size={40} className="text-indigo-500 animate-pulse" />
                                 </div>
-                                <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-2">Pusat Pengetahuan</h3>
-                                <p className="text-slate-500 max-w-xs">Pilih salah satu modul di sebelah kiri untuk memulai tutorial interaktif.</p>
+                                <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-2">{i18n.knowledgeCenter}</h3>
+                                <p className="text-slate-500 max-w-xs">{i18n.knowledgeCenterDesc}</p>
                             </motion.div>
                         ) : null}
                     </AnimatePresence>

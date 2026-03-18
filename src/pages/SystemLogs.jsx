@@ -2,8 +2,32 @@ import React, { useState, useEffect } from 'react';
 import { Terminal, RefreshCw, AlertCircle, FileWarning, Search, Download, Trash2 } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { systemService } from '../services/systemService';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function SystemLogs({ isDarkMode }) {
+    const { language } = useLanguage();
+    const isEnglish = language === 'en';
+    const text = isEnglish
+        ? {
+            loadFailed: 'Failed to load logs: ',
+            systemErrors: 'System Errors',
+            ocrFailures: 'OCR Failures',
+            searchPlaceholder: 'Search logs...',
+            entries: 'entries',
+            loading: 'Loading logs...',
+            empty: 'No logs found.',
+            footer: 'This log is generated automatically by Winston Logger and Morgan HTTP Middleware',
+        }
+        : {
+            loadFailed: 'Gagal memuat log: ',
+            systemErrors: 'System Errors',
+            ocrFailures: 'OCR Failures',
+            searchPlaceholder: 'Cari di dalam log...',
+            entries: 'entries',
+            loading: 'Memuat data log...',
+            empty: 'Tidak ada log yang ditemukan.',
+            footer: 'Log ini dihasilkan secara otomatis oleh Winston Logger & Morgan HTTP Middleware',
+        };
     const [logType, setLogType] = useState('error'); // 'error' | 'ocr'
     const [rawContent, setRawContent] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -15,13 +39,13 @@ export default function SystemLogs({ isDarkMode }) {
             const data = await systemService.getFileLogs(logType);
             setRawContent(data.content || '');
         } catch (err) {
-            setRawContent("Gagal memuat log: " + err.message);
+            setRawContent(text.loadFailed + err.message);
         } finally {
             setIsLoading(false);
         }
     };
 
-    useEffect(() => { fetchLogs(); }, [logType]);
+    useEffect(() => { fetchLogs(); }, [logType, language]);
 
     const filteredLogs = rawContent.split('\n')
         .filter(line => line.trim() !== '')
@@ -36,13 +60,13 @@ export default function SystemLogs({ isDarkMode }) {
                         onClick={() => setLogType('error')}
                         className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all ${logType === 'error' ? 'bg-white dark:bg-slate-700 text-red-600 shadow-sm' : 'text-gray-500'}`}
                     >
-                        <AlertCircle size={16} /> System Errors
+                        <AlertCircle size={16} /> {text.systemErrors}
                     </button>
                     <button
                         onClick={() => setLogType('ocr')}
                         className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all ${logType === 'ocr' ? 'bg-white dark:bg-slate-700 text-amber-600 shadow-sm' : 'text-gray-500'}`}
                     >
-                        <FileWarning size={16} /> OCR Failures
+                        <FileWarning size={16} /> {text.ocrFailures}
                     </button>
                 </div>
 
@@ -51,7 +75,7 @@ export default function SystemLogs({ isDarkMode }) {
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                         <input
                             type="text"
-                            placeholder="Cari di dalam log..."
+                            placeholder={text.searchPlaceholder}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500"
@@ -72,15 +96,15 @@ export default function SystemLogs({ isDarkMode }) {
                             <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
                         </div>
                         <span className="ml-4 text-xs font-mono text-slate-400 flex items-center gap-2">
-                            <Terminal size={14} /> {logType === 'error' ? 'error.log' : 'ocr-failures.log'} — {filteredLogs.length} entries
+                            <Terminal size={14} /> {logType === 'error' ? 'error.log' : 'ocr-failures.log'} — {filteredLogs.length} {text.entries}
                         </span>
                     </div>
                 </div>
                 <div className="bg-[#0d1117] p-6 font-mono text-sm h-[60vh] overflow-y-auto custom-scrollbar">
                     {isLoading ? (
-                        <div className="flex items-center justify-center h-full text-slate-500">Memuat data log...</div>
+                        <div className="flex items-center justify-center h-full text-slate-500">{text.loading}</div>
                     ) : filteredLogs.length === 0 ? (
-                        <div className="flex items-center justify-center h-full text-slate-600 italic">Tidak ada log yang ditemukan.</div>
+                        <div className="flex items-center justify-center h-full text-slate-600 italic">{text.empty}</div>
                     ) : (
                         <div className="space-y-1">
                             {filteredLogs.map((line, i) => {
@@ -100,7 +124,7 @@ export default function SystemLogs({ isDarkMode }) {
                 </div>
             </Card>
             <p className="text-[10px] text-center text-slate-500 uppercase tracking-widest font-bold">
-                Log ini dihasilkan secara otomatis oleh Winston Logger & Morgan HTTP Middleware
+                {text.footer}
             </p>
         </div>
     );

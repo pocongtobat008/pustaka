@@ -1,8 +1,43 @@
 import React, { useState } from 'react';
 import { User, FileKey, AlertCircle, ShieldCheck, Zap, ArrowRight, BookOpen } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Login({ onLogin }) {
     const [loginForm, setLoginForm] = useState({ username: '', password: '', error: '' });
+    const { language } = useLanguage();
+    const isEnglish = language === 'en';
+
+    const text = isEnglish
+        ? {
+            titleMain: 'One Unified\nSystem Management Solution',
+            titleAccent: 'for Integrated Operations',
+            subtitle: 'Smart integration between digital systems to support efficient and compliant corporate operations.',
+            security: 'Enterprise Security',
+            ocr: 'AI Powered OCR',
+            welcome: 'Welcome Back',
+            credentialHint: 'Enter your credentials to access the system.',
+            username: 'Username',
+            password: 'Password',
+            submit: 'Sign In to Dashboard',
+            or: 'or',
+            guest: 'Continue as Guest (Read-Only)',
+            version: '©2026 Pustaka Enterprise • v1.0.0 (Beta)',
+        }
+        : {
+            titleMain: 'Solusi Satu\nManajemen Sistem Terpadu',
+            titleAccent: 'untuk Operasional Terintegrasi',
+            subtitle: 'Integrasi cerdas antara sistem digital untuk mendukung operasional korporat yang efisien dan patuh regulasi.',
+            security: 'Keamanan Enterprise',
+            ocr: 'OCR Bertenaga AI',
+            welcome: 'Selamat Datang',
+            credentialHint: 'Masukkan kredensial Anda untuk akses sistem.',
+            username: 'Username',
+            password: 'Password',
+            submit: 'Masuk Ke Dashboard',
+            or: 'Atau',
+            guest: 'Masuk Sebagai Tamu (Read-Only)',
+            version: '©2026 Pustaka Enterprise • v1.0.0 (Beta)',
+        };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -42,11 +77,11 @@ export default function Login({ onLogin }) {
                         </div>
                         
                         <h1 className="text-5xl font-black text-white leading-tight mb-6">
-                            Solusi Satu<br /> 
-                            <span className="text-indigo-200">Manajemen Sistem Terpadu</span>
+                            {text.titleMain.split('\n')[0]}<br />
+                            <span className="text-indigo-200">{text.titleAccent}</span>
                         </h1>
                         <p className="text-indigo-100 text-lg font-medium max-w-md">
-                            Integrasi cerdas antara sistem digital untuk mendukung operasional korporat yang efisien dan patuh regulasi.
+                            {text.subtitle}
                         </p>
                     </div>
 
@@ -71,10 +106,10 @@ export default function Login({ onLogin }) {
 
                     <div className="relative z-10 flex gap-6">
                         <div className="flex items-center gap-2 text-white/70 text-sm font-bold">
-                            <ShieldCheck size={18} className="text-emerald-400" /> Enterprise Security
+                            <ShieldCheck size={18} className="text-emerald-400" /> {text.security}
                         </div>
                         <div className="flex items-center gap-2 text-white/70 text-sm font-bold">
-                            <Zap size={18} className="text-amber-400" /> AI Powered OCR
+                            <Zap size={18} className="text-amber-400" /> {text.ocr}
                         </div>
                     </div>
                 </div>
@@ -88,8 +123,8 @@ export default function Login({ onLogin }) {
                     </div>
                     
                     <div className="mb-10">
-                        <h2 className="text-3xl font-black text-[#2B3674] dark:text-white mb-2 tracking-tight">Selamat Datang</h2>
-                        <p className="text-gray-500 dark:text-slate-400 font-bold">Masukkan kredensial Anda untuk akses sistem.</p>
+                        <h2 className="text-3xl font-black text-[#2B3674] dark:text-white mb-2 tracking-tight">{text.welcome}</h2>
+                        <p className="text-gray-500 dark:text-slate-400 font-bold">{text.credentialHint}</p>
                     </div>
 
                     {loginForm.error && (
@@ -100,7 +135,7 @@ export default function Login({ onLogin }) {
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="group">
-                            <label className="block text-sm font-black text-[#2B3674] dark:text-slate-300 mb-2 uppercase tracking-widest ml-1">Username</label>
+                            <label className="block text-sm font-black text-[#2B3674] dark:text-slate-300 mb-2 uppercase tracking-widest ml-1">{text.username}</label>
                             <div className="relative group-focus-within:scale-[1.01] transition-all duration-300">
                                 <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors" size={20} />
                                 <input
@@ -113,7 +148,7 @@ export default function Login({ onLogin }) {
                             </div>
                         </div>
                         <div className="group">
-                            <label className="block text-sm font-black text-[#2B3674] dark:text-slate-300 mb-2 uppercase tracking-widest ml-1">Password</label>
+                            <label className="block text-sm font-black text-[#2B3674] dark:text-slate-300 mb-2 uppercase tracking-widest ml-1">{text.password}</label>
                             <div className="relative group-focus-within:scale-[1.01] transition-all duration-300">
                                 <FileKey className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors" size={20} />
                                 <input
@@ -126,13 +161,13 @@ export default function Login({ onLogin }) {
                             </div>
                         </div>
                         <button type="submit" className="w-full py-4 bg-[#4318FF] hover:bg-indigo-700 text-white rounded-2xl font-black shadow-xl shadow-indigo-500/30 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 group">
-                            Masuk Ke Dashboard
+                            {text.submit}
                             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                         </button>
 
                         <div className="relative flex items-center py-2">
                             <div className="flex-grow border-t border-gray-100 dark:border-slate-800"></div>
-                            <span className="flex-shrink mx-4 text-gray-400 text-[10px] font-black uppercase tracking-[0.2em]">Atau</span>
+                            <span className="flex-shrink mx-4 text-gray-400 text-[10px] font-black uppercase tracking-[0.2em]">{text.or}</span>
                             <div className="flex-grow border-t border-gray-100 dark:border-slate-800"></div>
                         </div>
 
@@ -142,10 +177,10 @@ export default function Login({ onLogin }) {
                             className="w-full py-4 bg-white dark:bg-slate-900/40 border-2 border-indigo-50 dark:border-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-2xl font-black shadow-sm hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-3 group border-dashed"
                         >
                             <User size={20} className="group-hover:scale-110 transition-transform" />
-                            Masuk Sebagai Tamu (Read-Only)
+                            {text.guest}
                         </button>
                     </form>
-                    <p className="text-center text-xs text-gray-400 mt-12 font-bold uppercase tracking-widest">©2026 Pustaka Enterprise • v1.0.0 (Beta)</p>
+                    <p className="text-center text-xs text-gray-400 mt-12 font-bold uppercase tracking-widest">{text.version}</p>
                 </div>
             </div>
         </div>

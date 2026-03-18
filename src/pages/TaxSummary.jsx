@@ -12,6 +12,7 @@ import * as XLSX from 'xlsx';
 import { api } from '../api';
 import { parseApiError } from '../utils/errorHandler';
 import { Card, SummaryCard } from '../components/ui/Card';
+import { useLanguage } from '../contexts/LanguageContext';
 
 // --- HELPERS ---
 const getSafeValue = (record, type, category) => {
@@ -26,7 +27,42 @@ const getSafeValue = (record, type, category) => {
 
 // --- TAB: COMPARISON COMPONENT ---
 // Deklarasi dipindahkan ke luar fungsi utama untuk mencegah "reset state" akibat remounting di setiap re-render induk
-const ComparisonTab = ({ sortedSummaries, config, onCopy }) => {
+const ComparisonTab = ({ sortedSummaries, config, onCopy, isEnglish }) => {
+    const monthLabelMap = {
+        Januari: 'January',
+        Februari: 'February',
+        Maret: 'March',
+        April: 'April',
+        Mei: 'May',
+        Juni: 'June',
+        Juli: 'July',
+        Agustus: 'August',
+        September: 'September',
+        Oktober: 'October',
+        November: 'November',
+        Desember: 'December',
+    };
+    const t = {
+        noData: isEnglish ? 'No data available for comparison yet.' : 'Belum ada data untuk dibandingkan.',
+        modes: {
+            manual: isEnglish ? 'Manual' : 'Manual',
+            mom: isEnglish ? 'Month vs Month (Same Year)' : 'Bulan vs Bulan (Tahun Sama)',
+            diffYear: isEnglish ? 'Month vs Month (Different Year)' : 'Bulan vs Bulan (Tahun Berbeda)',
+            yoy: isEnglish ? 'Year vs Year (Same Month)' : 'Tahun vs Tahun (Bulan Sama)',
+            rev: isEnglish ? 'Revision Comparison' : 'Perbandingan Pembetulan',
+        },
+        filter: isEnglish ? 'Filter:' : 'Filter:',
+        allMonth: isEnglish ? 'All Months' : 'Semua Bulan',
+        allYear: isEnglish ? 'All Years' : 'Semua Tahun',
+        allRevision: isEnglish ? 'All Revisions' : 'Semua Pembetulan',
+        choose: isEnglish ? 'Choose:' : 'Pilih:',
+        pphComparison: isEnglish ? 'PPh Comparison' : 'Perbandingan PPh',
+        ppnComparison: isEnglish ? 'PPN Comparison' : 'Perbandingan PPN',
+        ppnInput: isEnglish ? 'Input VAT' : 'PPN Masukan',
+        ppnOutput: isEnglish ? 'Output VAT' : 'PPN Keluaran',
+        copyPeriodB: isEnglish ? 'Copy Period B Total PPh' : 'Salin Total PPh Periode B',
+    };
+    const monthDisplay = (m) => (isEnglish ? (monthLabelMap[m] || m) : m);
     const uniquePeriods = useMemo(() => {
         const groups = {};
         sortedSummaries.forEach(s => {
@@ -148,7 +184,7 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy }) => {
     const uniqueYears = [...new Set(sortedSummaries.map(s => s.year))].sort((a, b) => b - a);
     const uniquePembetulan = [...new Set(sortedSummaries.map(s => s.pembetulan || 0))].sort((a, b) => a - b);
 
-    if (sortedSummaries.length === 0) return <div className="p-8 text-center text-gray-500">Belum ada data untuk dibandingkan.</div>;
+    if (sortedSummaries.length === 0) return <div className="p-8 text-center text-gray-500">{t.noData}</div>;
 
     const renderDelta = (valA, valB) => {
         const diff = valB - valA;
@@ -171,11 +207,11 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy }) => {
                 <div className="space-y-4">
                     <div className="flex gap-2 border-b border-gray-100 dark:border-slate-700 pb-4 overflow-x-auto">
                         {[
-                            { id: 'manual', label: 'Manual' },
-                            { id: 'mom', label: 'Bulan vs Bulan (Tahun Sama)' },
-                            { id: 'diff_year', label: 'Bulan vs Bulan (Tahun Berbeda)' },
-                            { id: 'yoy', label: 'Tahun vs Tahun (Bulan Sama)' },
-                            { id: 'rev', label: 'Perbandingan Pembetulan' }
+                            { id: 'manual', label: t.modes.manual },
+                            { id: 'mom', label: t.modes.mom },
+                            { id: 'diff_year', label: t.modes.diffYear },
+                            { id: 'yoy', label: t.modes.yoy },
+                            { id: 'rev', label: t.modes.rev }
                         ].map(mode => (
                             <button
                                 key={mode.id}
@@ -190,17 +226,17 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy }) => {
                     <div className="flex flex-wrap gap-3 items-center">
                         {compMode === 'manual' && (
                             <>
-                                <span className="text-sm font-bold text-gray-500 mr-2">Filter:</span>
+                                <span className="text-sm font-bold text-gray-500 mr-2">{t.filter}</span>
                                 <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={compFilters.month} onChange={e => setCompFilters(prev => ({ ...prev, month: e.target.value }))}>
-                                    <option value="All">Semua Bulan</option>
-                                    {months.map(m => <option key={m} value={m}>{m}</option>)}
+                                    <option value="All">{t.allMonth}</option>
+                                    {months.map(m => <option key={m} value={m}>{monthDisplay(m)}</option>)}
                                 </select>
                                 <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={compFilters.year} onChange={e => setCompFilters(prev => ({ ...prev, year: e.target.value }))}>
-                                    <option value="All">Semua Tahun</option>
+                                    <option value="All">{t.allYear}</option>
                                     {uniqueYears.map(y => <option key={y} value={y}>{y}</option>)}
                                 </select>
                                 <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={compFilters.pembetulan} onChange={e => setCompFilters(prev => ({ ...prev, pembetulan: e.target.value }))}>
-                                    <option value="All">Semua Pembetulan</option>
+                                    <option value="All">{t.allRevision}</option>
                                     {uniquePembetulan.map(p => <option key={p} value={p}>P-{p}</option>)}
                                 </select>
                                 <button onClick={() => setCompFilters({ month: 'All', year: 'All', pembetulan: 'All' })} className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg"><X size={16} /></button>
@@ -209,33 +245,33 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy }) => {
 
                         {compMode === 'mom' && (
                             <>
-                                <span className="text-sm font-bold text-gray-500 mr-2">Pilih:</span>
+                                <span className="text-sm font-bold text-gray-500 mr-2">{t.choose}</span>
                                 <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedYear} onChange={e => setSelectedYear(e.target.value)}>
                                     {uniqueYears.map(y => <option key={y} value={y}>{y}</option>)}
                                 </select>
                                 <div className="h-4 w-px bg-gray-300 mx-2"></div>
                                 <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedMonthA} onChange={e => setSelectedMonthA(e.target.value)}>
-                                    {months.map(m => <option key={m} value={m}>{m}</option>)}
+                                    {months.map(m => <option key={m} value={m}>{monthDisplay(m)}</option>)}
                                 </select>
                                 <span className="text-xs text-gray-400">vs</span>
                                 <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedMonthB} onChange={e => setSelectedMonthB(e.target.value)}>
-                                    {months.map(m => <option key={m} value={m}>{m}</option>)}
+                                    {months.map(m => <option key={m} value={m}>{monthDisplay(m)}</option>)}
                                 </select>
                             </>
                         )}
 
                         {compMode === 'diff_year' && (
                             <>
-                                <span className="text-sm font-bold text-gray-500 mr-2">Pilih:</span>
+                                <span className="text-sm font-bold text-gray-500 mr-2">{t.choose}</span>
                                 <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedMonthA} onChange={e => setSelectedMonthA(e.target.value)}>
-                                    {months.map(m => <option key={m} value={m}>{m}</option>)}
+                                    {months.map(m => <option key={m} value={m}>{monthDisplay(m)}</option>)}
                                 </select>
                                 <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedYearA} onChange={e => setSelectedYearA(e.target.value)}>
                                     {uniqueYears.map(y => <option key={y} value={y}>{y}</option>)}
                                 </select>
                                 <span className="text-xs text-gray-400">vs</span>
                                 <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedMonthB} onChange={e => setSelectedMonthB(e.target.value)}>
-                                    {months.map(m => <option key={m} value={m}>{m}</option>)}
+                                    {months.map(m => <option key={m} value={m}>{monthDisplay(m)}</option>)}
                                 </select>
                                 <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedYearB} onChange={e => setSelectedYearB(e.target.value)}>
                                     {uniqueYears.map(y => <option key={y} value={y}>{y}</option>)}
@@ -245,9 +281,9 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy }) => {
 
                         {compMode === 'yoy' && (
                             <>
-                                <span className="text-sm font-bold text-gray-500 mr-2">Pilih:</span>
+                                <span className="text-sm font-bold text-gray-500 mr-2">{t.choose}</span>
                                 <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedMonth} onChange={e => setSelectedMonth(e.target.value)}>
-                                    {months.map(m => <option key={m} value={m}>{m}</option>)}
+                                    {months.map(m => <option key={m} value={m}>{monthDisplay(m)}</option>)}
                                 </select>
                                 <div className="h-4 w-px bg-gray-300 mx-2"></div>
                                 <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedYearA} onChange={e => setSelectedYearA(e.target.value)}>
@@ -262,9 +298,9 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy }) => {
 
                         {compMode === 'rev' && (
                             <>
-                                <span className="text-sm font-bold text-gray-500 mr-2">Pilih:</span>
+                                <span className="text-sm font-bold text-gray-500 mr-2">{t.choose}</span>
                                 <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedMonth} onChange={e => setSelectedMonth(e.target.value)}>
-                                    {months.map(m => <option key={m} value={m}>{m}</option>)}
+                                    {months.map(m => <option key={m} value={m}>{monthDisplay(m)}</option>)}
                                 </select>
                                 <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedYear} onChange={e => setSelectedYear(e.target.value)}>
                                     {uniqueYears.map(y => <option key={y} value={y}>{y}</option>)}
@@ -285,12 +321,12 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
                     <div className="flex justify-between items-center mb-4">
-                        <h3 className="font-bold text-gray-900 dark:text-white">Perbandingan PPh</h3>
+                        <h3 className="font-bold text-gray-900 dark:text-white">{t.pphComparison}</h3>
                         {dataB.data?.pph && (
                             <button 
                                 onClick={() => onCopy(Object.values(dataB.data.pph).reduce((a, b) => a + b, 0), "Total PPh Periode B")}
                                 className="p-1.5 text-slate-400 hover:text-indigo-600 transition-all"
-                                title="Salin Total PPh Periode B"
+                                title={t.copyPeriodB}
                             >
                                 <Copy size={16} />
                             </button>
@@ -314,10 +350,10 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy }) => {
                 </Card>
 
                 <Card>
-                    <h3 className="font-bold text-gray-900 dark:text-white mb-4">Perbandingan PPN</h3>
+                    <h3 className="font-bold text-gray-900 dark:text-white mb-4">{t.ppnComparison}</h3>
                     <div className="space-y-4">
                         <div>
-                            <h4 className="text-xs uppercase text-gray-500 font-bold mb-2">PPN Masukan</h4>
+                            <h4 className="text-xs uppercase text-gray-500 font-bold mb-2">{t.ppnInput}</h4>
                             {config.ppnInTypes.map(t => {
                                 const valA = getSafeValue(dataA, t, 'ppnIn');
                                 const valB = getSafeValue(dataB, t, 'ppnIn');
@@ -333,7 +369,7 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy }) => {
                             })}
                         </div>
                         <div>
-                            <h4 className="text-xs uppercase text-gray-500 font-bold mb-2">PPN Keluaran</h4>
+                            <h4 className="text-xs uppercase text-gray-500 font-bold mb-2">{t.ppnOutput}</h4>
                             {config.ppnOutTypes.map(t => {
                                 const valA = getSafeValue(dataA, t, 'ppnOut');
                                 const valB = getSafeValue(dataB, t, 'ppnOut');
@@ -357,6 +393,8 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy }) => {
 
 
 export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, setModalTab, setIsModalOpen, config, saveConfig, handleDeleteRecord, handleRenameTaxType, onRefresh, onImport, onCopy }) {
+    const { language } = useLanguage();
+    const isEnglish = language === 'en';
     const [activeTab, setActiveTab] = useState('pph'); // pph, ppn, comparison
     const [viewMode, setViewMode] = useState('chart'); // chart, table
     const [filters, setFilters] = useState({ month: 'All', year: 'All', pembetulan: 'All', status: 'All' });
@@ -402,7 +440,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
 
 
     const handleAddType = (category) => {
-        const name = prompt("Masukkan nama tipe pajak baru:");
+        const name = prompt(isEnglish ? "Enter new tax type name:" : "Masukkan nama tipe pajak baru:");
         if (name && !config[category].includes(name)) {
             saveConfig({
                 ...config,
@@ -412,7 +450,9 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
     };
 
     const handleDeleteType = (category, typeId) => {
-        if (window.confirm(`Apakah Anda yakin ingin menghapus kolom "${typeId}"? Data historis mungkin tidak akan terlihat.`)) {
+        if (window.confirm(isEnglish
+            ? `Are you sure you want to delete column "${typeId}"? Historical data may no longer be visible.`
+            : `Apakah Anda yakin ingin menghapus kolom "${typeId}"? Data historis mungkin tidak akan terlihat.`)) {
             const newTypes = config[category].filter(t => t !== typeId);
             saveConfig({
                 ...config,
@@ -455,7 +495,9 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
         // 1. Konteks Filter
         if (filters.month !== 'All' || filters.year !== 'All') {
             return {
-                text: `Analisis Filter: Menampilkan data untuk periode ${filters.month !== 'All' ? filters.month : ''} ${filters.year !== 'All' ? filters.year : ''}. AI membandingkan tren kepatuhan pada periode ini.`,
+                text: isEnglish
+                    ? `Filter Analysis: Showing data for period ${filters.month !== 'All' ? filters.month : ''} ${filters.year !== 'All' ? filters.year : ''}. AI is comparing compliance trends for this period.`
+                    : `Analisis Filter: Menampilkan data untuk periode ${filters.month !== 'All' ? filters.month : ''} ${filters.year !== 'All' ? filters.year : ''}. AI membandingkan tren kepatuhan pada periode ini.`,
                 icon: <Search className="text-indigo-500" size={20} />,
                 color: "border-indigo-200 dark:border-indigo-800/50 bg-indigo-50/50 dark:bg-indigo-900/10 text-indigo-800 dark:text-indigo-200"
             };
@@ -469,7 +511,9 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
         const hasCurrent = taxSummaries.some(s => s.month === currentMonth && s.year === currentYear);
         if (!hasCurrent) {
             return {
-                text: `Pengingat Laporan: Data untuk ${currentMonth} ${currentYear} belum tersedia. Segera lakukan input atau import data untuk menjaga validitas dashboard.`,
+                text: isEnglish
+                    ? `Reporting Reminder: Data for ${currentMonth} ${currentYear} is not available yet. Please input or import data to keep dashboard validity.`
+                    : `Pengingat Laporan: Data untuk ${currentMonth} ${currentYear} belum tersedia. Segera lakukan input atau import data untuk menjaga validitas dashboard.`,
                 icon: <AlertCircle className="text-amber-500" size={20} />,
                 color: "border-amber-200 dark:border-amber-800/50 bg-amber-50/50 dark:bg-amber-900/10 text-amber-800 dark:text-amber-200"
             };
@@ -479,7 +523,9 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
         const highRev = taxSummaries.filter(s => (s.pembetulan || 0) > 1).length;
         if (highRev > 0) {
             return {
-                text: `Analisis Kualitas: Terdeteksi ${highRev} laporan dengan pembetulan > 1. Disarankan untuk melakukan review data master sebelum pelaporan final.`,
+                text: isEnglish
+                    ? `Quality Analysis: Detected ${highRev} reports with revision > 1. It is recommended to review master data before final reporting.`
+                    : `Analisis Kualitas: Terdeteksi ${highRev} laporan dengan pembetulan > 1. Disarankan untuk melakukan review data master sebelum pelaporan final.`,
                 icon: <TrendingUp className="text-blue-500" size={20} />,
                 color: "border-blue-200 dark:border-blue-800/50 bg-blue-50/50 dark:bg-blue-900/10 text-blue-800 dark:text-blue-200"
             };
@@ -487,10 +533,18 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
 
         // 4. Default Tips
         const tips = [
-            "Tips AI: Gunakan fitur 'Perbandingan' untuk melihat anomali pembayaran antar periode secara mendalam.",
-            "Info: Template PPh dan PPN akan otomatis menyesuaikan jika Anda menambahkan kolom tipe pajak baru.",
-            "Saran: Lakukan ekspor laporan secara berkala sebagai backup data kepatuhan pajak perusahaan.",
-            "Sistem Optimal: Semua perhitungan PPN Masukan dan Keluaran telah disinkronkan dengan database WP."
+            isEnglish
+                ? "AI Tip: Use the 'Comparison' feature to inspect payment anomalies across periods in depth."
+                : "Tips AI: Gunakan fitur 'Perbandingan' untuk melihat anomali pembayaran antar periode secara mendalam.",
+            isEnglish
+                ? "Info: PPh and PPN templates will auto-adjust when you add a new tax type column."
+                : "Info: Template PPh dan PPN akan otomatis menyesuaikan jika Anda menambahkan kolom tipe pajak baru.",
+            isEnglish
+                ? "Suggestion: Export reports periodically as a backup for company tax compliance data."
+                : "Saran: Lakukan ekspor laporan secara berkala sebagai backup data kepatuhan pajak perusahaan.",
+            isEnglish
+                ? "Optimal System: Input and Output VAT calculations are synchronized with the WP database."
+                : "Sistem Optimal: Semua perhitungan PPN Masukan dan Keluaran telah disinkronkan dengan database WP."
         ];
         return {
             text: tips[new Date().getHours() % tips.length],
@@ -554,7 +608,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
             const jsonData = XLSX.utils.sheet_to_json(ws);
 
             if (jsonData.length === 0) {
-                alert("File kosong.");
+                alert(isEnglish ? "File is empty." : "File kosong.");
                 return;
             }
 
@@ -573,12 +627,16 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
             const fileTypeMarker = String(jsonData[0]?.["Template Type"] || "").toUpperCase();
 
             if (importMode === 'ppn' && (fileTypeMarker === 'PPH' || (!hasPpnMarkers && fileTypeMarker !== 'PPN'))) {
-                alert("⚠️ Gagal Import PPN: File ini terdeteksi sebagai template PPh. Harap gunakan tombol 'Import PPh' atau gunakan template PPN yang benar.");
+                alert(isEnglish
+                    ? "⚠️ PPN Import Failed: This file is detected as a PPh template. Please use the 'Import PPh' button or use the correct PPN template."
+                    : "⚠️ Gagal Import PPN: File ini terdeteksi sebagai template PPh. Harap gunakan tombol 'Import PPh' atau gunakan template PPN yang benar.");
                 return;
             }
 
             if (importMode === 'pph' && (fileTypeMarker === 'PPN' || hasPpnMarkers)) {
-                alert("⚠️ Gagal Import PPh: File ini terdeteksi sebagai template PPN. Harap gunakan tombol 'Import PPN' atau gunakan template PPh yang benar.");
+                alert(isEnglish
+                    ? "⚠️ PPh Import Failed: This file is detected as a PPN template. Please use the 'Import PPN' button or use the correct PPh template."
+                    : "⚠️ Gagal Import PPh: File ini terdeteksi sebagai template PPN. Harap gunakan tombol 'Import PPN' atau gunakan template PPh yang benar.");
                 return;
             }
             
@@ -643,7 +701,9 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
 
             if (configChanged) {
                 saveConfig(localConfig); // Simpan ke App state / LocalStorage
-                alert(`Menambahkan kolom baru: ${newColumns.join(', ')}`);
+                alert(isEnglish
+                    ? `Added new columns: ${newColumns.join(', ')}`
+                    : `Menambahkan kolom baru: ${newColumns.join(', ')}`);
             }
 
             const payloads = [];
@@ -719,7 +779,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
         } catch (error) {
             console.error("Import failed", error);
             const msg = await parseApiError(error);
-            alert("Gagal mengimport file: " + msg);
+            alert((isEnglish ? "Failed to import file: " : "Gagal mengimport file: ") + msg);
         } finally {
             setImportMode(null);
             if (fileInputRef.current) fileInputRef.current.value = '';
@@ -739,7 +799,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                     value={filters.month}
                     onChange={e => setFilters(prev => ({ ...prev, month: e.target.value }))}
                 >
-                    <option value="All">Semua Bulan</option>
+                    <option value="All">{isEnglish ? 'All Months' : 'Semua Bulan'}</option>
                     {months.map(m => <option key={m} value={m}>{m}</option>)}
                 </select>
 
@@ -748,7 +808,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                     value={filters.year}
                     onChange={e => setFilters(prev => ({ ...prev, year: e.target.value }))}
                 >
-                    <option value="All">Semua Tahun</option>
+                    <option value="All">{isEnglish ? 'All Years' : 'Semua Tahun'}</option>
                     {uniqueYears.map(y => <option key={y} value={y}>{y}</option>)}
                 </select>
 
@@ -757,7 +817,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                     value={filters.pembetulan}
                     onChange={e => setFilters(prev => ({ ...prev, pembetulan: e.target.value }))}
                 >
-                    <option value="All">Semua Pembetulan</option>
+                    <option value="All">{isEnglish ? 'All Revisions' : 'Semua Pembetulan'}</option>
                     {uniquePembetulan.map(p => <option key={p} value={p}>P-{p}</option>)}
                 </select>
 
@@ -767,14 +827,14 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                         value={filters.status}
                         onChange={e => setFilters(prev => ({ ...prev, status: e.target.value }))}
                     >
-                        <option value="All">Semua Status</option>
-                        <option value="KB">Kurang Bayar</option>
-                        <option value="LB">Lebih Bayar</option>
+                        <option value="All">{isEnglish ? 'All Statuses' : 'Semua Status'}</option>
+                        <option value="KB">{isEnglish ? 'Underpaid' : 'Kurang Bayar'}</option>
+                        <option value="LB">{isEnglish ? 'Overpaid' : 'Lebih Bayar'}</option>
                         <option value="Nihil">Nihil</option>
                     </select>
                 )}
 
-                <button onClick={resetFilters} className="p-1.5 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded" title="Reset Filter">
+                <button onClick={resetFilters} className="p-1.5 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded" title={isEnglish ? 'Reset Filter' : 'Reset Filter'}>
                     <X size={14} />
                 </button>
             </div>
@@ -849,7 +909,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                     {hasPermission('tax-summary', 'edit') && (
                         <button onClick={() => handleAddType('pphTypes')} className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-2xl text-gray-400 hover:border-indigo-400 hover:text-indigo-500 transition-colors">
                             <Plus size={20} />
-                            <span className="text-xs font-medium mt-1">Tambah Tipe Pajak</span>
+                            <span className="text-xs font-medium mt-1">{isEnglish ? 'Add Tax Type' : 'Tambah Tipe Pajak'}</span>
                         </button>
                     )}
                 </div>
@@ -863,7 +923,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                                 <h3 className="font-bold text-lg dark:text-white flex items-center gap-2">
                                     <Percent size={20} className="text-indigo-500" /> Tren PPh (Year to Date)
                                 </h3>
-                                <p className="text-sm text-gray-500">Akumulasi pembayaran pajak penghasilan per bulan.</p>
+                                <p className="text-sm text-gray-500">{isEnglish ? 'Accumulated income tax payments per month.' : 'Akumulasi pembayaran pajak penghasilan per bulan.'}</p>
                             </div>
                             <div className="flex gap-2">
                                 {hasPermission('tax-summary', 'create') && (
@@ -885,7 +945,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                                     }}
                                     className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/20"
                                 >
-                                    <Plus size={14} /> Input PPh
+                                    <Plus size={14} /> {isEnglish ? 'Input PPh' : 'Input PPh'}
                                 </button>
                                 )}
                                 <button className="p-2 hover:bg-gray-100 rounded-lg dark:hover:bg-slate-700"><Download size={16} className="text-gray-500" /></button>
@@ -1401,7 +1461,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
             {/* Content Renderers */}
             {activeTab === 'pph' && renderPPhTab()}
             {activeTab === 'ppn' && renderPPNTab()}
-            {activeTab === 'comparison' && <ComparisonTab sortedSummaries={sortedSummaries} config={config} onCopy={onCopy} />}
+            {activeTab === 'comparison' && <ComparisonTab sortedSummaries={sortedSummaries} config={config} onCopy={onCopy} isEnglish={isEnglish} />}
         </div >
     );
 }

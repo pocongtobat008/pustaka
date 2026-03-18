@@ -2,8 +2,57 @@ import React, { useState } from 'react';
 import { User, Lock, Save, AlertCircle, CheckCircle2, ChevronRight } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { API_URL } from '../services/database';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Profile({ currentUser, onUpdateProfile }) {
+    const { language } = useLanguage();
+    const isEnglish = language === 'en';
+    const text = isEnglish
+        ? {
+            mismatch: 'Password confirmation does not match',
+            profileUpdated: 'Profile updated successfully',
+            profileUpdateFailed: 'Failed to update profile',
+            profileApiMissing: 'Profile API endpoint not found.',
+            systemError: 'A system error occurred',
+            pageTitle: 'User Profile',
+            pageSubtitle: 'Manage your personal information and account security',
+            accountStatus: 'Account Status',
+            active: 'Active',
+            username: 'Username',
+            department: 'Department',
+            personalInfo: 'Personal Information',
+            fullName: 'Full Name',
+            fullNamePlaceholder: 'Enter your full name',
+            securityTitle: 'Security & Password',
+            securityHint: 'Leave empty if you do not want to change password. If you want to change it, make sure you remember your current password.',
+            currentPassword: 'Current Password',
+            newPassword: 'New Password',
+            confirmNewPassword: 'Confirm New Password',
+            saveChanges: 'Save Changes',
+        }
+        : {
+            mismatch: 'Konfirmasi password tidak cocok',
+            profileUpdated: 'Profil berhasil diperbarui',
+            profileUpdateFailed: 'Gagal memperbarui profil',
+            profileApiMissing: 'API Profile tidak ditemukan.',
+            systemError: 'Terjadi kesalahan sistem',
+            pageTitle: 'Profil Pengguna',
+            pageSubtitle: 'Atur informasi pribadi dan keamanan akun Anda',
+            accountStatus: 'Account Status',
+            active: 'Active',
+            username: 'Username',
+            department: 'Department',
+            personalInfo: 'Informasi Pribadi',
+            fullName: 'Nama Lengkap',
+            fullNamePlaceholder: 'Masukkan nama lengkap Anda',
+            securityTitle: 'Keamanan & Password',
+            securityHint: 'Biarkan kosong jika Anda tidak ingin merubah password. Jika ingin merubah password, pastikan Anda mengingat password saat ini.',
+            currentPassword: 'Password Saat Ini',
+            newPassword: 'Password Baru',
+            confirmNewPassword: 'Konfirmasi Password Baru',
+            saveChanges: 'Simpan Perubahan',
+        };
+
     const [name, setName] = useState(currentUser?.name || '');
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -17,7 +66,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
         setMessage({ type: '', text: '' });
 
         if (newPassword && newPassword !== confirmPassword) {
-            setMessage({ type: 'error', text: 'Konfirmasi password tidak cocok' });
+            setMessage({ type: 'error', text: text.mismatch });
             setIsSaving(false);
             return;
         }
@@ -39,21 +88,21 @@ export default function Profile({ currentUser, onUpdateProfile }) {
             if (res.ok) {
                 const data = await res.json();
                 if (data.success) {
-                    setMessage({ type: 'success', text: 'Profil berhasil diperbarui' });
+                    setMessage({ type: 'success', text: text.profileUpdated });
                     onUpdateProfile(data.user);
                     setCurrentPassword('');
                     setNewPassword('');
                     setConfirmPassword('');
                 } else {
-                    setMessage({ type: 'error', text: data.error || 'Gagal memperbarui profil' });
+                    setMessage({ type: 'error', text: data.error || text.profileUpdateFailed });
                 }
             } else {
                 const errorText = await res.text();
                 const isHtml = errorText.includes('<!DOCTYPE');
-                setMessage({ type: 'error', text: `Gagal (Status ${res.status}): ${isHtml ? 'API Profile tidak ditemukan.' : errorText}` });
+                setMessage({ type: 'error', text: `Failed (Status ${res.status}): ${isHtml ? text.profileApiMissing : errorText}` });
             }
         } catch (error) {
-            setMessage({ type: 'error', text: 'Terjadi kesalahan sistem' });
+            setMessage({ type: 'error', text: text.systemError });
         } finally {
             setIsSaving(false);
         }
@@ -66,15 +115,15 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                 <div>
                     <h2 className="text-3xl font-extrabold text-[#2B3674] dark:text-white flex items-center gap-3">
                         <User className="text-indigo-500" size={32} />
-                        Profil Pengguna
+                        {text.pageTitle}
                     </h2>
                     <p className="text-gray-500 dark:text-slate-400 mt-2 font-medium">
-                        Atur informasi pribadi dan keamanan akun Anda
+                        {text.pageSubtitle}
                     </p>
                 </div>
 
                 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-indigo-500 bg-indigo-50 dark:bg-indigo-900/20 px-4 py-2 rounded-full">
-                    Account Status: <span className="text-green-500 ml-1">Active</span>
+                    {text.accountStatus}: <span className="text-green-500 ml-1">{text.active}</span>
                 </div>
             </div>
 
@@ -113,11 +162,11 @@ export default function Profile({ currentUser, onUpdateProfile }) {
 
                             <div className="mt-6 w-full space-y-3">
                                 <div className="flex items-center justify-between text-sm p-3 bg-gray-50 dark:bg-slate-800/50 rounded-xl border border-gray-100 dark:border-slate-700">
-                                    <span className="text-gray-500 dark:text-slate-400">Username</span>
+                                    <span className="text-gray-500 dark:text-slate-400">{text.username}</span>
                                     <span className="font-bold dark:text-white">{currentUser?.username}</span>
                                 </div>
                                 <div className="flex items-center justify-between text-sm p-3 bg-gray-50 dark:bg-slate-800/50 rounded-xl border border-gray-100 dark:border-slate-700">
-                                    <span className="text-gray-500 dark:text-slate-400">Department</span>
+                                    <span className="text-gray-500 dark:text-slate-400">{text.department}</span>
                                     <span className="font-bold dark:text-white">{currentUser?.department || '-'}</span>
                                 </div>
                             </div>
@@ -133,13 +182,13 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                             <div className="p-2.5 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl text-indigo-600">
                                 <User size={20} />
                             </div>
-                            <h3 className="font-bold text-lg dark:text-white text-[#2B3674]">Informasi Pribadi</h3>
+                            <h3 className="font-bold text-lg dark:text-white text-[#2B3674]">{text.personalInfo}</h3>
                         </div>
 
                         <div className="space-y-6">
                             <div className="group">
                                 <label className="block text-sm font-bold text-[#A3AED0] dark:text-slate-400 mb-2 transition-colors group-focus-within:text-indigo-500 uppercase tracking-wider">
-                                    Nama Lengkap
+                                    {text.fullName}
                                 </label>
                                 <div className="relative group-focus-within:scale-[1.01] transition-transform duration-300">
                                     <input
@@ -147,7 +196,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
                                         className="w-full pl-4 pr-10 py-4 bg-gray-50/50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all dark:text-white font-semibold"
-                                        placeholder="Masukkan nama lengkap Anda"
+                                        placeholder={text.fullNamePlaceholder}
                                         required
                                     />
                                     <User className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors" size={20} />
@@ -162,20 +211,20 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                             <div className="p-2.5 bg-amber-50 dark:bg-amber-900/30 rounded-xl text-amber-600">
                                 <Lock size={20} />
                             </div>
-                            <h3 className="font-bold text-lg dark:text-white text-[#2B3674]">Keamanan & Password</h3>
+                            <h3 className="font-bold text-lg dark:text-white text-[#2B3674]">{text.securityTitle}</h3>
                         </div>
 
                         <div className="space-y-6">
                             <div className="p-4 bg-amber-50/50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/20 rounded-2xl flex gap-3">
                                 <AlertCircle className="text-amber-500 shrink-0 mt-0.5" size={18} />
                                 <p className="text-xs text-amber-800 dark:text-amber-400 leading-relaxed font-medium">
-                                    Biarkan kosong jika Anda tidak ingin merubah password. Jika ingin merubah password, pastikan Anda mengingat password saat ini.
+                                    {text.securityHint}
                                 </p>
                             </div>
 
                             <div className="group">
                                 <label className="block text-sm font-bold text-[#A3AED0] dark:text-slate-400 mb-2 transition-colors group-focus-within:text-indigo-500 uppercase tracking-wider">
-                                    Password Saat Ini
+                                    {text.currentPassword}
                                 </label>
                                 <div className="relative group-focus-within:scale-[1.01] transition-transform duration-300">
                                     <input
@@ -193,7 +242,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="group">
                                     <label className="block text-sm font-bold text-[#A3AED0] dark:text-slate-400 mb-2 transition-colors group-focus-within:text-indigo-500 uppercase tracking-wider">
-                                        Password Baru
+                                        {text.newPassword}
                                     </label>
                                     <div className="relative group-focus-within:scale-[1.01] transition-transform duration-300">
                                         <input
@@ -207,7 +256,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                                 </div>
                                 <div className="group">
                                     <label className="block text-sm font-bold text-[#A3AED0] dark:text-slate-400 mb-2 transition-colors group-focus-within:text-indigo-500 uppercase tracking-wider">
-                                        Konfirmasi Password Baru
+                                        {text.confirmNewPassword}
                                     </label>
                                     <div className="relative group-focus-within:scale-[1.01] transition-transform duration-300">
                                         <input
@@ -238,7 +287,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                             ) : (
                                 <Save size={20} />
                             )}
-                            Simpan Perubahan
+                            {text.saveChanges}
                         </button>
                     </div>
                 </div>

@@ -8,9 +8,10 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format, addMonths, subMonths, isBefore, startOfDay, intervalToDuration } from 'date-fns';
-import { id } from 'date-fns/locale';
+import { id, enUS } from 'date-fns/locale';
 import { getSocket } from '../services/socketService';
 import OCRProcessingLanes from '../components/OCRProcessingLanes';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const parseCompletedMonths = (val) => {
     if (Array.isArray(val)) return val;
@@ -44,6 +45,134 @@ const parseAssignedTo = (val) => {
 };
 
 export default function JobDueDate({ currentUser, users, departments, hasPermission, isDarkMode, onCopy }) {
+    const { language } = useLanguage();
+    const isEnglish = language === 'en';
+    const dateLocale = isEnglish ? enUS : id;
+    const text = isEnglish
+        ? {
+            independentIssue: 'Independent Issue',
+            updateStatusFailed: 'Failed to update status:',
+            updateFailed: "Update failed: check whether 'owner' column exists in database.",
+            saveFailed: 'Save failed',
+            ensureMigration: 'Ensure latest database migration has been executed.',
+            systemError: 'System error: ',
+            savePicPrivacyFailed: 'Failed to save PIC privacy:',
+            deleteIssueConfirm: 'Delete this issue note?',
+            removePicConfirm: (username) => `Remove ${username} from monitoring list?`,
+            scheduleMonitoring: 'Schedule Monitoring',
+            workspace: 'Workspace',
+            addPic: 'Add PIC',
+            totalTasks: 'Total Tasks',
+            statusUpdated: 'Status updated.',
+            noHistoryYet: 'No activity history yet',
+            closeDetail: 'Close Detail',
+            chooseMonitoringPic: 'Choose Monitoring PIC',
+            allUsersMonitored: 'All users are already in monitoring list',
+            close: 'Close',
+            picReceiver: 'Receiver (PIC)',
+            timelineProgressFlow: 'Timeline Progress Flow',
+            picBlockPrivacy: 'PIC Block Privacy',
+            visibilityLevel: 'Visibility Level',
+            publicAll: 'Public (Everyone)',
+            privateMine: 'Private (Only Me)',
+            selectedDepartment: 'Selected Department',
+            selectedPeople: 'Selected People',
+            typeToFilter: 'Type to filter...',
+            allowedDepartments: 'Allowed Departments',
+            allowedUsers: 'Allowed Users',
+            saveSettings: 'Save Settings',
+            editIssueNote: 'Edit Issue Note',
+            addNewIssue: 'Add New Issue',
+            issueDetails: 'Work issue details',
+            searchPic: 'Search PIC...',
+            issueSummary: 'Issue Name / Summary',
+            issueDate: 'Issue Date',
+            issueDetail: 'Issue Detail',
+            issueDetailPlaceholder: 'Describe the issue in more detail...',
+            saveIssue: 'Save Issue',
+            editSchedule: 'Edit Schedule',
+            addNewSchedule: 'Add New Schedule',
+            issueDetailMonitoring: 'Issue Detail Monitoring',
+            completed: 'Completed',
+            issueDescription: 'Issue Description',
+            picVisibilityHelp: 'Set who can see monitoring for',
+            searchDepartmentOrUser: 'Search',
+            taskOptional: 'Related Task (Optional)',
+            noScheduleIndependent: '-- No Schedule (Independent) --',
+            issuePicReceiver: 'Issue PIC (Receiver)',
+            issueExamplePlaceholder: 'Example: Waiting for manager approval',
+            jobName: 'Job Name',
+            category: 'Category',
+            recurringMonthly: 'Recurring Monthly',
+            specialSchedule: 'Special Schedule',
+            dateDay: 'Date (1-31)',
+            dueDate: 'Due Date',
+            picUser: 'PIC / User',
+            scheduleVisibility: 'Schedule Visibility',
+            saveSchedule: 'Save Schedule',
+        }
+        : {
+            independentIssue: 'Independent Issue',
+            updateStatusFailed: 'Gagal update status:',
+            updateFailed: "Gagal update: cek apakah kolom 'owner' sudah ada di database.",
+            saveFailed: 'Gagal simpan',
+            ensureMigration: 'Pastikan migrasi database terbaru sudah dijalankan.',
+            systemError: 'Terjadi kesalahan sistem: ',
+            savePicPrivacyFailed: 'Gagal menyimpan privasi PIC:',
+            deleteIssueConfirm: 'Hapus catatan issue ini?',
+            removePicConfirm: (username) => `Hapus ${username} dari daftar monitoring?`,
+            scheduleMonitoring: 'Monitoring Jadwal',
+            workspace: 'Workspace',
+            addPic: 'Tambah PIC',
+            totalTasks: 'Total Tugas',
+            statusUpdated: 'Status diperbarui.',
+            noHistoryYet: 'Belum ada riwayat aktivitas',
+            closeDetail: 'Tutup Detail',
+            chooseMonitoringPic: 'Pilih PIC Monitoring',
+            allUsersMonitored: 'Semua user sudah masuk daftar',
+            close: 'Tutup',
+            picReceiver: 'Penerima (PIC)',
+            timelineProgressFlow: 'Timeline Progress Flow',
+            picBlockPrivacy: 'Privasi Blok PIC',
+            visibilityLevel: 'Tingkat Visibilitas',
+            publicAll: 'Public (Semua Orang)',
+            privateMine: 'Private (Hanya Saya)',
+            selectedDepartment: 'Departemen Tertentu',
+            selectedPeople: 'Orang Tertentu',
+            typeToFilter: 'Ketik untuk memfilter...',
+            allowedDepartments: 'Pilih Departemen yang Diizinkan:',
+            allowedUsers: 'Pilih User yang Diizinkan:',
+            saveSettings: 'Simpan Pengaturan',
+            editIssueNote: 'Edit Catatan Issue',
+            addNewIssue: 'Tambah Issue Baru',
+            issueDetails: 'Detail kendala pekerjaan',
+            searchPic: 'Cari PIC...',
+            issueSummary: 'Nama Issue / Ringkasan',
+            issueDate: 'Tanggal Kejadian',
+            issueDetail: 'Detail Kendala',
+            issueDetailPlaceholder: 'Jelaskan lebih detail mengenai kendala yang dihadapi...',
+            saveIssue: 'Simpan Issue',
+            editSchedule: 'Edit Jadwal',
+            addNewSchedule: 'Tambah Jadwal Baru',
+            issueDetailMonitoring: 'Issue Detail Monitoring',
+            completed: 'Selesai',
+            issueDescription: 'Deskripsi Kendala',
+            picVisibilityHelp: 'Atur siapa yang bisa melihat monitoring',
+            searchDepartmentOrUser: 'Cari',
+            taskOptional: 'Pilih Tugas Terkait (Opsional)',
+            noScheduleIndependent: '-- Tanpa Jadwal (Independent) --',
+            issuePicReceiver: 'PIC Issue (Penerima)',
+            issueExamplePlaceholder: 'Contoh: Menunggu approval manager',
+            jobName: 'Nama Pekerjaan',
+            category: 'Kategori',
+            recurringMonthly: 'Rutin Bulanan',
+            specialSchedule: 'Jadwal Khusus',
+            dateDay: 'Tanggal (1-31)',
+            dueDate: 'Due Date',
+            picUser: 'PIC / User',
+            scheduleVisibility: 'Visibilitas Jadwal',
+            saveSchedule: 'Simpan Jadwal',
+        };
     const [jobs, setJobs] = useState([]);
     const [selectedMonth, setSelectedMonth] = useState(new Date());
     const [showForm, setShowForm] = useState(false);
@@ -272,7 +401,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                     return assigned.includes(u.username) || i.owner === u.username;
                 }).map(i => ({
                     ...i,
-                    taskTitle: 'Independent Issue',
+                    taskTitle: text.independentIssue,
                     taskId: null
                 }))
             ].sort((a, b) => new Date(b.createdAt || b.created_at || 0) - new Date(a.createdAt || a.created_at || 0));
@@ -290,7 +419,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
             };
         });
         return Object.values(groups);
-    }, [jobs, selectedMonth, currentUser, users, monitoredPICs, independentIssues]);
+    }, [jobs, selectedMonth, currentUser, users, monitoredPICs, independentIssues, text.independentIssue]);
 
     const activeWorkspace = useMemo(() => {
         return userBlocks.find(b => b.user.username === selectedUser);
@@ -379,7 +508,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                 credentials: 'include'
             });
         } catch (err) {
-            console.error("Gagal update status:", err);
+            console.error(text.updateStatusFailed, err);
             setJobs(prev => prev.map(j => String(j.id) === String(jobId) ? job : j)); // Rollback jika error
         }
     };
@@ -536,7 +665,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                     if (res.ok) setIndependentIssues(prev => prev.map(i => i.id === issueForm.id ? updatedIssue : i));
                     else {
                         const err = await res.json().catch(() => ({}));
-                        alert(`Gagal update: ${err.error || "Cek apakah kolom 'owner' sudah ada di database."}`);
+                        alert(err.error ? `${text.saveFailed}: ${err.error}` : text.updateFailed);
                     }
                 } else {
                     // Pastikan assignedTo dikirim sebagai array (backend harus menghandle atau kita stringify jika perlu)
@@ -553,14 +682,14 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                     } else {
                         const errData = await res.json().catch(() => ({}));
                         console.error("Server Error Detail:", errData);
-                        alert(`Gagal simpan: ${errData.error || "Database Error"}. \n\nPastikan migrasi database terbaru sudah dijalankan.`);
+                        alert(`${text.saveFailed}: ${errData.error || 'Database Error'}. \n\n${text.ensureMigration}`);
                     }
                 }
             }
             setShowIssueModal(false);
         } catch (err) {
             console.error("Save Issue Crash:", err);
-            alert("Terjadi kesalahan sistem: " + err.message);
+            alert(text.systemError + err.message);
         }
     };
 
@@ -576,12 +705,12 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
             setEditingPicPrivacy(null);
             fetchData(); // Refresh data
         } catch (err) {
-            console.error("Gagal menyimpan privasi PIC:", err);
+            console.error(text.savePicPrivacyFailed, err);
         }
     };
 
     const handleDeleteIssue = async (taskId, issueId) => {
-        if (!window.confirm("Hapus catatan issue ini?")) return;
+        if (!window.confirm(text.deleteIssueConfirm)) return;
         if (taskId && taskId !== 0 && taskId !== '0') {
             const task = jobs.find(j => j.id === taskId);
             if (!task) return;
@@ -612,7 +741,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
 
     const handleRemovePIC = async (e, username) => {
         e.stopPropagation();
-        if (window.confirm(`Hapus ${username} dari daftar monitoring?`)) {
+        if (window.confirm(text.removePicConfirm(username))) {
             const res = await fetch(`/api/monitored-pics/${username}`, {
                 method: 'DELETE',
                 credentials: 'include'
@@ -654,10 +783,10 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                     )}
                     <div>
                         <h2 className="text-xl font-black dark:text-white tracking-tight">
-                            {selectedUser ? activeWorkspace?.user.name : 'Monitoring Jadwal'}
+                            {selectedUser ? activeWorkspace?.user.name : text.scheduleMonitoring}
                         </h2>
                         <p className="text-[10px] text-indigo-500 dark:text-indigo-400 uppercase tracking-[0.2em] font-black">
-                            {selectedUser ? (activeWorkspace?.user.department || 'Workspace') : format(selectedMonth, 'MMMM yyyy', { locale: id })}
+                            {selectedUser ? (activeWorkspace?.user.department || text.workspace) : format(selectedMonth, 'MMMM yyyy', { locale: dateLocale })}
                         </p>
                     </div>
                 </div>
@@ -688,12 +817,12 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                             onClick={() => setShowPicModal(true)}
                             className="flex-1 md:flex-none bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-2.5 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95 shadow-xl"
                         >
-                            <UserPlus size={18} /> Tambah PIC
+                            <UserPlus size={18} /> {text.addPic}
                         </button>
                     ) : (
                         <div className="hidden md:block px-4 py-2 bg-indigo-500/10 rounded-2xl border border-indigo-500/20">
                             <span className="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">
-                                {activeWorkspace?.recurring.length + activeWorkspace?.special.length} Total Tasks
+                                {activeWorkspace?.recurring.length + activeWorkspace?.special.length} {text.totalTasks}
                             </span>
                         </div>
                     )}
@@ -711,19 +840,19 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                         {/* Global Summary Row */}
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl p-5 rounded-[2rem] border border-white/20 dark:border-white/5 shadow-sm">
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total PIC</p>
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{isEnglish ? 'Total PIC' : 'Total PIC'}</p>
                                 <h4 className="text-2xl font-black dark:text-white">{userBlocks.length}</h4>
                             </div>
                             <div className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl p-5 rounded-[2rem] border border-white/20 dark:border-white/5 shadow-sm">
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Tugas</p>
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{isEnglish ? 'Total Tasks' : 'Total Tugas'}</p>
                                 <h4 className="text-2xl font-black dark:text-white">{userBlocks.reduce((acc, b) => acc + b.recurring.length + b.special.length, 0)}</h4>
                             </div>
                             <div className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl p-5 rounded-[2rem] border border-white/20 dark:border-white/5 shadow-sm">
-                                <p className="text-[10px] font-black text-rose-500 uppercase tracking-widest mb-1">Terlambat</p>
+                                <p className="text-[10px] font-black text-rose-500 uppercase tracking-widest mb-1">{isEnglish ? 'Overdue' : 'Terlambat'}</p>
                                 <h4 className="text-2xl font-black text-rose-600">{userBlocks.reduce((acc, b) => acc + [...b.recurring, ...b.special].filter(j => checkIsOverdue(j, selectedMonth)).length, 0)}</h4>
                             </div>
                             <div className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl p-5 rounded-[2rem] border border-white/20 dark:border-white/5 shadow-sm">
-                                <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1">Issue Aktif</p>
+                                <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1">{isEnglish ? 'Active Issues' : 'Issue Aktif'}</p>
                                 <h4 className="text-2xl font-black text-amber-600">{userBlocks.reduce((acc, b) => acc + b.allIssues.filter(i => i.status !== 'resolved').length, 0)}</h4>
                             </div>
                         </div>
@@ -765,11 +894,11 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
 
                                 <div className="grid grid-cols-2 gap-3">
                                     <div className="p-4 bg-slate-50 dark:bg-white/5 rounded-3xl border border-transparent group-hover:border-indigo-500/20 transition-all">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-tighter">Rutin</p>
+                                        <p className="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-tighter">{isEnglish ? 'Recurring' : 'Rutin'}</p>
                                         <p className="text-2xl font-black dark:text-white">{recurring.length}</p>
                                     </div>
                                     <div className="p-4 bg-slate-50 dark:bg-white/5 rounded-3xl border border-transparent group-hover:border-indigo-500/20 transition-all">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-tighter">Khusus</p>
+                                        <p className="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-tighter">{isEnglish ? 'Special' : 'Khusus'}</p>
                                         <p className="text-2xl font-black dark:text-white">{special.length}</p>
                                     </div>
                                 </div>
@@ -777,7 +906,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                 {pendingCount > 0 && (
                                     <div className="mt-4 flex items-center gap-2 px-3 py-2 bg-amber-500/10 rounded-xl border border-amber-500/20">
                                         <AlertCircle size={12} className="text-amber-500" />
-                                        <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400">{pendingCount} Pending Issues</span>
+                                        <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400">{pendingCount} {isEnglish ? 'Pending Issues' : 'Pending Issues'}</span>
                                     </div>
                                 )}
                             </motion.div>
@@ -796,28 +925,28 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                             <div className="bg-white/40 dark:bg-slate-900/40 p-5 rounded-[2rem] border border-white/20 dark:border-white/5 shadow-sm">
                                 <div className="flex items-center gap-3 mb-2">
                                     <div className="p-2 bg-indigo-500/10 rounded-lg text-indigo-600"><Activity size={18} /></div>
-                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Tugas</span>
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{isEnglish ? 'Total Tasks' : 'Total Tugas'}</span>
                                 </div>
                                 <p className="text-2xl font-black dark:text-white">{activeWorkspace.recurring.length + activeWorkspace.special.length}</p>
                             </div>
                             <div className="bg-white/40 dark:bg-slate-900/40 p-5 rounded-[2rem] border border-white/20 dark:border-white/5 shadow-sm">
                                 <div className="flex items-center gap-3 mb-2">
                                     <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-600"><CheckCircle2 size={18} /></div>
-                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Selesai</span>
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{isEnglish ? 'Completed' : 'Selesai'}</span>
                                 </div>
                                 <p className="text-2xl font-black dark:text-white">{[...activeWorkspace.recurring, ...activeWorkspace.special].filter(j => j.status === 'done').length}</p>
                             </div>
                             <div className="bg-white/40 dark:bg-slate-900/40 p-5 rounded-[2rem] border border-white/20 dark:border-white/5 shadow-sm">
                                 <div className="flex items-center gap-3 mb-2">
                                     <div className="p-2 bg-rose-500/10 rounded-lg text-rose-600"><AlertCircle size={18} /></div>
-                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Terlambat</span>
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{isEnglish ? 'Overdue' : 'Terlambat'}</span>
                                 </div>
                                 <p className="text-2xl font-black text-rose-600">{[...activeWorkspace.recurring, ...activeWorkspace.special].filter(j => checkIsOverdue(j, selectedMonth)).length}</p>
                             </div>
                             <div className="bg-white/40 dark:bg-slate-900/40 p-5 rounded-[2rem] border border-white/20 dark:border-white/5 shadow-sm">
                                 <div className="flex items-center gap-3 mb-2">
                                     <div className="p-2 bg-amber-500/10 rounded-lg text-amber-600"><MessageSquare size={18} /></div>
-                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Issue Aktif</span>
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{isEnglish ? 'Active Issues' : 'Issue Aktif'}</span>
                                 </div>
                                 <p className="text-2xl font-black text-amber-600">{activeWorkspace.allIssues.filter(i => i.status !== 'resolved').length}</p>
                             </div>
@@ -829,7 +958,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                             <div className="flex items-center justify-between px-4">
                                 <div className="flex items-center gap-3">
                                     <div className="p-2.5 bg-indigo-500/10 rounded-xl text-indigo-600 dark:text-indigo-400"><Repeat size={20} /></div>
-                                    <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-[0.2em]">Jadwal Rutin</h3>
+                                    <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-[0.2em]">{isEnglish ? 'Recurring Schedule' : 'Jadwal Rutin'}</h3>
                                 </div>
                                 {hasPermission('job-due-date', 'create') && (
                                     <button 
@@ -843,7 +972,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                             <div className="bg-white/50 dark:bg-slate-800/20 rounded-[2.5rem] p-4 border border-white/40 dark:border-white/5">
                                 <div className="space-y-4 min-h-[300px]">
                                     {paginatedRecurring.length === 0 ? (
-                                        <div className="p-12 text-center border-2 border-dashed border-slate-200 dark:border-white/5 rounded-[2.5rem] text-slate-400 text-xs italic">Belum ada jadwal rutin</div>
+                                        <div className="p-12 text-center border-2 border-dashed border-slate-200 dark:border-white/5 rounded-[2.5rem] text-slate-400 text-xs italic">{isEnglish ? 'No recurring schedule yet' : 'Belum ada jadwal rutin'}</div>
                                     ) : (
                                         paginatedRecurring.map(task => <TaskItem key={task.id} task={task} selectedMonth={selectedMonth} onToggle={handleToggleStatus} onEdit={() => { setEditingJob(task); setActiveType(task.type); setShowForm(true); }} onDelete={() => setJobs(prev => prev.filter(j => j.id !== task.id))} onAddIssue={() => handleOpenIssueModal(task.id)} onUpdateKendala={handleUpdateKendala} hasPermission={hasPermission} />)
                                     )}
@@ -857,7 +986,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                             <div className="flex items-center justify-between px-4">
                                 <div className="flex items-center gap-3">
                                     <div className="p-2.5 bg-purple-500/10 rounded-xl text-purple-600 dark:text-purple-400"><CalendarDays size={20} /></div>
-                                    <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-[0.2em]">Jadwal Khusus</h3>
+                                    <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-[0.2em]">{isEnglish ? 'Special Schedule' : 'Jadwal Khusus'}</h3>
                                 </div>
                                 {hasPermission('job-due-date', 'create') && (
                                     <button 
@@ -871,7 +1000,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                             <div className="bg-white/50 dark:bg-slate-800/20 rounded-[2.5rem] p-4 border border-white/40 dark:border-white/5">
                                 <div className="space-y-4 min-h-[300px]">
                                     {paginatedSpecial.length === 0 ? (
-                                        <div className="p-12 text-center border-2 border-dashed border-slate-200 dark:border-white/5 rounded-[2.5rem] text-slate-400 text-xs italic">Tidak ada jadwal khusus</div>
+                                        <div className="p-12 text-center border-2 border-dashed border-slate-200 dark:border-white/5 rounded-[2.5rem] text-slate-400 text-xs italic">{isEnglish ? 'No special schedule' : 'Tidak ada jadwal khusus'}</div>
                                     ) : (
                                         paginatedSpecial.map(task => <TaskItem key={task.id} task={task} selectedMonth={selectedMonth} onToggle={handleToggleStatus} onEdit={() => { setEditingJob(task); setActiveType(task.type); setShowForm(true); }} onDelete={() => setJobs(prev => prev.filter(j => j.id !== task.id))} onAddIssue={() => handleOpenIssueModal(task.id)} onUpdateKendala={handleUpdateKendala} hasPermission={hasPermission} />)
                                     )}
@@ -890,46 +1019,46 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     </div>
                                     <div className="flex flex-col">
                                         <div className="flex items-center gap-3">
-                                            <h3 className="text-lg font-black text-slate-800 dark:text-white uppercase tracking-tight">Issue Tracking Flow</h3>
+                                            <h3 className="text-lg font-black text-slate-800 dark:text-white uppercase tracking-tight">{isEnglish ? 'Issue Tracking Flow' : 'Issue Tracking Flow'}</h3>
                                             {hasPermission('job-due-date', 'create') && (
                                                 <button 
                                                     onClick={() => handleOpenIssueModal(null)}
                                                     className="p-1.5 bg-rose-500 text-white rounded-lg hover:scale-110 transition-all shadow-lg shadow-rose-500/20"
-                                                    title="Tambah Issue Baru"
+                                                    title={isEnglish ? 'Add New Issue' : 'Tambah Issue Baru'}
                                                 >
                                                     <Plus size={14} />
                                                 </button>
                                             )}
                                         </div>
-                                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Monitoring penyelesaian kendala kerja</p>
+                                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{isEnglish ? 'Monitor work-blocker resolution progress' : 'Monitoring penyelesaian kendala kerja'}</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-2">
                                     <div className="px-4 py-2 bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-white/5 shadow-sm">
-                                        <span className="text-[10px] font-black text-rose-500 uppercase">{activeWorkspace?.allIssues.filter(i => i.status !== 'resolved').length} Active</span>
+                                        <span className="text-[10px] font-black text-rose-500 uppercase">{activeWorkspace?.allIssues.filter(i => i.status !== 'resolved').length} {isEnglish ? 'Active' : 'Active'}</span>
                                     </div>
                                     <div className="px-4 py-2 bg-emerald-500 text-white rounded-xl shadow-sm">
-                                        <span className="text-[10px] font-black uppercase">{activeWorkspace?.allIssues.filter(i => i.status === 'resolved').length} Solved</span>
+                                        <span className="text-[10px] font-black uppercase">{activeWorkspace?.allIssues.filter(i => i.status === 'resolved').length} {isEnglish ? 'Solved' : 'Solved'}</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="space-y-4">
                                 {activeWorkspace?.allIssues.length === 0 ? (
-                                    <div className="p-20 text-center border-2 border-dashed border-slate-200 dark:border-white/5 rounded-[3rem] text-slate-400 text-sm italic">Belum ada catatan issue untuk user ini</div>
+                                    <div className="p-20 text-center border-2 border-dashed border-slate-200 dark:border-white/5 rounded-[3rem] text-slate-400 text-sm italic">{isEnglish ? 'No issue notes for this user yet' : 'Belum ada catatan issue untuk user ini'}</div>
                                 ) : (
                                     <div className="overflow-x-auto no-scrollbar">
                                         <table className="w-full border-separate border-spacing-y-3">
                                             <thead>
                                                 <tr className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
                                                     <th className="px-6 py-2 text-left w-16">No</th>
-                                                    <th className="px-6 py-2 text-left">Issue & Task Context</th>
-                                                    <th className="px-6 py-2 text-center">Submitter</th>
-                                                    <th className="px-6 py-2 text-center">Penerima</th>
-                                                    <th className="px-6 py-2 text-center">Flow Status & Progress</th>
-                                                    <th className="px-6 py-2 text-center">Tgl Issue</th>
-                                                    <th className="px-6 py-2 text-right">Durasi</th>
-                                                    <th className="px-6 py-2 text-right">Aksi</th>
+                                                    <th className="px-6 py-2 text-left">{isEnglish ? 'Issue & Task Context' : 'Issue & Task Context'}</th>
+                                                    <th className="px-6 py-2 text-center">{isEnglish ? 'Submitter' : 'Submitter'}</th>
+                                                    <th className="px-6 py-2 text-center">{isEnglish ? 'Receiver' : 'Penerima'}</th>
+                                                    <th className="px-6 py-2 text-center">{isEnglish ? 'Flow Status & Progress' : 'Flow Status & Progress'}</th>
+                                                    <th className="px-6 py-2 text-center">{isEnglish ? 'Issue Date' : 'Tgl Issue'}</th>
+                                                    <th className="px-6 py-2 text-right">{isEnglish ? 'Duration' : 'Durasi'}</th>
+                                                    <th className="px-6 py-2 text-right">{isEnglish ? 'Actions' : 'Aksi'}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -945,7 +1074,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                     const d = duration.days || 0;
                                                     const h = duration.hours || 0;
                                                     const m = duration.minutes || 0;
-                                                    const durationStr = d > 0 ? `${d}h ${h}j` : `${h}j ${m}m`;
+                                                    const durationStr = d > 0 ? (isEnglish ? `${d}d ${h}h` : `${d}h ${h}j`) : (isEnglish ? `${h}h ${m}m` : `${h}j ${m}m`);
                                                     
                                                     return (
                                                         <motion.tr 
@@ -960,7 +1089,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                                     <div className="flex flex-col gap-1">
                                                                         <p className="text-sm font-bold text-slate-700 dark:text-white leading-tight">{issue.note}</p>
                                                                         {issue.detail && <p className="text-[10px] text-slate-400 line-clamp-2 italic">{issue.detail}</p>}
-                                                                        {issue.isAutoGenerated && <span className="text-[8px] font-black text-red-500 uppercase bg-red-50 dark:bg-red-500/10 px-1.5 py-0.5 rounded w-fit">System Generated</span>}
+                                                                        {issue.isAutoGenerated && <span className="text-[8px] font-black text-red-500 uppercase bg-red-50 dark:bg-red-500/10 px-1.5 py-0.5 rounded w-fit">{isEnglish ? 'System Generated' : 'Dibuat Sistem'}</span>}
                                                                         <div className="flex items-center gap-2">
                                                                             <span className="text-[9px] font-black text-indigo-500 uppercase bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded-lg">{issue.taskTitle}</span>
                                                                         </div>
@@ -968,7 +1097,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                                     {/* Progress Bar */}
                                                                     <div className="w-full max-w-[200px]">
                                                                         <div className="flex justify-between items-center mb-1">
-                                                                            <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Completion</span>
+                                                                            <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">{isEnglish ? 'Completion' : 'Completion'}</span>
                                                                             <span className="text-[8px] font-black text-indigo-500">{getStatusProgress(issue.status)}%</span>
                                                                         </div>
                                                                         <div className="h-1 w-full bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
@@ -1023,14 +1152,14 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                                                 key={step.id}
                                                                                 onClick={() => isDone 
                                                                                     ? setViewingHistory({ ...historyItem, label: step.label }) 
-                                                                                    : canUpdate ? handleInitiateStatusUpdate(issue.taskId, issue.id, step.id) : alert("Hanya Submitter atau Penerima yang bisa update flow.")
+                                                                                    : canUpdate ? handleInitiateStatusUpdate(issue.taskId, issue.id, step.id) : alert(isEnglish ? 'Only submitter or receiver can update flow.' : 'Hanya Submitter atau Penerima yang bisa update flow.')
                                                                                 }
                                                                                 className={`px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-tighter transition-all border ${
                                                                                     isDone 
                                                                                     ? `bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20` 
                                                                                     : 'bg-slate-100 dark:bg-white/5 border-transparent text-slate-400 opacity-40 hover:opacity-100 hover:bg-indigo-500/10 hover:text-indigo-500'
                                                                                 }`}
-                                                                                title={isDone ? 'Klik untuk lihat detail' : `Klik untuk update ke ${step.label}`}
+                                                                                title={isDone ? (isEnglish ? 'Click to view details' : 'Klik untuk lihat detail') : (isEnglish ? `Click to update to ${step.label}` : `Klik untuk update ke ${step.label}`)}
                                                                             >
                                                                                 {step.label}
                                                                             </button>
@@ -1058,7 +1187,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                                                 <button 
                                                                                     onClick={() => setViewingIssueDetail(issue)}
                                                                                     className="p-2 hover:bg-blue-500 hover:text-white rounded-xl transition-all text-slate-400"
-                                                                                    title="Lihat Detail & Flow"
+                                                                                    title={isEnglish ? 'View Detail & Flow' : 'Lihat Detail & Flow'}
                                                                                 >
                                                                                     <Eye size={14} />
                                                                                 </button>
@@ -1109,24 +1238,24 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                 </div>
                                 <div>
                                     <h3 className="text-xl font-black dark:text-white uppercase tracking-tight">Update Progres</h3>
-                                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Berikan catatan untuk tahap: <span className="text-indigo-500">{statusUpdateForm.nextStatus}</span></p>
+                                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{isEnglish ? 'Add note for stage:' : 'Berikan catatan untuk tahap:'} <span className="text-indigo-500">{statusUpdateForm.nextStatus}</span></p>
                                 </div>
                             </div>
                             
                             <div className="space-y-4">
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Deskripsi / Catatan Progres</label>
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{isEnglish ? 'Progress Description / Notes' : 'Deskripsi / Catatan Progres'}</label>
                                     <textarea 
                                         value={statusUpdateForm.note} 
                                         onChange={e => setStatusUpdateForm({...statusUpdateForm, note: e.target.value})} 
                                         className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none focus:ring-2 ring-indigo-500 dark:text-white font-medium min-h-[120px]" 
-                                        placeholder="Apa yang sudah dilakukan pada tahap ini?" 
+                                        placeholder={isEnglish ? 'What has been done at this stage?' : 'Apa yang sudah dilakukan pada tahap ini?'} 
                                     />
                                 </div>
                             </div>
                             
                             <div className="flex gap-3 mt-8">
-                                <button onClick={() => setShowStatusModal(false)} className="flex-1 py-4 bg-slate-100 dark:bg-white/5 text-slate-500 font-bold rounded-2xl">Batal</button>
+                                <button onClick={() => setShowStatusModal(false)} className="flex-1 py-4 bg-slate-100 dark:bg-white/5 text-slate-500 font-bold rounded-2xl">{isEnglish ? 'Cancel' : 'Batal'}</button>
                                 <button 
                                     onClick={() => {
                                         handleUpdateIssueStatus(statusUpdateForm.taskId, statusUpdateForm.issueId, statusUpdateForm.nextStatus, statusUpdateForm.note);
@@ -1134,7 +1263,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     }} 
                                     className="flex-[2] py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-600/20"
                                 >
-                                    Simpan & Update Status
+                                    {isEnglish ? 'Save & Update Status' : 'Simpan & Update Status'}
                                 </button>
                             </div>
                         </motion.div>
@@ -1150,13 +1279,13 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative my-6 w-full max-w-sm max-h-[92vh] overflow-y-auto bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-2xl border border-emerald-500/20 sm:my-0">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="p-2 bg-emerald-500 rounded-xl text-white"><Check size={18} /></div>
-                                <h4 className="font-black dark:text-white uppercase text-sm tracking-widest">Detail Tahap: {viewingHistory.label}</h4>
+                                <h4 className="font-black dark:text-white uppercase text-sm tracking-widest">{isEnglish ? 'Stage Detail' : 'Detail Tahap'}: {viewingHistory.label}</h4>
                             </div>
-                            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4 bg-slate-50 dark:bg-white/5 p-4 rounded-2xl italic">"{viewingHistory.note || 'Tidak ada catatan tambahan.'}"</p>
+                            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4 bg-slate-50 dark:bg-white/5 p-4 rounded-2xl italic">"{viewingHistory.note || (isEnglish ? 'No additional notes.' : 'Tidak ada catatan tambahan.')}"</p>
                             <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                                <Timer size={12} /> Selesai pada: {format(new Date(viewingHistory.date), 'PPp', { locale: id })}
+                                <Timer size={12} /> {isEnglish ? 'Completed at' : 'Selesai pada'}: {format(new Date(viewingHistory.date), 'PPp', { locale: dateLocale })}
                             </div>
-                            <button onClick={() => setViewingHistory(null)} className="w-full mt-6 py-3 bg-slate-100 dark:bg-white/5 text-slate-500 font-bold rounded-xl hover:bg-slate-200 transition-colors">Tutup</button>
+                            <button onClick={() => setViewingHistory(null)} className="w-full mt-6 py-3 bg-slate-100 dark:bg-white/5 text-slate-500 font-bold rounded-xl hover:bg-slate-200 transition-colors">{isEnglish ? 'Close' : 'Tutup'}</button>
                         </motion.div>
                     </div>
                 )}
@@ -1176,7 +1305,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                             <Activity size={28} />
                                         </div>
                                         <div>
-                                            <span className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] mb-1 block">Issue Detail Monitoring</span>
+                                            <span className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] mb-1 block">{text.issueDetailMonitoring}</span>
                                             <h3 className="text-2xl font-black text-slate-800 dark:text-white leading-tight">{viewingIssueDetail.note}</h3>
                                             <div className="flex items-center gap-3 mt-2">
                                                 <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${viewingIssueDetail.status === 'resolved' ? 'bg-emerald-500 text-white' : 'bg-amber-500 text-white'}`}>
@@ -1196,7 +1325,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     <div className="flex-1 h-2 bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden shadow-inner">
                                         <motion.div initial={{ width: 0 }} animate={{ width: `${getStatusProgress(viewingIssueDetail.status)}%` }} className={`h-full bg-gradient-to-r ${viewingIssueDetail.status === 'resolved' ? 'from-emerald-400 to-emerald-600 shadow-[0_0_15px_rgba(16,185,129,0.4)]' : 'from-indigo-400 to-indigo-600 shadow-[0_0_15px_rgba(79,70,229,0.4)]'}`} />
                                     </div>
-                                    <span className="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">{getStatusProgress(viewingIssueDetail.status)}% Selesai</span>
+                                    <span className="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">{getStatusProgress(viewingIssueDetail.status)}% {text.completed}</span>
                                 </div>
                             </div>
 
@@ -1204,7 +1333,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                             <div className="p-8 overflow-y-auto custom-scrollbar space-y-8 flex-1">
                                 {viewingIssueDetail.detail && (
                                     <div className="space-y-2">
-                                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Deskripsi Kendala</h4>
+                                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.issueDescription}</h4>
                                         <div className="p-5 bg-slate-50 dark:bg-white/5 rounded-[2rem] border border-slate-100 dark:border-white/10 italic text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                                             "{viewingIssueDetail.detail}"
                                         </div>
@@ -1224,7 +1353,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                         </div>
                                     </div>
                                     <div className="p-5 bg-white dark:bg-white/5 rounded-3xl border border-slate-100 dark:border-white/10 shadow-sm flex flex-col gap-3">
-                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Penerima (PIC)</p>
+                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{text.picReceiver}</p>
                                         <div className="flex flex-wrap gap-2">
                                             {parseAssignedTo(viewingIssueDetail.assignedTo).map((pic, pIdx) => (
                                                 <div key={pIdx} className="flex items-center gap-2 px-3 py-1 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl border border-indigo-100 dark:border-indigo-500/20">
@@ -1242,7 +1371,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
 
                                 <div className="space-y-4">
                                     <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                                        <TrendingUp size={14} className="text-indigo-500" /> Timeline Progress Flow
+                                        <TrendingUp size={14} className="text-indigo-500" /> {text.timelineProgressFlow}
                                     </h4>
                                     
                                     <div className="relative pl-10 space-y-6 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-100 dark:before:bg-white/10">
@@ -1261,13 +1390,13 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                                 {format(new Date(h.date), 'dd MMM, HH:mm')}
                                                             </span>
                                                         </div>
-                                                        <p className="text-xs font-bold text-slate-700 dark:text-slate-200">{h.note || 'Status diperbarui.'}</p>
+                                                        <p className="text-xs font-bold text-slate-700 dark:text-slate-200">{h.note || text.statusUpdated}</p>
                                                     </div>
                                                 </div>
                                             ))
                                         ) : (
                                             <div className="text-slate-400 text-[10px] font-bold uppercase tracking-widest py-10 text-center bg-slate-50 dark:bg-white/5 rounded-[2rem] border-2 border-dashed border-slate-100 dark:border-white/5">
-                                                Belum ada riwayat aktivitas
+                                                {text.noHistoryYet}
                                             </div>
                                         )}
                                     </div>
@@ -1275,7 +1404,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                             </div>
 
                             <div className="p-8 bg-slate-50 dark:bg-white/5 border-t border-slate-100 dark:border-white/5 flex justify-end">
-                                <button onClick={() => setViewingIssueDetail(null)} className="px-10 py-4 bg-white dark:bg-slate-800 text-slate-500 font-black uppercase text-xs tracking-widest rounded-2xl shadow-sm hover:bg-slate-100 transition-all active:scale-95">Tutup Detail</button>
+                                <button onClick={() => setViewingIssueDetail(null)} className="px-10 py-4 bg-white dark:bg-slate-800 text-slate-500 font-black uppercase text-xs tracking-widest rounded-2xl shadow-sm hover:bg-slate-100 transition-all active:scale-95">{text.closeDetail}</button>
                             </div>
                         </motion.div>
                     </div>
@@ -1288,7 +1417,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                     <div className="fixed inset-0 z-[300] flex items-start justify-center overflow-y-auto p-4 sm:items-center">
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowPicModal(false)} className="fixed inset-0 bg-slate-900/60 backdrop-blur-md" />
                         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative my-6 w-full max-w-md max-h-[92vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl sm:my-0">
-                            <h3 className="text-xl font-black dark:text-white mb-6">Pilih PIC Monitoring</h3>
+                            <h3 className="text-xl font-black dark:text-white mb-6">{text.chooseMonitoringPic}</h3>
                             <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                                 {users.filter(u => !monitoredPICs.find(p => (typeof p === 'string' ? p : p.username) === u.username)).map(u => (
                                     <button 
@@ -1306,10 +1435,10 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     </button>
                                 ))}
                                 {users.filter(u => !monitoredPICs.includes(u.username)).length === 0 && (
-                                    <p className="text-center text-xs text-slate-400 py-10 italic">Semua user sudah masuk daftar</p>
+                                    <p className="text-center text-xs text-slate-400 py-10 italic">{text.allUsersMonitored}</p>
                                 )}
                             </div>
-                            <button onClick={() => setShowPicModal(false)} className="w-full mt-6 py-4 bg-slate-100 dark:bg-white/5 text-slate-500 font-bold rounded-2xl">Tutup</button>
+                            <button onClick={() => setShowPicModal(false)} className="w-full mt-6 py-4 bg-slate-100 dark:bg-white/5 text-slate-500 font-bold rounded-2xl">{text.close}</button>
                         </motion.div>
                     </div>
                 )}
@@ -1321,13 +1450,13 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                     <div className="fixed inset-0 z-[300] flex items-start justify-center overflow-y-auto p-4 sm:items-center">
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setEditingPicPrivacy(null)} className="fixed inset-0 bg-slate-900/60 backdrop-blur-md" />
                         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative my-6 w-full max-w-md max-h-[92vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl sm:my-0">
-                            <h3 className="text-xl font-black dark:text-white mb-2">Privasi Blok PIC</h3>
-                            <p className="text-xs text-slate-500 mb-6 font-bold uppercase tracking-widest">Atur siapa yang bisa melihat monitoring {users.find(u => u.username === editingPicPrivacy.username)?.name}</p>
+                            <h3 className="text-xl font-black dark:text-white mb-2">{text.picBlockPrivacy}</h3>
+                            <p className="text-xs text-slate-500 mb-6 font-bold uppercase tracking-widest">{text.picVisibilityHelp} {users.find(u => u.username === editingPicPrivacy.username)?.name}</p>
                             
                             <div className="space-y-4">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Tingkat Visibilitas</label>
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.visibilityLevel}</label>
                                         <select 
                                             value={editingPicPrivacy.privacy || 'public'} 
                                             onChange={(e) => {
@@ -1337,21 +1466,21 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                             }}
                                             className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none dark:text-white font-bold focus:ring-2 ring-indigo-500"
                                         >
-                                            <option value="public">Public (Semua Orang)</option>
-                                            <option value="private">Private (Hanya Saya)</option>
-                                            <option value="department">Departemen Tertentu</option>
-                                            <option value="specific">Orang Tertentu</option>
+                                            <option value="public">{text.publicAll}</option>
+                                            <option value="private">{text.privateMine}</option>
+                                            <option value="department">{text.selectedDepartment}</option>
+                                            <option value="specific">{text.selectedPeople}</option>
                                         </select>
                                     </div>
 
                                     {(editingPicPrivacy.privacy === 'department' || editingPicPrivacy.privacy === 'specific') && (
                                         <div className="space-y-1 animate-in fade-in slide-in-from-top-2">
                                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                                                Cari {editingPicPrivacy.privacy === 'department' ? 'Departemen' : 'User'}
+                                                {text.searchDepartmentOrUser} {editingPicPrivacy.privacy === 'department' ? (isEnglish ? 'Department' : 'Departemen') : 'User'}
                                             </label>
                                             <input 
                                                 type="text"
-                                                placeholder="Ketik untuk memfilter..."
+                                                placeholder={text.typeToFilter}
                                                 value={userSearch}
                                                 onChange={(e) => setUserSearch(e.target.value)}
                                                 className="w-full px-4 py-2.5 bg-slate-50 dark:bg-white/5 rounded-xl text-xs outline-none border border-transparent focus:border-indigo-500 dark:text-white font-medium"
@@ -1362,7 +1491,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
 
                                 {editingPicPrivacy.privacy === 'department' && (
                                     <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Pilih Departemen yang Diizinkan:</label>
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.allowedDepartments}</label>
                                         <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                                             {departments.filter(d => d.name.toLowerCase().includes(userSearch.toLowerCase())).map(d => (
                                                 <label key={d.id} className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 cursor-pointer hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors border border-transparent hover:border-indigo-200 dark:hover:border-indigo-500/30">
@@ -1387,7 +1516,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
 
                                 {editingPicPrivacy.privacy === 'specific' && (
                                     <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Pilih User yang Diizinkan:</label>
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.allowedUsers}</label>
                                         <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                                             {users.filter(u => u.username !== editingPicPrivacy.username && (u.name.toLowerCase().includes(userSearch.toLowerCase()) || u.username.toLowerCase().includes(userSearch.toLowerCase()))).map(u => (
                                                 <label key={u.username} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-white/5 cursor-pointer hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors border border-transparent hover:border-indigo-200 dark:hover:border-indigo-500/30">
@@ -1418,7 +1547,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     </div>
                                 )}
                             </div>
-                            <button onClick={handleSavePicPrivacy} className="w-full mt-8 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-600/20">Simpan Pengaturan</button>
+                            <button onClick={handleSavePicPrivacy} className="w-full mt-8 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-600/20">{text.saveSettings}</button>
                         </motion.div>
                     </div>
                 )}
@@ -1435,21 +1564,21 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     <AlertCircle size={24} />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-black dark:text-white">{issueForm.id ? 'Edit Catatan Issue' : 'Tambah Issue Baru'}</h3>
-                                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Detail kendala pekerjaan</p>
+                                    <h3 className="text-xl font-black dark:text-white">{issueForm.id ? text.editIssueNote : text.addNewIssue}</h3>
+                                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{text.issueDetails}</p>
                                 </div>
                             </div>
                             
                             <div className="space-y-4">
                                 {!issueForm.id && !issueForm.isAutoGenerated && (
                                     <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Pilih Tugas Terkait (Opsional)</label>
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.taskOptional}</label>
                                         <select 
                                             value={issueForm.taskId || ''} 
                                             onChange={e => setIssueForm({...issueForm, taskId: Number(e.target.value)})}
                                             className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none focus:ring-2 ring-rose-500 dark:text-white font-bold"
                                         >
-                                            <option value="">-- Tanpa Jadwal (Independent) --</option>
+                                            <option value="">{text.noScheduleIndependent}</option>
                                             {[...(activeWorkspace?.recurring || []), ...(activeWorkspace?.special || [])].map(t => (
                                                 <option key={t.id} value={t.id}>{t.title}</option>
                                             ))}
@@ -1457,11 +1586,11 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     </div>
                                 )}
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">PIC Issue (Penerima)</label>
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.issuePicReceiver}</label>
                                     <div className="space-y-2">
                                         <input 
                                             type="text" 
-                                            placeholder="Cari PIC..." 
+                                            placeholder={text.searchPic} 
                                             value={userSearch} 
                                             onChange={e => setUserSearch(e.target.value)}
                                             className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 rounded-xl text-xs outline-none border border-transparent focus:border-indigo-500 dark:text-white"
@@ -1497,22 +1626,22 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     </div>
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nama Issue / Ringkasan</label>
-                                    <input value={issueForm.note} onChange={e => setIssueForm({...issueForm, note: e.target.value})} className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none focus:ring-2 ring-rose-500 dark:text-white font-bold" placeholder="Contoh: Menunggu approval manager" />
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.issueSummary}</label>
+                                    <input value={issueForm.note} onChange={e => setIssueForm({...issueForm, note: e.target.value})} className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none focus:ring-2 ring-rose-500 dark:text-white font-bold" placeholder={text.issueExamplePlaceholder} />
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Tanggal Kejadian</label>
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.issueDate}</label>
                                     <input type="date" value={issueForm.createdAt} onChange={e => setIssueForm({...issueForm, createdAt: e.target.value})} className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none dark:text-white font-bold" />
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Detail Kendala</label>
-                                    <textarea value={issueForm.detail} onChange={e => setIssueForm({...issueForm, detail: e.target.value})} className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none focus:ring-2 ring-rose-500 dark:text-white font-medium min-h-[100px]" placeholder="Jelaskan lebih detail mengenai kendala yang dihadapi..." />
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.issueDetail}</label>
+                                    <textarea value={issueForm.detail} onChange={e => setIssueForm({...issueForm, detail: e.target.value})} className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none focus:ring-2 ring-rose-500 dark:text-white font-medium min-h-[100px]" placeholder={text.issueDetailPlaceholder} />
                                 </div>
                             </div>
                             
                             <div className="flex gap-3 mt-8">
-                                <button onClick={() => setShowIssueModal(false)} className="flex-1 py-4 bg-slate-100 dark:bg-white/5 text-slate-500 font-bold rounded-2xl">Batal</button>
-                                <button onClick={handleSaveIssue} disabled={!issueForm.note} className="flex-[2] py-4 bg-rose-500 text-white font-bold rounded-2xl shadow-lg shadow-rose-500/20 disabled:opacity-50">Simpan Issue</button>
+                                <button onClick={() => setShowIssueModal(false)} className="flex-1 py-4 bg-slate-100 dark:bg-white/5 text-slate-500 font-bold rounded-2xl">{text.cancel}</button>
+                                <button onClick={handleSaveIssue} disabled={!issueForm.note} className="flex-[2] py-4 bg-rose-500 text-white font-bold rounded-2xl shadow-lg shadow-rose-500/20 disabled:opacity-50">{text.saveIssue}</button>
                             </div>
                         </motion.div>
                     </div>
@@ -1536,7 +1665,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                         >
                             <div className="p-8">
                                 <h3 className="text-xl font-black dark:text-white mb-6">
-                                    {editingJob ? 'Edit Jadwal' : 'Tambah Jadwal Baru'}
+                                    {editingJob ? text.editSchedule : text.addNewSchedule}
                                 </h3>
                                 
                                 <form className="space-y-4" onSubmit={(e) => {
@@ -1578,7 +1707,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     setShowForm(false);
                                 }}>
                                     <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nama Pekerjaan</label>
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.jobName}</label>
                                         <input name="title" defaultValue={editingJob?.title} required className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none focus:ring-2 ring-indigo-500 dark:text-white font-bold" />
                                     </div>
 
@@ -1586,7 +1715,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                         <div className="flex items-center gap-3">
                                             {activeType === 'recurring' ? <Repeat size={20} className="text-indigo-600" /> : <CalendarDays size={20} className="text-purple-600" />}
                                             <span className="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-white">
-                                                Kategori: {activeType === 'recurring' ? 'Rutin Bulanan' : 'Jadwal Khusus'}
+                                                {text.category}: {activeType === 'recurring' ? text.recurringMonthly : text.specialSchedule}
                                             </span>
                                         </div>
                                     </div>
@@ -1594,17 +1723,17 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {activeType === 'recurring' ? (
                                             <div className="space-y-1">
-                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Tanggal (1-31)</label>
+                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.dateDay}</label>
                                                 <input name="day" type="number" min="1" max="31" defaultValue={editingJob ? new Date(editingJob.dueDate).getDate() : 1} required className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none dark:text-white font-bold" />
                                             </div>
                                         ) : (
                                             <div className="space-y-1">
-                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Due Date</label>
+                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.dueDate}</label>
                                                 <input name="dueDate" type="date" defaultValue={editingJob?.dueDate} required className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none dark:text-white font-bold" />
                                             </div>
                                         )}
                                         <div className="space-y-1">
-                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">PIC / User</label>
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.picUser}</label>
                                             <div className="w-full px-5 py-3 bg-slate-100/50 dark:bg-white/5 rounded-2xl dark:text-white font-bold flex items-center gap-2 border border-transparent opacity-70">
                                                 <UserIcon size={14} className="text-indigo-500" />
                                                 <span>
@@ -1617,27 +1746,27 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-white/5">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div className="space-y-1">
-                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Visibilitas Jadwal</label>
+                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.scheduleVisibility}</label>
                                                 <select 
                                                     value={formPrivacy} 
                                                     onChange={(e) => setFormPrivacy(e.target.value)}
                                                     className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none dark:text-white font-bold focus:ring-2 ring-indigo-500"
                                                 >
-                                                    <option value="public">Public (Semua Orang)</option>
-                                                    <option value="private">Private (Hanya Saya)</option>
-                                                    <option value="department">Departemen Tertentu</option>
-                                                    <option value="specific">Orang Tertentu</option>
+                                                    <option value="public">{text.publicAll}</option>
+                                                    <option value="private">{text.privateMine}</option>
+                                                    <option value="department">{text.selectedDepartment}</option>
+                                                    <option value="specific">{text.selectedPeople}</option>
                                                 </select>
                                             </div>
 
                                             {(formPrivacy === 'department' || formPrivacy === 'specific') && (
                                                 <div className="space-y-1 animate-in fade-in slide-in-from-top-2">
                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                                                        Cari {formPrivacy === 'department' ? 'Departemen' : 'User'}
+                                                        {text.searchDepartmentOrUser} {formPrivacy === 'department' ? (isEnglish ? 'Department' : 'Departemen') : 'User'}
                                                     </label>
                                                     <input 
                                                         type="text"
-                                                        placeholder="Ketik untuk memfilter..."
+                                                        placeholder={text.typeToFilter}
                                                         value={userSearch}
                                                         onChange={(e) => setUserSearch(e.target.value)}
                                                         className="w-full px-4 py-2.5 bg-slate-50 dark:bg-white/5 rounded-xl text-xs outline-none border border-transparent focus:border-indigo-500 dark:text-white font-medium"
@@ -1648,7 +1777,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
 
                                         {formPrivacy === 'department' && (
                                             <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
-                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Pilih Departemen yang Diizinkan:</label>
+                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.allowedDepartments}</label>
                                                 <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
                                                     {departments.filter(d => d.name.toLowerCase().includes(userSearch.toLowerCase())).map(d => (
                                                         <label key={d.id} className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 cursor-pointer hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors border border-transparent hover:border-indigo-200 dark:hover:border-indigo-500/30">
@@ -1670,7 +1799,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
 
                                         {formPrivacy === 'specific' && (
                                             <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
-                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Pilih User yang Diizinkan:</label>
+                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.allowedUsers}</label>
                                                 <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
                                                     {users.filter(u => u.username !== currentUser.username && (u.name.toLowerCase().includes(userSearch.toLowerCase()) || u.username.toLowerCase().includes(userSearch.toLowerCase()))).map(u => (
                                                         <label key={u.username} className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 cursor-pointer hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors border border-transparent hover:border-indigo-200 dark:hover:border-indigo-500/30">
@@ -1695,8 +1824,8 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     </div>
 
                                     <div className="flex gap-3 pt-6">
-                                        <button type="button" onClick={() => setShowForm(false)} className="flex-1 py-4 bg-slate-100 dark:bg-white/5 text-slate-500 font-bold rounded-2xl">Batal</button>
-                                        <button type="submit" className="flex-[2] py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-600/20">Simpan Jadwal</button>
+                                        <button type="button" onClick={() => setShowForm(false)} className="flex-1 py-4 bg-slate-100 dark:bg-white/5 text-slate-500 font-bold rounded-2xl">{text.cancel}</button>
+                                        <button type="submit" className="flex-[2] py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-600/20">{text.saveSchedule}</button>
                                     </div>
                                 </form>
                             </div>

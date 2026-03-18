@@ -9,6 +9,7 @@ import AuditStepTracker from '../components/tax/AuditStepTracker';
 import TaxFileDetailModal from '../components/modals/TaxFileDetailModal';
 import TaxUploadModal from '../components/modals/TaxUploadModal';
 import { useToast, ToastContainer } from '../components/ui/Toast';
+import { useLanguage } from '../contexts/LanguageContext';
 
 // ... (code)
 
@@ -23,8 +24,152 @@ const AUDIT_STEPS = [
     { id: 7, title: 'LHP & SKP', description: 'Laporan Hasil Pemeriksaan dan Penerbitan Surat Ketetapan Pajak.' }
 ];
 
+const AUDIT_STEPS_EN = [
+    { id: 1, title: 'SP2 Delivery', description: 'The audit assignment letter is delivered to the taxpayer.' },
+    { id: 2, title: 'Document Borrowing', description: 'Requesting books, records, and supporting documents.' },
+    { id: 3, title: 'Audit Testing', description: 'Material and formal compliance testing execution.' },
+    { id: 4, title: 'SPHP Delivery', description: 'Audit findings notification letter (SPHP) is delivered.' },
+    { id: 5, title: 'Final Discussion', description: 'Closing conference / final discussion of audit findings.' },
+    { id: 6, title: 'Discussion Minutes', description: 'Signing discussion minutes and official report.' },
+    { id: 7, title: 'LHP & SKP', description: 'Audit report and tax assessment issuance.' }
+];
+
 export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, onRefresh, syncAuditFolder }) {
     const { toasts, toast, removeToast, updateToast } = useToast();
+    const { language } = useLanguage();
+    const isEnglish = language === 'en';
+    const auditSteps = isEnglish ? AUDIT_STEPS_EN : AUDIT_STEPS;
+    const text = isEnglish
+        ? {
+            sendMessageFailed: 'Failed to send message: ',
+            requiredTitle: 'Audit title is required!',
+            saveFailed: 'Failed to save: ',
+            deleteConfirm: 'Delete this audit including all related data?',
+            deleteFailed: 'Failed to delete: ',
+            finishStepFailed: 'Failed to complete step: ',
+            sendbackConfirm: 'Revert this completed step? The next step will return to Pending.',
+            sendbackFailed: 'Failed to revert step: ',
+            deleteDocConfirm: 'Delete this document?',
+            deleteFileFailed: 'Failed to delete file: ',
+            updateStatusFailed: 'Failed to update status: ',
+            addNoteFailed: 'Failed to add note: ',
+            deleteNoteFailed: 'Failed to delete note: ',
+            updateNoteFailed: 'Failed to update note: ',
+            searchPlaceholder: 'Search letter number, taxpayer, or audit title...',
+            totalAudit: 'Total Audits',
+            auditList: 'Audit List',
+            newAudit: 'New Audit',
+            attachment: 'Attachment',
+            view: 'View',
+            action: 'Action',
+            dateAndLetter: 'Letter No & Date',
+            title: 'Title',
+            status: 'Status',
+            progress: 'Progress',
+            completePrevStep: 'Complete previous step first',
+            completeCurrentStep: 'Complete this step',
+            cancelComplete: 'Cancel Complete',
+            completeThisStep: 'Complete This Step',
+            dataRequestList: 'Data Request & PIC List',
+            noRequestYet: 'No data request list yet.',
+            addDataRequest: 'Add new data request...',
+            coordinationNotes: 'Coordination & Pending Notes',
+            noDiscussion: 'No discussion in this step yet.',
+            writeCoordination: 'Write coordination note or pending reason...',
+            selectedFile: 'Selected File',
+            attach: 'Attachment',
+            send: 'Send',
+            stepDocuments: (step) => `Step Documents ${step}`,
+            noDocuments: 'No documents',
+            uploading: 'Uploading...',
+            uploadFile: 'Upload File',
+            clickToChoose: 'Click to choose file',
+            editAudit: 'Edit Audit',
+            newAuditTitle: 'New Audit',
+            auditStatus: 'Audit Status',
+            inProgress: 'On Progress',
+            auditTitleLabel: 'Title / Taxpayer Name',
+            auditTitlePlaceholder: 'Example: PT. Sumber Makmur - VAT 2023',
+            sp2Label: 'Assignment Letter Number (SP2)',
+            picOptional: 'Auditor / PIC (Optional)',
+            picPlaceholder: 'Audit Team / PIC Name',
+            startDate: 'Start Date',
+            sp2AttachmentOptional: 'SP2 Attachment (Optional)',
+            chooseFile: 'Choose File...',
+            cancel: 'Cancel',
+            saving: 'Saving...',
+            saveChanges: 'Save Changes',
+            startAudit: 'Start Audit',
+            smartAssistant: 'Smart Assistant',
+            auditIntelligence: 'Audit Intelligence',
+            viewFile: 'View',
+            loading: 'Loading...',
+        }
+        : {
+            sendMessageFailed: 'Gagal mengirim pesan: ',
+            requiredTitle: 'Judul Pemeriksaan wajib diisi!',
+            saveFailed: 'Gagal menyimpan: ',
+            deleteConfirm: 'Hapus pemeriksaan ini beserta seluruh datanya?',
+            deleteFailed: 'Gagal menghapus: ',
+            finishStepFailed: 'Gagal menyelesaikan tahap: ',
+            sendbackConfirm: 'Batalkan status selesai untuk tahap ini? Tahap berikutnya akan kembali ke status Pending.',
+            sendbackFailed: 'Gagal membatalkan tahap: ',
+            deleteDocConfirm: 'Hapus dokumen ini?',
+            deleteFileFailed: 'Gagal menghapus file: ',
+            updateStatusFailed: 'Gagal memperbarui status: ',
+            addNoteFailed: 'Gagal menambah catatan: ',
+            deleteNoteFailed: 'Gagal menghapus catatan: ',
+            updateNoteFailed: 'Gagal memperbarui catatan: ',
+            searchPlaceholder: 'Cari No Surat, Nama WP, atau Judul Pemeriksaan...',
+            totalAudit: 'Total Pemeriksaan',
+            auditList: 'Daftar Pemeriksaan',
+            newAudit: 'Baru',
+            attachment: 'Lampiran',
+            view: 'Lihat',
+            action: 'Action',
+            dateAndLetter: 'No Surat & Tanggal',
+            title: 'Judul',
+            status: 'Status',
+            progress: 'Progress',
+            completePrevStep: 'Selesaikan tahap sebelumnya terlebih dahulu',
+            completeCurrentStep: 'Selesaikan tahap ini',
+            cancelComplete: 'Batalkan Selesai',
+            completeThisStep: 'Selesai Tahap Ini',
+            dataRequestList: 'Daftar Permintaan Data & PIC',
+            noRequestYet: 'Belum ada daftar permintaan data.',
+            addDataRequest: 'Tambah permintaan data baru...',
+            coordinationNotes: 'Koordinasi & Catatan Pending',
+            noDiscussion: 'Belum ada diskusi di tahap ini.',
+            writeCoordination: 'Tulis koordinasi atau alasan pending...',
+            selectedFile: 'File Terpilih',
+            attach: 'Lampiran',
+            send: 'Kirim',
+            stepDocuments: (step) => `Dokumen Tahap ${step}`,
+            noDocuments: 'Tidak ada dokumen',
+            uploading: 'Uploading...',
+            uploadFile: 'Upload File',
+            clickToChoose: 'Klik untuk pilih file',
+            editAudit: 'Edit Pemeriksaan',
+            newAuditTitle: 'Pemeriksaan Baru',
+            auditStatus: 'Status Pemeriksaan',
+            inProgress: 'On Progress',
+            auditTitleLabel: 'Judul / Nama Wajib Pajak',
+            auditTitlePlaceholder: 'Contoh: PT. Sumber Makmur - PPN 2023',
+            sp2Label: 'Nomor Surat Perintah (SP2)',
+            picOptional: 'Auditor / PIC (Opsional)',
+            picPlaceholder: 'Nama Tim Pemeriksa / PIC',
+            startDate: 'Tanggal Mulai',
+            sp2AttachmentOptional: 'Lampiran SP2 (Opsional)',
+            chooseFile: 'Pilih File...',
+            cancel: 'Batalkan',
+            saving: 'Menyimpan...',
+            saveChanges: 'Simpan Perubahan',
+            startAudit: 'Mulai Pemeriksaan',
+            smartAssistant: 'Smart Assistant',
+            auditIntelligence: 'Audit Intelligence',
+            viewFile: 'Lihat',
+            loading: 'Loading...',
+        };
     const [selectedAudit, setSelectedAudit] = useState(null);
     const [activeStep, setActiveStep] = useState(1);
     const [auditFiles, setAuditFiles] = useState([]);
@@ -216,7 +361,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
             }
         } catch (e) {
             setStepNotes(previousNotes);
-            toast.error("Gagal mengirim pesan: " + e.message);
+            toast.error(text.sendMessageFailed + e.message);
         }
         setIsPostingNote(false);
     };
@@ -400,7 +545,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
     };
 
     const handleSaveAudit = async () => {
-        if (!newAuditTitle.trim()) { alert("Judul Pemeriksaan wajib diisi!"); return; }
+        if (!newAuditTitle.trim()) { alert(text.requiredTitle); return; }
         setIsSaving(true);
 
         try {
@@ -480,7 +625,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
             setNewAuditFile(null);
             if (onRefresh) onRefresh();
         } catch (e) {
-            alert('Gagal menyimpan: ' + e.message);
+            alert(text.saveFailed + e.message);
             console.error("Failed to save audit or upload initial file:", e);
         } finally {
             setIsSaving(false);
@@ -489,7 +634,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
 
     const handleDeleteAudit = async (id, e) => {
         e.stopPropagation();
-        if (!confirm("Hapus pemeriksaan ini beserta seluruh datanya?")) return;
+        if (!confirm(text.deleteConfirm)) return;
 
         const previousAudits = [...taxAudits];
         // Optimistic Update
@@ -505,7 +650,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
         } catch (e) {
             if (onRefresh) onRefresh(previousAudits);
             const msg = await parseApiError(e);
-            alert('Gagal menghapus: ' + msg);
+            alert(text.deleteFailed + msg);
         }
     };
 
@@ -540,13 +685,13 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
             if (onRefresh) onRefresh();
         } catch (e) {
             setSelectedAudit(previousAudit);
-            toast.error("Gagal menyelesaikan tahap: " + e.message);
+            toast.error(text.finishStepFailed + e.message);
         }
     };
 
     const handleSendbackStep = async () => {
         if (!selectedAudit) return;
-        if (!confirm("Batalkan status selesai untuk tahap ini? Tahap berikutnya akan kembali ke status Pending.")) return;
+        if (!confirm(text.sendbackConfirm)) return;
 
         const previousAudit = { ...selectedAudit };
 
@@ -578,7 +723,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
             if (onRefresh) onRefresh();
         } catch (e) {
             setSelectedAudit(previousAudit);
-            toast.error("Gagal membatalkan tahap: " + e.message);
+            toast.error(text.sendbackFailed + e.message);
         }
     };
 
@@ -667,7 +812,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
     };
 
     const handleDeleteFile = async (docId) => {
-        if (!confirm("Hapus dokumen ini?")) return;
+        if (!confirm(text.deleteDocConfirm)) return;
 
         const previousFiles = [...auditFiles];
         setAuditFiles(auditFiles.filter(f => f.id !== docId));
@@ -678,7 +823,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
         } catch (e) {
             setAuditFiles(previousFiles);
             const msg = await parseApiError(e);
-            alert("Gagal menghapus file: " + msg);
+            alert(text.deleteFileFailed + msg);
         }
     };
 
@@ -702,7 +847,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
         } catch (error) {
             // 4. Rollback jika gagal
             setSelectedAudit(previousAudit);
-            toast.error("Gagal memperbarui status: " + error.message);
+            toast.error(text.updateStatusFailed + error.message);
         }
     };
 
@@ -723,7 +868,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
             await taxService.updateTaxAudit(selectedAudit.id, updatedAudit);
         } catch (error) {
             setSelectedAudit(previousAudit);
-            toast.error("Gagal menambah catatan: " + error.message);
+            toast.error(text.addNoteFailed + error.message);
         }
     };
 
@@ -738,7 +883,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
             await taxService.updateTaxAudit(selectedAudit.id, updatedAudit);
         } catch (error) {
             setSelectedAudit(previousAudit);
-            toast.error("Gagal menghapus catatan: " + error.message);
+            toast.error(text.deleteNoteFailed + error.message);
         }
     };
 
@@ -762,7 +907,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
             setEditingNotePic('');
         } catch (error) {
             setSelectedAudit(previousAudit);
-            toast.error("Gagal memperbarui catatan: " + error.message);
+            toast.error(text.updateNoteFailed + error.message);
         }
     };
 
@@ -850,9 +995,9 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                     </div>
                     <div className="flex-1">
                         <div className="flex items-center gap-2 mb-0.5">
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Smart Assistant</span>
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">{text.smartAssistant}</span>
                             <div className="w-1 h-1 rounded-full bg-current opacity-40"></div>
-                            <span className="text-[10px] font-bold opacity-60">Audit Intelligence</span>
+                            <span className="text-[10px] font-bold opacity-60">{text.auditIntelligence}</span>
                         </div>
                         <p className="text-sm font-bold leading-relaxed">{insight.text}</p>
                     </div>
@@ -864,18 +1009,18 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                             <input
                                 className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 transition-all dark:text-white"
-                                placeholder="Cari No Surat, Nama WP, atau Judul Pemeriksaan..."
+                                placeholder={text.searchPlaceholder}
                                 value={searchQuery}
                                 onChange={e => setSearchQuery(e.target.value)}
                             />
                         </div>
-                        <SummaryCard title="Total Pemeriksaan" value={taxAudits?.length || 0} icon={ClipboardCheck} colorClass="bg-indigo-100 text-indigo-600" />
+                        <SummaryCard title={text.totalAudit} value={taxAudits?.length || 0} icon={ClipboardCheck} colorClass="bg-indigo-100 text-indigo-600" />
                         <Card>
                             <div className="flex justify-between items-center mb-6">
-                                <h3 className="font-bold text-lg dark:text-white">Daftar Pemeriksaan</h3>
+                                <h3 className="font-bold text-lg dark:text-white">{text.auditList}</h3>
                                 {hasPermission('tax-monitoring', 'create') && (
                                     <button onClick={openCreateModal} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-indigo-700">
-                                        <Plus size={16} /> Baru
+                                        <Plus size={16} /> {text.newAudit}
                                     </button>
                                 )}
                             </div>
@@ -883,12 +1028,12 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                                 <table className="w-full text-sm text-left">
                                     <thead className="bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-slate-300">
                                         <tr>
-                                            <th className="px-6 py-3">No Surat & Tanggal</th>
-                                            <th className="px-6 py-3">Judul</th>
-                                            <th className="px-6 py-3">Lampiran</th>
-                                            <th className="px-6 py-3">Status</th>
-                                            <th className="px-6 py-3">Progress</th>
-                                            <th className="text-right px-6 py-3">Action</th>
+                                            <th className="px-6 py-3">{text.dateAndLetter}</th>
+                                            <th className="px-6 py-3">{text.title}</th>
+                                            <th className="px-6 py-3">{text.attachment}</th>
+                                            <th className="px-6 py-3">{text.status}</th>
+                                            <th className="px-6 py-3">{text.progress}</th>
+                                            <th className="text-right px-6 py-3">{text.action}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -916,7 +1061,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                                                     <td className="px-6 py-4">
                                                         {attachment ? (
                                                             <button onClick={() => handleSecureDownload(attachment)} className="flex items-center gap-1 text-blue-600 hover:underline text-xs" title={attachment.title}>
-                                                                <Paperclip size={14} /> Lihat
+                                                                <Paperclip size={14} /> {text.view}
                                                             </button>
                                                         ) : <span className="text-gray-400 text-xs">-</span>}
                                                     </td>
@@ -1079,8 +1224,8 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                             <Card className="lg:col-span-2">
                                 <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-slate-800">
                                     <div>
-                                        <h3 className="font-bold text-lg dark:text-white">{(AUDIT_STEPS[activeStep - 1] || AUDIT_STEPS[0]).title}</h3>
-                                        <p className="text-sm text-gray-500">{(AUDIT_STEPS[activeStep - 1] || AUDIT_STEPS[0]).description}</p>
+                                        <h3 className="font-bold text-lg dark:text-white">{(auditSteps[activeStep - 1] || auditSteps[0]).title}</h3>
+                                        <p className="text-sm text-gray-500">{(auditSteps[activeStep - 1] || auditSteps[0]).description}</p>
                                         <div className="flex items-center gap-3 mt-2 text-xs text-gray-500">
                                             <span className="flex items-center gap-1"><Clock size={12} /> Durasi Tahap: {getDuration(selectedAudit.steps?.[activeStep - 1]?.startDate, selectedAudit.steps?.[activeStep - 1]?.endDate)}</span>
                                         </div>
@@ -1088,7 +1233,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                                     <div className="flex gap-2">
                                         {(selectedAudit.steps?.[activeStep - 1]?.status || '') === 'Done' && hasPermission('tax-monitoring', 'edit') && (
                                             <button onClick={handleSendbackStep} className="px-4 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-lg flex items-center gap-2 hover:bg-amber-200 transition-all text-sm font-semibold">
-                                                <RotateCcw size={16} /> Batalkan Selesai
+                                                <RotateCcw size={16} /> {text.cancelComplete}
                                             </button>
                                         )}
                                         {(selectedAudit.steps?.[activeStep - 1]?.status || '') !== 'Done' && hasPermission('tax-monitoring', 'edit') && (
@@ -1096,9 +1241,9 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                                                 onClick={handleFinishStep}
                                                 disabled={activeStep > 1 && selectedAudit.steps?.[activeStep - 2]?.status !== 'Done'}
                                                 className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:text-gray-500 text-white rounded-lg flex items-center gap-2 shadow-sm transition-all text-sm font-semibold"
-                                                title={activeStep > 1 && selectedAudit.steps?.[activeStep - 2]?.status !== 'Done' ? "Selesaikan tahap sebelumnya terlebih dahulu" : "Selesaikan tahap ini"}
+                                                title={activeStep > 1 && selectedAudit.steps?.[activeStep - 2]?.status !== 'Done' ? text.completePrevStep : text.completeCurrentStep}
                                             >
-                                                <CheckCircle2 size={16} /> Selesai Tahap Ini
+                                                <CheckCircle2 size={16} /> {text.completeThisStep}
                                             </button>
                                         )}
                                     </div>
@@ -1108,7 +1253,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                                 <div className="mb-10">
                                     <div className="flex justify-between items-center mb-4 px-1">
                                         <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                                            <ClipboardCheck size={12} className="text-indigo-500" /> Daftar Permintaan Data & PIC
+                                            <ClipboardCheck size={12} className="text-indigo-500" /> {text.dataRequestList}
                                         </h4>
                                         <div className="flex items-center gap-3">
                                             <div className="h-1.5 w-24 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
@@ -1124,7 +1269,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                                     <div className="grid grid-cols-1 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                                         {(selectedAudit.steps[activeStep - 1]?.notes || []).length === 0 && (
                                             <div className="text-center py-8 bg-slate-50/50 dark:bg-slate-900/50 rounded-3xl border-2 border-dashed border-slate-100 dark:border-slate-800">
-                                                <p className="text-xs text-slate-400 font-medium">Belum ada daftar permintaan data.</p>
+                                                <p className="text-xs text-slate-400 font-medium">{text.noRequestYet}</p>
                                             </div>
                                         )}
                                         {(selectedAudit.steps[activeStep - 1]?.notes || []).map((note) => (
@@ -1192,7 +1337,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                                             <input
                                                 id={`note-input-${activeStep}`}
                                                 className="flex-1 bg-transparent border-0 focus:ring-0 text-sm font-bold px-4 dark:text-white placeholder:text-slate-300"
-                                                placeholder="Tambah permintaan data baru..."
+                                                placeholder={text.addDataRequest}
                                                 onKeyDown={(e) => { if (e.key === 'Enter') { const pic = document.getElementById(`pic-input-${activeStep}`); handleAddNote(e.target.value, pic.value); e.target.value = ''; pic.value = ''; } }}
                                             />
                                             <div className="h-8 w-px bg-slate-200 dark:bg-slate-800 my-auto"></div>
@@ -1220,14 +1365,14 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                                 {/* DISCUSSION HUB (CHAT NOTES) */}
                                 <div className="border-t border-slate-100 dark:border-slate-800 pt-8">
                                     <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-2 px-1">
-                                        <MoreVertical size={12} className="text-indigo-500" /> Koordinasi & Catatan Pending
+                                        <MoreVertical size={12} className="text-indigo-500" /> {text.coordinationNotes}
                                     </h4>
 
                                     <div className="flex-1 min-h-0 max-h-[400px] overflow-y-auto custom-scrollbar mb-8 px-1">
                                         <div className="space-y-4 flex flex-col">
                                             {stepNotes.length === 0 && (
                                                 <div className="text-center py-10 text-slate-300 italic text-[10px] uppercase tracking-widest">
-                                                    Belum ada diskusi di tahap ini.
+                                                    {text.noDiscussion}
                                                 </div>
                                             )}
                                             {Array.isArray(stepNotes) && stepNotes.map(note => {
@@ -1272,7 +1417,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                                             <textarea
                                                 value={newNoteText} onChange={e => setNewNoteText(e.target.value)}
                                                 className="w-full p-4 text-sm bg-slate-50 dark:bg-slate-950 border-0 rounded-3xl focus:ring-2 focus:ring-indigo-500 outline-none dark:text-white resize-none shadow-inner"
-                                                placeholder="Tulis koordinasi atau alasan pending..."
+                                                placeholder={text.writeCoordination}
                                                 rows="2"
                                             />
                                             <div className="flex justify-between items-center px-2">
@@ -1281,7 +1426,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                                                         <Paperclip size={18} />
                                                     </div>
                                                     <div className="flex flex-col">
-                                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-tight">{noteAttachment ? 'File Terpilih' : 'Lampiran'}</span>
+                                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-tight">{noteAttachment ? text.selectedFile : text.attach}</span>
                                                         <span className="text-[9px] font-bold text-indigo-500 truncate max-w-[120px]">{noteAttachment ? noteAttachment.name : 'PDF/Gambar'}</span>
                                                     </div>
                                                     <input type="file" className="hidden" onChange={e => setNoteAttachment(e.target.files[0])} />
@@ -1294,7 +1439,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                                                     {isPostingNote ? (
                                                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                                     ) : <CloudUpload size={16} />}
-                                                    Kirim
+                                                    {text.send}
                                                 </button>
                                             </div>
                                         </div>
@@ -1303,9 +1448,9 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                             </Card>
                             <div className="space-y-4">
                                 <Card>
-                                    <h4 className="font-bold text-sm text-gray-700 dark:text-gray-200 mb-3 flex items-center gap-2"><FileText size={16} /> Dokumen Tahap {activeStep}</h4>
+                                    <h4 className="font-bold text-sm text-gray-700 dark:text-gray-200 mb-3 flex items-center gap-2"><FileText size={16} /> {text.stepDocuments(activeStep)}</h4>
                                     <div className="space-y-2 max-h-[300px] overflow-y-auto mb-4 custom-scrollbar">
-                                        {isLoadingFiles ? <div className="text-center py-4 text-xs text-gray-400">Loading...</div> : auditFiles.length === 0 ? <div className="text-center py-4 text-xs text-gray-400 border-2 border-dashed border-gray-200 rounded-lg">Tidak ada dokumen</div> :
+                                        {isLoadingFiles ? <div className="text-center py-4 text-xs text-gray-400">{text.loading}</div> : auditFiles.length === 0 ? <div className="text-center py-4 text-xs text-gray-400 border-2 border-dashed border-gray-200 rounded-lg">{text.noDocuments}</div> :
                                             auditFiles.map(file => (
                                                 <div key={file.id} className="flex items-center gap-3 p-2 bg-white dark:bg-slate-800 rounded-lg border border-gray-100 dark:border-slate-700 shadow-sm text-xs group">
                                                     <div className={`p-1.5 rounded ${file.type?.includes('pdf') ? 'bg-red-100 text-red-600' : file.type?.includes('image') ? 'bg-purple-100 text-purple-600' : 'bg-blue-100 text-blue-600'}`}>
@@ -1330,12 +1475,12 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                                         <label className="block w-full cursor-pointer">
                                             <div className="w-full py-6 px-6 bg-white dark:bg-slate-800 border-2 border-dashed border-indigo-300 dark:border-indigo-700 rounded-2xl flex flex-col items-center justify-center text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all shadow-sm group">
                                                 {isUploadingFile ? (
-                                                    <span className="animate-pulse font-bold text-sm">Uploading...</span>
+                                                    <span className="animate-pulse font-bold text-sm">{text.uploading}</span>
                                                 ) : (
                                                     <>
                                                         <UploadCloud size={32} className="mb-2 group-hover:scale-110 transition-transform" />
-                                                        <span className="text-sm font-bold">Upload File</span>
-                                                        <span className="text-xs text-slate-400 mt-1">Klik untuk pilih file</span>
+                                                        <span className="text-sm font-bold">{text.uploadFile}</span>
+                                                        <span className="text-xs text-slate-400 mt-1">{text.clickToChoose}</span>
                                                     </>
                                                 )}
                                             </div>
@@ -1354,7 +1499,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
             <Modal
                 isOpen={isCreateModalOpen}
                 onClose={() => setIsCreateModalOpen(false)}
-                title={editingAudit ? 'Edit Pemeriksaan' : 'Pemeriksaan Baru'}
+                title={editingAudit ? text.editAudit : text.newAuditTitle}
                 size="max-w-xl"
             >
                 <div className="space-y-6 pt-4 px-1">
@@ -1363,24 +1508,24 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                             <ClipboardCheck size={28} />
                         </div>
                         <div className="text-right">
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Status Pemeriksaan</p>
-                            <span className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-black uppercase tracking-tight">On Progress</span>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{text.auditStatus}</p>
+                            <span className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-black uppercase tracking-tight">{text.inProgress}</span>
                         </div>
                     </div>
 
                     <div className="space-y-5">
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Judul / Nama Wajib Pajak</label>
+                            <label className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">{text.auditTitleLabel}</label>
                             <input
                                 className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-800 rounded-2xl focus:border-indigo-500 transition-all outline-none dark:text-white font-black text-lg"
-                                placeholder="Contoh: PT. Sumber Makmur - PPN 2023"
+                                placeholder={text.auditTitlePlaceholder}
                                 value={newAuditTitle}
                                 onChange={e => setNewAuditTitle(e.target.value)}
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Nomor Surat Perintah (SP2)</label>
+                            <label className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">{text.sp2Label}</label>
                             <input
                                 className="w-full px-5 py-3 bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-800 rounded-xl focus:border-indigo-500 transition-all outline-none dark:text-white font-bold"
                                 placeholder="No. PRIN-000/WPJ.00/KP.0000/2024"
@@ -1390,10 +1535,10 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Auditor / PIC (Opsional)</label>
+                            <label className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">{text.picOptional}</label>
                             <input
                                 className="w-full px-5 py-3 bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-800 rounded-xl focus:border-indigo-500 transition-all outline-none dark:text-white font-bold"
-                                placeholder="Nama Tim Pemeriksa / PIC"
+                                placeholder={text.picPlaceholder}
                                 value={newAuditAuditor}
                                 onChange={e => setNewAuditAuditor(e.target.value)}
                             />
@@ -1401,7 +1546,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Tanggal Mulai</label>
+                                <label className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">{text.startDate}</label>
                                 <div className="relative">
                                     <input
                                         type="date"
@@ -1413,11 +1558,11 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                             </div>
                             {!editingAudit && (
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">Lampiran SP2 (Opsional)</label>
+                                    <label className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1">{text.sp2AttachmentOptional}</label>
                                     <label className="flex items-center gap-3 px-5 py-3 bg-white dark:bg-slate-800 border-2 border-dashed border-indigo-300 dark:border-indigo-700 rounded-2xl cursor-pointer hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all group shadow-sm">
                                         <UploadCloud size={20} className="text-indigo-500 group-hover:scale-110 transition-transform" />
                                         <span className="text-xs font-bold text-indigo-700 dark:text-indigo-300 truncate">
-                                            {newAuditFile ? newAuditFile.name : 'Pilih File...'}
+                                            {newAuditFile ? newAuditFile.name : text.chooseFile}
                                         </span>
                                         <input type="file" className="hidden" onChange={e => setNewAuditFile(e.target.files[0])} accept="image/*,.pdf,.docx,.doc,.xlsx,.xls,.pptx" />
                                     </label>
@@ -1431,7 +1576,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                             onClick={() => setIsCreateModalOpen(false)}
                             className="flex-1 py-4 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white text-xs font-black uppercase tracking-widest transition-all"
                         >
-                            Batalkan
+                            {text.cancel}
                         </button>
                         <button
                             onClick={handleSaveAudit}
@@ -1441,12 +1586,12 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                             {isSaving ? (
                                 <span className="flex items-center justify-center gap-2">
                                     <div className="w-3 h-3 border-2 border-white rounded-full animate-spin border-t-transparent" />
-                                    Menyimpan...
+                                    {text.saving}
                                 </span>
                             ) : (
                                 <span className="flex items-center justify-center gap-2">
                                     <Save size={16} />
-                                    {editingAudit ? 'Simpan Perubahan' : 'Mulai Pemeriksaan'}
+                                    {editingAudit ? text.saveChanges : text.startAudit}
                                 </span>
                             )}
                         </button>

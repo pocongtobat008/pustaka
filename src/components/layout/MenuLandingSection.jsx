@@ -345,9 +345,111 @@ export default function MenuLandingSection({
   onOpenVision,
   isOpen,
   onClose,
+  language = 'id',
 }) {
+  const isEnglish = language === 'en';
   const config = menuLandingConfig[activeTab];
   const manualAdvantages = manualAdvantageMap[activeTab] || [];
+
+  const uiText = isEnglish
+    ? {
+        close: 'Close',
+        mainFeatures: 'Core Features',
+        businessFunctions: 'Business Functions',
+        useCases: 'Use Cases',
+        quickNavigation: 'Quick Navigation',
+        platformVision: 'View Platform Vision',
+        advantages: 'Advantages vs Manual Process',
+        goTo: 'Go to',
+      }
+    : {
+        close: 'Tutup',
+        mainFeatures: 'Fitur Utama',
+        businessFunctions: 'Fungsi Bisnis',
+        useCases: 'Use Cases',
+        quickNavigation: 'Quick Navigation',
+        platformVision: 'Lihat Visi Platform',
+        advantages: 'Kelebihan Dibanding Manual',
+        goTo: 'Ke',
+      };
+
+  const tabLabelMap = isEnglish
+    ? {
+        dashboard: 'Dashboard',
+        inventory: 'Inventory',
+        documents: 'Documents',
+        approvals: 'Approvals',
+        'tax-monitoring': 'Tax Monitoring',
+        'tax-calculation': 'Tax Calculation',
+        'tax-summary': 'Tax Summary',
+        master: 'Master Data',
+        pustaka: 'Manual Book',
+        flow: 'SOP Flow',
+        'job-due-date': 'My Job',
+      }
+    : {
+        dashboard: 'Dashboard',
+        inventory: 'Manajemen Rak',
+        documents: 'Dokumen Digital',
+        approvals: 'Approval',
+        'tax-monitoring': 'Monitoring Pajak',
+        'tax-calculation': 'Kalkulasi Pajak',
+        'tax-summary': 'Ringkasan Pajak',
+        master: 'Master Data',
+        pustaka: 'Manual Book',
+        flow: 'SOP Flow',
+        'job-due-date': 'My Job',
+      };
+
+  const englishHeadlineMap = {
+    dashboard: {
+      title: 'Executive Dashboard for Daily Operations',
+      subtitle: 'A consolidated view of document performance, team activity, OCR status, and risk signals so decisions can be made quickly and accurately.',
+    },
+    inventory: {
+      title: 'Filing and Physical Archive Rack Management',
+      subtitle: 'Manage box locations, inbound-outbound transfers, and storage availability with a structured warehouse view that is easy to monitor.',
+    },
+    documents: {
+      title: 'Structured Digital Document Center',
+      subtitle: 'Manage folders, metadata, OCR content, document versions, and cross-unit access in a secure and scalable workflow.',
+    },
+    approvals: {
+      title: 'Multi-level Document Approval',
+      subtitle: 'Ensure every document follows the proper authorization flow with transparent and traceable approval history.',
+    },
+    'tax-monitoring': {
+      title: 'End-to-End Tax Audit Monitoring',
+      subtitle: 'Track audit status, supporting document requirements, and follow-up progress so compliance teams stay inspection-ready.',
+    },
+    'tax-calculation': {
+      title: 'Accurate Tax Calculation',
+      subtitle: 'Calculate tax components with consistent parameters to reduce errors and speed up reporting cycles.',
+    },
+    'tax-summary': {
+      title: 'Tax Compliance and Payment Summary',
+      subtitle: 'Show compliance insights, payment history, and trend performance so management gets a comprehensive tax view.',
+    },
+    master: {
+      title: 'Master Data and Core Configuration',
+      subtitle: 'Manage roles, users, departments, and process structure so all modules run in line with organizational governance.',
+    },
+    pustaka: {
+      title: 'Manual Book and Team Knowledge Hub',
+      subtitle: 'Store work guides, best practices, and operational references in a format that is easy to read, search, and share.',
+    },
+    flow: {
+      title: 'Visual and Adaptive SOP Flow',
+      subtitle: 'Design, manage, and communicate work processes visually so team execution is consistent, fast, and auditable.',
+    },
+    'job-due-date': {
+      title: 'Daily Job and Due Date Monitoring',
+      subtitle: 'Track active work, deadlines, and execution priorities so teams stay focused on the highest-impact tasks.',
+    },
+  };
+
+  const displayTitle = isEnglish ? (englishHeadlineMap[activeTab]?.title || config.title) : config.title;
+  const displaySubtitle = isEnglish ? (englishHeadlineMap[activeTab]?.subtitle || config.subtitle) : config.subtitle;
 
   if (!config || !isOpen) return null;
 
@@ -382,7 +484,7 @@ export default function MenuLandingSection({
               className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-opacity"
             >
               <X size={14} />
-              Tutup
+              {uiText.close}
             </button>
           </div>
 
@@ -393,10 +495,10 @@ export default function MenuLandingSection({
                 {config.kicker}
               </div>
               <h2 className="text-2xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white leading-tight mb-3">
-                {config.title}
+                {displayTitle}
               </h2>
               <p className="text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-                {config.subtitle}
+                {displaySubtitle}
               </p>
             </div>
 
@@ -407,7 +509,7 @@ export default function MenuLandingSection({
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div className="rounded-2xl border border-slate-200/70 dark:border-slate-700/60 bg-white/80 dark:bg-slate-950/50 p-5">
-              <h3 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 font-bold mb-3">Fitur Utama</h3>
+              <h3 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 font-bold mb-3">{uiText.mainFeatures}</h3>
               <ul className="space-y-2">
                 {config.features.map((item) => (
                   <li key={item} className="text-sm text-slate-700 dark:text-slate-200 flex gap-2 leading-relaxed">
@@ -419,7 +521,7 @@ export default function MenuLandingSection({
             </div>
 
             <div className="rounded-2xl border border-slate-200/70 dark:border-slate-700/60 bg-white/80 dark:bg-slate-950/50 p-5">
-              <h3 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 font-bold mb-3">Fungsi Bisnis</h3>
+              <h3 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 font-bold mb-3">{uiText.businessFunctions}</h3>
               <ul className="space-y-2">
                 {config.functions.map((item) => (
                   <li key={item} className="text-sm text-slate-700 dark:text-slate-200 flex gap-2 leading-relaxed">
@@ -431,7 +533,7 @@ export default function MenuLandingSection({
             </div>
 
             <div className="rounded-2xl border border-slate-200/70 dark:border-slate-700/60 bg-white/80 dark:bg-slate-950/50 p-5">
-              <h3 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 font-bold mb-3">Use Cases</h3>
+              <h3 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 font-bold mb-3">{uiText.useCases}</h3>
               <div className="flex flex-wrap gap-2 mb-4">
                 {config.useCases.map((item) => (
                   <span key={item} className="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200">
@@ -440,13 +542,13 @@ export default function MenuLandingSection({
                 ))}
               </div>
 
-              <h4 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 font-bold mb-2">Quick Navigation</h4>
+              <h4 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 font-bold mb-2">{uiText.quickNavigation}</h4>
               <div className="space-y-2">
                 {config.quickActions.map((action) => {
                   const ActionIcon = action.icon || Briefcase;
                   return (
                     <button
-                      key={action.label}
+                      key={action.tab}
                       type="button"
                       onClick={() => {
                         setActiveTab(action.tab);
@@ -456,7 +558,7 @@ export default function MenuLandingSection({
                     >
                       <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide">
                         <ActionIcon size={14} />
-                        {action.label}
+                        {`${uiText.goTo} ${tabLabelMap[action.tab] || action.tab}`}
                       </span>
                       <ArrowRight size={14} />
                     </button>
@@ -473,7 +575,7 @@ export default function MenuLandingSection({
                   >
                     <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide">
                       <Rocket size={14} />
-                      Lihat Visi Platform
+                      {uiText.platformVision}
                     </span>
                     <ArrowRight size={14} />
                   </button>
@@ -484,7 +586,7 @@ export default function MenuLandingSection({
 
           <div className="rounded-2xl border border-emerald-200/70 dark:border-emerald-500/30 bg-emerald-50/70 dark:bg-emerald-500/10 p-5">
             <h3 className="text-xs uppercase tracking-[0.16em] text-emerald-700 dark:text-emerald-300 font-bold mb-3">
-              Kelebihan Dibanding Manual
+              {uiText.advantages}
             </h3>
             <ul className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {manualAdvantages.map((item) => (

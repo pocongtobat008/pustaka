@@ -15188,3 +15188,751 @@
 {"level":"info","message":"\u001b[0mGET /api/tax/objects?cb=1773798875581 \u001b[32m200\u001b[0m 3.898 ms - 51903\u001b[0m","timestamp":"2026-03-18 01:54:35"}
 {"level":"info","message":"\u001b[0mGET /api/tax/wp?cb=1773798875974 \u001b[32m200\u001b[0m 8.480 ms - 228220\u001b[0m","timestamp":"2026-03-18 01:54:36"}
 {"level":"info","message":"\u001b[0mGET /api/tax/wp?cb=1773798877274 \u001b[32m200\u001b[0m 6.373 ms - 228220\u001b[0m","timestamp":"2026-03-18 01:54:37"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 2.356 ms - -\u001b[0m","timestamp":"2026-03-18 01:56:52"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.623 ms - -\u001b[0m","timestamp":"2026-03-18 01:56:52"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.945 ms - -\u001b[0m","timestamp":"2026-03-18 01:56:52"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.940 ms - -\u001b[0m","timestamp":"2026-03-18 01:56:52"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.803 ms - -\u001b[0m","timestamp":"2026-03-18 01:56:52"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.882 ms - -\u001b[0m","timestamp":"2026-03-18 01:56:52"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.865 ms - -\u001b[0m","timestamp":"2026-03-18 01:56:54"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.636 ms - -\u001b[0m","timestamp":"2026-03-18 01:56:54"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 2.160 ms - -\u001b[0m","timestamp":"2026-03-18 01:56:54"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 2.006 ms - -\u001b[0m","timestamp":"2026-03-18 01:56:54"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.603 ms - -\u001b[0m","timestamp":"2026-03-18 01:56:54"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 2.514 ms - -\u001b[0m","timestamp":"2026-03-18 01:56:54"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 2.117 ms - -\u001b[0m","timestamp":"2026-03-18 01:56:59"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.957 ms - -\u001b[0m","timestamp":"2026-03-18 01:56:59"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.650 ms - -\u001b[0m","timestamp":"2026-03-18 01:56:59"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.958 ms - -\u001b[0m","timestamp":"2026-03-18 01:56:59"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.866 ms - -\u001b[0m","timestamp":"2026-03-18 01:56:59"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.549 ms - -\u001b[0m","timestamp":"2026-03-18 01:56:59"}
+{"level":"info","message":"Client disconnected: ncAjLYic9flUVUacAAAH","timestamp":"2026-03-18 01:59:17"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 3.043 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:33"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 0.928 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:33"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 1.698 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:33"}
+{"level":"info","message":"Client connected: KDBxvYZOuT5SF6LiAAAJ","timestamp":"2026-03-18 01:59:34"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 2.696 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 2.366 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.668 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 1.303 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 2.068 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 5.741 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 2.076 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 2.057 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 1.411 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 4.216 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 3.009 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.684 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 1.309 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 0.896 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 1.037 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 8.686 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 28.199 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 35.694 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 32.328 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 2.012 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:35"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.561 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:36"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 1.994 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:36"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.601 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:36"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 2.299 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:36"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.802 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:36"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.098 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:37"}
+{"details":"User logged out (cookie cleared)","level":"info","message":"Logout: User logged out (cookie cleared)","timestamp":"2026-03-18 01:59:43","user":"Unknown"}
+{"level":"info","message":"\u001b[0mPOST /api/logout \u001b[32m200\u001b[0m 2.870 ms - 31\u001b[0m","timestamp":"2026-03-18 01:59:43"}
+{"details":"User logged in with HttpOnly cookie","level":"info","message":"Login: User logged in with HttpOnly cookie","timestamp":"2026-03-18 01:59:48","user":"admin"}
+{"level":"info","message":"\u001b[0mPOST /api/login \u001b[32m200\u001b[0m 65.892 ms - 284\u001b[0m","timestamp":"2026-03-18 01:59:48"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 4.441 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:49"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 4.299 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:49"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 3.932 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:49"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 1.464 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:49"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 1.290 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:49"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 1.877 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:49"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.181 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:49"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.742 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:49"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 2.110 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:49"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 01:59:49"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 3.447 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:49"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.878 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:49"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 2.181 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:50"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.437 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:50"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.953 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:50"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.798 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:51"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.815 ms - -\u001b[0m","timestamp":"2026-03-18 01:59:51"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 2.482 ms - -\u001b[0m","timestamp":"2026-03-18 02:00:00"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 2.827 ms - -\u001b[0m","timestamp":"2026-03-18 02:00:00"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.585 ms - -\u001b[0m","timestamp":"2026-03-18 02:00:01"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 2.391 ms - -\u001b[0m","timestamp":"2026-03-18 02:00:01"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 2.217 ms - -\u001b[0m","timestamp":"2026-03-18 02:00:01"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 2.440 ms - -\u001b[0m","timestamp":"2026-03-18 02:00:01"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 3.215 ms - -\u001b[0m","timestamp":"2026-03-18 02:00:07"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 2.716 ms - -\u001b[0m","timestamp":"2026-03-18 02:00:07"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.182 ms - -\u001b[0m","timestamp":"2026-03-18 02:01:01"}
+{"level":"info","message":"\u001b[0mPOST /api/folders \u001b[32m200\u001b[0m 3.478 ms - 8\u001b[0m","timestamp":"2026-03-18 02:01:01"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[32m200\u001b[0m 2.837 ms - 6116\u001b[0m","timestamp":"2026-03-18 02:01:01"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[32m200\u001b[0m 1.823 ms - 1956\u001b[0m","timestamp":"2026-03-18 02:01:01"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.193 ms - -\u001b[0m","timestamp":"2026-03-18 02:01:01"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.645 ms - -\u001b[0m","timestamp":"2026-03-18 02:01:01"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 1.246 ms - -\u001b[0m","timestamp":"2026-03-18 02:01:02"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 1.571 ms - -\u001b[0m","timestamp":"2026-03-18 02:01:02"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 1.041 ms - -\u001b[0m","timestamp":"2026-03-18 02:01:02"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.240 ms - -\u001b[0m","timestamp":"2026-03-18 02:01:02"}
+{"level":"info","message":"\u001b[0mPOST /api/sop-flows \u001b[31m500\u001b[0m 3.215 ms - 64\u001b[0m","timestamp":"2026-03-18 02:01:02"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.247 ms - -\u001b[0m","timestamp":"2026-03-18 02:01:09"}
+{"level":"info","message":"\u001b[0mPOST /api/sop-flows \u001b[31m500\u001b[0m 2.535 ms - 64\u001b[0m","timestamp":"2026-03-18 02:01:09"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 8.111 ms - -\u001b[0m","timestamp":"2026-03-18 02:03:01"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 8.661 ms - -\u001b[0m","timestamp":"2026-03-18 02:03:01"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.935 ms - -\u001b[0m","timestamp":"2026-03-18 02:03:02"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.882 ms - -\u001b[0m","timestamp":"2026-03-18 02:03:02"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.827 ms - -\u001b[0m","timestamp":"2026-03-18 02:03:02"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.755 ms - -\u001b[0m","timestamp":"2026-03-18 02:03:02"}
+{"level":"info","message":"\u001b[0mPOST /api/independent-issues \u001b[32m200\u001b[0m 3.711 ms - 42\u001b[0m","timestamp":"2026-03-18 02:03:14"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[32m200\u001b[0m 3.053 ms - 6476\u001b[0m","timestamp":"2026-03-18 02:03:15"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 2.090 ms - -\u001b[0m","timestamp":"2026-03-18 02:03:15"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[32m200\u001b[0m 2.097 ms - 275\u001b[0m","timestamp":"2026-03-18 02:03:15"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.780 ms - -\u001b[0m","timestamp":"2026-03-18 02:03:15"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.281 ms - -\u001b[0m","timestamp":"2026-03-18 02:03:16"}
+{"level":"info","message":"\u001b[0mPUT /api/independent-issues/1 \u001b[33m400\u001b[0m 3.791 ms - 121\u001b[0m","timestamp":"2026-03-18 02:03:20"}
+{"level":"info","message":"\u001b[0mPUT /api/independent-issues/1 \u001b[33m400\u001b[0m 1.667 ms - 121\u001b[0m","timestamp":"2026-03-18 02:03:24"}
+{"level":"info","message":"\u001b[0mPUT /api/independent-issues/1 \u001b[33m400\u001b[0m 1.999 ms - 121\u001b[0m","timestamp":"2026-03-18 02:03:38"}
+{"level":"info","message":"\u001b[0mPUT /api/independent-issues/1 \u001b[33m400\u001b[0m 2.193 ms - 121\u001b[0m","timestamp":"2026-03-18 02:03:40"}
+{"level":"info","message":"\u001b[0mDELETE /api/independent-issues/1 \u001b[32m200\u001b[0m 3.040 ms - 36\u001b[0m","timestamp":"2026-03-18 02:03:45"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[32m200\u001b[0m 3.354 ms - 2\u001b[0m","timestamp":"2026-03-18 02:03:45"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 2.431 ms - -\u001b[0m","timestamp":"2026-03-18 02:03:45"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[32m200\u001b[0m 3.436 ms - 6836\u001b[0m","timestamp":"2026-03-18 02:03:45"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 2.645 ms - -\u001b[0m","timestamp":"2026-03-18 02:03:45"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 1.963 ms - -\u001b[0m","timestamp":"2026-03-18 02:03:46"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 2.257 ms - -\u001b[0m","timestamp":"2026-03-18 02:07:49"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.653 ms - -\u001b[0m","timestamp":"2026-03-18 02:07:49"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.961 ms - -\u001b[0m","timestamp":"2026-03-18 02:07:49"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 2.029 ms - -\u001b[0m","timestamp":"2026-03-18 02:07:49"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.866 ms - -\u001b[0m","timestamp":"2026-03-18 02:07:49"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.438 ms - -\u001b[0m","timestamp":"2026-03-18 02:07:49"}
+{"level":"info","message":"\u001b[0mPOST /api/monitored-pics \u001b[32m200\u001b[0m 4.414 ms - 48\u001b[0m","timestamp":"2026-03-18 02:07:55"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[32m200\u001b[0m 2.742 ms - 7180\u001b[0m","timestamp":"2026-03-18 02:07:55"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.947 ms - -\u001b[0m","timestamp":"2026-03-18 02:07:55"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[32m200\u001b[0m 1.662 ms - 820\u001b[0m","timestamp":"2026-03-18 02:07:55"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.853 ms - -\u001b[0m","timestamp":"2026-03-18 02:07:55"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.228 ms - -\u001b[0m","timestamp":"2026-03-18 02:07:55"}
+{"level":"info","message":"\u001b[0mDELETE /api/monitored-pics/staff \u001b[32m200\u001b[0m 3.145 ms - 45\u001b[0m","timestamp":"2026-03-18 02:07:58"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 2.012 ms - -\u001b[0m","timestamp":"2026-03-18 02:07:58"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 2.331 ms - -\u001b[0m","timestamp":"2026-03-18 02:07:58"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[32m200\u001b[0m 2.520 ms - 615\u001b[0m","timestamp":"2026-03-18 02:07:58"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 2.259 ms - -\u001b[0m","timestamp":"2026-03-18 02:08:01"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 2.750 ms - -\u001b[0m","timestamp":"2026-03-18 02:08:01"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.876 ms - -\u001b[0m","timestamp":"2026-03-18 02:08:01"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 2.185 ms - -\u001b[0m","timestamp":"2026-03-18 02:08:02"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.646 ms - -\u001b[0m","timestamp":"2026-03-18 02:08:02"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.889 ms - -\u001b[0m","timestamp":"2026-03-18 02:08:02"}
+{"level":"info","message":"Client disconnected: KDBxvYZOuT5SF6LiAAAJ","timestamp":"2026-03-18 02:09:25"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 3.789 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 3.953 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.082 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 0.809 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 2.107 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 0.890 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 1.300 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 3.412 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.849 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.952 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 2.143 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 2.783 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.070 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 1.899 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 2.581 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 3.922 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 2.315 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 5.733 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 0.863 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 3.386 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 5.001 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 2.416 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.889 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.955 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:30"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 4.915 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:31"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 7.482 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:31"}
+{"level":"info","message":"Client connected: SYzwhaI289SMKJIrAAAL","timestamp":"2026-03-18 02:09:31"}
+{"level":"info","message":"Client disconnected: SYzwhaI289SMKJIrAAAL","timestamp":"2026-03-18 02:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.159 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:40"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 0.824 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:40"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.752 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:40"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 02:09:40"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 2.044 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:40"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 1.790 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:40"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 6.123 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:41"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 8.824 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:41"}
+{"level":"info","message":"Client connected: Rf2P5MjG-R6V0OD1AAAN","timestamp":"2026-03-18 02:09:41"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.472 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:41"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 0.866 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:41"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 0.899 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:41"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 2.115 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:41"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 02:09:41"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 1.891 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:41"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 2.710 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:41"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.796 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:41"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.246 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:41"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 2.237 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:41"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 2.772 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:41"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 0.942 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:41"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 1.035 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:41"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 2.222 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:41"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 1.274 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:41"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.561 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:41"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.601 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:41"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.505 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:42"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[32m200\u001b[0m 2.487 ms - 13993\u001b[0m","timestamp":"2026-03-18 02:09:42"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[32m200\u001b[0m 2.649 ms - 46997\u001b[0m","timestamp":"2026-03-18 02:09:42"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 1.987 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:42"}
+{"level":"info","message":"Client disconnected: Rf2P5MjG-R6V0OD1AAAN","timestamp":"2026-03-18 02:09:50"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[32m200\u001b[0m 1.393 ms - 1956\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[32m200\u001b[0m 1.798 ms - 2\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 4.676 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[32m200\u001b[0m 1.823 ms - 1774\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[32m200\u001b[0m 0.958 ms - 333\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[32m200\u001b[0m 4.505 ms - 2\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[32m200\u001b[0m 3.439 ms - 2\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[32m200\u001b[0m 0.801 ms - 123\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[32m200\u001b[0m 2.359 ms - 1803\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 3.198 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.127 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 1.591 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"Client connected: myNTXLTuRGaACdJFAAAP","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 4.059 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 3.582 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 2.280 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 4.244 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.650 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 0.982 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 1.832 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.253 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 1.931 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.550 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 2.127 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 2.306 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.859 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:53"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 1.992 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:54"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.736 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:55"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.751 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:55"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.761 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:55"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.489 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:55"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.667 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:55"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.476 ms - -\u001b[0m","timestamp":"2026-03-18 02:09:55"}
+{"level":"info","message":"Client disconnected: myNTXLTuRGaACdJFAAAP","timestamp":"2026-03-18 02:10:12"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.352 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.824 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 2.136 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 1.481 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 2.600 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 2.317 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 3.017 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 4.056 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 4.954 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 4.727 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 4.212 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 2.564 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 0.858 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.644 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 1.825 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"Client connected: OgmIiYINNLlYFHWMAAAR","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 2.120 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 1.415 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 2.370 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 2.031 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 2.254 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 2.453 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 1.605 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 1.965 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:19"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 2.121 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:20"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.070 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:20"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 1.894 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:21"}
+{"level":"info","message":"Client disconnected: OgmIiYINNLlYFHWMAAAR","timestamp":"2026-03-18 02:10:23"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 2.598 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 3.487 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 2.673 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 0.863 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.786 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 1.765 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 1.794 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 0.859 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 0.825 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.598 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.366 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 5.138 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.621 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 1.196 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 2.471 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 4.062 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 1.913 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 2.549 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 1.929 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 0.776 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 1.134 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 2.109 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 2.269 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"Client connected: CbK-H6jGkQUz4CHXAAAT","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 2.014 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:29"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.661 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:30"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.379 ms - -\u001b[0m","timestamp":"2026-03-18 02:10:30"}
+{"details":"INVENTORY Error: Cannot read properties of undefined (reading '_zod')","level":"error","message":"System Error: INVENTORY Error: Cannot read properties of undefined (reading '_zod')","timestamp":"2026-03-18 02:19:10","user":"System"}
+{"level":"info","message":"\u001b[0mPUT /api/inventory/1 \u001b[31m500\u001b[0m 3.658 ms - 82\u001b[0m","timestamp":"2026-03-18 02:19:10"}
+{"details":"INVENTORY Error: Cannot read properties of undefined (reading '_zod')","level":"error","message":"System Error: INVENTORY Error: Cannot read properties of undefined (reading '_zod')","timestamp":"2026-03-18 02:19:29","user":"System"}
+{"level":"info","message":"\u001b[0mPUT /api/inventory/1 \u001b[31m500\u001b[0m 3.386 ms - 82\u001b[0m","timestamp":"2026-03-18 02:19:29"}
+{"details":"INVENTORY Error: Cannot read properties of undefined (reading '_zod')","level":"error","message":"System Error: INVENTORY Error: Cannot read properties of undefined (reading '_zod')","timestamp":"2026-03-18 02:19:29","user":"System"}
+{"level":"info","message":"\u001b[0mPUT /api/inventory/1 \u001b[31m500\u001b[0m 3.018 ms - 82\u001b[0m","timestamp":"2026-03-18 02:19:29"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 2.026 ms - -\u001b[0m","timestamp":"2026-03-18 02:20:46"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.134 ms - -\u001b[0m","timestamp":"2026-03-18 02:20:46"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 5.012 ms - -\u001b[0m","timestamp":"2026-03-18 02:20:46"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 02:20:46"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 2.888 ms - -\u001b[0m","timestamp":"2026-03-18 02:20:46"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.698 ms - -\u001b[0m","timestamp":"2026-03-18 02:20:46"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 0.760 ms - -\u001b[0m","timestamp":"2026-03-18 02:20:46"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 1.610 ms - -\u001b[0m","timestamp":"2026-03-18 02:20:46"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 2.134 ms - -\u001b[0m","timestamp":"2026-03-18 02:20:46"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 0.791 ms - -\u001b[0m","timestamp":"2026-03-18 02:20:46"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.199 ms - -\u001b[0m","timestamp":"2026-03-18 02:20:46"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 2.403 ms - -\u001b[0m","timestamp":"2026-03-18 02:20:46"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 1.773 ms - -\u001b[0m","timestamp":"2026-03-18 02:20:46"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 1.871 ms - -\u001b[0m","timestamp":"2026-03-18 02:20:46"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 1.934 ms - -\u001b[0m","timestamp":"2026-03-18 02:20:47"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.652 ms - -\u001b[0m","timestamp":"2026-03-18 02:22:39"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.562 ms - -\u001b[0m","timestamp":"2026-03-18 02:22:39"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.405 ms - -\u001b[0m","timestamp":"2026-03-18 02:22:39"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.781 ms - -\u001b[0m","timestamp":"2026-03-18 02:22:40"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.323 ms - -\u001b[0m","timestamp":"2026-03-18 02:22:40"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.474 ms - -\u001b[0m","timestamp":"2026-03-18 02:22:40"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 2.504 ms - -\u001b[0m","timestamp":"2026-03-18 02:22:49"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 2.037 ms - -\u001b[0m","timestamp":"2026-03-18 02:22:49"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 2.035 ms - -\u001b[0m","timestamp":"2026-03-18 02:26:27"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.605 ms - -\u001b[0m","timestamp":"2026-03-18 02:26:27"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 2.169 ms - -\u001b[0m","timestamp":"2026-03-18 02:26:27"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 2.095 ms - -\u001b[0m","timestamp":"2026-03-18 02:26:27"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 2.201 ms - -\u001b[0m","timestamp":"2026-03-18 02:26:27"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.396 ms - -\u001b[0m","timestamp":"2026-03-18 02:26:27"}
+{"details":"User logged out (cookie cleared)","level":"info","message":"Logout: User logged out (cookie cleared)","timestamp":"2026-03-18 02:30:11","user":"Unknown"}
+{"level":"info","message":"\u001b[0mPOST /api/logout \u001b[32m200\u001b[0m 4.915 ms - 31\u001b[0m","timestamp":"2026-03-18 02:30:11"}
+{"details":"User logged in with HttpOnly cookie","level":"info","message":"Login: User logged in with HttpOnly cookie","timestamp":"2026-03-18 02:30:22","user":"admin"}
+{"level":"info","message":"\u001b[0mPOST /api/login \u001b[32m200\u001b[0m 70.747 ms - 284\u001b[0m","timestamp":"2026-03-18 02:30:22"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.490 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:23"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 1.198 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:23"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 2.797 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:23"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 1.925 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:23"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 02:30:23"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 2.454 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:23"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 2.787 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:23"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 3.191 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:23"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 5.171 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:23"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 6.411 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:23"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 1.917 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:23"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 1.003 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:23"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 1.935 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:23"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.491 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:23"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 2.310 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:23"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.394 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:24"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.587 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:24"}
+{"details":"User logged out (cookie cleared)","level":"info","message":"Logout: User logged out (cookie cleared)","timestamp":"2026-03-18 02:30:28","user":"Unknown"}
+{"level":"info","message":"\u001b[0mPOST /api/logout \u001b[32m200\u001b[0m 1.664 ms - 31\u001b[0m","timestamp":"2026-03-18 02:30:28"}
+{"details":"User logged in with HttpOnly cookie","level":"info","message":"Login: User logged in with HttpOnly cookie","timestamp":"2026-03-18 02:30:33","user":"admin"}
+{"level":"info","message":"\u001b[0mPOST /api/login \u001b[32m200\u001b[0m 66.425 ms - 284\u001b[0m","timestamp":"2026-03-18 02:30:33"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 2.636 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:33"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 1.629 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:33"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 0.692 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:33"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 1.935 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:33"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 0.743 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:33"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.932 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:33"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 0.968 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:33"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 02:30:33"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 2.239 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:33"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 3.368 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:33"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 1.501 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:33"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 2.373 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:33"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 1.879 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:34"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.999 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:34"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 1.921 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:34"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.513 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:34"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 1.942 ms - -\u001b[0m","timestamp":"2026-03-18 02:30:35"}
+{"level":"info","message":"\u001b[0mGET /api/system/logs-file/server \u001b[32m200\u001b[0m 24.801 ms - 2373525\u001b[0m","timestamp":"2026-03-18 02:32:45"}
+{"level":"info","message":"\u001b[0mGET /api/system/logs-file/error \u001b[32m200\u001b[0m 2.300 ms - 3618\u001b[0m","timestamp":"2026-03-18 02:32:49"}
+{"level":"info","message":"\u001b[0mGET /api/system/logs-file/ocr \u001b[32m200\u001b[0m 2.069 ms - 35946\u001b[0m","timestamp":"2026-03-18 02:32:50"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 2.487 ms - -\u001b[0m","timestamp":"2026-03-18 02:54:14"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 4.738 ms - -\u001b[0m","timestamp":"2026-03-18 02:54:15"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 2.228 ms - -\u001b[0m","timestamp":"2026-03-18 02:54:16"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.644 ms - -\u001b[0m","timestamp":"2026-03-18 02:54:16"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.711 ms - -\u001b[0m","timestamp":"2026-03-18 02:54:16"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.687 ms - -\u001b[0m","timestamp":"2026-03-18 02:54:16"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.598 ms - -\u001b[0m","timestamp":"2026-03-18 02:54:16"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 2.211 ms - -\u001b[0m","timestamp":"2026-03-18 02:54:16"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.758 ms - -\u001b[0m","timestamp":"2026-03-18 03:01:43"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.840 ms - -\u001b[0m","timestamp":"2026-03-18 03:01:43"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 2.128 ms - -\u001b[0m","timestamp":"2026-03-18 03:01:43"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 2.021 ms - -\u001b[0m","timestamp":"2026-03-18 03:01:43"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 2.152 ms - -\u001b[0m","timestamp":"2026-03-18 03:01:43"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 2.002 ms - -\u001b[0m","timestamp":"2026-03-18 03:01:43"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 2.363 ms - -\u001b[0m","timestamp":"2026-03-18 03:01:45"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.503 ms - -\u001b[0m","timestamp":"2026-03-18 03:01:45"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 2.011 ms - -\u001b[0m","timestamp":"2026-03-18 03:01:45"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.980 ms - -\u001b[0m","timestamp":"2026-03-18 03:01:45"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.535 ms - -\u001b[0m","timestamp":"2026-03-18 03:01:45"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.478 ms - -\u001b[0m","timestamp":"2026-03-18 03:01:45"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 2.237 ms - -\u001b[0m","timestamp":"2026-03-18 03:01:51"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 3.258 ms - -\u001b[0m","timestamp":"2026-03-18 03:01:51"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 2.043 ms - -\u001b[0m","timestamp":"2026-03-18 03:02:01"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 2.106 ms - -\u001b[0m","timestamp":"2026-03-18 03:02:01"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[32m200\u001b[0m 2.140 ms - 46997\u001b[0m","timestamp":"2026-03-18 03:02:08"}
+{"details":"Started audit for: dfsafs","level":"info","message":"Create Audit: Started audit for: dfsafs","timestamp":"2026-03-18 03:02:08","user":"Admin"}
+{"level":"info","message":"\u001b[0mPOST /api/tax-audits \u001b[32m200\u001b[0m 7.919 ms - 37\u001b[0m","timestamp":"2026-03-18 03:02:08"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[32m200\u001b[0m 4.666 ms - 7484\u001b[0m","timestamp":"2026-03-18 03:02:08"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[32m200\u001b[0m 2.132 ms - 639\u001b[0m","timestamp":"2026-03-18 03:02:08"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 4.213 ms - -\u001b[0m","timestamp":"2026-03-18 03:02:08"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.118 ms - -\u001b[0m","timestamp":"2026-03-18 03:02:08"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 2.372 ms - -\u001b[0m","timestamp":"2026-03-18 03:02:09"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.235 ms - -\u001b[0m","timestamp":"2026-03-18 03:02:09"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 2.771 ms - -\u001b[0m","timestamp":"2026-03-18 03:02:09"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 2.551 ms - -\u001b[0m","timestamp":"2026-03-18 03:02:09"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 1.777 ms - -\u001b[0m","timestamp":"2026-03-18 03:02:09"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 1.573 ms - -\u001b[0m","timestamp":"2026-03-18 03:02:09"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 2.353 ms - -\u001b[0m","timestamp":"2026-03-18 03:02:09"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.124 ms - -\u001b[0m","timestamp":"2026-03-18 03:02:11"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits/1773802928339/steps/1/notes \u001b[32m200\u001b[0m 3.362 ms - 2\u001b[0m","timestamp":"2026-03-18 03:02:11"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.138 ms - -\u001b[0m","timestamp":"2026-03-18 03:02:11"}
+{"level":"info","message":"\u001b[0mPOST /api/folders \u001b[32m200\u001b[0m 2.252 ms - 8\u001b[0m","timestamp":"2026-03-18 03:02:12"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[32m200\u001b[0m 1.836 ms - 2241\u001b[0m","timestamp":"2026-03-18 03:02:12"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[32m200\u001b[0m 2.776 ms - 7796\u001b[0m","timestamp":"2026-03-18 03:02:12"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 1.987 ms - -\u001b[0m","timestamp":"2026-03-18 03:02:12"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 1.032 ms - -\u001b[0m","timestamp":"2026-03-18 03:02:12"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 0.726 ms - -\u001b[0m","timestamp":"2026-03-18 03:02:12"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 0.998 ms - -\u001b[0m","timestamp":"2026-03-18 03:02:12"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 0.733 ms - -\u001b[0m","timestamp":"2026-03-18 03:02:12"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.127 ms - -\u001b[0m","timestamp":"2026-03-18 03:02:12"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=1&auditId=1773802928339&folderId=8 \u001b[32m200\u001b[0m 1.806 ms - 2\u001b[0m","timestamp":"2026-03-18 03:02:13"}
+{"level":"info","message":"\u001b[0mGET /api/tax/objects?cb=1773802939096 \u001b[32m200\u001b[0m 2.506 ms - 51903\u001b[0m","timestamp":"2026-03-18 03:02:19"}
+{"level":"info","message":"\u001b[0mGET /api/tax/wp?cb=1773802939689 \u001b[32m200\u001b[0m 7.272 ms - 228220\u001b[0m","timestamp":"2026-03-18 03:02:19"}
+{"level":"info","message":"\u001b[0mPOST /api/users \u001b[33m400\u001b[0m 1.502 ms - 94\u001b[0m","timestamp":"2026-03-18 03:02:45"}
+{"details":"User logged out (cookie cleared)","level":"info","message":"Logout: User logged out (cookie cleared)","timestamp":"2026-03-18 03:03:00","user":"Unknown"}
+{"level":"info","message":"\u001b[0mPOST /api/logout \u001b[32m200\u001b[0m 2.411 ms - 31\u001b[0m","timestamp":"2026-03-18 03:03:00"}
+{"level":"info","message":"\u001b[0mPOST /api/login \u001b[33m400\u001b[0m 0.449 ms - 94\u001b[0m","timestamp":"2026-03-18 03:03:03"}
+{"level":"info","message":"\u001b[0mPOST /api/login \u001b[33m400\u001b[0m 0.408 ms - 94\u001b[0m","timestamp":"2026-03-18 03:03:06"}
+{"details":"User logged in with HttpOnly cookie","level":"info","message":"Login: User logged in with HttpOnly cookie","timestamp":"2026-03-18 03:03:13","user":"viewer"}
+{"level":"info","message":"\u001b[0mPOST /api/login \u001b[32m200\u001b[0m 63.160 ms - 260\u001b[0m","timestamp":"2026-03-18 03:03:13"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 2.628 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:13"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[32m200\u001b[0m 2.054 ms - 7730\u001b[0m","timestamp":"2026-03-18 03:03:13"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 2.170 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:13"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.020 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:13"}
+{"level":"info","message":"Fetching approvals for user: viewer","timestamp":"2026-03-18 03:03:13"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 1.644 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:13"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.788 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:13"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 1.430 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:13"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 0.774 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:13"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 0.837 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:13"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 0.816 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:13"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.461 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:13"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.114 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:13"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 2.042 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:13"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.655 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:13"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.312 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:14"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.332 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:14"}
+{"details":"User logged out (cookie cleared)","level":"info","message":"Logout: User logged out (cookie cleared)","timestamp":"2026-03-18 03:03:19","user":"Unknown"}
+{"level":"info","message":"\u001b[0mPOST /api/logout \u001b[32m200\u001b[0m 2.351 ms - 31\u001b[0m","timestamp":"2026-03-18 03:03:19"}
+{"details":"User logged in with HttpOnly cookie","level":"info","message":"Login: User logged in with HttpOnly cookie","timestamp":"2026-03-18 03:03:23","user":"admin"}
+{"level":"info","message":"\u001b[0mPOST /api/login \u001b[32m200\u001b[0m 63.321 ms - 284\u001b[0m","timestamp":"2026-03-18 03:03:23"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[32m200\u001b[0m 2.461 ms - 7796\u001b[0m","timestamp":"2026-03-18 03:03:23"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 0.952 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:23"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 2.550 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:23"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 1.502 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:23"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 03:03:23"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 2.312 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:23"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 1.674 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:23"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 0.714 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:23"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 0.745 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:23"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 0.999 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:23"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 1.770 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:23"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.792 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:23"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.508 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:23"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 1.733 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:23"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.532 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:23"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.304 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:24"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.552 ms - -\u001b[0m","timestamp":"2026-03-18 03:03:24"}
+{"level":"info","message":"Client disconnected: CbK-H6jGkQUz4CHXAAAT","timestamp":"2026-03-18 03:08:28"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 2.271 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 2.458 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.646 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 1.835 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 0.755 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 1.486 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 0.694 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 1.814 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 0.984 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.572 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 2.598 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 2.047 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 0.989 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 2.033 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 0.844 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 1.500 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 0.851 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.275 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 1.991 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 0.706 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.900 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 1.730 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.388 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.435 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:29"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.574 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:30"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.170 ms - -\u001b[0m","timestamp":"2026-03-18 03:08:30"}
+{"level":"info","message":"Client connected: 2uMLcWyEofCLsmu4AAAV","timestamp":"2026-03-18 03:08:31"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773737603875 \u001b[36m304\u001b[0m 1.967 ms - -\u001b[0m","timestamp":"2026-03-18 03:17:11"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773737603875/stream \u001b[32m200\u001b[0m 103.336 ms - -\u001b[0m","timestamp":"2026-03-18 03:17:11"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773737603875/comments \u001b[36m304\u001b[0m 2.484 ms - -\u001b[0m","timestamp":"2026-03-18 03:17:11"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773737606252-846 \u001b[32m200\u001b[0m 1.929 ms - 14734\u001b[0m","timestamp":"2026-03-18 03:22:41"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773737606252-846/comments \u001b[36m304\u001b[0m 1.797 ms - -\u001b[0m","timestamp":"2026-03-18 03:22:42"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773737606252-846/stream \u001b[32m200\u001b[0m 198.983 ms - -\u001b[0m","timestamp":"2026-03-18 03:22:43"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773737606252-846 \u001b[36m304\u001b[0m 2.159 ms - -\u001b[0m","timestamp":"2026-03-18 03:22:51"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773737606252-846/stream \u001b[32m200\u001b[0m 2.190 ms - -\u001b[0m","timestamp":"2026-03-18 03:22:51"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773737606252-846/comments \u001b[36m304\u001b[0m 1.896 ms - -\u001b[0m","timestamp":"2026-03-18 03:22:52"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773737591982-469 \u001b[36m304\u001b[0m 2.044 ms - -\u001b[0m","timestamp":"2026-03-18 03:23:00"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773737591982-469/stream \u001b[32m200\u001b[0m 5.367 ms - -\u001b[0m","timestamp":"2026-03-18 03:23:01"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773737591982-469/comments \u001b[36m304\u001b[0m 1.836 ms - -\u001b[0m","timestamp":"2026-03-18 03:23:01"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773737603875 \u001b[36m304\u001b[0m 2.221 ms - -\u001b[0m","timestamp":"2026-03-18 03:23:06"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773737603875/stream \u001b[32m200\u001b[0m 2.273 ms - -\u001b[0m","timestamp":"2026-03-18 03:23:06"}
+{"level":"info","message":"\u001b[0mGET /api/documents/1773737603875/comments \u001b[36m304\u001b[0m 1.912 ms - -\u001b[0m","timestamp":"2026-03-18 03:23:07"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773737606252-846 \u001b[36m304\u001b[0m 2.317 ms - -\u001b[0m","timestamp":"2026-03-18 03:23:10"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773737606252-846/stream \u001b[32m200\u001b[0m 2.390 ms - -\u001b[0m","timestamp":"2026-03-18 03:23:10"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773737606252-846/comments \u001b[36m304\u001b[0m 2.164 ms - -\u001b[0m","timestamp":"2026-03-18 03:23:10"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773737610017-815 \u001b[36m304\u001b[0m 2.146 ms - -\u001b[0m","timestamp":"2026-03-18 03:23:25"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773737610017-815/comments \u001b[36m304\u001b[0m 2.742 ms - -\u001b[0m","timestamp":"2026-03-18 03:23:26"}
+{"level":"info","message":"\u001b[0mGET /api/documents/doc-1773737610017-815/stream \u001b[32m200\u001b[0m 8.329 ms - -\u001b[0m","timestamp":"2026-03-18 03:23:26"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 2.375 ms - -\u001b[0m","timestamp":"2026-03-18 03:38:05"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 2.105 ms - -\u001b[0m","timestamp":"2026-03-18 03:38:05"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.668 ms - -\u001b[0m","timestamp":"2026-03-18 03:38:16"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.578 ms - -\u001b[0m","timestamp":"2026-03-18 03:38:16"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.697 ms - -\u001b[0m","timestamp":"2026-03-18 03:38:16"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.675 ms - -\u001b[0m","timestamp":"2026-03-18 03:38:16"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.483 ms - -\u001b[0m","timestamp":"2026-03-18 03:38:16"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.877 ms - -\u001b[0m","timestamp":"2026-03-18 03:38:16"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.645 ms - -\u001b[0m","timestamp":"2026-03-18 03:43:34"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.513 ms - -\u001b[0m","timestamp":"2026-03-18 03:43:34"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.758 ms - -\u001b[0m","timestamp":"2026-03-18 03:43:34"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.868 ms - -\u001b[0m","timestamp":"2026-03-18 03:43:34"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 2.906 ms - -\u001b[0m","timestamp":"2026-03-18 03:43:34"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.852 ms - -\u001b[0m","timestamp":"2026-03-18 03:43:35"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 2.034 ms - -\u001b[0m","timestamp":"2026-03-18 03:46:20"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 2.208 ms - -\u001b[0m","timestamp":"2026-03-18 03:46:20"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 1.804 ms - -\u001b[0m","timestamp":"2026-03-18 03:50:48"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 2.019 ms - -\u001b[0m","timestamp":"2026-03-18 03:50:48"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.815 ms - -\u001b[0m","timestamp":"2026-03-18 03:50:55"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.447 ms - -\u001b[0m","timestamp":"2026-03-18 03:50:55"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.367 ms - -\u001b[0m","timestamp":"2026-03-18 03:50:55"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 2.525 ms - -\u001b[0m","timestamp":"2026-03-18 03:50:56"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.639 ms - -\u001b[0m","timestamp":"2026-03-18 03:50:56"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.619 ms - -\u001b[0m","timestamp":"2026-03-18 03:50:56"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[32m200\u001b[0m 2.075 ms - 46997\u001b[0m","timestamp":"2026-03-18 03:56:12"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 2.366 ms - -\u001b[0m","timestamp":"2026-03-18 03:56:13"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 2.248 ms - -\u001b[0m","timestamp":"2026-03-18 03:56:30"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 2.136 ms - -\u001b[0m","timestamp":"2026-03-18 03:56:30"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 2.020 ms - -\u001b[0m","timestamp":"2026-03-18 03:56:32"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 2.017 ms - -\u001b[0m","timestamp":"2026-03-18 03:56:33"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.775 ms - -\u001b[0m","timestamp":"2026-03-18 03:56:43"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 2.333 ms - -\u001b[0m","timestamp":"2026-03-18 03:56:43"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 2.351 ms - -\u001b[0m","timestamp":"2026-03-18 03:56:43"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.810 ms - -\u001b[0m","timestamp":"2026-03-18 03:56:43"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.843 ms - -\u001b[0m","timestamp":"2026-03-18 03:56:43"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.610 ms - -\u001b[0m","timestamp":"2026-03-18 03:56:43"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.597 ms - -\u001b[0m","timestamp":"2026-03-18 03:57:38"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 2.103 ms - -\u001b[0m","timestamp":"2026-03-18 03:57:38"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.406 ms - -\u001b[0m","timestamp":"2026-03-18 03:57:38"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.876 ms - -\u001b[0m","timestamp":"2026-03-18 03:57:38"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.484 ms - -\u001b[0m","timestamp":"2026-03-18 03:57:38"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.349 ms - -\u001b[0m","timestamp":"2026-03-18 03:57:38"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.541 ms - -\u001b[0m","timestamp":"2026-03-18 03:57:39"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 2.369 ms - -\u001b[0m","timestamp":"2026-03-18 03:57:39"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 2.272 ms - -\u001b[0m","timestamp":"2026-03-18 03:57:39"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.885 ms - -\u001b[0m","timestamp":"2026-03-18 03:57:39"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 1.591 ms - -\u001b[0m","timestamp":"2026-03-18 03:57:39"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 1.393 ms - -\u001b[0m","timestamp":"2026-03-18 03:57:39"}
+{"level":"info","message":"Client connected: XvOtCXn4ot_SQQCkAAAX","timestamp":"2026-03-18 03:58:18"}
+{"level":"info","message":"Client disconnected: 2uMLcWyEofCLsmu4AAAV","timestamp":"2026-03-18 03:58:25"}
+{"level":"info","message":"Client disconnected: XvOtCXn4ot_SQQCkAAAX","timestamp":"2026-03-18 03:59:57"}
+{"level":"info","message":"Client connected: B4nc6gzyTUebve7wAAAZ","timestamp":"2026-03-18 04:23:44"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 8.185 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:45"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 8.169 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:45"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 6.198 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:45"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 1.317 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:45"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 2.158 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:45"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 2.569 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:45"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 04:23:45"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 2.238 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:45"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 1.142 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:45"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 0.939 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:45"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.746 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:45"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.011 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:45"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 2.081 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:45"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 1.659 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:45"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.051 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:45"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 8.044 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:46"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 9.475 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:46"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 3.117 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:46"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 2.127 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:46"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 2.177 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:46"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 04:23:46"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 3.662 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:46"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 14.153 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:46"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 5.864 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:46"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 4.072 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:46"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 2.119 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:46"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 1.958 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:46"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.460 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:46"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.664 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:46"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.512 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:47"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.277 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:48"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 1.910 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:54"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 2.350 ms - -\u001b[0m","timestamp":"2026-03-18 04:23:54"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 2.149 ms - -\u001b[0m","timestamp":"2026-03-18 04:24:05"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 2.181 ms - -\u001b[0m","timestamp":"2026-03-18 04:24:05"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-18 06:19:06"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-18 06:19:06"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-18 06:19:07"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-18 06:19:07"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-18 06:19:07"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-18 06:19:12"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-18 06:19:12"}
+{"level":"info","message":"Client connected: JuA7nXhAfmSOHLesAAAB","timestamp":"2026-03-18 06:19:12"}
+{"level":"info","message":"Client connected: QZMVGr2cKNfgXtTQAAAD","timestamp":"2026-03-18 06:19:12"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-18 06:31:38"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-18 06:31:38"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-18 06:31:39"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-18 06:31:39"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-18 06:31:39"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-18 06:31:39"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-18 06:31:39"}
+{"level":"info","message":"Client connected: T6UJ5ir9FkWydOlhAAAC","timestamp":"2026-03-18 06:31:39"}
+{"level":"info","message":"Client connected: ceHgr7gC80rFWQIVAAAD","timestamp":"2026-03-18 06:31:39"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-18 07:08:51"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-18 07:08:51"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-18 07:08:51"}
+{"level":"info","message":"Client connected: 4ZtM2R4EaZASj8HgAAAB","timestamp":"2026-03-18 07:08:51"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-18 07:08:51"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-18 07:08:51"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-18 07:08:51"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-18 07:08:51"}
+{"level":"info","message":"Client connected: wYVKztp8XoLoYOg7AAAD","timestamp":"2026-03-18 07:08:51"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 64.691 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 86.060 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 101.286 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 16.579 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 44.569 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 18.451 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 78.709 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 41.380 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 18.561 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 53.830 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"Client connected: A2p5dEECbVdkCQDEAAAF","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 5.283 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 6.593 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 2.853 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.310 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 1.055 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 2.135 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 2.943 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 2.366 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 1.039 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 1.873 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 1.109 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:34"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 2.490 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:35"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 2.675 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:35"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 3.183 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:35"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 6.334 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:36"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 6.482 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:36"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[32m200\u001b[0m 3.486 ms - 615\u001b[0m","timestamp":"2026-03-18 07:09:42"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[32m200\u001b[0m 4.817 ms - 2\u001b[0m","timestamp":"2026-03-18 07:09:42"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[32m200\u001b[0m 4.789 ms - 520\u001b[0m","timestamp":"2026-03-18 07:09:42"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 4.435 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:42"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 3.894 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:42"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 2.141 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:42"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 5.263 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:46"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 2.700 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:46"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 3.633 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:59"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 3.324 ms - -\u001b[0m","timestamp":"2026-03-18 07:09:59"}
+{"level":"info","message":"Client disconnected: A2p5dEECbVdkCQDEAAAF","timestamp":"2026-03-18 07:15:20"}
+{"level":"info","message":"Client connected: vXLA3kkG-WpXjPaWAAAH","timestamp":"2026-03-18 07:15:34"}
+{"level":"info","message":"Client disconnected: vXLA3kkG-WpXjPaWAAAH","timestamp":"2026-03-18 07:19:15"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 3.205 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:45"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.297 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:45"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 2.749 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:45"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 1.247 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:45"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 2.887 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:45"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 2.382 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:45"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 4.766 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:45"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 0.953 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:45"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 1.093 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:45"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 07:25:45"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 2.302 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:45"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 3.993 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:45"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.119 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:45"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-18 07:25:46"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 2.893 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:46"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 4.968 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:46"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 3.297 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:46"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 2.065 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:46"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 1.016 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:46"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 2.568 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:46"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 1.376 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:46"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 1.229 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:46"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 2.865 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:46"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 2.508 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:46"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 2.640 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:46"}
+{"level":"info","message":"Client connected: w__gsoyIgFtKiG6RAAAJ","timestamp":"2026-03-18 07:25:46"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 2.513 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:46"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.943 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:46"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.712 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:46"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 2.291 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:55"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 2.007 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:55"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.906 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:55"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 2.926 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:55"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 2.762 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:55"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 3.196 ms - -\u001b[0m","timestamp":"2026-03-18 07:25:55"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 3.457 ms - -\u001b[0m","timestamp":"2026-03-18 07:26:00"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 2.824 ms - -\u001b[0m","timestamp":"2026-03-18 07:26:00"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 9.661 ms - -\u001b[0m","timestamp":"2026-03-18 07:26:00"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 2.764 ms - -\u001b[0m","timestamp":"2026-03-18 07:26:00"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 2.657 ms - -\u001b[0m","timestamp":"2026-03-18 07:26:00"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 2.860 ms - -\u001b[0m","timestamp":"2026-03-18 07:26:00"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 2.173 ms - -\u001b[0m","timestamp":"2026-03-18 07:26:01"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 2.171 ms - -\u001b[0m","timestamp":"2026-03-18 07:26:01"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 2.072 ms - -\u001b[0m","timestamp":"2026-03-18 07:26:01"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 1.845 ms - -\u001b[0m","timestamp":"2026-03-18 07:26:01"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 3.573 ms - -\u001b[0m","timestamp":"2026-03-18 07:26:01"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 3.015 ms - -\u001b[0m","timestamp":"2026-03-18 07:26:01"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 2.568 ms - -\u001b[0m","timestamp":"2026-03-18 07:26:14"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 2.553 ms - -\u001b[0m","timestamp":"2026-03-18 07:26:14"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.434 ms - -\u001b[0m","timestamp":"2026-03-18 07:26:31"}
+{"level":"info","message":"\u001b[0mPOST /api/folders \u001b[32m200\u001b[0m 13.329 ms - 8\u001b[0m","timestamp":"2026-03-18 07:26:31"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[32m200\u001b[0m 4.109 ms - 2512\u001b[0m","timestamp":"2026-03-18 07:26:31"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[32m200\u001b[0m 6.588 ms - 8108\u001b[0m","timestamp":"2026-03-18 07:26:31"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 3.126 ms - -\u001b[0m","timestamp":"2026-03-18 07:26:31"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.348 ms - -\u001b[0m","timestamp":"2026-03-18 07:26:31"}
+{"level":"info","message":"\u001b[0mPOST /api/sop-flows \u001b[31m500\u001b[0m 4.411 ms - 64\u001b[0m","timestamp":"2026-03-18 07:26:32"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.525 ms - -\u001b[0m","timestamp":"2026-03-18 07:26:38"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 1.254 ms - -\u001b[0m","timestamp":"2026-03-18 07:26:38"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 1.335 ms - -\u001b[0m","timestamp":"2026-03-18 07:26:38"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 1.614 ms - -\u001b[0m","timestamp":"2026-03-18 07:26:39"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-18 07:30:38"}
+{"level":"info","message":"Client connected: oOTWAl4GxuaBezK9AAAL","timestamp":"2026-03-18 07:30:38"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-03-18 07:30:38"}
+{"level":"info","message":"Client connected: jupIL9hv9PZecy7XAAAN","timestamp":"2026-03-18 07:30:38"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[33m401\u001b[0m 0.730 ms - 32\u001b[0m","timestamp":"2026-03-18 07:31:22"}
+{"level":"info","message":"\u001b[0mPOST /api/sop-flows \u001b[33m401\u001b[0m 0.980 ms - 32\u001b[0m","timestamp":"2026-03-18 07:31:22"}
+{"level":"info","message":"Client disconnected: w__gsoyIgFtKiG6RAAAJ","timestamp":"2026-03-18 07:31:23"}
+{"level":"info","message":"\u001b[0mPOST /api/login \u001b[33m401\u001b[0m 1.542 ms - 31\u001b[0m","timestamp":"2026-03-18 07:31:29"}
+{"level":"info","message":"\u001b[0mPOST /api/login \u001b[33m401\u001b[0m 0.970 ms - 31\u001b[0m","timestamp":"2026-03-18 07:31:38"}

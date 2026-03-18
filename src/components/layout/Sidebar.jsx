@@ -26,6 +26,7 @@ import {
 import { useAuthStore } from '../../store/useAuthStore';
 import { useDocStore } from '../../store/useDocStore';
 import { API_URL } from '../../services/apiClient';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const Sidebar = ({
     isSidebarCollapsed,
@@ -42,6 +43,8 @@ const Sidebar = ({
     setIsModalOpen,
     approvals = []
 }) => {
+    const { language, setLanguage, t } = useLanguage();
+
     // Calculate unread approvals count
     const unreadApprovalsCount = React.useMemo(() => {
         if (!approvals || !currentUser) return 0;
@@ -113,41 +116,41 @@ const Sidebar = ({
             <nav className="flex-1 px-4 py-4 space-y-6 overflow-y-auto no-scrollbar relative">
                 {[
                     {
-                        category: 'GENERAL',
+                        categoryKey: 'sidebar.category.general',
                         items: [
-                            { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-                            { id: 'job-due-date', icon: ClipboardCheck, label: 'My Job' },
-                            { id: 'pustaka', icon: BookOpen, label: 'Manual Book' },
-                            { id: 'flow', icon: GitBranch, label: 'SOP' },
+                            { id: 'dashboard', icon: LayoutDashboard, labelKey: 'sidebar.item.dashboard' },
+                            { id: 'job-due-date', icon: ClipboardCheck, labelKey: 'sidebar.item.myJob' },
+                            { id: 'pustaka', icon: BookOpen, labelKey: 'sidebar.item.manualBook' },
+                            { id: 'flow', icon: GitBranch, labelKey: 'sidebar.item.sop' },
                         ]
                     },
                     {
-                        category: 'Document',
+                        categoryKey: 'sidebar.category.document',
                         items: [
-                            { id: 'inventory', icon: Grid3x3, label: 'Filling' },
-                            { id: 'documents', icon: FileStack, label: 'Documents' },
-                            { id: 'approvals', icon: FileCheck, label: 'Approvals' },
+                            { id: 'inventory', icon: Grid3x3, labelKey: 'sidebar.item.filling' },
+                            { id: 'documents', icon: FileStack, labelKey: 'sidebar.item.documents' },
+                            { id: 'approvals', icon: FileCheck, labelKey: 'sidebar.item.approvals' },
                         ]
                     },
                     {
-                        category: 'TAX & COMPLIANCE',
+                        categoryKey: 'sidebar.category.tax',
                         items: [
-                            { id: 'tax-monitoring', icon: ShieldCheck, label: 'Compliance' },
-                            { id: 'tax-calculation', icon: Calculator, label: 'Tax Calc' },
-                            { id: 'tax-summary', icon: PieChart, label: 'Reporting' },
+                            { id: 'tax-monitoring', icon: ShieldCheck, labelKey: 'sidebar.item.compliance' },
+                            { id: 'tax-calculation', icon: Calculator, labelKey: 'sidebar.item.taxCalc' },
+                            { id: 'tax-summary', icon: PieChart, labelKey: 'sidebar.item.reporting' },
                         ]
                     },
                     {
-                        category: 'SYSTEM',
+                        categoryKey: 'sidebar.category.system',
                         items: [
-                            { id: 'master', icon: Settings, label: 'Master Data' },
+                            { id: 'master', icon: Settings, labelKey: 'sidebar.item.masterData' },
                         ]
                     }
                 ].map((section, sectionIdx) => (
-                    <div key={section.category} className="space-y-2">
+                    <div key={section.categoryKey} className="space-y-2">
                         {!isSidebarCollapsed && (
                             <h3 className="px-4 text-[10px] font-bold text-[#A3AED0] dark:text-slate-500 uppercase tracking-[0.2em] mb-2 animate-in fade-in slide-in-from-left-2 duration-500">
-                                {section.category}
+                                {t(section.categoryKey)}
                             </h3>
                         )}
                         <div className="space-y-1">
@@ -187,7 +190,7 @@ const Sidebar = ({
 
                                         {!isSidebarCollapsed && (
                                             <span className={`relative z-10 font-bold tracking-tight text-sm transition-all duration-500 ${isActive ? 'translate-x-1' : ''} flex-1 text-left`}>
-                                                {item.label}
+                                                {t(item.labelKey)}
                                             </span>
                                         )}
 
@@ -201,7 +204,7 @@ const Sidebar = ({
                                         {isSidebarCollapsed && (
                                             <div className="absolute left-full ml-6 px-4 py-2 bg-[#1B254B] dark:bg-white text-white dark:text-[#1B254B] text-sm font-bold rounded-xl opacity-0 scale-90 -translate-x-2 group-hover:opacity-100 group-hover:scale-100 group-hover:translate-x-0 transition-all duration-300 whitespace-nowrap z-50 shadow-2xl origin-left pointer-events-none">
                                                 <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-[#1B254B] dark:bg-white rotate-45 rounded-sm"></div>
-                                                {item.label}
+                                                {t(item.labelKey)}
                                             </div>
                                         )}
                                     </button>
@@ -232,8 +235,8 @@ const Sidebar = ({
                                             <CheckCircle2 size={16} className="text-white" />
                                         </div>
                                         <div>
-                                            <h3 className="text-xs font-bold">OCR Siap</h3>
-                                            <p className="text-blue-100 text-[10px]">Antrian kosong</p>
+                                            <h3 className="text-xs font-bold">{t('sidebar.ocr.ready')}</h3>
+                                            <p className="text-blue-100 text-[10px]">{t('sidebar.ocr.queueEmpty')}</p>
                                         </div>
                                     </div>
                                 ) : (
@@ -241,7 +244,7 @@ const Sidebar = ({
                                         <div className="flex justify-between items-start mb-4">
                                             <h3 className="text-xs font-bold flex items-center gap-2">
                                                 <div className="w-2 h-2 bg-white rounded-full animate-ping"></div>
-                                                Proses OCR...
+                                                {t('sidebar.ocr.processing')}
                                             </h3>
                                             <button
                                                 onClick={async (e) => {
@@ -261,7 +264,7 @@ const Sidebar = ({
                                                 }
                                                 className="text-[8px] bg-white/10 hover:bg-white/20 px-2 py-1 rounded-md border border-white/20 transition-colors font-bold text-white uppercase"
                                             >
-                                                Reset
+                                                {t('sidebar.ocr.reset')}
                                             </button>
                                         </div>
 
@@ -269,7 +272,7 @@ const Sidebar = ({
                                             <div className="mb-4 bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/10">
                                                 <div className="flex justify-between items-end mb-1.5">
                                                     <div className="min-w-0">
-                                                        <p className="text-[8px] text-blue-100 font-black uppercase tracking-wider mb-0.5">Aktif</p>
+                                                        <p className="text-[8px] text-blue-100 font-black uppercase tracking-wider mb-0.5">{t('sidebar.ocr.active')}</p>
                                                         <p className="text-[10px] font-bold truncate">{ocrStats.activeJobs[0].filename}</p>
                                                     </div>
                                                     <div className="text-right shrink-0">
@@ -287,15 +290,15 @@ const Sidebar = ({
 
                                         <div className="grid grid-cols-3 gap-2">
                                             <div className="bg-white/10 backdrop-blur-md rounded-lg p-2 border border-white/10 text-center">
-                                                <p className="text-[8px] text-blue-100 uppercase font-black mb-0.5">Antri</p>
+                                                <p className="text-[8px] text-blue-100 uppercase font-black mb-0.5">{t('sidebar.ocr.waiting')}</p>
                                                 <p className="text-xs font-bold">{ocrStats?.counts?.waiting || 0}</p>
                                             </div>
                                             <div className="bg-white/10 backdrop-blur-md rounded-lg p-2 border border-white/10 text-center">
-                                                <p className="text-[8px] text-blue-100 uppercase font-black mb-0.5">OK</p>
+                                                <p className="text-[8px] text-blue-100 uppercase font-black mb-0.5">{t('sidebar.ocr.ok')}</p>
                                                 <p className="text-xs font-bold">{ocrStats?.counts?.completed || 0}</p>
                                             </div>
                                             <div className="bg-white/10 backdrop-blur-md rounded-lg p-2 border border-white/10 text-center">
-                                                <p className="text-[8px] text-blue-100 uppercase font-black mb-0.5">Fail</p>
+                                                <p className="text-[8px] text-blue-100 uppercase font-black mb-0.5">{t('sidebar.ocr.fail')}</p>
                                                 <p className="text-xs font-bold">{ocrStats?.counts?.failed || 0}</p>
                                             </div>
                                         </div>
@@ -337,8 +340,8 @@ const Sidebar = ({
 
                         {!isSidebarCollapsed && (
                             <div className="flex-1 min-w-0 animate-in fade-in duration-300">
-                                <h4 className="font-bold text-sm text-[#2B3674] dark:text-white truncate">{currentUser?.name || 'Guest'}</h4>
-                                <p className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold truncate">{currentUser?.role || 'Viewer'}</p>
+                                <h4 className="font-bold text-sm text-[#2B3674] dark:text-white truncate">{currentUser?.name || t('sidebar.user.guest')}</h4>
+                                <p className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold truncate">{currentUser?.role || t('sidebar.user.viewer')}</p>
                             </div>
                         )}
                         {!isSidebarCollapsed && (
@@ -349,21 +352,53 @@ const Sidebar = ({
                     {/* Actions: Collapsed vs Expanded */}
                     {isSidebarCollapsed ? (
                         <>
+                            <div className="flex flex-col gap-1.5">
+                                <button
+                                    onClick={() => setLanguage('id')}
+                                    className={`w-10 h-7 text-[10px] font-black rounded-lg transition-all ${language === 'id' ? 'bg-indigo-600 text-white' : 'text-gray-500 bg-indigo-50 dark:bg-slate-800'}`}
+                                    title="Bahasa Indonesia"
+                                >
+                                    {t('language.id')}
+                                </button>
+                                <button
+                                    onClick={() => setLanguage('en')}
+                                    className={`w-10 h-7 text-[10px] font-black rounded-lg transition-all ${language === 'en' ? 'bg-indigo-600 text-white' : 'text-gray-500 bg-indigo-50 dark:bg-slate-800'}`}
+                                    title="English"
+                                >
+                                    {t('language.en')}
+                                </button>
+                            </div>
                             {/* Collapsed Actions: Stacked Icons */}
-                            <button onClick={() => setIsDarkMode(!isDarkMode)} className="w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-yellow-500 hover:bg-indigo-50 dark:hover:bg-slate-800 transition-all hover:scale-110" title="Toggle Theme">
+                            <button onClick={() => setIsDarkMode(!isDarkMode)} className="w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-yellow-500 hover:bg-indigo-50 dark:hover:bg-slate-800 transition-all hover:scale-110" title={t('sidebar.action.toggleTheme')}>
                                 {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                             </button>
-                            <button onClick={handleLogout} className="w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all hover:scale-110" title="Logout">
+                            <button onClick={handleLogout} className="w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all hover:scale-110" title={t('sidebar.action.logout')}>
                                 <LogOut size={20} />
                             </button>
                         </>
                     ) : (
                         /* Expanded Actions: Horizontal Row */
                         <div className="flex items-center gap-2 mt-2 px-3 pb-3">
-                            <button onClick={() => setIsDarkMode(!isDarkMode)} className="flex-1 flex items-center justify-center p-2.5 rounded-xl text-gray-400 bg-white dark:bg-slate-800 hover:text-yellow-500 shadow-sm hover:shadow-md transition-all border border-transparent hover:border-indigo-100 hover:-translate-y-0.5" title="Toggle Theme">
+                            <div className="flex items-center gap-1 bg-white dark:bg-slate-800 rounded-xl p-1 border border-slate-100 dark:border-slate-700">
+                                <button
+                                    onClick={() => setLanguage('id')}
+                                    className={`px-2.5 py-1.5 text-[10px] font-black rounded-lg transition-all ${language === 'id' ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'}`}
+                                    title="Bahasa Indonesia"
+                                >
+                                    {t('language.id')}
+                                </button>
+                                <button
+                                    onClick={() => setLanguage('en')}
+                                    className={`px-2.5 py-1.5 text-[10px] font-black rounded-lg transition-all ${language === 'en' ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'}`}
+                                    title="English"
+                                >
+                                    {t('language.en')}
+                                </button>
+                            </div>
+                            <button onClick={() => setIsDarkMode(!isDarkMode)} className="flex-1 flex items-center justify-center p-2.5 rounded-xl text-gray-400 bg-white dark:bg-slate-800 hover:text-yellow-500 shadow-sm hover:shadow-md transition-all border border-transparent hover:border-indigo-100 hover:-translate-y-0.5" title={t('sidebar.action.toggleTheme')}>
                                 {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
                             </button>
-                            <button onClick={handleLogout} className="flex-1 flex items-center justify-center p-2.5 rounded-xl text-gray-400 bg-white dark:bg-slate-800 hover:text-red-500 shadow-sm hover:shadow-md transition-all border border-transparent hover:border-red-100 hover:-translate-y-0.5" title="Logout">
+                            <button onClick={handleLogout} className="flex-1 flex items-center justify-center p-2.5 rounded-xl text-gray-400 bg-white dark:bg-slate-800 hover:text-red-500 shadow-sm hover:shadow-md transition-all border border-transparent hover:border-red-100 hover:-translate-y-0.5" title={t('sidebar.action.logout')}>
                                 <LogOut size={18} />
                             </button>
                         </div>

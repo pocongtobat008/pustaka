@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Search, Plus, Edit2, Trash2, ChevronLeft, ChevronRight, Filter, X, Save, AlertCircle, Info } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Modal } from '../ui/Modal';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 export default function MasterTaxObjectsTab({
     masterData,
@@ -11,6 +12,95 @@ export default function MasterTaxObjectsTab({
     onUpdate,
     hasPermission
 }) {
+    const { language } = useLanguage();
+    const isEnglish = language === 'en';
+    const text = isEnglish
+        ? {
+            searchPlaceholder: 'Search Name or Code...',
+            allTypes: 'All Types',
+            pph21: 'PPh 21',
+            pph23: 'PPh 23',
+            pph4: 'PPh 4(2)',
+            pph26: 'PPh 26',
+            addObject: 'Add Object',
+            noData: 'No data found',
+            showing: 'Showing',
+            from: 'from',
+            data: 'data',
+            edit: 'Edit',
+            delete: 'Delete',
+            title: 'Master Tax Object Code',
+            confirmDelete: 'Are you sure you want to delete this tax object?',
+            deleteError: 'Failed to delete: ',
+            editTitle: 'Edit Master Tax Object',
+            addTitle: 'Add New Master Tax Object',
+            objectInfo: 'Object Information',
+            objectCode: 'Object Code',
+            codeExample: 'Example: 23-100-01',
+            taxType: 'Tax Type',
+            objectName: 'Tax Object Name',
+            namePlaceholder: 'Tax object description...',
+            rateSettings: 'Rate & Calculation Settings',
+            rate: 'Rate (%)',
+            markupMode: 'Mark-up Mode',
+            normalMode: 'Normal (No Gross Up)',
+            grossUpPph: 'Gross Up PPh',
+            grossUpPpn: 'Gross Up PPN',
+            nonEmployee: 'NON EMPLOYEE?',
+            usePpn: 'USE PPN?',
+            internalNote: 'Internal Note',
+            notePlaceholder: 'Additional note for this tax object...',
+            cancel: 'Cancel',
+            saveChanges: 'Save Changes',
+            registerObject: 'Register Object',
+            pasal21: 'PPh Pasal 21',
+            pasal23: 'PPh Pasal 23',
+            pasal4: 'PPh Pasal 4(2)',
+            pasal26: 'PPh Pasal 26'
+        }
+        : {
+            searchPlaceholder: 'Cari Nama atau Kode...',
+            allTypes: 'Semua Jenis',
+            pph21: 'PPh 21',
+            pph23: 'PPh 23',
+            pph4: 'PPh 4(2)',
+            pph26: 'PPh 26',
+            addObject: 'Tambah Objek',
+            noData: 'Tidak ada data ditemukan',
+            showing: 'Menampilkan',
+            from: 'dari',
+            data: 'data',
+            edit: 'Edit',
+            delete: 'Hapus',
+            title: 'Kode Objek Pajak Master',
+            confirmDelete: 'Yakin ingin menghapus objek pajak ini?',
+            deleteError: 'Gagal menghapus: ',
+            editTitle: 'Edit Master Objek Pajak',
+            addTitle: 'Tambah Master Objek Baru',
+            objectInfo: 'Informasi Objek',
+            objectCode: 'Kode Objek',
+            codeExample: 'Contoh: 23-100-01',
+            taxType: 'Jenis Pajak',
+            objectName: 'Nama Objek Pajak',
+            namePlaceholder: 'Nama deskripsi objek pajak...',
+            rateSettings: 'Pengaturan Tarif & Perhitungan',
+            rate: 'Tarif (%)',
+            markupMode: 'Mode Mark-up',
+            normalMode: 'Normal (Tanpa Gross Up)',
+            grossUpPph: 'Gross Up PPh',
+            grossUpPpn: 'Gross Up PPN',
+            nonEmployee: 'BUKAN PEGAWAI?',
+            usePpn: 'GUNAKAN PPN?',
+            internalNote: 'Keterangan Internal',
+            notePlaceholder: 'Catatan tambahan untuk objek pajak ini...',
+            cancel: 'Batal',
+            saveChanges: 'Simpan Perubahan',
+            registerObject: 'Daftarkan Objek',
+            pasal21: 'PPh Pasal 21',
+            pasal23: 'PPh Pasal 23',
+            pasal4: 'PPh Pasal 4(2)',
+            pasal26: 'PPh Pasal 26'
+        };
     const [searchTerm, setSearchTerm] = useState('');
     const [filterType, setFilterType] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
@@ -101,12 +191,12 @@ export default function MasterTaxObjectsTab({
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm("Yakin ingin menghapus objek pajak ini?")) {
+        if (window.confirm(text.confirmDelete)) {
             try {
                 await onDelete(id);
                 onRefresh();
             } catch (error) {
-                alert("Gagal menghapus: " + error.message);
+                alert(text.deleteError + error.message);
             }
         }
     };
@@ -120,7 +210,7 @@ export default function MasterTaxObjectsTab({
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                         <input
                             type="text"
-                            placeholder="Cari Nama atau Kode..."
+                            placeholder={text.searchPlaceholder}
                             className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
@@ -133,11 +223,11 @@ export default function MasterTaxObjectsTab({
                             value={filterType}
                             onChange={(e) => setFilterType(e.target.value)}
                         >
-                            <option value="all">Semua Jenis</option>
-                            <option value="21">PPh 21</option>
-                            <option value="23">PPh 23</option>
-                            <option value="4(2)">PPh 4(2)</option>
-                            <option value="26">PPh 26</option>
+                            <option value="all">{text.allTypes}</option>
+                            <option value="21">{text.pph21}</option>
+                            <option value="23">{text.pph23}</option>
+                            <option value="4(2)">{text.pph4}</option>
+                            <option value="26">{text.pph26}</option>
                         </select>
                     </div>
                 </div>
@@ -146,7 +236,7 @@ export default function MasterTaxObjectsTab({
                         onClick={() => handleOpenForm()}
                         className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-indigo-600/20 transition-all active:scale-95"
                     >
-                        <Plus size={18} /> Tambah Objek
+                        <Plus size={18} /> {text.addObject}
                     </button>
                 )}
             </div>
@@ -202,7 +292,7 @@ export default function MasterTaxObjectsTab({
                                                 <button
                                                     onClick={() => handleOpenForm(item)}
                                                     className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-all"
-                                                    title="Edit"
+                                                    title={text.edit}
                                                 >
                                                     <Edit2 size={16} />
                                                 </button>
@@ -211,7 +301,7 @@ export default function MasterTaxObjectsTab({
                                                 <button
                                                     onClick={() => handleDelete(item.id)}
                                                     className="p-1.5 text-gray-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-all"
-                                                    title="Hapus"
+                                                    title={text.delete}
                                                 >
                                                     <Trash2 size={16} />
                                                 </button>
@@ -223,7 +313,7 @@ export default function MasterTaxObjectsTab({
                                 <tr>
                                     <td colSpan="5" className="px-6 py-12 text-center text-gray-400">
                                         <AlertCircle className="mx-auto mb-2 opacity-20" size={48} />
-                                        <p>Tidak ada data ditemukan</p>
+                                        <p>{text.noData}</p>
                                     </td>
                                 </tr>
                             )}
@@ -235,7 +325,7 @@ export default function MasterTaxObjectsTab({
                 {totalPages > 1 && (
                     <div className="px-6 py-4 bg-gray-50 dark:bg-slate-800/30 border-t dark:border-slate-800 flex items-center justify-between">
                         <div className="text-xs text-gray-500">
-                            Menampilkan <span className="font-bold">{(currentPage - 1) * rowsPerPage + 1}</span> - <span className="font-bold">{Math.min(currentPage * rowsPerPage, filteredData.length)}</span> dari <span className="font-bold">{filteredData.length}</span> data
+                            {text.showing} <span className="font-bold">{(currentPage - 1) * rowsPerPage + 1}</span> - <span className="font-bold">{Math.min(currentPage * rowsPerPage, filteredData.length)}</span> {text.from} <span className="font-bold">{filteredData.length}</span> {text.data}
                         </div>
                         <div className="flex gap-1">
                             <button
@@ -273,7 +363,7 @@ export default function MasterTaxObjectsTab({
             <Modal
                 isOpen={isFormOpen}
                 onClose={() => setIsFormOpen(false)}
-                title={editingItem ? 'Edit Master Objek Pajak' : 'Tambah Master Objek Baru'}
+                title={editingItem ? text.editTitle : text.addTitle}
                 size="max-w-xl"
             >
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -281,32 +371,32 @@ export default function MasterTaxObjectsTab({
                     <div className="bg-slate-50/50 dark:bg-slate-800/30 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-4">
                         <div className="flex items-center gap-2 mb-2">
                             <div className="w-1.5 h-4 bg-indigo-500 rounded-full"></div>
-                            <h4 className="text-xs font-black uppercase tracking-widest text-slate-500">Informasi Objek</h4>
+                            <h4 className="text-xs font-black uppercase tracking-widest text-slate-500">{text.objectInfo}</h4>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="col-span-1">
-                                <label className="block text-xs font-bold text-gray-500 mb-1.5 ml-1">Kode Objek</label>
+                                <label className="block text-xs font-bold text-gray-500 mb-1.5 ml-1">{text.objectCode}</label>
                                 <input
                                     type="text"
                                     required
                                     className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white font-mono text-sm"
-                                    placeholder="Contoh: 23-100-01"
+                                    placeholder={text.codeExample}
                                     value={formData.code}
                                     onChange={(e) => setFormData({ ...formData, code: e.target.value })}
                                 />
                             </div>
                             <div className="col-span-1">
-                                <label className="block text-xs font-bold text-gray-500 mb-1.5 ml-1">Jenis Pajak</label>
+                                <label className="block text-xs font-bold text-gray-500 mb-1.5 ml-1">{text.taxType}</label>
                                 <select
                                     className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white appearance-none"
                                     value={formData.tax_type}
                                     onChange={(e) => setFormData({ ...formData, tax_type: e.target.value })}
                                 >
-                                    <option value="21">PPh Pasal 21</option>
-                                    <option value="23">PPh Pasal 23</option>
-                                    <option value="4(2)">PPh Pasal 4(2)</option>
-                                    <option value="26">PPh Pasal 26</option>
+                                    <option value="21">{text.pasal21}</option>
+                                    <option value="23">{text.pasal23}</option>
+                                    <option value="4(2)">{text.pasal4}</option>
+                                    <option value="26">{text.pasal26}</option>
                                 </select>
                             </div>
                         </div>
@@ -328,12 +418,12 @@ export default function MasterTaxObjectsTab({
                     <div className="bg-slate-50/50 dark:bg-slate-800/30 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-4">
                         <div className="flex items-center gap-2 mb-2">
                             <div className="w-1.5 h-4 bg-emerald-500 rounded-full"></div>
-                            <h4 className="text-xs font-black uppercase tracking-widest text-slate-500">Pengaturan Tarif & Perhitungan</h4>
+                            <h4 className="text-xs font-black uppercase tracking-widest text-slate-500">{text.rateSettings}</h4>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="col-span-1">
-                                <label className="block text-xs font-bold text-gray-500 mb-1.5 ml-1">Tarif (%)</label>
+                                <label className="block text-xs font-bold text-gray-500 mb-1.5 ml-1">{text.rate}</label>
                                 <div className="relative">
                                     <input
                                         type="number"
@@ -348,22 +438,22 @@ export default function MasterTaxObjectsTab({
                                 </div>
                             </div>
                             <div className="col-span-1">
-                                <label className="block text-xs font-bold text-gray-500 mb-1.5 ml-1">Mode Mark-up</label>
+                                <label className="block text-xs font-bold text-gray-500 mb-1.5 ml-1">{text.markupMode}</label>
                                 <select
                                     className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white appearance-none"
                                     value={formData.markup_mode}
                                     onChange={(e) => setFormData({ ...formData, markup_mode: e.target.value })}
                                 >
-                                    <option value="none">Normal (Tanpa Gross Up)</option>
-                                    <option value="pph">Gross Up PPh</option>
-                                    <option value="ppn">Gross Up PPN</option>
+                                    <option value="none">{text.normalMode}</option>
+                                    <option value="pph">{text.grossUpPph}</option>
+                                    <option value="ppn">{text.grossUpPpn}</option>
                                 </select>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <label className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${formData.is_pph21_bukan_pegawai ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20' : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900'}`}>
-                                <span className={`text-[11px] font-bold ${formData.is_pph21_bukan_pegawai ? 'text-indigo-600' : 'text-gray-500'}`}>BUKAN PEGAWAI?</span>
+                                <span className={`text-[11px] font-bold ${formData.is_pph21_bukan_pegawai ? 'text-indigo-600' : 'text-gray-500'}`}>{text.nonEmployee}</span>
                                 <input
                                     type="checkbox"
                                     className="w-4 h-4 rounded-full text-indigo-600 focus:ring-indigo-500 border-gray-300 transition-all"
@@ -372,7 +462,7 @@ export default function MasterTaxObjectsTab({
                                 />
                             </label>
                             <label className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${formData.use_ppn ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20' : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900'}`}>
-                                <span className={`text-[11px] font-bold ${formData.use_ppn ? 'text-indigo-600' : 'text-gray-500'}`}>GUNAKAN PPN?</span>
+                                <span className={`text-[11px] font-bold ${formData.use_ppn ? 'text-indigo-600' : 'text-gray-500'}`}>{text.usePpn}</span>
                                 <input
                                     type="checkbox"
                                     className="w-4 h-4 rounded-full text-indigo-600 focus:ring-indigo-500 border-gray-300 transition-all"
@@ -384,11 +474,11 @@ export default function MasterTaxObjectsTab({
                     </div>
 
                     <div>
-                        <label className="block text-xs font-bold text-gray-500 mb-1.5 ml-1">Keterangan Internal</label>
+                        <label className="block text-xs font-bold text-gray-500 mb-1.5 ml-1">{text.internalNote}</label>
                         <textarea
                             className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white text-sm"
                             rows="2"
-                            placeholder="Catatan tambahan untuk objek pajak ini..."
+                            placeholder={text.notePlaceholder}
                             value={formData.note}
                             onChange={(e) => setFormData({ ...formData, note: e.target.value })}
                         ></textarea>
@@ -400,7 +490,7 @@ export default function MasterTaxObjectsTab({
                             onClick={() => setIsFormOpen(false)}
                             className="flex-1 px-4 py-3 rounded-xl font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 transition-all"
                         >
-                            Batal
+                            {text.cancel}
                         </button>
                         <button
                             type="submit"
@@ -408,7 +498,7 @@ export default function MasterTaxObjectsTab({
                             className="flex-[2] bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-black uppercase tracking-widest shadow-xl shadow-indigo-600/20 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
                         >
                             {isSubmitting ? <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span> : <Save size={20} />}
-                            {editingItem ? 'Simpan Perubahan' : 'Daftarkan Objek'}
+                            {editingItem ? text.saveChanges : text.registerObject}
                         </button>
                     </div>
                 </form>
