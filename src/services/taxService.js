@@ -1,6 +1,24 @@
 import { API_URL } from './database';
 import { apiClient } from './apiClient';
 
+const normalizeDateTimeForApi = (value) => {
+    if (value === undefined || value === null || value === '') return value;
+    if (typeof value !== 'string') return value;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+    if (value.includes('T')) return value.slice(0, 10);
+    return value;
+};
+
+const sanitizeTaxAuditPayload = (payload, { forUpdate = false } = {}) => {
+    if (!payload || typeof payload !== 'object') return payload;
+    const next = { ...payload };
+    if (forUpdate) delete next.id;
+    if (Object.prototype.hasOwnProperty.call(next, 'startDate')) {
+        next.startDate = normalizeDateTimeForApi(next.startDate);
+    }
+    return next;
+};
+
 export const taxService = {
     // Database Wajib Pajak
     async getWpDatabase() {
@@ -46,15 +64,17 @@ export const taxService = {
         return apiClient.fetchJson(`${API_URL}/tax-audits`);
     },
     async createTaxAudit(payload) {
+        const safePayload = sanitizeTaxAuditPayload(payload);
         return apiClient.fetchJson(`${API_URL}/tax-audits`, {
             method: 'POST',
-            body: JSON.stringify(payload)
+            body: JSON.stringify(safePayload)
         });
     },
     async updateTaxAudit(id, payload) {
+        const safePayload = sanitizeTaxAuditPayload(payload, { forUpdate: true });
         return apiClient.fetchJson(`${API_URL}/tax-audits/${id}`, {
             method: 'PUT',
-            body: JSON.stringify(payload)
+            body: JSON.stringify(safePayload)
         });
     },
     async deleteTaxAudit(id) {

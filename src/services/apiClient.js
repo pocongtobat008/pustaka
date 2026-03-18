@@ -31,7 +31,13 @@ export const apiClient = {
         }
         if (!response.ok) {
             const error = await response.json().catch(() => ({}));
-            throw new Error(error.error || `Request failed with status ${response.status}`);
+            const details = Array.isArray(error.details)
+                ? error.details
+                    .map((d) => `${d.path || '(root)'}: ${d.message || 'invalid value'}`)
+                    .join('; ')
+                : '';
+            const baseMessage = error.error || error.message || `Request failed with status ${response.status}`;
+            throw new Error(details ? `${baseMessage} - ${details}` : baseMessage);
         }
         return response.json();
     },

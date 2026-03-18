@@ -15,6 +15,23 @@ import {
     validateRequestBody
 } from '../utils/requestValidation.js';
 
+function normalizeMySqlDateTime(value) {
+    if (value === undefined || value === null || value === '') return null;
+    if (typeof value !== 'string') return value;
+
+    // Keep yyyy-mm-dd input stable and store it as midnight datetime
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        return `${value} 00:00:00`;
+    }
+
+    // Convert ISO timestamps to MySQL datetime (drop timezone/millis)
+    if (value.includes('T')) {
+        return value.replace('T', ' ').replace(/\.\d{3}Z$/, '').replace(/Z$/, '').slice(0, 19);
+    }
+
+    return value;
+}
+
 // --- TAX OBJECTS ---
 export const getTaxObjects = async (req, res) => {
     try {
@@ -109,6 +126,9 @@ export const createTaxAudit = async (req, res) => {
         if (data.steps && typeof data.steps !== 'string') {
             data.steps = JSON.stringify(data.steps);
         }
+        if (Object.prototype.hasOwnProperty.call(data, 'startDate')) {
+            data.startDate = normalizeMySqlDateTime(data.startDate);
+        }
 
         await knex('tax_audits').insert(data);
         await systemLog('Admin', "Create Audit", `Started audit for: ${data.title}`);
@@ -145,9 +165,15 @@ export const updateTaxAudit = async (req, res) => {
 
         const data = { ...validated };
 
+        // Never allow primary key updates from payload
+        delete data.id;
+
         // Flatten steps if they are provided as an object/array
         if (data.steps && typeof data.steps !== 'string') {
             data.steps = JSON.stringify(data.steps);
+        }
+        if (Object.prototype.hasOwnProperty.call(data, 'startDate')) {
+            data.startDate = normalizeMySqlDateTime(data.startDate);
         }
 
         await knex('tax_audits').where('id', id).update(data);

@@ -592,13 +592,32 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
             const updated = independentIssues.map(updateLogic);
             const issue = updated.find(i => i.id === issueId);
             if (issue) {
+                const payload = {
+                    note: issue.note,
+                    detail: issue.detail,
+                    status: issue.status,
+                    progress: issue.progress,
+                    history: issue.history,
+                    assignedTo: issue.assignedTo,
+                    owner: issue.owner
+                };
                 fetch(`/api/independent-issues/${issueId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(issue),
+                    body: JSON.stringify(payload),
                     credentials: 'include'
-                }).then(res => {
+                }).then(async res => {
                     if (res.ok) setIndependentIssues(updated);
+                    else {
+                        try {
+                            const error = await res.json();
+                            console.error('[JobDueDate] Update error:', error);
+                        } catch (e) {
+                            console.error('[JobDueDate] Update failed with status', res.status);
+                        }
+                    }
+                }).catch(err => {
+                    console.error('[JobDueDate] Request error:', err);
                 });
             }
         }

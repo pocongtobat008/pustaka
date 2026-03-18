@@ -46,7 +46,7 @@ export const sopFlowCreateSchema = z.object({
     description: z.string().optional(),
     category: z.string().optional(),
     steps: z.array(z.any()).optional(),
-    visual_config: z.record(z.any()).optional(),
+    visual_config: z.record(z.string(), z.any()).optional(),
     privacy_type: privacyEnum.optional(),
     allowed_departments: z.array(z.string()).optional(),
     allowed_users: z.array(z.string()).optional()
@@ -94,7 +94,7 @@ export const approvalFlowCreateSchema = z.object({
     name: z.string().min(1, 'name is required'),
     description: z.string().optional(),
     steps: z.array(approverStepSchema).optional(),
-    visual_config: z.record(z.any()).optional(),
+    visual_config: z.record(z.string(), z.any()).optional(),
     privacy: z.string().optional(),
     allowed_departments: z.array(z.string()).optional(),
     allowed_users: z.array(z.string()).optional()
@@ -146,7 +146,7 @@ export const createBoxSchema = z.object({
 
 export const updateInventoryItemSchema = z.object({
     status: z.string().optional(),
-    box_data: z.union([z.string(), z.record(z.any()), z.array(z.any()), z.null()]).optional(),
+    box_data: z.union([z.string(), z.record(z.string(), z.any()), z.array(z.any()), z.null()]).optional(),
     history: z.union([z.string(), z.array(z.any()), z.null()]).optional(),
     lastUpdated: z.string().optional()
 }).passthrough();
@@ -156,7 +156,7 @@ export const createExternalItemSchema = z.object({
     destination: z.string().min(1, 'destination is required'),
     sentDate: z.string().optional(),
     sender: z.string().optional(),
-    boxData: z.union([z.string(), z.record(z.any()), z.array(z.any())]).optional(),
+    boxData: z.union([z.string(), z.record(z.string(), z.any()), z.array(z.any())]).optional(),
     history: z.union([z.string(), z.array(z.any())]).optional()
 }).passthrough();
 
@@ -221,7 +221,7 @@ export const taxSummaryUpsertSchema = z.object({
     month: z.string().min(1, 'month is required'),
     year: z.union([z.string(), z.number()]),
     pembetulan: z.coerce.number().optional(),
-    data: z.union([z.string(), z.record(z.any())]).optional()
+    data: z.union([z.string(), z.record(z.string(), z.any())]).optional()
 }).passthrough();
 
 export const taxWpUpsertSchema = z.object({
@@ -234,18 +234,32 @@ export const taxAuditNoteSchema = z.object({
 }).passthrough();
 
 export function validateRequestBody(schema, req, res) {
-    const parsed = schema.safeParse(req.body);
-    if (!parsed.success) {
-        res.status(400).json({
-            error: 'Validation failed',
-            details: parsed.error.issues.map((issue) => ({
-                path: issue.path.join('.') || '(root)',
-                message: issue.message
-            }))
-        });
-        return null;
-    }
-    return parsed.data;
+        try {
+            if (!schema || typeof schema.safeParse !== 'function') {
+                res.status(500).json({ error: 'Internal validation error: invalid schema' });
+                return null;
+            }
+            
+            const parsed = schema.safeParse(req.body);
+            if (!parsed.success) {
+                res.status(400).json({
+                    error: 'Validation failed',
+                    details: parsed.error.issues.map((issue) => ({
+                        path: issue.path.join('.') || '(root)',
+                        message: issue.message
+                    }))
+                });
+                return null;
+            }
+            return parsed.data;
+        } catch (err) {
+            console.error('[validateRequestBody] Error:', err.message);
+            res.status(500).json({ 
+                error: 'Validation error',
+                message: err.message 
+            });
+            return null;
+        }
 }
 
 export function validateBodyMiddleware(schema) {

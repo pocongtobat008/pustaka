@@ -633,7 +633,11 @@ app.put('/api/independent-issues/:id', checkAuth, async (req, res) => {
         io.emit('data:changed', { channel: 'independent-issues' });
         res.json({ message: 'Issue berhasil diperbarui' });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+            console.error('[PUT /api/independent-issues/:id] Error:', err);
+            res.status(500).json({ 
+                error: 'Failed to update issue',
+                message: err.message 
+            });
     }
 });
 
@@ -721,7 +725,11 @@ app.post('/api/sop-flows', checkAuth, async (req, res) => {
         res.json({ id, message: 'SOP Flow created successfully' });
         io.emit('data:changed', { channel: 'sop-flows' });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+            console.error('[POST /api/sop-flows] Error:', err);
+            res.status(500).json({ 
+                error: 'Failed to create SOP flow',
+                message: err.message 
+            });
     }
 });
 
