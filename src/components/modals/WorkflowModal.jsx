@@ -19,7 +19,7 @@ export default function WorkflowModal({
       size="max-w-7xl"
       noPadding
     >
-      <div className="flex flex-col h-[85vh]">
+      <div className="flex h-full min-h-0 flex-col">
         {/* Header Controls (Name & Description) */}
         <div className="p-6 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-6">
           <div className="space-y-2">

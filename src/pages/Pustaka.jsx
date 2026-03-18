@@ -1086,11 +1086,13 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
             </AnimatePresence>
 
             {/* Animated Assistant */}
-            <GuideAssistant
-                message={assistantMsg}
-                isExplaining={!!selectedGuide}
-                onClick={() => setShowAbout(true)}
-            />
+            {!isCreating && !showAbout && !zoomedImage && (
+                <GuideAssistant
+                    message={assistantMsg}
+                    isExplaining={!!selectedGuide}
+                    onClick={() => setShowAbout(true)}
+                />
+            )}
 
             {/* Image Zoom Modal */}
             <AnimatePresence>

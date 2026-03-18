@@ -1361,7 +1361,7 @@ export default function Documents({
                 title={mgmtOp?.type === 'copy' ? 'Salin Dokumen' : 'Pindah Dokumen'}
                 size="max-w-md"
             >
-                <div className="flex flex-col relative pt-24">
+                <div className="flex flex-col relative pt-4">
                     <div className="mb-6">
                         <div className="flex items-center gap-3 mb-2">
                             <div className={`p-2.5 rounded-2xl ${mgmtOp?.type === 'copy' ? 'bg-indigo-100 text-indigo-600' : 'bg-emerald-100 text-emerald-600'}`}>
@@ -1433,7 +1433,7 @@ export default function Documents({
                 title={folderForm.id ? 'Edit Konfigurasi Folder' : 'Buat Folder Baru'}
                 size="max-w-md"
             >
-                <div className="space-y-6 max-h-[70vh] overflow-y-auto px-1 pt-24 custom-scrollbar">
+                <div className="space-y-6 px-1 pt-4 custom-scrollbar">
                     <div>
                         <label className="block text-[10px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest ml-1">Nama Folder</label>
                         <input
@@ -1591,7 +1591,7 @@ export default function Documents({
                 title="Riwayat Revisi Dokumen"
                 size="max-w-xl"
             >
-                <div className="space-y-4 pt-24">
+                <div className="space-y-4 pt-4">
                     <div className="flex items-center gap-3 p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl border border-indigo-100 dark:border-indigo-800/50">
                         <div className="p-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
                             <FileText size={24} className="text-indigo-600" />
@@ -1664,7 +1664,7 @@ export default function Documents({
                 title="Preview Dokumen & OCR"
                 size="max-w-[95vw]"
             >
-                <div className="flex flex-col lg:flex-row gap-4 h-[85vh] pt-24">
+                <div className="flex h-full min-h-0 flex-col gap-4 pt-4 lg:flex-row">
                     {/* COLUMN 1: FILE PREVIEW */}
                     <div className="flex-[2] bg-slate-100 dark:bg-slate-950 rounded-2xl overflow-hidden flex items-center justify-center border border-slate-200 dark:border-slate-800 relative shadow-inner min-w-0">
                         {isGeneratingPreview ? (

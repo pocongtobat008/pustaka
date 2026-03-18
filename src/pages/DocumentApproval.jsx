@@ -378,7 +378,7 @@ export default function DocumentApproval({ approvals = [], users = [], departmen
                 title={editingApproval ? "Edit & Ajukan Ulang" : "Pengajuan Dokumen Baru"}
                 size="max-w-2xl"
             >
-                <div className="space-y-6 pt-24 max-h-[80vh] overflow-y-auto custom-scrollbar px-1">
+                <div className="space-y-6 pt-4 px-1">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Judul Dokumen</label>
@@ -488,7 +488,7 @@ export default function DocumentApproval({ approvals = [], users = [], departmen
             </Modal>
 
             <Modal isOpen={!!selectedApproval} onClose={() => setSelectedApproval(null)} title="Detail & Alur Persetujuan" size="max-w-7xl">
-                <div className="flex flex-col md:flex-row gap-8 pt-24 h-[75vh]">
+                <div className="flex h-full min-h-0 flex-col gap-8 pt-4 md:flex-row">
                     <div className="flex-1 space-y-6 overflow-y-auto pr-2 custom-scrollbar">
                         <div className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-[2.5rem] border border-slate-100 dark:border-slate-800">
                             <span className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] mb-2 block">Informasi Dokumen</span>
@@ -737,7 +737,7 @@ export default function DocumentApproval({ approvals = [], users = [], departmen
             </Modal>
 
             <Modal isOpen={!!previewFile} onClose={() => setPreviewFile(null)} title={`Preview: ${previewFile?.name}`} size="max-w-7xl">
-                <div className="pt-24 h-[85vh] flex flex-col">
+                <div className="flex h-full min-h-0 flex-col pt-4">
                     <div className="flex-1 bg-slate-100 dark:bg-slate-950 rounded-[2.5rem] overflow-hidden border border-slate-200 dark:border-slate-800 shadow-inner">
                         {previewFile?.url && String(previewFile.url).toLowerCase().match(/\.(jpg|jpeg|png|webp)/) ? (
                             <img src={getFullUrl(previewFile.url)} alt="Preview" className="w-full h-full object-contain" />

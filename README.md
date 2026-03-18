@@ -24,7 +24,7 @@ Archive-OS dirancang untuk dapat berjalan dengan konfigurasi minimal (*default*)
 1. **Clone Repositori**
    ```bash
    git clone <repository-url>
-   cd archive-os
+   cd pustaka
    ```
 
 2. **Install Dependencies**

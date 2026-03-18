@@ -17,7 +17,7 @@ export default function TaxUploadModal({
             title="Upload Dokumen Pemeriksaan"
             size="max-w-2xl"
         >
-            <div className="space-y-6 pt-24 max-h-[85vh] overflow-y-auto custom-scrollbar px-1">
+            <div className="space-y-6 pt-4 px-1">
                 {/* Preview Section */}
                 <div className="flex flex-col md:flex-row gap-6">
                     <div className="w-full md:w-1/3 bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 flex items-center justify-center h-48 relative group">

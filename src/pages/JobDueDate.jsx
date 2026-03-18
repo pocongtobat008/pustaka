@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { 
     Calendar, Clock, CheckCircle2, AlertCircle, Plus, 
     Users, Lock, Globe, Building2, MoreVertical, 
@@ -629,6 +630,11 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
         return Math.round(total / issues.length);
     };
 
+    const renderInPortal = (content) => {
+        if (typeof document === 'undefined') return null;
+        return createPortal(content, document.body);
+    };
+
     return (
         <div className="space-y-6">
             {/* Header & Filters */}
@@ -1092,11 +1098,11 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
             </AnimatePresence>
 
             {/* Status Update Description Modal */}
-            <AnimatePresence>
+            {renderInPortal((<AnimatePresence>
                 {showStatusModal && (
-                    <div className="fixed inset-0 z-[400] flex items-center justify-center p-4">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowStatusModal(false)} className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" />
-                        <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl">
+                    <div className="fixed inset-0 z-[400] flex items-start justify-center overflow-y-auto p-4 sm:items-center">
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowStatusModal(false)} className="fixed inset-0 bg-slate-900/60 backdrop-blur-md" />
+                        <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="relative my-6 w-full max-w-md max-h-[92vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl sm:my-0">
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="p-3 bg-indigo-500 rounded-2xl text-white shadow-lg shadow-indigo-500/20">
                                     <MessageSquare size={24} />
@@ -1134,14 +1140,14 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                         </motion.div>
                     </div>
                 )}
-            </AnimatePresence>
+            </AnimatePresence>))}
 
             {/* History Detail Popover */}
-            <AnimatePresence>
+            {renderInPortal((<AnimatePresence>
                 {viewingHistory && (
-                    <div className="fixed inset-0 z-[500] flex items-center justify-center p-4">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setViewingHistory(null)} className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" />
-                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative w-full max-w-sm bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-2xl border border-emerald-500/20">
+                    <div className="fixed inset-0 z-[500] flex items-start justify-center overflow-y-auto p-4 sm:items-center">
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setViewingHistory(null)} className="fixed inset-0 bg-slate-900/60 backdrop-blur-md" />
+                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative my-6 w-full max-w-sm max-h-[92vh] overflow-y-auto bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-2xl border border-emerald-500/20 sm:my-0">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="p-2 bg-emerald-500 rounded-xl text-white"><Check size={18} /></div>
                                 <h4 className="font-black dark:text-white uppercase text-sm tracking-widest">Detail Tahap: {viewingHistory.label}</h4>
@@ -1154,14 +1160,14 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                         </motion.div>
                     </div>
                 )}
-            </AnimatePresence>
+            </AnimatePresence>))}
 
             {/* Issue Detail Flow Modal */}
-            <AnimatePresence>
+            {renderInPortal((<AnimatePresence>
                 {viewingIssueDetail && (
-                    <div className="fixed inset-0 z-[500] flex items-center justify-center p-4">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setViewingIssueDetail(null)} className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" />
-                        <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                    <div className="fixed inset-0 z-[500] flex items-start justify-center overflow-y-auto p-4 sm:items-center">
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setViewingIssueDetail(null)} className="fixed inset-0 bg-slate-900/60 backdrop-blur-md" />
+                        <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="relative my-6 w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl overflow-hidden flex flex-col max-h-[92vh] sm:my-0">
                             {/* Header */}
                             <div className="p-8 pb-6 border-b border-slate-100 dark:border-white/5 bg-gradient-to-br from-indigo-50/50 to-white dark:from-white/5 dark:to-slate-900">
                                 <div className="flex justify-between items-start mb-6">
@@ -1274,14 +1280,14 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                         </motion.div>
                     </div>
                 )}
-            </AnimatePresence>
+            </AnimatePresence>))}
 
             {/* PIC Selection Modal */}
-            <AnimatePresence>
+            {renderInPortal((<AnimatePresence>
                 {showPicModal && (
-                    <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowPicModal(false)} className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" />
-                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl">
+                    <div className="fixed inset-0 z-[300] flex items-start justify-center overflow-y-auto p-4 sm:items-center">
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowPicModal(false)} className="fixed inset-0 bg-slate-900/60 backdrop-blur-md" />
+                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative my-6 w-full max-w-md max-h-[92vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl sm:my-0">
                             <h3 className="text-xl font-black dark:text-white mb-6">Pilih PIC Monitoring</h3>
                             <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                                 {users.filter(u => !monitoredPICs.find(p => (typeof p === 'string' ? p : p.username) === u.username)).map(u => (
@@ -1307,14 +1313,14 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                         </motion.div>
                     </div>
                 )}
-            </AnimatePresence>
+            </AnimatePresence>))}
 
             {/* PIC Privacy Modal */}
-            <AnimatePresence>
+            {renderInPortal((<AnimatePresence>
                 {editingPicPrivacy && (
-                    <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setEditingPicPrivacy(null)} className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" />
-                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl">
+                    <div className="fixed inset-0 z-[300] flex items-start justify-center overflow-y-auto p-4 sm:items-center">
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setEditingPicPrivacy(null)} className="fixed inset-0 bg-slate-900/60 backdrop-blur-md" />
+                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative my-6 w-full max-w-md max-h-[92vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl sm:my-0">
                             <h3 className="text-xl font-black dark:text-white mb-2">Privasi Blok PIC</h3>
                             <p className="text-xs text-slate-500 mb-6 font-bold uppercase tracking-widest">Atur siapa yang bisa melihat monitoring {users.find(u => u.username === editingPicPrivacy.username)?.name}</p>
                             
@@ -1416,79 +1422,14 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                         </motion.div>
                     </div>
                 )}
-            </AnimatePresence>
-
-            {/* Status Update Description Modal */}
-            <AnimatePresence>
-                {showStatusModal && (
-                    <div className="fixed inset-0 z-[400] flex items-center justify-center p-4">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowStatusModal(false)} className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" />
-                        <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl">
-                            <div className="flex items-center gap-4 mb-6">
-                                <div className="p-3 bg-indigo-500 rounded-2xl text-white shadow-lg shadow-indigo-500/20">
-                                    <MessageSquare size={24} />
-                                </div>
-                                <div>
-                                    <h3 className="text-xl font-black dark:text-white uppercase tracking-tight">Update Progres</h3>
-                                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Berikan catatan untuk tahap: <span className="text-indigo-500">{statusUpdateForm.nextStatus}</span></p>
-                                </div>
-                            </div>
-                            
-                            <div className="space-y-4">
-                                <div className="space-y-1">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Deskripsi / Catatan Progres</label>
-                                    <textarea 
-                                        value={statusUpdateForm.note} 
-                                        onChange={e => setStatusUpdateForm({...statusUpdateForm, note: e.target.value})} 
-                                        className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none focus:ring-2 ring-indigo-500 dark:text-white font-medium min-h-[120px]" 
-                                        placeholder="Apa yang sudah dilakukan pada tahap ini?" 
-                                    />
-                                </div>
-                            </div>
-                            
-                            <div className="flex gap-3 mt-8">
-                                <button onClick={() => setShowStatusModal(false)} className="flex-1 py-4 bg-slate-100 dark:bg-white/5 text-slate-500 font-bold rounded-2xl">Batal</button>
-                                <button 
-                                    onClick={() => {
-                                        handleUpdateIssueStatus(statusUpdateForm.taskId, statusUpdateForm.issueId, statusUpdateForm.nextStatus, statusUpdateForm.note);
-                                        setShowStatusModal(false);
-                                    }} 
-                                    className="flex-[2] py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-600/20"
-                                >
-                                    Simpan & Update Status
-                                </button>
-                            </div>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
-
-            {/* History Detail Popover */}
-            <AnimatePresence>
-                {viewingHistory && (
-                    <div className="fixed inset-0 z-[500] flex items-center justify-center p-4">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setViewingHistory(null)} className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" />
-                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative w-full max-w-sm bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-2xl border border-emerald-500/20">
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="p-2 bg-emerald-500 rounded-xl text-white"><Check size={18} /></div>
-                                <h4 className="font-black dark:text-white uppercase text-sm tracking-widest">Detail Tahap: {viewingHistory.label}</h4>
-                            </div>
-                            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4 bg-slate-50 dark:bg-white/5 p-4 rounded-2xl italic">"{viewingHistory.note || 'Tidak ada catatan tambahan.'}"</p>
-                            <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                                <Timer size={12} /> Selesai pada: {format(new Date(viewingHistory.date), 'PPp', { locale: id })}
-                            </div>
-                            <button onClick={() => setViewingHistory(null)} className="w-full mt-6 py-3 bg-slate-100 dark:bg-white/5 text-slate-500 font-bold rounded-xl hover:bg-slate-200 transition-colors">Tutup</button>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
+            </AnimatePresence>))}
 
             {/* Issue CRUD Modal */}
-            <AnimatePresence>
+            {renderInPortal((<AnimatePresence>
                 {showIssueModal && (
-                    <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowIssueModal(false)} className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" />
-                        <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl">
+                    <div className="fixed inset-0 z-[300] flex items-start justify-center overflow-y-auto p-4 sm:items-center">
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowIssueModal(false)} className="fixed inset-0 bg-slate-900/60 backdrop-blur-md" />
+                        <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="relative my-6 w-full max-w-md max-h-[92vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl sm:my-0">
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="p-3 bg-rose-500 rounded-2xl text-white shadow-lg shadow-rose-500/20">
                                     <AlertCircle size={24} />
@@ -1576,22 +1517,22 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                         </motion.div>
                     </div>
                 )}
-            </AnimatePresence>
+            </AnimatePresence>))}
 
             {/* Modal Form (Simplified for this example) */}
-            <AnimatePresence>
+            {renderInPortal((<AnimatePresence>
                 {showForm && (
-                    <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
+                    <div className="fixed inset-0 z-[300] flex items-start justify-center overflow-y-auto p-4 sm:items-center">
                         <motion.div 
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                             onClick={() => setShowForm(false)}
-                            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+                            className="fixed inset-0 bg-slate-900/60 backdrop-blur-md"
                         />
                         <motion.div 
                             initial={{ scale: 0.9, opacity: 0, y: 20 }}
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                            className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl overflow-hidden"
+                            className="relative my-6 w-full max-w-lg max-h-[92vh] bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl overflow-hidden sm:my-0"
                         >
                             <div className="p-8">
                                 <h3 className="text-xl font-black dark:text-white mb-6">
@@ -1762,7 +1703,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                         </motion.div>
                     </div>
                 )}
-            </AnimatePresence>
+            </AnimatePresence>))}
 
             <OCRProcessingLanes />
         </div>

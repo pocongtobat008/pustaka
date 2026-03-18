@@ -1,23 +1,55 @@
 import React from 'react';
 import { UploadCloud, FileText } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function UploadModal({ uploadForm, setUploadForm, fileInputRef, handleFileSelect, handleProcessDoc }) {
   if (uploadForm.isProcessing) {
     return (
-      <div className="text-center py-12">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center py-12"
+      >
         <div className="relative mx-auto mb-4 w-16 h-16">
-          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          <FileText className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-blue-500" size={24} />
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ repeat: Infinity, duration: 1.2, ease: 'linear' }}
+            className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full"
+          />
+          <motion.div
+            animate={{ scale: [1, 1.08, 1] }}
+            transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          >
+            <FileText className="text-blue-500" size={24} />
+          </motion.div>
         </div>
-        <h3 className="text-xl font-bold dark:text-white animate-pulse">Sedang Memproses...</h3>
-        <p className="text-sm text-gray-500 mt-2">{uploadForm.processingMessage || 'Mohon tunggu...'}</p>
-      </div>
+
+        <h3 className="text-xl font-bold dark:text-white">Sedang Memproses...</h3>
+        <p className="text-sm text-gray-500 mt-2">{uploadForm.processingMessage || 'Mengunggah dokumen ke sistem...'}</p>
+
+        <div className="mt-6 mx-auto h-2 w-full max-w-xs overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+          <motion.div
+            className="h-full rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400"
+            initial={{ x: '-100%' }}
+            animate={{ x: ['-100%', '100%'] }}
+            transition={{ repeat: Infinity, duration: 1.3, ease: 'linear' }}
+          />
+        </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="space-y-6 pt-24">
-      <div
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+      className="space-y-6 pt-4"
+    >
+      <motion.div
+        whileHover={{ y: -2, scale: 1.01 }}
+        whileTap={{ scale: 0.995 }}
         className={`group relative flex flex-col items-center justify-center border-dashed rounded-2xl p-10 text-center transition-all duration-300 cursor-pointer ${uploadForm.fileData ? 'border-2 border-indigo-500 bg-indigo-50/30 dark:bg-indigo-900/10' : 'border border-slate-200 dark:border-slate-700 hover:border-indigo-300 hover:bg-slate-50/50 dark:hover:bg-slate-800/30'}`}
         onClick={() => fileInputRef.current.click()}
       >
@@ -35,7 +67,7 @@ export default function UploadModal({ uploadForm, setUploadForm, fileInputRef, h
             Semua Jenis File (PDF, Gambar, Office) - Max 30MB
           </p>
         )}
-      </div>
+      </motion.div>
       <div>
         <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Judul Dokumen</label>
         <input
@@ -50,6 +82,6 @@ export default function UploadModal({ uploadForm, setUploadForm, fileInputRef, h
           {uploadForm.editMode ? 'Simpan Revisi' : 'Upload & Proses'}
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 }

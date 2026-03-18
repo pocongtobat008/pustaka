@@ -18,7 +18,7 @@ export default function RestoreBoxModal({
       title="Restore Box"
       size="max-w-md"
     >
-      <div className="relative z-10 pt-24">
+      <div className="relative z-10 pt-4">
         <div className="flex justify-between items-center mb-6">
           <div>
             <p className="text-xs text-slate-500 dark:text-slate-400 font-medium tracking-wide uppercase mt-1">

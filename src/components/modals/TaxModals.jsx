@@ -12,7 +12,7 @@ export default function TaxModals({
     if (!['tax-form', 'tax-form-pph', 'tax-form-ppn'].includes(modalTab)) return null;
 
     return (
-        <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-300 pt-24">
+        <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-300 pt-4">
             <div className="grid grid-cols-3 gap-6 bg-white/30 dark:bg-slate-800/30 p-6 rounded-3xl border border-white/20 dark:border-white/5">
                 <div>
                     <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Bulan</label>

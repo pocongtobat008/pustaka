@@ -1357,7 +1357,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                 title={editingAudit ? 'Edit Pemeriksaan' : 'Pemeriksaan Baru'}
                 size="max-w-xl"
             >
-                <div className="space-y-6 pt-24 max-h-[85vh] overflow-y-auto custom-scrollbar px-1">
+                <div className="space-y-6 pt-4 px-1">
                     <div className="flex justify-between items-center mb-6">
                         <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center shadow-inner">
                             <ClipboardCheck size={28} />

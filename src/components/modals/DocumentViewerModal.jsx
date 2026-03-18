@@ -18,7 +18,7 @@ export default function DocumentViewerModal({
     if (modalTab !== 'doc-view' || !viewDocData) return null;
 
     return (
-        <div className="space-y-6 pt-24 pb-10">
+        <div className="space-y-6 pt-4 pb-10">
             <div className="flex gap-4">
                 <div className="w-24 h-24 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center">
                     {String(viewDocData?.type || '').toLowerCase().includes('pdf') ? <FileDigit size={40} className="text-red-500" /> : <ImageIcon size={40} />}

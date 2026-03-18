@@ -1,6 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import { Grid3x3, ScanLine, History, PieChart, FileText, FileDigit, ChevronDown, ChevronUp, ArrowRight, Package, Truck, FileBarChart, Download, X, CheckCircle2, FileSearch, FolderOpen, Users, Sparkles, Clock, Eye, Info, MessageSquare, BookOpen, FileCheck, ClipboardCheck, ChevronLeft, ChevronRight, User } from 'lucide-react';
-import { Card, SummaryCard } from '../components/ui/Card';
+import { Card } from '../components/ui/Card';
+import { Card as ShadCard, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Badge } from '../components/ui/badge';
 import QueueStatus from '../components/ui/QueueStatus';
 import WarehouseMap from '../components/WarehouseMap';
 import TaxAnalytics from '../components/TaxAnalytics';
@@ -28,6 +31,7 @@ export default function Dashboard({
     todayWork,
     currentUser,
     onOpenLanding,
+    ocrStats = {},
     inventory = [] // Prop baru
 }) {
     // Defensive Defaults
@@ -118,6 +122,26 @@ export default function Dashboard({
         const dayIndex = new Date().getDate() % suggestions.length;
         return suggestions[dayIndex];
     };
+
+    const bentoStats = useMemo(() => {
+        const waiting = ocrStats?.counts?.waiting || 0;
+        const active = ocrStats?.counts?.active || 0;
+        const completed = ocrStats?.counts?.completed || 0;
+        const failed = ocrStats?.counts?.failed || 0;
+        const totalSlots = TOTAL_SLOTS || 1;
+        const usedSlots = (stats?.stored || 0) + (stats?.borrowed || 0) + (stats?.audit || 0);
+
+        return {
+            waiting,
+            active,
+            completed,
+            failed,
+            usedSlots,
+            totalSlots,
+            occupancyPercent: Number(((usedSlots / totalSlots) * 100).toFixed(0)),
+            activeAudits: (Array.isArray(taxAudits) ? taxAudits.filter(a => a.status !== 'Selesai').length : 0)
+        };
+    }, [ocrStats, stats, TOTAL_SLOTS, taxAudits]);
 
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
@@ -393,35 +417,123 @@ export default function Dashboard({
                 )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <SummaryCard
-                    title="Gudang Internal"
-                    value={`${(stats?.occupancy || 0).toFixed(0)}%`}
-                    subtext={`${stats?.empty || 0} Slot Tersedia`}
-                    icon={Grid3x3}
-                    colorClass="bg-indigo-100 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400"
-                />
-                <SummaryCard
-                    title="Gudang Eksternal"
-                    value={externalItems?.length || 0}
-                    subtext="Box di Indoarsip"
-                    icon={Truck}
-                    colorClass="bg-emerald-100 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400"
-                />
-                <SummaryCard
-                    title="Audit Pajak"
-                    value={(Array.isArray(taxAudits) ? taxAudits.filter(a => a.status !== 'Selesai') : []).length}
-                    subtext={`${Array.isArray(taxAudits) ? taxAudits.length : 0} Total Pemeriksaan`}
-                    icon={FileSearch}
-                    colorClass="bg-amber-100 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400"
-                />
-                <SummaryCard
-                    title="Kepatuhan SPT"
-                    value={taxSummaries?.length || 0}
-                    subtext="Laporan Tersimpan"
-                    icon={FileBarChart}
-                    colorClass="bg-purple-100 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400"
-                />
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
+                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="md:col-span-2">
+                    <ShadCard className="relative overflow-hidden border-slate-200/80 bg-gradient-to-br from-white to-slate-50 dark:from-slate-950 dark:to-slate-900">
+                        <div className="pointer-events-none absolute -right-12 -top-10 h-44 w-44 rounded-full bg-indigo-500/20 blur-3xl" />
+                        <CardHeader>
+                            <div className="flex items-center justify-between gap-3">
+                                <div>
+                                    <CardTitle className="text-xl">Storage Command Center</CardTitle>
+                                    <CardDescription>Kontrol kapasitas arsip dan percepat navigasi modul.</CardDescription>
+                                </div>
+                                <Badge variant="success">Live</Badge>
+                            </div>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                                <div className="rounded-xl border border-slate-200 bg-white/80 p-3 dark:border-slate-800 dark:bg-slate-900/80">
+                                    <p className="text-[11px] uppercase tracking-wide text-slate-500">Occupancy</p>
+                                    <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{bentoStats.occupancyPercent}%</p>
+                                </div>
+                                <div className="rounded-xl border border-slate-200 bg-white/80 p-3 dark:border-slate-800 dark:bg-slate-900/80">
+                                    <p className="text-[11px] uppercase tracking-wide text-slate-500">Used Slots</p>
+                                    <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{bentoStats.usedSlots}</p>
+                                </div>
+                                <div className="rounded-xl border border-slate-200 bg-white/80 p-3 dark:border-slate-800 dark:bg-slate-900/80">
+                                    <p className="text-[11px] uppercase tracking-wide text-slate-500">External Box</p>
+                                    <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{externalItems?.length || 0}</p>
+                                </div>
+                                <div className="rounded-xl border border-slate-200 bg-white/80 p-3 dark:border-slate-800 dark:bg-slate-900/80">
+                                    <p className="text-[11px] uppercase tracking-wide text-slate-500">Available</p>
+                                    <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{stats?.empty || 0}</p>
+                                </div>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                                <button onClick={() => setActiveTab('inventory')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">Buka Inventory</button>
+                                <button onClick={() => setActiveTab('documents')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">Lihat Documents</button>
+                                <button onClick={() => setActiveTab('tax-summary')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">Tax Summary</button>
+                            </div>
+                        </CardContent>
+                    </ShadCard>
+                </motion.div>
+
+                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+                    <ShadCard className="h-full">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-base"><FileSearch size={16} /> Tax Control</CardTitle>
+                            <CardDescription>Status audit dan laporan kepatuhan.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                            <div className="rounded-lg bg-amber-50 p-3 dark:bg-amber-950/20">
+                                <p className="text-xs text-amber-700 dark:text-amber-300">Audit Berjalan</p>
+                                <p className="text-2xl font-bold text-amber-800 dark:text-amber-200">{bentoStats.activeAudits}</p>
+                            </div>
+                            <div className="rounded-lg bg-violet-50 p-3 dark:bg-violet-950/20">
+                                <p className="text-xs text-violet-700 dark:text-violet-300">Tax Summary</p>
+                                <p className="text-2xl font-bold text-violet-800 dark:text-violet-200">{taxSummaries?.length || 0}</p>
+                            </div>
+                        </CardContent>
+                    </ShadCard>
+                </motion.div>
+
+                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+                    <ShadCard className="h-full">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-base"><ScanLine size={16} /> OCR Pipeline</CardTitle>
+                            <CardDescription>Antrian OCR realtime.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-2 text-sm">
+                                <div className="flex items-center justify-between rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-900"><span>Aktif</span><span className="font-semibold">{bentoStats.active}</span></div>
+                                <div className="flex items-center justify-between rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-900"><span>Menunggu</span><span className="font-semibold">{bentoStats.waiting}</span></div>
+                                <div className="flex items-center justify-between rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-900"><span>Sukses</span><span className="font-semibold">{bentoStats.completed}</span></div>
+                                <div className="flex items-center justify-between rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-900"><span>Gagal</span><span className="font-semibold">{bentoStats.failed}</span></div>
+                            </div>
+                        </CardContent>
+                    </ShadCard>
+                </motion.div>
+
+                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="md:col-span-2">
+                    <ShadCard className="h-full">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-base"><FileText size={16} /> Dokumen Terbaru</CardTitle>
+                            <CardDescription>Akses cepat file baru tanpa keluar dari dashboard.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                            {docList.slice(0, 4).map((doc) => (
+                                <button key={doc.id} onClick={() => handleViewDoc(doc)} className="flex w-full items-center gap-3 rounded-lg border border-slate-200 bg-white/70 px-3 py-2 text-left transition hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900/70 dark:hover:bg-slate-800">
+                                    <div className="rounded-md bg-indigo-100 p-2 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-300">
+                                        {doc.type?.includes('pdf') ? <FileDigit size={16} /> : <FileText size={16} />}
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="truncate text-sm font-semibold text-slate-800 dark:text-slate-100">{doc.title}</p>
+                                        <p className="text-xs text-slate-500 dark:text-slate-400">{new Date(doc.uploadDate).toLocaleDateString()} • {doc.size}</p>
+                                    </div>
+                                </button>
+                            ))}
+                            {docList.length === 0 && <p className="text-sm text-slate-500">Belum ada dokumen terbaru.</p>}
+                        </CardContent>
+                    </ShadCard>
+                </motion.div>
+
+                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="md:col-span-2 xl:col-span-1">
+                    <ShadCard className="h-full">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-base"><History size={16} /> Activity Feed</CardTitle>
+                            <CardDescription>Snapshot audit trail terbaru.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                            {logs.slice(0, 4).map((log) => (
+                                <div key={log.id} className="rounded-lg border border-slate-200 bg-white/70 px-3 py-2 dark:border-slate-800 dark:bg-slate-900/70">
+                                    <p className="truncate text-xs font-semibold text-slate-700 dark:text-slate-200">{log.action}</p>
+                                    <p className="truncate text-[11px] text-slate-500 dark:text-slate-400">{log.details}</p>
+                                </div>
+                            ))}
+                            {logs.length === 0 && <p className="text-sm text-slate-500">Belum ada aktivitas.</p>}
+                        </CardContent>
+                    </ShadCard>
+                </motion.div>
             </div>
 
             {/* TAX ANALYTICS VISUALIZATION */}
@@ -429,10 +541,7 @@ export default function Dashboard({
                 <TaxAnalytics taxSummaries={taxSummaries} taxAudits={taxAudits} />
             </div>
 
-            {/* OCR QUEUE STATUS SECTION */}
-
-            {/* OCR QUEUE STATUS SECTION */}
-            <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
+            <div className="grid grid-cols-1 gap-6">
                 <QueueStatus />
             </div>
 

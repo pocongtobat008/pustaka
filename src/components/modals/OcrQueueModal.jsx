@@ -4,7 +4,7 @@ import { Activity, RefreshCw } from 'lucide-react';
 
 export default function OcrQueueModal({ ocrStats, API_BASE, toast }) {
   return (
-    <div className="space-y-6 pt-24 max-h-[80vh] overflow-y-auto custom-scrollbar px-1 pb-4">
+    <div className="space-y-6 pt-4 px-1 pb-4">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-2xl border border-blue-100 dark:border-blue-800">
           <p className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">Aktif</p>

@@ -110,6 +110,7 @@ import JobDueDate from './pages/JobDueDate';
 import { getFullUrl } from './utils/urlHelper';
 import { useToast, ToastContainer } from './components/ui/Toast';
 import PdfViewer from './components/ui/PdfViewer';
+import CommandPalette from './components/ui/CommandPalette';
 import AiChatAssistant from './components/AiChatAssistant';
 import OcrLanes from './components/OcrLanes';
 import NotificationBell from './components/NotificationBell';
@@ -2941,6 +2942,70 @@ export default function App() {
 
   }, [taxForm.month, taxForm.year, isModalOpen, taxSummaries, taxConfig]);
 
+  const commandItems = useMemo(() => {
+    const items = [
+      { id: 'dashboard', tab: 'dashboard', label: 'Dashboard', description: 'Ikhtisar sistem', group: 'General', icon: LayoutDashboard, keywords: 'home statistik ringkasan' },
+      { id: 'job-due-date', tab: 'job-due-date', label: 'My Job', description: 'Monitoring issue dan due date', group: 'General', icon: ClipboardCheck, keywords: 'task issue deadline' },
+      { id: 'pustaka', tab: 'pustaka', label: 'Manual Book', description: 'Panduan kerja dan pengetahuan', group: 'General', icon: BookOpen, keywords: 'wiki guide docs' },
+      { id: 'flow', tab: 'flow', label: 'SOP Flow', description: 'Alur SOP interaktif', group: 'General', icon: FileCheck, keywords: 'sop workflow' },
+      { id: 'inventory', tab: 'inventory', label: 'Inventory', description: 'Gudang arsip internal dan eksternal', group: 'Documents', icon: Grid3x3, keywords: 'rak box warehouse' },
+      { id: 'documents', tab: 'documents', label: 'Documents', description: 'Dokumen digital', group: 'Documents', icon: FileStack, keywords: 'files upload folder' },
+      { id: 'approvals', tab: 'approvals', label: 'Approvals', description: 'Persetujuan dokumen', group: 'Documents', icon: ShieldCheck, keywords: 'approval workflow review' },
+      { id: 'tax-monitoring', tab: 'tax-monitoring', label: 'Tax Monitoring', description: 'Monitoring pemeriksaan pajak', group: 'Tax', icon: Shield, keywords: 'audit pemeriksaan pajak' },
+      { id: 'tax-calculation', tab: 'tax-calculation', label: 'Tax Calculation', description: 'Perhitungan pajak', group: 'Tax', icon: Calculator, keywords: 'ppn pph hitung' },
+      { id: 'tax-summary', tab: 'tax-summary', label: 'Tax Summary', description: 'Ringkasan kepatuhan pajak', group: 'Tax', icon: PieChart, keywords: 'summary compliance reporting' },
+      { id: 'master', tab: 'master', label: 'Master Data', description: 'Pengaturan user, role, dan data referensi', group: 'System', icon: Settings, keywords: 'admin settings role' },
+      { id: 'profile', tab: 'profile', label: 'Profile', description: 'Profil pengguna', group: 'System', icon: User, keywords: 'akun user' }
+    ];
+
+    return items.filter((item) => {
+      if (item.id === 'profile') return true;
+      return hasPermission(item.id, 'view');
+    });
+  }, [hasPermission]);
+
+  const commandQuickActions = useMemo(() => {
+    const actions = [
+      {
+        id: 'quick-upload',
+        label: 'Upload Dokumen',
+        description: 'Buka modal upload dokumen',
+        icon: UploadCloud,
+        keywords: 'unggah upload file dokumen',
+        visible: hasPermission('documents', 'create'),
+        action: () => {
+          setModalTab('upload');
+          setIsModalOpen(true);
+        }
+      },
+      {
+        id: 'quick-ocr-queue',
+        label: 'Lihat OCR Queue',
+        description: 'Buka status antrian OCR',
+        icon: ScanLine,
+        keywords: 'ocr queue status',
+        visible: true,
+        action: () => {
+          setModalTab('ocr-details');
+          setIsModalOpen(true);
+        }
+      },
+      {
+        id: 'quick-theme',
+        label: isDarkMode ? 'Switch ke Light Mode' : 'Switch ke Dark Mode',
+        description: 'Ganti tema tampilan',
+        icon: isDarkMode ? Sun : Moon,
+        keywords: 'theme dark light mode',
+        visible: true,
+        action: () => setIsDarkMode(!isDarkMode)
+      }
+    ];
+
+    return actions.filter((action) => action.visible);
+  }, [hasPermission, isDarkMode, setIsDarkMode, setIsModalOpen, setModalTab]);
+
+  const isPopupInteractionLocked = isModalOpen || showRestoreForm || showExternalForm || showMenuLandingPopup || isFlowModalOpen;
+
   // --- LOGIN SCREEN ---
 
   if (isLoading) {
@@ -3033,19 +3098,43 @@ export default function App() {
               </p>
             </div>
 
-            <button
-              type="button"
-              onClick={() => setShowMenuLandingPopup(true)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-slate-900 to-indigo-700 text-white text-xs font-black uppercase tracking-[0.14em] shadow-lg hover:opacity-95 transition-opacity"
-            >
-              <Sparkles size={14} />
-              Info Menu
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <CommandPalette
+                items={commandItems}
+                quickActions={commandQuickActions}
+                disabled={isPopupInteractionLocked}
+                onSelect={(item) => {
+                  if (item.action) {
+                    item.action();
+                    return;
+                  }
+                  if (item.tab) {
+                    setActiveTab(item.tab);
+                  }
+                }}
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowMenuLandingPopup(true)}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-slate-900 to-indigo-700 text-white text-xs font-black uppercase tracking-[0.14em] shadow-lg hover:opacity-95 transition-opacity"
+              >
+                <Sparkles size={14} />
+                Info Menu
+              </button>
+            </div>
 
           </div>
 
 
-          <div key={activeTab}>
+          <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 14, filter: 'blur(6px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, y: -8, filter: 'blur(4px)' }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+          >
             {activeTab === 'dashboard' && (
               <Dashboard
                 stats={stats}
@@ -3248,7 +3337,8 @@ export default function App() {
                 onCopy={handleCopyToClipboard}
               />
             )}
-          </div>
+          </motion.div>
+          </AnimatePresence>
 
         </div>
 
@@ -3290,7 +3380,7 @@ export default function App() {
         title="Restore Box"
         size="max-w-md"
       >
-        <div className="relative z-10 pt-24">
+        <div className="relative z-10 pt-4">
           <div className="flex justify-between items-center mb-6">
             <div>
               <p className="text-xs text-slate-500 dark:text-slate-400 font-medium tracking-wide uppercase mt-1">
@@ -3454,7 +3544,7 @@ export default function App() {
         title="Restore Box"
         size="max-w-md"
       >
-        <div className="relative z-10 pt-24">
+        <div className="relative z-10 pt-4">
           <div className="flex justify-between items-center mb-6">
             <div>
               <p className="text-xs text-slate-500 dark:text-slate-400 font-medium tracking-wide uppercase mt-1">
@@ -3537,7 +3627,7 @@ export default function App() {
         title="Kirim ke Indoarsip"
         size="max-w-sm"
       >
-        <div className="pt-24">
+        <div className="pt-4">
           <div className="w-16 h-16 rounded-[2rem] bg-indigo-600 text-white flex items-center justify-center shadow-2xl shadow-indigo-600/30 mx-auto mb-6">
             <Truck size={32} />
           </div>
@@ -3580,7 +3670,7 @@ export default function App() {
         size="max-w-7xl"
         noPadding
       >
-        <div className="flex flex-col h-[85vh]">
+        <div className="flex h-full min-h-0 flex-col">
           {/* Header Controls (Name & Description) */}
           <div className="p-6 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-6">
             <div className="space-y-2">

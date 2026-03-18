@@ -11,7 +11,7 @@ export default function MasterDataModals({
     if (!['user-create', 'dept-form', 'role-create', 'role-edit'].includes(modalTab)) return null;
 
     return (
-        <div className="space-y-6 pt-24">
+        <div className="space-y-6 pt-4">
             {modalTab === 'user-create' && (
                 <div className="space-y-5 animate-in slide-in-from-bottom-2 duration-300">
                     <div className="grid grid-cols-2 gap-4">

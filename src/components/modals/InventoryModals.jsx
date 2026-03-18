@@ -24,7 +24,7 @@ export default function InventoryModals({
     if (!['details', 'history', 'invoice-detail'].includes(modalTab)) return null;
 
     return (
-        <div className="space-y-6 animate-in fade-in duration-500 pt-24">
+        <div className="space-y-6 animate-in fade-in duration-500 pt-4">
             <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl -z-10 animate-pulse"></div>
 
             {/* Header Box ID - Capsule Style */}

@@ -10,7 +10,7 @@ export default function ExternalTransferModal({ isOpen, onClose, externalDate, s
       title="Kirim ke Indoarsip"
       size="max-w-sm"
     >
-      <div className="pt-24">
+      <div className="pt-4">
         <div className="w-16 h-16 rounded-[2rem] bg-indigo-600 text-white flex items-center justify-center shadow-2xl shadow-indigo-600/30 mx-auto mb-6">
           <Truck size={32} />
         </div>

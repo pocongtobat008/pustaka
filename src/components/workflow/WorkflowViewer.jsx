@@ -1,5 +1,6 @@
 
 import React, { useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
     ReactFlow,
     Controls,
@@ -150,13 +151,15 @@ function NodeDetailPopup({ node, onClose }) {
 
     const isImage = (url) => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url);
 
-    return (
+    if (typeof document === 'undefined') return null;
+
+    return createPortal((
         <>
             {/* Backdrop */}
-            <div className="absolute inset-0 bg-black/30 backdrop-blur-sm z-40 animate-in fade-in duration-200" onClick={onClose} />
+            <div className="fixed inset-0 z-[10020] bg-black/60 backdrop-blur-md animate-in fade-in duration-200" onClick={onClose} />
 
             {/* Popup */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[420px] max-h-[80%] bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+            <div className="fixed left-1/2 top-1/2 z-[10030] w-[420px] max-w-[92vw] max-h-[92vh] -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in-95 duration-300">
                 {/* Header */}
                 <div className={`p-5 border-b border-slate-100 dark:border-slate-800 ${isDone ? 'bg-emerald-50 dark:bg-emerald-900/10' :
                     isRejected ? 'bg-red-50 dark:bg-red-900/10' :
@@ -204,7 +207,7 @@ function NodeDetailPopup({ node, onClose }) {
                 </div>
 
                 {/* Body */}
-                <div className="p-5 overflow-y-auto max-h-[400px] custom-scrollbar space-y-5">
+                <div className="p-5 overflow-y-auto max-h-[calc(92vh-9rem)] custom-scrollbar space-y-5">
                     {/* Instruction */}
                     <div>
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1 mb-2">
@@ -269,7 +272,7 @@ function NodeDetailPopup({ node, onClose }) {
             {/* Full-screen Image Preview */}
             {previewImage && (
                 <div
-                    className="fixed inset-0 z-[60] bg-black/80 flex items-center justify-center animate-in fade-in duration-200 cursor-pointer"
+                    className="fixed inset-0 z-[10040] bg-black/80 flex items-center justify-center animate-in fade-in duration-200 cursor-pointer"
                     onClick={() => setPreviewImage(null)}
                 >
                     <button className="absolute top-4 right-4 p-2 bg-white/20 rounded-full hover:bg-white/40 transition-all">
@@ -283,7 +286,7 @@ function NodeDetailPopup({ node, onClose }) {
                 </div>
             )}
         </>
-    );
+    ), document.body);
 }
 
 // --- Main Viewer ---

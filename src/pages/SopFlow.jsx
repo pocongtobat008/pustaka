@@ -263,7 +263,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                 size="max-w-7xl"
                 noPadding
             >
-                <div className="flex flex-col h-[85vh]">
+                <div className="flex h-full min-h-0 flex-col">
                     <div className="p-6 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div className="space-y-2 lg:col-span-1">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Judul SOP</label>
@@ -414,7 +414,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                 size="max-w-6xl"
                 noPadding
             >
-                <div className="flex flex-col h-[80vh]">
+                <div className="flex h-full min-h-0 flex-col">
                     {/* SOP Info Header */}
                     <div className="p-5 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
                         <div className="flex items-center justify-between">
