@@ -5,7 +5,7 @@ export const up = async (knex) => {
         const hasColumn = await knex.schema.hasColumn('tax_audit_notes', 'ocrContent');
         if (!hasColumn) {
             await knex.schema.alterTable('tax_audit_notes', (table) => {
-                table.specificType('ocrContent', 'LONGTEXT');
+                table.text('ocrContent', 'longtext');
             });
             console.log('  ✅ Added ocrContent to tax_audit_notes');
         }

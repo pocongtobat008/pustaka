@@ -32,9 +32,16 @@ export const up = async (knex) => {
 
     // 3. Fix ID type
     const columnInfo = await knex('comments').columnInfo('id');
-    if (columnInfo.type !== 'varchar' && columnInfo.type !== 'string') {
+    if (columnInfo.type !== 'varchar' && columnInfo.type !== 'string' && columnInfo.type !== 'character varying') {
         console.log('Converting ID to VARCHAR(50)...');
-        await knex.raw('ALTER TABLE comments MODIFY id VARCHAR(50) NOT NULL');
+        if (knex.client.config.client === 'pg') {
+            await knex.raw('ALTER TABLE comments ALTER COLUMN id DROP DEFAULT');
+            await knex.raw('ALTER TABLE comments ALTER COLUMN id TYPE VARCHAR(50) USING id::VARCHAR');
+        } else {
+            await knex.schema.alterTable('comments', table => {
+                table.string('id', 50).notNullable().alter();
+            });
+        }
     }
 
     // 4. Drop old columns if they exist

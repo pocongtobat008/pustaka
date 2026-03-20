@@ -15,17 +15,34 @@ async function safeCreateTable(knex, tableName, builder) {
 // Helper: Add unique index defensively
 async function safeAddUnique(knex, tableName, column) {
     try {
-        const [indexes] = await knex.raw('SHOW INDEX FROM ?? WHERE Column_name = ? AND Non_unique = 0', [tableName, column]);
-        if (indexes && indexes.length > 0) {
-            console.log(`  ⏭️  Unique index already exists on ${tableName}.${column}`);
-            return;
+        if (knex.client.config.client === 'mysql2') {
+            const [indexes] = await knex.raw('SHOW INDEX FROM ?? WHERE Column_name = ? AND Non_unique = 0', [tableName, column]);
+            if (indexes && indexes.length > 0) {
+                console.log(`  ⏭️  Unique index already exists on ${tableName}.${column}`);
+                return;
+            }
+        } else if (knex.client.config.client === 'pg') {
+            const hasIndex = await knex.raw(`
+                SELECT 1 FROM pg_indexes 
+                WHERE tablename = ? AND indexname = ?
+            `, [tableName, `${tableName}_${column}_unique`]);
+
+            if (hasIndex.rows && hasIndex.rows.length > 0) {
+                console.log(`  ⏭️  Unique index already exists on ${tableName}.${column}`);
+                return;
+            }
         }
+
         await knex.schema.alterTable(tableName, (table) => {
             table.unique(column);
         });
         console.log(`  ✅ Added unique index to ${tableName}.${column}`);
     } catch (err) {
-        console.warn(`  ⚠️  Failed to add unique index to ${tableName}.${column}: ${err.message}`);
+        if (err.message.includes('already exists') || err.message.includes('Duplicate field name') || err.code === '42P07') {
+            console.log(`  ⏭️  Unique index already exists on ${tableName}.${column}`);
+        } else {
+            console.warn(`  ⚠️  Failed to add unique index to ${tableName}.${column}: ${err.message}`);
+        }
     }
 }
 
@@ -58,7 +75,7 @@ export const up = async (knex) => {
         table.integer('id').primary();
         table.string('status', 50);
         table.dateTime('lastUpdated');
-        table.specificType('box_data', 'LONGTEXT');
+        table.text('box_data', 'longtext');
         table.text('history');
     });
 
@@ -83,14 +100,14 @@ export const up = async (knex) => {
         table.string('folderId');
         table.string('department', 100);
         table.string('owner', 100);
-        table.specificType('ocrContent', 'LONGTEXT');
+        table.text('ocrContent', 'longtext');
         table.string('auditId');
         table.integer('stepIndex');
-        table.specificType('fileData', 'LONGTEXT');
-        table.specificType('versionsHistory', 'LONGTEXT');
+        table.text('fileData', 'longtext');
+        table.text('versionsHistory', 'longtext');
         table.integer('version').defaultTo(1);
         table.string('status', 50).defaultTo('ready');
-        table.specificType('vector', 'LONGTEXT');
+        table.text('vector', 'longtext');
     });
 
     await safeCreateTable(knex, 'logs', (table) => {
@@ -119,7 +136,7 @@ export const up = async (knex) => {
         table.string('month', 50);
         table.integer('year');
         table.integer('pembetulan').defaultTo(0);
-        table.specificType('data', 'LONGTEXT');
+        table.text('data', 'longtext');
     });
 
     await safeCreateTable(knex, 'external_items', (table) => {
@@ -157,10 +174,10 @@ export const up = async (knex) => {
         table.string('payment_date', 100);
         table.text('file_url');
         table.string('file_name');
-        table.specificType('ocr_content', 'LONGTEXT');
+        table.text('ocr_content', 'longtext');
         table.index('invoice_no');
         table.index('vendor');
-        table.specificType('vector', 'LONGTEXT');
+        table.text('vector', 'longtext');
         table.foreign('ordner_ref_id').references('id').inTable('ordners').onDelete('CASCADE');
     });
 
@@ -174,7 +191,7 @@ export const up = async (knex) => {
         table.dateTime('date');
         table.decimal('amount', 15, 2);
         table.text('file_url');
-        table.specificType('ocr_content', 'LONGTEXT');
+        table.text('ocr_content', 'longtext');
         table.dateTime('created_at').defaultTo(knex.fn.now());
         table.index(['invoice_no', 'vendor']);
     });
@@ -213,14 +230,14 @@ export const up = async (knex) => {
         table.string('name');
         table.text('note');
         table.decimal('rate', 5, 2);
-        table.specificType('vector', 'LONGTEXT');
+        table.text('vector', 'longtext');
         table.dateTime('created_at').defaultTo(knex.fn.now());
     });
 
     await safeCreateTable(knex, 'job_queue', (table) => {
         table.increments('id').primary();
         table.string('name');
-        table.specificType('data', 'LONGTEXT');
+        table.text('data', 'longtext');
         table.string('status', 50).defaultTo('waiting');
         table.integer('progress').defaultTo(0);
         table.dateTime('created_at').defaultTo(knex.fn.now());
@@ -241,7 +258,7 @@ export const up = async (knex) => {
         table.string('status', 50).defaultTo('Pending');
         table.integer('current_step_index').defaultTo(0);
         table.dateTime('created_at').defaultTo(knex.fn.now());
-        table.specificType('ocr_content', 'LONGTEXT');
+        table.text('ocr_content', 'longtext');
     });
 
     await safeCreateTable(knex, 'approval_steps', (table) => {
@@ -256,7 +273,7 @@ export const up = async (knex) => {
         table.text('attachment_url');
         table.text('attachment_name');
         table.text('instruction');
-        table.specificType('vector', 'LONGTEXT');
+        table.text('vector', 'longtext');
         table.foreign('approval_id').references('id').inTable('document_approvals').onDelete('CASCADE');
     });
 
@@ -264,7 +281,7 @@ export const up = async (knex) => {
         table.increments('id').primary();
         table.string('name');
         table.text('description');
-        table.specificType('steps', 'LONGTEXT');
+        table.text('steps', 'longtext');
     });
 
     await safeCreateTable(knex, 'pustaka_guides', (table) => {

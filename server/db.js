@@ -152,11 +152,6 @@ const initDb = async () => {
             console.log(`Inisialisasi Database: Menambahkan ${missingSlots.length} slot yang hilang...`);
             await knex('inventory').insert(missingSlots);
             console.log('Sinkronisasi slot inventory berhasil.');
-
-            // PostgreSQL Sequence Fix: Reset sequence agar ID berikutnya tidak bentrok
-            if (knex.client.config.client === 'pg') {
-                await knex.raw('SELECT setval(\'inventory_id_seq\', (SELECT MAX(id) FROM inventory))');
-            }
         }
 
         // --- FIX: Tax Tables are now strictly defined in 20260228140000 Knex migration ---

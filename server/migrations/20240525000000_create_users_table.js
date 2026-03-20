@@ -2,9 +2,9 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-export const up = async function(knex) {
+export const up = async function (knex) {
   const hasTable = await knex.schema.hasTable('users');
-  
+
   if (!hasTable) {
     // Jika tabel belum ada, buat baru dengan constraint unik
     await knex.schema.createTable('users', table => {
@@ -33,22 +33,29 @@ export const up = async function(knex) {
     // Tambahkan unique constraint secara terpisah dengan pengecekan manual untuk menghindari error "Duplicate key"
     if (!hasUsername) {
       try {
-        // Cara yang lebih aman untuk mengecek keberadaan index unik
-        const result = await knex.raw(`SHOW INDEX FROM users WHERE Column_name = 'username' AND Non_unique = 0`);
-        const indexExists = result[0] && result[0].length > 0;
-        
-        if (!indexExists) {
-          await knex.schema.alterTable('users', table => {
-            table.unique('username');
-          });
+        if (knex.client.config.client === 'mysql2') {
+          const result = await knex.raw(`SHOW INDEX FROM users WHERE Column_name = 'username' AND Non_unique = 0`);
+          const indexExists = result[0] && result[0].length > 0;
+          if (indexExists) return;
+        } else if (knex.client.config.client === 'pg') {
+          const hasIndex = await knex.raw(`SELECT 1 FROM pg_indexes WHERE tablename = ? AND indexname = ?`, ['users', 'users_username_unique']);
+          if (hasIndex.rows && hasIndex.rows.length > 0) return;
         }
+
+        await knex.schema.alterTable('users', table => {
+          table.unique('username');
+        });
       } catch (e) {
-        console.warn("Skipping unique constraint creation for users.username (might already exist)");
+        if (e.message.includes('already exists') || e.code === '23505' || e.code === '42P07') {
+          console.log("Unique constraint for users.username already exists.");
+        } else {
+          console.warn("Skipping unique constraint creation for users.username:", e.message);
+        }
       }
     }
   }
 };
 
-export const down = async function(knex) {
+export const down = async function (knex) {
   await knex.schema.dropTableIfExists('users');
 };

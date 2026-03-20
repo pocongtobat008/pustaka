@@ -17,7 +17,7 @@ export const up = async (knex) => {
     console.log('[MIGRATION] add_vector_to_approval_steps UP');
 
     await addColumnIfNotExists('approval_steps', 'vector', (table) => {
-        table.specificType('vector', 'LONGTEXT');
+        table.text('vector', 'longtext');
     });
 
     await addColumnIfNotExists('approval_steps', 'instruction', (table) => {

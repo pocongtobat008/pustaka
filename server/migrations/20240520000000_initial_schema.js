@@ -2,7 +2,7 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-export const up = async function(knex) {
+export const up = async function (knex) {
   if (!(await knex.schema.hasTable('users'))) {
     await knex.schema.createTable('users', table => {
       table.increments('id').primary();
@@ -53,9 +53,9 @@ export const up = async function(knex) {
       table.timestamp('uploadDate').defaultTo(knex.fn.now());
       table.integer('folderId').unsigned().references('id').inTable('folders').onDelete('SET NULL');
       table.string('owner');
-      table.specificType('ocrContent', 'LONGTEXT');
+      table.text('ocrContent', 'longtext');
       table.string('url');
-      table.specificType('file_data', 'LONGTEXT');
+      table.text('file_data', 'longtext');
       table.integer('version').defaultTo(1);
       table.json('versionsHistory');
       table.string('status');
@@ -102,7 +102,7 @@ export const up = async function(knex) {
       table.string('requester_username');
       table.string('attachment_url');
       table.string('attachment_name');
-      table.specificType('ocr_content', 'LONGTEXT');
+      table.text('ocr_content', 'longtext');
       table.string('status').defaultTo('Pending');
       table.integer('current_step_index').defaultTo(0);
       table.integer('flow_id');
@@ -260,8 +260,10 @@ export const up = async function(knex) {
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-export const down = async function(knex) {
-  await knex.raw('SET FOREIGN_KEY_CHECKS = 0');
+export const down = async function (knex) {
+  if (knex.client.config.client === 'mysql2') {
+    await knex.raw('SET FOREIGN_KEY_CHECKS = 0');
+  }
   await knex.schema
     .dropTableIfExists('tax_audit_notes')
     .dropTableIfExists('comments')
@@ -283,5 +285,7 @@ export const down = async function(knex) {
     .dropTableIfExists('roles')
     .dropTableIfExists('departments')
     .dropTableIfExists('users');
-  await knex.raw('SET FOREIGN_KEY_CHECKS = 1');
+  if (knex.client.config.client === 'mysql2') {
+    await knex.raw('SET FOREIGN_KEY_CHECKS = 1');
+  }
 };

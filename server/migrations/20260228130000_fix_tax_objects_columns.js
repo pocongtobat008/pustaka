@@ -59,17 +59,25 @@ export const up = async function (knex) {
     const hasTaxWp = await knex.schema.hasTable('tax_wp');
     if (hasTaxWp) {
         try {
-            const [indexes] = await knex.raw("SHOW INDEX FROM tax_wp WHERE Column_name = 'identity_number'");
-            const isUnique = indexes.some(idx => idx.Non_unique === 0);
-
-            if (!isUnique) {
-                await knex.schema.alterTable('tax_wp', table => {
-                    table.unique('identity_number');
-                });
-                console.log(`[Migration] Added unique constraint to tax_wp.identity_number`);
+            if (knex.client.config.client === 'mysql2') {
+                const [indexes] = await knex.raw("SHOW INDEX FROM tax_wp WHERE Column_name = 'identity_number'");
+                const isUnique = indexes.some(idx => idx.Non_unique === 0);
+                if (isUnique) return;
+            } else if (knex.client.config.client === 'pg') {
+                const hasIndex = await knex.raw(`SELECT 1 FROM pg_indexes WHERE tablename = ? AND indexname = ?`, ['tax_wp', 'tax_wp_identity_number_unique']);
+                if (hasIndex.rows && hasIndex.rows.length > 0) return;
             }
+
+            await knex.schema.alterTable('tax_wp', table => {
+                table.unique('identity_number');
+            });
+            console.log(`[Migration] Added unique constraint to tax_wp.identity_number`);
         } catch (e) {
-            console.log(`[Migration] Unique constraint check failed (likely already unique)`);
+            if (e.message.includes('already exists') || e.code === '23505' || e.code === '42P07') {
+                console.log(`[Migration] Unique constraint already exists on tax_wp.identity_number`);
+            } else {
+                console.warn(`[Migration] Failed to add unique constraint to tax_wp.identity_number: ${e.message}`);
+            }
         }
     }
 };

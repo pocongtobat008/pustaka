@@ -5,7 +5,7 @@ export const up = async (knex) => {
         const hasVisualConfig = await knex.schema.hasColumn('approval_flows', 'visual_config');
         if (!hasVisualConfig) {
             await knex.schema.table('approval_flows', (table) => {
-                table.specificType('visual_config', 'LONGTEXT');
+                table.text('visual_config', 'longtext');
             });
         }
     }
