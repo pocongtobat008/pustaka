@@ -21,3 +21,28 @@ export const SummaryCard = ({ title, value, subtext, icon: Icon, colorClass }) =
         </div>
     </Card>
 );
+
+export const CardHeader = React.forwardRef(({ className = '', ...props }, ref) => (
+    <div ref={ref} className={`flex flex-col space-y-1.5 ${className}`} {...props} />
+));
+CardHeader.displayName = "CardHeader";
+
+export const CardTitle = React.forwardRef(({ className = '', ...props }, ref) => (
+    <h3 ref={ref} className={`font-semibold leading-none tracking-tight ${className}`} {...props} />
+));
+CardTitle.displayName = "CardTitle";
+
+export const CardDescription = React.forwardRef(({ className = '', ...props }, ref) => (
+    <p ref={ref} className={`text-sm text-gray-500 dark:text-slate-400 ${className}`} {...props} />
+));
+CardDescription.displayName = "CardDescription";
+
+export const CardContent = React.forwardRef(({ className = '', ...props }, ref) => (
+    <div ref={ref} className={`pt-0 ${className}`} {...props} />
+));
+CardContent.displayName = "CardContent";
+
+export const CardFooter = React.forwardRef(({ className = '', ...props }, ref) => (
+    <div ref={ref} className={`flex items-center pt-0 ${className}`} {...props} />
+));
+CardFooter.displayName = "CardFooter";

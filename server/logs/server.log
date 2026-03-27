@@ -17995,3 +17995,12 @@
 {"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 216.762 ms - -\u001b[0m","timestamp":"2026-03-27 17:34:59"}
 {"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 40.714 ms - -\u001b[0m","timestamp":"2026-03-27 17:34:59"}
 {"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 40.735 ms - -\u001b[0m","timestamp":"2026-03-27 17:34:59"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-27 18:33:31"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 18:33:31"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-27 18:33:31"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-27 18:33:31"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-27 18:33:31"}
+{"level":"info","message":"Client connected: aOu2n0iwR4OI3BDKAAAC","timestamp":"2026-03-27 18:33:33"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 18:33:33"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 18:33:33"}
+{"level":"info","message":"Client connected: -nFx5MQAj9SnOfjfAAAD","timestamp":"2026-03-27 18:33:33"}
