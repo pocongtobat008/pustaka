@@ -969,7 +969,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
             "Tips Kepatuhan: Selalu gunakan fitur 'Notes' untuk mencatat setiap interaksi dengan pemeriksa pajak.",
             "Info AI: Dokumen yang di-upload di setiap tahap otomatis terindeks untuk pencarian cepat saat pembahasan akhir.",
             "Saran: Lakukan review mingguan terhadap progress bar pemeriksaan untuk menghindari keterlambatan respon SPHP.",
-            "Sistem Optimal: Semua data pemeriksaan tersinkronisasi dengan aman di Digital Vault."
+            "Sistem Optimal: Semua data pemeriksaan tersinkronisasi dengan aman di Arsip Digital."
         ];
         return {
             text: tips[new Date().getHours() % tips.length],

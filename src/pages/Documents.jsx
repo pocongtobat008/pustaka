@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import mammoth from 'mammoth';
 import * as XLSX from 'xlsx';
+import { createPortal } from 'react-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
     HardDrive, ChevronRight, ChevronLeft, Search, Plus, UploadCloud, FolderOpen,
     Trash2, Edit3, FileDigit, FileText, Highlighter, History, PenLine, User, Clock, Paperclip,
     Copy, Move, RefreshCw, X, Lock, Users, Building, Shield, Download, Eye, File, Image, MoreVertical, Sparkles, AlertCircle, TrendingUp, ShieldCheck, Truck, ArrowLeftRight, FileStack,
-    LayoutGrid, List, Check
+    LayoutGrid, List, Check, ZoomIn
 } from 'lucide-react';
 import { SummaryCard } from '../components/ui/Card';
 import { db as api, API_URL } from '../services/database';
@@ -102,6 +104,7 @@ export default function Documents({
     const [previewHtml, setPreviewHtml] = useState('');
     const [isGeneratingPreview, setIsGeneratingPreview] = useState(false);
     const [pdfBlobUrl, setPdfBlobUrl] = useState(null);
+    const [zoomedImage, setZoomedImage] = useState(null);
 
     // --- BULK SELECTION STATE ---
     const [selectedDocIds, setSelectedDocIds] = useState(new Set());
@@ -604,7 +607,7 @@ export default function Documents({
 
                 <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-white/40 dark:border-white/10 shadow-xl ring-1 ring-black/5">
                     <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto">
-                        <div className="flex gap-1 mr-2 bg-gray-100 dark:bg-slate-800 rounded-lg p-1">
+                        <div className="flex gap-1 mr-2 bg-gray-100 dark:bg-slate-800 border dark:border-slate-700/50 rounded-lg p-1 shadow-inner">
                             <button onClick={navigateBack} disabled={historyIndex <= 0} className={`p-1 rounded hover:bg-white dark:hover:bg-slate-700 transition-colors ${historyIndex <= 0 ? 'text-gray-300 dark:text-slate-600' : 'text-gray-600 dark:text-slate-300'}`}>
                                 <ChevronLeft size={18} />
                             </button>
@@ -612,7 +615,7 @@ export default function Documents({
                                 <ChevronRight size={18} />
                             </button>
                         </div>
-                        <button onClick={() => navigateFolder(null)} className={`p-2 rounded-lg ${currentFolderId === null ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100 text-gray-500'}`}>
+                        <button onClick={() => navigateFolder(null)} className={`p-2 rounded-lg transition-all ${currentFolderId === null ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-600 dark:text-white shadow-sm' : 'hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-500 dark:text-slate-400'}`}>
                             <HardDrive size={20} />
                         </button>
                         {currentFolderId && (
@@ -1716,7 +1719,18 @@ export default function Documents({
                                 <p className="text-sm font-bold text-slate-500 animate-pulse">{isEnglish ? 'Preparing Preview...' : 'Menyiapkan Preview...'}</p>
                             </div>
                         ) : previewFile?.type?.toLowerCase()?.startsWith('image/') ? (
-                            <img src={previewFile?.fileData || previewFile?.file_data || previewFile?.filedata || getFullUrl(previewFile?.url) || undefined} alt="Preview" className="max-w-full max-h-full object-contain" onError={(e) => { e.target.style.display = 'none'; }} />
+                            <div className="relative w-full h-full group/preview">
+                                <img src={previewFile?.fileData || previewFile?.file_data || previewFile?.filedata || getFullUrl(previewFile?.url) || undefined} alt="Preview" className="max-w-full max-h-full object-contain" onError={(e) => { e.target.style.display = 'none'; }} />
+                                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/preview:opacity-100 transition-opacity flex items-center justify-center">
+                                    <button
+                                        onClick={() => setZoomedImage(previewFile?.fileData || previewFile?.file_data || previewFile?.filedata || getFullUrl(previewFile?.url))}
+                                        className="p-4 bg-white/20 hover:bg-white/40 text-white rounded-2xl backdrop-blur-xl transition-all hover:scale-110 shadow-2xl"
+                                        title="Zoom Detail"
+                                    >
+                                        <ZoomIn size={32} />
+                                    </button>
+                                </div>
+                            </div>
                         ) : previewFile?.type?.toLowerCase()?.includes('pdf') ? (
                             pdfBlobUrl ? (
                                 <PdfViewer src={pdfBlobUrl} className="w-full h-full" />
@@ -1783,7 +1797,19 @@ export default function Documents({
                                                                 <span className="text-[9px] font-bold truncate max-w-[100px]">{c.attachmentName}</span>
                                                             </div>
                                                             <div className="flex gap-2 shrink-0 ml-2">
-                                                                <button onClick={() => handlePreview({ id: 'att-' + c.id, url: c.attachmentUrl, title: c.attachmentName, type: c.attachmentType, fileData: null }, true)} className={`text-[9px] font-black uppercase hover:underline ${isMe ? 'text-white' : 'text-indigo-600'}`}>Preview</button>
+                                                                <button
+                                                                    onClick={() => {
+                                                                        const imgUrl = getFullUrl(c.attachmentUrl);
+                                                                        if (c.attachmentType?.startsWith('image/')) {
+                                                                            setZoomedImage(imgUrl);
+                                                                        } else {
+                                                                            handlePreview({ id: 'att-' + c.id, url: c.attachmentUrl, title: c.attachmentName, type: c.attachmentType, fileData: null }, true);
+                                                                        }
+                                                                    }}
+                                                                    className={`text-[9px] font-black uppercase hover:underline ${isMe ? 'text-white' : 'text-indigo-600'}`}
+                                                                >
+                                                                    {c.attachmentType?.startsWith('image/') ? 'Zoom' : 'Preview'}
+                                                                </button>
                                                                 {hasPermission('documents', 'edit') && (
                                                                     <button onClick={() => handlePromoteAttachment(c.id)} className={`text-[9px] font-black uppercase hover:underline ${isMe ? 'text-emerald-300' : 'text-emerald-600'}`}>{isEnglish ? 'Revise' : 'Revisi'}</button>
                                                                 )}
@@ -1838,6 +1864,62 @@ export default function Documents({
                     </div>
                 </div>
             </Modal>
+            <AnimatePresence>
+                {zoomedImage && createPortal(
+                    <motion.div
+                        key="zoomed-image-portal"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[10001] bg-black/95 backdrop-blur-xl flex items-center justify-center p-0 overflow-hidden"
+                        onClick={() => setZoomedImage(null)}
+                    >
+                        <motion.button
+                            initial={{ scale: 0.5, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            className="absolute top-8 right-8 p-4 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all z-20 backdrop-blur-md"
+                            onClick={(e) => { e.stopPropagation(); setZoomedImage(null); }}
+                        >
+                            <X size={32} />
+                        </motion.button>
+
+                        <motion.div
+                            initial={{ scale: 0.9, y: 20, opacity: 0 }}
+                            animate={{ scale: 1, y: 0, opacity: 1 }}
+                            exit={{ scale: 0.9, y: 20, opacity: 0 }}
+                            className="relative w-full h-full flex items-center justify-center"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <img
+                                src={zoomedImage}
+                                alt="Zoomed"
+                                className="w-full h-full object-contain cursor-zoom-out"
+                                onClick={() => setZoomedImage(null)}
+                            />
+
+                            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center gap-4 text-white shadow-2xl">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                                    <span className="text-xs font-black uppercase tracking-widest">{isEnglish ? 'High Quality' : 'Kualitas Tinggi'}</span>
+                                </div>
+                                <div className="h-4 w-px bg-white/20" />
+                                <button
+                                    onClick={() => {
+                                        const link = document.createElement('a');
+                                        link.href = zoomedImage;
+                                        link.download = 'attachment_full.png';
+                                        link.click();
+                                    }}
+                                    className="text-xs font-black uppercase tracking-widest hover:text-emerald-400 transition-colors"
+                                >
+                                    Download
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>,
+                    document.body
+                )}
+            </AnimatePresence>
         </>
     );
 }

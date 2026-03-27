@@ -6,6 +6,7 @@ export default function MasterDataModals({
     userForm, setUserForm, handleSaveUser,
     deptForm, setDeptForm, handleSaveDept,
     roleForm, setRoleForm, handleSaveRole, handleTogglePermission,
+    handleBulkPermission,
     roles, departments, APP_MODULES
 }) {
     if (!['user-create', 'dept-form', 'role-create', 'role-edit'].includes(modalTab)) return null;
@@ -132,18 +133,45 @@ export default function MasterDataModals({
                         <table className="w-full text-sm">
                             <thead>
                                 <tr className="bg-slate-100/50 dark:bg-slate-800/50">
-                                    <th className="px-6 py-4 text-left text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Modul</th>
-                                    <th className="px-4 py-4 text-center text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">View</th>
-                                    <th className="px-4 py-4 text-center text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Create</th>
-                                    <th className="px-4 py-4 text-center text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Edit</th>
-                                    <th className="px-4 py-4 text-center text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Delete</th>
+                                    <th className="px-6 py-4 text-left">
+                                        <div className="flex items-center gap-3">
+                                            <input
+                                                type="checkbox"
+                                                checked={Object.values(APP_MODULES).every(m => ['view', 'create', 'edit', 'delete'].every(a => (roleForm.permissions[m.id] || []).includes(a)))}
+                                                onChange={() => handleBulkPermission('all')}
+                                                className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                                            />
+                                            <span className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Modul</span>
+                                        </div>
+                                    </th>
+                                    {['view', 'create', 'edit', 'delete'].map(action => (
+                                        <th key={action} className="px-4 py-4 text-center">
+                                            <div className="flex flex-col items-center gap-1">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={Object.values(APP_MODULES).every(m => (roleForm.permissions[m.id] || []).includes(action))}
+                                                    onChange={() => handleBulkPermission('action', action)}
+                                                    className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                                                />
+                                                <span className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">{action}</span>
+                                            </div>
+                                        </th>
+                                    ))}
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-white/10 dark:divide-white/5">
                                 {Object.values(APP_MODULES).map(mod => (
                                     <tr key={mod.id} className="hover:bg-white/30 dark:hover:bg-slate-800/30 transition-colors">
                                         <td className="px-6 py-4">
-                                            <span className="font-black text-slate-700 dark:text-slate-200">{mod.label}</span>
+                                            <div className="flex items-center gap-3">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={['view', 'create', 'edit', 'delete'].every(a => (roleForm.permissions[mod.id] || []).includes(a))}
+                                                    onChange={() => handleBulkPermission('module', mod.id)}
+                                                    className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                                                />
+                                                <span className="font-black text-slate-700 dark:text-slate-200">{mod.label}</span>
+                                            </div>
                                         </td>
                                         {['view', 'create', 'edit', 'delete'].map(action => (
                                             <td key={action} className="text-center py-4">

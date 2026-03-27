@@ -32,7 +32,7 @@ export const useAppStore = create((set) => ({
     setIsModalOpen: (val) => set({ isModalOpen: val }),
     setModalTab: (val) => set({ modalTab: val }),
     setCopyNotification: (val) => set({ copyNotification: val }),
-    setLogs: (logs) => set({ logs }),
+    setLogs: (logs) => set((state) => ({ logs: typeof logs === 'function' ? logs(state.logs) : logs })),
 
     reset: () => set(initialState),
 }));

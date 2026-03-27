@@ -99,7 +99,8 @@ export const deleteRole = async (req, res) => {
 export const createDepartment = async (req, res) => {
     try {
         const { name } = req.body;
-        const [id] = await knex('departments').insert({ name });
+        const [dbRes] = await knex('departments').insert({ name }).returning('id');
+        const id = typeof dbRes === 'object' ? dbRes.id : dbRes;
         req.app.get('io')?.emit('data:changed', { channel: 'system' });
         res.json({ id });
     } catch (err) {
@@ -154,7 +155,7 @@ export const getFolderById = async (req, res) => {
 export const createFolder = async (req, res) => {
     try {
         const { name, parentId, privacy, allowedDepts, allowedUsers } = req.body;
-        const [id] = await knex('folders').insert({
+        const [dbRes] = await knex('folders').insert({
             name,
             parentId: parentId || null,
             privacy: privacy || 'public',
@@ -162,7 +163,8 @@ export const createFolder = async (req, res) => {
             allowedUsers: JSON.stringify(allowedUsers || []),
             owner: req.user?.username || 'System',
             createdAt: knex.fn.now()
-        });
+        }).returning('id');
+        const id = typeof dbRes === 'object' ? dbRes.id : dbRes;
         req.app.get('io')?.emit('data:changed', { channel: 'system' });
         res.json({ id });
     } catch (err) {
@@ -199,7 +201,7 @@ export const updateFolder = async (req, res) => {
 export const deleteFolder = async (req, res) => {
     try {
         const { id } = req.params;
-        
+
         // Get existing folder to check ownership
         const existing = await knex('folders').where('id', id).first();
         if (!existing) {
@@ -223,7 +225,7 @@ export const deleteFolder = async (req, res) => {
 export const moveFolder = async (req, res) => {
     try {
         const { id, targetParentId } = req.body;
-        
+
         // Get existing folder to check ownership
         const existing = await knex('folders').where('id', id).first();
         if (!existing) {
@@ -256,14 +258,15 @@ export const copyFolder = async (req, res) => {
             return res.status(403).json({ error: 'Hanya owner folder atau admin yang dapat menyalin folder ini' });
         }
 
-        const [newId] = await knex('folders').insert({
+        const [dbRes] = await knex('folders').insert({
             ...folder,
             id: undefined, // Let DB generate new ID
             name: `Copy of ${folder.name}`,
             parentId: targetParentId || null,
             owner: req.user?.username || 'System', // New copy is owned by current user
             createdAt: knex.fn.now()
-        });
+        }).returning('id');
+        const newId = typeof dbRes === 'object' ? dbRes.id : dbRes;
         req.app.get('io')?.emit('data:changed', { channel: 'system' });
         res.json({ success: true, id: newId });
     } catch (err) {

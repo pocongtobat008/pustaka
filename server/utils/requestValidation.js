@@ -1,22 +1,22 @@
 import { z } from 'zod';
 
-const privacyEnum = z.enum(['public', 'department', 'specific_users']);
+const privacyEnum = z.enum(['public', 'private', 'department', 'specific', 'specific_users', 'dept', 'user']);
 
 export const jobCreateSchema = z.object({
     title: z.string().min(1, 'title is required'),
-    dueDate: z.string().optional(),
+    dueDate: z.string().nullable().optional(),
     assignedTo: z.any().optional(),
-    privacy: privacyEnum.optional(),
-    allowedUsers: z.array(z.string()).optional(),
-    allowedDepts: z.array(z.string()).optional(),
-    type: z.string().optional(),
-    targetDept: z.string().optional(),
-    owner: z.string().optional(),
-    status: z.string().optional(),
-    completedMonths: z.array(z.any()).optional(),
-    completed_months: z.union([z.string(), z.array(z.any())]).optional(),
-    issues: z.array(z.any()).optional(),
-    kendala: z.string().optional()
+    privacy: privacyEnum.nullable().optional(),
+    allowedUsers: z.array(z.string()).nullable().optional(),
+    allowedDepts: z.array(z.string()).nullable().optional(),
+    type: z.string().nullable().optional(),
+    targetDept: z.string().nullable().optional(),
+    owner: z.string().nullable().optional(),
+    status: z.string().nullable().optional(),
+    completedMonths: z.array(z.any()).nullable().optional(),
+    completed_months: z.union([z.string(), z.array(z.any())]).nullable().optional(),
+    issues: z.array(z.any()).nullable().optional(),
+    kendala: z.string().nullable().optional()
 }).passthrough();
 
 export const jobUpdateSchema = jobCreateSchema.partial();
@@ -168,13 +168,13 @@ export const moveInventoryItemSchema = z.object({
 
 export const pustakaGuideCreateSchema = z.object({
     title: z.string().min(1, 'title is required'),
-    content: z.string().optional(),
-    category: z.string().optional(),
-    description: z.string().optional(),
-    icon: z.string().optional(),
-    privacy: z.string().optional(),
-    allowed_depts: z.array(z.string()).optional(),
-    allowed_users: z.array(z.string()).optional()
+    content: z.string().nullable().optional(),
+    category: z.string().nullable().optional(),
+    description: z.string().nullable().optional(),
+    icon: z.string().nullable().optional(),
+    privacy: privacyEnum.nullable().optional(),
+    allowed_depts: z.array(z.string()).nullable().optional(),
+    allowed_users: z.array(z.string()).nullable().optional()
 }).passthrough();
 
 export const pustakaGuideUpdateSchema = pustakaGuideCreateSchema.partial();
@@ -234,32 +234,32 @@ export const taxAuditNoteSchema = z.object({
 }).passthrough();
 
 export function validateRequestBody(schema, req, res) {
-        try {
-            if (!schema || typeof schema.safeParse !== 'function') {
-                res.status(500).json({ error: 'Internal validation error: invalid schema' });
-                return null;
-            }
-            
-            const parsed = schema.safeParse(req.body);
-            if (!parsed.success) {
-                res.status(400).json({
-                    error: 'Validation failed',
-                    details: parsed.error.issues.map((issue) => ({
-                        path: issue.path.join('.') || '(root)',
-                        message: issue.message
-                    }))
-                });
-                return null;
-            }
-            return parsed.data;
-        } catch (err) {
-            console.error('[validateRequestBody] Error:', err.message);
-            res.status(500).json({ 
-                error: 'Validation error',
-                message: err.message 
+    try {
+        if (!schema || typeof schema.safeParse !== 'function') {
+            res.status(500).json({ error: 'Internal validation error: invalid schema' });
+            return null;
+        }
+
+        const parsed = schema.safeParse(req.body);
+        if (!parsed.success) {
+            res.status(400).json({
+                error: 'Validation failed',
+                details: parsed.error.issues.map((issue) => ({
+                    path: issue.path.join('.') || '(root)',
+                    message: issue.message
+                }))
             });
             return null;
         }
+        return parsed.data;
+    } catch (err) {
+        console.error('[validateRequestBody] Error:', err.message);
+        res.status(500).json({
+            error: 'Validation error',
+            message: err.message
+        });
+        return null;
+    }
 }
 
 export function validateBodyMiddleware(schema) {

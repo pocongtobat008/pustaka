@@ -106,7 +106,7 @@ const createAutoNotificationFromDataChange = async (payload) => {
     const message = payload?.message || `Ada perubahan data pada modul ${label}.`;
     const type = payload?.type || 'info';
 
-    const [id] = await knex('notifications').insert({
+    const [dbRes] = await knex('notifications').insert({
         title,
         message,
         type,
@@ -116,7 +116,9 @@ const createAutoNotificationFromDataChange = async (payload) => {
         created_by: payload?.actor || 'System',
         meta: JSON.stringify({ source: 'auto:data-changed', channel }),
         created_at: knex.fn.now()
-    });
+    }).returning('id');
+
+    const id = typeof dbRes === 'object' ? dbRes.id : dbRes;
 
     rawIoEmit('notification:new', {
         id,
@@ -229,13 +231,15 @@ app.post('/api/approvals', checkAuth, async (req, res) => {
         const { title, description, division, requester_name, requester_username, attachment_url, attachment_name, flow_id, steps, ocr_content } = req.body;
 
         // 1. Simpan ke tabel induk document_approvals
-        const [id] = await trx('document_approvals').insert({
+        const [dbRes] = await trx('document_approvals').insert({
             title, description, division, requester_name, requester_username,
             attachment_url, attachment_name, ocr_content, flow_id,
             status: 'Pending',
             current_step_index: 0,
             created_at: new Date()
-        });
+        }).returning('id');
+
+        const id = typeof dbRes === 'object' ? dbRes.id : dbRes;
 
         // 2. Simpan steps ke tabel approval_steps secara relasional
         if (steps && steps.length > 0) {
@@ -424,7 +428,7 @@ app.post('/api/jobs', checkAuth, async (req, res) => {
             : (typeof data.completed_months === 'string'
                 ? parseJsonArraySafe(data.completed_months)
                 : []);
-        const [id] = await knex('job_due_dates').insert({
+        const [dbRes] = await knex('job_due_dates').insert({
             title: data.title,
             due_date: data.dueDate,
             assigned_to: data.assignedTo,
@@ -440,7 +444,8 @@ app.post('/api/jobs', checkAuth, async (req, res) => {
             kendala: data.kendala,
             created_at: new Date(),
             updated_at: new Date()
-        });
+        }).returning('id');
+        const id = typeof dbRes === 'object' ? dbRes.id : dbRes;
         io.emit('data:changed', { channel: 'jobs' });
         res.json({ id, message: 'Jadwal berhasil dibuat' });
     } catch (err) {
@@ -499,7 +504,7 @@ app.delete('/api/jobs/:id', checkAuth, async (req, res) => {
     try {
         const { id } = req.params;
         const existing = await knex('job_due_dates').where({ id }).first();
-        
+
         if (!existing) {
             return res.status(404).json({ error: 'Jadwal tidak ditemukan' });
         }
@@ -583,9 +588,9 @@ app.get('/api/independent-issues', checkAuth, async (req, res) => {
         res.json(parsed);
     } catch (err) {
         console.error("CRITICAL ERROR GET /api/independent-issues:", err.message);
-        res.status(500).json({ 
+        res.status(500).json({
             error: "Gagal mengambil data issue. Pastikan tabel database sudah ada.",
-            details: err.message 
+            details: err.message
         });
     }
 });
@@ -595,7 +600,7 @@ app.post('/api/independent-issues', checkAuth, async (req, res) => {
         const data = validateRequestBody(independentIssueCreateSchema, req, res);
         if (!data) return;
 
-        const [id] = await knex('independent_issues').insert({
+        const [dbRes] = await knex('independent_issues').insert({
             note: data.note,
             detail: data.detail,
             status: data.status || 'pending',
@@ -605,7 +610,8 @@ app.post('/api/independent-issues', checkAuth, async (req, res) => {
             owner: data.owner || req.user?.username || 'system',
             created_at: new Date(),
             updated_at: new Date()
-        });
+        }).returning('id');
+        const id = typeof dbRes === 'object' ? dbRes.id : dbRes;
         io.emit('data:changed', { channel: 'independent-issues' });
         res.json({ id, message: 'Issue berhasil dibuat' });
     } catch (err) {
@@ -633,11 +639,11 @@ app.put('/api/independent-issues/:id', checkAuth, async (req, res) => {
         io.emit('data:changed', { channel: 'independent-issues' });
         res.json({ message: 'Issue berhasil diperbarui' });
     } catch (err) {
-            console.error('[PUT /api/independent-issues/:id] Error:', err);
-            res.status(500).json({ 
-                error: 'Failed to update issue',
-                message: err.message 
-            });
+        console.error('[PUT /api/independent-issues/:id] Error:', err);
+        res.status(500).json({
+            error: 'Failed to update issue',
+            message: err.message
+        });
     }
 });
 
@@ -709,7 +715,7 @@ app.post('/api/sop-flows', checkAuth, async (req, res) => {
         if (!data) return;
 
         const { title, description, category, steps, visual_config, privacy_type, allowed_departments, allowed_users } = data;
-        const [id] = await knex('sop_flows').insert({
+        const [dbRes] = await knex('sop_flows').insert({
             title,
             description,
             category,
@@ -721,15 +727,16 @@ app.post('/api/sop-flows', checkAuth, async (req, res) => {
             allowed_users: JSON.stringify(allowed_users || []),
             created_at: new Date(),
             updated_at: new Date()
-        });
+        }).returning('id');
+        const id = typeof dbRes === 'object' ? dbRes.id : dbRes;
         res.json({ id, message: 'SOP Flow created successfully' });
         io.emit('data:changed', { channel: 'sop-flows' });
     } catch (err) {
-            console.error('[POST /api/sop-flows] Error:', err);
-            res.status(500).json({ 
-                error: 'Failed to create SOP flow',
-                message: err.message 
-            });
+        console.error('[POST /api/sop-flows] Error:', err);
+        res.status(500).json({
+            error: 'Failed to create SOP flow',
+            message: err.message
+        });
     }
 });
 
@@ -882,7 +889,7 @@ const startServer = async () => {
         server.listen(PORT, '127.0.0.1', () => {
             console.log(`✅ BACKEND LISTENING: http://127.0.0.1:${PORT}`);
             console.log(`📁 Folder Upload: ${UPLOADS_DIR}`);
-            
+
             // Jalankan inisialisasi database SETELAH port terbuka
             (async () => {
                 try {
@@ -916,7 +923,7 @@ const startServer = async () => {
     } catch (err) {
         logger.error("❌ CRITICAL: Server failed to start!");
         logger.error(err.stack);
-        
+
         if (err.code === 'ECONNREFUSED') {
             logger.error(`Gagal terhubung ke layanan di ${err.address}:${err.port}. Pastikan MySQL/Redis sudah menyala.`);
         }

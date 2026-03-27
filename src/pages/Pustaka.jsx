@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     BookOpen, ChevronRight, ChevronLeft, Play,
@@ -51,133 +52,137 @@ const GuideAssistant = ({ message, isExplaining, onClick }) => (
 );
 
 
-const PustakaLandingPage = ({ onClose }) => (
-    <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[200] bg-slate-50/80 dark:bg-[#0B1437]/90 backdrop-blur-xl overflow-y-auto custom-scrollbar p-6 md:p-12"
-    >
-        <div className="max-w-5xl mx-auto">
-            <div className="flex justify-end mb-8">
-                <button
-                    onClick={onClose}
-                    className="p-3 bg-white dark:bg-slate-800 rounded-2xl shadow-lg text-slate-400 hover:text-red-500 transition-all hover:scale-110"
-                >
-                    <X size={24} />
-                </button>
-            </div>
-
-            <div className="text-center mb-16 space-y-6">
-                <motion.div
-                    initial={{ scale: 0.5, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.5 }}
-                    className="inline-flex items-center gap-2 px-6 py-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-full text-sm font-black uppercase tracking-widest mb-4"
-                >
-                    <Sparkles size={16} />
-                    <span>The Vision</span>
-                </motion.div>
-                <motion.h1
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                    className="text-5xl md:text-7xl font-black text-[#2B3674] dark:text-white tracking-tight leading-tight"
-                >
-                    Latar Belakang <br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Pustaka Pengetahuan</span>
-                </motion.h1>
-                <motion.p
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="text-xl text-slate-500 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed font-medium"
-                >
-                    Membangun fondasi pengetahuan yang kuat, terstruktur, dan siap menghadapi perkembangan di masa depan.
-                </motion.p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-                <motion.div
-                    initial={{ x: -50, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                    className="p-8 bg-white dark:bg-slate-800 rounded-[3rem] shadow-xl border border-slate-100 dark:border-slate-700 relative overflow-hidden group"
-                >
-                    <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-                        <AlertCircle size={120} />
-                    </div>
-                    <div className="w-14 h-14 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-2xl flex items-center justify-center mb-6 shadow-inner">
-                        <HelpCircle size={28} />
-                    </div>
-                    <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-4 uppercase tracking-tight">Tantangan Operasional</h3>
-                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                        Dalam lingkungan kerja yang dinamis, keberlangsungan operasional sangat bergantung pada ketersediaan informasi. Namun, banyak pengetahuan penting masih tersimpan secara personal pada masing-masing karyawan.
-                    </p>
-                    <div className="mt-6 p-4 bg-red-50/50 dark:bg-red-900/10 rounded-2xl border border-red-100 dark:border-red-900/20">
-                        <p className="text-sm text-red-700 dark:text-red-400 font-bold italic">
-                            "Kendala muncul saat karyawan cuti, mutasi, atau resign karena kurangnya panduan terdokumentasi."
-                        </p>
-                    </div>
-                </motion.div>
-
-                <motion.div
-                    initial={{ x: 50, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.5 }}
-                    className="p-8 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-[3rem] shadow-2xl text-white relative overflow-hidden group"
-                >
-                    <div className="absolute bottom-0 left-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
-                        <Rocket size={120} />
-                    </div>
-                    <div className="w-14 h-14 bg-white/20 backdrop-blur-md text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg">
-                        <Target size={28} />
-                    </div>
-                    <h3 className="text-2xl font-black mb-4 uppercase tracking-tight">Solusi Terpadu</h3>
-                    <p className="text-indigo-50 leading-relaxed font-medium">
-                        Pustaka Pengetahuan dibangun sebagai pusat dokumentasi digital yang berisi panduan kerja, tutorial, prosedur operasional, serta best practice dari setiap divisi.
-                    </p>
-                    <ul className="mt-6 space-y-3">
-                        {['User Guide Terpadu', 'Akses Kapan Saja', 'Dokumentasi Sistematis'].map((item, i) => (
-                            <li key={i} className="flex items-center gap-3 text-sm font-bold">
-                                <CheckCircle2 size={18} className="text-emerald-400" />
-                                {item}
-                            </li>
-                        ))}
-                    </ul>
-                </motion.div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-                {[
-                    { icon: Users, title: "Kemandirian Tim", desc: "Pengetahuan tidak lagi bergantung pada individu tertentu, menjaga keberlangsungan pekerjaan.", color: "bg-blue-50 text-blue-600" },
-                    { icon: Zap, title: "Adaptasi Cepat", desc: "Mempercepat proses onboarding karyawan baru melalui modul pembelajaran mandiri.", color: "bg-amber-50 text-amber-600" },
-                    { icon: Award, title: "Kualitas Berkelanjutan", desc: "Peningkatan kualitas kerja secara terus-menerus melalui standarisasi best practice.", color: "bg-emerald-50 text-emerald-600" }
-                ].map((feature, i) => (
-                    <motion.div
-                        key={i}
-                        initial={{ y: 30, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.6 + (i * 0.1) }}
-                        className="p-6 bg-white dark:bg-slate-800 rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-xl transition-all hover:-translate-y-2"
+const PustakaLandingPage = ({ onClose }) => {
+    if (typeof document === 'undefined') return null;
+    return createPortal(
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9999] bg-slate-50/80 dark:bg-[#0B1437]/90 backdrop-blur-xl overflow-y-auto custom-scrollbar p-6 md:p-12 text-slate-900 dark:text-white"
+        >
+            <div className="max-w-5xl mx-auto">
+                <div className="flex justify-end mb-8">
+                    <button
+                        onClick={onClose}
+                        className="p-3 bg-white dark:bg-slate-800 rounded-2xl shadow-lg text-slate-400 hover:text-red-500 transition-all hover:scale-110"
                     >
-                        <div className={`w-12 h-12 ${feature.color} rounded-2xl flex items-center justify-center mb-4 shadow-inner`}>
-                            <feature.icon size={24} />
-                        </div>
-                        <h4 className="font-black text-slate-800 dark:text-white mb-2 uppercase tracking-tight text-sm">{feature.title}</h4>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">{feature.desc}</p>
-                    </motion.div>
-                ))}
-            </div>
+                        <X size={24} />
+                    </button>
+                </div>
 
-            <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.9 }} className="text-center">
-                <button onClick={onClose} className="px-12 py-5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-[2rem] font-black uppercase tracking-widest shadow-2xl shadow-indigo-500/40 transition-all hover:scale-105 active:scale-95 flex items-center gap-3 mx-auto">
-                    Mulai Menjelajah <ArrowRight size={20} />
-                </button>
-            </motion.div>
-        </div>
-    </motion.div>
-);
+                <div className="text-center mb-16 space-y-6">
+                    <motion.div
+                        initial={{ scale: 0.5, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ duration: 0.5 }}
+                        className="inline-flex items-center gap-2 px-6 py-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-full text-sm font-black uppercase tracking-widest mb-4"
+                    >
+                        <Sparkles size={16} />
+                        <span>The Vision</span>
+                    </motion.div>
+                    <motion.h1
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                        className="text-5xl md:text-7xl font-black text-[#2B3674] dark:text-white tracking-tight leading-tight"
+                    >
+                        Latar Belakang <br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Pustaka Pengetahuan</span>
+                    </motion.h1>
+                    <motion.p
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.3 }}
+                        className="text-xl text-slate-500 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed font-medium"
+                    >
+                        Membangun fondasi pengetahuan yang kuat, terstruktur, dan siap menghadapi perkembangan di masa depan.
+                    </motion.p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+                    <motion.div
+                        initial={{ x: -50, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.4 }}
+                        className="p-8 bg-white dark:bg-slate-800 rounded-[3rem] shadow-xl border border-slate-100 dark:border-slate-700 relative overflow-hidden group"
+                    >
+                        <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                            <AlertCircle size={120} />
+                        </div>
+                        <div className="w-14 h-14 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-2xl flex items-center justify-center mb-6 shadow-inner">
+                            <HelpCircle size={28} />
+                        </div>
+                        <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-4 uppercase tracking-tight">Tantangan Operasional</h3>
+                        <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+                            Dalam lingkungan kerja yang dinamis, keberlangsungan operasional sangat bergantung pada ketersediaan informasi. Namun, banyak pengetahuan penting masih tersimpan secara personal pada masing-masing karyawan.
+                        </p>
+                        <div className="mt-6 p-4 bg-red-50/50 dark:bg-red-900/10 rounded-2xl border border-red-100 dark:border-red-900/20">
+                            <p className="text-sm text-red-700 dark:text-red-400 font-bold italic">
+                                "Kendala muncul saat karyawan cuti, mutasi, atau resign karena kurangnya panduan terdokumentasi."
+                            </p>
+                        </div>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ x: 50, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.5 }}
+                        className="p-8 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-[3rem] shadow-2xl text-white relative overflow-hidden group"
+                    >
+                        <div className="absolute bottom-0 left-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <Rocket size={120} />
+                        </div>
+                        <div className="w-14 h-14 bg-white/20 backdrop-blur-md text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                            <Target size={28} />
+                        </div>
+                        <h3 className="text-2xl font-black mb-4 uppercase tracking-tight">Solusi Terpadu</h3>
+                        <p className="text-indigo-50 leading-relaxed font-medium">
+                            Pustaka Pengetahuan dibangun sebagai pusat dokumentasi digital yang berisi panduan kerja, tutorial, prosedur operasional, serta best practice dari setiap divisi.
+                        </p>
+                        <ul className="mt-6 space-y-3">
+                            {['User Guide Terpadu', 'Akses Kapan Saja', 'Dokumentasi Sistematis'].map((item, i) => (
+                                <li key={i} className="flex items-center gap-3 text-sm font-bold">
+                                    <CheckCircle2 size={18} className="text-emerald-400" />
+                                    {item}
+                                </li>
+                            ))}
+                        </ul>
+                    </motion.div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+                    {[
+                        { icon: Users, title: "Kemandirian Tim", desc: "Pengetahuan tidak lagi bergantung pada individu tertentu, menjaga keberlangsungan pekerjaan.", color: "bg-blue-50 text-blue-600" },
+                        { icon: Zap, title: "Adaptasi Cepat", desc: "Mempercepat proses onboarding karyawan baru melalui modul pembelajaran mandiri.", color: "bg-amber-50 text-amber-600" },
+                        { icon: Award, title: "Kualitas Berkelanjutan", desc: "Peningkatan kualitas kerja secara terus-menerus melalui standarisasi best practice.", color: "bg-emerald-50 text-emerald-600" }
+                    ].map((feature, i) => (
+                        <motion.div
+                            key={i}
+                            initial={{ y: 30, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ delay: 0.6 + (i * 0.1) }}
+                            className="p-6 bg-white dark:bg-slate-800 rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-xl transition-all hover:-translate-y-2"
+                        >
+                            <div className={`w-12 h-12 ${feature.color} rounded-2xl flex items-center justify-center mb-4 shadow-inner`}>
+                                <feature.icon size={24} />
+                            </div>
+                            <h4 className="font-black text-slate-800 dark:text-white mb-2 uppercase tracking-tight text-sm">{feature.title}</h4>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">{feature.desc}</p>
+                        </motion.div>
+                    ))}
+                </div>
+
+                <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.9 }} className="text-center">
+                    <button onClick={onClose} className="px-12 py-5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-[2rem] font-black uppercase tracking-widest shadow-2xl shadow-indigo-500/40 transition-all hover:scale-105 active:scale-95 flex items-center gap-3 mx-auto">
+                        Mulai Menjelajah <ArrowRight size={20} />
+                    </button>
+                </motion.div>
+            </div>
+        </motion.div>,
+        document.body
+    );
+};
 
 const SlideViewer = ({ guide, slides, currentIdx, onNext, onPrev, onClose, setZoomedImage, getFullUrl }) => {
     useEffect(() => {
@@ -192,11 +197,13 @@ const SlideViewer = ({ guide, slides, currentIdx, onNext, onPrev, onClose, setZo
 
     const currentSlide = slides[currentIdx];
     const progress = ((currentIdx + 1) / slides.length) * 100;
+    if (typeof document === 'undefined') return null;
 
-    return (
+    return createPortal(
         <motion.div
+            key="slide-viewer-overlay"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[300] bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center p-4 md:p-10"
+            className="fixed inset-0 z-[9999] bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center p-0"
         >
             {/* Top Progress Bar */}
             <div className="absolute top-0 left-0 w-full h-1.5 bg-slate-800">
@@ -207,7 +214,7 @@ const SlideViewer = ({ guide, slides, currentIdx, onNext, onPrev, onClose, setZo
                 />
             </div>
 
-            <div className="max-w-7xl w-full h-full flex flex-col">
+            <div className="w-full h-full flex flex-col p-6 md:p-12 lg:p-16">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-8">
                     <div className="flex items-center gap-4">
@@ -257,16 +264,34 @@ const SlideViewer = ({ guide, slides, currentIdx, onNext, onPrev, onClose, setZo
                         <div className="absolute inset-0 bg-indigo-500/20 blur-[120px] rounded-full opacity-20 group-hover:opacity-40 transition-opacity"></div>
                         <div
                             onClick={() => currentSlide?.image && setZoomedImage(getFullUrl(currentSlide.image))}
-                            className="relative h-full w-full rounded-[4rem] overflow-hidden border-4 border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] cursor-zoom-in group"
+                            className="relative h-full w-full rounded-[2rem] md:rounded-[4rem] overflow-hidden border-4 border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] cursor-zoom-in group bg-slate-900/50"
                         >
                             <img
                                 src={getFullUrl(currentSlide?.image) || undefined}
-                                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-[1.02]"
                                 alt="Step Illustration"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-10">
-                                <div className="flex items-center gap-3 text-white font-black text-xs uppercase tracking-widest">
-                                    <ZoomIn size={20} /> Klik untuk memperbesar
+
+                            {/* Persistent Zoom Button (Higher visibility) */}
+                            <div className="absolute top-6 right-6 z-20">
+                                <div
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        const url = getFullUrl(currentSlide.image);
+                                        console.log('Zooming to:', url);
+                                        setZoomedImage(url);
+                                    }}
+                                    className="p-4 bg-indigo-600/90 hover:bg-indigo-600 text-white rounded-2xl backdrop-blur-md shadow-2xl transition-all hover:scale-110 flex items-center gap-2 group/btn cursor-pointer pointer-events-auto"
+                                >
+                                    <ZoomIn size={24} className="group-hover/btn:scale-110 transition-transform" />
+                                    <span className="text-[10px] font-black uppercase tracking-widest px-2 border-l border-white/20 hidden md:block">Zoom Detail</span>
+                                </div>
+                            </div>
+
+                            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-8 md:p-12">
+                                <div className="flex items-center gap-3 text-white font-black text-xs uppercase tracking-widest bg-white/10 backdrop-blur-md px-6 py-3 rounded-full border border-white/10">
+                                    <Sparkles size={16} className="text-indigo-400" /> Klik gambar untuk melihat detail penuh
                                 </div>
                             </div>
                         </div>
@@ -290,7 +315,8 @@ const SlideViewer = ({ guide, slides, currentIdx, onNext, onPrev, onClose, setZo
                     </button>
                 </div>
             </div>
-        </motion.div>
+        </motion.div>,
+        document.body
     );
 };
 
@@ -1103,7 +1129,22 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                                                 {isUploading === idx ? (
                                                                     <RefreshCw size={24} className="animate-spin text-indigo-500" />
                                                                 ) : slide.image ? (
-                                                                    <img src={getFullUrl(slide.image)} className="w-full h-full object-cover rounded-xl shadow-sm" alt="Preview" />
+                                                                    <div className="relative w-full h-full group/img">
+                                                                        <img src={getFullUrl(slide.image)} className="w-full h-full object-cover rounded-xl shadow-sm" alt="Preview" />
+                                                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                                                            <button
+                                                                                type="button"
+                                                                                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setZoomedImage(getFullUrl(slide.image)); }}
+                                                                                className="p-3 bg-white/20 hover:bg-white/40 text-white rounded-xl backdrop-blur-md transition-all hover:scale-110"
+                                                                                title="Zoom"
+                                                                            >
+                                                                                <ZoomIn size={20} />
+                                                                            </button>
+                                                                            <div className="p-3 bg-white/20 text-white rounded-xl backdrop-blur-md">
+                                                                                <Upload size={20} />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
                                                                 ) : (
                                                                     <>
                                                                         <Upload size={24} className="mb-1 group-hover:text-indigo-500" />
@@ -1200,24 +1241,45 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                 />
             )}
 
-            {/* Image Zoom Modal */}
+            {/* Image Zoom Modal (Immersive Lightbox) - RENDERED LAST WITH EXTREME Z-INDEX */}
             <AnimatePresence>
-                {zoomedImage && (
+                {zoomedImage && createPortal(
                     <motion.div
+                        key="zoomed-image-overlay-final"
                         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[400] bg-white/90 dark:bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 md:p-12"
+                        className="fixed inset-0 z-[999999] bg-black/98 backdrop-blur-2xl flex items-center justify-center p-0 pointer-events-auto"
                         onClick={() => setZoomedImage(null)}
                     >
                         <motion.img
-                            initial={{ scale: 0.8 }} animate={{ scale: 1 }} exit={{ scale: 0.8 }}
+                            key={zoomedImage}
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
                             src={zoomedImage}
-                            className="max-w-full max-h-full rounded-3xl shadow-2xl border-4 border-white dark:border-slate-800 object-contain"
-                            onClick={(e) => e.stopPropagation()} // Prevent close on image click
+                            className="max-w-[100vw] max-h-[100vh] object-contain shadow-2xl cursor-zoom-out"
+                            onClick={(e) => { e.stopPropagation(); setZoomedImage(null); }}
                         />
-                        <button onClick={() => setZoomedImage(null)} className="absolute top-6 right-6 p-4 bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 text-slate-500 dark:text-white rounded-2xl transition-all hover:scale-110 shadow-xl">
-                            <X size={24} />
-                        </button>
-                    </motion.div>
+
+                        {/* Overlay Controls */}
+                        <div className="absolute top-0 left-0 w-full p-8 flex justify-between items-center bg-gradient-to-b from-black/80 to-transparent pointer-events-none">
+                            <div className="flex items-center gap-4 px-6 py-3 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/10">
+                                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                                <span className="text-[10px] font-black text-white uppercase tracking-[0.2em]">High Detail View</span>
+                            </div>
+                            <button
+                                onClick={(e) => { e.stopPropagation(); setZoomedImage(null); }}
+                                className="p-5 bg-white/10 hover:bg-red-500/20 text-white hover:text-red-500 rounded-2xl transition-all hover:scale-110 shadow-2xl pointer-events-auto border border-white/10 group"
+                            >
+                                <X size={28} className="group-hover:rotate-90 transition-transform duration-300" />
+                            </button>
+                        </div>
+
+                        {/* Bottom Info */}
+                        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 px-8 py-3 bg-white/5 backdrop-blur-md rounded-full border border-white/10 text-[10px] text-white/60 font-medium tracking-widest uppercase">
+                            Klik di mana saja untuk kembali
+                        </div>
+                    </motion.div>,
+                    document.body
                 )}
             </AnimatePresence>
         </div>

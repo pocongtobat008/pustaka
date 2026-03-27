@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Grid3x3, ScanLine, History, PieChart, FileText, FileDigit, ChevronDown, ChevronUp, ArrowRight, Package, Truck, FileBarChart, Download, X, CheckCircle2, FileSearch, FolderOpen, Users, Sparkles, Clock, Eye, Info, MessageSquare, BookOpen, FileCheck, ClipboardCheck, ChevronLeft, ChevronRight, User } from 'lucide-react';
+import { Grid3x3, ScanLine, History, PieChart, FileText, FileDigit, ChevronDown, ChevronUp, ArrowRight, ArrowUpRight, Package, Truck, FileBarChart, Download, X, CheckCircle2, FileSearch, FolderOpen, Users, Sparkles, Clock, Eye, Info, MessageSquare, BookOpen, FileCheck, ClipboardCheck, ChevronLeft, ChevronRight, User } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Card as ShadCard, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
@@ -564,120 +564,144 @@ export default function Dashboard({
                 )}
             </div>
 
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
-                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="md:col-span-2">
-                    <ShadCard className="relative overflow-hidden border-slate-200/80 bg-gradient-to-br from-white to-slate-50 dark:from-slate-950 dark:to-slate-900">
-                        <div className="pointer-events-none absolute -right-12 -top-10 h-44 w-44 rounded-full bg-indigo-500/20 blur-3xl" />
-                        <CardHeader>
-                            <div className="flex items-center justify-between gap-3">
-                                <div>
-                                    <CardTitle className="text-xl">{text.storageCenter}</CardTitle>
-                                    <CardDescription>{text.storageDesc}</CardDescription>
+            {/* ===== BENTO GRID DASHBOARD ===== */}
+            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-5 auto-rows-min">
+
+                {/* 1. Main Storage Command Center - Jumbo Bento Card */}
+                <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }} viewport={{ once: true }} className="md:col-span-4 lg:col-span-4 lg:row-span-2 group">
+                    <ShadCard className="h-full relative overflow-hidden border-slate-200/50 bg-white/60 dark:bg-slate-900/40 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-500 flex flex-col justify-between">
+                        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-indigo-500/10 blur-[80px] group-hover:bg-indigo-500/20 transition-all duration-700" />
+                        <CardHeader className="pb-2">
+                            <div className="flex items-start justify-between gap-3">
+                                <div className="space-y-1">
+                                    <Badge variant="outline" className="bg-indigo-50/50 text-indigo-600 border-indigo-200/50 dark:bg-indigo-900/30 dark:text-indigo-400 dark:border-indigo-800/50 w-fit mb-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 mr-2 animate-pulse"></div>
+                                        {text.live} Sync
+                                    </Badge>
+                                    <CardTitle className="text-2xl font-black tracking-tight">{text.storageCenter}</CardTitle>
+                                    <CardDescription className="text-sm font-medium">{text.storageDesc}</CardDescription>
                                 </div>
-                                <Badge variant="success">{text.live}</Badge>
+                                <div className="p-3 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                                    <Grid3x3 size={24} className="text-indigo-500" />
+                                </div>
                             </div>
                         </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                                <div className="rounded-xl border border-slate-200 bg-white/80 p-3 dark:border-slate-800 dark:bg-slate-900/80">
-                                    <p className="text-[11px] uppercase tracking-wide text-slate-500">{text.occupancy}</p>
-                                    <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{bentoStats.occupancyPercent}%</p>
+                        <CardContent className="space-y-6 pt-4">
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                <div className="rounded-2xl border border-slate-200/60 bg-white/80 p-4 dark:border-slate-700/50 dark:bg-slate-900/80 shadow-sm hover:shadow-md transition-shadow">
+                                    <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-1">{text.occupancy}</p>
+                                    <p className="text-3xl font-black text-slate-900 dark:text-white">{bentoStats.occupancyPercent}%</p>
                                 </div>
-                                <div className="rounded-xl border border-slate-200 bg-white/80 p-3 dark:border-slate-800 dark:bg-slate-900/80">
-                                    <p className="text-[11px] uppercase tracking-wide text-slate-500">{text.usedSlots}</p>
-                                    <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{bentoStats.usedSlots}</p>
+                                <div className="rounded-2xl border border-slate-200/60 bg-white/80 p-4 dark:border-slate-700/50 dark:bg-slate-900/80 shadow-sm hover:shadow-md transition-shadow">
+                                    <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-1">{text.usedSlots}</p>
+                                    <p className="text-3xl font-black text-slate-900 dark:text-white">{bentoStats.usedSlots}</p>
                                 </div>
-                                <div className="rounded-xl border border-slate-200 bg-white/80 p-3 dark:border-slate-800 dark:bg-slate-900/80">
-                                    <p className="text-[11px] uppercase tracking-wide text-slate-500">{text.externalBox}</p>
-                                    <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{externalItems?.length || 0}</p>
+                                <div className="rounded-2xl border border-slate-200/60 bg-white/80 p-4 dark:border-slate-700/50 dark:bg-slate-900/80 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+                                    <div className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-emerald-500/10 to-transparent"></div>
+                                    <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-1">{text.externalBox}</p>
+                                    <p className="text-3xl font-black text-slate-900 dark:text-white">{externalItems?.length || 0}</p>
                                 </div>
-                                <div className="rounded-xl border border-slate-200 bg-white/80 p-3 dark:border-slate-800 dark:bg-slate-900/80">
-                                    <p className="text-[11px] uppercase tracking-wide text-slate-500">{text.available}</p>
-                                    <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{stats?.empty || 0}</p>
+                                <div className="rounded-2xl border border-slate-200/60 bg-white/80 p-4 dark:border-slate-700/50 dark:bg-slate-900/80 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+                                    <div className="absolute bottom-0 w-full h-1 bg-slate-100 dark:bg-slate-800 left-0"></div>
+                                    <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-1">{text.available}</p>
+                                    <p className="text-3xl font-black text-slate-900 dark:text-white">{stats?.empty || 0}</p>
                                 </div>
                             </div>
-                            <div className="flex flex-wrap gap-2">
-                                <button onClick={() => setActiveTab('inventory')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">{text.openInventory}</button>
-                                <button onClick={() => setActiveTab('documents')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">{text.viewDocuments}</button>
-                                <button onClick={() => setActiveTab('tax-summary')} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">{text.taxSummaryTab}</button>
+                            <div className="flex flex-wrap gap-3">
+                                <button onClick={() => setActiveTab('inventory')} className="flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white transition-all hover:bg-slate-800 hover:shadow-lg dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 active:scale-95">
+                                    {text.openInventory} <ArrowRight size={14} />
+                                </button>
+                                <button onClick={() => setActiveTab('documents')} className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 transition-all hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 active:scale-95">
+                                    {text.viewDocuments}
+                                </button>
+                                <button onClick={() => setActiveTab('tax-summary')} className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 transition-all hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 active:scale-95">
+                                    {text.taxSummaryTab}
+                                </button>
                             </div>
                         </CardContent>
                     </ShadCard>
                 </motion.div>
 
-                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-                    <ShadCard className="h-full">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-base"><FileSearch size={16} /> {text.taxControl}</CardTitle>
-                            <CardDescription>{text.taxControlDesc}</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                            <div className="rounded-lg bg-amber-50 p-3 dark:bg-amber-950/20">
-                                <p className="text-xs text-amber-700 dark:text-amber-300">{text.auditRunning}</p>
-                                <p className="text-2xl font-bold text-amber-800 dark:text-amber-200">{bentoStats.activeAudits}</p>
+                {/* 2. OCR Pipeline - Tall Bento Card */}
+                <motion.div initial={{ opacity: 0, x: 16 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.1 }} viewport={{ once: true }} className="md:col-span-2 lg:col-span-2 lg:row-span-2">
+                    <ShadCard className="h-full bg-gradient-to-b from-slate-900 to-slate-950 text-white border-0 shadow-xl flex flex-col justify-between">
+                        <CardHeader className="pb-0">
+                            <div className="flex items-center justify-between">
+                                <CardTitle className="flex items-center gap-2 text-lg font-bold"><ScanLine className="text-indigo-400" size={20} /> Pipeline OCR</CardTitle>
+                                {bentoStats.active > 0 && <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>}
                             </div>
-                            <div className="rounded-lg bg-violet-50 p-3 dark:bg-violet-950/20">
-                                <p className="text-xs text-violet-700 dark:text-violet-300">{text.taxSummaryCount}</p>
-                                <p className="text-2xl font-bold text-violet-800 dark:text-violet-200">{taxSummaries?.length || 0}</p>
+                            <CardDescription className="text-slate-400 font-medium">{text.ocrDesc}</CardDescription>
+                        </CardHeader>
+                        <CardContent className="mt-6 flex-1 flex flex-col justify-end space-y-3">
+                            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 flex items-center justify-between border border-white/5">
+                                <span className="text-sm font-semibold text-slate-300">{text.ocrActive}</span>
+                                <span className="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-400">{bentoStats.active}</span>
+                            </div>
+                            <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 flex items-center justify-between border border-white/5">
+                                <span className="text-sm font-semibold text-slate-400">{text.ocrWaiting}</span>
+                                <span className="text-lg font-bold text-slate-300">{bentoStats.waiting}</span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3 mt-2">
+                                <div className="bg-emerald-500/10 rounded-2xl p-3 border border-emerald-500/20">
+                                    <p className="text-[10px] text-emerald-400/80 uppercase font-bold text-center mb-1">{text.ocrSuccess}</p>
+                                    <p className="text-lg text-emerald-400 font-black text-center">{bentoStats.completed}</p>
+                                </div>
+                                <div className="bg-rose-500/10 rounded-2xl p-3 border border-rose-500/20">
+                                    <p className="text-[10px] text-rose-400/80 uppercase font-bold text-center mb-1">{text.ocrFailed}</p>
+                                    <p className="text-lg text-rose-400 font-black text-center">{bentoStats.failed}</p>
+                                </div>
                             </div>
                         </CardContent>
                     </ShadCard>
                 </motion.div>
 
-                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-                    <ShadCard className="h-full">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-base"><ScanLine size={16} /> {text.ocrPipeline}</CardTitle>
-                            <CardDescription>{text.ocrDesc}</CardDescription>
+                {/* 3. Tax Control - Wide Bento Card */}
+                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }} viewport={{ once: true }} className="md:col-span-2 lg:col-span-3">
+                    <ShadCard className="h-full border-slate-200/60 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:shadow-lg transition-shadow">
+                        <CardHeader className="pb-4">
+                            <CardTitle className="flex items-center gap-2 text-base font-bold"><FileSearch className="text-amber-500" size={18} /> {text.taxControl}</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="space-y-2 text-sm">
-                                <div className="flex items-center justify-between rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-900"><span>{text.ocrActive}</span><span className="font-semibold">{bentoStats.active}</span></div>
-                                <div className="flex items-center justify-between rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-900"><span>{text.ocrWaiting}</span><span className="font-semibold">{bentoStats.waiting}</span></div>
-                                <div className="flex items-center justify-between rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-900"><span>{text.ocrSuccess}</span><span className="font-semibold">{bentoStats.completed}</span></div>
-                                <div className="flex items-center justify-between rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-900"><span>{text.ocrFailed}</span><span className="font-semibold">{bentoStats.failed}</span></div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="rounded-2xl border border-amber-100 bg-amber-50/50 p-4 dark:border-amber-900/30 dark:bg-amber-950/20 group hover:bg-amber-50 dark:hover:bg-amber-900/30 transition-colors cursor-pointer" onClick={() => setActiveTab('tax-monitoring')}>
+                                    <p className="text-[11px] font-bold text-amber-700/80 dark:text-amber-400/80 uppercase tracking-wider mb-2">{text.auditRunning}</p>
+                                    <div className="flex items-center justify-between">
+                                        <p className="text-3xl font-black text-amber-800 dark:text-amber-300">{bentoStats.activeAudits}</p>
+                                        <ArrowUpRight className="text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity" size={20} />
+                                    </div>
+                                </div>
+                                <div className="rounded-2xl border border-violet-100 bg-violet-50/50 p-4 dark:border-violet-900/30 dark:bg-violet-950/20 group hover:bg-violet-50 dark:hover:bg-violet-900/30 transition-colors cursor-pointer" onClick={() => setActiveTab('tax-summary')}>
+                                    <p className="text-[11px] font-bold text-violet-700/80 dark:text-violet-400/80 uppercase tracking-wider mb-2">{text.taxSummaryCount}</p>
+                                    <div className="flex items-center justify-between">
+                                        <p className="text-3xl font-black text-violet-800 dark:text-violet-300">{taxSummaries?.length || 0}</p>
+                                        <ArrowUpRight className="text-violet-400 opacity-0 group-hover:opacity-100 transition-opacity" size={20} />
+                                    </div>
+                                </div>
                             </div>
                         </CardContent>
                     </ShadCard>
                 </motion.div>
 
-                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="md:col-span-2">
-                    <ShadCard className="h-full">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-base"><FileText size={16} /> {text.recentDocs}</CardTitle>
-                            <CardDescription>{text.recentDocsDesc}</CardDescription>
+                {/* 4. Recent Docs - Compact List */}
+                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} viewport={{ once: true }} className="md:col-span-2 lg:col-span-3">
+                    <ShadCard className="h-full border-slate-200/60 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:shadow-lg transition-shadow">
+                        <CardHeader className="pb-3 flex flex-row items-center justify-between">
+                            <CardTitle className="flex items-center gap-2 text-base font-bold"><FileText className="text-indigo-500" size={18} /> {text.recentDocs}</CardTitle>
+                            <button onClick={() => setActiveTab('documents')} className="text-xs font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 transition-colors">Lihat Semua</button>
                         </CardHeader>
-                        <CardContent className="space-y-2">
-                            {docList.slice(0, 4).map((doc) => (
-                                <button key={doc.id} onClick={() => handleViewDoc(doc)} className="flex w-full items-center gap-3 rounded-lg border border-slate-200 bg-white/70 px-3 py-2 text-left transition hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900/70 dark:hover:bg-slate-800">
-                                    <div className="rounded-md bg-indigo-100 p-2 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-300">
-                                        {doc.type?.includes('pdf') ? <FileDigit size={16} /> : <FileText size={16} />}
+                        <CardContent className="space-y-3 pb-6">
+                            {docList.slice(0, 3).map((doc) => (
+                                <button key={doc.id} onClick={() => handleViewDoc(doc)} className="group flex w-full items-center gap-3 rounded-2xl border border-transparent hover:border-slate-200 bg-transparent hover:bg-white p-2 text-left transition-all dark:hover:border-slate-700 dark:hover:bg-slate-800 shadow-none hover:shadow-sm">
+                                    <div className="rounded-xl bg-slate-100 p-2.5 text-slate-500 group-hover:bg-indigo-50 group-hover:text-indigo-600 dark:bg-slate-800 dark:text-slate-400 dark:group-hover:bg-indigo-900/30 dark:group-hover:text-indigo-400 transition-colors">
+                                        {doc.type?.includes('pdf') ? <FileDigit size={18} /> : <FileText size={18} />}
                                     </div>
                                     <div className="min-w-0 flex-1">
-                                        <p className="truncate text-sm font-semibold text-slate-800 dark:text-slate-100">{doc.title}</p>
-                                        <p className="text-xs text-slate-500 dark:text-slate-400">{new Date(doc.uploadDate).toLocaleDateString()} • {doc.size}</p>
+                                        <p className="truncate text-sm font-bold text-slate-700 dark:text-slate-200 group-hover:text-indigo-700 dark:group-hover:text-indigo-300 transition-colors">{doc.title}</p>
+                                        <p className="text-xs font-medium text-slate-500/80 dark:text-slate-500 mt-0.5">{new Date(doc.uploadDate).toLocaleDateString()} • {doc.size}</p>
                                     </div>
                                 </button>
                             ))}
-                            {docList.length === 0 && <p className="text-sm text-slate-500">{text.noRecentDocs}</p>}
-                        </CardContent>
-                    </ShadCard>
-                </motion.div>
-
-                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="md:col-span-2 xl:col-span-1">
-                    <ShadCard className="h-full">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-base"><History size={16} /> {text.activityFeed}</CardTitle>
-                            <CardDescription>{text.activityDesc}</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-2">
-                            {logs.slice(0, 4).map((log) => (
-                                <div key={log.id} className="rounded-lg border border-slate-200 bg-white/70 px-3 py-2 dark:border-slate-800 dark:bg-slate-900/70">
-                                    <p className="truncate text-xs font-semibold text-slate-700 dark:text-slate-200">{log.action}</p>
-                                    <p className="truncate text-[11px] text-slate-500 dark:text-slate-400">{log.details}</p>
-                                </div>
-                            ))}
-                            {logs.length === 0 && <p className="text-sm text-slate-500">{text.noActivity}</p>}
+                            {docList.length === 0 && <p className="text-sm font-medium text-slate-400 italic p-4 text-center">{text.noRecentDocs}</p>}
                         </CardContent>
                     </ShadCard>
                 </motion.div>
@@ -733,7 +757,7 @@ export default function Dashboard({
                 </Card>
             </div>
 
-            <Card className="max-h-[400px] overflow-y-auto relative p-0">
+            <Card className="max-h-[400px] overflow-y-auto relative p-0 sm:p-0">
                 <div className="sticky top-0 bg-white dark:bg-slate-900 z-10 p-6 pb-2 border-b border-slate-100 dark:border-slate-800">
                     <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <History size={20} className="text-purple-500" /> {text.auditLog}

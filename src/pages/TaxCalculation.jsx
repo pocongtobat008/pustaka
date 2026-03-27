@@ -662,25 +662,24 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
 
                 {/* Tabs */}
                 {/* Tabs */}
-                <div className="flex bg-gray-100 dark:bg-slate-800 p-1 rounded-xl overflow-x-auto">
-                    {[
-                        { id: 'simulation', label: text.tabs.simulation, icon: Calculator },
-                        { id: 'object', label: text.tabs.object, icon: FileText },
-                        { id: 'database', label: text.tabs.database, icon: Database },
-                        { id: 'master', label: text.tabs.master, icon: Book },
-                    ].map(tab => (
-                        <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id)}
-                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === tab.id
-                                ? 'bg-white dark:bg-slate-700 text-indigo-600 shadow-sm'
-                                : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                                }`}
-                        >
-                            <tab.icon size={16} />
-                            {tab.label}
-                        </button>
-                    ))}
+                <div className="flex bg-gray-100 dark:bg-slate-800 border dark:border-slate-700/50 p-1 rounded-xl overflow-x-auto shadow-inner">
+                    <div className="flex gap-1">
+                        {[
+                            { id: 'simulation', label: text.tabs.simulation, icon: Calculator },
+                            { id: 'object', label: text.tabs.object, icon: FileText },
+                            { id: 'database', label: text.tabs.database, icon: Database },
+                            { id: 'master', label: text.tabs.master, icon: Book },
+                        ].map((tab) => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)}
+                                className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all whitespace-nowrap ${activeTab === tab.id ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-md transform scale-105 z-10' : 'text-gray-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700'}`}
+                            >
+                                <tab.icon size={16} />
+                                {tab.label}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
 

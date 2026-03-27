@@ -48,14 +48,15 @@ export const createTaxObject = async (req, res) => {
         if (!data) return;
 
         const { code, name, tax_type, rate, note, is_pph21_bukan_pegawai, use_ppn, markup_mode } = data;
-        const [id] = await knex('master_tax_objects').insert({
+        const [dbRes] = await knex('master_tax_objects').insert({
             code, name, tax_type,
             rate: parseFloat(rate) || 0,
             note: note || null,
             is_pph21_bukan_pegawai: is_pph21_bukan_pegawai ? 1 : 0,
             use_ppn: use_ppn !== undefined ? (use_ppn ? 1 : 0) : 1,
             markup_mode: markup_mode || 'none'
-        });
+        }).returning('id');
+        const id = typeof dbRes === 'object' ? dbRes.id : dbRes;
         await systemLog('Admin', "Create Tax Object", `Created: ${name} (${code})`);
         req.app.get('io')?.emit('data:changed', { channel: 'tax' });
         res.json({ id });
@@ -241,7 +242,7 @@ export const compareTaxSummaries = async (req, res) => {
         }
 
         // helper to format period key and month name mapping
-        const monthNames = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+        const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         const monthNameToNum = m => {
             const idx = monthNames.findIndex(x => x.toLowerCase() === String(m).toLowerCase());
             return idx >= 0 ? idx + 1 : null;
@@ -339,12 +340,12 @@ export const getOverUnderHistory = async (req, res) => {
     try {
         const { metric = 'ppn', start, end, limit = 20, type = 'both', pembetulan = 'all' } = req.query;
         // Validation
-        if (!['ppn','pph'].includes(metric)) return res.status(400).json({ error: 'metric must be ppn or pph' });
-        if (!['both','over','under'].includes(type)) return res.status(400).json({ error: 'type must be one of both, over, under' });
+        if (!['ppn', 'pph'].includes(metric)) return res.status(400).json({ error: 'metric must be ppn or pph' });
+        if (!['both', 'over', 'under'].includes(type)) return res.status(400).json({ error: 'type must be one of both, over, under' });
         if (pembetulan !== 'all' && Number.isNaN(Number(pembetulan))) return res.status(400).json({ error: 'Invalid pembetulan param' });
         if (Number(limit) <= 0 || Number(limit) > 240) return res.status(400).json({ error: 'limit must be between 1 and 240' });
 
-        const monthNames = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+        const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         const monthNameToNum = m => {
             const idx = monthNames.findIndex(x => x.toLowerCase() === String(m).toLowerCase());
             return idx >= 0 ? idx + 1 : null;
@@ -484,7 +485,8 @@ export const createTaxWp = async (req, res) => {
         const payload = validateRequestBody(taxWpUpsertSchema, req, res);
         if (!payload) return;
 
-        const [id] = await knex('tax_objects').insert(payload);
+        const [dbRes] = await knex('tax_objects').insert(payload).returning('id');
+        const id = typeof dbRes === 'object' ? dbRes.id : dbRes;
         await systemLog('Admin', "Create Tax WP", `Created entry for: ${payload.name || '-'}`);
         req.app.get('io')?.emit('data:changed', { channel: 'tax' });
         res.json({ id });
@@ -562,7 +564,7 @@ export const addAuditNote = async (req, res) => {
             attachmentSize = (req.file.size / 1024).toFixed(2) + ' KB';
         }
 
-        const [noteId] = await knex('tax_audit_notes').insert({
+        const [dbRes] = await knex('tax_audit_notes').insert({
             auditId: id,
             stepIndex,
             user,
@@ -571,7 +573,8 @@ export const addAuditNote = async (req, res) => {
             attachmentName,
             attachmentType,
             attachmentSize
-        });
+        }).returning('id');
+        const noteId = typeof dbRes === 'object' ? dbRes.id : dbRes;
 
         // Trigger OCR if there's an attachment
         if (req.file) {

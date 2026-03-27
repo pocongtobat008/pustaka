@@ -21,7 +21,7 @@ export const getOCRStatus = async (req, res) => {
             [JOB_STATUS.FAILED]: 0
         };
         counts.forEach(c => {
-            if (countsMap[c.status] !== undefined) countsMap[c.status] = c.count;
+            if (countsMap[c.status] !== undefined) countsMap[c.status] = parseInt(c.count, 10) || 0;
         });
 
         const activeJobs = await knex('job_queue')
@@ -103,7 +103,7 @@ export const getLaneLoad = async (req, res) => {
             loadPct: Math.round(((counts[n] || 0) / Math.max(LANE_CAPACITY, 1)) * 100)
         }));
 
-        res.json({ lanes, totalWaitingActive: Object.values(counts).reduce((a,b)=>a+b,0) });
+        res.json({ lanes, totalWaitingActive: Object.values(counts).reduce((a, b) => a + b, 0) });
     } catch (err) {
         console.error('[getLaneLoad] Error:', err);
         handleError(res, err, 'OCR Error');
@@ -113,7 +113,7 @@ export const getLaneLoad = async (req, res) => {
 export const retryOCRJob = async (req, res) => {
     try {
         const { id } = req.params;
-        
+
         // Get the job to check ownership
         const job = await knex('job_queue').where('id', id).first();
         if (!job) {

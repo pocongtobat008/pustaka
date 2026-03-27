@@ -15,10 +15,10 @@ export const useDocStore = create((set, get) => ({
     ...initialState,
 
     // Setters
-    setDocList: (docList) => set({ docList }),
-    setFolders: (folders) => set({ folders }),
-    setApprovals: (approvals) => set({ approvals }),
-    setFlows: (flows) => set({ flows }),
+    setDocList: (docList) => set((state) => ({ docList: typeof docList === 'function' ? docList(state.docList) : docList })),
+    setFolders: (folders) => set((state) => ({ folders: typeof folders === 'function' ? folders(state.folders) : folders })),
+    setApprovals: (approvals) => set((state) => ({ approvals: typeof approvals === 'function' ? approvals(state.approvals) : approvals })),
+    setFlows: (flows) => set((state) => ({ flows: typeof flows === 'function' ? flows(state.flows) : flows })),
     setCurrentFolderId: (folderId) => set({ currentFolderId: folderId }),
 
     // Actions

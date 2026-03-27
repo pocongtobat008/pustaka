@@ -29,9 +29,9 @@ export const useAuthStore = create((set) => ({
         }
         set({ currentUser: user });
     },
-    setUsers: (users) => set({ users }),
-    setRoles: (roles) => set({ roles }),
-    setDepartments: (departments) => set({ departments }),
+    setUsers: (users) => set((state) => ({ users: typeof users === 'function' ? users(state.users) : users })),
+    setRoles: (roles) => set((state) => ({ roles: typeof roles === 'function' ? roles(state.roles) : roles })),
+    setDepartments: (departments) => set((state) => ({ departments: typeof departments === 'function' ? departments(state.departments) : departments })),
 
     reset: () => set({
         ...initialState,

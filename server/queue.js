@@ -19,7 +19,8 @@ class DbQueue {
         };
         try {
             console.log("Attempting to add job to queue with data:", jobData);
-            const [id] = await knex('job_queue').insert(jobData);
+            const [res] = await knex('job_queue').insert(jobData).returning('id');
+            const id = typeof res === 'object' ? res.id : res;
             return { id, name, data };
         } catch (err) {
             console.error("Queue Add Error:", err.message);
@@ -89,7 +90,7 @@ async function getLaneCounts() {
         rows.forEach(r => {
             for (let i = 1; i <= OCR_LANES; i++) {
                 const laneName = `process-ocr-lane-${i}`;
-                if (r.name === laneName) counts[i-1] = parseInt(r.count, 10) || 0;
+                if (r.name === laneName) counts[i - 1] = parseInt(r.count, 10) || 0;
             }
         });
     } catch (e) {

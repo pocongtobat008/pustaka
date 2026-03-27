@@ -184,12 +184,12 @@ export default function MasterData({
 
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
-            <div className="flex bg-gray-100 dark:bg-slate-800 p-1 rounded-xl w-fit mb-4">
+            <div className="flex bg-gray-100 dark:bg-slate-800 border dark:border-slate-700/50 p-1 rounded-xl w-fit mb-4 shadow-inner">
                 {['users', 'roles', 'departments', 'flows', 'logs'].map(tab => (
                     <button
                         key={tab}
                         onClick={() => setMasterTab(tab)}
-                        className={`px-4 py-2 rounded-lg capitalize text-sm font-bold transition-all ${masterTab === tab ? 'bg-white dark:bg-slate-700 text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:hover:text-slate-300'}`}
+                        className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${masterTab === tab ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-md' : 'text-gray-500 dark:text-slate-500 hover:bg-gray-200 dark:hover:bg-slate-700 dark:hover:text-slate-300'}`}
                     >
                         {text.tabs[tab] || tab}
                     </button>

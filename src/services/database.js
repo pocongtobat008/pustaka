@@ -408,7 +408,7 @@ export const db = {
 
     async createUser(data) {
         try {
-            await fetch(`${API_URL}/users`, {
+            const response = await fetch(`${API_URL}/users`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -416,7 +416,9 @@ export const db = {
                 },
                 body: JSON.stringify(data)
             });
-        } catch (e) { console.error("Gagal membuat user", e); }
+            if (!response.ok) throw new Error('Gagal membuat user');
+            return await response.json();
+        } catch (e) { console.error("Gagal membuat user", e); throw e; }
     },
 
     async updateUser(id, data) {
@@ -443,7 +445,7 @@ export const db = {
 
     async createRole(data) {
         try {
-            await fetch(`${API_URL}/roles`, {
+            const response = await fetch(`${API_URL}/roles`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -451,7 +453,9 @@ export const db = {
                 },
                 body: JSON.stringify(data)
             });
-        } catch (e) { console.error("Gagal membuat role", e); }
+            if (!response.ok) throw new Error('Gagal membuat role');
+            return await response.json();
+        } catch (e) { console.error("Gagal membuat role", e); throw e; }
     },
 
     async updateRole(id, data) {
@@ -505,7 +509,7 @@ export const db = {
 
     async createDepartment(name) {
         try {
-            await fetch(`${API_URL}/departments`, {
+            const response = await fetch(`${API_URL}/departments`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -513,7 +517,9 @@ export const db = {
                 },
                 body: JSON.stringify({ name })
             });
-        } catch (e) { console.error("Gagal membuat dept", e); }
+            if (!response.ok) throw new Error('Gagal membuat dept');
+            return await response.json();
+        } catch (e) { console.error("Gagal membuat dept", e); throw e; }
     },
 
     async deleteDepartment(id) {

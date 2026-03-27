@@ -136,6 +136,7 @@ export default function App() {
   // Toast Notification System
   const { toasts, toast, removeToast, updateToast } = useToast();
   const { language } = useLanguage();
+  const isEnglish = language === 'en';
 
   const tabTextMap = useMemo(() => {
     if (language === 'en') {
@@ -829,9 +830,9 @@ export default function App() {
 
         const currentParentId = folder.parentId || folder.parent_id;
         if (newName !== folder.name || String(currentParentId) !== String(taxAuditParentId)) {
-          await api.updateFolder(folder.id, { 
+          await api.updateFolder(folder.id, {
             name: newName,
-            parentId: taxAuditParentId 
+            parentId: taxAuditParentId
           });
           await fetchFolders();
         }
@@ -1631,6 +1632,34 @@ export default function App() {
     });
   };
 
+  const handleBulkPermission = (type, value) => {
+    const actions = ['view', 'create', 'edit', 'delete'];
+    const modules = Object.values(APP_MODULES).map(m => m.id);
+    let nextPermissions = { ...roleForm.permissions };
+
+    if (type === 'all') {
+      const isAllSelected = modules.every(mId =>
+        actions.every(a => (nextPermissions[mId] || []).includes(a))
+      );
+      modules.forEach(mId => {
+        nextPermissions[mId] = isAllSelected ? [] : [...actions];
+      });
+    } else if (type === 'module') {
+      const isModuleSelected = actions.every(a => (nextPermissions[value] || []).includes(a));
+      nextPermissions[value] = isModuleSelected ? [] : [...actions];
+    } else if (type === 'action') {
+      const isActionSelected = modules.every(mId => (nextPermissions[mId] || []).includes(value));
+      modules.forEach(mId => {
+        const current = nextPermissions[mId] || [];
+        nextPermissions[mId] = isActionSelected
+          ? current.filter(a => a !== value)
+          : Array.from(new Set([...current, value]));
+      });
+    }
+
+    setRoleForm({ ...roleForm, permissions: nextPermissions });
+  };
+
   const handleSaveTaxForm = async (e) => {
     e.preventDefault();
     try {
@@ -1992,8 +2021,16 @@ export default function App() {
       setIsModalOpen(false);
 
       try {
-        if (userForm.id) await api.updateUser(userForm.id, userForm);
-        else await api.createUser(userForm);
+        let res;
+        if (userForm.id) {
+          await api.updateUser(userForm.id, userForm);
+        } else {
+          res = await api.createUser(userForm);
+          if (res && res.id) {
+            const realId = res.id;
+            setUsers(prev => prev.map(u => u.username === userForm.username ? { ...u, id: realId } : u));
+          }
+        }
         addLog(currentUser?.name, userForm.id ? 'Update User' : 'Create User', userForm.username);
       } catch (e) {
         setUsers(previousUsers);
@@ -2046,8 +2083,16 @@ export default function App() {
       setIsModalOpen(false);
 
       try {
-        if (deptForm.id) await api.updateDepartment(deptForm.id, deptForm.name);
-        else await api.createDepartment(deptForm.name);
+        let res;
+        if (deptForm.id) {
+          await api.updateDepartment(deptForm.id, deptForm.name);
+        } else {
+          res = await api.createDepartment(deptForm.name);
+          if (res && res.id) {
+            const realId = res.id;
+            setDepartments(prev => prev.map(d => d.name === deptForm.name ? { ...d, id: realId } : d));
+          }
+        }
       } catch (e) {
         setDepartments(previousDepts);
         const msg = await parseApiError(e);
@@ -2111,8 +2156,16 @@ export default function App() {
       setIsModalOpen(false);
 
       try {
-        if (editingRole) await api.updateRole(editingRole.id, payload);
-        else await api.createRole(payload);
+        let res;
+        if (editingRole) {
+          await api.updateRole(editingRole.id, payload);
+        } else {
+          res = await api.createRole(payload);
+          if (res && res.id) {
+            const realId = res.id;
+            setRoles(prev => prev.map(r => (r.name === payload.name || r.label === payload.label) ? { ...r, id: realId } : r));
+          }
+        }
       } catch (e) {
         setRoles(previousRoles);
         const msg = await parseApiError(e);
@@ -2192,8 +2245,16 @@ export default function App() {
 
       setIsFlowModalOpen(false);
       try {
-        if (editingFlow) await api.updateApprovalFlow(editingFlow.id, flowForm);
-        else await api.createApprovalFlow(flowForm);
+        let res;
+        if (editingFlow) {
+          await api.updateApprovalFlow(editingFlow.id, flowForm);
+        } else {
+          res = await api.createApprovalFlow(flowForm);
+          if (res && res.id) {
+            const realId = res.id;
+            setFlows(prev => prev.map(f => f.name === flowForm.name ? { ...f, id: realId } : f));
+          }
+        }
       } catch (e) {
         setFlows(previousFlows);
         const msg = await parseApiError(e);
@@ -2218,8 +2279,16 @@ export default function App() {
 
       setIsFlowModalOpen(false);
       try {
-        if (editingFlow) await api.updateApprovalFlow(editingFlow.id, updatedPayload);
-        else await api.createApprovalFlow(updatedPayload);
+        let res;
+        if (editingFlow) {
+          await api.updateApprovalFlow(editingFlow.id, updatedPayload);
+        } else {
+          res = await api.createApprovalFlow(updatedPayload);
+          if (res && res.id) {
+            const realId = res.id;
+            setFlows(prev => prev.map(f => f.name === updatedPayload.name ? { ...f, id: realId } : f));
+          }
+        }
         toast.success('Workflow berhasil disimpan');
       } catch (e) {
         setFlows(previousFlows);
@@ -2354,12 +2423,17 @@ export default function App() {
     const toastId = toast.loading(capturedForm.editMode ? `Memperbarui "${capturedForm.title}"...` : `Mengupload "${capturedForm.title}"...`);
 
     try {
+      let res;
       if (capturedForm.editMode) {
         await updateDocument(capturedForm.id, { ...docPayload, file });
         addLog(currentUser?.name, 'Revisi Dokumen', `Revisi ${docPayload.title}`);
         updateToast(toastId, { message: `"${docPayload.title}" diperbarui`, type: 'success' });
       } else {
-        await createDocument({ ...docPayload, file });
+        res = await createDocument({ ...docPayload, file });
+        if (res && res.id) {
+          const realId = res.id;
+          setDocList(prev => prev.map(d => d.title === docPayload.title ? { ...d, id: realId } : d));
+        }
         addLog(currentUser?.name, 'Upload Dokumen', `Upload ${docPayload.title}`);
         updateToast(toastId, { message: `"${docPayload.title}" diupload`, type: 'success' });
       }
@@ -2699,7 +2773,11 @@ export default function App() {
 
       setIsModalOpen(false);
       try {
-        await api.saveTaxSummary(payload);
+        const res = await api.saveTaxSummary(payload);
+        if (!taxForm.id && res && res.id) {
+          const realId = res.id;
+          setTaxSummaries(prev => prev.map(s => (s.month === payload.month && s.year === payload.year && s.type === payload.type) ? { ...s, id: realId } : s));
+        }
         addLog(currentUser?.name, taxForm.id ? 'Update Pajak' : 'Create Pajak', `${taxForm.type} - ${taxForm.month} ${taxForm.year}`);
       } catch (e) {
         setTaxSummaries(previousSummaries);
@@ -2764,7 +2842,11 @@ export default function App() {
       setFolders([...folders, { ...payload, id: Date.now().toString() }]);
 
       try {
-        await createFolder(payload);
+        const res = await createFolder(payload);
+        if (res && res.id) {
+          const realId = res.id;
+          setFolders(prev => prev.map(f => f.name === payload.name ? { ...f, id: realId } : f));
+        }
       } catch (e) {
         setFolders(previousFolders);
         const msg = await parseApiError(e);
@@ -3177,10 +3259,10 @@ export default function App() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
-                {tabTextMap[activeTab]?.title || 'Digital Vault'}
+                {tabTextMap[activeTab]?.title || 'Pustaka'}
               </h1>
               <p className="text-gray-500 dark:text-slate-400">
-                {tabTextMap[activeTab]?.subtitle || (language === 'en' ? 'Main Archive Warehouse' : 'Gudang Arsip Utama')}
+                {tabTextMap[activeTab]?.subtitle || (isEnglish ? 'Digital Info & Services Center' : 'Pusat Informasi & Layanan Digital')}
               </p>
             </div>
 
@@ -3200,230 +3282,232 @@ export default function App() {
                 }}
               />
 
-              <button
-                type="button"
-                onClick={() => setShowMenuLandingPopup(true)}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-slate-900 to-indigo-700 text-white text-xs font-black uppercase tracking-[0.14em] shadow-lg hover:opacity-95 transition-opacity"
-              >
-                <Sparkles size={14} />
-                {commandTextMap.labels.infoMenu}
-              </button>
+              {activeTab !== 'profile' && (
+                <button
+                  type="button"
+                  onClick={() => setShowMenuLandingPopup(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-slate-900 to-indigo-700 text-white text-xs font-black uppercase tracking-[0.14em] shadow-lg hover:opacity-95 transition-opacity"
+                >
+                  <Sparkles size={14} />
+                  {commandTextMap.labels.infoMenu}
+                </button>
+              )}
             </div>
 
           </div>
 
 
           <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 14, filter: 'blur(6px)' }}
-            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, y: -8, filter: 'blur(4px)' }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
-          >
-            {activeTab === 'dashboard' && (
-              <Dashboard
-                stats={stats}
-                docList={docList}
-                docStats={docStats}
-                logs={logs}
-                TOTAL_SLOTS={TOTAL_SLOTS}
-                Grid3x3={Grid3x3}
-                isDarkMode={isDarkMode}
-                handleViewDoc={handleViewDoc}
-                handleNavigateToFolder={handleNavigateToFolder}
-                setActiveTab={setActiveTab}
-                setActiveInvTab={setActiveInvTab}
-                handleDownload={handleDownload}
-                handleDownloadInvoice={handleDownloadInvoice}
-                ocrStats={ocrStats}
-                taxSummaries={taxSummaries}
-                taxAudits={taxAudits}
-                users={users}
-                departments={departments}
-                externalItems={externalItems}
-                folders={folders}
-                currentUser={currentUser}
-                onCopy={handleCopyToClipboard}
-                onOpenLanding={handleOpenLanding}
-                inventory={inventory}
-              />
-            )}
-            {activeTab === 'inventory' && (
-              <Inventory
-                inventory={hydratedInventory}
-                stats={stats}
-                TOTAL_SLOTS={TOTAL_SLOTS}
-                getStatusStyle={getStatusStyle}
-                handleSlotClick={handleSlotClick}
-                handleExcelImport={handleExcelImport}
-                downloadTemplate={downloadTemplate}
-                excelInputRef={excelInputRef}
-                handleExportInventory={handleExportInventory}
-                inventorySearchQuery={inventorySearchQuery}
-                setInventorySearchQuery={setInventorySearchQuery}
-                hasPermission={hasPermission}
-                activeInvTab={activeInvTab}
-                setActiveInvTab={setActiveInvTab}
-                externalItems={externalItems}
-                onRestoreExternal={(item) => {
-                  setSelectedExternalItem(item);
-                  setRestoreTargetSlot(''); // Reset selection
-                  setShowRestoreForm(true);
-                }}
-                onViewExternal={handleViewExternal}
-                ocrStats={ocrStats}
-                inventoryIssues={inventoryIssues}
-              />
-            )}
-            {activeTab === 'documents' && (
-              <Documents
-                docList={docList}
-                folders={folders}
-                currentFolderId={currentFolderId}
-                setCurrentFolderId={setCurrentFolderId}
-                folderHistory={folderHistory}
-                historyIndex={historyIndex}
-                navigateFolder={navigateFolder}
-                navigateBack={navigateBack}
-                navigateForward={navigateForward}
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-                handleCreateFolder={handleCreateFolder}
-                handleDeleteFolder={handleDeleteFolder}
-                handleViewDoc={handleViewDoc}
-                handleEditDoc={handleEditDoc}
-                handleDeleteDoc={handleDeleteDoc}
-                handleRenameDoc={handleRenameDoc}
-                setUploadForm={setUploadForm}
-                setModalTab={setModalTab}
-                setIsModalOpen={setIsModalOpen}
-                hasPermission={hasPermission}
-                docStats={docStats}
-                getSearchSnippet={getSearchSnippet}
-                logs={logs}
-                onRefresh={() => { fetchDocs(); fetchFolders(); fetchLogs(); }}
-                users={users}
-                departments={departments}
-                currentUser={currentUser}
-                handleEditFolder={handleEditFolder}
-                handleDownload={handleDownload}
-                ocrStats={ocrStats}
-                syncPustakaFolder={syncPustakaFolder}
-                handleMultipleDocUpload={handleMultipleDocUpload}
-              />
-            )}
-            {activeTab === 'tax-monitoring' && (
-              <TaxMonitoring
-                taxAudits={taxAudits}
-                onRefresh={(optimisticData) => {
-                  if (optimisticData) setTaxAudits(optimisticData);
-                  else { fetchTaxAudits(); fetchDocs(); fetchFolders(); fetchLogs(); }
-                }}
-                hasPermission={hasPermission}
-                currentUser={currentUser}
-                syncAuditFolder={syncAuditFolder}
-              />
-            )}
-            {activeTab === 'approvals' && (
-              <DocumentApproval
-                approvals={approvals}
-                users={users}
-                departments={departments}
-                currentUser={currentUser}
-                onRefresh={fetchApprovals}
-                hasPermission={hasPermission}
-                flows={flows}
-                syncApprovalFolder={syncApprovalFolder}
-              />
-            )}
-            {activeTab === 'tax-summary' && (
-              <TaxSummary
-                taxSummaries={taxSummaries}
-                hasPermission={hasPermission}
-                setTaxForm={setTaxForm}
-                setModalTab={setModalTab}
-                setIsModalOpen={setIsModalOpen}
-                config={taxConfig}
-                saveConfig={saveTaxConfig}
-                handleDeleteRecord={handleDeleteTaxRecord}
-                handleRenameTaxType={handleRenameTaxType}
-                onImport={handleTaxImport}
-                onCopy={handleCopyToClipboard}
-              />
-            )}
-            {activeTab === 'tax-calculation' && <TaxCalculation onCopy={handleCopyToClipboard} hasPermission={hasPermission} />}
-            {activeTab === 'master' && (
-              <MasterData
-                masterTab={masterTab}
-                setMasterTab={setMasterTab}
-                users={users}
-                roles={roles}
-                departments={departments}
-                flows={flows} // Pass flows to MasterData
-                userSearchQuery={userSearchQuery}
-                setUserSearchQuery={setUserSearchQuery}
-                handleDeleteUser={handleDeleteUser}
-                handleCreateUser={handleCreateUser}
-                handleEditUser={handleEditUser}
-                handleEditRole={handleEditRole}
-                handleDeleteRole={handleDeleteRole}
-                handleCreateRole={handleCreateRole}
-                handleCreateDept={handleCreateDept}
-                handleEditDept={handleEditDept}
-                handleDeleteDept={handleDeleteDept}
-                handleCreateFlow={handleCreateFlow} // Pass flow handlers
-                handleEditFlow={handleEditFlow}
-                handleDeleteFlow={handleDeleteFlow}
-                setIsModalOpen={setIsModalOpen}
-                logs={logs}
-                setModalTab={setModalTab}
-                setRoles={setRoles}
-                setDepartments={setDepartments}
-                hasPermission={hasPermission}
-              />
-            )}
-            {activeTab === 'profile' && (
-              <Profile
-                currentUser={currentUser}
-                onUpdateProfile={handleUpdateProfile}
-              />
-            )}
-            {activeTab === 'pustaka' && (
-              <Pustaka
-                currentUser={currentUser}
-                hasPermission={hasPermission}
-                users={users}
-                departments={departments}
-                syncPustakaFolder={syncPustakaFolder}
-                syncSopFolder={syncSopFolder}
-              />
-            )}
-            {activeTab === 'system-logs' && (
-              <SystemLogs
-                isDarkMode={isDarkMode}
-              />
-            )}
-            {activeTab === 'flow' && (
-              <SopFlow
-                currentUser={currentUser}
-                hasPermission={hasPermission}
-                users={users}
-                departments={departments}
-                syncSopFolder={syncSopFolder}
-              />
-            )}
-            {activeTab === 'job-due-date' && (
-              <JobDueDate 
-                currentUser={currentUser}
-                users={users}
-                departments={departments}
-                hasPermission={hasPermission}
-                isDarkMode={isDarkMode}
-                onCopy={handleCopyToClipboard}
-              />
-            )}
-          </motion.div>
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 14, filter: 'blur(6px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, y: -8, filter: 'blur(4px)' }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+            >
+              {activeTab === 'dashboard' && (
+                <Dashboard
+                  stats={stats}
+                  docList={docList}
+                  docStats={docStats}
+                  logs={logs}
+                  TOTAL_SLOTS={TOTAL_SLOTS}
+                  Grid3x3={Grid3x3}
+                  isDarkMode={isDarkMode}
+                  handleViewDoc={handleViewDoc}
+                  handleNavigateToFolder={handleNavigateToFolder}
+                  setActiveTab={setActiveTab}
+                  setActiveInvTab={setActiveInvTab}
+                  handleDownload={handleDownload}
+                  handleDownloadInvoice={handleDownloadInvoice}
+                  ocrStats={ocrStats}
+                  taxSummaries={taxSummaries}
+                  taxAudits={taxAudits}
+                  users={users}
+                  departments={departments}
+                  externalItems={externalItems}
+                  folders={folders}
+                  currentUser={currentUser}
+                  onCopy={handleCopyToClipboard}
+                  onOpenLanding={handleOpenLanding}
+                  inventory={inventory}
+                />
+              )}
+              {activeTab === 'inventory' && (
+                <Inventory
+                  inventory={hydratedInventory}
+                  stats={stats}
+                  TOTAL_SLOTS={TOTAL_SLOTS}
+                  getStatusStyle={getStatusStyle}
+                  handleSlotClick={handleSlotClick}
+                  handleExcelImport={handleExcelImport}
+                  downloadTemplate={downloadTemplate}
+                  excelInputRef={excelInputRef}
+                  handleExportInventory={handleExportInventory}
+                  inventorySearchQuery={inventorySearchQuery}
+                  setInventorySearchQuery={setInventorySearchQuery}
+                  hasPermission={hasPermission}
+                  activeInvTab={activeInvTab}
+                  setActiveInvTab={setActiveInvTab}
+                  externalItems={externalItems}
+                  onRestoreExternal={(item) => {
+                    setSelectedExternalItem(item);
+                    setRestoreTargetSlot(''); // Reset selection
+                    setShowRestoreForm(true);
+                  }}
+                  onViewExternal={handleViewExternal}
+                  ocrStats={ocrStats}
+                  inventoryIssues={inventoryIssues}
+                />
+              )}
+              {activeTab === 'documents' && (
+                <Documents
+                  docList={docList}
+                  folders={folders}
+                  currentFolderId={currentFolderId}
+                  setCurrentFolderId={setCurrentFolderId}
+                  folderHistory={folderHistory}
+                  historyIndex={historyIndex}
+                  navigateFolder={navigateFolder}
+                  navigateBack={navigateBack}
+                  navigateForward={navigateForward}
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
+                  handleCreateFolder={handleCreateFolder}
+                  handleDeleteFolder={handleDeleteFolder}
+                  handleViewDoc={handleViewDoc}
+                  handleEditDoc={handleEditDoc}
+                  handleDeleteDoc={handleDeleteDoc}
+                  handleRenameDoc={handleRenameDoc}
+                  setUploadForm={setUploadForm}
+                  setModalTab={setModalTab}
+                  setIsModalOpen={setIsModalOpen}
+                  hasPermission={hasPermission}
+                  docStats={docStats}
+                  getSearchSnippet={getSearchSnippet}
+                  logs={logs}
+                  onRefresh={() => { fetchDocs(); fetchFolders(); fetchLogs(); }}
+                  users={users}
+                  departments={departments}
+                  currentUser={currentUser}
+                  handleEditFolder={handleEditFolder}
+                  handleDownload={handleDownload}
+                  ocrStats={ocrStats}
+                  syncPustakaFolder={syncPustakaFolder}
+                  handleMultipleDocUpload={handleMultipleDocUpload}
+                />
+              )}
+              {activeTab === 'tax-monitoring' && (
+                <TaxMonitoring
+                  taxAudits={taxAudits}
+                  onRefresh={(optimisticData) => {
+                    if (optimisticData) setTaxAudits(optimisticData);
+                    else { fetchTaxAudits(); fetchDocs(); fetchFolders(); fetchLogs(); }
+                  }}
+                  hasPermission={hasPermission}
+                  currentUser={currentUser}
+                  syncAuditFolder={syncAuditFolder}
+                />
+              )}
+              {activeTab === 'approvals' && (
+                <DocumentApproval
+                  approvals={approvals}
+                  users={users}
+                  departments={departments}
+                  currentUser={currentUser}
+                  onRefresh={fetchApprovals}
+                  hasPermission={hasPermission}
+                  flows={flows}
+                  syncApprovalFolder={syncApprovalFolder}
+                />
+              )}
+              {activeTab === 'tax-summary' && (
+                <TaxSummary
+                  taxSummaries={taxSummaries}
+                  hasPermission={hasPermission}
+                  setTaxForm={setTaxForm}
+                  setModalTab={setModalTab}
+                  setIsModalOpen={setIsModalOpen}
+                  config={taxConfig}
+                  saveConfig={saveTaxConfig}
+                  handleDeleteRecord={handleDeleteTaxRecord}
+                  handleRenameTaxType={handleRenameTaxType}
+                  onImport={handleTaxImport}
+                  onCopy={handleCopyToClipboard}
+                />
+              )}
+              {activeTab === 'tax-calculation' && <TaxCalculation onCopy={handleCopyToClipboard} hasPermission={hasPermission} />}
+              {activeTab === 'master' && (
+                <MasterData
+                  masterTab={masterTab}
+                  setMasterTab={setMasterTab}
+                  users={users}
+                  roles={roles}
+                  departments={departments}
+                  flows={flows} // Pass flows to MasterData
+                  userSearchQuery={userSearchQuery}
+                  setUserSearchQuery={setUserSearchQuery}
+                  handleDeleteUser={handleDeleteUser}
+                  handleCreateUser={handleCreateUser}
+                  handleEditUser={handleEditUser}
+                  handleEditRole={handleEditRole}
+                  handleDeleteRole={handleDeleteRole}
+                  handleCreateRole={handleCreateRole}
+                  handleCreateDept={handleCreateDept}
+                  handleEditDept={handleEditDept}
+                  handleDeleteDept={handleDeleteDept}
+                  handleCreateFlow={handleCreateFlow} // Pass flow handlers
+                  handleEditFlow={handleEditFlow}
+                  handleDeleteFlow={handleDeleteFlow}
+                  setIsModalOpen={setIsModalOpen}
+                  logs={logs}
+                  setModalTab={setModalTab}
+                  setRoles={setRoles}
+                  setDepartments={setDepartments}
+                  hasPermission={hasPermission}
+                />
+              )}
+              {activeTab === 'profile' && (
+                <Profile
+                  currentUser={currentUser}
+                  onUpdateProfile={handleUpdateProfile}
+                />
+              )}
+              {activeTab === 'pustaka' && (
+                <Pustaka
+                  currentUser={currentUser}
+                  hasPermission={hasPermission}
+                  users={users}
+                  departments={departments}
+                  syncPustakaFolder={syncPustakaFolder}
+                  syncSopFolder={syncSopFolder}
+                />
+              )}
+              {activeTab === 'system-logs' && (
+                <SystemLogs
+                  isDarkMode={isDarkMode}
+                />
+              )}
+              {activeTab === 'flow' && (
+                <SopFlow
+                  currentUser={currentUser}
+                  hasPermission={hasPermission}
+                  users={users}
+                  departments={departments}
+                  syncSopFolder={syncSopFolder}
+                />
+              )}
+              {activeTab === 'job-due-date' && (
+                <JobDueDate
+                  currentUser={currentUser}
+                  users={users}
+                  departments={departments}
+                  hasPermission={hasPermission}
+                  isDarkMode={isDarkMode}
+                  onCopy={handleCopyToClipboard}
+                />
+              )}
+            </motion.div>
           </AnimatePresence>
 
         </div>
@@ -3611,6 +3695,7 @@ export default function App() {
           deptForm={deptForm} setDeptForm={setDeptForm} handleSaveDept={handleSaveDept}
           roleForm={roleForm} setRoleForm={setRoleForm} handleSaveRole={handleSaveRole}
           handleTogglePermission={handleTogglePermission}
+          handleBulkPermission={handleBulkPermission}
           roles={roles} departments={departments} APP_MODULES={APP_MODULES}
         />
 

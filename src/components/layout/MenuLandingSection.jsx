@@ -73,7 +73,7 @@ const menuLandingConfig = {
     ],
   },
   documents: {
-    kicker: 'Digital Vault',
+    kicker: 'Arsip Digital',
     title: 'Pusat Dokumen Digital Terstruktur',
     subtitle:
       'Kelola folder, metadata, OCR content, versi dokumen, dan akses lintas unit dalam satu alur kerja yang aman dan scalable.',
@@ -353,94 +353,94 @@ export default function MenuLandingSection({
 
   const uiText = isEnglish
     ? {
-        close: 'Close',
-        mainFeatures: 'Core Features',
-        businessFunctions: 'Business Functions',
-        useCases: 'Use Cases',
-        quickNavigation: 'Quick Navigation',
-        platformVision: 'View Platform Vision',
-        advantages: 'Advantages vs Manual Process',
-        goTo: 'Go to',
-      }
+      close: 'Close',
+      mainFeatures: 'Core Features',
+      businessFunctions: 'Business Functions',
+      useCases: 'Use Cases',
+      quickNavigation: 'Quick Navigation',
+      platformVision: 'View Platform Vision',
+      advantages: 'Advantages vs Manual Process',
+      goTo: 'Go to',
+    }
     : {
-        close: 'Tutup',
-        mainFeatures: 'Fitur Utama',
-        businessFunctions: 'Fungsi Bisnis',
-        useCases: 'Use Cases',
-        quickNavigation: 'Quick Navigation',
-        platformVision: 'Lihat Visi Platform',
-        advantages: 'Kelebihan Dibanding Manual',
-        goTo: 'Ke',
-      };
+      close: 'Tutup',
+      mainFeatures: 'Fitur Utama',
+      businessFunctions: 'Fungsi Bisnis',
+      useCases: 'Use Cases',
+      quickNavigation: 'Quick Navigation',
+      platformVision: 'Lihat Visi Platform',
+      advantages: 'Kelebihan Dibanding Manual',
+      goTo: 'Ke',
+    };
 
   const tabLabelMap = isEnglish
     ? {
-        dashboard: 'Dashboard',
-        inventory: 'Inventory',
-        documents: 'Documents',
-        approvals: 'Approvals',
-        'tax-monitoring': 'Tax Monitoring',
-        'tax-calculation': 'Tax Calculation',
-        'tax-summary': 'Tax Summary',
-        master: 'Master Data',
-        pustaka: 'Manual Book',
-        flow: 'SOP Flow',
-        'job-due-date': 'My Job',
-      }
+      dashboard: 'Dashboard',
+      inventory: 'Inventory',
+      documents: 'Documents',
+      approvals: 'Approvals',
+      'tax-monitoring': 'Tax Monitoring',
+      'tax-calculation': 'Tax Calculation',
+      'tax-summary': 'Tax Summary',
+      master: 'Master Data',
+      pustaka: 'Manual Book',
+      flow: 'SOP Flow',
+      'job-due-date': 'My Job',
+    }
     : {
-        dashboard: 'Dashboard',
-        inventory: 'Manajemen Rak',
-        documents: 'Dokumen Digital',
-        approvals: 'Approval',
-        'tax-monitoring': 'Monitoring Pajak',
-        'tax-calculation': 'Kalkulasi Pajak',
-        'tax-summary': 'Ringkasan Pajak',
-        master: 'Master Data',
-        pustaka: 'Manual Book',
-        flow: 'SOP Flow',
-        'job-due-date': 'My Job',
-      };
+      dashboard: 'Dashboard',
+      inventory: 'Manajemen Rak',
+      documents: 'Dokumen Digital',
+      approvals: 'Approval',
+      'tax-monitoring': 'Monitoring Pajak',
+      'tax-calculation': 'Kalkulasi Pajak',
+      'tax-summary': 'Ringkasan Pajak',
+      master: 'Master Data',
+      pustaka: 'Manual Book',
+      flow: 'SOP Flow',
+      'job-due-date': 'My Job',
+    };
 
   const englishHeadlineMap = {
     dashboard: {
       title: 'Executive Dashboard for Daily Operations',
-      subtitle: 'A consolidated view of document performance, team activity, OCR status, and risk signals so decisions can be made quickly and accurately.',
+      subtitle: 'Performance summaries of documents, team activities, OCR status, and risk signals in one screen for fast and accurate decision making.',
     },
     inventory: {
-      title: 'Filing and Physical Archive Rack Management',
-      subtitle: 'Manage box locations, inbound-outbound transfers, and storage availability with a structured warehouse view that is easy to monitor.',
+      title: 'Filing & Physical Rack Management',
+      subtitle: 'Manage box locations, inbound-outbound transfers, and space availability with structured and easy-to-monitor warehouse visuals.',
     },
     documents: {
-      title: 'Structured Digital Document Center',
-      subtitle: 'Manage folders, metadata, OCR content, document versions, and cross-unit access in a secure and scalable workflow.',
+      title: 'Structured Digital Document Hub',
+      subtitle: 'Manage folders, metadata, OCR content, document versions, and cross-unit access in one secure and scalable workflow.',
     },
     approvals: {
-      title: 'Multi-level Document Approval',
-      subtitle: 'Ensure every document follows the proper authorization flow with transparent and traceable approval history.',
+      title: 'Multi-level Document Approvals',
+      subtitle: 'Ensure every document passes through the correct authorization flow with transparent and traceable approval trails.',
     },
     'tax-monitoring': {
       title: 'End-to-End Tax Audit Monitoring',
-      subtitle: 'Track audit status, supporting document requirements, and follow-up progress so compliance teams stay inspection-ready.',
+      subtitle: 'Monitor audit status, supporting document needs, and follow-up progress so compliance teams are always ready for audits.',
     },
     'tax-calculation': {
-      title: 'Accurate Tax Calculation',
-      subtitle: 'Calculate tax components with consistent parameters to reduce errors and speed up reporting cycles.',
+      title: 'Precise Tax Calculation',
+      subtitle: 'Calculate tax components with consistent parameters to reduce miscalculation risks and speed up reporting.',
     },
     'tax-summary': {
-      title: 'Tax Compliance and Payment Summary',
-      subtitle: 'Show compliance insights, payment history, and trend performance so management gets a comprehensive tax view.',
+      title: 'Tax Compliance & Payment Summary',
+      subtitle: 'Display compliance insights, payment history, and performance trends so management has a comprehensive tax overview.',
     },
     master: {
-      title: 'Master Data and Core Configuration',
-      subtitle: 'Manage roles, users, departments, and process structure so all modules run in line with organizational governance.',
+      title: 'Master Data & Core Configuration',
+      subtitle: 'Manage roles, users, departments, and process structures so all modules run according to organizational governance.',
     },
     pustaka: {
-      title: 'Manual Book and Team Knowledge Hub',
-      subtitle: 'Store work guides, best practices, and operational references in a format that is easy to read, search, and share.',
+      title: 'Team Manual Book & Knowledge Center',
+      subtitle: 'Documented work guides, best practices, and operational references in an easy-to-read, search, and share format.',
     },
     flow: {
-      title: 'Visual and Adaptive SOP Flow',
-      subtitle: 'Design, manage, and communicate work processes visually so team execution is consistent, fast, and auditable.',
+      title: 'Visual and Adaptive SOP Flows',
+      subtitle: 'Design, manage, and communicate work process flows visually so team execution is consistent, fast, and easy to audit.',
     },
     'job-due-date': {
       title: 'Daily Job and Due Date Monitoring',
@@ -448,10 +448,200 @@ export default function MenuLandingSection({
     },
   };
 
+  const englishFeaturesMap = {
+    dashboard: [
+      'Real-time KPI snapshots: occupancy, document status, revisions, and productivity trends.',
+      'AI semantic search to find archives across modules based on context, not just filenames.',
+      'Activity feed that facilitates daily operational audit trails.',
+    ],
+    inventory: [
+      'Visual rack slots to know archive positions precisely.',
+      'Import/export inventory data for quick synchronization with field operations.',
+      'Tracking external items and borrowing history to prevent document loss.',
+    ],
+    documents: [
+      'Folder hierarchy and history navigation for tidy archive management.',
+      'OCR content preview to speed up content verification without opening the full file.',
+      'Complete document actions: upload, edit, rename, delete, copy, move, and bulk upload.',
+    ],
+    approvals: [
+      'Multi-level approval workflow according to roles and departments.',
+      'Clear approval status to minimize process bottlenecks.',
+      'History of decisions for governance and audit trail needs.',
+    ],
+    'tax-monitoring': [
+      'Centralized recording of audit cases and resolution progress.',
+      'Links to supporting documents for quick audit response.',
+      'Visibility of follow-up status per PIC and timeline.',
+    ],
+    'tax-calculation': [
+      'Structured and easy-to-review parameter-based calculations.',
+      'Ready-to-use output formats for documentation and internal review.',
+      'Workflow integration with tax monitoring and summary modules.',
+    ],
+    'tax-summary': [
+      'Concise visuals for payment status and compliance indicators.',
+      'Consolidation of data from monitoring and calculation processes.',
+      'Export support for external reporting needs.',
+    ],
+    master: [
+      'User, role, and permission management based on business needs.',
+      'Master department settings for cross-module data consistency.',
+      'Configuration control for system workflows.',
+    ],
+    pustaka: [
+      'Collection of training materials and SOP guides in one place.',
+      'Quick access for knowledge transfer across teams and periods.',
+      'Content synchronization with actual work process documentation.',
+    ],
+    flow: [
+      'Visual SOP representation for easy understanding by all roles.',
+      'Work step standardization to reduce unnecessary process variations.',
+      'Documentation of flow changes as a reference for continuous improvement.',
+    ],
+    'job-due-date': [
+      'Priority task list with clear status visibility.',
+      'Due date monitoring to prevent deliverable delays.',
+      'Issue tracking for faster escalation and resolution.',
+    ],
+  };
+
+  const englishFunctionsMap = {
+    dashboard: [
+      'Direct users to priority modules when process bottlenecks occur.',
+      'Act as a control point for validating document status before approval.',
+      'Provide quick insights for cross-divisional coordination.',
+    ],
+    inventory: [
+      'Reduce time spent searching for physical documents in the warehouse.',
+      'Support capacity control to keep space usage optimal.',
+      'Provide basic data for internal inventory audits.',
+    ],
+    documents: [
+      'Serve as the primary data source for approval, compliance, and reporting.',
+      'Speed up document retrieval for audit or clarification needs.',
+      'Improve digital archive quality through consistent metadata.',
+    ],
+    approvals: [
+      'Maintain document quality control before publication or operational use.',
+      'Increase accountability among stakeholders.',
+      'Reduce human error risk on important decisions.',
+    ],
+    'tax-monitoring': [
+      'Increase data readiness when auditors request info.',
+      'Help teams identify compliance risk areas earlier.',
+      'Unify coordination between finance, tax, and operations.',
+    ],
+    'tax-calculation': [
+      'Simplify periodic calculation processes for the tax team.',
+      'Support data validation before reporting.',
+      'Reduce dependence on manual calculations in separate spreadsheets.',
+    ],
+    'tax-summary': [
+      'Become a management reference for periodic evaluations.',
+      'Speed up the preparation of tax compliance reports.',
+      'Help identify trends for more directed fiscal planning.',
+    ],
+    master: [
+      'Maintain access security based on the principle of least privilege.',
+      'Form a data foundation so processes stay stable as the team grows.',
+      'Facilitate system administration without excessive technical intervention.',
+    ],
+    pustaka: [
+      'Lower knowledge loss risk during personnel rotation.',
+      'Speed up onboarding for new team members.',
+      'Maintain uniform work quality standards.',
+    ],
+    flow: [
+      'Align expectations between teams on critical processes.',
+      'Speed up troubleshooting as the work path is clearly visible.',
+      'Support compliance with corporate operational procedures.',
+    ],
+    'job-due-date': [
+      'Help managers monitor team capacity and workload.',
+      'Serve as an execution reminder to achieve daily targets.',
+      'Improve punctuality through operational priority alarms.',
+    ],
+  };
+
+  const englishUseCasesMap = {
+    dashboard: ['Team morning briefing', 'Daily control room', 'Workload monitoring'],
+    inventory: ['Archive stock opname', 'External box tracking', 'Physical location reconciliation'],
+    documents: ['Team document consolidation', 'Quick search for transaction evidence', 'Audit file preparation'],
+    approvals: ['Cross-level document review', 'Sensitive document control', 'Decision auditing'],
+    'tax-monitoring': ['Audit war room', 'Tracking auditor requests', 'Finding follow-up'],
+    'tax-calculation': ['Periodic calculation', 'Rate scenario testing', 'Reporting basis finalization'],
+    'tax-summary': ['Management monthly review', 'Compliance report preparation', 'Payment trend analysis'],
+    master: ['New user onboarding', 'Access adjustment', 'Organizational structure updates'],
+    pustaka: ['Team onboarding', 'Operational self-learning', 'Work method standardization'],
+    flow: ['New flow design', 'Old process optimization', 'Inter-unit SOP socialization'],
+    'job-due-date': ['Daily standup', 'Internal SLA control', 'Critical task escalation'],
+  };
+
+  const englishAdvantagesMap = {
+    dashboard: [
+      'Without a dashboard, teams need to manually combine data from many sources, which is prone to delays.',
+      'KPI monitoring becomes real-time so decisions don\'t wait for daily recaps.',
+      'Detect bottlenecks faster than checking reports one by one.',
+    ],
+    inventory: [
+      'Box searching no longer relies on personal memory or paper notes.',
+      'Inbound-outbound transfers are recorded automatically, not easily lost like manual logs.',
+      'precise rack capacity control, not rough field estimates.',
+    ],
+    documents: [
+      'Documents are not scattered in local folders or chats that are difficult to trace.',
+      'OCR and metadata speed up content searching compared to opening files one by one.',
+      'Consistent folder history and structure, not dependent on manual naming per user.',
+    ],
+    approvals: [
+      'Approval flows are more controlled compared to signatures or informal chats.',
+      'Decision trails are neatly documented for audits, not manual reconstructions.',
+      'Approval status is transparent so follow-up doesn\'t require repeated questioning.',
+    ],
+    'tax-monitoring': [
+      'Audit cases are not scattered in separate spreadsheets among PICs.',
+      'Supporting documents are directly linked to cases, not searched for again when requested by auditors.',
+      'Follow-up timelines are more accurate than manual updates via messages.',
+    ],
+    'tax-calculation': [
+      'Calculation error risk is reduced compared to changing spreadsheet formulas.',
+      'Calculation parameters are more consistent for each reporting period.',
+      'Result review becomes faster as output formats are standardized.',
+    ],
+    'tax-summary': [
+      'Compliance summaries are immediately available without hours of manual report compilation.',
+      'Management can see periodic trends without waiting for team recaps.',
+      'Analysis is more accurate because data is consolidated from operational processes.',
+    ],
+    master: [
+      'Access control is no longer managed manually per ad-hoc request.',
+      'User and department structures stay consistent when the organization changes.',
+      'System administration is faster without repeated data editing in many places.',
+    ],
+    pustaka: [
+      'Knowledge is not lost when personnel change as all are centrally documented.',
+      'New teams learn faster than non-standardized oral onboarding.',
+      'Guides are always easy to find, not scattered in personal files.',
+    ],
+    flow: [
+      'Visual SOPs are easier to understand than long, ambiguous text descriptions.',
+      'Process changes can be socialized quickly without repeated manual document revisions.',
+      'Execution non-compliance is reduced because work paths are clearly visible.',
+    ],
+    'job-due-date': [
+      'Work priority no longer depends on personal reminders that are often missed.',
+      'Due dates are monitored centrally, not scattered in individual notes.',
+      'Issue escalation is faster with status visible in real-time.',
+    ],
+  };
+
   const displayTitle = isEnglish ? (englishHeadlineMap[activeTab]?.title || config.title) : config.title;
   const displaySubtitle = isEnglish ? (englishHeadlineMap[activeTab]?.subtitle || config.subtitle) : config.subtitle;
-
-  if (!config || !isOpen) return null;
+  const displayFeatures = isEnglish ? (englishFeaturesMap[activeTab] || config.features) : config.features;
+  const displayFunctions = isEnglish ? (englishFunctionsMap[activeTab] || config.functions) : config.functions;
+  const displayUseCases = isEnglish ? (englishUseCasesMap[activeTab] || config.useCases) : config.useCases;
+  const displayAdvantages = isEnglish ? (englishAdvantagesMap[activeTab] || manualAdvantages) : manualAdvantages;
 
   const ActiveIcon = config.icon || Brain;
 
@@ -511,7 +701,7 @@ export default function MenuLandingSection({
             <div className="rounded-2xl border border-slate-200/70 dark:border-slate-700/60 bg-white/80 dark:bg-slate-950/50 p-5">
               <h3 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 font-bold mb-3">{uiText.mainFeatures}</h3>
               <ul className="space-y-2">
-                {config.features.map((item) => (
+                {displayFeatures.map((item) => (
                   <li key={item} className="text-sm text-slate-700 dark:text-slate-200 flex gap-2 leading-relaxed">
                     <CheckCircle2 size={16} className="mt-0.5 text-emerald-500 shrink-0" />
                     <span>{item}</span>
@@ -523,7 +713,7 @@ export default function MenuLandingSection({
             <div className="rounded-2xl border border-slate-200/70 dark:border-slate-700/60 bg-white/80 dark:bg-slate-950/50 p-5">
               <h3 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 font-bold mb-3">{uiText.businessFunctions}</h3>
               <ul className="space-y-2">
-                {config.functions.map((item) => (
+                {displayFunctions.map((item) => (
                   <li key={item} className="text-sm text-slate-700 dark:text-slate-200 flex gap-2 leading-relaxed">
                     <Building2 size={16} className="mt-0.5 text-indigo-500 shrink-0" />
                     <span>{item}</span>
@@ -535,7 +725,7 @@ export default function MenuLandingSection({
             <div className="rounded-2xl border border-slate-200/70 dark:border-slate-700/60 bg-white/80 dark:bg-slate-950/50 p-5">
               <h3 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 font-bold mb-3">{uiText.useCases}</h3>
               <div className="flex flex-wrap gap-2 mb-4">
-                {config.useCases.map((item) => (
+                {displayUseCases.map((item) => (
                   <span key={item} className="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200">
                     {item}
                   </span>
@@ -589,7 +779,7 @@ export default function MenuLandingSection({
               {uiText.advantages}
             </h3>
             <ul className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {manualAdvantages.map((item) => (
+              {displayAdvantages.map((item) => (
                 <li key={item} className="rounded-xl bg-white/80 dark:bg-slate-900/60 border border-emerald-200/70 dark:border-emerald-500/30 p-3 text-sm text-slate-700 dark:text-slate-200 leading-relaxed flex gap-2">
                   <Zap size={16} className="mt-0.5 text-emerald-500 shrink-0" />
                   <span>{item}</span>

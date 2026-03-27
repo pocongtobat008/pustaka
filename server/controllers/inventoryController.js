@@ -46,11 +46,12 @@ export const createBox = async (req, res) => {
         if (!data) return;
 
         const { box_id, description, location } = data;
-        const [id] = await knex('boxes').insert({
+        const [dbRes] = await knex('boxes').insert({
             box_id,
             description,
             location
-        });
+        }).returning('id');
+        const id = typeof dbRes === 'object' ? dbRes.id : dbRes;
         await systemLog('Admin', "Create Box", `Created box: ${box_id}`);
         req.app.get('io')?.emit('data:changed', { channel: 'inventory' });
         res.json({ id });
@@ -91,17 +92,21 @@ export const updateInventoryItem = async (req, res) => {
 
 export const getAnalytics = async (req, res) => {
     try {
-        const [totalItems] = await knex('inventory').count('id as count');
-        const [totalBoxes] = await knex('boxes').count('id as count');
-        const [totalExternal] = await knex('external_items').count('id as count');
+        const [itemsResult] = await knex('inventory').count('id as count');
+        const [boxesResult] = await knex('boxes').count('id as count');
+        const [externalResult] = await knex('external_items').count('id as count');
+
+        const totalItems = typeof itemsResult.count === 'string' ? parseInt(itemsResult.count) : itemsResult.count;
+        const totalBoxes = typeof boxesResult.count === 'string' ? parseInt(boxesResult.count) : boxesResult.count;
+        const totalExternal = typeof externalResult.count === 'string' ? parseInt(externalResult.count) : externalResult.count;
 
         // Mock recent activity for now or fetch from logs
         const recentActivity = await knex('logs').orderBy('timestamp', 'desc').limit(5);
 
         res.json({
-            totalItems: totalItems.count,
-            totalBoxes: totalBoxes.count,
-            totalExternal: totalExternal.count,
+            totalItems,
+            totalBoxes,
+            totalExternal,
             recentActivity
         });
     } catch (err) {
@@ -124,14 +129,15 @@ export const createExternalItem = async (req, res) => {
         if (!data) return;
 
         const { boxId, destination, sentDate, sender, boxData, history } = data;
-        const [id] = await knex('external_items').insert({
+        const [dbRes] = await knex('external_items').insert({
             boxId,
             destination,
             sentDate: sentDate || knex.fn.now(),
             sender,
             boxData: typeof boxData === 'string' ? boxData : JSON.stringify(boxData || {}),
             history: typeof history === 'string' ? history : JSON.stringify(history || [])
-        });
+        }).returning('id');
+        const id = typeof dbRes === 'object' ? dbRes.id : dbRes;
         await systemLog('System', "External Inventory", `Added item: ${boxId} to ${destination}`);
         req.app.get('io')?.emit('data:changed', { channel: 'inventory' });
         res.json({ id });

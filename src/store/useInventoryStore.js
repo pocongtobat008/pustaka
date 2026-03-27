@@ -14,10 +14,10 @@ const initialState = {
 export const useInventoryStore = create((set, get) => ({
     ...initialState,
 
-    setInventory: (inventory) => set({ inventory }),
-    setInventoryIssues: (inventoryIssues) => set({ inventoryIssues }),
-    setStats: (stats) => set({ stats }),
-    setExternalItems: (externalItems) => set({ externalItems }),
+    setInventory: (inventory) => set((state) => ({ inventory: typeof inventory === 'function' ? inventory(state.inventory) : inventory })),
+    setInventoryIssues: (inventoryIssues) => set((state) => ({ inventoryIssues: typeof inventoryIssues === 'function' ? inventoryIssues(state.inventoryIssues) : inventoryIssues })),
+    setStats: (stats) => set((state) => ({ stats: typeof stats === 'function' ? stats(state.stats) : stats })),
+    setExternalItems: (externalItems) => set((state) => ({ externalItems: typeof externalItems === 'function' ? externalItems(state.externalItems) : externalItems })),
     setActiveInvTab: (tab) => set({ activeInvTab: tab }),
     setOcrStats: (ocrStats) => set({ ocrStats }),
 

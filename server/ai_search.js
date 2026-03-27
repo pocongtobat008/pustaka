@@ -1,5 +1,10 @@
 import { pipeline, env } from '@xenova/transformers';
 
+// Disable native node bindings to prevent C++ segmentation faults
+// when used alongside node-canvas or other native modules.
+env.backends.onnx.wasm.numThreads = 1;
+env.backends.onnx.wasm.simd = false;
+
 // Suppress ONNX Runtime warnings
 if (env && env.onnx) {
     env.onnx.logLevel = 'error';

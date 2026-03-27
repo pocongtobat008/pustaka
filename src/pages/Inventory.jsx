@@ -340,10 +340,10 @@ export default function Inventory({
             <div className="flex flex-col gap-6 mb-8 bg-white/40 dark:bg-slate-900/40 backdrop-blur-2xl p-6 rounded-[2rem] border border-white/50 dark:border-white/10 shadow-2xl shadow-indigo-500/10 group hover:shadow-indigo-500/20 transition-all duration-500">
                 <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4 w-full md:w-auto">
-                        <div className="flex items-center gap-2 bg-slate-200/50 dark:bg-slate-800/50 p-1.5 rounded-2xl backdrop-blur-sm border border-white/20">
+                        <div className="flex bg-gray-100 dark:bg-slate-800 border dark:border-slate-700/50 p-1.5 rounded-2xl backdrop-blur-sm shadow-inner">
                             <button
                                 onClick={() => setActiveInvTab('internal')}
-                                className={`px-6 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all duration-300 ${activeInvTab === 'internal' ? 'bg-white dark:bg-slate-700 shadow-lg text-indigo-600 dark:text-white scale-105 ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-700 dark:hover:text-slate-300 hover:bg-white/50'}`}
+                                className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all duration-300 ${activeInvTab === 'internal' ? 'bg-white dark:bg-slate-700 shadow-lg text-indigo-600 dark:text-indigo-300 scale-105 ring-1 ring-black/5' : 'text-gray-500 dark:text-slate-500 hover:text-gray-700 dark:hover:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-800/50'}`}
                             >
                                 <Grid3x3 size={18} /> {text.tabWarehouse}
                                 {inventorySearchQuery && internalMatchCount > 0 && (
@@ -352,7 +352,7 @@ export default function Inventory({
                             </button>
                             <button
                                 onClick={() => setActiveInvTab('external')}
-                                className={`px-6 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all duration-300 ${activeInvTab === 'external' ? 'bg-white dark:bg-slate-700 shadow-lg text-indigo-600 dark:text-white scale-105 ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-700 dark:hover:text-slate-300 hover:bg-white/50'}`}
+                                className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all duration-300 ${activeInvTab === 'external' ? 'bg-white dark:bg-slate-700 shadow-lg text-indigo-600 dark:text-indigo-300 scale-105 ring-1 ring-black/5' : 'text-gray-500 dark:text-slate-500 hover:text-gray-700 dark:hover:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-800/50'}`}
                             >
                                 <Truck size={18} /> {text.tabIndoarsip}
                                 {inventorySearchQuery && externalMatchCount > 0 && (
@@ -444,8 +444,8 @@ export default function Inventory({
                                             key={i}
                                             onClick={() => setCurrentPage(i + 1)}
                                             className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${currentPage === i + 1
-                                                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30 scale-110'
-                                                    : 'bg-white/50 dark:bg-slate-800/50 text-slate-500 hover:bg-white dark:hover:bg-slate-700 border border-white/40 dark:border-white/10'
+                                                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30 scale-110'
+                                                : 'bg-white/50 dark:bg-slate-800/50 text-slate-500 hover:bg-white dark:hover:bg-slate-700 border border-white/40 dark:border-white/10'
                                                 }`}
                                         >
                                             {i + 1}

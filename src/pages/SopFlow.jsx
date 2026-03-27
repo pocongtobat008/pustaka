@@ -1,12 +1,121 @@
 import React, { useState, useEffect } from 'react';
-import { GitBranch, Plus, Trash2, Edit3, Search, Info, Globe, Lock, Users, Shield } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { GitBranch, Plus, Trash2, Edit3, Search, Info, Globe, Lock, Users, Shield, AlertCircle, X } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { sopService } from '../services/sopService';
 import { parseApiError } from '../utils/errorHandler';
 import Modal from '../components/common/Modal';
 import WorkflowDesigner from '../components/workflow/WorkflowDesigner';
 import WorkflowViewer from '../components/workflow/WorkflowViewer';
+import { MarkerType } from '@xyflow/react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { getFullUrl } from '../utils/urlHelper';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const SopViewer = ({ flow, onClose, text, getFullUrl }) => {
+    if (typeof document === 'undefined' || !flow) return null;
+
+    return createPortal(
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9999] bg-slate-950 flex flex-col"
+        >
+            {/* Full Screen Header */}
+            <div className="bg-slate-900/50 backdrop-blur-xl border-b border-white/5 p-6 flex justify-between items-center shrink-0">
+                <div className="flex items-center gap-4">
+                    <div className="p-3 bg-indigo-500 rounded-2xl text-white shadow-lg shadow-indigo-500/20">
+                        <GitBranch size={24} />
+                    </div>
+                    <div>
+                        <h2 className="text-xl font-black text-white leading-tight">{flow.title}</h2>
+                        <div className="flex items-center gap-3 mt-1">
+                            <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">{flow.category || 'Standard'}</span>
+                            <span className="w-1 h-1 rounded-full bg-slate-700" />
+                            <span className="text-[10px] font-bold text-slate-500 uppercase">{flow.steps?.length || 0} {text.steps}</span>
+                        </div>
+                    </div>
+                </div>
+                <button
+                    onClick={onClose}
+                    className="p-4 bg-white/5 hover:bg-white/10 text-white rounded-2xl transition-all hover:scale-110 active:scale-95 group"
+                >
+                    <X size={24} className="group-hover:rotate-90 transition-transform" />
+                </button>
+            </div>
+
+            {/* Full Canvas Area */}
+            <div className="flex-1 relative overflow-hidden bg-slate-950">
+                {flow.visual_config ? (() => {
+                    try {
+                        const config = typeof flow.visual_config === 'string'
+                            ? JSON.parse(flow.visual_config)
+                            : flow.visual_config;
+
+                        if (!config || !config.nodes) throw new Error("Invalid structure");
+
+                        const nodesWithStrings = (config.nodes || []).map(node => ({
+                            ...node,
+                            id: String(node.id)
+                        }));
+
+                        const edgesWithArrows = (config.edges || [])
+                            .filter(edge => edge.source && edge.target)
+                            .map((edge, eIdx) => {
+                                const finalColor = edge.style?.stroke || flow.accent_color || '#6366f1';
+                                return {
+                                    ...edge,
+                                    id: String(edge.id || `edge-${flow.id}-${eIdx}`),
+                                    source: String(edge.source),
+                                    target: String(edge.target),
+                                    type: 'smoothstep',
+                                    style: { ...(edge.style || {}), stroke: finalColor, strokeWidth: 2.5 },
+                                    markerEnd: {
+                                        type: MarkerType?.ArrowClosed || 'arrowclosed',
+                                        color: edge.markerEnd?.color || finalColor,
+                                        width: 20,
+                                        height: 20
+                                    }
+                                };
+                            });
+
+                        return (
+                            <WorkflowViewer
+                                key={flow.id}
+                                nodes={nodesWithStrings}
+                                edges={edgesWithArrows}
+                                accentColor={flow.accent_color}
+                                sopMode={true}
+                            />
+                        );
+                    } catch (err) {
+                        return (
+                            <div className="flex flex-col items-center justify-center h-full text-red-500 p-8 text-center">
+                                <AlertCircle size={48} className="mb-4 opacity-50" />
+                                <p className="text-sm font-bold uppercase tracking-widest mb-2">Gagal Memuat Visualisasi</p>
+                                <p className="text-xs opacity-70">Format data SOP tidak valid atau rusak.</p>
+                            </div>
+                        );
+                    }
+                })() : (
+                    <div className="flex flex-col items-center justify-center h-full text-slate-500">
+                        <Info size={48} className="mb-4 opacity-20" />
+                        <p className="text-sm font-bold uppercase tracking-widest">{text.noVisualization}</p>
+                    </div>
+                )}
+            </div>
+
+            <div className="absolute bottom-6 left-6 z-10">
+                <div className="bg-slate-900/60 backdrop-blur-md px-4 py-2 rounded-xl border border-white/5 text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    Presentation Mode (Read-Only)
+                </div>
+            </div>
+        </motion.div>,
+        document.body
+    );
+};
 
 export default function SopFlow({ currentUser, hasPermission, users = [], departments = [], syncSopFolder }) {
     const { language } = useLanguage();
@@ -315,17 +424,17 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                             {hasPermission('flow', 'edit') && (
                                 <button
                                     type="button"
-                                    onClick={(e) => { 
-                                        e.preventDefault(); 
-                                        e.stopPropagation(); 
-                                        setEditingFlow(flow); 
-                                        setForm({ ...flow, accent_color: flow.accent_color || '#6366f1' }); 
-                                        setIsModalOpen(true); 
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setEditingFlow(flow);
+                                        setForm({ ...flow, accent_color: flow.accent_color || '#6366f1' });
+                                        setIsModalOpen(true);
                                     }}
                                     className="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-indigo-500 transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20 active:scale-95"
                                 >
                                     <Edit3 size={16} /> {text.editFlow}
-                            </button>
+                                </button>
                             )}
                             {hasPermission('flow', 'delete') && (
                                 <button
@@ -493,85 +602,16 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                 </div>
             </Modal>
 
-            {/* MODAL: WORKFLOW VIEWER */}
-            <Modal
-                isOpen={!!selectedFlow}
-                onClose={() => setSelectedFlow(null)}
-                title={`${text.detailTitle} ${selectedFlow?.title}`}
-                size="max-w-6xl"
-                noPadding
-            >
-                <div className="flex h-full min-h-0 flex-col">
-                    {/* SOP Info Header */}
-                    <div className="p-5 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <h3 className="text-lg font-black text-slate-800 dark:text-white">{selectedFlow?.title}</h3>
-                                <p className="text-xs text-slate-500 mt-1">{selectedFlow?.description}</p>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <span className="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 rounded-lg text-[10px] font-black uppercase">
-                                    {selectedFlow?.category || text.defaultCategory}
-                                </span>
-                                <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-lg text-[10px] font-bold">
-                                    {selectedFlow?.steps?.length || 0} {text.steps}
-                                </span>
-                            </div>
-                        </div>
-                        <p className="text-[10px] text-slate-400 mt-3 font-bold flex items-center gap-1">
-                            💡 {text.viewerHint}
-                        </p>
-                    </div>
-
-                    {/* Full Flow Canvas */}
-                    <div className="flex-1 min-h-0 relative">
-                        {selectedFlow?.visual_config ? (() => {
-                            const config = typeof selectedFlow.visual_config === 'string' ? JSON.parse(selectedFlow.visual_config) : selectedFlow.visual_config;
-
-                            const nodesWithStrings = (config.nodes || []).map(node => ({
-                                ...node,
-                                id: String(node.id)
-                            }));
-
-                            const edgesWithArrows = (config.edges || [])
-                                .filter(edge => edge.source && edge.target)
-                                .map((edge, eIdx) => {
-                                    const finalColor = edge.style?.stroke || selectedFlow?.accent_color || '#6366f1';
-                                    return {
-                                        ...edge,
-                                        id: String(edge.id || `edge-${selectedFlow?.id}-${eIdx}`),
-                                        source: String(edge.source),
-                                        target: String(edge.target),
-                                        type: 'smoothstep',
-                                        style: { ...(edge.style || {}), stroke: finalColor, strokeWidth: 2.5 },
-                                        markerEnd: {
-                                            type: 'arrowclosed',
-                                            color: edge.markerEnd?.color || finalColor,
-                                            width: 20,
-                                            height: 20
-                                        },
-                                        sourceHandle: (edge.sourceHandle === null || edge.sourceHandle === "null") ? undefined : edge.sourceHandle,
-                                        targetHandle: (edge.targetHandle === null || edge.targetHandle === "null") ? undefined : edge.targetHandle
-                                    };
-                                });
-                            return (
-                                <WorkflowViewer
-                                    key={selectedFlow?.id}
-                                    nodes={nodesWithStrings}
-                                    edges={edgesWithArrows}
-                                    accentColor={selectedFlow?.accent_color}
-                                    sopMode={true}
-                                />
-                            );
-                        })() : (
-                            <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                                <Info size={48} className="mb-4 opacity-20" />
-                                <p className="text-sm font-bold uppercase tracking-widest">{text.noVisualization}</p>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </Modal>
+            <AnimatePresence>
+                {selectedFlow && (
+                    <SopViewer
+                        flow={selectedFlow}
+                        onClose={() => setSelectedFlow(null)}
+                        text={text}
+                        getFullUrl={getFullUrl}
+                    />
+                )}
+            </AnimatePresence>
         </div>
     );
 }

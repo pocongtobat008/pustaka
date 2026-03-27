@@ -55,10 +55,10 @@ export default function SystemLogs({ isDarkMode }) {
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div className="flex bg-gray-100 dark:bg-slate-800 p-1 rounded-xl">
+                <div className="flex bg-gray-100 dark:bg-slate-800 border dark:border-slate-700/50 p-1 rounded-xl shadow-inner">
                     <button
                         onClick={() => setLogType('error')}
-                        className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all ${logType === 'error' ? 'bg-white dark:bg-slate-700 text-red-600 shadow-sm' : 'text-gray-500'}`}
+                        className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${logType === 'error' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-md' : 'text-gray-500 dark:text-slate-500 hover:text-gray-700 dark:hover:text-slate-300'}`}
                     >
                         <AlertCircle size={16} /> {text.systemErrors}
                     </button>
@@ -87,7 +87,7 @@ export default function SystemLogs({ isDarkMode }) {
                 </div>
             </div>
 
-            <Card className="p-0 overflow-hidden border-0 shadow-2xl">
+            <Card className="p-0 sm:p-0 overflow-hidden border-0 shadow-2xl">
                 <div className="bg-slate-900 p-4 flex items-center justify-between border-b border-white/10">
                     <div className="flex items-center gap-2">
                         <div className="flex gap-1.5">
@@ -111,7 +111,7 @@ export default function SystemLogs({ isDarkMode }) {
                                 let color = "text-slate-300";
                                 if (line.includes('"level":"error"')) color = "text-red-400";
                                 if (line.includes('"level":"warn"')) color = "text-amber-400";
-                                
+
                                 return (
                                     <div key={i} className={`${color} hover:bg-white/5 py-0.5 px-2 rounded transition-colors break-all`}>
                                         <span className="opacity-30 mr-3 select-none">{filteredLogs.length - i}</span>

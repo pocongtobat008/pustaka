@@ -13,18 +13,20 @@ export const up = async (knex) => {
 
         if (!data || !data.id) continue;
 
-        const [boxRefId] = await knex('boxes').insert({
+        const [resBox] = await knex('boxes').insert({
             inventory_id: row.id,
             box_id: data.id
-        });
+        }).returning('id');
+        const boxRefId = typeof resBox === 'object' ? resBox.id : resBox;
 
         if (data.ordners && Array.isArray(data.ordners)) {
             for (const ord of data.ordners) {
-                const [ordnerRefId] = await knex('ordners').insert({
+                const [resOrd] = await knex('ordners').insert({
                     box_ref_id: boxRefId,
                     no_ordner: ord.noOrdner || '',
                     period: ord.period || ''
-                });
+                }).returning('id');
+                const ordnerRefId = typeof resOrd === 'object' ? resOrd.id : resOrd;
 
                 if (ord.invoices && Array.isArray(ord.invoices)) {
                     const invoicesToInsert = ord.invoices.map(inv => ({

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { User, FileKey, AlertCircle, ShieldCheck, Zap, ArrowRight, BookOpen } from 'lucide-react';
+import { User, FileKey, AlertCircle, ShieldCheck, Zap, ArrowRight, BookOpen, Sun, Moon, Globe } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAppStore } from '../store/useAppStore';
 
 export default function Login({ onLogin }) {
     const [loginForm, setLoginForm] = useState({ username: '', password: '', error: '' });
-    const { language } = useLanguage();
+    const { language, setLanguage } = useLanguage();
+    const { isDarkMode, setIsDarkMode } = useAppStore();
     const isEnglish = language === 'en';
 
     const text = isEnglish
@@ -57,9 +59,9 @@ export default function Login({ onLogin }) {
             {/* Animated Background Elements */}
             <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/10 rounded-full blur-[120px] animate-pulse"></div>
             <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
-            
+
             <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-0 bg-white/60 dark:bg-slate-900/60 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl border border-white/40 dark:border-white/10 overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-700">
-                
+
                 {/* Left Side: Branding & Illustration (Startup Style) */}
                 <div className="hidden lg:flex flex-col justify-between p-12 bg-gradient-to-br from-indigo-600 to-purple-700 relative overflow-hidden">
                     <div className="absolute inset-0 opacity-10">
@@ -67,7 +69,7 @@ export default function Login({ onLogin }) {
                             <path d="M0 0 L100 0 L100 100 Z" fill="white" />
                         </svg>
                     </div>
-                    
+
                     <div className="relative z-10">
                         <div className="flex items-center gap-3 mb-8">
                             <div className="p-2 bg-white/20 backdrop-blur-md rounded-xl">
@@ -75,7 +77,7 @@ export default function Login({ onLogin }) {
                             </div>
                             <span className="text-2xl font-black text-white tracking-tighter">Pustaka</span>
                         </div>
-                        
+
                         <h1 className="text-5xl font-black text-white leading-tight mb-6">
                             {text.titleMain.split('\n')[0]}<br />
                             <span className="text-indigo-200">{text.titleAccent}</span>
@@ -121,8 +123,32 @@ export default function Login({ onLogin }) {
                             <BookOpen className="text-white" size={32} />
                         </div>
                     </div>
-                    
-                    <div className="mb-10">
+
+                    <div className="mb-10 relative">
+                        {/* Language & Theme Toggles */}
+                        <div className="absolute -top-4 right-0 flex items-center gap-2">
+                            <button
+                                onClick={() => setLanguage(isEnglish ? 'id' : 'en')}
+                                className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 dark:bg-slate-800 border-2 border-transparent hover:border-indigo-500/30 rounded-xl transition-all group"
+                                title={isEnglish ? 'Change to Indonesian' : 'Ganti ke Bahasa Inggris'}
+                            >
+                                <Globe size={14} className="text-gray-400 group-hover:text-indigo-500" />
+                                <span className="text-[10px] font-black text-gray-500 dark:text-slate-300 uppercase tracking-widest">{isEnglish ? 'EN' : 'ID'}</span>
+                            </button>
+
+                            <button
+                                onClick={() => setIsDarkMode(!isDarkMode)}
+                                className="p-2 bg-gray-50 dark:bg-slate-800 border-2 border-transparent hover:border-indigo-500/30 rounded-xl transition-all group"
+                                title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                            >
+                                {isDarkMode ? (
+                                    <Sun size={14} className="text-amber-400 group-hover:scale-110 transition-transform" />
+                                ) : (
+                                    <Moon size={14} className="text-indigo-600 group-hover:scale-110 transition-transform" />
+                                )}
+                            </button>
+                        </div>
+
                         <h2 className="text-3xl font-black text-[#2B3674] dark:text-white mb-2 tracking-tight">{text.welcome}</h2>
                         <p className="text-gray-500 dark:text-slate-400 font-bold">{text.credentialHint}</p>
                     </div>
@@ -171,8 +197,8 @@ export default function Login({ onLogin }) {
                             <div className="flex-grow border-t border-gray-100 dark:border-slate-800"></div>
                         </div>
 
-                        <button 
-                            type="button" 
+                        <button
+                            type="button"
                             onClick={handleGuestLogin}
                             className="w-full py-4 bg-white dark:bg-slate-900/40 border-2 border-indigo-50 dark:border-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-2xl font-black shadow-sm hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-3 group border-dashed"
                         >

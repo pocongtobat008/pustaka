@@ -36,7 +36,7 @@ export const createApprovalFlow = async (req, res) => {
         const { name, description, steps, visual_config, privacy, allowed_departments, allowed_users } = data;
         // steps is array of { username, name, nodeId } from frontend
 
-        const [flowId] = await knex('approval_flows').insert({
+        const [dbRes] = await knex('approval_flows').insert({
             name,
             description,
             steps: JSON.stringify(steps || []),
@@ -45,7 +45,9 @@ export const createApprovalFlow = async (req, res) => {
             privacy: privacy || 'private',
             allowed_departments: JSON.stringify(allowed_departments || []),
             allowed_users: JSON.stringify(allowed_users || [])
-        });
+        }).returning('id');
+
+        const flowId = typeof dbRes === 'object' ? dbRes.id : dbRes;
 
         if (steps && steps.length > 0) {
             const inserts = steps.map((s, idx) => ({
@@ -92,7 +94,7 @@ export const initiateApproval = async (req, res) => {
         } = data;
 
         // Insert into document_approvals
-        const [approvalId] = await knex('document_approvals').insert({
+        const [dbRes] = await knex('document_approvals').insert({
             title,
             description,
             division,
@@ -104,7 +106,9 @@ export const initiateApproval = async (req, res) => {
             status: 'Pending',
             current_step_index: 0,
             created_at: knex.fn.now()
-        });
+        }).returning('id');
+
+        const approvalId = typeof dbRes === 'object' ? dbRes.id : dbRes;
 
         // Trigger OCR for main attachment
         if (attachment_url && attachment_url.startsWith('/uploads/')) {

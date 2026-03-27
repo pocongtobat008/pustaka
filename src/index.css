@@ -4,48 +4,48 @@
 
 @layer base {
   :root {
-    --background: 220 23% 97%;
-    --foreground: 222 47% 11%;
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 231 86% 59%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
-    --accent: 220 14% 96%;
-    --accent-foreground: 222 47% 11%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 231 86% 59%;
-    --radius: 0.85rem;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 243 75% 59%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 243 75% 59%;
+    --radius: 1rem;
   }
 
   .dark {
-    --background: 224 61% 8%;
-    --foreground: 210 40% 98%;
-    --card: 224 48% 12%;
-    --card-foreground: 210 40% 98%;
-    --popover: 224 48% 12%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 229 84% 66%;
-    --primary-foreground: 222 47% 11%;
-    --secondary: 223 40% 17%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 223 40% 17%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 223 40% 17%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 223 35% 22%;
-    --input: 223 35% 22%;
-    --ring: 229 84% 66%;
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 243 75% 59%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 243 75% 59%;
   }
 }
 
@@ -55,20 +55,23 @@
   }
 
   body {
-    @apply bg-background text-foreground min-h-screen antialiased;
+    @apply bg-background text-foreground min-h-screen antialiased selection:bg-indigo-500/30;
     font-family: 'Plus Jakarta Sans', sans-serif;
+    /* Soft premium dark mode background */
     background-image:
-      radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
-      radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
-      radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+      radial-gradient(ellipse at top left, rgba(79, 70, 229, 0.05) 0%, transparent 40%),
+      radial-gradient(ellipse at top right, rgba(168, 85, 247, 0.05) 0%, transparent 40%),
+      radial-gradient(ellipse at bottom left, rgba(56, 189, 248, 0.03) 0%, transparent 40%);
+    background-attachment: fixed;
   }
 
   /* Light mode override for cleaner look */
   html:not(.dark) body {
     background-image:
-      radial-gradient(at 0% 0%, hsla(213, 89%, 96%, 1) 0, transparent 50%),
-      radial-gradient(at 50% 0%, hsla(250, 80%, 98%, 1) 0, transparent 50%),
-      radial-gradient(at 100% 0%, hsla(280, 80%, 98%, 1) 0, transparent 50%);
+      radial-gradient(ellipse at top left, rgba(79, 70, 229, 0.03) 0%, transparent 40%),
+      radial-gradient(ellipse at top right, rgba(168, 85, 247, 0.03) 0%, transparent 40%),
+      radial-gradient(ellipse at bottom left, rgba(56, 189, 248, 0.02) 0%, transparent 40%);
+    background-color: #FAFAFB;
   }
 }
 
@@ -139,6 +142,30 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* React Flow Dark Mode Overrides */
+.dark .react-flow__controls-button {
+  background-color: theme('colors.slate.900');
+  fill: theme('colors.slate.200');
+  border-bottom: 1px solid theme('colors.slate.800');
+}
+
+.dark .react-flow__controls-button:hover {
+  background-color: theme('colors.slate.800');
+}
+
+.dark .react-flow__controls-button path {
+  fill: currentColor;
+}
+
+.dark .react-flow__edge-path {
+  stroke: theme('colors.slate.700');
+}
+
+.dark .react-flow__handle {
+  background-color: theme('colors.indigo.500');
+  border-color: theme('colors.slate.950');
 }
 
 .animate-fade-in-up {

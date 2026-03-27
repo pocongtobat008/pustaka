@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { 
-    Calendar, Clock, CheckCircle2, AlertCircle, Plus, 
-    Users, Lock, Globe, Building2, MoreVertical, 
+import {
+    Calendar, Clock, CheckCircle2, AlertCircle, Plus,
+    Users, Lock, Globe, Building2, MoreVertical,
     MessageSquare, TrendingUp, Filter, ChevronRight,
     User as UserIcon, Trash2, Edit3, ArrowLeft, CalendarDays, Repeat, UserPlus, LayoutGrid, X, Hash, ChevronLeft, Settings, Activity, Timer, Check, Info, Eye
 } from 'lucide-react';
@@ -42,6 +42,12 @@ const parseAssignedTo = (val) => {
         }
     }
     return [];
+};
+
+const calculateProgress = (issues) => {
+    if (!issues || issues.length === 0) return 0;
+    const total = issues.reduce((sum, iss) => sum + (Number(iss.progress) || 0), 0);
+    return Math.round(total / issues.length);
 };
 
 export default function JobDueDate({ currentUser, users, departments, hasPermission, isDarkMode, onCopy }) {
@@ -222,7 +228,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
 
             if (jobsRes.ok) setJobs(await jobsRes.json());
             if (indepRes.ok) setIndependentIssues(await indepRes.json());
-            
+
             if (picsRes.ok) {
                 let pics = await picsRes.json();
                 // Otomatis deteksi user login dan tambahkan ke monitoring jika belum ada di DB
@@ -270,15 +276,15 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
     // Helper to check overdue status
     const checkIsOverdue = (task, month) => {
         if (task.status === 'done') return false;
-        
+
         const creationDate = task.created_at ? new Date(task.created_at) : new Date(Number(task.id));
         const today = startOfDay(new Date());
-        
+
         let taskDate;
         if (task.type === 'recurring') {
             const day = new Date(task.dueDate).getDate();
             taskDate = new Date(month.getFullYear(), month.getMonth(), day);
-            
+
             // Logika: Jadwal rutin tidak bisa terlambat sebelum tugas itu sendiri dibuat
             if (isBefore(taskDate, startOfDay(creationDate))) return false;
         } else {
@@ -294,18 +300,18 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
             const isOwner = job.owner === currentUser.username;
             const isAssigned = job.assignedTo === currentUser.username;
             const isPublic = job.privacy === 'public';
-            const isDept = job.privacy === 'department' && 
-                          (job.allowedDepts?.includes(currentUser.department) || currentUser.department === job.targetDept);
+            const isDept = job.privacy === 'department' &&
+                (job.allowedDepts?.includes(currentUser.department) || currentUser.department === job.targetDept);
             const isSpecific = job.privacy === 'specific' && job.allowedUsers?.includes(currentUser.username);
             const isAdmin = currentUser.role === 'admin';
-            
+
             // Visible if any issue inside is assigned to currentUser (Relational visibility)
             const hasIssueForMe = (job.issues || []).some(i => {
                 const assigned = Array.isArray(i.assignedTo) ? i.assignedTo : (i.assignedTo ? [i.assignedTo] : []);
                 return assigned.includes(currentUser.username);
             });
             const hasIssueByMe = (job.issues || []).some(i => i.owner === currentUser.username);
-            
+
             return isOwner || isAssigned || isPublic || isDept || isSpecific || isAdmin || hasIssueForMe || hasIssueByMe;
         });
 
@@ -318,8 +324,8 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
             // PIC Block Visibility Check
             const isOwner = username === currentUser.username;
             const isPublic = picConfig.privacy === 'public' || typeof picConfig === 'string';
-            const isDept = picConfig.privacy === 'department' && 
-                          (picConfig.allowedDepts?.includes(currentUser.department) || currentUser.department === u.department);
+            const isDept = picConfig.privacy === 'department' &&
+                (picConfig.allowedDepts?.includes(currentUser.department) || currentUser.department === u.department);
             const isSpecific = picConfig.privacy === 'specific' && picConfig.allowedUsers?.includes(currentUser.username);
             const isAdmin = currentUser.role === 'admin';
 
@@ -345,8 +351,8 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
             const special = visibleJobs.filter(j => {
                 if (j.assignedTo !== u.username || j.type === 'recurring') return false;
                 const jobDate = new Date(j.dueDate);
-                return jobDate.getMonth() === selectedMonth.getMonth() && 
-                       jobDate.getFullYear() === selectedMonth.getFullYear();
+                return jobDate.getMonth() === selectedMonth.getMonth() &&
+                    jobDate.getFullYear() === selectedMonth.getFullYear();
             });
 
             // d. Aggregated Issues (Tasks + Overdue + Independent)
@@ -367,11 +373,11 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                             const assigned = parseAssignedTo(issue.assignedTo);
                             return assigned.includes(u.username) || issue.owner === u.username;
                         })
-                        .map(issue => ({ 
-                            ...issue, 
-                            taskTitle: task.title, 
-                            taskId: task.id, 
-                            taskType: task.type, 
+                        .map(issue => ({
+                            ...issue,
+                            taskTitle: task.title,
+                            taskId: task.id,
+                            taskType: task.type,
                             taskDueDate: task.dueDate,
                             status: issue.status || 'pending'
                         }));
@@ -465,19 +471,19 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
             const rawCompleted = job.completedMonths !== undefined ? job.completedMonths : (job.completed_months || []);
             const completedMonths = parseCompletedMonths(rawCompleted) || [];
             const isDone = completedMonths.includes(monthKey);
-            const newCompletedMonths = isDone 
+            const newCompletedMonths = isDone
                 ? completedMonths.filter(m => m !== monthKey)
                 : [...completedMonths, monthKey];
-            
-            updatedJob = { 
-                ...job, 
+
+            updatedJob = {
+                ...job,
                 completedMonths: newCompletedMonths,
                 completed_months: JSON.stringify(newCompletedMonths)
             };
         } else {
             const isDone = job.status === 'done';
-            updatedJob = { 
-                ...job, 
+            updatedJob = {
+                ...job,
                 status: isDone ? 'pending' : 'done',
                 completedAt: !isDone ? new Date().toISOString() : null
             };
@@ -553,10 +559,10 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
         const updateLogic = (i) => {
             if (i.id === issueId) {
                 const history = i.history || [];
-                return { 
-                    ...i, 
-                    status: newStatus, 
-                    resolvedAt: newStatus === 'resolved' ? new Date().toISOString() : i.resolvedAt, 
+                return {
+                    ...i,
+                    status: newStatus,
+                    resolvedAt: newStatus === 'resolved' ? new Date().toISOString() : i.resolvedAt,
                     progress: getStatusProgress(newStatus),
                     history: [...history, { status: newStatus, note, date: new Date().toISOString() }]
                 };
@@ -567,23 +573,23 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
         if (taskId && taskId !== 0 && taskId !== '0' && taskId !== null) {
             const task = jobs.find(j => j.id === taskId);
             if (!task) return;
-            
+
             const existingIssues = task.issues || [];
             const issueExists = existingIssues.some(i => i.id === issueId);
-            
+
             if (!issueExists && String(issueId).startsWith('auto-overdue-')) {
-                        // Convert virtual overdue to real issue to persist history
-                        const newIssue = {
-                            id: issueId,
-                            note: `⚠️ TERLAMBAT: ${task.title}`,
-                            detail: `Tugas ini telah melewati batas waktu pengerjaan.`,
-                            status: newStatus,
-                            createdAt: task.dueDate,
-                            isAutoGenerated: true,
-                            assignedTo: [task.assignedTo],
-                            progress: getStatusProgress(newStatus),
-                            history: [{ status: newStatus, note, date: new Date().toISOString() }]
-                        };
+                // Convert virtual overdue to real issue to persist history
+                const newIssue = {
+                    id: issueId,
+                    note: `⚠️ TERLAMBAT: ${task.title}`,
+                    detail: `Tugas ini telah melewati batas waktu pengerjaan.`,
+                    status: newStatus,
+                    createdAt: task.dueDate,
+                    isAutoGenerated: true,
+                    assignedTo: [task.assignedTo],
+                    progress: getStatusProgress(newStatus),
+                    history: [{ status: newStatus, note, date: new Date().toISOString() }]
+                };
                 handleUpdateIssues(taskId, [...existingIssues, newIssue]);
             } else {
                 handleUpdateIssues(taskId, existingIssues.map(updateLogic));
@@ -630,21 +636,21 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
 
     const handleOpenIssueModal = (taskId, issue = null) => {
         if (issue) {
-            setIssueForm({ 
-                id: issue.id, 
-                note: issue.note, 
-                detail: issue.detail || '', 
-                createdAt: (issue.createdAt || issue.created_at) ? (issue.createdAt || issue.created_at).split('T')[0] : new Date().toISOString().split('T')[0], 
+            setIssueForm({
+                id: issue.id,
+                note: issue.note,
+                detail: issue.detail || '',
+                createdAt: (issue.createdAt || issue.created_at) ? (issue.createdAt || issue.created_at).split('T')[0] : new Date().toISOString().split('T')[0],
                 taskId,
                 isAutoGenerated: issue.isAutoGenerated || false,
                 assignedTo: parseAssignedTo(issue.assignedTo)
             });
         } else {
-            setIssueForm({ 
-                id: null, 
-                note: '', 
-                detail: '', 
-                createdAt: new Date().toISOString().split('T')[0], 
+            setIssueForm({
+                id: null,
+                note: '',
+                detail: '',
+                createdAt: new Date().toISOString().split('T')[0],
                 taskId,
                 isAutoGenerated: false,
                 assignedTo: selectedUser ? [selectedUser] : [currentUser.username]
@@ -772,11 +778,6 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
         }
     };
 
-    const calculateProgress = (issues) => {
-        if (!issues || issues.length === 0) return 0;
-        const total = issues.reduce((sum, iss) => sum + (Number(iss.progress) || 0), 0);
-        return Math.round(total / issues.length);
-    };
 
     const renderInPortal = (content) => {
         if (typeof document === 'undefined') return null;
@@ -789,7 +790,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white/40 dark:bg-slate-900/40 p-5 rounded-[2.5rem] border border-white/20 dark:border-white/5 backdrop-blur-xl shadow-xl shadow-indigo-500/5">
                 <div className="flex items-center gap-4">
                     {selectedUser ? (
-                        <button 
+                        <button
                             onClick={() => setSelectedUser(null)}
                             className="p-3 bg-white dark:bg-slate-800 rounded-2xl text-slate-600 dark:text-slate-300 hover:bg-indigo-600 hover:text-white transition-all shadow-md hover:shadow-indigo-500/20 group"
                         >
@@ -812,19 +813,19 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
 
                 <div className="flex items-center gap-2 w-full md:w-auto">
                     <div className="flex items-center gap-1 bg-white dark:bg-slate-800 rounded-2xl p-1 ring-1 ring-slate-200 dark:ring-white/10 shadow-sm">
-                        <button 
+                        <button
                             onClick={handlePrevMonth}
                             className="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-xl transition-all text-slate-500"
                         >
                             <ChevronLeft size={18} />
                         </button>
-                        <input 
-                            type="month" 
+                        <input
+                            type="month"
                             className="bg-transparent border-none px-2 py-1.5 text-sm font-bold dark:text-white outline-none w-32 text-center"
                             value={format(selectedMonth, 'yyyy-MM')}
                             onChange={(e) => setSelectedMonth(new Date(e.target.value))}
                         />
-                        <button 
+                        <button
                             onClick={handleNextMonth}
                             className="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-xl transition-all text-slate-500"
                         >
@@ -832,7 +833,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                         </button>
                     </div>
                     {!selectedUser && hasPermission('job-due-date', 'create') ? (
-                        <button 
+                        <button
                             onClick={() => setShowPicModal(true)}
                             className="flex-1 md:flex-none bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-2.5 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95 shadow-xl"
                         >
@@ -851,7 +852,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
             <AnimatePresence mode="wait">
                 {!selectedUser ? (
                     /* View 1: User Grid Summary */
-                    <motion.div 
+                    <motion.div
                         key="grid"
                         initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
                         className="space-y-8"
@@ -877,64 +878,64 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {userBlocks.map(({ user, recurring, special, pendingCount, config }) => (
-                            <motion.div 
-                                key={user.username}
-                                whileHover={{ y: -5 }}
-                                onClick={() => setSelectedUser(user.username)}
-                                className="bg-white dark:bg-slate-900/40 rounded-[2.5rem] p-7 border border-slate-100 dark:border-white/5 shadow-sm cursor-pointer group relative"
-                            >
-                                <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
-                                    {hasPermission('job-due-date', 'edit') && (
-                                        <button 
-                                            onClick={(e) => { e.stopPropagation(); setEditingPicPrivacy(config); }}
-                                            className="p-2 text-slate-300 hover:text-indigo-500"
-                                        >
-                                            <Settings size={16} />
-                                        </button>
-                                    )}
-                                    {hasPermission('job-due-date', 'delete') && (
-                                        <button 
-                                            onClick={(e) => handleRemovePIC(e, user.username)}
-                                            className="p-2 text-slate-300 hover:text-red-500"
-                                        >
-                                            <X size={16} />
-                                        </button>
-                                    )}
-                                </div>
-                                
-                                <div className="flex items-center gap-4 mb-6">
-                                    <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-indigo-500"><UserIcon size={28} /></div>
-                                    <div>
-                                        <h3 className="font-black text-slate-800 dark:text-white leading-tight">{user.name}</h3>
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{user.department}</p>
+                            {userBlocks.map(({ user, recurring, special, pendingCount, config }) => (
+                                <motion.div
+                                    key={user.username}
+                                    whileHover={{ y: -5 }}
+                                    onClick={() => setSelectedUser(user.username)}
+                                    className="bg-white dark:bg-slate-900/40 rounded-[2.5rem] p-7 border border-slate-100 dark:border-white/5 shadow-sm cursor-pointer group relative"
+                                >
+                                    <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                                        {hasPermission('job-due-date', 'edit') && (
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); setEditingPicPrivacy(config); }}
+                                                className="p-2 text-slate-300 hover:text-indigo-500"
+                                            >
+                                                <Settings size={16} />
+                                            </button>
+                                        )}
+                                        {hasPermission('job-due-date', 'delete') && (
+                                            <button
+                                                onClick={(e) => handleRemovePIC(e, user.username)}
+                                                className="p-2 text-slate-300 hover:text-red-500"
+                                            >
+                                                <X size={16} />
+                                            </button>
+                                        )}
                                     </div>
-                                </div>
 
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div className="p-4 bg-slate-50 dark:bg-white/5 rounded-3xl border border-transparent group-hover:border-indigo-500/20 transition-all">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-tighter">{isEnglish ? 'Recurring' : 'Rutin'}</p>
-                                        <p className="text-2xl font-black dark:text-white">{recurring.length}</p>
+                                    <div className="flex items-center gap-4 mb-6">
+                                        <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-indigo-500"><UserIcon size={28} /></div>
+                                        <div>
+                                            <h3 className="font-black text-slate-800 dark:text-white leading-tight">{user.name}</h3>
+                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{user.department}</p>
+                                        </div>
                                     </div>
-                                    <div className="p-4 bg-slate-50 dark:bg-white/5 rounded-3xl border border-transparent group-hover:border-indigo-500/20 transition-all">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-tighter">{isEnglish ? 'Special' : 'Khusus'}</p>
-                                        <p className="text-2xl font-black dark:text-white">{special.length}</p>
-                                    </div>
-                                </div>
 
-                                {pendingCount > 0 && (
-                                    <div className="mt-4 flex items-center gap-2 px-3 py-2 bg-amber-500/10 rounded-xl border border-amber-500/20">
-                                        <AlertCircle size={12} className="text-amber-500" />
-                                        <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400">{pendingCount} {isEnglish ? 'Pending Issues' : 'Pending Issues'}</span>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="p-4 bg-slate-50 dark:bg-white/5 rounded-3xl border border-transparent group-hover:border-indigo-500/20 transition-all">
+                                            <p className="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-tighter">{isEnglish ? 'Recurring' : 'Rutin'}</p>
+                                            <p className="text-2xl font-black dark:text-white">{recurring.length}</p>
+                                        </div>
+                                        <div className="p-4 bg-slate-50 dark:bg-white/5 rounded-3xl border border-transparent group-hover:border-indigo-500/20 transition-all">
+                                            <p className="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-tighter">{isEnglish ? 'Special' : 'Khusus'}</p>
+                                            <p className="text-2xl font-black dark:text-white">{special.length}</p>
+                                        </div>
                                     </div>
-                                )}
-                            </motion.div>
-                        ))}
+
+                                    {pendingCount > 0 && (
+                                        <div className="mt-4 flex items-center gap-2 px-3 py-2 bg-amber-500/10 rounded-xl border border-amber-500/20">
+                                            <AlertCircle size={12} className="text-amber-500" />
+                                            <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400">{pendingCount} {isEnglish ? 'Pending Issues' : 'Pending Issues'}</span>
+                                        </div>
+                                    )}
+                                </motion.div>
+                            ))}
                         </div>
                     </motion.div>
                 ) : (
                     /* View 2: User Workspace Detail */
-                    <motion.div 
+                    <motion.div
                         key="workspace"
                         initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
                         className="space-y-12"
@@ -972,61 +973,61 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {/* a. Jadwal Bulanan (Recurring) */}
-                        <div className="space-y-6">
-                            <div className="flex items-center justify-between px-4">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2.5 bg-indigo-500/10 rounded-xl text-indigo-600 dark:text-indigo-400"><Repeat size={20} /></div>
-                                    <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-[0.2em]">{isEnglish ? 'Recurring Schedule' : 'Jadwal Rutin'}</h3>
-                                </div>
-                                {hasPermission('job-due-date', 'create') && (
-                                    <button 
-                                        onClick={() => { setEditingJob(null); setActiveType('recurring'); setShowForm(true); }}
-                                        className="p-2 bg-indigo-600 text-white rounded-xl hover:scale-110 transition-transform shadow-lg shadow-indigo-500/20"
-                                    >
-                                        <Plus size={18} />
-                                    </button>
-                                )}
-                            </div>
-                            <div className="bg-white/50 dark:bg-slate-800/20 rounded-[2.5rem] p-4 border border-white/40 dark:border-white/5">
-                                <div className="space-y-4 min-h-[300px]">
-                                    {paginatedRecurring.length === 0 ? (
-                                        <div className="p-12 text-center border-2 border-dashed border-slate-200 dark:border-white/5 rounded-[2.5rem] text-slate-400 text-xs italic">{isEnglish ? 'No recurring schedule yet' : 'Belum ada jadwal rutin'}</div>
-                                    ) : (
-                                        paginatedRecurring.map(task => <TaskItem key={task.id} task={task} selectedMonth={selectedMonth} onToggle={handleToggleStatus} onEdit={() => { setEditingJob(task); setActiveType(task.type); setShowForm(true); }} onDelete={() => setJobs(prev => prev.filter(j => j.id !== task.id))} onAddIssue={() => handleOpenIssueModal(task.id)} onUpdateKendala={handleUpdateKendala} hasPermission={hasPermission} />)
+                            {/* a. Jadwal Bulanan (Recurring) */}
+                            <div className="space-y-6">
+                                <div className="flex items-center justify-between px-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2.5 bg-indigo-500/10 rounded-xl text-indigo-600 dark:text-indigo-400"><Repeat size={20} /></div>
+                                        <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-[0.2em]">{isEnglish ? 'Recurring Schedule' : 'Jadwal Rutin'}</h3>
+                                    </div>
+                                    {hasPermission('job-due-date', 'create') && (
+                                        <button
+                                            onClick={() => { setEditingJob(null); setActiveType('recurring'); setShowForm(true); }}
+                                            className="p-2 bg-indigo-600 text-white rounded-xl hover:scale-110 transition-transform shadow-lg shadow-indigo-500/20"
+                                        >
+                                            <Plus size={18} />
+                                        </button>
                                     )}
                                 </div>
-                                {renderPagination(recurringPage, activeWorkspace?.recurring.length || 0, setRecurringPage)}
+                                <div className="bg-white/50 dark:bg-slate-800/20 rounded-[2.5rem] p-4 border border-white/40 dark:border-white/5">
+                                    <div className="space-y-4 min-h-[300px]">
+                                        {paginatedRecurring.length === 0 ? (
+                                            <div className="p-12 text-center border-2 border-dashed border-slate-200 dark:border-white/5 rounded-[2.5rem] text-slate-400 text-xs italic">{isEnglish ? 'No recurring schedule yet' : 'Belum ada jadwal rutin'}</div>
+                                        ) : (
+                                            paginatedRecurring.map(task => <TaskItem key={task.id} task={task} selectedMonth={selectedMonth} onToggle={handleToggleStatus} onEdit={() => { setEditingJob(task); setActiveType(task.type); setShowForm(true); }} onDelete={() => setJobs(prev => prev.filter(j => j.id !== task.id))} onAddIssue={() => handleOpenIssueModal(task.id)} onUpdateKendala={handleUpdateKendala} hasPermission={hasPermission} />)
+                                        )}
+                                    </div>
+                                    {renderPagination(recurringPage, activeWorkspace?.recurring.length || 0, setRecurringPage)}
+                                </div>
                             </div>
-                        </div>
 
-                        {/* b. Jadwal Khusus (Special) */}
-                        <div className="space-y-6">
-                            <div className="flex items-center justify-between px-4">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2.5 bg-purple-500/10 rounded-xl text-purple-600 dark:text-purple-400"><CalendarDays size={20} /></div>
-                                    <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-[0.2em]">{isEnglish ? 'Special Schedule' : 'Jadwal Khusus'}</h3>
-                                </div>
-                                {hasPermission('job-due-date', 'create') && (
-                                    <button 
-                                        onClick={() => { setEditingJob(null); setActiveType('special'); setShowForm(true); }}
-                                        className="p-2 bg-purple-600 text-white rounded-xl hover:scale-110 transition-transform shadow-lg shadow-purple-500/20"
-                                    >
-                                        <Plus size={18} />
-                                    </button>
-                                )}
-                            </div>
-                            <div className="bg-white/50 dark:bg-slate-800/20 rounded-[2.5rem] p-4 border border-white/40 dark:border-white/5">
-                                <div className="space-y-4 min-h-[300px]">
-                                    {paginatedSpecial.length === 0 ? (
-                                        <div className="p-12 text-center border-2 border-dashed border-slate-200 dark:border-white/5 rounded-[2.5rem] text-slate-400 text-xs italic">{isEnglish ? 'No special schedule' : 'Tidak ada jadwal khusus'}</div>
-                                    ) : (
-                                        paginatedSpecial.map(task => <TaskItem key={task.id} task={task} selectedMonth={selectedMonth} onToggle={handleToggleStatus} onEdit={() => { setEditingJob(task); setActiveType(task.type); setShowForm(true); }} onDelete={() => setJobs(prev => prev.filter(j => j.id !== task.id))} onAddIssue={() => handleOpenIssueModal(task.id)} onUpdateKendala={handleUpdateKendala} hasPermission={hasPermission} />)
+                            {/* b. Jadwal Khusus (Special) */}
+                            <div className="space-y-6">
+                                <div className="flex items-center justify-between px-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2.5 bg-purple-500/10 rounded-xl text-purple-600 dark:text-purple-400"><CalendarDays size={20} /></div>
+                                        <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-[0.2em]">{isEnglish ? 'Special Schedule' : 'Jadwal Khusus'}</h3>
+                                    </div>
+                                    {hasPermission('job-due-date', 'create') && (
+                                        <button
+                                            onClick={() => { setEditingJob(null); setActiveType('special'); setShowForm(true); }}
+                                            className="p-2 bg-purple-600 text-white rounded-xl hover:scale-110 transition-transform shadow-lg shadow-purple-500/20"
+                                        >
+                                            <Plus size={18} />
+                                        </button>
                                     )}
                                 </div>
-                                {renderPagination(specialPage, activeWorkspace?.special.length || 0, setSpecialPage)}
+                                <div className="bg-white/50 dark:bg-slate-800/20 rounded-[2.5rem] p-4 border border-white/40 dark:border-white/5">
+                                    <div className="space-y-4 min-h-[300px]">
+                                        {paginatedSpecial.length === 0 ? (
+                                            <div className="p-12 text-center border-2 border-dashed border-slate-200 dark:border-white/5 rounded-[2.5rem] text-slate-400 text-xs italic">{isEnglish ? 'No special schedule' : 'Tidak ada jadwal khusus'}</div>
+                                        ) : (
+                                            paginatedSpecial.map(task => <TaskItem key={task.id} task={task} selectedMonth={selectedMonth} onToggle={handleToggleStatus} onEdit={() => { setEditingJob(task); setActiveType(task.type); setShowForm(true); }} onDelete={() => setJobs(prev => prev.filter(j => j.id !== task.id))} onAddIssue={() => handleOpenIssueModal(task.id)} onUpdateKendala={handleUpdateKendala} hasPermission={hasPermission} />)
+                                        )}
+                                    </div>
+                                    {renderPagination(specialPage, activeWorkspace?.special.length || 0, setSpecialPage)}
+                                </div>
                             </div>
-                        </div>
                         </div>
 
                         {/* c. Detailed Issue Flow List (Bottom Section) */}
@@ -1040,7 +1041,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                         <div className="flex items-center gap-3">
                                             <h3 className="text-lg font-black text-slate-800 dark:text-white uppercase tracking-tight">{isEnglish ? 'Issue Tracking Flow' : 'Issue Tracking Flow'}</h3>
                                             {hasPermission('job-due-date', 'create') && (
-                                                <button 
+                                                <button
                                                     onClick={() => handleOpenIssueModal(null)}
                                                     className="p-1.5 bg-rose-500 text-white rounded-lg hover:scale-110 transition-all shadow-lg shadow-rose-500/20"
                                                     title={isEnglish ? 'Add New Issue' : 'Tambah Issue Baru'}
@@ -1085,7 +1086,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                     const globalIdx = (issuesPage - 1) * 5 + idx;
                                                     const issueStart = new Date(issue.createdAt || issue.created_at || Date.now());
                                                     const issueEnd = (issue.resolvedAt || issue.resolved_at) ? new Date(issue.resolvedAt || issue.resolved_at) : new Date();
-                                                    
+
                                                     const duration = intervalToDuration({
                                                         start: isNaN(issueStart.getTime()) ? new Date() : issueStart,
                                                         end: isNaN(issueEnd.getTime()) ? new Date() : issueEnd
@@ -1094,9 +1095,9 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                     const h = duration.hours || 0;
                                                     const m = duration.minutes || 0;
                                                     const durationStr = d > 0 ? (isEnglish ? `${d}d ${h}h` : `${d}h ${h}j`) : (isEnglish ? `${h}h ${m}m` : `${h}j ${m}m`);
-                                                    
+
                                                     return (
-                                                        <motion.tr 
+                                                        <motion.tr
                                                             key={issue.id}
                                                             initial={{ opacity: 0, y: 10 }}
                                                             animate={{ opacity: 1, y: 0 }}
@@ -1120,7 +1121,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                                             <span className="text-[8px] font-black text-indigo-500">{getStatusProgress(issue.status)}%</span>
                                                                         </div>
                                                                         <div className="h-1 w-full bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
-                                                                            <motion.div 
+                                                                            <motion.div
                                                                                 initial={{ width: 0 }}
                                                                                 animate={{ width: `${getStatusProgress(issue.status)}%` }}
                                                                                 className={`h-full bg-gradient-to-r ${issue.status === 'resolved' ? 'from-emerald-400 to-emerald-600' : 'from-indigo-400 to-indigo-600'}`}
@@ -1165,19 +1166,18 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                                         const isDone = !!historyItem;
                                                                         const assigned = parseAssignedTo(issue.assignedTo);
                                                                         const canUpdate = issue.owner === currentUser.username || assigned.includes(currentUser.username) || currentUser.role === 'admin';
-                                                                        
+
                                                                         return (
-                                                                            <button 
+                                                                            <button
                                                                                 key={step.id}
-                                                                                onClick={() => isDone 
-                                                                                    ? setViewingHistory({ ...historyItem, label: step.label }) 
+                                                                                onClick={() => isDone
+                                                                                    ? setViewingHistory({ ...historyItem, label: step.label })
                                                                                     : canUpdate ? handleInitiateStatusUpdate(issue.taskId, issue.id, step.id) : alert(isEnglish ? 'Only submitter or receiver can update flow.' : 'Hanya Submitter atau Penerima yang bisa update flow.')
                                                                                 }
-                                                                                className={`px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-tighter transition-all border ${
-                                                                                    isDone 
-                                                                                    ? `bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20` 
+                                                                                className={`px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-tighter transition-all border ${isDone
+                                                                                    ? `bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20`
                                                                                     : 'bg-slate-100 dark:bg-white/5 border-transparent text-slate-400 opacity-40 hover:opacity-100 hover:bg-indigo-500/10 hover:text-indigo-500'
-                                                                                }`}
+                                                                                    }`}
                                                                                 title={isDone ? (isEnglish ? 'Click to view details' : 'Klik untuk lihat detail') : (isEnglish ? `Click to update to ${step.label}` : `Klik untuk update ke ${step.label}`)}
                                                                             >
                                                                                 {step.label}
@@ -1203,7 +1203,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                                         const canManage = issue.owner === currentUser.username || assigned.includes(currentUser.username) || currentUser.role === 'admin';
                                                                         return (
                                                                             <>
-                                                                                <button 
+                                                                                <button
                                                                                     onClick={() => setViewingIssueDetail(issue)}
                                                                                     className="p-2 hover:bg-blue-500 hover:text-white rounded-xl transition-all text-slate-400"
                                                                                     title={isEnglish ? 'View Detail & Flow' : 'Lihat Detail & Flow'}
@@ -1211,7 +1211,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                                                     <Eye size={14} />
                                                                                 </button>
                                                                                 {canManage && !issue.isAutoGenerated && hasPermission('job-due-date', 'edit') && (
-                                                                                    <button 
+                                                                                    <button
                                                                                         onClick={() => handleOpenIssueModal(issue.taskId, issue)}
                                                                                         className="p-2 hover:bg-indigo-500 hover:text-white rounded-xl transition-all text-slate-400"
                                                                                     >
@@ -1219,7 +1219,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                                                     </button>
                                                                                 )}
                                                                                 {canManage && hasPermission('job-due-date', 'delete') && (
-                                                                                    <button 
+                                                                                    <button
                                                                                         onClick={() => handleDeleteIssue(issue.taskId, issue.id)}
                                                                                         className="p-2 hover:bg-red-500 hover:text-white rounded-xl transition-all text-slate-400"
                                                                                     >
@@ -1260,26 +1260,26 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{isEnglish ? 'Add note for stage:' : 'Berikan catatan untuk tahap:'} <span className="text-indigo-500">{statusUpdateForm.nextStatus}</span></p>
                                 </div>
                             </div>
-                            
+
                             <div className="space-y-4">
                                 <div className="space-y-1">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{isEnglish ? 'Progress Description / Notes' : 'Deskripsi / Catatan Progres'}</label>
-                                    <textarea 
-                                        value={statusUpdateForm.note} 
-                                        onChange={e => setStatusUpdateForm({...statusUpdateForm, note: e.target.value})} 
-                                        className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none focus:ring-2 ring-indigo-500 dark:text-white font-medium min-h-[120px]" 
-                                        placeholder={isEnglish ? 'What has been done at this stage?' : 'Apa yang sudah dilakukan pada tahap ini?'} 
+                                    <textarea
+                                        value={statusUpdateForm.note}
+                                        onChange={e => setStatusUpdateForm({ ...statusUpdateForm, note: e.target.value })}
+                                        className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none focus:ring-2 ring-indigo-500 dark:text-white font-medium min-h-[120px]"
+                                        placeholder={isEnglish ? 'What has been done at this stage?' : 'Apa yang sudah dilakukan pada tahap ini?'}
                                     />
                                 </div>
                             </div>
-                            
+
                             <div className="flex gap-3 mt-8">
                                 <button onClick={() => setShowStatusModal(false)} className="flex-1 py-4 bg-slate-100 dark:bg-white/5 text-slate-500 font-bold rounded-2xl">{isEnglish ? 'Cancel' : 'Batal'}</button>
-                                <button 
+                                <button
                                     onClick={() => {
                                         handleUpdateIssueStatus(statusUpdateForm.taskId, statusUpdateForm.issueId, statusUpdateForm.nextStatus, statusUpdateForm.note);
                                         setShowStatusModal(false);
-                                    }} 
+                                    }}
                                     className="flex-[2] py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-600/20"
                                 >
                                     {isEnglish ? 'Save & Update Status' : 'Simpan & Update Status'}
@@ -1392,7 +1392,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
                                         <TrendingUp size={14} className="text-indigo-500" /> {text.timelineProgressFlow}
                                     </h4>
-                                    
+
                                     <div className="relative pl-10 space-y-6 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-100 dark:before:bg-white/10">
                                         {(viewingIssueDetail.history && viewingIssueDetail.history.length > 0) ? (
                                             viewingIssueDetail.history.map((h, i) => (
@@ -1439,7 +1439,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                             <h3 className="text-xl font-black dark:text-white mb-6">{text.chooseMonitoringPic}</h3>
                             <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                                 {users.filter(u => !monitoredPICs.find(p => (typeof p === 'string' ? p : p.username) === u.username)).map(u => (
-                                    <button 
+                                    <button
                                         key={u.username}
                                         onClick={() => handleAddPIC(u.username)}
                                         className="w-full flex items-center gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-white/5 hover:bg-indigo-500 hover:text-white transition-all group"
@@ -1471,13 +1471,13 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative my-6 w-full max-w-md max-h-[92vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl sm:my-0">
                             <h3 className="text-xl font-black dark:text-white mb-2">{text.picBlockPrivacy}</h3>
                             <p className="text-xs text-slate-500 mb-6 font-bold uppercase tracking-widest">{text.picVisibilityHelp} {users.find(u => u.username === editingPicPrivacy.username)?.name}</p>
-                            
+
                             <div className="space-y-4">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-1">
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.visibilityLevel}</label>
-                                        <select 
-                                            value={editingPicPrivacy.privacy || 'public'} 
+                                        <select
+                                            value={editingPicPrivacy.privacy || 'public'}
                                             onChange={(e) => {
                                                 const newPrivacy = e.target.value;
                                                 setMonitoredPICs(prev => prev.map(p => p.username === editingPicPrivacy.username ? { ...p, privacy: newPrivacy } : p));
@@ -1497,7 +1497,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
                                                 {text.searchDepartmentOrUser} {editingPicPrivacy.privacy === 'department' ? (isEnglish ? 'Department' : 'Departemen') : 'User'}
                                             </label>
-                                            <input 
+                                            <input
                                                 type="text"
                                                 placeholder={text.typeToFilter}
                                                 value={userSearch}
@@ -1514,8 +1514,8 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                         <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                                             {departments.filter(d => d.name.toLowerCase().includes(userSearch.toLowerCase())).map(d => (
                                                 <label key={d.id} className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 cursor-pointer hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors border border-transparent hover:border-indigo-200 dark:hover:border-indigo-500/30">
-                                                    <input 
-                                                        type="checkbox" 
+                                                    <input
+                                                        type="checkbox"
                                                         checked={editingPicPrivacy.allowedDepts?.includes(d.name)}
                                                         onChange={(e) => {
                                                             const checked = e.target.checked;
@@ -1548,8 +1548,8 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                             <p className="text-[9px] text-slate-400 uppercase font-black truncate">{u.department}</p>
                                                         </div>
                                                     </div>
-                                                    <input 
-                                                        type="checkbox" 
+                                                    <input
+                                                        type="checkbox"
                                                         className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
                                                         checked={editingPicPrivacy.allowedUsers?.includes(u.username)}
                                                         onChange={(e) => {
@@ -1587,14 +1587,14 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{text.issueDetails}</p>
                                 </div>
                             </div>
-                            
+
                             <div className="space-y-4">
                                 {!issueForm.id && !issueForm.isAutoGenerated && (
                                     <div className="space-y-1">
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.taskOptional}</label>
-                                        <select 
-                                            value={issueForm.taskId || ''} 
-                                            onChange={e => setIssueForm({...issueForm, taskId: Number(e.target.value)})}
+                                        <select
+                                            value={issueForm.taskId || ''}
+                                            onChange={e => setIssueForm({ ...issueForm, taskId: Number(e.target.value) })}
                                             className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none focus:ring-2 ring-rose-500 dark:text-white font-bold"
                                         >
                                             <option value="">{text.noScheduleIndependent}</option>
@@ -1607,10 +1607,10 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                 <div className="space-y-1">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.issuePicReceiver}</label>
                                     <div className="space-y-2">
-                                        <input 
-                                            type="text" 
-                                            placeholder={text.searchPic} 
-                                            value={userSearch} 
+                                        <input
+                                            type="text"
+                                            placeholder={text.searchPic}
+                                            value={userSearch}
                                             onChange={e => setUserSearch(e.target.value)}
                                             className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 rounded-xl text-xs outline-none border border-transparent focus:border-indigo-500 dark:text-white"
                                         />
@@ -1626,14 +1626,14 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                             <p className="text-[8px] text-slate-400 uppercase font-black">{u.department}</p>
                                                         </div>
                                                     </div>
-                                                    <input 
-                                                        type="checkbox" 
+                                                    <input
+                                                        type="checkbox"
                                                         checked={issueForm.assignedTo?.includes(u.username)}
                                                         onChange={(e) => {
                                                             const checked = e.target.checked;
                                                             const current = issueForm.assignedTo || [];
                                                             setIssueForm({
-                                                                ...issueForm, 
+                                                                ...issueForm,
                                                                 assignedTo: checked ? [...current, u.username] : current.filter(un => un !== u.username)
                                                             });
                                                         }}
@@ -1646,18 +1646,18 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.issueSummary}</label>
-                                    <input value={issueForm.note} onChange={e => setIssueForm({...issueForm, note: e.target.value})} className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none focus:ring-2 ring-rose-500 dark:text-white font-bold" placeholder={text.issueExamplePlaceholder} />
+                                    <input value={issueForm.note} onChange={e => setIssueForm({ ...issueForm, note: e.target.value })} className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none focus:ring-2 ring-rose-500 dark:text-white font-bold" placeholder={text.issueExamplePlaceholder} />
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.issueDate}</label>
-                                    <input type="date" value={issueForm.createdAt} onChange={e => setIssueForm({...issueForm, createdAt: e.target.value})} className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none dark:text-white font-bold" />
+                                    <input type="date" value={issueForm.createdAt} onChange={e => setIssueForm({ ...issueForm, createdAt: e.target.value })} className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none dark:text-white font-bold" />
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.issueDetail}</label>
-                                    <textarea value={issueForm.detail} onChange={e => setIssueForm({...issueForm, detail: e.target.value})} className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none focus:ring-2 ring-rose-500 dark:text-white font-medium min-h-[100px]" placeholder={text.issueDetailPlaceholder} />
+                                    <textarea value={issueForm.detail} onChange={e => setIssueForm({ ...issueForm, detail: e.target.value })} className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none focus:ring-2 ring-rose-500 dark:text-white font-medium min-h-[100px]" placeholder={text.issueDetailPlaceholder} />
                                 </div>
                             </div>
-                            
+
                             <div className="flex gap-3 mt-8">
                                 <button onClick={() => setShowIssueModal(false)} className="flex-1 py-4 bg-slate-100 dark:bg-white/5 text-slate-500 font-bold rounded-2xl">{text.cancel}</button>
                                 <button onClick={handleSaveIssue} disabled={!issueForm.note} className="flex-[2] py-4 bg-rose-500 text-white font-bold rounded-2xl shadow-lg shadow-rose-500/20 disabled:opacity-50">{text.saveIssue}</button>
@@ -1671,12 +1671,12 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
             {renderInPortal((<AnimatePresence>
                 {showForm && (
                     <div className="fixed inset-0 z-[300] flex items-start justify-center overflow-y-auto p-4 sm:items-center">
-                        <motion.div 
+                        <motion.div
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                             onClick={() => setShowForm(false)}
                             className="fixed inset-0 bg-slate-900/60 backdrop-blur-md"
                         />
-                        <motion.div 
+                        <motion.div
                             initial={{ scale: 0.9, opacity: 0, y: 20 }}
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -1686,7 +1686,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                 <h3 className="text-xl font-black dark:text-white mb-6">
                                     {editingJob ? text.editSchedule : text.addNewSchedule}
                                 </h3>
-                                
+
                                 <form className="space-y-4" onSubmit={(e) => {
                                     e.preventDefault();
                                     const formData = new FormData(e.target);
@@ -1704,10 +1704,10 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                         status: editingJob?.status || 'pending',
                                         issues: editingJob?.issues || []
                                     };
-                                    
+
                                     const method = editingJob ? 'PUT' : 'POST';
                                     const url = editingJob ? `/api/jobs/${editingJob.id}` : '/api/jobs';
-                                    
+
                                     fetch(url, {
                                         method,
                                         headers: { 'Content-Type': 'application/json' },
@@ -1766,8 +1766,8 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div className="space-y-1">
                                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.scheduleVisibility}</label>
-                                                <select 
-                                                    value={formPrivacy} 
+                                                <select
+                                                    value={formPrivacy}
                                                     onChange={(e) => setFormPrivacy(e.target.value)}
                                                     className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none dark:text-white font-bold focus:ring-2 ring-indigo-500"
                                                 >
@@ -1783,7 +1783,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
                                                         {text.searchDepartmentOrUser} {formPrivacy === 'department' ? (isEnglish ? 'Department' : 'Departemen') : 'User'}
                                                     </label>
-                                                    <input 
+                                                    <input
                                                         type="text"
                                                         placeholder={text.typeToFilter}
                                                         value={userSearch}
@@ -1800,8 +1800,8 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                 <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
                                                     {departments.filter(d => d.name.toLowerCase().includes(userSearch.toLowerCase())).map(d => (
                                                         <label key={d.id} className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 cursor-pointer hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors border border-transparent hover:border-indigo-200 dark:hover:border-indigo-500/30">
-                                                            <input 
-                                                                type="checkbox" 
+                                                            <input
+                                                                type="checkbox"
                                                                 checked={formAllowedDepts.includes(d.name)}
                                                                 onChange={(e) => {
                                                                     const checked = e.target.checked;
@@ -1822,8 +1822,8 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                 <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
                                                     {users.filter(u => u.username !== currentUser.username && (u.name.toLowerCase().includes(userSearch.toLowerCase()) || u.username.toLowerCase().includes(userSearch.toLowerCase()))).map(u => (
                                                         <label key={u.username} className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 cursor-pointer hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors border border-transparent hover:border-indigo-200 dark:hover:border-indigo-500/30">
-                                                            <input 
-                                                                type="checkbox" 
+                                                            <input
+                                                                type="checkbox"
                                                                 checked={formAllowedUsers.includes(u.username)}
                                                                 onChange={(e) => {
                                                                     const checked = e.target.checked;
@@ -1864,7 +1864,7 @@ function TaskItem({ task, selectedMonth, onToggle, onEdit, onDelete, onUpdateIss
         const creationDate = task.created_at ? new Date(task.created_at) : new Date(Number(task.id));
         const now = new Date();
         const today = startOfDay(now);
-        
+
         let taskDate;
         if (task.type === 'recurring') {
             // Proyeksikan tanggal rutin ke bulan yang sedang dilihat
@@ -1873,13 +1873,13 @@ function TaskItem({ task, selectedMonth, onToggle, onEdit, onDelete, onUpdateIss
             const year = selectedMonth.getFullYear();
             const month = selectedMonth.getMonth();
             taskDate = new Date(year, month, Math.min(day, new Date(year, month + 1, 0).getDate()));
-            
+
             // Jangan anggap terlambat jika tanggal jadwal sebelum tanggal pembuatan
             if (isBefore(taskDate, startOfDay(creationDate))) return false;
         } else {
             taskDate = startOfDay(new Date(task.dueDate));
         }
-        
+
         return isBefore(taskDate, today);
     }, [task, selectedMonth]);
 
@@ -1894,32 +1894,30 @@ function TaskItem({ task, selectedMonth, onToggle, onEdit, onDelete, onUpdateIss
     const isFuture = isFutureMonth(selectedMonth);
 
     return (
-        <div className={`group relative p-4 rounded-3xl border transition-all ${
-            task.status === 'done' 
-            ? 'bg-emerald-50/50 dark:bg-emerald-500/5 border-emerald-100 dark:border-emerald-500/20' 
+        <div className={`group relative p-4 rounded-3xl border transition-all ${task.status === 'done'
+            ? 'bg-emerald-50/50 dark:bg-emerald-500/5 border-emerald-100 dark:border-emerald-500/20'
             : 'bg-slate-50 dark:bg-white/5 border-transparent hover:border-indigo-500/30'
-        }`}>
+            }`}>
             <div className="flex items-start gap-3">
                 {/* Logic: Hide checklist if future month. Show if current or past. */}
                 {isFuture ? (
                     <div className="mt-1 w-5 h-5 rounded-lg border-2 border-slate-200 dark:border-white/10 flex items-center justify-center bg-slate-100 dark:bg-white/5 opacity-50 cursor-not-allowed"></div>
                 ) : (
-                    <button 
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        if (hasPermission('job-due-date', 'edit')) onToggle(task.id);
-                    }}
-                    disabled={!hasPermission('job-due-date', 'edit')}
-                    className={`mt-1 w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${
-                        task.status === 'done' 
-                        ? 'bg-emerald-500 border-emerald-500 text-white' 
-                        : 'border-slate-300 dark:border-white/20'
-                    }`}
-                >
-                    {task.status === 'done' && <CheckCircle2 size={12} />}
-                </button>
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            if (hasPermission('job-due-date', 'edit')) onToggle(task.id);
+                        }}
+                        disabled={!hasPermission('job-due-date', 'edit')}
+                        className={`mt-1 w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${task.status === 'done'
+                            ? 'bg-emerald-500 border-emerald-500 text-white'
+                            : 'border-slate-300 dark:border-white/20'
+                            }`}
+                    >
+                        {task.status === 'done' && <CheckCircle2 size={12} />}
+                    </button>
                 )}
-                
+
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">
@@ -1954,7 +1952,7 @@ function TaskItem({ task, selectedMonth, onToggle, onEdit, onDelete, onUpdateIss
                     {/* Kendala Note Input - Muncul saat pending */}
                     {task.status === 'pending' && (
                         <div className="mt-2">
-                            <input 
+                            <input
                                 type="text"
                                 placeholder="Tulis kendala/catatan di sini..."
                                 value={task.kendala || ''}
@@ -1964,7 +1962,7 @@ function TaskItem({ task, selectedMonth, onToggle, onEdit, onDelete, onUpdateIss
                             />
                         </div>
                     )}
-                    
+
                     {/* Issue Summary */}
                     {task.issues && task.issues.length > 0 && (
                         <div className="mt-3 space-y-2">
@@ -1973,7 +1971,7 @@ function TaskItem({ task, selectedMonth, onToggle, onEdit, onDelete, onUpdateIss
                                 <span>{calculateProgress(task.issues)}%</span>
                             </div>
                             <div className="h-1.5 w-full bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden">
-                                <motion.div 
+                                <motion.div
                                     initial={{ width: 0 }}
                                     animate={{ width: `${calculateProgress(task.issues)}%` }}
                                     className="h-full bg-indigo-500 rounded-full"
@@ -1994,7 +1992,7 @@ function TaskItem({ task, selectedMonth, onToggle, onEdit, onDelete, onUpdateIss
 
             <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
                 {hasPermission('job-due-date', 'edit') && (
-                    <button 
+                    <button
                         onClick={onEdit}
                         className="p-1.5 bg-white dark:bg-slate-800 rounded-lg shadow-sm text-slate-400 hover:text-indigo-500"
                     >
@@ -2002,7 +2000,7 @@ function TaskItem({ task, selectedMonth, onToggle, onEdit, onDelete, onUpdateIss
                     </button>
                 )}
                 {hasPermission('job-due-date', 'delete') && (
-                    <button 
+                    <button
                         onClick={onDelete}
                         className="p-1.5 bg-white dark:bg-slate-800 rounded-lg shadow-sm text-slate-400 hover:text-red-500"
                     >

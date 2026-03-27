@@ -153,7 +153,7 @@ export const createNotification = async (req, res) => {
             return res.status(400).json({ error: 'targetValue wajib diisi untuk target user/role' });
         }
 
-        const [id] = await knex('notifications').insert({
+        const [dbRes] = await knex('notifications').insert({
             title,
             message,
             type,
@@ -164,7 +164,9 @@ export const createNotification = async (req, res) => {
             meta: meta ? JSON.stringify(meta) : null,
             expires_at: expiresAt || null,
             created_at: knex.fn.now()
-        });
+        }).returning('id');
+
+        const id = typeof dbRes === 'object' ? dbRes.id : dbRes;
 
         const created = await knex('notifications').where({ id }).first();
         req.app.get('io')?.emit('notification:new', {

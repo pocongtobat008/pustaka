@@ -50,7 +50,7 @@ export const createGuide = async (req, res) => {
         if (!data) return;
 
         const { title, content, category, description, icon, privacy, allowed_depts, allowed_users } = data;
-        const [id] = await knex('pustaka_guides').insert({
+        const [dbRes] = await knex('pustaka_guides').insert({
             title,
             category,
             description: description || content || '', // Use description, fallback to content if provided (backward compat payload), or empty
@@ -59,7 +59,8 @@ export const createGuide = async (req, res) => {
             allowed_depts: JSON.stringify(allowed_depts || []),
             allowed_users: JSON.stringify(allowed_users || []),
             owner: req.user?.username || 'System'
-        });
+        }).returning('id');
+        const id = typeof dbRes === 'object' ? dbRes.id : dbRes;
         req.app.get('io')?.emit('data:changed', { channel: 'pustaka' });
         res.json({ id });
     } catch (err) {
@@ -134,13 +135,14 @@ export const createPustakaSlide = async (req, res) => {
         if (!data) return;
 
         const { guide_id, title, content, image_url, image, order_index } = data;
-        const [id] = await knex('pustaka_slides').insert({
+        const [dbRes] = await knex('pustaka_slides').insert({
             guide_id,
             title,
             content,
             image: image_url || image, // Support both naming conventions
             step_order: order_index || 0
-        });
+        }).returning('id');
+        const id = typeof dbRes === 'object' ? dbRes.id : dbRes;
         req.app.get('io')?.emit('data:changed', { channel: 'pustaka' });
         res.json({ id });
     } catch (err) {

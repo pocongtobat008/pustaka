@@ -102,13 +102,15 @@ export const createUser = async (req, res) => {
 
         const { username, password, name, role, department } = data;
         const hashedPassword = await bcrypt.hash(password, 10);
-        const [id] = await knex('users').insert({
+        const [dbRes] = await knex('users').insert({
             username,
             password: hashedPassword,
             name,
             role,
             department
-        });
+        }).returning('id');
+
+        const id = typeof dbRes === 'object' ? dbRes.id : dbRes;
         await systemLog('Admin', "Create User", `Created user: ${username}`);
         req.app.get('io')?.emit('data:changed', { channel: 'users' });
         res.json({ id });

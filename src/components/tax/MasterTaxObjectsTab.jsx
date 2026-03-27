@@ -258,7 +258,7 @@ export default function MasterTaxObjectsTab({
                             {paginatedData.length > 0 ? paginatedData.map((item) => (
                                 <tr key={item.id} className="hover:bg-gray-50/50 dark:hover:bg-slate-800/30 transition-colors group">
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className="font-mono text-xs font-bold bg-gray-100 dark:bg-slate-800 px-2 py-1 rounded text-gray-600 dark:text-slate-400 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/20 group-hover:text-indigo-600 transition-colors">
+                                        <span className="font-mono text-xs font-bold bg-gray-100 dark:bg-slate-900 border dark:border-slate-800 px-2 py-1 rounded text-gray-600 dark:text-slate-300 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/20 group-hover:text-indigo-600 transition-colors">
                                             {item.code}
                                         </span>
                                     </td>
