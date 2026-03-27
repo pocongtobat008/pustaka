@@ -6,7 +6,6 @@ import { DOC_STATUS } from '../constants/status.js';
 import { systemLog } from '../utils/logger.js';
 import { addOcrJob } from '../utils/queue.js';
 import { UPLOADS_DIR } from '../config/upload.js';
-import { vectorStore } from '../ai_search.js';
 import { parseJsonArraySafe, parseJsonObjectSafe } from '../utils/jsonSafe.js';
 import { cache } from '../utils/cache.js';
 
@@ -273,7 +272,7 @@ export const deleteDocument = async (req, res) => {
         await knex('documents').where('id', subId).del();
 
         // --- ⚡ Fast RAM Cache Sync ---
-        vectorStore.removeDocument(subId);
+        // (Removed in Microservice Mode: Worker handles its own vector cache sync)
 
         await systemLog(null, "Delete Document", `Menghapus dokumen: "${doc.title}"`);
         // Clear document cache

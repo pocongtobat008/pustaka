@@ -20,7 +20,7 @@ import mammoth from 'mammoth';
 import JSZip from 'jszip';
 import * as XLSX from 'xlsx';
 import { pathToFileURL } from 'url';
-import { knex } from './db.js';
+import { knex, initDb } from './db.js';
 import { JOB_STATUS, DOC_STATUS } from './constants/status.js';
 import { generateEmbedding, parseIntent, generateAnswer, vectorStore } from './ai_search.js';
 import { Worker } from 'bullmq';
@@ -176,7 +176,7 @@ async function processJob(job) {
 
             const pushContext = (label, text) => {
                 if (!text) return;
-                const key = `${label}:${text.substring(0,200)}`;
+                const key = `${label}:${text.substring(0, 200)}`;
                 if (seen.has(key)) return;
                 seen.add(key);
                 contexts.push(`${label}: ${text}`);
@@ -184,37 +184,37 @@ async function processJob(job) {
 
             // Add semantic doc matches first
             for (const m of semanticMatches) {
-                const txt = (m.data && m.data.ocrContent) ? `${m.data.title} — ${ (m.data.ocrContent || '').substring(0,300)}` : m.name;
+                const txt = (m.data && m.data.ocrContent) ? `${m.data.title} — ${(m.data.ocrContent || '').substring(0, 300)}` : m.name;
                 pushContext(`SemanticMatch(${m.matchType})`, txt);
                 if (contexts.length >= 8) break;
             }
 
             // Add keyword DB results
             for (const d of kwDocs) {
-                pushContext('Doc', `${d.title} — ${(d.ocrContent || '').substring(0,300)}`);
+                pushContext('Doc', `${d.title} — ${(d.ocrContent || '').substring(0, 300)}`);
                 if (contexts.length >= 12) break;
             }
             for (const inv of kwInvoices) {
-                pushContext('Invoice', `${inv.vendor || ''} ${inv.invoice_no || ''} — ${ (inv.description || '').substring(0,200)}`);
+                pushContext('Invoice', `${inv.vendor || ''} ${inv.invoice_no || ''} — ${(inv.description || '').substring(0, 200)}`);
                 if (contexts.length >= 12) break;
             }
             for (const t of kwTaxObjects) {
-                pushContext('TaxObject', `${t.name} — ${ (t.identity_number || '')}`);
+                pushContext('TaxObject', `${t.name} — ${(t.identity_number || '')}`);
                 if (contexts.length >= 12) break;
             }
             for (const e of kwExternal) {
-                pushContext('External', `${e.boxId || ''} — ${ (e.destination || '')}`);
+                pushContext('External', `${e.boxId || ''} — ${(e.destination || '')}`);
                 if (contexts.length >= 12) break;
             }
             for (const inv of kwInventory) {
-                pushContext('Inventory', `${inv.id || ''} — ${ (inv.box_data || '').substring(0,200)}`);
+                pushContext('Inventory', `${inv.id || ''} — ${(inv.box_data || '').substring(0, 200)}`);
                 if (contexts.length >= 12) break;
             }
 
             // If no context found, fallback to latest documents snippet
             if (contexts.length === 0) {
                 const recent = await knex('documents').orderBy('uploadDate', 'desc').limit(5);
-                for (const d of recent) pushContext('Doc', `${d.title} — ${(d.ocrContent || '').substring(0,300)}`);
+                for (const d of recent) pushContext('Doc', `${d.title} — ${(d.ocrContent || '').substring(0, 300)}`);
             }
 
             const answer = await generateAnswer(message, contexts);
@@ -246,6 +246,74 @@ async function processJob(job) {
             return;
         } catch (err) {
             console.error(`[Worker] AI Embedding Job ${job.id} Failed:`, err);
+            throw err;
+        }
+    }
+
+    if (jobName === 'ai-semantic-search') {
+        const { query } = job.data;
+        console.log(`[Worker] Processing AI Semantic Search for: "${query}"`);
+        try {
+            // 1. Keyword Matches (for hybrid relevance)
+            const [kwDocs, kwInvoices, kwTaxObjects, kwExternal, kwInventory] = await Promise.all([
+                knex('documents').where('title', 'like', `%${query}%`).orWhere('ocrContent', 'like', `%${query}%`).limit(20),
+                knex('invoices').where('invoice_no', 'like', `%${query}%`).orWhere('tax_invoice_no', 'like', `%${query}%`).orWhere('vendor', 'like', `%${query}%`).limit(20),
+                knex('tax_objects').where('name', 'like', `%${query}%`).orWhere('identity_number', 'like', `%${query}%`).limit(20),
+                knex('external_items').where('boxId', 'like', `%${query}%`).orWhere('destination', 'like', `%${query}%`).limit(20),
+                knex('inventory').where('box_data', 'like', `%${query}%`).limit(20)
+            ]);
+
+            // 2. Vector Search (Semantic)
+            const queryVector = await generateEmbedding(query);
+            const semanticMatches = vectorStore.searchNearest(queryVector, 0.4, 15);
+
+            const resultsMap = new Map();
+            semanticMatches.forEach(r => resultsMap.set(`${r.matchType}-${r.id}`, r));
+
+            // 3. Merge Keyword Matches (boosted score)
+            kwDocs.forEach(d => {
+                const matchType = d.category || 'document';
+                resultsMap.set(`${matchType}-${d.id}`, { id: d.id, name: d.title, date: d.uploadDate, size: d.size, matchType, score: 1.0, data: d });
+            });
+
+            kwInvoices.forEach(inv => {
+                resultsMap.set(`invoice-${inv.id}`, { id: inv.id, name: `${inv.vendor} (${inv.invoice_no})`, date: inv.payment_date, matchType: 'invoice', score: 1.0, data: inv });
+            });
+
+            kwTaxObjects.forEach(t => {
+                resultsMap.set(`tax_object-${t.id}`, { id: t.id, name: t.name, date: t.created_at, matchType: 'tax_object', score: 1.0, data: t });
+            });
+
+            // 4. Enrich Results
+            const enriched = [];
+            const UPLOADS_DIR_LOCAL = path.join(process.cwd(), 'uploads');
+
+            for (const r of Array.from(resultsMap.values()).sort((a, b) => b.score - a.score).slice(0, 50)) {
+                const out = { id: r.id, name: r.name, matchType: r.matchType, score: r.score || 0 };
+                // doc enrichment
+                if (r.matchType === 'document' || r.matchType === 'Doc') {
+                    const doc = r.data || await knex('documents').where('id', r.id).first();
+                    if (doc) {
+                        out.preview = (doc.ocrContent || '').substring(0, 600);
+                        out.downloadUrl = doc.url || (doc.file_url || null);
+                    }
+                } else if (r.data && r.data.ocrContent) {
+                    out.preview = (r.data.ocrContent || '').substring(0, 600);
+                    if (r.data.url) out.downloadUrl = r.data.url;
+                }
+                enriched.push(out);
+                if (enriched.length >= 15) break;
+            }
+
+            await knex('job_queue').where('id', job.id).update({
+                result: JSON.stringify({ results: enriched }),
+                status: JOB_STATUS.COMPLETED,
+                finished_at: knex.fn.now()
+            });
+            console.log(`[Worker] AI Semantic Search Job ${job.id} Completed.`);
+            return;
+        } catch (err) {
+            console.error(`[Worker] AI Semantic Search Job ${job.id} Failed:`, err);
             throw err;
         }
     }
@@ -505,7 +573,7 @@ async function startPolling() {
         poll();
     };
 
-    for (let i = 0; i < OCR_POLLERS; i++) startPoller(i+1);
+    for (let i = 0; i < OCR_POLLERS; i++) startPoller(i + 1);
 }
 
 async function startWorkerSystem() {
@@ -516,6 +584,20 @@ async function startWorkerSystem() {
 
     const tag = `[Worker:${mode}]`;
     console.log(`⚙️ ${tag} Memulai Sistem Antrean...`);
+
+    // --- DB & AI Vector Store Initialization ---
+    // In Microservice mode, ONLY the worker handles this heavy operation.
+    (async () => {
+        try {
+            console.log(`${tag} 📦 Menghubungkan ke Database...`);
+            await initDb();
+            console.log(`${tag} 🧠 Memulai Vector Store (lazy=true)...`);
+            await vectorStore.initialize({ lazy: true });
+            console.log(`${tag} ✅ Vector Store initialized in background.`);
+        } catch (e) {
+            console.error(`${tag} ❌ Gagal inisialisasi Database/Vector Store:`, e.message);
+        }
+    })();
 
     const startBullMQ = mode === 'ALL' || mode === 'BULLMQ';
     const startPollingMode = mode === 'ALL' || mode === 'POLLING';
@@ -544,4 +626,5 @@ async function startWorkerSystem() {
 }
 
 console.log('[worker.js] Calling startWorkerSystem()...');
+process.env.IS_WORKER = 'true';
 startWorkerSystem();

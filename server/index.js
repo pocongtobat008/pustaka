@@ -900,21 +900,6 @@ const startServer = async () => {
                     logger.info("📦 Menghubungkan ke Database...");
                     await initDb();
                     logger.info("✅ Database & Migrasi Selesai.");
-
-                    const lazyVectorInit = process.env.AI_VECTOR_LAZY_INIT !== 'false';
-                    const vectorBatchSize = Number(process.env.AI_VECTOR_INIT_BATCH_SIZE || 250);
-
-                    logger.info(`🧠 Memulai Vector Store (lazy=${lazyVectorInit}, batch=${vectorBatchSize})...`);
-                    await vectorStore.initialize({
-                        lazy: lazyVectorInit,
-                        batchSize: vectorBatchSize
-                    });
-
-                    if (lazyVectorInit) {
-                        logger.info("🟡 AI Search warming up di background. Cek /api/system/ai-status.");
-                    } else {
-                        logger.info("✅ AI Search siap digunakan.");
-                    }
                 } catch (innerErr) {
                     logger.error("❌ Gagal inisialisasi layanan latar belakang (DB/AI):", innerErr.message);
                     console.error("❌ Background Service Error:", innerErr);

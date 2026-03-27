@@ -1402,39 +1402,47 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                 {/* Import/Export Actions */}
                 <div className="flex flex-wrap gap-2">
                     <div className="flex gap-1 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg p-1">
-                        <button
-                            onClick={() => downloadTemplate('pph')}
-                            className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded flex items-center gap-2"
-                            title="Download Template PPh"
-                        >
-                            <Download size={14} /> Template PPh
-                        </button>
-                        <div className="w-px bg-gray-200 dark:bg-slate-700 my-1"></div>
-                        <button
-                            onClick={() => downloadTemplate('ppn')}
-                            className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded flex items-center gap-2"
-                            title="Download Template PPN"
-                        >
-                            <Download size={14} /> Template PPN
-                        </button>
+                        {(activeTab === 'pph' || activeTab === 'comparison') && (
+                            <button
+                                onClick={() => downloadTemplate('pph')}
+                                className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded flex items-center gap-2"
+                                title="Download Template PPh"
+                            >
+                                <Download size={14} /> Template PPh
+                            </button>
+                        )}
+                        {activeTab === 'comparison' && <div className="w-px bg-gray-200 dark:bg-slate-700 my-1"></div>}
+                        {(activeTab === 'ppn' || activeTab === 'comparison') && (
+                            <button
+                                onClick={() => downloadTemplate('ppn')}
+                                className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded flex items-center gap-2"
+                                title="Download Template PPN"
+                            >
+                                <Download size={14} /> Template PPN
+                            </button>
+                        )}
                     </div>
 
                     <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept=".xlsx, .xls" />
 
                     {hasPermission('tax-summary', 'create') && (
                         <div className="flex gap-1">
-                            <button
-                                onClick={() => { setImportMode('pph'); setTimeout(() => fileInputRef.current?.click(), 0); }}
-                                className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm flex items-center gap-2 transition-colors shadow-sm"
-                            >
-                                <FileSpreadsheet size={16} /> Import PPh
-                            </button>
-                            <button
-                                onClick={() => { setImportMode('ppn'); setTimeout(() => fileInputRef.current?.click(), 0); }}
-                                className="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm flex items-center gap-2 transition-colors shadow-sm"
-                            >
-                                <FileSpreadsheet size={16} /> Import PPN
-                            </button>
+                            {(activeTab === 'pph' || activeTab === 'comparison') && (
+                                <button
+                                    onClick={() => { setImportMode('pph'); setTimeout(() => fileInputRef.current?.click(), 0); }}
+                                    className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm flex items-center gap-2 transition-colors shadow-sm"
+                                >
+                                    <FileSpreadsheet size={16} /> Import PPh
+                                </button>
+                            )}
+                            {(activeTab === 'ppn' || activeTab === 'comparison') && (
+                                <button
+                                    onClick={() => { setImportMode('ppn'); setTimeout(() => fileInputRef.current?.click(), 0); }}
+                                    className="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm flex items-center gap-2 transition-colors shadow-sm"
+                                >
+                                    <FileSpreadsheet size={16} /> Import PPN
+                                </button>
+                            )}
                         </div>
                     )}
                 </div>

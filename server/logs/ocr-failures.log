@@ -31,3 +31,9 @@
 {"details":"Create User Error: Cannot access 'res' before initialization","level":"error","message":"System Error: Create User Error: Cannot access 'res' before initialization","timestamp":"2026-03-20 17:01:16","user":"System"}
 {"details":"Create User Error: Cannot access 'res' before initialization","level":"error","message":"System Error: Create User Error: Cannot access 'res' before initialization","timestamp":"2026-03-20 17:02:14","user":"System"}
 {"details":"Delete User Error: delete from \"users\" where \"id\" = $1 - value \"1774000934560\" is out of range for type integer","level":"error","message":"System Error: Delete User Error: delete from \"users\" where \"id\" = $1 - value \"1774000934560\" is out of range for type integer","timestamp":"2026-03-20 17:04:53","user":"System"}
+{"level":"error","message":"❌ Gagal inisialisasi layanan latar belakang (DB/AI):","timestamp":"2026-03-27 21:50:34"}
+{"level":"error","message":"❌ Gagal inisialisasi layanan latar belakang (DB/AI):","timestamp":"2026-03-27 21:50:57"}
+{"level":"error","message":"❌ Gagal inisialisasi layanan latar belakang (DB/AI):","timestamp":"2026-03-27 21:51:12"}
+{"level":"error","message":"❌ Gagal inisialisasi layanan latar belakang (DB/AI):","timestamp":"2026-03-27 21:51:29"}
+{"level":"error","message":"❌ Gagal inisialisasi layanan latar belakang (DB/AI):","timestamp":"2026-03-27 21:52:48"}
+{"level":"error","message":"❌ Gagal inisialisasi layanan latar belakang (DB/AI):","timestamp":"2026-03-27 21:53:53"}

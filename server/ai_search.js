@@ -13,7 +13,15 @@ if (env && env.onnx) {
 // Singleton Promise mechanism to prevent race conditions
 let embedderPromise = null;
 
+const isWorker = process.env.IS_WORKER === 'true' ||
+    process.env.WORKER_MODE ||
+    (typeof process !== 'undefined' && process.argv[1]?.includes('worker.js'));
+
 async function initEmbedder() {
+    if (!isWorker) {
+        console.warn('[AI Search] ATTEMPT TO LOAD HEAVY MODEL IN NON-WORKER PROCESS BLOCKED.');
+        throw new Error('Heavy AI models can only be loaded in the dedicated worker process.');
+    }
     if (!embedderPromise) {
         embedderPromise = (async () => {
             console.log('[AI Search] Initializing sentence-transformer model (all-MiniLM-L6-v2)...');
@@ -304,6 +312,10 @@ export async function parseIntent(query, queryVector = null) {
 let generatorPromise = null;
 
 async function initGenerator() {
+    if (!isWorker) {
+        console.warn('[AI Search] ATTEMPT TO LOAD GENERATOR IN NON-WORKER PROCESS BLOCKED.');
+        throw new Error('Text generation models can only be loaded in the dedicated worker process.');
+    }
     if (!generatorPromise) {
         generatorPromise = (async () => {
             console.log('[AI Search] Initializing text-generation model (flan-t5-small)...');

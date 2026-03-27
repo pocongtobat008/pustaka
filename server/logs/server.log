@@ -18343,3 +18343,176 @@
 {"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 6.082 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:42"}
 {"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 3.227 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:44"}
 {"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 2.970 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:44"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-27 21:50:34"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:50:34"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-27 21:50:34"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-27 21:50:34"}
+{"level":"error","message":"❌ Gagal inisialisasi layanan latar belakang (DB/AI):","timestamp":"2026-03-27 21:50:34"}
+{"level":"info","message":"Client connected: waR1UTzQdZi0ofhGAAAB","timestamp":"2026-03-27 21:50:35"}
+{"level":"info","message":"Client connected: tkcbdEjgrE_vPeSqAAAD","timestamp":"2026-03-27 21:50:35"}
+{"level":"info","message":"Client connected: SFE_g91yg8s7EEwDAAAF","timestamp":"2026-03-27 21:50:35"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-27 21:50:56"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:50:56"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-27 21:50:57"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-27 21:50:57"}
+{"level":"error","message":"❌ Gagal inisialisasi layanan latar belakang (DB/AI):","timestamp":"2026-03-27 21:50:57"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:50:57"}
+{"level":"info","message":"Client connected: eycqigI0rAw1rwqaAAAB","timestamp":"2026-03-27 21:50:57"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:50:57"}
+{"level":"info","message":"Client connected: 2ZfAKVpvN5tRg2-wAAAD","timestamp":"2026-03-27 21:50:57"}
+{"level":"info","message":"Client connected: 0dXtnNU2FWQwaZnWAAAF","timestamp":"2026-03-27 21:50:57"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-27 21:51:12"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:51:12"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-27 21:51:12"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-27 21:51:12"}
+{"level":"error","message":"❌ Gagal inisialisasi layanan latar belakang (DB/AI):","timestamp":"2026-03-27 21:51:12"}
+{"level":"info","message":"Client connected: zRoaXmZgPZVrvGnnAAAB","timestamp":"2026-03-27 21:51:13"}
+{"level":"info","message":"Client connected: z2-TTlc-eY805RvdAAAD","timestamp":"2026-03-27 21:51:14"}
+{"level":"info","message":"Client connected: FycxGTaYtFkUQF7FAAAF","timestamp":"2026-03-27 21:51:14"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-27 21:51:29"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:51:29"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-27 21:51:29"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-27 21:51:29"}
+{"level":"error","message":"❌ Gagal inisialisasi layanan latar belakang (DB/AI):","timestamp":"2026-03-27 21:51:29"}
+{"level":"info","message":"Client connected: OzxuiBwe1vixn1mYAAAB","timestamp":"2026-03-27 21:51:30"}
+{"level":"info","message":"Client connected: IlzZo0X9kzS9mW7HAAAD","timestamp":"2026-03-27 21:51:31"}
+{"level":"info","message":"Client connected: Mem25zjZKaWoyiSTAAAF","timestamp":"2026-03-27 21:51:32"}
+{"level":"info","message":"Client disconnected: Mem25zjZKaWoyiSTAAAF","timestamp":"2026-03-27 21:52:08"}
+{"level":"info","message":"Client disconnected: IlzZo0X9kzS9mW7HAAAD","timestamp":"2026-03-27 21:52:08"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:52:12"}
+{"level":"info","message":"Client connected: N3uPc8DJi_t6cU_tAAAH","timestamp":"2026-03-27 21:52:12"}
+{"level":"info","message":"Client connected: 0FLto-n_L9YHpJFVAAAJ","timestamp":"2026-03-27 21:52:12"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:52:12"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-27 21:52:48"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:52:48"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-27 21:52:48"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-27 21:52:48"}
+{"level":"error","message":"❌ Gagal inisialisasi layanan latar belakang (DB/AI):","timestamp":"2026-03-27 21:52:48"}
+{"level":"info","message":"Client connected: n-pe3500XNrPFnYCAAAB","timestamp":"2026-03-27 21:52:49"}
+{"level":"info","message":"Client connected: ZGKWZ76i5LhloHArAAAD","timestamp":"2026-03-27 21:52:51"}
+{"level":"info","message":"Client connected: UL7EEf_FUlRfhtUOAAAF","timestamp":"2026-03-27 21:52:52"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-27 21:53:52"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:53:52"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-27 21:53:53"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-27 21:53:53"}
+{"level":"error","message":"❌ Gagal inisialisasi layanan latar belakang (DB/AI):","timestamp":"2026-03-27 21:53:53"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:53:54"}
+{"level":"info","message":"Client connected: Zrrn3WF1NNjlbRYiAAAB","timestamp":"2026-03-27 21:53:54"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:53:54"}
+{"level":"info","message":"Client connected: 3GQ2uQDgje-lnLbYAAAD","timestamp":"2026-03-27 21:53:54"}
+{"level":"info","message":"Client connected: J-casB9PZyVmfbZIAAAF","timestamp":"2026-03-27 21:53:57"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-27 21:54:30"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:54:30"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-27 21:54:30"}
+{"level":"info","message":"Client connected: WVK0RHmvyvkg9gSTAAAB","timestamp":"2026-03-27 21:54:30"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:54:32"}
+{"level":"info","message":"Client connected: ylZwEN3Y81qf9Qu0AAAD","timestamp":"2026-03-27 21:54:32"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:54:32"}
+{"level":"info","message":"Client connected: 6on1jXJ_aaZVRy8kAAAF","timestamp":"2026-03-27 21:54:32"}
+{"level":"info","message":"Client disconnected: ylZwEN3Y81qf9Qu0AAAD","timestamp":"2026-03-27 21:54:52"}
+{"level":"info","message":"Client disconnected: 6on1jXJ_aaZVRy8kAAAF","timestamp":"2026-03-27 21:54:52"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:54:57"}
+{"level":"info","message":"Client connected: -OvIqxIyg6S1zPQgAAAH","timestamp":"2026-03-27 21:54:57"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:54:57"}
+{"level":"info","message":"Client connected: U9JZKVHeZXNTOvJcAAAJ","timestamp":"2026-03-27 21:54:57"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-27 21:56:55"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:56:55"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-27 21:56:55"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:56:56"}
+{"level":"info","message":"Client connected: Nc-JP8RJxFhOlolHAAAB","timestamp":"2026-03-27 21:56:56"}
+{"level":"info","message":"Client connected: 8uSfrU1_l_LAct3oAAAD","timestamp":"2026-03-27 21:56:57"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:56:57"}
+{"level":"info","message":"Client connected: JD_sZzMK7dm9wjkqAAAF","timestamp":"2026-03-27 21:56:58"}
+{"level":"info","message":"Client disconnected: JD_sZzMK7dm9wjkqAAAF","timestamp":"2026-03-27 21:57:25"}
+{"level":"info","message":"Client connected: GLaq1XGQX98OkQdjAAAH","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 154.106 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 196.946 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 39.913 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 213.022 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 215.789 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 205.078 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 56.920 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 37.873 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 19.672 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 19.366 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 25.091 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 31.650 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 36.234 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 30.628 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 31.348 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 25.015 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 34.509 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 44.118 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 41.852 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 26.789 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 24.979 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 25.649 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 11.736 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 6.212 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:29"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 13.937 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:30"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 9.886 ms - -\u001b[0m","timestamp":"2026-03-27 21:57:30"}
+{"level":"info","message":"\u001b[0mPOST /api/search/ai \u001b[32m200\u001b[0m 38.697 ms - 75\u001b[0m","timestamp":"2026-03-27 21:58:23"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-27 21:58:25"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:58:25"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-27 21:58:25"}
+{"level":"info","message":"Client connected: 1T8q5M3clpyDI5y1AAAB","timestamp":"2026-03-27 21:58:26"}
+{"level":"info","message":"Client connected: E9IXq_oS4UX_VRL6AAAD","timestamp":"2026-03-27 21:58:26"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 11.554 ms - -\u001b[0m","timestamp":"2026-03-27 21:58:29"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 18.806 ms - -\u001b[0m","timestamp":"2026-03-27 21:58:29"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 9.082 ms - -\u001b[0m","timestamp":"2026-03-27 21:58:29"}
+{"level":"info","message":"\u001b[0mPOST /api/search/ai \u001b[32m200\u001b[0m 58.410 ms - 75\u001b[0m","timestamp":"2026-03-27 21:58:29"}
+{"level":"info","message":"Client connected: bo9uCoRIHpSwhT7IAAAF","timestamp":"2026-03-27 21:58:30"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 6.780 ms - -\u001b[0m","timestamp":"2026-03-27 21:58:34"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 9.191 ms - -\u001b[0m","timestamp":"2026-03-27 21:58:34"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 5.181 ms - -\u001b[0m","timestamp":"2026-03-27 21:58:35"}
+{"level":"info","message":"Client disconnected: E9IXq_oS4UX_VRL6AAAD","timestamp":"2026-03-27 21:58:50"}
+{"level":"info","message":"Client disconnected: 1T8q5M3clpyDI5y1AAAB","timestamp":"2026-03-27 21:58:50"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:58:53"}
+{"level":"info","message":"Client connected: iITT5BMTip5-6yfjAAAH","timestamp":"2026-03-27 21:58:53"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:58:53"}
+{"level":"info","message":"Client connected: RQjJIa6woB9erSngAAAJ","timestamp":"2026-03-27 21:58:53"}
+{"level":"info","message":"Client disconnected: RQjJIa6woB9erSngAAAJ","timestamp":"2026-03-27 21:59:00"}
+{"level":"info","message":"Client disconnected: iITT5BMTip5-6yfjAAAH","timestamp":"2026-03-27 21:59:00"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:59:04"}
+{"level":"info","message":"Client connected: XvIj7KKOiY3xo1rDAAAL","timestamp":"2026-03-27 21:59:04"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:59:04"}
+{"level":"info","message":"Client connected: lmsR00t_FkF0J9NUAAAN","timestamp":"2026-03-27 21:59:04"}
+{"level":"info","message":"\u001b[0mPOST /api/search/ai \u001b[32m200\u001b[0m 7.877 ms - 75\u001b[0m","timestamp":"2026-03-27 22:00:16"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 5.840 ms - -\u001b[0m","timestamp":"2026-03-27 22:00:19"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 6.276 ms - -\u001b[0m","timestamp":"2026-03-27 22:00:19"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 3.202 ms - -\u001b[0m","timestamp":"2026-03-27 22:00:20"}
+{"level":"info","message":"\u001b[0mPOST /api/search/ai \u001b[32m200\u001b[0m 5.007 ms - 75\u001b[0m","timestamp":"2026-03-27 22:01:32"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 16.297 ms - -\u001b[0m","timestamp":"2026-03-27 22:01:34"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 29.740 ms - -\u001b[0m","timestamp":"2026-03-27 22:01:34"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 8.543 ms - -\u001b[0m","timestamp":"2026-03-27 22:01:34"}
+{"details":"Updated summary for Januari 2026 (PPH)","level":"info","message":"Upsert Tax Summary: Updated summary for Januari 2026 (PPH)","timestamp":"2026-03-27 22:02:40","user":"System"}
+{"level":"info","message":"[Cache] Pattern cleared: tax:* (1 keys)","timestamp":"2026-03-27 22:02:40"}
+{"level":"info","message":"\u001b[0mPOST /api/tax-summaries \u001b[32m200\u001b[0m 82.652 ms - 42\u001b[0m","timestamp":"2026-03-27 22:02:40"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[32m200\u001b[0m 12.887 ms - 213\u001b[0m","timestamp":"2026-03-27 22:02:40"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[32m200\u001b[0m 22.539 ms - 6380\u001b[0m","timestamp":"2026-03-27 22:02:40"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 5.820 ms - -\u001b[0m","timestamp":"2026-03-27 22:02:41"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 2.401 ms - -\u001b[0m","timestamp":"2026-03-27 22:02:42"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 3.900 ms - -\u001b[0m","timestamp":"2026-03-27 22:02:42"}
+{"details":"Deleted record ID: PPH_Januari_2026_0","level":"info","message":"Delete Tax Summary: Deleted record ID: PPH_Januari_2026_0","timestamp":"2026-03-27 22:02:46","user":"Admin"}
+{"level":"info","message":"[Cache] Pattern cleared: tax:* (1 keys)","timestamp":"2026-03-27 22:02:46"}
+{"level":"info","message":"\u001b[0mDELETE /api/tax-summaries/PPH_Januari_2026_0 \u001b[32m200\u001b[0m 9.671 ms - 16\u001b[0m","timestamp":"2026-03-27 22:02:46"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[32m200\u001b[0m 10.506 ms - 6684\u001b[0m","timestamp":"2026-03-27 22:02:46"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 7.857 ms - -\u001b[0m","timestamp":"2026-03-27 22:02:46"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 2.742 ms - -\u001b[0m","timestamp":"2026-03-27 22:02:46"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[32m200\u001b[0m 3.622 ms - 2\u001b[0m","timestamp":"2026-03-27 22:02:46"}
+{"details":"Updated summary for Januari 2026 (PPH)","level":"info","message":"Upsert Tax Summary: Updated summary for Januari 2026 (PPH)","timestamp":"2026-03-27 22:03:17","user":"System"}
+{"level":"info","message":"[Cache] Pattern cleared: tax:* (1 keys)","timestamp":"2026-03-27 22:03:17"}
+{"level":"info","message":"\u001b[0mPOST /api/tax-summaries \u001b[32m200\u001b[0m 8.830 ms - 42\u001b[0m","timestamp":"2026-03-27 22:03:17"}
+{"details":"Updated summary for Januari 2026 (PPH)","level":"info","message":"Upsert Tax Summary: Updated summary for Januari 2026 (PPH)","timestamp":"2026-03-27 22:03:17","user":"System"}
+{"level":"info","message":"\u001b[0mPOST /api/tax-summaries \u001b[32m200\u001b[0m 12.296 ms - 42\u001b[0m","timestamp":"2026-03-27 22:03:17"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[32m200\u001b[0m 9.991 ms - 6988\u001b[0m","timestamp":"2026-03-27 22:03:17"}
+{"details":"Updated summary for Februari 2026 (PPH)","level":"info","message":"Upsert Tax Summary: Updated summary for Februari 2026 (PPH)","timestamp":"2026-03-27 22:03:17","user":"System"}
+{"level":"info","message":"\u001b[0mPOST /api/tax-summaries \u001b[32m200\u001b[0m 10.391 ms - 43\u001b[0m","timestamp":"2026-03-27 22:03:17"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 7.020 ms - -\u001b[0m","timestamp":"2026-03-27 22:03:17"}
+{"details":"Updated summary for Maret 2026 (PPH)","level":"info","message":"Upsert Tax Summary: Updated summary for Maret 2026 (PPH)","timestamp":"2026-03-27 22:03:17","user":"System"}
+{"level":"info","message":"\u001b[0mPOST /api/tax-summaries \u001b[32m200\u001b[0m 6.899 ms - 40\u001b[0m","timestamp":"2026-03-27 22:03:17"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[32m200\u001b[0m 3.545 ms - 939\u001b[0m","timestamp":"2026-03-27 22:03:17"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 4.798 ms - -\u001b[0m","timestamp":"2026-03-27 22:03:19"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 14.616 ms - -\u001b[0m","timestamp":"2026-03-27 22:03:19"}
