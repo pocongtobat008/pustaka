@@ -17927,3 +17927,35 @@
 {"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 8.236 ms - -\u001b[0m","timestamp":"2026-03-20 18:01:22"}
 {"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 9.841 ms - -\u001b[0m","timestamp":"2026-03-20 18:07:14"}
 {"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 4.421 ms - -\u001b[0m","timestamp":"2026-03-20 18:07:14"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-27 17:28:54"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 17:28:54"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-27 17:28:54"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-27 17:28:54"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-27 17:28:54"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 17:28:56"}
+{"level":"info","message":"Client connected: gonIQSZyfZ3tmk2ZAAAB","timestamp":"2026-03-27 17:28:56"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 17:28:57"}
+{"level":"info","message":"Client connected: hysKslFKmVoEv7Y0AAAD","timestamp":"2026-03-27 17:28:57"}
+{"details":"User logged in with HttpOnly cookie","level":"info","message":"Login: User logged in with HttpOnly cookie","timestamp":"2026-03-27 17:29:33","user":"admin"}
+{"level":"info","message":"\u001b[0mPOST /api/login \u001b[32m200\u001b[0m 125.878 ms - 284\u001b[0m","timestamp":"2026-03-27 17:29:33"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-27 17:29:36"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 17:29:36"}
+{"level":"info","message":"Client connected: 4iUn2OMDkA3UkJvhAAAB","timestamp":"2026-03-27 17:29:36"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-27 17:29:36"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-27 17:29:36"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-27 17:29:36"}
+{"level":"info","message":"Client connected: LGjPnx68vq6t1NNuAAAD","timestamp":"2026-03-27 17:29:36"}
+{"level":"info","message":"Client connected: HsNbaU0e3WaHEl-fAAAF","timestamp":"2026-03-27 17:29:38"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[32m200\u001b[0m 82.275 ms - 736\u001b[0m","timestamp":"2026-03-27 17:29:42"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[32m200\u001b[0m 130.050 ms - 206\u001b[0m","timestamp":"2026-03-27 17:29:42"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[32m200\u001b[0m 187.165 ms - 2\u001b[0m","timestamp":"2026-03-27 17:29:42"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 59.956 ms - -\u001b[0m","timestamp":"2026-03-27 17:29:42"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 61.744 ms - -\u001b[0m","timestamp":"2026-03-27 17:29:42"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 26.298 ms - -\u001b[0m","timestamp":"2026-03-27 17:29:42"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[32m200\u001b[0m 11.696 ms - 2432\u001b[0m","timestamp":"2026-03-27 17:30:00"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 5.887 ms - -\u001b[0m","timestamp":"2026-03-27 17:30:00"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[32m200\u001b[0m 4.462 ms - 923\u001b[0m","timestamp":"2026-03-27 17:30:18"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 8.762 ms - -\u001b[0m","timestamp":"2026-03-27 17:30:18"}
+{"level":"info","message":"\u001b[0mGET /api/tax/wp?cb=1774607421561 \u001b[32m200\u001b[0m 12.195 ms - 2\u001b[0m","timestamp":"2026-03-27 17:30:21"}
+{"level":"info","message":"\u001b[0mGET /api/tax/objects?cb=1774607421562 \u001b[32m200\u001b[0m 10.359 ms - 2\u001b[0m","timestamp":"2026-03-27 17:30:21"}
+{"level":"info","message":"\u001b[0mGET /api/tax/objects?cb=1774607422466 \u001b[32m200\u001b[0m 4.670 ms - 2\u001b[0m","timestamp":"2026-03-27 17:30:22"}
