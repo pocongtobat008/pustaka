@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Grid3x3, ScanLine, History, PieChart, FileText, FileDigit, ChevronDown, ChevronUp, ArrowRight, ArrowUpRight, Package, Truck, FileBarChart, Download, X, CheckCircle2, FileSearch, FolderOpen, Users, Sparkles, Clock, Eye, Info, MessageSquare, BookOpen, FileCheck, ClipboardCheck, ChevronLeft, ChevronRight, User } from 'lucide-react';
 import { Card } from '../components/ui/Card';
-import { Card as ShadCard, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Card as ShadCard, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
 import { Badge } from '../components/ui/badge';
 import QueueStatus from '../components/ui/QueueStatus';
 import WarehouseMap from '../components/WarehouseMap';

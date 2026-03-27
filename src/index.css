@@ -54,6 +54,46 @@
     @apply border-border;
   }
 
+  /* Responsive Auto-Scaling for smaller screens/laptops */
+  html {
+    font-size: 16px;
+  }
+
+  @media (max-width: 1536px) {
+    html {
+      font-size: 15px;
+    }
+  }
+
+  @media (max-width: 1366px),
+  (max-height: 850px) {
+    html {
+      font-size: 14px;
+    }
+  }
+
+  @media (max-width: 1280px),
+  (max-height: 750px) {
+    html {
+      font-size: 13.5px;
+    }
+  }
+
+  @media (max-width: 1024px),
+  (max-height: 650px) {
+    html {
+      font-size: 13px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    html {
+      font-size: 16px;
+    }
+  }
+
+  /* Reset for mobile */
+
   body {
     @apply bg-background text-foreground min-h-screen antialiased selection:bg-indigo-500/30;
     font-family: 'Plus Jakarta Sans', sans-serif;
