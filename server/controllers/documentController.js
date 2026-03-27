@@ -8,6 +8,7 @@ import { addOcrJob } from '../utils/queue.js';
 import { UPLOADS_DIR } from '../config/upload.js';
 import { vectorStore } from '../ai_search.js';
 import { parseJsonArraySafe, parseJsonObjectSafe } from '../utils/jsonSafe.js';
+import { cache } from '../utils/cache.js';
 
 // Helper: Convert ISO 8601 datetime to MySQL-compatible format
 const toMySQLDate = (isoOrDate) => {
@@ -19,6 +20,11 @@ const toMySQLDate = (isoOrDate) => {
 export const getDocuments = async (req, res) => {
     try {
         const { folderId } = req.query;
+        const cacheKey = `documents:folder:${folderId || 'root'}`;
+
+        const cachedDocs = await cache.get(cacheKey);
+        if (cachedDocs) return res.json(cachedDocs);
+
         let query = knex('documents').select('*');
 
         if (folderId !== undefined) {
@@ -30,6 +36,7 @@ export const getDocuments = async (req, res) => {
         }
 
         const rows = await query;
+        await cache.set(cacheKey, rows, 3600); // 1 hour TTL
         res.json(rows);
     } catch (err) {
         handleError(res, err, "DOCUMENT Error");
@@ -151,6 +158,8 @@ export const uploadDocument = async (req, res) => {
             }
 
             await systemLog(owner, "Revisi", `Otomatis membuat revisi: "${title}" v${(existingDoc.version || 1) + 1}`);
+            // Clear document cache
+            await cache.delByPattern('documents:*');
             req.app.get('io')?.emit('data:changed', { channel: 'documents' });
             return res.json({ success: true, id: existingDoc.id, version: (existingDoc.version || 1) + 1, isRevision: true, url: fileUrl });
         }
@@ -212,6 +221,9 @@ export const uploadDocument = async (req, res) => {
 
         await systemLog(owner, "Upload", `Mengunggah dokumen (Queued): "${title}"`);
 
+        // Clear document cache
+        await cache.delByPattern('documents:*');
+
         req.app.get('io')?.emit('data:changed', { channel: 'documents' });
         res.json({
             success: true,
@@ -264,6 +276,8 @@ export const deleteDocument = async (req, res) => {
         vectorStore.removeDocument(subId);
 
         await systemLog(null, "Delete Document", `Menghapus dokumen: "${doc.title}"`);
+        // Clear document cache
+        await cache.delByPattern('documents:*');
         req.app.get('io')?.emit('data:changed', { channel: 'documents' });
         res.json({ success: true });
     } catch (err) {
@@ -292,6 +306,8 @@ export const moveDocument = async (req, res) => {
         }
 
         await systemLog(owner || 'System', "Move", `Pindah file ID: ${id} ke folder: ${targetFolderId || 'Root'}`);
+        // Clear document cache
+        await cache.delByPattern('documents:*');
         req.app.get('io')?.emit('data:changed', { channel: 'documents' });
         res.json({ success: true });
     } catch (err) {
@@ -332,6 +348,8 @@ export const copyDocument = async (req, res) => {
         });
 
         await systemLog(owner || doc.owner || 'System', "Copy", `Salin file: "${doc.title}" ke folder: ${targetFolderId || 'Root'}`);
+        // Clear document cache
+        await cache.delByPattern('documents:*');
         req.app.get('io')?.emit('data:changed', { channel: 'documents' });
         res.json({ success: true, newId: newDocId });
     } catch (err) {
@@ -405,6 +423,8 @@ export const restoreVersion = async (req, res) => {
         }
 
         await systemLog(user, "Restore", `Restore dokumen "${doc.title}" ke versi tanggal ${timestamp}`);
+        // Clear document cache
+        await cache.delByPattern('documents:*');
         req.app.get('io')?.emit('data:changed', { channel: 'documents' });
         res.json({ success: true });
 
@@ -488,6 +508,9 @@ export const updateDocument = async (req, res) => {
                 await addOcrJob(id, req.file.path, req.file.mimetype, updateData.title || existingDoc.title);
             } catch (qErr) { console.error("Queue Error:", qErr); }
         }
+
+        // Clear document cache
+        await cache.delByPattern('documents:*');
 
         req.app.get('io')?.emit('data:changed', { channel: 'documents' });
         res.json({ success: true, id, ...updateData });

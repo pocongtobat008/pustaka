@@ -2,6 +2,10 @@ import { create } from 'zustand';
 
 const initialState = {
     isSidebarCollapsed: false,
+    isSidebarPinned: (() => {
+        const saved = localStorage.getItem('archive_sidebar_pinned');
+        return saved === 'true';
+    })(),
     activeTab: 'dashboard',
     isModalOpen: false,
     modalTab: 'details',
@@ -28,6 +32,10 @@ export const useAppStore = create((set) => ({
         set({ showInitialLanding: val });
     },
     setIsSidebarCollapsed: (val) => set({ isSidebarCollapsed: val }),
+    setIsSidebarPinned: (val) => {
+        localStorage.setItem('archive_sidebar_pinned', val ? 'true' : 'false');
+        set({ isSidebarPinned: val });
+    },
     setActiveTab: (val) => set({ activeTab: val }),
     setIsModalOpen: (val) => set({ isModalOpen: val }),
     setModalTab: (val) => set({ modalTab: val }),

@@ -1,0 +1,71 @@
+import { connection, USE_BULLMQ } from './queue.js';
+import { logger } from './logger.js';
+
+/**
+ * Cache utility for Pustaka
+ * Uses the global Redis connection defined in queue.js
+ */
+export const cache = {
+    /**
+     * Get data from cache
+     * @param {string} key 
+     * @returns {Promise<any|null>}
+     */
+    get: async (key) => {
+        if (!USE_BULLMQ) return null;
+        try {
+            const data = await connection.get(`pustaka:cache:${key}`);
+            return data ? JSON.parse(data) : null;
+        } catch (err) {
+            logger.error(`[Cache] Get error for ${key}: ${err.message}`);
+            return null;
+        }
+    },
+
+    /**
+     * Set data to cache with TTL
+     * @param {string} key 
+     * @param {any} value 
+     * @param {number} ttlInSeconds - Default 6 hours (21600s)
+     */
+    set: async (key, value, ttlInSeconds = 21600) => {
+        if (!USE_BULLMQ) return;
+        try {
+            const data = JSON.stringify(value);
+            await connection.set(`pustaka:cache:${key}`, data, 'EX', ttlInSeconds);
+        } catch (err) {
+            logger.error(`[Cache] Set error for ${key}: ${err.message}`);
+        }
+    },
+
+    /**
+     * Delete specific key from cache
+     * @param {string} key 
+     */
+    del: async (key) => {
+        if (!USE_BULLMQ) return;
+        try {
+            await connection.del(`pustaka:cache:${key}`);
+            logger.info(`[Cache] Key deleted: ${key}`);
+        } catch (err) {
+            logger.error(`[Cache] Del error for ${key}: ${err.message}`);
+        }
+    },
+
+    /**
+     * Delete all keys matching a pattern
+     * @param {string} pattern - e.g., 'inventory:*'
+     */
+    delByPattern: async (pattern) => {
+        if (!USE_BULLMQ) return;
+        try {
+            const keys = await connection.keys(`pustaka:cache:${pattern}`);
+            if (keys.length > 0) {
+                await connection.del(...keys);
+                logger.info(`[Cache] Pattern cleared: ${pattern} (${keys.length} keys)`);
+            }
+        } catch (err) {
+            logger.error(`[Cache] DelPattern error for ${pattern}: ${err.message}`);
+        }
+    }
+};

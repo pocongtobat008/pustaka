@@ -14,6 +14,7 @@ import {
     taxAuditNoteSchema,
     validateRequestBody
 } from '../utils/requestValidation.js';
+import { cache } from '../utils/cache.js';
 
 function normalizeMySqlDateTime(value) {
     if (value === undefined || value === null || value === '') return null;
@@ -203,11 +204,17 @@ export const deleteTaxAudit = async (req, res) => {
 // --- TAX SUMMARIES ---
 export const getTaxSummaries = async (req, res) => {
     try {
+        const cacheKey = 'tax:summaries:all';
+        const cachedSummaries = await cache.get(cacheKey);
+        if (cachedSummaries) return res.json(cachedSummaries);
+
         const items = await knex('tax_summaries').select('*');
         const parsedItems = items.map(item => ({
             ...item,
             data: parseJsonObjectSafe(item.data, {})
         }));
+
+        await cache.set(cacheKey, parsedItems, 3600); // 1 hour TTL
         res.json(parsedItems);
     } catch (err) {
         handleError(res, err, "TAX Error");
@@ -218,6 +225,10 @@ export const getTaxSummaries = async (req, res) => {
 export const compareTaxSummaries = async (req, res) => {
     try {
         const { metrics = 'pph,ppn', start, end, limit = 12, pembetulan = 'all' } = req.query;
+        const cacheKey = `tax:compare:${metrics}:${start || 'none'}:${end || 'none'}:${limit}:${pembetulan}`;
+
+        const cachedCompare = await cache.get(cacheKey);
+        if (cachedCompare) return res.json(cachedCompare);
         // Validate inputs
         const validMetrics = ['pph', 'ppn'];
         const requested = metrics.split(',').map(m => m.trim().toLowerCase()).filter(Boolean);
@@ -322,13 +333,16 @@ export const compareTaxSummaries = async (req, res) => {
             if (lastUnder && lastOver) break;
         }
 
-        res.json({
+        const finalResult = {
             meta: { metrics: metricList, start: startKey, end: endKey },
             series,
             aggregates,
             lastUnderpayment: lastUnder,
             lastOverpayment: lastOver
-        });
+        };
+
+        await cache.set(cacheKey, finalResult, 3600); // 1 hour TTL
+        res.json(finalResult);
     } catch (e) {
         console.error('Compare Tax Summaries Error', e);
         handleError(res, e, 'Tax Compare Error');
@@ -450,6 +464,10 @@ export const upsertTaxSummary = async (req, res) => {
         }
 
         await systemLog('System', "Upsert Tax Summary", `Updated summary for ${month} ${year} (${type})`);
+
+        // Clear tax cache
+        await cache.delByPattern('tax:*');
+
         req.app.get('io')?.emit('data:changed', { channel: 'tax' });
         res.json({ success: true, id: recordId });
     } catch (e) {
@@ -463,6 +481,8 @@ export const deleteTaxSummary = async (req, res) => {
         const { id } = req.params;
         await knex('tax_summaries').where('id', id).del();
         await systemLog('Admin', "Delete Tax Summary", `Deleted record ID: ${id}`);
+        // Clear tax cache
+        await cache.delByPattern('tax:*');
         req.app.get('io')?.emit('data:changed', { channel: 'tax' });
         res.json({ success: true });
     } catch (e) {

@@ -50,7 +50,6 @@ import {
     sopFlowUpdateSchema
 } from './utils/requestValidation.js';
 import { uploadDocument } from './controllers/documentController.js';
-import { vectorStore } from './ai_search.js';
 
 // Setup
 const __filename = fileURLToPath(import.meta.url);
@@ -193,9 +192,14 @@ app.use('/api', authRoutes); // /api/login, /api/users
 app.use('/api', systemRoutes); // /api/logs, /api/roles, /api/departments, /api/folders
 app.use('/api', notificationRoutes); // /api/notifications
 
-app.get('/api/system/ai-status', checkAuth, (req, res) => {
+app.get('/api/system/ai-status', checkAuth, async (req, res) => {
+    // API should not have its own vectorStore in microservice mode.
+    // Fetch from a shared source (like Redis) or just return a static 'Online/Worker-Led' status
     res.json({
-        vectorStore: vectorStore.getStatus()
+        vectorStore: {
+            status: 'Isolated Process (Worker-Led)',
+            message: 'AI Search is handled by the dedicated background worker.'
+        }
     });
 });
 

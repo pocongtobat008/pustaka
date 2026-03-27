@@ -9,10 +9,16 @@ import {
     moveInventoryItemSchema,
     validateRequestBody
 } from '../utils/requestValidation.js';
+import { cache } from '../utils/cache.js';
 
 export const getInventory = async (req, res) => {
     try {
         const { search } = req.query;
+        const cacheKey = `inventory:list:${search || 'all'}`;
+
+        const cachedData = await cache.get(cacheKey);
+        if (cachedData) return res.json(cachedData);
+
         let query = knex('inventory').select('*');
 
         if (search) {
@@ -25,6 +31,7 @@ export const getInventory = async (req, res) => {
         }
 
         const rows = await query;
+        await cache.set(cacheKey, rows, 3600); // 1 hour TTL
         res.json(rows);
     } catch (err) {
         handleError(res, err, "INVENTORY Error");
@@ -83,6 +90,8 @@ export const updateInventoryItem = async (req, res) => {
         }
 
         await systemLog('System', "Update Inventory", `Updated item ID: ${id}`);
+        // Clear inventory cache
+        await cache.delByPattern('inventory:*');
         req.app.get('io')?.emit('data:changed', { channel: 'inventory' });
         res.json({ success: true });
     } catch (e) {
@@ -92,6 +101,10 @@ export const updateInventoryItem = async (req, res) => {
 
 export const getAnalytics = async (req, res) => {
     try {
+        const cacheKey = 'inventory:analytics';
+        const cachedAnalytics = await cache.get(cacheKey);
+        if (cachedAnalytics) return res.json(cachedAnalytics);
+
         const [itemsResult] = await knex('inventory').count('id as count');
         const [boxesResult] = await knex('boxes').count('id as count');
         const [externalResult] = await knex('external_items').count('id as count');
@@ -103,12 +116,15 @@ export const getAnalytics = async (req, res) => {
         // Mock recent activity for now or fetch from logs
         const recentActivity = await knex('logs').orderBy('timestamp', 'desc').limit(5);
 
-        res.json({
+        const analytics = {
             totalItems,
             totalBoxes,
             totalExternal,
             recentActivity
-        });
+        };
+
+        await cache.set(cacheKey, analytics, 3600); // 1 hour TTL
+        res.json(analytics);
     } catch (err) {
         handleError(res, err, "INVENTORY Error");
     }
@@ -214,6 +230,8 @@ export const moveInventoryItem = async (req, res) => {
         });
 
         await systemLog(user || 'System', "Move Inventory", `Moved box from #${sourceId} to #${targetId}`);
+        // Clear inventory cache
+        await cache.delByPattern('inventory:*');
         req.app.get('io')?.emit('data:changed', { channel: 'inventory' });
         res.json({ success: true });
     } catch (err) {

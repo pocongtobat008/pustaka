@@ -18129,3 +18129,217 @@
 {"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 4.248 ms - -\u001b[0m","timestamp":"2026-03-27 20:39:53"}
 {"details":"User logged out (cookie cleared)","level":"info","message":"Logout: User logged out (cookie cleared)","timestamp":"2026-03-27 20:39:55","user":"Unknown"}
 {"level":"info","message":"\u001b[0mPOST /api/logout \u001b[32m200\u001b[0m 4.091 ms - 31\u001b[0m","timestamp":"2026-03-27 20:39:55"}
+{"level":"info","message":"Client disconnected: 6o3cybCHspcohFCjAAAJ","timestamp":"2026-03-27 20:42:11"}
+{"details":"User logged in with HttpOnly cookie","level":"info","message":"Login: User logged in with HttpOnly cookie","timestamp":"2026-03-27 20:53:41","user":"admin"}
+{"level":"info","message":"\u001b[0mPOST /api/login \u001b[32m200\u001b[0m 85.663 ms - 284\u001b[0m","timestamp":"2026-03-27 20:53:41"}
+{"level":"info","message":"Client connected: lAjXcc6AFdQ3rC5qAAAL","timestamp":"2026-03-27 20:53:41"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 35.631 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:41"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 33.058 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:41"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-27 20:53:41"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 167.851 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:42"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 168.309 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:42"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[32m200\u001b[0m 42.086 ms - 342\u001b[0m","timestamp":"2026-03-27 20:53:42"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 190.469 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:42"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 82.596 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:42"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 49.721 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:42"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 111.579 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:42"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 44.306 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:42"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 75.434 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:42"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 13.762 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:42"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 23.436 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:42"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 17.534 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:42"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 7.208 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:42"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 13.158 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:42"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 19.558 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:44"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 73.427 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:44"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 80.593 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:44"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 70.307 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:44"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 22.630 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:44"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 38.133 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:44"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 5.057 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:49"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 12.542 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:49"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 6.185 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:49"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 13.257 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:50"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 15.182 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:50"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 34.382 ms - -\u001b[0m","timestamp":"2026-03-27 20:53:50"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 28.534 ms - -\u001b[0m","timestamp":"2026-03-27 20:56:28"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 50.980 ms - -\u001b[0m","timestamp":"2026-03-27 20:56:28"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 59.181 ms - -\u001b[0m","timestamp":"2026-03-27 20:56:28"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 102.531 ms - -\u001b[0m","timestamp":"2026-03-27 20:56:28"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 103.701 ms - -\u001b[0m","timestamp":"2026-03-27 20:56:28"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 52.046 ms - -\u001b[0m","timestamp":"2026-03-27 20:56:28"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[32m200\u001b[0m 8.744 ms - 923\u001b[0m","timestamp":"2026-03-27 21:00:04"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 6.379 ms - -\u001b[0m","timestamp":"2026-03-27 21:00:04"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 3.558 ms - -\u001b[0m","timestamp":"2026-03-27 21:00:11"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 2.869 ms - -\u001b[0m","timestamp":"2026-03-27 21:00:11"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 3.744 ms - -\u001b[0m","timestamp":"2026-03-27 21:04:29"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 3.400 ms - -\u001b[0m","timestamp":"2026-03-27 21:04:29"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 18.457 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:01"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 68.551 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:01"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 40.070 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:01"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 49.347 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:01"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 2.418 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:01"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 11.083 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:01"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 4.907 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:03"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 4.456 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:03"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 4.445 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:04"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 5.235 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:04"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 7.520 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:04"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 6.601 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:04"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 26.994 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:04"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 33.587 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:04"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 3.978 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:05"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 3.142 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:05"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 4.898 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:08"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 4.762 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:08"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 6.317 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:16"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 6.787 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:16"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 15.301 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:16"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 34.308 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:16"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 32.928 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:16"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 27.761 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:16"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 4.251 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:20"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 4.517 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:20"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 4.451 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:59"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 4.825 ms - -\u001b[0m","timestamp":"2026-03-27 21:05:59"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 3.475 ms - -\u001b[0m","timestamp":"2026-03-27 21:06:08"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 2.714 ms - -\u001b[0m","timestamp":"2026-03-27 21:06:08"}
+{"level":"info","message":"\u001b[0mPOST /api/notifications/read-all \u001b[32m200\u001b[0m 23.005 ms - 28\u001b[0m","timestamp":"2026-03-27 21:07:05"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 3.018 ms - -\u001b[0m","timestamp":"2026-03-27 21:14:44"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 3.174 ms - -\u001b[0m","timestamp":"2026-03-27 21:14:44"}
+{"details":"User logged out (cookie cleared)","level":"info","message":"Logout: User logged out (cookie cleared)","timestamp":"2026-03-27 21:14:58","user":"Unknown"}
+{"level":"info","message":"\u001b[0mPOST /api/logout \u001b[32m200\u001b[0m 3.666 ms - 31\u001b[0m","timestamp":"2026-03-27 21:14:58"}
+{"details":"User logged in with HttpOnly cookie","level":"info","message":"Login: User logged in with HttpOnly cookie","timestamp":"2026-03-27 21:15:03","user":"admin"}
+{"level":"info","message":"\u001b[0mPOST /api/login \u001b[32m200\u001b[0m 77.082 ms - 284\u001b[0m","timestamp":"2026-03-27 21:15:03"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 18.303 ms - -\u001b[0m","timestamp":"2026-03-27 21:15:03"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[32m200\u001b[0m 42.001 ms - 6076\u001b[0m","timestamp":"2026-03-27 21:15:03"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 80.272 ms - -\u001b[0m","timestamp":"2026-03-27 21:15:03"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 87.822 ms - -\u001b[0m","timestamp":"2026-03-27 21:15:03"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-27 21:15:03"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 98.809 ms - -\u001b[0m","timestamp":"2026-03-27 21:15:03"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 26.278 ms - -\u001b[0m","timestamp":"2026-03-27 21:15:03"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 56.528 ms - -\u001b[0m","timestamp":"2026-03-27 21:15:03"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 30.287 ms - -\u001b[0m","timestamp":"2026-03-27 21:15:03"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 51.868 ms - -\u001b[0m","timestamp":"2026-03-27 21:15:03"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 95.979 ms - -\u001b[0m","timestamp":"2026-03-27 21:15:03"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 41.777 ms - -\u001b[0m","timestamp":"2026-03-27 21:15:03"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 31.257 ms - -\u001b[0m","timestamp":"2026-03-27 21:15:03"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 17.369 ms - -\u001b[0m","timestamp":"2026-03-27 21:15:03"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 15.346 ms - -\u001b[0m","timestamp":"2026-03-27 21:15:03"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 5.731 ms - -\u001b[0m","timestamp":"2026-03-27 21:15:03"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 3.553 ms - -\u001b[0m","timestamp":"2026-03-27 21:15:03"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 4.078 ms - -\u001b[0m","timestamp":"2026-03-27 21:25:37"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 3.205 ms - -\u001b[0m","timestamp":"2026-03-27 21:25:38"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 1.516 ms - -\u001b[0m","timestamp":"2026-03-27 21:25:38"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 4.289 ms - -\u001b[0m","timestamp":"2026-03-27 21:25:38"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-27 21:25:38"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 3.069 ms - -\u001b[0m","timestamp":"2026-03-27 21:25:38"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 3.169 ms - -\u001b[0m","timestamp":"2026-03-27 21:25:38"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 6.398 ms - -\u001b[0m","timestamp":"2026-03-27 21:25:38"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 2.409 ms - -\u001b[0m","timestamp":"2026-03-27 21:25:38"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 1.195 ms - -\u001b[0m","timestamp":"2026-03-27 21:25:38"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 2.924 ms - -\u001b[0m","timestamp":"2026-03-27 21:25:38"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 2.796 ms - -\u001b[0m","timestamp":"2026-03-27 21:25:38"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 2.484 ms - -\u001b[0m","timestamp":"2026-03-27 21:25:38"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 4.248 ms - -\u001b[0m","timestamp":"2026-03-27 21:25:38"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 2.919 ms - -\u001b[0m","timestamp":"2026-03-27 21:25:38"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 3.221 ms - -\u001b[0m","timestamp":"2026-03-27 21:25:38"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 9.453 ms - -\u001b[0m","timestamp":"2026-03-27 21:28:18"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 12.382 ms - -\u001b[0m","timestamp":"2026-03-27 21:28:18"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 16.102 ms - -\u001b[0m","timestamp":"2026-03-27 21:28:18"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 48.815 ms - -\u001b[0m","timestamp":"2026-03-27 21:28:18"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 104.216 ms - -\u001b[0m","timestamp":"2026-03-27 21:28:18"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 68.891 ms - -\u001b[0m","timestamp":"2026-03-27 21:28:18"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 6.230 ms - -\u001b[0m","timestamp":"2026-03-27 21:28:19"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 5.028 ms - -\u001b[0m","timestamp":"2026-03-27 21:28:19"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 9.299 ms - -\u001b[0m","timestamp":"2026-03-27 21:30:20"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 10.507 ms - -\u001b[0m","timestamp":"2026-03-27 21:30:20"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 10.177 ms - -\u001b[0m","timestamp":"2026-03-27 21:30:20"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 4.198 ms - -\u001b[0m","timestamp":"2026-03-27 21:30:20"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 4.307 ms - -\u001b[0m","timestamp":"2026-03-27 21:30:20"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 4.567 ms - -\u001b[0m","timestamp":"2026-03-27 21:30:20"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-27 21:34:35"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:34:35"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-27 21:34:35"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-27 21:34:35"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-27 21:34:35"}
+{"level":"info","message":"Client connected: lVDsLyV7pAT4CUK4AAAB","timestamp":"2026-03-27 21:34:35"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:34:36"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:34:38"}
+{"level":"info","message":"Client connected: hQXAqUWn0fHTCqQ7AAAE","timestamp":"2026-03-27 21:34:38"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:34:39"}
+{"level":"info","message":"Client connected: rLWPpyQVT4NJqiOOAAAG","timestamp":"2026-03-27 21:34:39"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 66.605 ms - -\u001b[0m","timestamp":"2026-03-27 21:35:07"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 153.469 ms - -\u001b[0m","timestamp":"2026-03-27 21:35:07"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 156.271 ms - -\u001b[0m","timestamp":"2026-03-27 21:35:07"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 111.408 ms - -\u001b[0m","timestamp":"2026-03-27 21:35:07"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 48.781 ms - -\u001b[0m","timestamp":"2026-03-27 21:35:07"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 65.221 ms - -\u001b[0m","timestamp":"2026-03-27 21:35:07"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 8.345 ms - -\u001b[0m","timestamp":"2026-03-27 21:35:08"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 5.936 ms - -\u001b[0m","timestamp":"2026-03-27 21:35:08"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 7.894 ms - -\u001b[0m","timestamp":"2026-03-27 21:35:11"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 21.428 ms - -\u001b[0m","timestamp":"2026-03-27 21:35:11"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-27 21:38:58"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:38:58"}
+{"level":"info","message":"Client connected: N1wB0kF0ZFLRXPIaAAAB","timestamp":"2026-03-27 21:38:58"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-27 21:38:58"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-27 21:38:58"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-27 21:38:58"}
+{"level":"info","message":"Client connected: EHo-jQetyzJTs0qbAAAD","timestamp":"2026-03-27 21:39:00"}
+{"level":"info","message":"Client connected: DXAFTGx6gwslrzJUAAAF","timestamp":"2026-03-27 21:39:00"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-27 21:39:13"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:39:13"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-27 21:39:13"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-27 21:39:13"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-27 21:39:13"}
+{"level":"info","message":"Client connected: ewA1LzgNRJdcszlwAAAB","timestamp":"2026-03-27 21:39:14"}
+{"level":"info","message":"Client connected: h0OQq_kuyLVNZQHIAAAD","timestamp":"2026-03-27 21:39:14"}
+{"level":"info","message":"Client connected: L110agKVTEcfwd9CAAAF","timestamp":"2026-03-27 21:39:14"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-03-27 21:39:32"}
+{"level":"info","message":"[Queue] Connected to Redis. BullMQ initialized.","timestamp":"2026-03-27 21:39:32"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-03-27 21:39:32"}
+{"level":"info","message":"🧠 Memulai Vector Store (lazy=true, batch=250)...","timestamp":"2026-03-27 21:39:32"}
+{"level":"info","message":"🟡 AI Search warming up di background. Cek /api/system/ai-status.","timestamp":"2026-03-27 21:39:32"}
+{"level":"info","message":"Client connected: IvTU6M7hDWIj7otDAAAB","timestamp":"2026-03-27 21:39:33"}
+{"level":"info","message":"Client connected: S4s4DmscjMv0-p3kAAAD","timestamp":"2026-03-27 21:39:34"}
+{"level":"info","message":"Client connected: yPQd4z3hNMjGurZbAAAF","timestamp":"2026-03-27 21:39:36"}
+{"level":"info","message":"Client disconnected: IvTU6M7hDWIj7otDAAAB","timestamp":"2026-03-27 21:40:59"}
+{"level":"info","message":"Client connected: tBPVgLDUCL9QjX-DAAAH","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 125.098 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 134.921 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 22.789 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 131.044 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 217.234 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 80.902 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 149.970 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 19.709 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 24.489 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/folders \u001b[36m304\u001b[0m 23.251 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 33.083 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/users \u001b[36m304\u001b[0m 7.855 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"Fetching approvals for user: admin","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/tax-audits \u001b[36m304\u001b[0m 33.065 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/approvals \u001b[36m304\u001b[0m 33.290 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/documents \u001b[36m304\u001b[0m 36.011 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/tax-summaries \u001b[36m304\u001b[0m 30.470 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/departments \u001b[36m304\u001b[0m 14.970 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/inventory \u001b[36m304\u001b[0m 35.253 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/roles \u001b[36m304\u001b[0m 11.358 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 42.386 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 18.445 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/inventory/external \u001b[36m304\u001b[0m 8.513 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 5.879 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/approval-flows \u001b[36m304\u001b[0m 3.111 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 17.598 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/notifications \u001b[36m304\u001b[0m 5.473 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:00"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 70.557 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:40"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 97.201 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:40"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 100.523 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:40"}
+{"level":"info","message":"\u001b[0mGET /api/jobs \u001b[36m304\u001b[0m 41.876 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:40"}
+{"level":"info","message":"\u001b[0mGET /api/monitored-pics \u001b[36m304\u001b[0m 33.070 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:40"}
+{"level":"info","message":"\u001b[0mGET /api/independent-issues \u001b[36m304\u001b[0m 40.952 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:40"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 7.066 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:42"}
+{"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 6.082 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:42"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 3.227 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:44"}
+{"level":"info","message":"\u001b[0mGET /api/documents?stepIndex=0 \u001b[36m304\u001b[0m 2.970 ms - -\u001b[0m","timestamp":"2026-03-27 21:41:44"}
