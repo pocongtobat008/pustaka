@@ -70,11 +70,16 @@ export const useDocStore = create((set, get) => ({
 
     // Mutation Actions
     createDocument: async (doc) => {
-        const res = await api.createDocument(doc);
-        if (res) {
-            await get().fetchDocs();
+        try {
+            const res = await api.createDocument(doc);
+            if (res) {
+                await get().fetchDocs();
+            }
+            return res;
+        } catch (e) {
+            console.error("[DocStore] createDocument failed:", e);
+            throw e; // Re-throw so caller can handle
         }
-        return res;
     },
     updateDocument: async (id, doc) => {
         await api.updateDocument(id, doc);

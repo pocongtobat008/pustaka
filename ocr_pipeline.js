@@ -31,6 +31,30 @@ const PDFJS_OPTS = {
 };
 
 /**
+ * Assess the quality of extracted text to detect garbage/invisible text layers.
+ * Returns a score between 0 (garbage) and 1 (high quality readable text).
+ */
+function assessTextQuality(text) {
+  if (!text || text.trim().length === 0) return 0;
+  const trimmed = text.trim();
+  // Ratio of alphanumeric characters (a-z, 0-9) to total
+  const alnumCount = (trimmed.match(/[a-zA-Z0-9]/g) || []).length;
+  const alnumRatio = alnumCount / trimmed.length;
+  // Average word length
+  const words = trimmed.split(/\s+/).filter(w => w.length > 0);
+  const avgWordLen = words.length > 0 ? words.reduce((s, w) => s + w.length, 0) / words.length : 0;
+  // Ratio of "real" words (2-20 chars, mostly alpha)
+  const realWords = words.filter(w => w.length >= 2 && w.length <= 20 && /[a-zA-Z]/.test(w));
+  const realWordRatio = words.length > 0 ? realWords.length / words.length : 0;
+  // Penalty for too many non-printable / special chars
+  const nonPrintable = (trimmed.match(/[^\x20-\x7E\xA0-\xFF]/g) || []).length;
+  const nonPrintableRatio = nonPrintable / trimmed.length;
+  // Composite score
+  let score = (alnumRatio * 0.35) + (Math.min(avgWordLen / 8, 1) * 0.25) + (realWordRatio * 0.3) + ((1 - nonPrintableRatio) * 0.1);
+  return Math.max(0, Math.min(1, score));
+}
+
+/**
  * Extract raw JPEG streams embedded in a PDF binary.
  * Most scanner-produced PDFs store each page as a JPEG XObject.
  * This approach is reliable and needs no canvas or PDF renderer.
@@ -124,6 +148,161 @@ async function renderPdfToImages(pdfPath, maxPages = 50) {
       // ignore operator extraction errors
     }
   }
+
+  if (images.length > 0) return images;
+
+  // ── Strategy 3: PDF.js viewport rendering to raw pixel buffer (handles JBIG2, CCITT, etc.)
+  // This is the most reliable fallback — it renders each page exactly as a PDF viewer would.
+  console.log(`[OCR] Strategies 1 & 2 found no images. Using viewport rendering (Strategy 3)...`);
+  for (let i = 1; i <= pages; i++) {
+    try {
+      const page = await pdf.getPage(i);
+      const scale = 2.0; // 2x scale for better OCR accuracy
+      const viewport = page.getViewport({ scale });
+      const width = Math.floor(viewport.width);
+      const height = Math.floor(viewport.height);
+
+      // Skip unreasonably small pages
+      if (width < 50 || height < 50) continue;
+
+      // Try using node-canvas if available
+      if (Canvas) {
+        try {
+          const canvas = Canvas.createCanvas(width, height);
+          const ctx = canvas.getContext('2d');
+          await page.render({ canvasContext: ctx, viewport }).promise;
+          const pngBuf = canvas.toBuffer('image/png');
+          if (pngBuf && pngBuf.length > 1000) {
+            images.push({ page: i, buffer: pngBuf });
+            console.log(`[OCR] Page ${i} rendered via node-canvas (${width}x${height})`);
+            continue;
+          }
+        } catch (canvasErr) {
+          // canvas render failed, try raw pixel approach below
+        }
+      }
+
+      // Raw pixel buffer approach (no canvas dependency)
+      // Create an RGBA buffer and a minimal canvas-like context for pdf.js
+      const pixelBuf = Buffer.alloc(width * height * 4, 255); // white background
+      const fakeCanvasContext = {
+        canvas: { width, height },
+        _pixelBuf: pixelBuf,
+        // pdf.js uses putImageData to draw rendered content
+        putImageData(imageData, dx, dy) {
+          const srcData = imageData.data || imageData;
+          const srcW = imageData.width || width;
+          const srcH = imageData.height || height;
+          for (let y = 0; y < srcH && (dy + y) < height; y++) {
+            for (let x = 0; x < srcW && (dx + x) < width; x++) {
+              const srcIdx = (y * srcW + x) * 4;
+              const dstIdx = ((dy + y) * width + (dx + x)) * 4;
+              pixelBuf[dstIdx] = srcData[srcIdx];
+              pixelBuf[dstIdx + 1] = srcData[srcIdx + 1];
+              pixelBuf[dstIdx + 2] = srcData[srcIdx + 2];
+              pixelBuf[dstIdx + 3] = srcData[srcIdx + 3];
+            }
+          }
+        },
+        getImageData(sx, sy, sw, sh) {
+          const out = new Uint8ClampedArray(sw * sh * 4);
+          for (let y = 0; y < sh; y++) {
+            for (let x = 0; x < sw; x++) {
+              const srcIdx = ((sy + y) * width + (sx + x)) * 4;
+              const dstIdx = (y * sw + x) * 4;
+              out[dstIdx] = pixelBuf[srcIdx];
+              out[dstIdx + 1] = pixelBuf[srcIdx + 1];
+              out[dstIdx + 2] = pixelBuf[srcIdx + 2];
+              out[dstIdx + 3] = pixelBuf[srcIdx + 3];
+            }
+          }
+          return { data: out, width: sw, height: sh };
+        },
+        createImageData(w, h) {
+          return { data: new Uint8ClampedArray(w * h * 4), width: w, height: h };
+        },
+        // Stubs for other canvas context methods pdf.js might call
+        save() { },
+        restore() { },
+        transform() { },
+        setTransform() { },
+        resetTransform() { },
+        scale() { },
+        rotate() { },
+        translate() { },
+        beginPath() { },
+        closePath() { },
+        moveTo() { },
+        lineTo() { },
+        rect() { },
+        clip() { },
+        fill() { },
+        stroke() { },
+        fillRect(x, y, w, h) {
+          // Fill rectangle in pixel buffer (used for background)
+          for (let py = Math.max(0, Math.floor(y)); py < Math.min(height, Math.floor(y + h)); py++) {
+            for (let px = Math.max(0, Math.floor(x)); px < Math.min(width, Math.floor(x + w)); px++) {
+              const idx = (py * width + px) * 4;
+              pixelBuf[idx] = 255; pixelBuf[idx + 1] = 255; pixelBuf[idx + 2] = 255; pixelBuf[idx + 3] = 255;
+            }
+          }
+        },
+        strokeRect() { },
+        clearRect() { },
+        arc() { },
+        arcTo() { },
+        bezierCurveTo() { },
+        quadraticCurveTo() { },
+        drawImage() { },
+        fillText() { },
+        strokeText() { },
+        measureText() { return { width: 0 }; },
+        set fillStyle(v) { },
+        get fillStyle() { return '#ffffff'; },
+        set strokeStyle(v) { },
+        get strokeStyle() { return '#000000'; },
+        set lineWidth(v) { },
+        get lineWidth() { return 1; },
+        set lineCap(v) { },
+        get lineCap() { return 'butt'; },
+        set lineJoin(v) { },
+        get lineJoin() { return 'miter'; },
+        set miterLimit(v) { },
+        get miterLimit() { return 10; },
+        set globalAlpha(v) { },
+        get globalAlpha() { return 1; },
+        set globalCompositeOperation(v) { },
+        get globalCompositeOperation() { return 'source-over'; },
+        set font(v) { },
+        get font() { return '10px sans-serif'; },
+        set textAlign(v) { },
+        get textAlign() { return 'start'; },
+        set textBaseline(v) { },
+        get textBaseline() { return 'alphabetic'; },
+        setLineDash() { },
+        getLineDash() { return []; },
+        set imageSmoothingEnabled(v) { },
+        get imageSmoothingEnabled() { return true; },
+      };
+
+      try {
+        await page.render({ canvasContext: fakeCanvasContext, viewport }).promise;
+        // Convert RGBA pixel buffer to PNG via sharp
+        const pngBuf = await sharp(pixelBuf, { raw: { width, height, channels: 4 } })
+          .png()
+          .toBuffer();
+        if (pngBuf && pngBuf.length > 1000) {
+          images.push({ page: i, buffer: pngBuf });
+          console.log(`[OCR] Page ${i} rendered via pixel buffer (${width}x${height})`);
+        }
+      } catch (renderErr) {
+        console.warn(`[OCR] Page ${i} viewport render failed: ${renderErr.message}`);
+      }
+    } catch (pageErr) {
+      console.warn(`[OCR] Strategy 3 page ${i} error: ${pageErr.message}`);
+    }
+  }
+
   return images;
 }
 
@@ -140,7 +319,7 @@ async function preprocessBuffer(buffer) {
     .toBuffer();
 }
 
-async function doOcrOnBuffer(worker, buffer, psmCandidates = ['1','3','6','11']) {
+async function doOcrOnBuffer(worker, buffer, psmCandidates = ['3', '6', '11']) {
   let best = { text: '', confidence: -1, psm: null };
   for (const psm of psmCandidates) {
     await worker.setParameters({ tessedit_pageseg_mode: psm });
@@ -183,7 +362,7 @@ async function ocrPdf(pdfPath, outDir, options = {}) {
   function resolveInputPath(p) {
     if (fs.existsSync(p)) return p;
     // try decodeURIComponent
-    try { const dec = decodeURIComponent(p); if (fs.existsSync(dec)) return dec; } catch (e) {}
+    try { const dec = decodeURIComponent(p); if (fs.existsSync(dec)) return dec; } catch (e) { }
     // replace %20 with space
     const sp = p.replace(/%20/g, ' ');
     if (fs.existsSync(sp)) return sp;
@@ -210,8 +389,16 @@ async function ocrPdf(pdfPath, outDir, options = {}) {
 
   // prefer pdf-lib to read metadata or check number of pages quickly
   const raw = fs.readFileSync(resolved);
-  const pdfDoc = await PDFDocument.load(raw);
-  const numPages = pdfDoc.getPageCount();
+  let numPages = 0;
+  try {
+    const pdfDoc = await PDFDocument.load(raw, { ignoreEncryption: true });
+    numPages = pdfDoc.getPageCount();
+  } catch (pdfLibErr) {
+    console.warn(`[OCR] pdf-lib failed to parse PDF (${pdfLibErr.message}). Falling back to pdfjs-dist for page count.`);
+    const loadingTask = pdfjsLib.getDocument({ ...PDFJS_OPTS, data: new Uint8Array(raw) });
+    const pdf = await loadingTask.promise;
+    numPages = pdf.numPages;
+  }
   const baseName = path.basename(pdfPath).replace(/\.[^.]+$/, '');
   const outFile = path.join(outDir, `${baseName}.txt`);
 
@@ -232,7 +419,18 @@ async function ocrPdf(pdfPath, outDir, options = {}) {
       }
       const avg = pages ? (totalChars / pages) : 0;
       // heuristic: if average chars per page > 40, treat as digital text PDF
-      if (avg > 40) return texts;
+      if (avg > 40) {
+        // Additional quality check: many scanned PDFs have invisible/garbage OCR text layers
+        // from scanner software. Check if the text is actually readable.
+        const allText = texts.map(t => t.text).join(' ');
+        const quality = assessTextQuality(allText);
+        console.log(`[OCR] Text layer: avg=${Math.round(avg)} chars/page, quality=${quality.toFixed(2)}`);
+        if (quality < 0.35) {
+          console.log(`[OCR] Text layer quality too low (${quality.toFixed(2)} < 0.35) — treating as scanned PDF.`);
+          return null; // Force OCR
+        }
+        return texts;
+      }
       return null;
     } catch (e) {
       return null;
@@ -244,7 +442,7 @@ async function ocrPdf(pdfPath, outDir, options = {}) {
   if (extracted && extracted.length > 0) {
     sendProgress('text_layer_found', { message: 'Digital text layer detected — extracting without OCR' });
     const results = extracted.map(r => ({ page: r.page, text: r.text || '', confidence: 100, psm: null, angle: 0 }));
-    const combined = results.sort((a,b)=>a.page-b.page).map(r=>`--- Page ${r.page} (angle=${r.angle}, conf=${Math.round(r.confidence)}) ---\n${r.text}\n`).join('\n');
+    const combined = results.sort((a, b) => a.page - b.page).map(r => `--- Page ${r.page} (angle=${r.angle}, conf=${Math.round(r.confidence)}) ---\n${r.text}\n`).join('\n');
     fs.writeFileSync(outFile, combined, 'utf8');
     sendProgress('saved_combined', { message: `Saved extracted text to ${outFile}`, percent: 100 });
     return { outFile, results };
@@ -295,7 +493,10 @@ async function ocrPdf(pdfPath, outDir, options = {}) {
   };
 
   const images = await renderPdfToImages(resolved, numPages);
-  if (images.length === 0) throw new Error('No pages rendered');
+  if (images.length === 0) {
+    console.error('[OCR] All 3 rendering strategies failed — no pages could be rendered.');
+    throw new Error('No pages rendered — all rendering strategies exhausted (raw JPEG, operator-list, viewport render)');
+  }
 
   // init tesseract worker (createWorker returns a Promise-resolved worker)
   const worker = await createWorker('ind+eng');
@@ -335,7 +536,7 @@ async function ocrPdf(pdfPath, outDir, options = {}) {
     results.push({ page: img.page, text: cleaned || bestOverall.text, confidence: bestOverall.confidence, psm: bestOverall.psm, angle: bestOverall.angle });
   }
 
-  try { await worker.terminate(); } catch (e) {}
+  try { await worker.terminate(); } catch (e) { }
 
   // restore console handlers and emit a concise warning/error summary
   try { console.warn = origWarn; console.error = origError; } catch (e) { /* ignore */ }
@@ -344,11 +545,11 @@ async function ocrPdf(pdfPath, outDir, options = {}) {
     const sample = [];
     for (const v of warnBuffer.values()) sample.push(v.join(' '));
     for (const v of errorBuffer.values()) sample.push(v.join(' '));
-    sendProgress('warnings_summary', { message: `${suppressed} library warnings/errors suppressed`, sample: sample.slice(0,3) });
+    sendProgress('warnings_summary', { message: `${suppressed} library warnings/errors suppressed`, sample: sample.slice(0, 3) });
   }
 
   // write combined text
-  const combined = results.sort((a,b)=>a.page-b.page).map(r=>`--- Page ${r.page} (angle=${r.angle}, conf=${Math.round(r.confidence)}) ---\n${r.text}\n`).join('\n');
+  const combined = results.sort((a, b) => a.page - b.page).map(r => `--- Page ${r.page} (angle=${r.angle}, conf=${Math.round(r.confidence)}) ---\n${r.text}\n`).join('\n');
   fs.writeFileSync(outFile, combined, 'utf8');
   sendProgress('saved_combined', { message: `Saved OCR text to ${outFile}`, percent: 100 });
 

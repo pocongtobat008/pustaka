@@ -4,6 +4,7 @@ import {
     getOCRQueue,
     getLaneLoad,
     retryOCRJob,
+    requeueDocument,
     clearCompletedJobs
 } from '../controllers/ocrController.js';
 
@@ -17,6 +18,7 @@ router.get('/status', getOCRStatus);
 router.get('/queue', getOCRQueue);
 router.get('/lanes', getLaneLoad);
 router.post('/retry/:id', retryOCRJob);
+router.post('/requeue/document/:docId', requeueDocument);
 router.delete('/completed', clearCompletedJobs);
 
 export default router;

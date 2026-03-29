@@ -32,7 +32,11 @@ export const cache = {
         if (!USE_BULLMQ) return;
         try {
             const data = JSON.stringify(value);
-            await connection.set(`pustaka:cache:${key}`, data, 'EX', ttlInSeconds);
+            if (connection && typeof connection.set === 'function') {
+                await connection.set(`pustaka:cache:${key}`, data, 'EX', ttlInSeconds);
+            } else {
+                logger.warn(`[Cache] Redis connection not ready - set skipped for ${key}`);
+            }
         } catch (err) {
             logger.error(`[Cache] Set error for ${key}: ${err.message}`);
         }
@@ -59,10 +63,18 @@ export const cache = {
     delByPattern: async (pattern) => {
         if (!USE_BULLMQ) return;
         try {
-            const keys = await connection.keys(`pustaka:cache:${pattern}`);
+            if (!connection || typeof connection.keys !== 'function') {
+                logger.warn(`[Cache] Redis connection does not support keys(); delByPattern skipped for ${pattern}`);
+                return;
+            }
+            const keys = await connection.keys(`pustaka:cache:${pattern}`) || [];
             if (keys.length > 0) {
-                await connection.del(...keys);
-                logger.info(`[Cache] Pattern cleared: ${pattern} (${keys.length} keys)`);
+                if (typeof connection.del === 'function') {
+                    await connection.del(...keys);
+                    logger.info(`[Cache] Pattern cleared: ${pattern} (${keys.length} keys)`);
+                } else {
+                    logger.warn(`[Cache] Redis connection has no del(); keys found but cannot delete for ${pattern}`);
+                }
             }
         } catch (err) {
             logger.error(`[Cache] DelPattern error for ${pattern}: ${err.message}`);

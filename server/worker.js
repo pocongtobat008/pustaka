@@ -27,6 +27,7 @@ import { Worker } from 'bullmq';
 import { connection, USE_BULLMQ } from './utils/queue.js';
 import { io as ioClient } from 'socket.io-client';
 import { parseJsonObjectSafe } from './utils/jsonSafe.js';
+import { cache } from './utils/cache.js';
 
 // Load PDF.js dynamically to ensure polyfills are applied first
 const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
@@ -355,9 +356,18 @@ async function processJob(job) {
             if (isPdfFile(filePath)) effectiveFileType = 'application/pdf';
 
             if (effectiveFileType.startsWith('image/')) {
-                const tess = await createWorker('eng+ind');
+                await job.updateProgress(10);
+                const tess = await createWorker('eng+ind', 1, {
+                    logger: m => {
+                        if (m.status === 'recognizing text') {
+                            job.updateProgress(10 + Math.round(m.progress * 80));
+                        }
+                    }
+                });
+                await tess.setParameters({ tessedit_pageseg_mode: '3' });
                 const { data: { text } } = await tess.recognize(filePath);
                 extractedText = `[OCR IMAGE]\n${text}`;
+                await job.updateProgress(100);
                 await tess.terminate();
             } else if (effectiveFileType === 'application/pdf') {
                 const dataBuffer = fs.readFileSync(filePath);
@@ -388,7 +398,15 @@ async function processJob(job) {
 
                 try {
                     // Use improved OCR pipeline for all PDFs (text + scanned)
-                    const pipelineRes = await ocrPdf(filePath);
+                    const pipelineRes = await ocrPdf(filePath, null, {
+                        onProgress: (p) => {
+                            if (p.percent != null) {
+                                // Map pipeline 0-100% to worker 20-95% (since digital extraction was already done)
+                                const mapped = 20 + Math.round(p.percent * 0.75);
+                                job.updateProgress(mapped);
+                            }
+                        }
+                    });
                     if (pipelineRes && pipelineRes.results) {
                         const combined = pipelineRes.results.map(r => r.text || '').join('\n').trim();
                         if (combined.length > 10) {
@@ -406,33 +424,72 @@ async function processJob(job) {
                         }
                     }
                 } catch (err) {
-                    console.error('[Worker] OCR pipeline failed:', err);
+                    console.error('[Worker] OCR pipeline failed:', err.message);
+
+                    // Last-resort fallback: if pipeline failed and text is thin, use worker's own image extraction + Tesseract
+                    if (extractedText.length < 100) {
+                        console.log('[Worker] Text thin after pipeline failure. Attempting last-resort Tesseract OCR...');
+                        try {
+                            const uint8 = new Uint8Array(dataBuffer);
+                            const lt = pdfjsLib.getDocument({ data: uint8, standardFontDataUrl: standardFontDataUrlHref });
+                            const pdfDoc = await lt.promise;
+                            const extractedImages = await extractImagesFromPDF(pdfDoc, 15);
+                            if (extractedImages.length > 0) {
+                                console.log(`[Worker] Last-resort: Found ${extractedImages.length} images. Running Tesseract...`);
+                                const tess = await createWorker('eng+ind');
+                                await tess.setParameters({ tessedit_pageseg_mode: '3' });
+                                let ocrTexts = [];
+                                for (let idx = 0; idx < extractedImages.length; idx++) {
+                                    const { data: { text } } = await tess.recognize(extractedImages[idx]);
+                                    if (text && text.trim().length > 5) ocrTexts.push(text.trim());
+                                    job.updateProgress(20 + Math.round((idx / extractedImages.length) * 75));
+                                }
+                                await tess.terminate();
+                                if (ocrTexts.length > 0) {
+                                    extractedText = `[OCR-LASTRESORT]\n${ocrTexts.join('\n')}`;
+                                    console.log(`[Worker] ✅ Last-resort OCR produced ${extractedText.length} characters.`);
+                                }
+                            } else {
+                                console.warn('[Worker] Last-resort: No images found in PDF either.');
+                            }
+                        } catch (lrErr) {
+                            console.error('[Worker] Last-resort OCR also failed:', lrErr.message);
+                        }
+                    }
                 }
             } else if (fileType.includes('spreadsheet') || fileType.includes('excel')) {
+                await job.updateProgress(20);
                 const workbook = XLSX.read(fs.readFileSync(filePath), { type: 'buffer' });
+                await job.updateProgress(60);
                 extractedText = workbook.SheetNames.map(n => XLSX.utils.sheet_to_txt(workbook.Sheets[n])).join("\n\n");
+                await job.updateProgress(100);
             } else if (fileType.includes('word') || filePath.endsWith('.docx')) {
+                await job.updateProgress(30);
                 const res = await mammoth.extractRawText({ path: filePath });
                 extractedText = res.value;
+                await job.updateProgress(100);
             } else if (fileType.includes('powerpoint') || fileType.includes('presentation') || filePath.endsWith('.pptx')) {
+                await job.updateProgress(20);
                 try {
                     const data = fs.readFileSync(filePath);
                     const zip = new JSZip();
                     const contents = await zip.loadAsync(data);
+                    await job.updateProgress(50);
                     let pptText = "";
 
                     // PPTX stores text in ppt/slides/slide*.xml
-                    for (const filename of Object.keys(contents.files)) {
-                        if (filename.startsWith('ppt/slides/slide') && filename.endsWith('.xml')) {
-                            const xml = await contents.files[filename].async("string");
-                            // Grab anything between <a:t> and </a:t>
-                            const matches = xml.match(/<a:t.*?>(.*?)<\/a:t>/g);
-                            if (matches) {
-                                pptText += matches.map(m => m.replace(/<.*?>/g, '')).join(' ') + "\n";
-                            }
+                    const slides = Object.keys(contents.files).filter(f => f.startsWith('ppt/slides/slide') && f.endsWith('.xml'));
+                    for (let i = 0; i < slides.length; i++) {
+                        const filename = slides[i];
+                        const xml = await contents.files[filename].async("string");
+                        const matches = xml.match(/<a:t.*?>(.*?)<\/a:t>/g);
+                        if (matches) {
+                            pptText += matches.map(m => m.replace(/<.*?>/g, '')).join(' ') + "\n";
                         }
+                        job.updateProgress(50 + Math.round((i / slides.length) * 45));
                     }
                     extractedText = pptText.trim();
+                    await job.updateProgress(100);
                 } catch (pptErr) {
                     console.error("PPTX Parsing Failed:", pptErr);
                 }
@@ -472,6 +529,8 @@ async function processJob(job) {
             if (docExists) {
                 await knex('documents').where('id', docId).update({ ocrContent: extractedText, status: DOC_STATUS.DONE });
                 console.log(`[Worker] Updated document ${docId} with OCR results.`);
+                // Invalidate documents cache so frontend gets fresh data
+                try { await cache.delByPattern('documents:*'); } catch (ce) { /* ignore cache errors */ }
             }
         }
 
@@ -562,6 +621,44 @@ async function startPolling() {
                             await knex('job_queue').where('id', row.id).update({ status: JOB_STATUS.WAITING, retries, error: e.message });
                         } else {
                             await knex('job_queue').where('id', row.id).update({ status: JOB_STATUS.FAILED, finished_at: knex.fn.now(), error: e.message });
+
+                            // CRITICAL: Reset the status of the associated document or inventory item so it doesn't stay stuck at 'processing'
+                            try {
+                                const jobData = parseJsonObjectSafe(row.data, {});
+                                const context = jobData.context || {};
+
+                                // 1. Check for documents
+                                if (jobData.docId) {
+                                    await knex('documents').where('id', jobData.docId).where('status', 'processing').update({ status: DOC_STATUS.DONE });
+                                    console.log(`[Worker] Document ${jobData.docId} status reset to 'done' after job failure.`);
+                                }
+
+                                // 2. Check for inventory invoices
+                                if (context.type === 'inventory_invoice' || jobData.isInventory) {
+                                    const slotId = context.slotId || context.slot_id;
+                                    const invoiceId = context.invoiceId || context.invoice_id;
+
+                                    if (slotId && invoiceId) {
+                                        const res = await knex('inventory').select('box_data').where('id', slotId).first();
+                                        if (res) {
+                                            let box = parseJsonObjectSafe(res.box_data, {});
+                                            let changed = false;
+                                            box.ordners?.forEach(ord => ord.invoices?.forEach(inv => {
+                                                if (inv.id == invoiceId && (inv.status === 'processing' || inv.status === 'waiting' || inv.status === 'stalled')) {
+                                                    inv.status = DOC_STATUS.DONE; // Reset to done/failed
+                                                    changed = true;
+                                                }
+                                            }));
+                                            if (changed) {
+                                                await knex('inventory').where('id', slotId).update({ box_data: JSON.stringify(box) });
+                                                console.log(`[Worker] Inventory invoice ${invoiceId} status reset to 'done' after job failure.`);
+                                            }
+                                        }
+                                    }
+                                }
+                            } catch (resetErr) {
+                                console.error('[Worker] Failed to reset status after job failure:', resetErr.message);
+                            }
                         }
                     }
                 } catch (e) {

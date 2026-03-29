@@ -1,4 +1,4 @@
-﻿﻿import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+﻿﻿import React, { useState, useEffect, useMemo, useRef, useCallback, Suspense, lazy } from 'react';
 import * as XLSX from 'xlsx';
 import { motion, AnimatePresence } from 'framer-motion';
 import mammoth from 'mammoth';
@@ -93,23 +93,25 @@ import {
   Calculator
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import Inventory from './pages/Inventory';
-import Documents from './pages/Documents';
-import TaxMonitoring from './pages/TaxMonitoring';
-import TaxSummary from './pages/TaxSummary';
-import TaxCalculation from './pages/TaxCalculation';
-import MasterData from './pages/MasterData';
-import Profile from './pages/Profile';
-import DocumentApproval from './pages/DocumentApproval';
-import Pustaka from './pages/Pustaka';
-import SystemLogs from './pages/SystemLogs';
-import SopFlow from './pages/SopFlow';
-import JobDueDate from './pages/JobDueDate';
-import { getFullUrl } from './utils/urlHelper';
+const Login = lazy(() => import('./pages/Login'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Inventory = lazy(() => import('./pages/Inventory'));
+const Documents = lazy(() => import('./pages/Documents'));
+const TaxMonitoring = lazy(() => import('./pages/TaxMonitoring'));
+const TaxSummary = lazy(() => import('./pages/TaxSummary'));
+const TaxCalculation = lazy(() => import('./pages/TaxCalculation'));
+const MasterData = lazy(() => import('./pages/MasterData'));
+const Profile = lazy(() => import('./pages/Profile'));
+const DocumentApproval = lazy(() => import('./pages/DocumentApproval'));
+const Pustaka = lazy(() => import('./pages/Pustaka'));
+const SystemLogs = lazy(() => import('./pages/SystemLogs'));
+const SopFlow = lazy(() => import('./pages/SopFlow'));
+const JobDueDate = lazy(() => import('./pages/JobDueDate'));
+const PdfViewer = lazy(() => import('./components/ui/PdfViewer'));
+import LoadingFallback from './components/common/LoadingFallback';
 import { useToast, ToastContainer } from './components/ui/Toast';
-import PdfViewer from './components/ui/PdfViewer';
+import { getFullUrl } from './utils/urlHelper';
+
 import CommandPalette from './components/ui/CommandPalette';
 import AiChatAssistant from './components/AiChatAssistant';
 import OcrLanes from './components/OcrLanes';
@@ -297,7 +299,20 @@ export default function App() {
       const updatedOrdners = data.ordners.map(ord => ({
         ...ord,
         invoices: (ord.invoices || []).map(inv => {
-          const realDoc = docList.find(d => d.id === inv.id);
+          // Try robust matching: compare as strings to tolerate id type differences
+          let realDoc = null;
+          if (inv.id !== undefined && inv.id !== null) {
+            realDoc = docList.find(d => String(d.id) === String(inv.id));
+          }
+
+          // Fallback: match by filename or invoice number when id mismatches
+          if (!realDoc && inv.fileName) {
+            realDoc = docList.find(d => d.title && inv.fileName && d.title.includes(inv.fileName));
+          }
+          if (!realDoc && inv.invoiceNo) {
+            realDoc = docList.find(d => (d.invoiceNo && String(d.invoiceNo) === String(inv.invoiceNo)) || (d.metadata && d.metadata.invoiceNo && String(d.metadata.invoiceNo) === String(inv.invoiceNo)));
+          }
+
           return realDoc ? {
             ...inv,
             status: realDoc.status || inv.status,
@@ -377,10 +392,17 @@ export default function App() {
 
   const [isLoading, setIsLoading] = useState(!!currentUser);
 
+  // Keep latest refs to avoid stale closures in polling logic
+  const docListRef = useRef(docList);
+  const inventoryRef = useRef(inventory);
+  useEffect(() => { docListRef.current = docList; }, [docList]);
+  useEffect(() => { inventoryRef.current = inventory; }, [inventory]);
+
   const lastOcrCompletedRef = useRef(0);
   const lastOcrFailedRef = useRef(0);
   const lastOcrWaitingRef = useRef(0);
   const lastOcrActiveRef = useRef(0);
+  const lastCleanupRefreshRef = useRef(0); // Tracks last time we did a fallback refresh
 
   useEffect(() => {
     if (!currentUser) return;
@@ -394,25 +416,42 @@ export default function App() {
         if (!res.ok) return;
         const data = await res.json();
 
-        // Check for new completions/failures for general alerts
+        // Check for new completions/failures
         const newCompleted = data?.counts?.completed || 0;
         const newFailed = data?.counts?.failed || 0;
         const newWaiting = data?.counts?.waiting || 0;
         const newActive = data?.counts?.active || 0;
 
-        // Debug Heartbeat: Muncul setiap 5 detik untuk memastikan polling jalan
-        // console.debug(`[OCR Poll] Active: ${newActive}, Completed: ${newCompleted} (Last: ${lastOcrCompletedRef.current})`);
-
-        // Refresh logic: Dipicu saat jumlah selesai/gagal bertambah OR saat antrean baru saja selesai (transisi sibuk -> kosong)
         const isQueueEmpty = newActive === 0 && newWaiting === 0;
         const wasQueueBusy = lastOcrActiveRef.current > 0 || lastOcrWaitingRef.current > 0;
-        const hasLocalProcessing = docList.some(d => d.status === 'processing' || d.status === 'waiting');
 
-        // Hanya refresh jika ada progres nyata atau antrean baru saja tuntas
+        // Use refs to get latest data and avoid stale closures in the polling interval
+        const hasStuckDocs = docListRef.current.some(d => d.status === 'processing' || d.status === 'waiting');
+        const hasStuckInv = inventoryRef.current.some(s => {
+          let box = s.box_data || s.boxData;
+          if (typeof box === 'string') try { box = JSON.parse(box); } catch (e) { return false; }
+          return box?.ordners?.some(ord => ord.invoices?.some(inv => inv.status === 'processing' || inv.status === 'waiting'));
+        });
+        const hasLocalProcessing = hasStuckDocs || hasStuckInv;
+
+        // Condition for cleanup refresh: Queue is empty, but we still have 'processing' labels.
+        // We limit this cleanup to run at most once every 30s to prevent blinking.
+        const now = Date.now();
+        const shouldCleanup = isQueueEmpty && hasLocalProcessing && (now - lastCleanupRefreshRef.current > 30000);
+
+        // Refresh logic: Dipicu saat jumlah selesai/gagal bertambah, antrean baru saja tuntas, atau cooldown cleanup tercapai
         if (newCompleted > lastOcrCompletedRef.current ||
           newFailed > lastOcrFailedRef.current ||
-          (isQueueEmpty && wasQueueBusy && hasLocalProcessing)) {
-          console.log("OCR Status Change detected. Refreshing data...");
+          (isQueueEmpty && wasQueueBusy && hasLocalProcessing) ||
+          shouldCleanup) {
+
+          if (shouldCleanup) {
+            console.log("Stuck OCR status detected (Queue Empty). Running throttled cleanup refresh...");
+            lastCleanupRefreshRef.current = now;
+          } else {
+            console.log("OCR Jobs completed. Refreshing UI...");
+          }
+
           fetchInventory(); // Refresh Inventory
           fetchDocs();      // Refresh Documents
           fetchLogs();      // Refresh Logs
@@ -497,11 +536,48 @@ export default function App() {
         console.log(`[Socket.IO] Data changed: ${channel} — refetching...`);
         switch (channel) {
           case 'inventory':
+            // Skip refetch if user has unsaved inventory changes to prevent losing new invoices
+            if (hasUnsavedInventoryChanges) {
+              console.log('[Socket.IO] Skipping inventory refetch due to unsaved changes');
+              break;
+            }
             fetchInventory();
             break;
           case 'documents':
-            fetchDocs();
-            fetchFolders();
+            // Ensure documents are fetched first, then refresh folders and inventory
+            // so that inventory hydration (which depends on docList) sees latest OCR results.
+            fetchDocs()
+              .then(() => {
+                fetchFolders();
+                return fetchInventory();
+              })
+              .then(() => {
+                // Diagnostic: inspect Slot #2 to help debug persistent OCR spinner
+                try {
+                  const slotIdToInspect = 2;
+                  const currentSlot = inventory.find(s => Number(s.id) === slotIdToInspect) || null;
+                  const hydratedSlot = (hydratedInventory || []).find(s => Number(s.id) === slotIdToInspect) || null;
+                  console.log('[OCR-DIAG] After documents refresh — slot raw:', currentSlot);
+                  console.log('[OCR-DIAG] After documents refresh — slot hydrated:', hydratedSlot);
+
+                  if (hydratedSlot) {
+                    const box = hydratedSlot.box_data || hydratedSlot.boxData || {};
+                    (box.ordners || []).forEach(ord => {
+                      (ord.invoices || []).forEach(inv => {
+                        const matchedDoc = (docList || []).find(d => String(d.id) === String(inv.id)) || null;
+                        console.log(`[OCR-DIAG] Slot#${slotIdToInspect} Invoice ${inv.id} | inv.status=${inv.status} | inv.ocr=${String(inv.ocrContent || inv.ocr_content || '').slice(0, 60)} | matchedDoc=${matchedDoc ? matchedDoc.id : 'null'}`);
+                      });
+                    });
+                  }
+                } catch (diagErr) {
+                  console.warn('[OCR-DIAG] Diagnostic failed:', diagErr);
+                }
+              })
+              .catch(() => {
+                // Even if fetchDocs or fetchInventory fails, attempt to refresh folders and inventory
+                fetchFolders();
+                fetchInventory();
+              });
             break;
           case 'tax':
             fetchTaxAudits();
@@ -591,6 +667,8 @@ export default function App() {
     boxId: '',
     ordners: []
   });
+
+  const [hasUnsavedInventoryChanges, setHasUnsavedInventoryChanges] = useState(false);
 
   const [editingItem, setEditingItem] = useState(null);
   const [moveTargetSlot, setMoveTargetSlot] = useState('');
@@ -1181,14 +1259,16 @@ export default function App() {
     }
   }, [inventory, selectedSlotId, docList]); // Tambahkan docList sebagai dependency
 
-  const addOrdner = () => {
-    if (!newOrdner.noOrdner || !newOrdner.period) return;
+  // Accept optional payload to avoid depending on parent state when typing
+  const addOrdner = (payload) => {
+    const ord = payload || newOrdner;
+    if (!ord.noOrdner || !ord.period) return;
     if (editingItem && editingItem.type === 'ordner') {
-      setBoxForm(prev => ({ ...prev, ordners: prev.ordners.map(o => o.id === editingItem.id ? { ...o, noOrdner: newOrdner.noOrdner, period: newOrdner.period } : o) }));
+      setBoxForm(prev => ({ ...prev, ordners: prev.ordners.map(o => o.id === editingItem.id ? { ...o, noOrdner: ord.noOrdner, period: ord.period } : o) }));
       setEditingItem(null);
     } else {
       const ordId = Date.now();
-      setBoxForm(prev => ({ ...prev, ordners: [...prev.ordners, { ...newOrdner, id: ordId, invoices: [] }] }));
+      setBoxForm(prev => ({ ...prev, ordners: [...prev.ordners, { ...ord, id: ordId, invoices: [] }] }));
       setExpandedOrdnerIds(prev => [...prev, ordId]);
     }
     setNewOrdner({ noOrdner: '', period: '' });
@@ -1197,27 +1277,41 @@ export default function App() {
   const editOrdner = (ord) => { setNewOrdner({ noOrdner: ord.noOrdner, period: ord.period }); setEditingItem({ type: 'ordner', id: ord.id }); };
   const removeOrdner = (id) => { if (window.confirm("Hapus ordner?")) setBoxForm(prev => ({ ...prev, ordners: prev.ordners.filter(o => o.id !== id) })); };
 
-  const addInvoice = (ordnerId) => {
-    if (!newInvoice.invoiceNo || !newInvoice.vendor) return;
+  // addInvoice accepts ordnerId and optional payload to allow local input state
+  const addInvoice = (ordnerId, payload) => {
+    const inv = payload || newInvoice;
+    if (!inv.invoiceNo || !inv.vendor) return;
+
+    // Validation: If fileName is provided but no rawFile, require file upload
+    const isNewInvoice = !inv.id || String(inv.id || '').match(/^\d+$/); // Local temp IDs are all digits
+    if (isNewInvoice && inv.fileName && !inv.rawFile && !inv.file) {
+      toast.error('⚠️ Pilih file terlebih dahulu atau hapus nama file');
+      return;
+    }
 
     const invoicePayload = {
-      invoiceNo: newInvoice.invoiceNo,
-      vendor: newInvoice.vendor,
-      paymentDate: newInvoice.paymentDate,
-      taxInvoiceNo: newInvoice.taxInvoiceNo,
-      specialNote: newInvoice.specialNote,
-      file: newInvoice.file,
-      fileName: newInvoice.fileName,
-      ocrContent: newInvoice.ocrContent,
-      rawFile: newInvoice.rawFile // Pass raw file
+      invoiceNo: inv.invoiceNo,
+      vendor: inv.vendor,
+      paymentDate: inv.paymentDate,
+      taxInvoiceNo: inv.taxInvoiceNo,
+      specialNote: inv.specialNote,
+      file: inv.file,
+      fileName: inv.fileName,
+      ocrContent: inv.ocrContent,
+      rawFile: inv.rawFile // Pass raw file
     };
 
     if (editingItem && editingItem.type === 'invoice') {
       setBoxForm(prev => ({ ...prev, ordners: prev.ordners.map(o => o.id === ordnerId ? { ...o, invoices: o.invoices.map(i => i.id === editingItem.id ? { ...i, ...invoicePayload, id: i.id } : i) } : o) }));
       setEditingItem(null);
     } else {
-      setBoxForm(prev => ({ ...prev, ordners: prev.ordners.map(o => o.id === ordnerId ? { ...o, invoices: [...o.invoices, { ...invoicePayload, id: Date.now() }] } : o) }));
+      // Use string-based temp ID for invoices to avoid type mismatches with server IDs
+      setBoxForm(prev => ({ ...prev, ordners: prev.ordners.map(o => o.id === ordnerId ? { ...o, invoices: [...o.invoices, { ...invoicePayload, id: String(Date.now()) }] } : o) }));
     }
+
+    // Mark as having unsaved changes so socket refetch doesn't overwrite new invoice
+    setHasUnsavedInventoryChanges(true);
+
     setNewInvoice({
       invoiceNo: '',
       vendor: '',
@@ -1247,7 +1341,47 @@ export default function App() {
     });
     setEditingItem({ type: 'invoice', id: inv.id, parentId: ordId });
   };
-  const removeInvoice = (ordnerId, invoiceId) => { if (window.confirm("Hapus invoice?")) setBoxForm(prev => ({ ...prev, ordners: prev.ordners.map(o => o.id === ordnerId ? { ...o, invoices: o.invoices.filter(i => i.id !== invoiceId) } : o) })); };
+
+  const removeInvoice = async (ordnerId, invoiceId) => {
+    if (!window.confirm("Hapus invoice?")) return;
+
+    // Update local state immediately for UI feedback
+    setBoxForm(prev => ({
+      ...prev,
+      ordners: prev.ordners.map(o =>
+        o.id === ordnerId ? { ...o, invoices: o.invoices.filter(i => i.id !== invoiceId) } : o
+      )
+    }));
+
+    // Persist deletion to server immediately
+    try {
+      const currentSlot = inventory.find(s => Number(s.id) === Number(selectedSlotId));
+      if (!currentSlot) return;
+
+      // Safe lookup for invoice info before deletion for logging purposes
+      const boxDataObj = typeof currentSlot.boxData === 'string' ? JSON.parse(currentSlot.boxData) : (currentSlot.boxData || {});
+      const invoice = boxDataObj.ordners?.find(o => o.id === ordnerId)?.invoices?.find(i => i.id === invoiceId);
+      const invoiceLabel = invoice?.invoiceNo ? `No: ${invoice.invoiceNo}` : `ID: ${invoiceId}`;
+
+      const payload = {
+        status: currentSlot.status || 'IMPORTED',
+        box_id: updatedBoxForm.boxId,
+        box_data: JSON.stringify({
+          id: updatedBoxForm.boxId,
+          ordners: updatedBoxForm.ordners
+        }),
+        history: [...(currentSlot.history || []), createHistoryItem('UPDATED', `Hapus invoice ${invoiceLabel}`)]
+      };
+
+      await api.updateInventory(selectedSlotId, payload);
+      toast.success('Invoice dihapus');
+    } catch (err) {
+      console.error('[removeInvoice] Error persisting deletion:', err);
+      toast.error('Gagal menghapus invoice. Coba lagi.');
+      // Restore the invoice to state if save failed
+      await fetchInventory();
+    }
+  };
 
   const handleSaveBox = async () => {
     // Validation: Unique Box ID Check
@@ -1306,6 +1440,15 @@ export default function App() {
             for (let iIdx = 0; iIdx < updatedInvoices.length; iIdx++) {
               let inv = updatedInvoices[iIdx];
 
+              // Diagnostic: log all invoices being processed
+              console.log(`[runBackgroundSave] Processing Ordner ${oIdx} Invoice ${iIdx}:`, {
+                invoiceNo: inv.invoiceNo,
+                fileName: inv.fileName,
+                hasRawFile: !!inv.rawFile,
+                hasFile: !!inv.file,
+                fileType: inv.file ? typeof inv.file : 'null'
+              });
+
               if (inv.rawFile) {
                 const fileType = inv.rawFile.type;
                 const fileSize = (inv.rawFile.size / 1024).toFixed(2) + ' KB';
@@ -1320,13 +1463,11 @@ export default function App() {
                   title: inv.fileName || `Invoice ${inv.invoiceNo}`,
                   forceOcr: true, // Aktifkan mode scan untuk PDF image-only
                   type: fileType,
-                  size: fileSize,
-                  uploadDate: new Date().toISOString(),
-                  folderId: String(boxFolderId || ''),
-                  owner: capturedCurrentUser?.name || 'Admin',
-                  status: 'waiting', // Masuk antrean FIFO (1 per 1)
-                  ocrContent: '',
-                  file: inv.rawFile, // Kirim file mentah untuk diupload oleh createDocument
+                  file: inv.rawFile,
+                  folderId: boxFolderId,
+                  slotId, // CRITICAL: Route to worker inventory sync
+                  invoiceId: inv.id,
+                  box_id: boxId,
                   // Metadata for AI Search
                   invoiceNo: inv.invoiceNo,
                   vendor: inv.vendor,
@@ -1335,21 +1476,53 @@ export default function App() {
                 };
 
                 try {
+                  // Diagnostic: log invoice metadata (avoid printing full File object)
+                  console.log(`[DIAG] [runBackgroundSave] Preparing upload for Slot ${slotId} Ordner ${oIdx} Invoice ${iIdx}`, {
+                    invoiceNo: inv.invoiceNo,
+                    fileName: inv.fileName,
+                    specialNote: inv.specialNote,
+                    rawFileName: inv.rawFile ? inv.rawFile.name : null,
+                    rawFileSize: inv.rawFile ? inv.rawFile.size : null,
+                    generatedDocId: docId
+                  });
+
+                  // Mark as uploading in UI
+                  updatedInvoices[iIdx] = { ...inv, status: 'uploading' };
+                  updatedOrdners[oIdx] = { ...ordner, invoices: updatedInvoices };
+                  // Update local UI immediately so user sees progress
+                  try {
+                    setInventory(prev => prev.map(s => s.id === slotId ? { ...s, boxData: { id: boxId, ordners: updatedOrdners } } : s));
+                  } catch (uiErr) { /* ignore UI update errors */ }
+
                   const createdDoc = await createDocument(docPayload);
 
-                  if (createdDoc) {
-                    // Update invoice dengan URL asli dari dokumen yang baru dibuat
-                    updatedInvoices[iIdx] = {
-                      ...inv,
-                      id: docId,
-                      status: 'waiting',
-                      file: createdDoc.url || createdDoc.file_url,
-                      ocrContent: '',
-                      rawFile: undefined // Bersihkan file mentah setelah upload sukses
-                    };
-                    inv = updatedInvoices[iIdx];
-                    uploadCount++;
+                  // Diagnostic: log server response for created doc
+                  console.log(`[DIAG] [runBackgroundSave] createDocument response for ${docId}:`, createdDoc);
+
+                  if (!createdDoc) {
+                    throw new Error(`Gagal membuat dokumen untuk invoice ${inv.invoiceNo}. Server tidak merespons atau menolak upload.`);
                   }
+
+                  // Use server-returned id if provided, otherwise keep our generated id
+                  const serverId = createdDoc.id || createdDoc._id || docId;
+                  // Update invoice dengan URL dan id yang benar
+                  updatedInvoices[iIdx] = {
+                    ...inv,
+                    id: serverId,
+                    status: 'waiting',
+                    file: createdDoc.url || createdDoc.file_url,
+                    ocrContent: '',
+                    rawFile: undefined // Bersihkan file mentah setelah upload sukses
+                  };
+                  inv = updatedInvoices[iIdx];
+                  updatedOrdners[oIdx] = { ...ordner, invoices: updatedInvoices };
+
+                  // Update UI to reflect uploaded file and server id
+                  try {
+                    setInventory(prev => prev.map(s => s.id === slotId ? { ...s, boxData: { id: boxId, ordners: updatedOrdners } } : s));
+                  } catch (uiErr) { /* ignore */ }
+
+                  uploadCount++;
                 } catch (docErr) {
                   console.error(`[BackgroundSave] Gagal upload/sinkronisasi dokumen ${inv.invoiceNo}:`, docErr);
                   throw new Error(`Gagal memproses invoice ${inv.invoiceNo}: ${docErr.message}`);
@@ -1358,6 +1531,14 @@ export default function App() {
             }
             updatedOrdners[oIdx] = { ...ordner, invoices: updatedInvoices };
           }
+        }
+
+        // Diagnostic: Warn if any invoices have fileName but no document was created
+        const orphanInvoices = updatedOrdners.flatMap((o, oIdx) =>
+          (o.invoices || []).filter(inv => inv.fileName && !inv.id?.includes('-')).map(inv => ({ ordner: oIdx, invoice: inv.invoiceNo, file: inv.fileName }))
+        );
+        if (orphanInvoices.length > 0) {
+          console.warn('[BackgroundSave] Found invoices with filenames but no document IDs (no OCR will happen):', orphanInvoices);
         }
 
         if (uploadCount > 0) {
@@ -1371,23 +1552,53 @@ export default function App() {
           ? [createHistoryItem('CREATED', `Kardus baru: ${boxId}`), createHistoryItem('STORED', `Masuk Slot #${slotId}`)]
           : [createHistoryItem('UPDATED', oldBoxId !== boxId ? `Rename: ${oldBoxId} -> ${boxId}` : `Update data ${boxId}`)];
 
+        // SANITIZE: remove any File/rawFile objects from invoices before persisting
+        const sanitizedOrdners = updatedOrdners.map(o => ({
+          noOrdner: o.noOrdner,
+          period: o.period,
+          invoices: (o.invoices || []).map(i => ({
+            id: i.id,
+            invoiceNo: i.invoiceNo || '',
+            vendor: i.vendor || '',
+            paymentDate: i.paymentDate || '',
+            taxInvoiceNo: i.taxInvoiceNo || '',
+            specialNote: i.specialNote || '',
+            file: i.file || null,
+            fileName: i.fileName || null
+          }))
+        }));
+
+        // Diagnostic: if any invoice still carries a rawFile/File-like object, log it
+        const invoicesWithRaw = updatedOrdners.flatMap(o => (o.invoices || []).filter(i => i.rawFile || (i.file && typeof i.file === 'object' && !(i.file instanceof Blob))));
+        if (invoicesWithRaw.length > 0) {
+          console.warn('[SANITIZE] Some invoices still contain rawFile/file objects before final save:', invoicesWithRaw.map(i => ({ id: i.id, fileName: i.fileName, hasRawFile: !!i.rawFile, fileIsObject: typeof i.file === 'object' })));
+        }
+
         const finalSlot = {
           ...currentSlot,
           status: (currentSlot.status || 'EMPTY').toUpperCase() === 'EMPTY' ? 'STORED' : currentSlot.status.toUpperCase(),
           lastUpdated: new Date().toISOString(),
           history: [...(currentSlot.history || []), ...newHistory],
           box_id: boxId,
-          box_data: { id: boxId, ordners: updatedOrdners }
+          box_data: { id: boxId, ordners: sanitizedOrdners },
+          boxData: { id: boxId, ordners: sanitizedOrdners }
         };
 
         await updateInventory(slotId, finalSlot);
         await fetchInventory(); // Refresh UI dengan data final (termasuk URL file)
         addLog(capturedCurrentUser?.name || 'Admin', isNew ? 'Masuk Barang' : 'Update Barang', `Kardus ${boxId} di Slot #${slotId}`);
         updateToast(mainToastId, { message: isNew ? `Box ${boxId} berhasil disimpan!` : `Box ${boxId} berhasil diperbarui!`, type: 'success' });
+        // Clear unsaved changes flag so socket-driven refetches resume normally
+        setHasUnsavedInventoryChanges(false);
 
       } catch (perr) {
         console.error("Background Save Error:", perr);
-        updateToast(mainToastId, { message: `Gagal menyimpan box ${boxId}: ${perr.message}`, type: 'error' });
+        const errorMsg = perr.message || 'Gagal menyimpan data';
+        updateToast(mainToastId, { message: `Gagal menyimpan box ${boxId}: ${errorMsg}`, type: 'error' });
+        // Also show toast so user sees error even if they're not looking at the modal
+        setTimeout(() => {
+          toast.error(`❌ Menyimpan Box ${boxId} gagal: ${errorMsg}`);
+        }, 500);
       }
     };
 
@@ -1413,6 +1624,8 @@ export default function App() {
 
       // Tutup modal agar user bisa lanjut kerja
       setIsModalOpen(false);
+      // Clear unsaved changes flag when modal closes
+      setHasUnsavedInventoryChanges(false);
 
       // Jalankan proses berat di latar belakang
       runBackgroundSave(selectedSlotId, currentSlot, { ...boxForm }, { ...currentUser });
@@ -1420,13 +1633,15 @@ export default function App() {
     } catch (err) {
       const msg = await parseApiError(err);
       toast.error("Gagal inisialisasi penyimpanan: " + msg);
+      // Clear flag even on error so future edits can proceed
+      setHasUnsavedInventoryChanges(false);
     }
   };
 
   const handleStatusChange = async (newStatus, label) => {
     if (!selectedSlotId) return;
-    const slotIndex = selectedSlotId - 1;
-    const currentSlot = inventory[slotIndex];
+    const currentSlot = inventory.find(s => Number(s.id) === Number(selectedSlotId));
+    console.log(`[handleStatusChange] Triggered for Slot ${selectedSlotId} with status ${newStatus}. Current state:`, JSON.stringify(currentSlot).slice(0, 200));
 
     const previousInventory = [...inventory];
 
@@ -1435,12 +1650,80 @@ export default function App() {
       await syncBoxFolder(currentSlot.boxData.id, newStatus);
     }
 
+    // CRITICAL VALIDATION: Ensure Box ID exists for occupied status
+    // Extract boxId from multiple possible sources
+    let boxId = currentSlot.box_id || currentSlot.boxId || null;
+
+    // Try to extract from boxData/box_data if boxId is not available
+    if (!boxId) {
+      try {
+        const boxDataCandidate = currentSlot.box_data || currentSlot.boxData || null;
+        if (typeof boxDataCandidate === 'string') {
+          const parsed = JSON.parse(boxDataCandidate);
+          if (parsed && parsed.id) boxId = parsed.id;
+        } else if (typeof boxDataCandidate === 'object' && boxDataCandidate) {
+          if (boxDataCandidate.id) boxId = boxDataCandidate.id;
+        }
+      } catch (e) {
+        console.warn('[handleStatusChange] Failed to parse box_data for Slot', selectedSlotId, e?.message || e);
+      }
+    }
+
+    // Fallback: check the current box form in modal if user typed a Box ID
+    try {
+      if (!boxId && typeof boxForm !== 'undefined' && boxForm) {
+        boxId = boxForm.boxId || boxForm.box_id || boxId;
+      }
+    } catch (e) { /* ignore */ }
+
+    // Debug logging to help trace missing Box ID issues
+    if (!boxId) {
+      console.warn('[handleStatusChange] Available sources for Box ID:', {
+        slot_box_id: currentSlot.box_id,
+        slot_boxId: currentSlot.boxId,
+        slot_box_data_preview: typeof currentSlot.box_data === 'string' ? (currentSlot.box_data || '').slice(0, 120) : currentSlot.box_data,
+        boxForm_boxId: (typeof boxForm !== 'undefined' && boxForm) ? (boxForm.boxId || boxForm.box_id) : null
+      });
+    }
+
+    if (newStatus !== 'EMPTY' && !boxId) {
+      toast.error(`Gagal: Slot ini tidak memiliki identitas Box. Silakan Reset slot ini terlebih dahulu atau import ulang.`);
+      console.error("[handleStatusChange] REJECTED - Missing Box ID for status:", newStatus, 'slot:', selectedSlotId);
+      return;
+    }
+
+    // Build payload carefully: avoid sending `box_data: null` when we
+    // don't intend to clear it — server treats null as an instruction
+    // to clear both `box_data` and `box_id` (which would reject occupied statuses).
     const updatedSlot = {
       ...currentSlot,
       status: newStatus,
+      box_id: newStatus === 'EMPTY' ? null : boxId,
+      boxId: newStatus === 'EMPTY' ? null : boxId,
       lastUpdated: new Date().toISOString(),
       history: [...(currentSlot.history || []), createHistoryItem(newStatus, `Status: ${label}`)]
     };
+
+    // Determine whether to include box_data/boxData in the payload.
+    // - If setting to EMPTY, explicitly clear box_data (send null).
+    // - If non-empty and slot already has box_data/boxData, include it.
+    // - If non-empty and no box_data present, omit the fields so server
+    //   does not interpret this as an instruction to clear box_id.
+    if (newStatus === 'EMPTY') {
+      updatedSlot.box_data = null;
+      updatedSlot.boxData = null;
+    } else {
+      // Prefer an explicitly stored string/object if available
+      if (currentSlot.box_data !== undefined && currentSlot.box_data !== null) {
+        updatedSlot.box_data = currentSlot.box_data;
+        updatedSlot.boxData = currentSlot.box_data;
+      } else if (currentSlot.boxData !== undefined && currentSlot.boxData !== null) {
+        updatedSlot.box_data = currentSlot.boxData;
+        updatedSlot.boxData = currentSlot.boxData;
+      }
+      // If neither source has box_data, leave the fields undefined to avoid
+      // the server clearing `box_id` unintentionally.
+    }
 
     try {
       await updateInventory(selectedSlotId, updatedSlot);
@@ -1456,61 +1739,92 @@ export default function App() {
 
   const handleMoveBox = async () => {
     const targetId = parseInt(moveTargetSlot);
-    if (!targetId || targetId < 1 || targetId > TOTAL_SLOTS || inventory[targetId - 1].status !== 'EMPTY') { alert("Slot tujuan tidak valid/penuh."); return; }
 
-    const sourceSlot = inventory[selectedSlotId - 1];
-    const targetSlot = inventory[targetId - 1];
+    // Use .find() to correctly lookup slots by ID instead of array index
+    const sourceSlot = inventory.find(s => Number(s.id) === Number(selectedSlotId));
+    const targetSlot = inventory.find(s => Number(s.id) === Number(targetId));
+
+    // Validation: Check source slot is not empty and target slot is empty
+    if (!sourceSlot || sourceSlot.status === 'EMPTY') {
+      alert("Slot sumber kosong. Pilih slot yang berisi barang.");
+      return;
+    }
+
+    if (!targetId || targetId < 1 || targetId > TOTAL_SLOTS || !targetSlot || targetSlot.status !== 'EMPTY') {
+      alert("Slot tujuan tidak valid/penuh.");
+      return;
+    }
 
     const previousInventory = [...inventory];
+    // Get boxId - try multiple possible property names
+    const sourceBoxId = sourceSlot.boxData?.id || sourceSlot.box_data?.id || (typeof sourceSlot.box_data === 'string' ? JSON.parse(sourceSlot.box_data).id : null) || 'Unknown';
 
     // --- SYNC FOLDER (Rename karena pindah slot) ---
-    if (sourceSlot.boxData) {
-      await syncBoxFolder(sourceSlot.boxData.id, 'MOVED');
+    if (sourceSlot.boxData?.id || (typeof sourceSlot.box_data === 'object' && sourceSlot.box_data?.id)) {
+      const boxId = sourceSlot.boxData?.id || (sourceSlot.box_data && typeof sourceSlot.box_data === 'object' ? sourceSlot.box_data.id : null);
+      if (boxId) {
+        await syncBoxFolder(boxId, 'MOVED');
+      }
     }
 
     try {
       // Optimized: Perform move on server-side to avoid sending large boxData payloads
       await moveInventory(selectedSlotId, targetId, currentUser?.name || 'Admin');
-
-      addLog(currentUser?.name || 'Admin', 'Pindah Rak', `Kardus ${sourceSlot.boxData.id} -> Slot ${targetId}`);
+      // moveInventory calls fetchInventory() which refetches inventory, no need to manually update
+      addLog(currentUser?.name || 'Admin', 'Pindah Rak', `Kardus ${sourceBoxId} -> Slot ${targetId}`);
       toast.success(`Box berhasil dipindahkan ke Slot #${targetId}`);
       setIsModalOpen(false);
     } catch (error) {
+      console.error('[handleMoveBox] Error:', error);
       setInventory(previousInventory);
-      toast.error("Gagal memindahkan box: " + error.message);
+      toast.error("❌ Gagal memindahkan box: " + error.message);
     }
   };
 
   const handleExternalTransfer = async (destination, date) => {
     if (!selectedSlotId) return;
     if (!window.confirm(`Kirim ke ${destination} pada tanggal ${date}?`)) return;
-    const currentSlot = inventory[selectedSlotId - 1];
+    const currentSlot = inventory.find(s => Number(s.id) === Number(selectedSlotId));
 
     const previousInventory = [...inventory];
     const previousExternal = [...externalItems];
-
     try {
+
       // 1. Save to External Items
       if (currentSlot.boxData) {
         await syncBoxFolder(currentSlot.boxData.id, 'EXTERNAL');
+
+        // Create the transfer history item first so it's included in Indoarsip
+        const transferNote = `Dikirim ke ${destination} (${date})`;
+        const transferHistoryItem = createHistoryItem(destination === 'Indoarsip' ? 'EXTERNAL' : 'REMOVED', transferNote);
+        const updatedHistory = [...(currentSlot.history || []), transferHistoryItem];
+
+        // Use store action to ensure state is properly synced
         await createExternalItem({
           boxId: currentSlot.boxData.id,
           destination: destination,
           sentDate: date ? new Date(date).toISOString() : new Date().toISOString(),
           sender: currentUser?.name || 'Admin',
           boxData: currentSlot.boxData,
-          history: currentSlot.history || []
+          history: updatedHistory
         });
+
+        // 2. Clear Internal Slot
+        const updatedSlot = {
+          ...currentSlot,
+          status: 'EMPTY',
+          boxData: null,
+          lastUpdated: new Date().toISOString(),
+          history: updatedHistory
+        };
+
+        // Note: updateInventory calls fetchInventory which will sync both inventory and externalItems
+        await updateInventory(selectedSlotId, updatedSlot);
+        addLog(currentUser?.name || 'Admin', 'Barang Keluar', `Kardus ke ${destination}`);
+        toast.success(`Berhasil dikirim ke ${destination}`);
+        setIsModalOpen(false);
+        setShowExternalForm(false);
       }
-
-      // 2. Clear Internal Slot
-      const updatedSlot = { ...currentSlot, status: 'EMPTY', boxData: null, lastUpdated: new Date().toISOString(), history: [...(currentSlot.history || []), createHistoryItem(destination === 'Indoarsip' ? 'EXTERNAL' : 'REMOVED', `Dikirim ke ${destination} (${date})`)] };
-
-      await updateInventory(selectedSlotId, updatedSlot);
-      addLog(currentUser?.name || 'Admin', 'Barang Keluar', `Kardus ke ${destination}`);
-      toast.success(`Berhasil dikirim ke ${destination}`);
-      setIsModalOpen(false);
-      setShowExternalForm(false);
     } catch (error) {
       setInventory(previousInventory);
       setExternalItems(previousExternal);
@@ -1518,7 +1832,43 @@ export default function App() {
     }
   };
 
+  const handleResetSlot = async (slotIdParam) => {
+    // Extraksi parameter jika dipanggil langsung dari onclick yang tidak terduga
+    const targetSlotId = (typeof slotIdParam === 'number' || typeof slotIdParam === 'string')
+      ? parseInt(slotIdParam)
+      : selectedSlotId;
+
+    if (!targetSlotId) return;
+    if (!window.confirm("Apakah Anda yakin ingin RESET slot ini? Semua data metadata akan dihapus dan status akan menjadi KOSONG. Gunakan ini hanya untuk memperbaiki data yang RUSAK.")) return;
+
+    const currentSlot = inventory[targetSlotId - 1];
+    const previousInventory = [...inventory];
+
+
+    const updatedSlot = {
+      ...currentSlot,
+      status: 'EMPTY',
+      boxData: null,
+      box_id: null,
+      box_data: null,
+      boxId: null,
+      lastUpdated: new Date().toISOString(),
+      history: [...(currentSlot.history || []), createHistoryItem('EMERGENCY_FIX', 'Reset corrupted slot to EMPTY via System Repair')]
+    };
+
+    try {
+      await updateInventory(targetSlotId, updatedSlot);
+      addLog(currentUser?.name || 'Admin', 'Reset Slot', `Slot #${targetSlotId} di-reset karena korupsi data`);
+      toast.success(`Slot #${targetSlotId} berhasil di-reset`);
+      setIsModalOpen(false);
+    } catch (error) {
+      setInventory(previousInventory);
+      toast.error("Gagal reset slot: " + error.message);
+    }
+  };
+
   const handleRestoreExternal = async () => {
+
     if (!restoreTargetSlot) { toast.error("Pilih slot tujuan!"); return; }
     const targetId = parseInt(restoreTargetSlot);
     if (isNaN(targetId) || targetId < 1 || targetId > TOTAL_SLOTS) { toast.error("Slot tidak valid!"); return; }
@@ -1539,6 +1889,7 @@ export default function App() {
       const updatedSlot = {
         ...targetSlot,
         status: 'STORED',
+        box_id: selectedExternalItem.boxId,
         boxData: { ...selectedExternalItem.boxData }, // Restore box data
         lastUpdated: new Date().toISOString(),
         history: [...(selectedExternalItem.history || []), createHistoryItem('RESTORED', `Dikembalikan dari ${selectedExternalItem.destination}`)]
@@ -1576,7 +1927,7 @@ export default function App() {
   const handleEmptySlot = async () => {
     if (selectedSlotId) {
       if (!window.confirm("Kosongkan slot? Data kardus akan dihapus.")) return;
-      const currentSlot = inventory[selectedSlotId - 1];
+      const currentSlot = inventory.find(s => Number(s.id) === Number(selectedSlotId));
 
       const previousInventory = [...inventory];
 
@@ -1725,8 +2076,9 @@ export default function App() {
 
               const invNo = findVal(['No Invoice', 'Invoice', 'No. Invoice']);
               if (invNo) {
+                // Use string-based temp invoice IDs for consistency with server/document IDs
                 groupedBySlot[sId].ordnerMap[oNo].invoices.push({
-                  id: Date.now() + Math.random(),
+                  id: `inv-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
                   invoiceNo: invNo,
                   vendor: findVal(['Vendor', 'Supplier', 'Nama Vendor']) || '-',
                   paymentDate: findVal(['Tgl Pembayaran', 'Tanggal', 'Date']) || '',
@@ -1769,19 +2121,36 @@ export default function App() {
                 status: 'IMPORTED',
                 box_id: data.boxId,
                 box_data: boxData,
+                boxId: data.boxId,     // Ensure camelCase is also set
+                boxData: boxData,     // Ensure camelCase is also set
                 lastUpdated: new Date().toISOString(),
                 history: [...(Array.isArray(currentSlot.history) ? currentSlot.history : []), createHistoryItem('IMPORTED', `Import: ${data.boxId}`)]
               };
 
-              await api.updateInventory(currentProcessingSlot, updatedSlot);
-              importedCount++;
+              console.log(`[Batch Import] Sending to Slot ${currentProcessingSlot}:`, JSON.stringify(updatedSlot));
+
+              try {
+                await api.updateInventory(currentProcessingSlot, updatedSlot);
+
+                importedCount++;
+              } catch (error) {
+                console.error(`Gagal import Slot #${currentProcessingSlot}:`, error);
+                skippedLogs.push(`Slot #${currentProcessingSlot} Gagal: ${error.message}`);
+              }
             }
             totalImported += importedCount;
+            if (skippedLogs.length > 0) {
+              console.error("[Batch Import] Errors:", skippedLogs);
+              toast.error(`Import Selesai dengan ${skippedLogs.length} error. Cek konsol browser.`);
+            } else {
+              toast.success(`Berhasil mengimport ${importedCount} box.`);
+            }
             resolve();
           } catch (error) {
             console.error(error);
             resolve();
           }
+
         };
         reader.readAsArrayBuffer(file);
       });
@@ -1813,10 +2182,17 @@ export default function App() {
     // Ambil data terbaru dari server untuk memastikan ocrContent terbaru muncul
     let fullInv = inv;
     if (inv.id) {
-      try {
-        const fetched = await api.getDocumentById(inv.id);
-        if (fetched) fullInv = { ...inv, ...fetched };
-      } catch (e) { console.warn("Gagal fetch detail invoice", e); }
+      // Skip fetching if id looks like a local temporary numeric id (timestamp)
+      const idStr = String(inv.id || '');
+      const looksLikeServerId = idStr.includes('-') || idStr.startsWith('doc') || idStr.toLowerCase().startsWith('doc');
+      if (looksLikeServerId) {
+        try {
+          const fetched = await api.getDocumentById(inv.id);
+          if (fetched) fullInv = { ...inv, ...fetched };
+        } catch (e) { /* ignore fetch errors for missing server docs */ }
+      } else {
+        // local temporary id => avoid server fetch (document likely not uploaded yet)
+      }
     }
 
     setSelectedInvoice(fullInv);
@@ -3208,9 +3584,11 @@ export default function App() {
   }
 
   if (!currentUser) return (
-    <Login
-      onLogin={handleLogin}
-    />
+    <Suspense fallback={<LoadingFallback />}>
+      <Login
+        onLogin={handleLogin}
+      />
+    </Suspense>
   );
 
   return (
@@ -3305,208 +3683,213 @@ export default function App() {
               exit={{ opacity: 0, y: -8, filter: 'blur(4px)' }}
               transition={{ duration: 0.2, ease: 'easeOut' }}
             >
-              {activeTab === 'dashboard' && (
-                <Dashboard
-                  stats={stats}
-                  docList={docList}
-                  docStats={docStats}
-                  logs={logs}
-                  TOTAL_SLOTS={TOTAL_SLOTS}
-                  Grid3x3={Grid3x3}
-                  isDarkMode={isDarkMode}
-                  handleViewDoc={handleViewDoc}
-                  handleNavigateToFolder={handleNavigateToFolder}
-                  setActiveTab={setActiveTab}
-                  setActiveInvTab={setActiveInvTab}
-                  handleDownload={handleDownload}
-                  handleDownloadInvoice={handleDownloadInvoice}
-                  ocrStats={ocrStats}
-                  taxSummaries={taxSummaries}
-                  taxAudits={taxAudits}
-                  users={users}
-                  departments={departments}
-                  externalItems={externalItems}
-                  folders={folders}
-                  currentUser={currentUser}
-                  onCopy={handleCopyToClipboard}
-                  onOpenLanding={handleOpenLanding}
-                  inventory={inventory}
-                />
-              )}
-              {activeTab === 'inventory' && (
-                <Inventory
-                  inventory={hydratedInventory}
-                  stats={stats}
-                  TOTAL_SLOTS={TOTAL_SLOTS}
-                  getStatusStyle={getStatusStyle}
-                  handleSlotClick={handleSlotClick}
-                  handleExcelImport={handleExcelImport}
-                  downloadTemplate={downloadTemplate}
-                  excelInputRef={excelInputRef}
-                  handleExportInventory={handleExportInventory}
-                  inventorySearchQuery={inventorySearchQuery}
-                  setInventorySearchQuery={setInventorySearchQuery}
-                  hasPermission={hasPermission}
-                  activeInvTab={activeInvTab}
-                  setActiveInvTab={setActiveInvTab}
-                  externalItems={externalItems}
-                  onRestoreExternal={(item) => {
-                    setSelectedExternalItem(item);
-                    setRestoreTargetSlot(''); // Reset selection
-                    setShowRestoreForm(true);
-                  }}
-                  onViewExternal={handleViewExternal}
-                  ocrStats={ocrStats}
-                  inventoryIssues={inventoryIssues}
-                />
-              )}
-              {activeTab === 'documents' && (
-                <Documents
-                  docList={docList}
-                  folders={folders}
-                  currentFolderId={currentFolderId}
-                  setCurrentFolderId={setCurrentFolderId}
-                  folderHistory={folderHistory}
-                  historyIndex={historyIndex}
-                  navigateFolder={navigateFolder}
-                  navigateBack={navigateBack}
-                  navigateForward={navigateForward}
-                  searchQuery={searchQuery}
-                  setSearchQuery={setSearchQuery}
-                  handleCreateFolder={handleCreateFolder}
-                  handleDeleteFolder={handleDeleteFolder}
-                  handleViewDoc={handleViewDoc}
-                  handleEditDoc={handleEditDoc}
-                  handleDeleteDoc={handleDeleteDoc}
-                  handleRenameDoc={handleRenameDoc}
-                  setUploadForm={setUploadForm}
-                  setModalTab={setModalTab}
-                  setIsModalOpen={setIsModalOpen}
-                  hasPermission={hasPermission}
-                  docStats={docStats}
-                  getSearchSnippet={getSearchSnippet}
-                  logs={logs}
-                  onRefresh={() => { fetchDocs(); fetchFolders(); fetchLogs(); }}
-                  users={users}
-                  departments={departments}
-                  currentUser={currentUser}
-                  handleEditFolder={handleEditFolder}
-                  handleDownload={handleDownload}
-                  ocrStats={ocrStats}
-                  syncPustakaFolder={syncPustakaFolder}
-                  handleMultipleDocUpload={handleMultipleDocUpload}
-                />
-              )}
-              {activeTab === 'tax-monitoring' && (
-                <TaxMonitoring
-                  taxAudits={taxAudits}
-                  onRefresh={(optimisticData) => {
-                    if (optimisticData) setTaxAudits(optimisticData);
-                    else { fetchTaxAudits(); fetchDocs(); fetchFolders(); fetchLogs(); }
-                  }}
-                  hasPermission={hasPermission}
-                  currentUser={currentUser}
-                  syncAuditFolder={syncAuditFolder}
-                />
-              )}
-              {activeTab === 'approvals' && (
-                <DocumentApproval
-                  approvals={approvals}
-                  users={users}
-                  departments={departments}
-                  currentUser={currentUser}
-                  onRefresh={fetchApprovals}
-                  hasPermission={hasPermission}
-                  flows={flows}
-                  syncApprovalFolder={syncApprovalFolder}
-                />
-              )}
-              {activeTab === 'tax-summary' && (
-                <TaxSummary
-                  taxSummaries={taxSummaries}
-                  hasPermission={hasPermission}
-                  setTaxForm={setTaxForm}
-                  setModalTab={setModalTab}
-                  setIsModalOpen={setIsModalOpen}
-                  config={taxConfig}
-                  saveConfig={saveTaxConfig}
-                  handleDeleteRecord={handleDeleteTaxRecord}
-                  handleRenameTaxType={handleRenameTaxType}
-                  onImport={handleTaxImport}
-                  onCopy={handleCopyToClipboard}
-                />
-              )}
-              {activeTab === 'tax-calculation' && <TaxCalculation onCopy={handleCopyToClipboard} hasPermission={hasPermission} />}
-              {activeTab === 'master' && (
-                <MasterData
-                  masterTab={masterTab}
-                  setMasterTab={setMasterTab}
-                  users={users}
-                  roles={roles}
-                  departments={departments}
-                  flows={flows} // Pass flows to MasterData
-                  userSearchQuery={userSearchQuery}
-                  setUserSearchQuery={setUserSearchQuery}
-                  handleDeleteUser={handleDeleteUser}
-                  handleCreateUser={handleCreateUser}
-                  handleEditUser={handleEditUser}
-                  handleEditRole={handleEditRole}
-                  handleDeleteRole={handleDeleteRole}
-                  handleCreateRole={handleCreateRole}
-                  handleCreateDept={handleCreateDept}
-                  handleEditDept={handleEditDept}
-                  handleDeleteDept={handleDeleteDept}
-                  handleCreateFlow={handleCreateFlow} // Pass flow handlers
-                  handleEditFlow={handleEditFlow}
-                  handleDeleteFlow={handleDeleteFlow}
-                  setIsModalOpen={setIsModalOpen}
-                  logs={logs}
-                  setModalTab={setModalTab}
-                  setRoles={setRoles}
-                  setDepartments={setDepartments}
-                  hasPermission={hasPermission}
-                />
-              )}
-              {activeTab === 'profile' && (
-                <Profile
-                  currentUser={currentUser}
-                  onUpdateProfile={handleUpdateProfile}
-                />
-              )}
-              {activeTab === 'pustaka' && (
-                <Pustaka
-                  currentUser={currentUser}
-                  hasPermission={hasPermission}
-                  users={users}
-                  departments={departments}
-                  syncPustakaFolder={syncPustakaFolder}
-                  syncSopFolder={syncSopFolder}
-                />
-              )}
-              {activeTab === 'system-logs' && (
-                <SystemLogs
-                  isDarkMode={isDarkMode}
-                />
-              )}
-              {activeTab === 'flow' && (
-                <SopFlow
-                  currentUser={currentUser}
-                  hasPermission={hasPermission}
-                  users={users}
-                  departments={departments}
-                  syncSopFolder={syncSopFolder}
-                />
-              )}
-              {activeTab === 'job-due-date' && (
-                <JobDueDate
-                  currentUser={currentUser}
-                  users={users}
-                  departments={departments}
-                  hasPermission={hasPermission}
-                  isDarkMode={isDarkMode}
-                  onCopy={handleCopyToClipboard}
-                />
-              )}
+              <Suspense fallback={<LoadingFallback />}>
+
+                {activeTab === 'dashboard' && (
+                  <Dashboard
+                    stats={stats}
+                    docList={docList}
+                    docStats={docStats}
+                    logs={logs}
+                    TOTAL_SLOTS={TOTAL_SLOTS}
+                    Grid3x3={Grid3x3}
+                    isDarkMode={isDarkMode}
+                    handleViewDoc={handleViewDoc}
+                    handleNavigateToFolder={handleNavigateToFolder}
+                    setActiveTab={setActiveTab}
+                    setActiveInvTab={setActiveInvTab}
+                    handleDownload={handleDownload}
+                    handleDownloadInvoice={handleDownloadInvoice}
+                    ocrStats={ocrStats}
+                    taxSummaries={taxSummaries}
+                    taxAudits={taxAudits}
+                    users={users}
+                    departments={departments}
+                    externalItems={externalItems}
+                    folders={folders}
+                    currentUser={currentUser}
+                    onCopy={handleCopyToClipboard}
+                    onOpenLanding={handleOpenLanding}
+                    inventory={inventory}
+                  />
+                )}
+                {activeTab === 'inventory' && (
+                  <Inventory
+                    inventory={hydratedInventory}
+                    docList={docList}
+                    stats={stats}
+                    TOTAL_SLOTS={TOTAL_SLOTS}
+                    getStatusStyle={getStatusStyle}
+                    handleSlotClick={handleSlotClick}
+                    handleExcelImport={handleExcelImport}
+                    downloadTemplate={downloadTemplate}
+                    excelInputRef={excelInputRef}
+                    handleExportInventory={handleExportInventory}
+                    inventorySearchQuery={inventorySearchQuery}
+                    setInventorySearchQuery={setInventorySearchQuery}
+                    hasPermission={hasPermission}
+                    activeInvTab={activeInvTab}
+                    setActiveInvTab={setActiveInvTab}
+                    externalItems={externalItems}
+                    onRestoreExternal={(item) => {
+                      setSelectedExternalItem(item);
+                      setRestoreTargetSlot(''); // Reset selection
+                      setShowRestoreForm(true);
+                    }}
+                    onViewExternal={handleViewExternal}
+                    ocrStats={ocrStats}
+                    inventoryIssues={inventoryIssues}
+                    handleResetSlot={handleResetSlot}
+                  />
+                )}
+                {activeTab === 'documents' && (
+                  <Documents
+                    docList={docList}
+                    folders={folders}
+                    currentFolderId={currentFolderId}
+                    setCurrentFolderId={setCurrentFolderId}
+                    folderHistory={folderHistory}
+                    historyIndex={historyIndex}
+                    navigateFolder={navigateFolder}
+                    navigateBack={navigateBack}
+                    navigateForward={navigateForward}
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                    handleCreateFolder={handleCreateFolder}
+                    handleDeleteFolder={handleDeleteFolder}
+                    handleViewDoc={handleViewDoc}
+                    handleEditDoc={handleEditDoc}
+                    handleDeleteDoc={handleDeleteDoc}
+                    handleRenameDoc={handleRenameDoc}
+                    setUploadForm={setUploadForm}
+                    setModalTab={setModalTab}
+                    setIsModalOpen={setIsModalOpen}
+                    hasPermission={hasPermission}
+                    docStats={docStats}
+                    getSearchSnippet={getSearchSnippet}
+                    logs={logs}
+                    onRefresh={() => { fetchDocs(); fetchFolders(); fetchLogs(); }}
+                    users={users}
+                    departments={departments}
+                    currentUser={currentUser}
+                    handleEditFolder={handleEditFolder}
+                    handleDownload={handleDownload}
+                    ocrStats={ocrStats}
+                    syncPustakaFolder={syncPustakaFolder}
+                    handleMultipleDocUpload={handleMultipleDocUpload}
+                  />
+                )}
+                {activeTab === 'tax-monitoring' && (
+                  <TaxMonitoring
+                    taxAudits={taxAudits}
+                    onRefresh={(optimisticData) => {
+                      if (optimisticData) setTaxAudits(optimisticData);
+                      else { fetchTaxAudits(); fetchDocs(); fetchFolders(); fetchLogs(); }
+                    }}
+                    hasPermission={hasPermission}
+                    currentUser={currentUser}
+                    syncAuditFolder={syncAuditFolder}
+                  />
+                )}
+                {activeTab === 'approvals' && (
+                  <DocumentApproval
+                    approvals={approvals}
+                    users={users}
+                    departments={departments}
+                    currentUser={currentUser}
+                    onRefresh={fetchApprovals}
+                    hasPermission={hasPermission}
+                    flows={flows}
+                    syncApprovalFolder={syncApprovalFolder}
+                  />
+                )}
+                {activeTab === 'tax-summary' && (
+                  <TaxSummary
+                    taxSummaries={taxSummaries}
+                    hasPermission={hasPermission}
+                    setTaxForm={setTaxForm}
+                    setModalTab={setModalTab}
+                    setIsModalOpen={setIsModalOpen}
+                    config={taxConfig}
+                    saveConfig={saveTaxConfig}
+                    handleDeleteRecord={handleDeleteTaxRecord}
+                    handleRenameTaxType={handleRenameTaxType}
+                    onImport={handleTaxImport}
+                    onCopy={handleCopyToClipboard}
+                  />
+                )}
+                {activeTab === 'tax-calculation' && <TaxCalculation onCopy={handleCopyToClipboard} hasPermission={hasPermission} />}
+                {activeTab === 'master' && (
+                  <MasterData
+                    masterTab={masterTab}
+                    setMasterTab={setMasterTab}
+                    users={users}
+                    roles={roles}
+                    departments={departments}
+                    flows={flows} // Pass flows to MasterData
+                    userSearchQuery={userSearchQuery}
+                    setUserSearchQuery={setUserSearchQuery}
+                    handleDeleteUser={handleDeleteUser}
+                    handleCreateUser={handleCreateUser}
+                    handleEditUser={handleEditUser}
+                    handleEditRole={handleEditRole}
+                    handleDeleteRole={handleDeleteRole}
+                    handleCreateRole={handleCreateRole}
+                    handleCreateDept={handleCreateDept}
+                    handleEditDept={handleEditDept}
+                    handleDeleteDept={handleDeleteDept}
+                    handleCreateFlow={handleCreateFlow} // Pass flow handlers
+                    handleEditFlow={handleEditFlow}
+                    handleDeleteFlow={handleDeleteFlow}
+                    setIsModalOpen={setIsModalOpen}
+                    logs={logs}
+                    setModalTab={setModalTab}
+                    setRoles={setRoles}
+                    setDepartments={setDepartments}
+                    hasPermission={hasPermission}
+                  />
+                )}
+                {activeTab === 'profile' && (
+                  <Profile
+                    currentUser={currentUser}
+                    onUpdateProfile={handleUpdateProfile}
+                  />
+                )}
+                {activeTab === 'pustaka' && (
+                  <Pustaka
+                    currentUser={currentUser}
+                    hasPermission={hasPermission}
+                    users={users}
+                    departments={departments}
+                    syncPustakaFolder={syncPustakaFolder}
+                    syncSopFolder={syncSopFolder}
+                  />
+                )}
+                {activeTab === 'system-logs' && (
+                  <SystemLogs
+                    isDarkMode={isDarkMode}
+                  />
+                )}
+                {activeTab === 'flow' && (
+                  <SopFlow
+                    currentUser={currentUser}
+                    hasPermission={hasPermission}
+                    users={users}
+                    departments={departments}
+                    syncSopFolder={syncSopFolder}
+                  />
+                )}
+                {activeTab === 'job-due-date' && (
+                  <JobDueDate
+                    currentUser={currentUser}
+                    users={users}
+                    departments={departments}
+                    hasPermission={hasPermission}
+                    isDarkMode={isDarkMode}
+                    onCopy={handleCopyToClipboard}
+                  />
+                )}
+              </Suspense>
             </motion.div>
           </AnimatePresence>
 
@@ -3673,6 +4056,7 @@ export default function App() {
         <InventoryModals
           modalTab={modalTab} setModalTab={setModalTab}
           selectedSlotId={selectedSlotId} selectedExternalItem={selectedExternalItem} inventory={inventory}
+          inventoryIssues={inventoryIssues}
           boxForm={boxForm} setBoxForm={setBoxForm} hasPermission={hasPermission}
           newOrdner={newOrdner} setNewOrdner={setNewOrdner} addOrdner={addOrdner} editOrdner={editOrdner} removeOrdner={removeOrdner}
           expandedOrdnerIds={expandedOrdnerIds} setExpandedOrdnerIds={setExpandedOrdnerIds}
@@ -3683,6 +4067,7 @@ export default function App() {
           invoiceFileInputRef={invoiceFileInputRef} handleInvoiceFileSelect={handleInvoiceFileSelect} fetchInventory={fetchInventory}
           selectedInvoice={selectedInvoice} handleDownloadInvoice={handleDownloadInvoice} isGeneratingPreview={isGeneratingPreview}
           getFullUrl={getFullUrl} pdfBlobUrl={pdfBlobUrl} previewHtml={previewHtml}
+          handleResetSlot={handleResetSlot}
         />
 
 

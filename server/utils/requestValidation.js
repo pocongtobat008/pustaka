@@ -147,6 +147,8 @@ export const createBoxSchema = z.object({
 export const updateInventoryItemSchema = z.object({
     status: z.string().optional(),
     box_data: z.union([z.string(), z.record(z.string(), z.any()), z.array(z.any()), z.null()]).optional(),
+    box_id: z.string().nullable().optional(),
+    boxId: z.string().nullable().optional(),
     history: z.union([z.string(), z.array(z.any()), z.null()]).optional(),
     lastUpdated: z.string().optional()
 }).passthrough();

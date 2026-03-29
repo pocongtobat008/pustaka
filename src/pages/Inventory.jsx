@@ -6,11 +6,11 @@ import ExternalInventoryTable from '../components/inventory/ExternalInventoryTab
 import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Inventory({
-    inventory, stats, TOTAL_SLOTS, getStatusStyle,
+    inventory, docList, stats, TOTAL_SLOTS, getStatusStyle,
     handleSlotClick, handleExcelImport, downloadTemplate, excelInputRef,
     handleExportInventory, inventorySearchQuery, setInventorySearchQuery,
     hasPermission, activeInvTab, setActiveInvTab, externalItems, isProcessing,
-    ocrStats, onRestoreExternal, onViewExternal, inventoryIssues = []
+    ocrStats, onRestoreExternal, onViewExternal, inventoryIssues = [], handleResetSlot
 }) {
     const { language } = useLanguage();
     const isEnglish = language === 'en';
@@ -94,7 +94,6 @@ export default function Inventory({
 
     const [currentPage, setCurrentPage] = React.useState(1);
     const itemsPerPage = 25;
-    const pageCount = Math.ceil(TOTAL_SLOTS / itemsPerPage);
 
     // Reset page when search query changes to avoid being on an empty page
     React.useEffect(() => {
@@ -290,11 +289,19 @@ export default function Inventory({
                                         <div className="flex gap-2 shrink-0">
                                             {issue.type === 'CORRUPT' && (
                                                 <button
+                                                    onClick={() => handleResetSlot(issue.slotId)}
+                                                    className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-[10px] font-black rounded-lg transition-all shadow-sm active:scale-95 mr-2"
+                                                >
+                                                    {text.fixSlot} #{issue.slotId}
+                                                </button>
+                                            )}
+                                            {issue.type === 'CORRUPT' && ( // Tambahkan tombol terpisah untuk memeriksa slot
+                                                <button
                                                     onClick={() => {
                                                         const slot = inventory.find(s => Number(s.id) === Number(issue.slotId));
                                                         if (slot) handleSlotClick(slot);
                                                     }}
-                                                    className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-[10px] font-black rounded-lg transition-all shadow-sm active:scale-95"
+                                                    className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black rounded-lg transition-all shadow-sm active:scale-95"
                                                 >
                                                     {text.fixSlot} #{issue.slotId}
                                                 </button>
@@ -412,12 +419,13 @@ export default function Inventory({
                     </div>
                 </div>
 
-                {/* GRID */}
+                {/* GRID ALONG WITH PAGINATION */}
                 {activeInvTab === 'internal' && (
-                    <>
+                    <div className="flex flex-col space-y-4">
                         <InventoryGrid
                             TOTAL_SLOTS={TOTAL_SLOTS}
                             inventory={inventory}
+                            docList={docList}
                             handleSlotClick={handleSlotClick}
                             getStatusStyle={getStatusStyle}
                             isMatch={isMatch}
@@ -427,42 +435,41 @@ export default function Inventory({
                             itemsPerPage={itemsPerPage}
                         />
 
-                        {/* PAGINATION CONTROLS */}
-                        {!inventorySearchQuery && (
-                            <div className="mt-8 flex items-center justify-center gap-4">
-                                <button
-                                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                                    disabled={currentPage === 1}
-                                    className="p-2.5 rounded-xl bg-white/50 dark:bg-slate-800/50 border border-white/40 dark:border-white/10 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white dark:hover:bg-slate-700 transition-all shadow-sm"
-                                >
-                                    <ChevronLeft size={20} />
-                                </button>
-
-                                <div className="flex items-center gap-2">
-                                    {Array.from({ length: pageCount }).map((_, i) => (
-                                        <button
-                                            key={i}
-                                            onClick={() => setCurrentPage(i + 1)}
-                                            className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${currentPage === i + 1
-                                                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30 scale-110'
-                                                : 'bg-white/50 dark:bg-slate-800/50 text-slate-500 hover:bg-white dark:hover:bg-slate-700 border border-white/40 dark:border-white/10'
-                                                }`}
-                                        >
-                                            {i + 1}
-                                        </button>
-                                    ))}
+                        {/* Pagination UI */}
+                        {!inventorySearchQuery && TOTAL_SLOTS > itemsPerPage && (
+                            <div className="flex justify-between items-center py-4 px-2 border-t border-slate-200 dark:border-slate-800 flex-wrap gap-4">
+                                <span className="text-sm text-slate-500 dark:text-slate-400 font-medium bg-white/50 dark:bg-slate-800/50 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                                    {text.totalSlot || "Total Slot"}: <strong className="text-indigo-600 dark:text-indigo-400">{TOTAL_SLOTS}</strong>
+                                </span>
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                        disabled={currentPage === 1}
+                                        className="p-2 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                        aria-label="Previous Page"
+                                    >
+                                        <ChevronLeft size={20} />
+                                    </button>
+                                    <div className="flex items-center gap-1.5 px-2">
+                                        <span className="text-sm font-bold text-slate-700 dark:text-slate-200">
+                                            {currentPage}
+                                        </span>
+                                        <span className="text-sm font-medium text-slate-400 dark:text-slate-500">
+                                            / {Math.ceil(TOTAL_SLOTS / itemsPerPage)}
+                                        </span>
+                                    </div>
+                                    <button
+                                        onClick={() => setCurrentPage(p => Math.min(Math.ceil(TOTAL_SLOTS / itemsPerPage), p + 1))}
+                                        disabled={currentPage >= Math.ceil(TOTAL_SLOTS / itemsPerPage)}
+                                        className="p-2 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                        aria-label="Next Page"
+                                    >
+                                        <ChevronRight size={20} />
+                                    </button>
                                 </div>
-
-                                <button
-                                    onClick={() => setCurrentPage(prev => Math.min(pageCount, prev + 1))}
-                                    disabled={currentPage === pageCount}
-                                    className="p-2.5 rounded-xl bg-white/50 dark:bg-slate-800/50 border border-white/40 dark:border-white/10 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white dark:hover:bg-slate-700 transition-all shadow-sm"
-                                >
-                                    <ChevronRight size={20} />
-                                </button>
                             </div>
                         )}
-                    </>
+                    </div>
                 )}
 
                 {/* EXTERNAL / INDOARSIP TAB CONTENT */}

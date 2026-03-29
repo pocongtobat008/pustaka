@@ -79,7 +79,7 @@ export const addOcrJob = async (docId, filename, contextStr, fileType = '', orig
             rows.forEach(r => {
                 for (let i = 1; i <= OCR_LANES; i++) {
                     const laneName = `process-ocr-lane-${i}`;
-                    if (r.name === laneName) counts[i-1] = parseInt(r.count, 10) || 0;
+                    if (r.name === laneName) counts[i - 1] = parseInt(r.count, 10) || 0;
                 }
             });
         } catch (e) {
@@ -88,7 +88,11 @@ export const addOcrJob = async (docId, filename, contextStr, fileType = '', orig
         return counts;
     }
 
-    if (USE_BULLMQ && !isHeavy) {
+    // OCR Jobs should ALWAYS go through MySQL Polling for visibility in the OCR Monitor
+    // unless explicitly non-OCR (like AI Chat).
+    const forcePolling = true;
+
+    if (USE_BULLMQ && !isHeavy && !forcePolling) {
         try {
             await ocrQueue.add(contextStr, jobData);
             logger.info(`[Queue] [${lane}] Job added to BullMQ: ${docId}`, { contextStr });

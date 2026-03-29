@@ -36,9 +36,11 @@ export const useInventoryStore = create((set, get) => ({
             const boxIdMap = {};
             data.forEach(slot => {
                 const status = (slot.status || 'EMPTY').toUpperCase();
-                const boxId = slot.boxData?.id;
+                // Use pre-mapped boxId from database service normalization
+                const boxId = slot.boxId;
 
                 if (status !== 'EMPTY' && !boxId) {
+
                     issues.push({
                         type: 'CORRUPT',
                         slotId: slot.id,

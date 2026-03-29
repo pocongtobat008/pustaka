@@ -149,7 +149,9 @@ export const uploadDocument = async (req, res) => {
                         invoiceNo: req.body.invoiceNo,
                         vendor: req.body.vendor,
                         taxInvoiceNo: req.body.taxInvoiceNo,
-                        specialNote: req.body.specialNote
+                        specialNote: req.body.specialNote,
+                        slotId: req.body.slotId, // MUST PASS FOR WORKER TO UPDATE BOX_DATA
+                        invoiceId: req.body.invoiceId
                     };
                     const contextStr = JSON.stringify(context);
                     await addOcrJob(existingDoc.id, absoluteFilePath, contextStr, finalType, title, req.file?.size || 0);
@@ -209,7 +211,9 @@ export const uploadDocument = async (req, res) => {
                     invoiceNo: req.body.invoiceNo,
                     vendor: req.body.vendor,
                     taxInvoiceNo: req.body.taxInvoiceNo,
-                    specialNote: req.body.specialNote
+                    specialNote: req.body.specialNote,
+                    slotId: req.body.slotId, // CRITICAL: Route to worker inventory sync
+                    invoiceId: req.body.invoiceId
                 };
                 const contextStr = JSON.stringify(context);
                 await addOcrJob(newDocId, absoluteFilePath, contextStr, finalType, title);
@@ -266,8 +270,16 @@ export const deleteDocument = async (req, res) => {
         // Based on schema: document_approvals has 'id', 'title', 'attachment_url' etc.
         // It seems approvals are separate entities.
 
-        // Clean up job_queue
-        await knex('job_queue').where('data', 'like', `%"docId":"${subId}"%`).del();
+        // Clean up job_queue (Cross-DB compatible for Postgres JSONB vs MySQL JSON)
+        try {
+            if (knex.client.config.client === 'pg') {
+                await knex('job_queue').whereRaw('data::text LIKE ?', [`%"docId":"${subId}"%`]).del();
+            } else {
+                await knex('job_queue').where('data', 'like', `%"docId":"${subId}"%`).del();
+            }
+        } catch (queueErr) {
+            console.warn(`[Delete Warning] job_queue cleanup skipped for ${subId}:`, queueErr.message);
+        }
 
         await knex('documents').where('id', subId).del();
 

@@ -545,6 +545,21 @@ export const db = {
 
     // --- MISSING FUNCTIONS ADDED ---
 
+    async uploadAttachmentLocal(formData) {
+        try {
+            const response = await fetch(`${API_URL}/documents`, {
+                method: 'POST',
+                credentials: 'include',
+                body: formData
+            });
+            if (!response.ok) throw new Error('Gagal unggah lampiran');
+            return await response.json();
+        } catch (e) {
+            console.error('uploadAttachmentLocal Error:', e);
+            throw e;
+        }
+    },
+
     async createDocument(doc) {
         try {
             let body = doc;
@@ -565,11 +580,14 @@ export const db = {
                 credentials: 'include',
                 body: body
             });
-            if (!response.ok) throw new Error('Gagal buat dokumen');
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP ${response.status}: ${errorText || 'Gagal buat dokumen'}`);
+            }
             return await response.json();
         } catch (e) {
-            console.error("createDocument Error:", e);
-            return null;
+            console.error("createDocument Error:", e.message || e);
+            throw e; // Re-throw so caller can handle
         }
     },
 
@@ -628,6 +646,8 @@ export const db = {
         delete payload.id;         // Primary Key tidak boleh di-update
         delete payload.lastUpdated; // Biarkan MySQL menangani timestamp otomatis
 
+        console.log(`[DB.updateInventory] Sending PUT for slot ${id}:`, JSON.stringify(payload).slice(0, 200));
+
         const response = await fetch(`${API_URL}/inventory/${id}`, {
             method: 'PUT',
             credentials: 'include',
@@ -664,7 +684,9 @@ export const db = {
 
             if (!response.ok) {
                 const errorMsg = data?.error || (text && text.length < 100 ? text : `Server Error ${response.status}`);
-                throw new Error(errorMsg);
+                const fullError = data?.details ? `${errorMsg}: ${JSON.stringify(data.details)}` : errorMsg;
+                console.error('[moveInventory] Error response:', { status: response.status, error: errorMsg, details: data?.details });
+                throw new Error(fullError);
             }
             return data;
         } catch (e) { throw e; }
@@ -672,7 +694,7 @@ export const db = {
 
     async createExternalItem(item) {
         try {
-            await fetch(`${API_URL}/inventory/external`, {
+            const response = await fetch(`${API_URL}/inventory/external`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -680,7 +702,9 @@ export const db = {
                 },
                 body: JSON.stringify(item)
             });
-        } catch (e) { console.error("Gagal buat external item", e); }
+            if (!response.ok) throw new Error('Gagal membuat external item');
+            return await response.json();
+        } catch (e) { console.error("Gagal buat external item", e); throw e; }
     },
 
     async getExternalItems() {

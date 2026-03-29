@@ -6,6 +6,103 @@ import {
     AlertCircle, Truck, LogOut, FileText, Download, User, Shield
 } from 'lucide-react';
 import PdfViewer from '../ui/PdfViewer';
+import { useState, useEffect } from 'react';
+
+function OrdnerInput({ editingItem, newOrdner, setNewOrdner, addOrdner }) {
+    const [local, setLocal] = useState({ noOrdner: '', period: '' });
+
+    useEffect(() => {
+        setLocal({ noOrdner: newOrdner.noOrdner || '', period: newOrdner.period || '' });
+    }, [newOrdner, editingItem]);
+
+    return (
+        <>
+            <div className="flex-1">
+                <label className="text-[10px] uppercase font-black text-slate-400 ml-1 mb-2 block tracking-[0.2em]">No Ordner</label>
+                <input
+                    value={local.noOrdner}
+                    onChange={e => setLocal(prev => ({ ...prev, noOrdner: e.target.value }))}
+                    onBlur={() => setNewOrdner(prev => ({ ...prev, noOrdner: local.noOrdner }))}
+                    className="w-full px-4 py-3 border-b-2 border-transparent bg-white/50 dark:bg-slate-900/50 rounded-xl focus:border-indigo-500 dark:text-white text-sm font-black transition-all outline-none"
+                    placeholder="ORD-001"
+                />
+            </div>
+            <div className="flex-1">
+                <label className="text-[10px] uppercase font-black text-slate-400 ml-1 mb-2 block tracking-[0.2em]">Periode</label>
+                <input
+                    value={local.period}
+                    onChange={e => setLocal(prev => ({ ...prev, period: e.target.value }))}
+                    onBlur={() => setNewOrdner(prev => ({ ...prev, period: local.period }))}
+                    className="w-full px-4 py-3 border-b-2 border-transparent bg-white/50 dark:bg-slate-900/50 rounded-xl focus:border-indigo-500 dark:text-white text-sm font-black transition-all outline-none"
+                    placeholder="2024"
+                />
+            </div>
+            <button
+                onClick={() => addOrdner(local)}
+                className={`w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-lg transition-all hover:scale-105 active:scale-95 ${editingItem?.type === 'ordner' ? 'bg-amber-500' : 'bg-indigo-600 hover:bg-indigo-500'}`}
+            >
+                {editingItem?.type === 'ordner' ? <Save size={20} /> : <Plus size={20} />}
+            </button>
+        </>
+    );
+}
+
+function InvoiceInput({ newInvoice, setNewInvoice, invoiceFileInputRef, handleInvoiceFileSelect, addInvoice, ord, editingItem }) {
+    const [local, setLocal] = useState({
+        invoiceNo: '', vendor: '', paymentDate: '', taxInvoiceNo: '', specialNote: '', file: null, fileName: '', rawFile: null, isProcessing: false
+    });
+
+    useEffect(() => {
+        // Only apply incoming values when they are meaningful (non-empty strings
+        // or defined non-null values). This prevents file attach updates (which
+        // may set parent `newInvoice` fields to empty strings) from wiping
+        // user-typed local input.
+        setLocal(prev => {
+            const pickString = (key) => {
+                const v = newInvoice[key];
+                if (typeof v === 'string') return v.trim().length > 0 ? v : prev[key];
+                return (v !== undefined && v !== null) ? v : prev[key];
+            };
+
+            return {
+                invoiceNo: pickString('invoiceNo'),
+                vendor: pickString('vendor'),
+                paymentDate: pickString('paymentDate'),
+                taxInvoiceNo: pickString('taxInvoiceNo'),
+                specialNote: pickString('specialNote'),
+                file: newInvoice.file ?? prev.file,
+                rawFile: newInvoice.rawFile ?? prev.rawFile,
+                fileName: (typeof newInvoice.fileName === 'string' && newInvoice.fileName.trim().length > 0) ? newInvoice.fileName : prev.fileName,
+                isProcessing: (newInvoice.isProcessing !== undefined && newInvoice.isProcessing !== null) ? newInvoice.isProcessing : prev.isProcessing
+            };
+        });
+    }, [newInvoice, editingItem]);
+
+    return (
+        <div className="flex flex-col gap-3 bg-white/50 dark:bg-slate-900/50 p-4 rounded-2xl border border-white/50 dark:border-white/5 w-full">
+            <div className="flex gap-3 items-center">
+                <input placeholder="NO INVOICE" value={local.invoiceNo} onChange={e => setLocal(prev => ({ ...prev, invoiceNo: e.target.value }))} className="flex-1 min-w-[100px] px-3 py-2 text-[10px] border-b border-slate-200 dark:border-slate-800 bg-transparent dark:text-white font-black uppercase tracking-wider focus:ring-0" title="Nomor Invoice" />
+                <input placeholder="VENDOR" value={local.vendor} onChange={e => setLocal(prev => ({ ...prev, vendor: e.target.value }))} className="flex-1 min-w-[100px] px-3 py-2 text-[10px] border-b border-slate-200 dark:border-slate-800 bg-transparent dark:text-white font-black uppercase tracking-wider focus:ring-0" title="Nama Vendor" />
+                <input placeholder="NO FAKTUR" value={local.taxInvoiceNo} onChange={e => setLocal(prev => ({ ...prev, taxInvoiceNo: e.target.value }))} className="flex-1 min-w-[100px] px-3 py-2 text-[10px] border-b border-indigo-500/20 bg-transparent dark:text-white font-black uppercase tracking-wider focus:ring-0" title="Nomor Faktur Pajak" />
+                <input type="date" value={local.paymentDate} onChange={e => setLocal(prev => ({ ...prev, paymentDate: e.target.value }))} className="w-28 px-3 py-2 text-[10px] border-b border-slate-200 dark:border-slate-800 bg-transparent dark:text-white font-black focus:ring-0" title="Tanggal Pembayaran" />
+            </div>
+            <div className="flex gap-3 items-center">
+                <input placeholder="KETERANGAN KUSUS (OPSIONAL)..." value={local.specialNote} onChange={e => setLocal(prev => ({ ...prev, specialNote: e.target.value }))} className="flex-1 px-3 py-2 text-[10px] border-b border-amber-500/20 bg-transparent dark:text-white font-bold uppercase tracking-wider focus:ring-0" title="Keterangan Kusus" />
+
+                <div className="relative">
+                    <input type="file" ref={invoiceFileInputRef} className="hidden" onChange={(e) => { handleInvoiceFileSelect(e); setLocal(prev => ({ ...prev, file: e.target.files[0], rawFile: e.target.files[0], fileName: e.target.files[0]?.name })); }} accept="image/*,.pdf,.docx,.doc,.xlsx,.xls,.pptx" />
+                    <button onClick={() => invoiceFileInputRef.current.click()} className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${local.file ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`} title={local.fileName || "Lampirkan File (OCR Auto)"}>
+                        {local.isProcessing ? <div className="w-3 h-3 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" /> : <Paperclip size={14} />}
+                    </button>
+                </div>
+
+                <button onClick={() => { addInvoice(ord.id, local); setLocal({ invoiceNo: '', vendor: '', paymentDate: '', taxInvoiceNo: '', specialNote: '', file: null, fileName: '', rawFile: null, isProcessing: false }); }} className={`w-8 h-8 rounded-lg flex items-center justify-center text-white transition-all hover:scale-105 active:scale-95 ${editingItem?.type === 'invoice' ? 'bg-amber-500' : 'bg-indigo-600'}`}>
+                    {editingItem?.type === 'invoice' ? <Save size={14} /> : <Plus size={14} />}
+                </button>
+            </div>
+        </div>
+    );
+}
 
 export default function InventoryModals({
     modalTab, setModalTab,
@@ -19,7 +116,8 @@ export default function InventoryModals({
     handleStatusChange, setShowExternalForm, setExternalDate, handleEmptySlot,
     invoiceFileInputRef, handleInvoiceFileSelect, fetchInventory,
     selectedInvoice, handleDownloadInvoice, isGeneratingPreview,
-    getFullUrl, pdfBlobUrl, previewHtml
+    getFullUrl, pdfBlobUrl, previewHtml,
+    handleResetSlot, inventoryIssues = []
 }) {
     if (!['details', 'history', 'invoice-detail'].includes(modalTab)) return null;
 
@@ -43,7 +141,7 @@ export default function InventoryModals({
                         <input
                             type="text"
                             value={boxForm.boxId}
-                            onChange={(e) => setBoxForm({ ...boxForm, boxId: e.target.value })}
+                            onChange={(e) => setBoxForm(prev => ({ ...prev, boxId: e.target.value }))}
                             className="text-base font-black text-slate-900 dark:text-white bg-transparent border-0 focus:ring-0 w-full placeholder:text-slate-300 focus:outline-none transition-all p-1"
                             placeholder="KETIK NAMA KARDUS..."
                         />
@@ -72,30 +170,14 @@ export default function InventoryModals({
                     {/* Input Area - Integrated Row */}
                     {hasPermission('inventory', 'edit') && (
                         <div className="flex gap-4 items-end bg-indigo-500/5 dark:bg-indigo-500/10 p-6 rounded-3xl border border-indigo-500/10 group/input transition-all hover:bg-indigo-500/[0.08]">
-                            <div className="flex-1">
-                                <label className="text-[10px] uppercase font-black text-slate-400 ml-1 mb-2 block tracking-[0.2em]">No Ordner</label>
-                                <input
-                                    value={newOrdner.noOrdner}
-                                    onChange={e => setNewOrdner({ ...newOrdner, noOrdner: e.target.value })}
-                                    className="w-full px-4 py-3 border-b-2 border-transparent bg-white/50 dark:bg-slate-900/50 rounded-xl focus:border-indigo-500 dark:text-white text-sm font-black transition-all outline-none"
-                                    placeholder="ORD-001"
-                                />
-                            </div>
-                            <div className="flex-1">
-                                <label className="text-[10px] uppercase font-black text-slate-400 ml-1 mb-2 block tracking-[0.2em]">Periode</label>
-                                <input
-                                    value={newOrdner.period}
-                                    onChange={e => setNewOrdner({ ...newOrdner, period: e.target.value })}
-                                    className="w-full px-4 py-3 border-b-2 border-transparent bg-white/50 dark:bg-slate-900/50 rounded-xl focus:border-indigo-500 dark:text-white text-sm font-black transition-all outline-none"
-                                    placeholder="2024"
-                                />
-                            </div>
-                            <button
-                                onClick={addOrdner}
-                                className={`w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-lg transition-all hover:scale-105 active:scale-95 ${editingItem?.type === 'ordner' ? 'bg-amber-500' : 'bg-indigo-600 hover:bg-indigo-500'}`}
-                            >
-                                {editingItem?.type === 'ordner' ? <Save size={20} /> : <Plus size={20} />}
-                            </button>
+                            <OrdnerInput
+                                hasPermission={hasPermission}
+                                editingItem={editingItem}
+                                newOrdner={newOrdner}
+                                setNewOrdner={setNewOrdner}
+                                addOrdner={addOrdner}
+                                editOrdner={editOrdner}
+                            />
                         </div>
                     )
                     }
@@ -107,8 +189,8 @@ export default function InventoryModals({
                                 <p className="font-black text-sm tracking-widest uppercase opacity-40">Kardus Kosong</p>
                             </div>
                         )}
-                        {(boxForm.ordners || []).map(ord => (
-                            <div key={ord.id} className={`group transition-all duration-300 rounded-3xl border ${expandedOrdnerIds.includes(ord.id) ? 'bg-indigo-500/10 border-indigo-500/30 shadow-lg shadow-indigo-500/5' : 'bg-white/40 dark:bg-slate-800/40 border-white/50 dark:border-white/5 hover:bg-white/60 dark:hover:bg-slate-800/60'}`}>
+                        {(boxForm.ordners || []).map((ord, ordIdx) => (
+                            <div key={ord.id || `ordner-${ordIdx}`} className={`group transition-all duration-300 rounded-3xl border ${expandedOrdnerIds.includes(ord.id) ? 'bg-indigo-500/10 border-indigo-500/30 shadow-lg shadow-indigo-500/5' : 'bg-white/40 dark:bg-slate-800/40 border-white/50 dark:border-white/5 hover:bg-white/60 dark:hover:bg-slate-800/60'}`}>
                                 <div className="flex justify-between items-center p-4 cursor-pointer" onClick={() => setExpandedOrdnerIds(prev => prev.includes(ord.id) ? prev.filter(id => id !== ord.id) : [...prev, ord.id])}>
                                     <div className="flex items-center gap-4">
                                         <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all ${expandedOrdnerIds.includes(ord.id) ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/40'}`}>
@@ -139,29 +221,15 @@ export default function InventoryModals({
                                     expandedOrdnerIds.includes(ord.id) && (
                                         <div className="px-4 pb-4 space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
                                             {hasPermission('inventory', 'edit') && (
-                                                <div className="flex flex-col gap-3 bg-white/50 dark:bg-slate-900/50 p-4 rounded-2xl border border-white/50 dark:border-white/5 w-full">
-                                                    <div className="flex gap-3 items-center">
-                                                        <input placeholder="NO INVOICE" value={newInvoice.invoiceNo} onChange={e => setNewInvoice({ ...newInvoice, invoiceNo: e.target.value })} className="flex-1 min-w-[100px] px-3 py-2 text-[10px] border-b border-slate-200 dark:border-slate-800 bg-transparent dark:text-white font-black uppercase tracking-wider focus:ring-0" title="Nomor Invoice" />
-                                                        <input placeholder="VENDOR" value={newInvoice.vendor} onChange={e => setNewInvoice({ ...newInvoice, vendor: e.target.value })} className="flex-1 min-w-[100px] px-3 py-2 text-[10px] border-b border-slate-200 dark:border-slate-800 bg-transparent dark:text-white font-black uppercase tracking-wider focus:ring-0" title="Nama Vendor" />
-                                                        <input placeholder="NO FAKTUR" value={newInvoice.taxInvoiceNo} onChange={e => setNewInvoice({ ...newInvoice, taxInvoiceNo: e.target.value })} className="flex-1 min-w-[100px] px-3 py-2 text-[10px] border-b border-indigo-500/20 bg-transparent dark:text-white font-black uppercase tracking-wider focus:ring-0" title="Nomor Faktur Pajak" />
-                                                        <input type="date" value={newInvoice.paymentDate} onChange={e => setNewInvoice({ ...newInvoice, paymentDate: e.target.value })} className="w-28 px-3 py-2 text-[10px] border-b border-slate-200 dark:border-slate-800 bg-transparent dark:text-white font-black focus:ring-0" title="Tanggal Pembayaran" />
-                                                    </div>
-                                                    <div className="flex gap-3 items-center">
-                                                        <input placeholder="KETERANGAN KUSUS (OPSIONAL)..." value={newInvoice.specialNote} onChange={e => setNewInvoice({ ...newInvoice, specialNote: e.target.value })} className="flex-1 px-3 py-2 text-[10px] border-b border-amber-500/20 bg-transparent dark:text-white font-bold uppercase tracking-wider focus:ring-0" title="Keterangan Kusus" />
-
-                                                        {/* Attachment Button */}
-                                                        <div className="relative">
-                                                            <input type="file" ref={invoiceFileInputRef} className="hidden" onChange={handleInvoiceFileSelect} accept="image/*,.pdf,.docx,.doc,.xlsx,.xls,.pptx" />
-                                                            <button onClick={() => invoiceFileInputRef.current.click()} className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${newInvoice.file ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`} title={newInvoice.fileName || "Lampirkan File (OCR Auto)"}>
-                                                                {newInvoice.isProcessing ? <div className="w-3 h-3 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" /> : <Paperclip size={14} />}
-                                                            </button>
-                                                        </div>
-
-                                                        <button onClick={() => addInvoice(ord.id)} className={`w-8 h-8 rounded-lg flex items-center justify-center text-white transition-all hover:scale-105 active:scale-95 ${editingItem?.type === 'invoice' ? 'bg-amber-500' : 'bg-indigo-600'}`}>
-                                                            {editingItem?.type === 'invoice' ? <Save size={14} /> : <Plus size={14} />}
-                                                        </button>
-                                                    </div>
-                                                </div>
+                                                <InvoiceInput
+                                                    newInvoice={newInvoice}
+                                                    setNewInvoice={setNewInvoice}
+                                                    invoiceFileInputRef={invoiceFileInputRef}
+                                                    handleInvoiceFileSelect={handleInvoiceFileSelect}
+                                                    addInvoice={addInvoice}
+                                                    ord={ord}
+                                                    editingItem={editingItem}
+                                                />
                                             )
                                             }
 
@@ -190,7 +258,9 @@ export default function InventoryModals({
                                                                     {inv.fileName && (
                                                                         <div className="flex items-center gap-1 text-[9px] text-slate-400 mt-1">
                                                                             <Paperclip size={10} /> {String(inv.fileName)}
-                                                                            {inv.status === 'done' ? (
+                                                                            {inv.status === 'uploading' ? (
+                                                                                <span className="text-indigo-500 font-bold text-[8px] border border-indigo-200 dark:border-indigo-800 px-1 rounded ml-1 animate-pulse">UPLOADING...</span>
+                                                                            ) : inv.status === 'done' ? (
                                                                                 <span className="text-emerald-500 font-bold text-[8px] border border-emerald-200 dark:border-emerald-800 px-1 rounded ml-1">OCR READY</span>
                                                                             ) : (
                                                                                 <span className="text-amber-500 font-bold text-[8px] border border-amber-200 dark:border-amber-800 px-1 rounded ml-1 animate-pulse">PROSES OCR...</span>
@@ -200,7 +270,7 @@ export default function InventoryModals({
                                                                 </div>
                                                             </div>
                                                             <div className="flex gap-1 opacity-0 group-hover/inv:opacity-100 transition-all">
-                                                                <button onClick={() => handleViewInvoice(inv)} className="p-1.5 text-slate-400 hover:text-indigo-600 transition-colors" title="Lihat Detail"><Eye size={12} /></button>
+                                                                <button onClick={() => inv.status !== 'uploading' && handleViewInvoice(inv)} className={`p-1.5 text-slate-400 transition-colors ${inv.status === 'uploading' ? 'opacity-40 cursor-not-allowed' : 'hover:text-indigo-600'}`} title="Lihat Detail"><Eye size={12} /></button>
                                                                 {hasPermission('inventory', 'edit') && (
                                                                     <button onClick={() => editInvoice(inv, ord.id)} className="p-1.5 text-slate-400 hover:text-blue-600 transition-colors"><Edit3 size={12} /></button>
                                                                 )}
@@ -303,10 +373,21 @@ export default function InventoryModals({
                                                 <LogOut size={24} className="group-hover:scale-110 transition-transform" /> KOSONGKAN
                                             </button>
                                         )}
+
+                                        {/* EMERGENCY RESET BUTTON FOR CORRUPTED/DUPLICATE SLOTS */}
+                                        {selectedSlotId && hasPermission('inventory', 'delete') && inventoryIssues.some(issue => (Number(issue.slotId) === Number(selectedSlotId) || (issue.slots && issue.slots.includes(Number(selectedSlotId)))) && (issue.type === 'CORRUPT' || issue.type === 'DUPLICATE')) && (
+                                            <button
+                                                onClick={() => handleResetSlot(selectedSlotId)}
+                                                className="col-span-2 p-5 border-4 border-red-600 bg-red-600 text-white rounded-3xl text-sm font-black flex items-center justify-center gap-3 transition-all transform active:scale-95 group shadow-2xl animate-pulse"
+                                            >
+                                                <Shield size={24} className="group-hover:rotate-12 transition-transform" /> PERBAIKI DATA (RESET SLOT)
+                                            </button>
+                                        )}
                                     </div>
                                 </div >
                             )
                         }
+
                     </div >
                 </div >
             )}
@@ -333,7 +414,7 @@ export default function InventoryModals({
                                             </span>
                                             <div className="w-1 h-1 rounded-full bg-white/40"></div>
                                             <span className="text-[10px] font-bold text-indigo-100">
-                                                Update: {new Date((selectedSlotId ? (inventory.find(s => s.id == selectedSlotId) || inventory[selectedSlotId - 1])?.lastUpdated : selectedExternalItem?.sentDate) || Date.now()).toLocaleDateString()}
+                                                Update: {new Date((selectedSlotId ? (inventory.find(s => s.id == selectedSlotId))?.lastUpdated : selectedExternalItem?.sentDate) || Date.now()).toLocaleDateString()}
                                             </span>
                                         </div>
                                     </div>
@@ -346,7 +427,7 @@ export default function InventoryModals({
                             <div className="absolute left-[39px] top-4 bottom-4 w-1 bg-slate-100 dark:bg-slate-800 rounded-full"></div>
 
                             {(() => {
-                                const history = (selectedSlotId ? (inventory.find(s => s.id == selectedSlotId) || inventory[selectedSlotId - 1])?.history : selectedExternalItem?.history) || [];
+                                const history = (selectedSlotId ? (inventory.find(s => s.id == selectedSlotId))?.history : selectedExternalItem?.history) || [];
                                 if (history.length === 0) {
                                     return (
                                         <div className="text-center py-20 text-slate-400 italic">
@@ -357,6 +438,13 @@ export default function InventoryModals({
                                 }
 
                                 return history.slice().reverse().map((hist, idx) => {
+                                    // Ensure all history fields exist with defaults
+                                    const histItem = {
+                                        action: hist.action || 'UNKNOWN',
+                                        note: hist.note || '',
+                                        timestamp: hist.timestamp || new Date().toISOString(),
+                                        user: hist.user || 'System'
+                                    };
                                     const getActionConfig = (action) => {
                                         const a = action?.toUpperCase();
                                         if (a === 'CREATED' || a === 'IMPORTED') return { icon: Plus, color: 'bg-emerald-500', text: 'text-emerald-600', bg: 'bg-emerald-50' };
@@ -369,7 +457,7 @@ export default function InventoryModals({
                                         return { icon: History, color: 'bg-slate-500', text: 'text-slate-600', bg: 'bg-slate-50' };
                                     };
 
-                                    const config = getActionConfig(hist.action);
+                                    const config = getActionConfig(histItem.action);
                                     const Icon = config.icon;
 
                                     return (
@@ -384,18 +472,18 @@ export default function InventoryModals({
                                                 <div className="flex justify-between items-start mb-3">
                                                     <div>
                                                         <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-lg ${config.bg} ${config.text}`}>
-                                                            {hist.action}
+                                                            {histItem.action}
                                                         </span>
                                                         <h4 className="mt-2 font-bold text-slate-800 dark:text-white text-sm leading-tight">
-                                                            {hist.note}
+                                                            {histItem.note}
                                                         </h4>
                                                     </div>
                                                     <div className="text-right">
                                                         <div className="flex items-center justify-end gap-1.5 text-[10px] font-black text-slate-400">
-                                                            <Clock size={10} /> {new Date(hist.timestamp).toLocaleDateString()}
+                                                            <Clock size={10} /> {new Date(histItem.timestamp).toLocaleDateString()}
                                                         </div>
                                                         <div className="text-[9px] font-bold text-slate-300 mt-0.5">
-                                                            {new Date(hist.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                            {new Date(histItem.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -403,9 +491,9 @@ export default function InventoryModals({
                                                 <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-50 dark:border-white/5">
                                                     <div className="flex items-center gap-2">
                                                         <div className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-[10px] font-black text-slate-500">
-                                                            {hist.user?.charAt(0).toUpperCase()}
+                                                            {histItem.user?.charAt(0).toUpperCase()}
                                                         </div>
-                                                        <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400">Oleh: <span className="text-indigo-500">{hist.user}</span></span>
+                                                        <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400">Oleh: <span className="text-indigo-500">{histItem.user}</span></span>
                                                     </div>
                                                     <div className="text-[10px] font-black text-slate-300 uppercase tracking-tighter">Verified Trail</div>
                                                 </div>
@@ -467,7 +555,7 @@ export default function InventoryModals({
                                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 block">Keterangan Kusus</span>
                                 <div className="p-4 bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/30 rounded-2xl">
                                     <p className="text-sm font-medium text-amber-900 dark:text-amber-200 leading-relaxed italic">
-                                        "{selectedInvoice.specialNote || 'Tidak ada keterangan kusus.'}"
+                                        {selectedInvoice.specialNote || 'Tidak ada keterangan kusus.'}
                                     </p>
                                 </div>
                             </div>
