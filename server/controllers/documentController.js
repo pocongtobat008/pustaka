@@ -567,8 +567,13 @@ export const addComment = async (req, res) => {
         const { id } = req.params;
         const { user, text, attachment } = req.body;
 
+        console.log('[addComment] req.params.id:', id);
+        console.log('[addComment] req.body:', { user, text, attachment });
+        console.log('[addComment] req.file:', req.file ? req.file.filename : 'no file');
+
+        const now = new Date();
         const newComment = {
-            id: `cmt-${Date.now()}`,
+            id: `cmt-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
             documentId: id,
             user: user || 'System',
             text: text || '',
@@ -577,22 +582,43 @@ export const addComment = async (req, res) => {
         };
 
         if (req.file) {
+            const originalName = req.file.originalname;
+            const truncatedName = originalName.length > 50 ? originalName.substring(0, 47) + '...' : originalName;
             newComment.attachment = JSON.stringify({
-                name: req.file.originalname,
-                url: `/uploads/${req.file.filename}`,
+                name: truncatedName,
+                filename: req.file.filename,
                 type: req.file.mimetype,
                 size: (req.file.size / 1024 / 1024).toFixed(2) + ' MB'
             });
         }
 
-        await knex('comments').insert(newComment);
+        console.log('[addComment] newComment:', newComment);
+
+        const insertData = {
+            id: newComment.id,
+            documentId: newComment.documentId,
+            user: newComment.user,
+            text: newComment.text,
+            timestamp: newComment.timestamp
+        };
+        if (newComment.attachment !== null) {
+            insertData.attachment = newComment.attachment;
+        }
+
+        try {
+            await knex('comments').insert(insertData);
+            console.log('[addComment] insert successful');
+        } catch (insertErr) {
+            console.error('[addComment] insert failed:', insertErr);
+            throw insertErr;
+        }
 
         // Return flattened version for immediate frontend update
         let responseComment = { ...newComment };
         if (newComment.attachment) {
             const att = parseJsonObjectSafe(newComment.attachment, null);
             if (att) {
-                responseComment.attachmentUrl = att.url;
+                responseComment.attachmentUrl = att.filename ? `/uploads/${att.filename}` : att.url;
                 responseComment.attachmentName = att.name;
                 responseComment.attachmentType = att.type;
                 responseComment.attachmentSize = att.size;
@@ -618,7 +644,7 @@ export const promoteCommentAttachment = async (req, res) => {
         }
 
         const attachment = parseJsonObjectSafe(comment.attachment, null);
-        if (!attachment?.url) {
+        if (!attachment?.filename && !attachment?.url) {
             return res.status(400).json({ error: "Comment attachment invalid" });
         }
         const doc = await knex('documents').where('id', docId).first();
@@ -654,7 +680,7 @@ export const promoteCommentAttachment = async (req, res) => {
         });
 
         // PROMOTE ATTACHMENT TO CURRENT VERSION
-        const newUrl = attachment.url;
+        const newUrl = attachment.filename ? `/uploads/${attachment.filename}` : attachment.url;
         const absoluteFilePath = path.join(UPLOADS_DIR, path.basename(newUrl));
         const finalType = attachment.type || 'application/octet-stream';
         const finalSize = attachment.size || '-';

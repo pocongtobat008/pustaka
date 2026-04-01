@@ -1,0 +1,15 @@
+                                Table "public.comments"
+     Column      |           Type           | Collation | Nullable |      Default      
+-----------------+--------------------------+-----------+----------+-------------------
+ id              | character varying(50)    |           | not null | 
+ documentId      | character varying(255)   |           |          | 
+ user            | character varying(255)   |           |          | 
+ text            | text                     |           |          | 
+ timestamp       | timestamp with time zone |           |          | CURRENT_TIMESTAMP
+ attachment      | character varying(255)   |           |          | 
+ attachment_name | character varying(255)   |           |          | 
+ attachment_type | character varying(255)   |           |          | 
+Indexes:
+    "comments_pkey" PRIMARY KEY, btree (id)
+    "idx_comm_doc" btree ("documentId")
+
