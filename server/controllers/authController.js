@@ -55,7 +55,7 @@ export const login = async (req, res) => {
             });
 
             const { password: _, ...userWithoutPass } = user;
-            // userWithoutPass.token = token; // Token is now exclusively managed via HttpOnly cookie
+            userWithoutPass.token = token; // Keep for internal context if needed, but not for manual header storage
 
             await systemLog(user.username, "Login", "User logged in with HttpOnly cookie");
             res.json(userWithoutPass);
