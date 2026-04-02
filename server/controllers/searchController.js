@@ -119,9 +119,32 @@ export const semanticSearch = async (req, res) => {
             console.warn('Synchronous semantic search failed, falling back to queued job:', syncErr.message);
         }
 
-        // Fallback: enqueue job and return job id (async path)
-        const job = await addAiSemanticSearchJob(query);
-        res.json({ jobId: job.id, status: 'processing', message: 'AI is analyzing your query...' });
+        // Fallback: return fast keyword-only results immediately, and enqueue semantic job in background
+        try {
+            const [kwDocs, kwInvoices, kwTaxObjects, kwExternal, kwInventory] = await Promise.all([
+                knex('documents').where('title', 'like', `%${query}%`).orWhere('ocrContent', 'like', `%${query}%`).limit(50),
+                knex('invoices').where('invoice_no', 'like', `%${query}%`).orWhere('tax_invoice_no', 'like', `%${query}%`).orWhere('vendor', 'like', `%${query}%`).limit(50),
+                knex('tax_objects').where('name', 'like', `%${query}%`).orWhere('identity_number', 'like', `%${query}%`).limit(50),
+                knex('external_items').where('boxId', 'like', `%${query}%`).orWhere('destination', 'like', `%${query}%`).limit(50),
+                knex('inventory').where('box_data', 'like', `%${query}%`).limit(50)
+            ]);
+
+            const results = [];
+            for (const d of kwDocs) results.push({ id: d.id, title: d.title, name: d.title, preview: (d.ocrContent || '').substring(0, 600), matchType: 'document' });
+            for (const inv of kwInvoices) results.push({ id: inv.id, title: `${inv.vendor || ''} ${inv.invoice_no || ''}`.trim(), name: `${inv.vendor || ''} ${inv.invoice_no || ''}`.trim(), preview: (inv.ocr_content || inv.ocrContent || '').substring(0, 600), matchType: 'invoice' });
+            for (const t of kwTaxObjects) results.push({ id: t.id, title: t.name, name: t.name, preview: '', matchType: 'tax_object' });
+            for (const e of kwExternal) results.push({ id: e.id, title: e.boxId || e.destination, name: e.boxId || e.destination, preview: '', matchType: 'external_item' });
+            for (const inv of kwInventory) results.push({ id: inv.id, title: `inventory-${inv.id}`, name: `inventory-${inv.id}`, preview: (inv.box_data || '').substring(0, 600), matchType: 'inventory' });
+
+            // Enqueue semantic job in background to produce richer results later
+            addAiSemanticSearchJob(query).catch(() => { /* ignore enqueue errors */ });
+
+            return res.json({ results });
+        } catch (fastErr) {
+            console.warn('Keyword fallback search failed:', fastErr.message);
+            const job = await addAiSemanticSearchJob(query);
+            return res.json({ jobId: job.id, status: 'processing', message: 'AI is analyzing your query...' });
+        }
 
     } catch (err) {
         console.error("Hybrid Search Error:", err);
