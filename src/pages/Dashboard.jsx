@@ -214,15 +214,45 @@ export default function Dashboard({
 
             if (res.ok) {
                 const data = await res.json();
+
+                const normalize = (item) => ({
+                    ...item,
+                    title: item.title || item.name || item.filename || item.file_name || 'Untitled',
+                    uploadDate: item.uploadDate || item.date || item.payment_date || null,
+                    size: item.amount ? `Rp ${parseInt(item.amount).toLocaleString('id-ID')}` : (item.size || item.category || item.file_size || 'Document'),
+                    folderName: item.folderName || (item.matchType === 'invoice' ? 'Finance' : 'General'),
+                    ocrContent: item.preview || item.ocrContent || item.ocr_content || item.snippet || ''
+                });
+
                 if (data.results) {
-                    const mapped = data.results.map(item => ({
-                        ...item,
-                        title: item.name,
-                        uploadDate: item.date,
-                        size: item.amount ? `Rp ${parseInt(item.amount).toLocaleString('id-ID')}` : (item.size || 'Document'),
-                        folderName: item.matchType === 'invoice' ? 'Finance' : 'General',
-                    }));
-                    setSearchResults(mapped);
+                    setSearchResults(data.results.map(normalize));
+                    return;
+                }
+
+                // If backend returned a jobId (async path), poll job status until completed
+                if (data.jobId) {
+                    const jobId = data.jobId;
+                    const start = Date.now();
+                    const timeoutMs = 30000; // 30s max
+                    while (Date.now() - start < timeoutMs) {
+                        await new Promise(r => setTimeout(r, 700));
+                        try {
+                            const jr = await fetch(`${API_URL}/search/job/${jobId}`, { credentials: 'include' });
+                            if (!jr.ok) continue;
+                            const jdata = await jr.json();
+                            if (jdata.status === 'COMPLETED' || jdata.status === 'completed') {
+                                const results = (jdata.result && (jdata.result.results || jdata.result)) || [];
+                                setSearchResults(Array.isArray(results) ? results.map(normalize) : []);
+                                return;
+                            }
+                            if (jdata.status === 'FAILED' || jdata.status === 'failed') break;
+                        } catch (pe) {
+                            // ignore transient poll errors
+                        }
+                    }
+                    // timed out or failed — clear results (no-op)
+                    setSearchResults([]);
+                    return;
                 }
             } else {
                 const errorText = await res.text();
