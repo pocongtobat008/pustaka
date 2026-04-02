@@ -691,6 +691,106 @@ async function startWorkerSystem() {
             console.log(`${tag} 🧠 Memulai Vector Store (lazy=true)...`);
             await vectorStore.initialize({ lazy: true });
             console.log(`${tag} ✅ Vector Store initialized in background.`);
+
+            // --- Custom: Indexing all relevant fields for semantic search ---
+            console.log(`${tag} 🔍 Indexing all documents, invoices, tax_objects, external_items, inventory for semantic search...`);
+            // Documents
+            const docs = await knex('documents').select('id', 'title', 'ocrContent');
+            for (const d of docs) {
+                if (d.title) {
+                    const v = await generateEmbedding(d.title);
+                    vectorStore.upsertDocument({ ...d, matchType: 'document-title' }, v);
+                }
+                if (d.ocrContent) {
+                    const v = await generateEmbedding(d.ocrContent);
+                    vectorStore.upsertDocument({ ...d, matchType: 'document-content' }, v);
+                }
+            }
+            // Invoices
+            const invoices = await knex('invoices').select('id', 'vendor', 'invoice_no', 'tax_invoice_no', 'ocrContent');
+            for (const inv of invoices) {
+                if (inv.vendor) {
+                    const v = await generateEmbedding(inv.vendor);
+                    vectorStore.upsertDocument({ ...inv, matchType: 'invoice-vendor' }, v);
+                }
+                if (inv.invoice_no) {
+                    const v = await generateEmbedding(inv.invoice_no);
+                    vectorStore.upsertDocument({ ...inv, matchType: 'invoice-no' }, v);
+                }
+                if (inv.tax_invoice_no) {
+                    const v = await generateEmbedding(inv.tax_invoice_no);
+                    vectorStore.upsertDocument({ ...inv, matchType: 'invoice-tax-no' }, v);
+                }
+                if (inv.ocrContent) {
+                    const v = await generateEmbedding(inv.ocrContent);
+                    vectorStore.upsertDocument({ ...inv, matchType: 'invoice-content' }, v);
+                }
+            }
+            // Tax Objects
+            const taxObjs = await knex('tax_objects').select('id', 'name', 'identity_number');
+            for (const t of taxObjs) {
+                if (t.name) {
+                    const v = await generateEmbedding(t.name);
+                    vectorStore.upsertDocument({ ...t, matchType: 'taxobject-name' }, v);
+                }
+                if (t.identity_number) {
+                    const v = await generateEmbedding(t.identity_number);
+                    vectorStore.upsertDocument({ ...t, matchType: 'taxobject-id' }, v);
+                }
+            }
+            // External Items
+            const extItems = await knex('external_items').select('id', 'boxId', 'destination');
+            for (const e of extItems) {
+                if (e.boxId) {
+                    const v = await generateEmbedding(e.boxId);
+                    vectorStore.upsertDocument({ ...e, matchType: 'external-boxid' }, v);
+                }
+                if (e.destination) {
+                    const v = await generateEmbedding(e.destination);
+                    vectorStore.upsertDocument({ ...e, matchType: 'external-destination' }, v);
+                }
+            }
+            // Inventory (box_data)
+            const inventory = await knex('inventory').select('id', 'box_data');
+            for (const inv of inventory) {
+                let box = null;
+                try { box = JSON.parse(inv.box_data); } catch (e) { box = null; }
+                if (box) {
+                    if (box.id) {
+                        const v = await generateEmbedding(String(box.id));
+                        vectorStore.upsertDocument({ id: inv.id, matchType: 'inventory-boxid', boxId: box.id }, v);
+                    }
+                    if (box.ocrContent) {
+                        const v = await generateEmbedding(box.ocrContent);
+                        vectorStore.upsertDocument({ id: inv.id, matchType: 'inventory-box-content', boxId: box.id }, v);
+                    }
+                    if (box.ordners && Array.isArray(box.ordners)) {
+                        for (const ord of box.ordners) {
+                            if (ord.noOrdner) {
+                                const v = await generateEmbedding(ord.noOrdner);
+                                vectorStore.upsertDocument({ id: inv.id, matchType: 'inventory-ordner', ordner: ord.noOrdner }, v);
+                            }
+                            if (ord.invoices && Array.isArray(ord.invoices)) {
+                                for (const invoice of ord.invoices) {
+                                    if (invoice.invoiceNo) {
+                                        const v = await generateEmbedding(invoice.invoiceNo);
+                                        vectorStore.upsertDocument({ id: inv.id, matchType: 'inventory-invoice-no', invoiceNo: invoice.invoiceNo }, v);
+                                    }
+                                    if (invoice.vendor) {
+                                        const v = await generateEmbedding(invoice.vendor);
+                                        vectorStore.upsertDocument({ id: inv.id, matchType: 'inventory-invoice-vendor', vendor: invoice.vendor }, v);
+                                    }
+                                    if (invoice.ocrContent) {
+                                        const v = await generateEmbedding(invoice.ocrContent);
+                                        vectorStore.upsertDocument({ id: inv.id, matchType: 'inventory-invoice-content', ocrContent: invoice.ocrContent }, v);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            console.log(`${tag} ✅ Semantic index complete.`);
         } catch (e) {
             console.error(`${tag} ❌ Gagal inisialisasi Database/Vector Store:`, e.message);
         }

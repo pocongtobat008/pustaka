@@ -4,14 +4,14 @@ module.exports = {
       name: "archive-backend",
       script: "server/index.js",
       watch: false,
-      env: { NODE_ENV: "production" }
+      env: { NODE_ENV: "production", NODE_TLS_REJECT_UNAUTHORIZED: "0" }
     },
     {
       name: "archive-worker-bullmq",
       script: "server/worker.js",
       args: "--mode=bullmq",
       watch: false,
-      env: { IS_WORKER: "true", NODE_ENV: "production" },
+      env: { IS_WORKER: "true", NODE_ENV: "production", NODE_TLS_REJECT_UNAUTHORIZED: "0" },
       node_args: "--max-old-space-size=2048"
     },
     {
@@ -19,7 +19,7 @@ module.exports = {
       script: "server/worker.js",
       args: "--mode=polling",
       watch: false,
-      env: { IS_WORKER: "true", NODE_ENV: "production" },
+      env: { IS_WORKER: "true", NODE_ENV: "production", NODE_TLS_REJECT_UNAUTHORIZED: "0" },
       node_args: "--max-old-space-size=2048"
     }
   ]
