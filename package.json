@@ -45,6 +45,7 @@
     "sharp": "^0.32.6",
     "socket.io": "^4.8.3",
     "socket.io-client": "^4.8.3",
+    "sqlite3": "^6.0.1",
     "tailwind-merge": "^3.5.0",
     "tailwindcss-animate": "^1.0.7",
     "tesseract.js": "^7.0.0",
@@ -71,8 +72,8 @@
     "vitest": "^1.0.0"
   },
   "scripts": {
-    "dev": "npx knex migrate:latest && concurrently \"node --watch server/index.js\" \"npm run worker:bullmq\" \"npm run worker:polling\" \"npx wait-on tcp:127.0.0.1:5000 && vite --host 0.0.0.0 --port 5173\"",
-    "db:reset": "npx knex migrate:rollback --all && npx knex migrate:latest",
+    "dev": "node server/scripts/init_db_choice.js && concurrently \"node --watch server/index.js\" \"npm run worker:bullmq\" \"npm run worker:polling\" \"npx wait-on tcp:127.0.0.1:5000 && vite --host 0.0.0.0 --port 5173\"",
+    "db:reset": "node server/scripts/init_db_choice.js && npx knex migrate:rollback --all && npx knex migrate:latest",
     "db:wipe": "node server/wipeDb.js",
     "server": "node --watch server/index.js",
     "worker": "set IS_WORKER=true&& node --watch server/worker.js",

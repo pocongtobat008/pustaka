@@ -26331,3 +26331,60 @@
 {"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 2.630 ms - -\u001b[0m","timestamp":"2026-04-01 09:32:39"}
 {"level":"info","message":"\u001b[0mGET /api/sop-flows \u001b[36m304\u001b[0m 2.236 ms - -\u001b[0m","timestamp":"2026-04-01 09:32:39"}
 {"level":"info","message":"Client disconnected: Z8umkts64OuvvcAaAAAF","timestamp":"2026-04-01 09:33:34"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-04-02 02:29:45"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-04-02 02:29:45"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-04-02 02:29:46"}
+{"level":"info","message":"\u001b[0mGET / \u001b[33m404\u001b[0m 2.944 ms - 139\u001b[0m","timestamp":"2026-04-02 02:29:52"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-04-02 02:32:58"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-04-02 02:32:58"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-04-02 02:32:58"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-04-02 02:33:44"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-04-02 02:33:44"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-04-02 02:33:44"}
+{"level":"info","message":"\u001b[0mGET / \u001b[33m404\u001b[0m 2.412 ms - 139\u001b[0m","timestamp":"2026-04-02 02:33:50"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-04-02 02:42:32"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-04-02 02:42:32"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-04-02 02:42:32"}
+{"level":"info","message":"\u001b[0mGET / \u001b[33m404\u001b[0m 2.553 ms - 139\u001b[0m","timestamp":"2026-04-02 02:42:50"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-04-02 02:43:01"}
+{"level":"info","message":"Client connected: QWzUPGkfQehbeI_cAAAB","timestamp":"2026-04-02 02:43:01"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-04-02 02:45:08"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-04-02 02:45:08"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-04-02 02:45:08"}
+{"level":"info","message":"\u001b[0mGET / \u001b[33m404\u001b[0m 2.996 ms - 139\u001b[0m","timestamp":"2026-04-02 02:45:14"}
+{"level":"info","message":"\u001b[0mPOST /api/ai \u001b[33m404\u001b[0m 52.485 ms - 146\u001b[0m","timestamp":"2026-04-02 02:47:25"}
+{"details":"SEARCH Error: select \"id\", \"title\", \"ocrContent\", \"url\", \"file_url\", \"uploadDate\", \"size\", \"folderId\" from \"documents\" where (\"title\" like $1 or \"ocrContent\" like $2 or \"file_data\" like $3) limit $4 - column \"file_url\" does not exist","level":"error","message":"System Error: SEARCH Error: select \"id\", \"title\", \"ocrContent\", \"url\", \"file_url\", \"uploadDate\", \"size\", \"folderId\" from \"documents\" where (\"title\" like $1 or \"ocrContent\" like $2 or \"file_data\" like $3) limit $4 - column \"file_url\" does not exist","timestamp":"2026-04-02 02:47:39","user":"System"}
+{"level":"info","message":"\u001b[0mPOST /api/search/ai \u001b[31m500\u001b[0m 11.303 ms - 82\u001b[0m","timestamp":"2026-04-02 02:47:39"}
+{"details":"SEARCH Error: select \"id\", \"title\", \"ocrContent\", \"url\", \"file_url\", \"uploadDate\", \"size\", \"folderId\" from \"documents\" where (\"title\" like $1 or \"ocrContent\" like $2 or \"file_data\" like $3) limit $4 - column \"file_url\" does not exist","level":"error","message":"System Error: SEARCH Error: select \"id\", \"title\", \"ocrContent\", \"url\", \"file_url\", \"uploadDate\", \"size\", \"folderId\" from \"documents\" where (\"title\" like $1 or \"ocrContent\" like $2 or \"file_data\" like $3) limit $4 - column \"file_url\" does not exist","timestamp":"2026-04-02 02:47:43","user":"System"}
+{"level":"info","message":"\u001b[0mPOST /api/search/ai \u001b[31m500\u001b[0m 7.284 ms - 82\u001b[0m","timestamp":"2026-04-02 02:47:43"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-04-02 02:48:47"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-04-02 02:48:47"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-04-02 02:48:47"}
+{"details":"SEARCH Error: select \"id\", \"boxId\", \"destination\", \"boxData\" from \"external_items\" where (\"boxId\" like $1 or \"destination\" like $2 or \"boxData\" like $3) limit $4 - operator does not exist: json ~~ unknown","level":"error","message":"System Error: SEARCH Error: select \"id\", \"boxId\", \"destination\", \"boxData\" from \"external_items\" where (\"boxId\" like $1 or \"destination\" like $2 or \"boxData\" like $3) limit $4 - operator does not exist: json ~~ unknown","timestamp":"2026-04-02 02:48:51","user":"System"}
+{"level":"info","message":"\u001b[0mPOST /api/search/ai \u001b[31m500\u001b[0m 27.972 ms - 82\u001b[0m","timestamp":"2026-04-02 02:48:51"}
+{"details":"SEARCH Error: select \"id\", \"boxId\", \"destination\", \"boxData\" from \"external_items\" where (\"boxId\" like $1 or \"destination\" like $2 or \"boxData\" like $3) limit $4 - operator does not exist: json ~~ unknown","level":"error","message":"System Error: SEARCH Error: select \"id\", \"boxId\", \"destination\", \"boxData\" from \"external_items\" where (\"boxId\" like $1 or \"destination\" like $2 or \"boxData\" like $3) limit $4 - operator does not exist: json ~~ unknown","timestamp":"2026-04-02 02:48:57","user":"System"}
+{"level":"info","message":"\u001b[0mPOST /api/search/ai \u001b[31m500\u001b[0m 8.897 ms - 82\u001b[0m","timestamp":"2026-04-02 02:48:57"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-04-02 02:49:41"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-04-02 02:49:41"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-04-02 02:49:41"}
+{"details":"SEARCH Error: select \"id\", \"boxId\", \"destination\", \"boxData\" from \"external_items\" where (\"boxId\" like $1 or \"destination\" like $2 or COALESCE(boxData::text,'') ILIKE $3) limit $4 - column \"boxdata\" does not exist","level":"error","message":"System Error: SEARCH Error: select \"id\", \"boxId\", \"destination\", \"boxData\" from \"external_items\" where (\"boxId\" like $1 or \"destination\" like $2 or COALESCE(boxData::text,'') ILIKE $3) limit $4 - column \"boxdata\" does not exist","timestamp":"2026-04-02 02:49:45","user":"System"}
+{"level":"info","message":"\u001b[0mPOST /api/search/ai \u001b[31m500\u001b[0m 25.984 ms - 82\u001b[0m","timestamp":"2026-04-02 02:49:45"}
+{"details":"SEARCH Error: select \"id\", \"boxId\", \"destination\", \"boxData\" from \"external_items\" where (\"boxId\" like $1 or \"destination\" like $2 or COALESCE(boxData::text,'') ILIKE $3) limit $4 - column \"boxdata\" does not exist","level":"error","message":"System Error: SEARCH Error: select \"id\", \"boxId\", \"destination\", \"boxData\" from \"external_items\" where (\"boxId\" like $1 or \"destination\" like $2 or COALESCE(boxData::text,'') ILIKE $3) limit $4 - column \"boxdata\" does not exist","timestamp":"2026-04-02 02:49:51","user":"System"}
+{"level":"info","message":"\u001b[0mPOST /api/search/ai \u001b[31m500\u001b[0m 8.872 ms - 82\u001b[0m","timestamp":"2026-04-02 02:49:51"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-04-02 02:50:34"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-04-02 02:50:34"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-04-02 02:50:34"}
+{"level":"info","message":"\u001b[0mPOST /api/search/ai \u001b[32m200\u001b[0m 33.778 ms - 483\u001b[0m","timestamp":"2026-04-02 02:50:40"}
+{"level":"info","message":"📦 Menghubungkan ke Database...","timestamp":"2026-04-02 02:53:52"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-04-02 02:53:52"}
+{"level":"info","message":"✅ Database & Migrasi Selesai.","timestamp":"2026-04-02 02:53:53"}
+{"level":"info","message":"\u001b[0mGET / \u001b[33m404\u001b[0m 2.424 ms - 139\u001b[0m","timestamp":"2026-04-02 02:53:55"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-04-02 03:02:26"}
+{"level":"info","message":"Client connected: s5ZuJkNm3OHxwmeHAAAB","timestamp":"2026-04-02 03:02:26"}
+{"level":"info","message":"\u001b[0mPOST /api/search/ai \u001b[32m200\u001b[0m 36.654 ms - 942\u001b[0m","timestamp":"2026-04-02 03:02:33"}
+{"level":"info","message":"\u001b[0mPOST /api/search/ai \u001b[32m200\u001b[0m 8.397 ms - 942\u001b[0m","timestamp":"2026-04-02 03:02:43"}
+{"level":"info","message":"\u001b[0mPOST /api/search/ai \u001b[32m200\u001b[0m 6.927 ms - 942\u001b[0m","timestamp":"2026-04-02 03:02:51"}
+{"level":"info","message":"\u001b[0mPOST /api/search/ai \u001b[32m200\u001b[0m 12.896 ms - 942\u001b[0m","timestamp":"2026-04-02 03:03:44"}
+{"level":"info","message":"\u001b[0mPOST /api/search/ai \u001b[32m200\u001b[0m 10.476 ms - 942\u001b[0m","timestamp":"2026-04-02 03:03:54"}
+{"level":"info","message":"\u001b[0mPOST /api/search/ai \u001b[32m200\u001b[0m 9.151 ms - 942\u001b[0m","timestamp":"2026-04-02 03:04:03"}
+{"level":"info","message":"[Queue] Redis unavailable, formatting to MySQL Polling framework.","timestamp":"2026-04-02 03:09:31"}

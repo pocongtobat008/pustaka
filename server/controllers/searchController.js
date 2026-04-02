@@ -7,6 +7,8 @@ import path from 'path';
 import { UPLOADS_DIR } from '../config/upload.js';
 import { parseJsonSafe } from '../utils/jsonSafe.js';
 
+const isPg = (process.env.DB_CLIENT || '').toLowerCase().startsWith('pg');
+
 export const getJobStatus = async (req, res) => {
     try {
         const { id } = req.params;
@@ -75,16 +77,25 @@ export const semanticSearch = async (req, res) => {
         // Build a comprehensive hybrid search: keyword across many tables + semantic vector search
         // 1. Run keyword queries across relevant tables (limit to 100 each)
         const [kwDocs, kwInvoices, kwTaxObjects, kwExternal, kwInventory, kwInvItems, kwApprovals, kwAuditNotes] = await Promise.all([
-            knex('documents').select('id', 'title', 'ocrContent', 'url', 'file_url', 'uploadDate', 'size', 'folderId').where(function() {
-                this.where('title', 'like', `%${query}%`).orWhere('ocrContent', 'like', `%${query}%`).orWhere('file_data', 'like', `%${query}%`);
+            knex('documents').select('id', 'title', 'ocrContent', 'url', 'uploadDate', 'size', 'folderId').where(function() {
+                this.where('title', 'like', `%${query}%`).orWhere('ocrContent', 'like', `%${query}%`);
+                if (isPg) this.orWhereRaw("COALESCE(file_data::text,'') ILIKE ?", [`%${query}%`]);
+                else this.orWhere('file_data', 'like', `%${query}%`);
             }).limit(100),
-            knex('invoices').select('id', 'vendor', 'invoice_no', 'tax_invoice_no', 'ocr_content', 'file_name', 'file_url', 'payment_date').where(function() {
+            knex('invoices').select('id', 'vendor', 'invoice_no', 'tax_invoice_no', 'ocr_content', 'file_name', 'payment_date').where(function() {
                 this.where('vendor', 'like', `%${query}%`).orWhere('invoice_no', 'like', `%${query}%`).orWhere('ocr_content', 'like', `%${query}%`);
             }).limit(100),
             knex('tax_objects').select('id', 'name', 'identity_number').where(function() { this.where('name', 'like', `%${query}%`).orWhere('identity_number', 'like', `%${query}%`); }).limit(100),
-            knex('external_items').select('id', 'boxId', 'destination', 'boxData').where(function() { this.where('boxId', 'like', `%${query}%`).orWhere('destination', 'like', `%${query}%`).orWhere('boxData', 'like', `%${query}%`); }).limit(100),
-            knex('inventory').select('id', 'box_data').where('box_data', 'like', `%${query}%`).limit(100),
-            knex('inventory_items').select('id', 'invoice_no', 'vendor', 'ocr_content', 'file_url').where(function() { this.where('invoice_no', 'like', `%${query}%`).orWhere('vendor', 'like', `%${query}%`).orWhere('ocr_content', 'like', `%${query}%`); }).limit(100),
+            knex('external_items').select('id', 'boxId', 'destination', 'boxData').where(function() {
+                this.where('boxId', 'like', `%${query}%`).orWhere('destination', 'like', `%${query}%`);
+                if (isPg) this.orWhereRaw(`COALESCE("boxData"::text,'') ILIKE ?`, [`%${query}%`]);
+                else this.orWhere('boxData', 'like', `%${query}%`);
+            }).limit(100),
+            knex('inventory').select('id', 'box_data').where(function() {
+                if (isPg) this.whereRaw("COALESCE(box_data::text,'') ILIKE ?", [`%${query}%`]);
+                else this.where('box_data', 'like', `%${query}%`);
+            }).limit(100),
+            knex('inventory_items').select('id', 'invoice_no', 'vendor', 'ocr_content').where(function() { this.where('invoice_no', 'like', `%${query}%`).orWhere('vendor', 'like', `%${query}%`).orWhere('ocr_content', 'like', `%${query}%`); }).limit(100),
             knex('document_approvals').select('id', 'title', 'description', 'ocr_content', 'attachment_url').where(function() { this.where('title', 'like', `%${query}%`).orWhere('description', 'like', `%${query}%`).orWhere('ocr_content', 'like', `%${query}%`); }).limit(100),
             knex('tax_audit_notes').select('id', 'text').where('text', 'like', `%${query}%`).limit(100)
         ]);
