@@ -456,10 +456,10 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 title={editingFlow ? `${text.modalEditPrefix} ${form.title}` : text.modalCreateTitle}
-                size="max-w-7xl"
+                size="max-w-[100vw] w-screen h-screen m-0 !rounded-none"
                 noPadding
             >
-                <div className="flex h-full min-h-0 flex-col">
+                <div className="flex h-full min-h-[80vh] flex-col">
                     <div className="p-6 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div className="space-y-2 lg:col-span-1">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.sopTitle}</label>
