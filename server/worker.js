@@ -707,7 +707,7 @@ async function startWorkerSystem() {
                 }
             }
             // Invoices
-            const invoices = await knex('invoices').select('id', 'vendor', 'invoice_no', 'tax_invoice_no', 'ocrContent');
+            const invoices = await knex('invoices').select('id', 'vendor', 'invoice_no', 'tax_invoice_no');
             for (const inv of invoices) {
                 if (inv.vendor) {
                     const v = await generateEmbedding(inv.vendor);
@@ -720,10 +720,6 @@ async function startWorkerSystem() {
                 if (inv.tax_invoice_no) {
                     const v = await generateEmbedding(inv.tax_invoice_no);
                     vectorStore.upsertDocument({ ...inv, matchType: 'invoice-tax-no' }, v);
-                }
-                if (inv.ocrContent) {
-                    const v = await generateEmbedding(inv.ocrContent);
-                    vectorStore.upsertDocument({ ...inv, matchType: 'invoice-content' }, v);
                 }
             }
             // Tax Objects
