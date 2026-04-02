@@ -49,7 +49,7 @@ export const login = async (req, res) => {
             // Set HttpOnly Cookie
             res.cookie('token', token, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
+                secure: false, // <-- TEMPORARY: Set to false for debugging HTTP connections
                 sameSite: 'lax', // Use 'lax' for dev stability on network IPs
                 maxAge: sessionTtlMs
             });
