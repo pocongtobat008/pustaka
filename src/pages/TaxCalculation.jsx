@@ -201,9 +201,9 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
     });
 
     const handleInputChange = (e) => {
-        const { name, value, type, checked } = e.target;
+        const { name, value } = e.target;
         setFormData(prev => {
-            let sanitizedValue = type === 'checkbox' ? checked : value;
+            let sanitizedValue = value;
             if (name === 'identityNumber') {
                 sanitizedValue = value.replace(/\D/g, '').slice(0, 16);
             }
@@ -216,13 +216,10 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                 }
                 const isPph21 = newData.taxType === '21';
                 newData.isPph21BukanPegawai = isPph21;
+                newData.usePpn = !isPph21;
 
                 // Also update calculation data to stay in sync
-                setCalcData(c => ({ ...c, isPph21BukanPegawai: isPph21 }));
-            }
-
-            if (name === 'usePpn') {
-                setCalcData(c => ({ ...c, usePpn: checked }));
+                setCalcData(c => ({ ...c, isPph21BukanPegawai: isPph21, usePpn: !isPph21 }));
             }
 
             return newData;
@@ -419,7 +416,6 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                 rate: calcData.rate,
                 pph: calcData.pph,
                 ppn: calcData.ppn,
-                ppnRate: ppnRate,
                 totalPayable: calcData.totalPayable,
                 discount: calcData.discount,
                 dppNet: calcData.dppNet,
@@ -478,25 +474,24 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
             taxObjectName: item.taxObjectName,
             markupMode: item.markupMode || 'none',
             isPph21BukanPegawai: !!item.isPph21BukanPegawai,
-            usePpn: item.usePpn !== undefined ? !!item.usePpn : true
+            usePpn: !!item.usePpn
         });
         setCalcData({
             dpp: item.dpp,
             rate: item.rate,
             pph: item.pph,
-            ppn: item.ppn || (!!item.use_ppn ? (((11 / 12) * (item.dpp - (item.discount || 0))) * ((item.ppnRate || 12) / 100)) : 0),
+            ppn: item.ppn || (!!item.use_ppn ? (((11 / 12) * (item.dpp - (item.discount || 0))) * 0.12) : 0),
             discount: item.discount || 0,
             dppNet: !!item.use_ppn ? ((11 / 12) * (item.dpp - (item.discount || 0))) : 0,
             markupMode: item.markup_mode || 'none',
             isPph21BukanPegawai: !!item.is_pph21_bukan_pegawai,
             usePpn: item.use_ppn !== undefined ? !!item.use_ppn : true,
             totalPayable: item.total_payable || item.totalPayable ||
-                Math.ceil((item.dpp - (item.discount || 0)) +
-                    (item.ppn || (!!item.use_ppn ? (((11 / 12) * (item.dpp - (item.discount || 0))) * ((item.ppnRate || 12) / 100)) : 0)) -
+                Math.ceil((item.dpp - (item.discount || 0)) + // Recalculate totalPayable if not present
+                    (item.ppn || (!!item.use_ppn ? (((11 / 12) * (item.dpp - (item.discount || 0))) * 0.12) : 0)) -
                     item.pph)
         });
         setActiveTab('object');
-        setPpnRate(item.ppnRate || 12);
     };
 
     const handleDeleteAll = async () => {
@@ -870,31 +865,6 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                     />
                                 </div>
 
-                                {/* PPN Rate & Toggle */}
-                                <div className="md:col-span-2 grid grid-cols-2 gap-4 items-end">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                            Gunakan PPN
-                                        </label>
-                                        <label className="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" name="usePpn" checked={formData.usePpn} onChange={handleInputChange} className="sr-only peer" disabled={isReadOnly} />
-                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 dark:peer-focus:ring-indigo-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-600"></div>
-                                        </label>
-                                    </div>
-                                    <div className={`${formData.usePpn ? 'opacity-100' : 'opacity-40 pointer-events-none'} transition-opacity`}>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                            Tarif PPN (%)
-                                        </label>
-                                        <input
-                                            type="number"
-                                            value={ppnRate}
-                                            onChange={(e) => setPpnRate(Number(e.target.value))}
-                                            disabled={isReadOnly || !formData.usePpn}
-                                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white"
-                                        />
-                                    </div>
-                                </div>
-
                                 {/* Tax Object Name (Searchable Dropdown) */}
                                 <div className="md:col-span-2 relative">
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -993,7 +963,6 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                             initialDiscount={calcData.discount || ''}
                             initialMarkupMode={calcData.markupMode}
                             initialIsPph21BukanPegawai={calcData.isPph21BukanPegawai}
-                        initialPpnRate={ppnRate}
                             initialUsePpn={calcData.usePpn}
                             onCopy={onCopy}
                             isReadOnly={isReadOnly}
