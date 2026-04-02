@@ -649,7 +649,7 @@ export default function TaxCalculator({
                         {markupMode !== 'none' && (
                             <div className="mt-4 pt-4 border-t border-white/10 flex justify-between items-center group">
                                 <div>
-                                    <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Total yang Harus Dibukukan (Gross + PPN)</p>
+                                    <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Total yang Harus Dibukukan</p>
                                     <div className="flex items-center gap-3">
                                         <p className="text-white text-lg font-black">{formatCurrency(lastEmitted.current.totalDibukukan || 0)}</p>
                                         <button
@@ -672,7 +672,7 @@ export default function TaxCalculator({
                         </p>
                         {markupMode !== 'none' && (
                             <p className="text-[10px] text-indigo-200 mt-1 font-bold">
-                                * {markupMode === 'pph' && (isPph21BukanPegawai ? "Vendor menerima target net (Gross - PPh Progresif)." : "Vendor menerima Net DPP secara penuh.")}
+                                * {markupMode === 'pph' && (isPph21BukanPegawai ? "Vendor menerima target net." : "Vendor menerima Net DPP secara penuh.")}
                                 {markupMode === 'ppn' && "Total Tagihan (DPP+PPN) sesuai target."}
                                 {markupMode === 'both' && "Total Akhir (PPh & PPN) sesuai target secara penuh."}
                             </p>
