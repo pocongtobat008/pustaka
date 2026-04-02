@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    MessageCircle, X, Send, FileText, FileSpreadsheet,
+    MessageCircle, X, Send, FileText, FileSpreadsheet, Maximize2, Minimize2,
     Package, Sparkles, Search, ArrowRight, Loader2,
     ChevronDown, Bot, User, Eye, TrendingUp, BarChart3, AlertCircle, CheckCircle2, Zap
 } from 'lucide-react';
@@ -520,6 +520,7 @@ export default function AiChatAssistant({
         } finally { setSemanticLoading(false); }
     };
     const [isOpen, setIsOpen] = useState(false);
+    const [isFullScreen, setIsFullScreen] = useState(false);
     const [messages, setMessages] = useState([
         {
             role: 'assistant',
@@ -723,10 +724,14 @@ export default function AiChatAssistant({
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 40, scale: 0.9 }}
                         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                        className={`fixed bottom-6 right-6 z-[200] w-[400px] max-w-[calc(100vw-2rem)] h-[600px] max-h-[calc(100vh-3rem)] rounded-3xl overflow-hidden flex flex-col shadow-2xl ${isDarkMode
+                        className={`fixed overflow-hidden flex flex-col shadow-2xl transition-all duration-300 ${
+                            isFullScreen 
+                                ? 'inset-0 w-full h-full rounded-none z-[9999]' 
+                                : 'bottom-6 right-6 w-[400px] max-w-[calc(100vw-2rem)] h-[600px] max-h-[calc(100vh-3rem)] rounded-3xl z-[200]'
+                        } ${isDarkMode
                             ? 'bg-[#0d1230]/95 border border-white/10 shadow-black/50'
-                            : 'bg-white/95 border border-slate-200 shadow-slate-300/50'
-                            }`}
+                            : 'bg-white/95 border-slate-200 shadow-slate-300/50'
+                        }`}
                         style={{ backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)' }}
                     >
                         {/* Header */}
@@ -751,6 +756,14 @@ export default function AiChatAssistant({
                                 title="Reset Chat"
                             >
                                 Reset
+                            </button>
+                            <button
+                                onClick={() => setIsFullScreen(!isFullScreen)}
+                                className={`p-2 rounded-xl transition-all ${isDarkMode ? 'hover:bg-white/10 text-white/50 hover:text-white/80' : 'hover:bg-slate-100 text-slate-400 hover:text-slate-600'
+                                    }`}
+                                title={isFullScreen ? "Kembali ke Ukuran Normal" : "Layar Penuh"}
+                            >
+                                {isFullScreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
                             </button>
                             <button
                                 onClick={() => setIsOpen(false)}
