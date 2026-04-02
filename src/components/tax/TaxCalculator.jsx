@@ -361,7 +361,7 @@ export default function TaxCalculator({
                         <button
                             onClick={() => setUsePpn(!usePpn)}
                             className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg border transition-all flex items-center gap-1.5 ${usePpn ? 'bg-indigo-600 border-indigo-700 text-white shadow-lg' : 'bg-gray-100 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700'}`}
-                            title="Aktifkan/Nonaktifkan perhitungan PPN (12%)"
+                            title={`Aktifkan/Nonaktifkan perhitungan PPN (${ppnRate}%)`}
                         >
                             {usePpn ? 'Gunakan PPN: ON' : 'Gunakan PPN: OFF'}
                         </button>
@@ -550,12 +550,12 @@ export default function TaxCalculator({
                                     <span className="font-bold">Rumus:</span> Target / (1 - Tarif%)</p>
                             )}
                             {markupMode === 'ppn' && (
-                                <p>Sistem mencari nilai Bruto dasar agar setelah ditambah PPN 12%, total tagihan sesuai dengan target yang diinginkan. <br />
-                                    <span className="font-bold">Rumus:</span> Target / 1.12</p>
+                                <p>Sistem mencari nilai Bruto dasar agar setelah ditambah PPN {ppnRate}%, total tagihan sesuai dengan target yang diinginkan. <br />
+                                    <span className="font-bold">Rumus:</span> Target / {1 + (ppnRate/100)}</p>
                             )}
                             {markupMode === 'both' && (
                                 <p>Sistem melakukan kalkulasi simultan mencari nilai Bruto agar vendor menerima target bersih, sementara PPh & PPN tetap terhitung dari nilai Bruto baru tersebut. <br />
-                                    <span className="font-bold text-indigo-800 dark:text-indigo-200 italic">Note: PPN 12% dan PPh {isPph21BukanPegawai ? 'Progresif' : rate + '%'} diterapkan.</span></p>
+                                    <span className="font-bold text-indigo-800 dark:text-indigo-200 italic">Note: PPN {ppnRate}% dan PPh {isPph21BukanPegawai ? 'Progresif' : rate + '%'} diterapkan.</span></p>
                             )}
                         </div>
                     </div>
@@ -668,7 +668,7 @@ export default function TaxCalculator({
                         )}
 
                         <p className="text-[10px] text-indigo-100/60 mt-4 font-medium italic">
-                            Rumus: {isPph21BukanPegawai ? '(50% x Bruto) x Progresif Pasal 17' : '(DPP - Potongan) + PPN 12% - PPh Terutang (Rounding Up)'}
+                            Rumus: {isPph21BukanPegawai ? '(50% x Bruto) x Progresif Pasal 17' : `(DPP - Potongan) + PPN ${ppnRate}% - PPh Terutang (Rounding Up)`}
                         </p>
                         {markupMode !== 'none' && (
                             <p className="text-[10px] text-indigo-200 mt-1 font-bold">
