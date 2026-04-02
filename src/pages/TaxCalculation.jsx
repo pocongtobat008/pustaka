@@ -171,6 +171,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
     const [isLoading, setIsLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [calcData, setCalcData] = useState({ dpp: 0, rate: 0, pph: 0, ppn: 0, totalPayable: 0, discount: 0, dppNet: 0, markupMode: 'none', isPph21BukanPegawai: false, usePpn: true });
+    const [ppnRate, setPpnRate] = useState(12);
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 15;
     const [editingId, setEditingId] = useState(null);
@@ -220,6 +221,10 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
 
                 // Also update calculation data to stay in sync
                 setCalcData(c => ({ ...c, isPph21BukanPegawai: isPph21, usePpn: !isPph21 }));
+            }
+
+            if (name === 'usePpn') {
+                setCalcData(c => ({ ...c, usePpn: newData.usePpn }));
             }
 
             return newData;
@@ -416,6 +421,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                 rate: calcData.rate,
                 pph: calcData.pph,
                 ppn: calcData.ppn,
+                ppnRate: ppnRate,
                 totalPayable: calcData.totalPayable,
                 discount: calcData.discount,
                 dppNet: calcData.dppNet,
@@ -480,7 +486,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
             dpp: item.dpp,
             rate: item.rate,
             pph: item.pph,
-            ppn: item.ppn || (!!item.use_ppn ? (((11 / 12) * (item.dpp - (item.discount || 0))) * 0.12) : 0),
+            ppn: item.ppn || (!!item.use_ppn ? (((11 / 12) * (item.dpp - (item.discount || 0))) * ((item.ppnRate || 12) / 100)) : 0),
             discount: item.discount || 0,
             dppNet: !!item.use_ppn ? ((11 / 12) * (item.dpp - (item.discount || 0))) : 0,
             markupMode: item.markup_mode || 'none',
@@ -488,9 +494,10 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
             usePpn: item.use_ppn !== undefined ? !!item.use_ppn : true,
             totalPayable: item.total_payable || item.totalPayable ||
                 Math.ceil((item.dpp - (item.discount || 0)) + // Recalculate totalPayable if not present
-                    (item.ppn || (!!item.use_ppn ? (((11 / 12) * (item.dpp - (item.discount || 0))) * 0.12) : 0)) -
+                    (item.ppn || (!!item.use_ppn ? (((11 / 12) * (item.dpp - (item.discount || 0))) * ((item.ppnRate || 12) / 100)) : 0)) -
                     item.pph)
         });
+        setPpnRate(item.ppnRate || 12);
         setActiveTab('object');
     };
 
@@ -865,6 +872,31 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                     />
                                 </div>
 
+                                {/* PPN Rate & Toggle */}
+                                <div className="md:col-span-2 grid grid-cols-2 gap-4 items-end">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            Gunakan PPN
+                                        </label>
+                                        <label className="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" name="usePpn" checked={formData.usePpn} onChange={(e) => handleInputChange({ target: { name: 'usePpn', value: e.target.checked } })} className="sr-only peer" disabled={isReadOnly} />
+                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 dark:peer-focus:ring-indigo-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-600"></div>
+                                        </label>
+                                    </div>
+                                    <div className={`${formData.usePpn ? 'opacity-100' : 'opacity-40 pointer-events-none'} transition-opacity`}>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            Tarif PPN (%)
+                                        </label>
+                                        <input
+                                            type="number"
+                                            value={ppnRate}
+                                            onChange={(e) => setPpnRate(Number(e.target.value))}
+                                            disabled={isReadOnly || !formData.usePpn}
+                                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white"
+                                        />
+                                    </div>
+                                </div>
+
                                 {/* Tax Object Name (Searchable Dropdown) */}
                                 <div className="md:col-span-2 relative">
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -964,6 +996,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                             initialMarkupMode={calcData.markupMode}
                             initialIsPph21BukanPegawai={calcData.isPph21BukanPegawai}
                             initialUsePpn={calcData.usePpn}
+                            initialPpnRate={ppnRate}
                             onCopy={onCopy}
                             isReadOnly={isReadOnly}
                         />
@@ -1059,7 +1092,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                     <div className="flex justify-between">
                                         <span className="text-gray-500">Gunakan PPN:</span>
                                         <span className={`font-bold ${calcData.usePpn ? 'text-green-600' : 'text-red-500'}`}>
-                                            {calcData.usePpn ? 'Ya (12%)' : 'Tidak'}
+                                            {calcData.usePpn ? `Ya (${ppnRate}%)` : 'Tidak'}
                                         </span>
                                     </div>
                                     <p className="text-[10px] text-slate-400 italic mt-4">
