@@ -544,14 +544,24 @@ async function processJob(job) {
             }
         }
 
-        // Embedding
+        // Embedding: create combined vector of title + OCR content so vector represents both
         if (extractedText.length > 10) {
-            const vector = await generateEmbedding(extractedText);
-            const vectorJson = JSON.stringify(vector);
             if (docId) {
-                await knex('documents').where('id', docId).update({ vector: vectorJson });
+                // ensure OCR content persisted first
+                try { await knex('documents').where('id', docId).update({ ocrContent: extractedText }); } catch (e) { /* ignore */ }
                 const updatedDoc = await knex('documents').where('id', docId).first();
-                if (updatedDoc) vectorStore.upsertDocument(updatedDoc, vector);
+                if (updatedDoc) {
+                    const combined = `${updatedDoc.title || ''}\n\n${updatedDoc.ocrContent || ''}`.trim();
+                    if (combined.length > 10) {
+                        const vector = await generateEmbedding(combined);
+                        const vectorJson = JSON.stringify(vector);
+                        try { await knex('documents').where('id', docId).update({ vector: vectorJson }); } catch (e) { }
+                        vectorStore.upsertDocument({ id: updatedDoc.id, title: updatedDoc.title, ocrContent: updatedDoc.ocrContent, matchType: 'document' }, vector);
+                    }
+                }
+            } else {
+                const vector = await generateEmbedding(extractedText);
+                // no docId to attach to, skip DB write but could upsert into cache if desired
             }
         }
 
@@ -694,32 +704,26 @@ async function startWorkerSystem() {
 
             // --- Custom: Indexing all relevant fields for semantic search ---
             console.log(`${tag} 🔍 Indexing all documents, invoices, tax_objects, external_items, inventory for semantic search...`);
-            // Documents
+            // Documents: embed combined title + OCR content so each doc has a single representative vector
             const docs = await knex('documents').select('id', 'title', 'ocrContent');
             for (const d of docs) {
-                if (d.title) {
-                    const v = await generateEmbedding(d.title);
-                    vectorStore.upsertDocument({ ...d, matchType: 'document-title' }, v);
-                }
-                if (d.ocrContent) {
-                    const v = await generateEmbedding(d.ocrContent);
-                    vectorStore.upsertDocument({ ...d, matchType: 'document-content' }, v);
+                const combined = `${d.title || ''}\n\n${d.ocrContent || ''}`.trim();
+                if (combined.length > 10) {
+                    const v = await generateEmbedding(combined);
+                    // store combined text as the vector source so title and OCR are both represented
+                    vectorStore.upsertDocument({ id: d.id, title: d.title, ocrContent: d.ocrContent, matchType: 'document' }, v);
+                    // persist vector in DB for future restarts
+                    try { await knex('documents').where('id', d.id).update({ vector: JSON.stringify(v) }); } catch (e) { /* ignore write errors here */ }
                 }
             }
-            // Invoices
-            const invoices = await knex('invoices').select('id', 'vendor', 'invoice_no', 'tax_invoice_no');
+            // Invoices: combine vendor, invoice numbers and any textual fields into one embedding
+            const invoices = await knex('invoices').select('id', 'vendor', 'invoice_no', 'tax_invoice_no', 'description');
             for (const inv of invoices) {
-                if (inv.vendor) {
-                    const v = await generateEmbedding(inv.vendor);
-                    vectorStore.upsertDocument({ ...inv, matchType: 'invoice-vendor' }, v);
-                }
-                if (inv.invoice_no) {
-                    const v = await generateEmbedding(inv.invoice_no);
-                    vectorStore.upsertDocument({ ...inv, matchType: 'invoice-no' }, v);
-                }
-                if (inv.tax_invoice_no) {
-                    const v = await generateEmbedding(inv.tax_invoice_no);
-                    vectorStore.upsertDocument({ ...inv, matchType: 'invoice-tax-no' }, v);
+                const combined = `${inv.vendor || ''} ${inv.invoice_no || ''} ${inv.tax_invoice_no || ''} ${inv.description || ''}`.trim();
+                if (combined.length > 5) {
+                    const v = await generateEmbedding(combined);
+                    vectorStore.upsertDocument({ id: inv.id, title: `${inv.vendor || ''} ${inv.invoice_no || ''}`.trim(), ocrContent: inv.description || '', matchType: 'invoice' }, v);
+                    try { await knex('invoices').where('id', inv.id).update({ vector: JSON.stringify(v) }); } catch (e) { }
                 }
             }
             // Tax Objects
@@ -746,43 +750,33 @@ async function startWorkerSystem() {
                     vectorStore.upsertDocument({ ...e, matchType: 'external-destination' }, v);
                 }
             }
-            // Inventory (box_data)
+            // Inventory (box_data): create a combined textual representation per inventory row
             const inventory = await knex('inventory').select('id', 'box_data');
             for (const inv of inventory) {
                 let box = null;
                 try { box = JSON.parse(inv.box_data); } catch (e) { box = null; }
                 if (box) {
-                    if (box.id) {
-                        const v = await generateEmbedding(String(box.id));
-                        vectorStore.upsertDocument({ id: inv.id, matchType: 'inventory-boxid', boxId: box.id }, v);
-                    }
-                    if (box.ocrContent) {
-                        const v = await generateEmbedding(box.ocrContent);
-                        vectorStore.upsertDocument({ id: inv.id, matchType: 'inventory-box-content', boxId: box.id }, v);
-                    }
-                    if (box.ordners && Array.isArray(box.ordners)) {
+                    // Build a combined string from relevant parts
+                    const parts = [];
+                    if (box.id) parts.push(String(box.id));
+                    if (box.ocrContent) parts.push(box.ocrContent);
+                    if (Array.isArray(box.ordners)) {
                         for (const ord of box.ordners) {
-                            if (ord.noOrdner) {
-                                const v = await generateEmbedding(ord.noOrdner);
-                                vectorStore.upsertDocument({ id: inv.id, matchType: 'inventory-ordner', ordner: ord.noOrdner }, v);
-                            }
-                            if (ord.invoices && Array.isArray(ord.invoices)) {
+                            if (ord.noOrdner) parts.push(ord.noOrdner);
+                            if (Array.isArray(ord.invoices)) {
                                 for (const invoice of ord.invoices) {
-                                    if (invoice.invoiceNo) {
-                                        const v = await generateEmbedding(invoice.invoiceNo);
-                                        vectorStore.upsertDocument({ id: inv.id, matchType: 'inventory-invoice-no', invoiceNo: invoice.invoiceNo }, v);
-                                    }
-                                    if (invoice.vendor) {
-                                        const v = await generateEmbedding(invoice.vendor);
-                                        vectorStore.upsertDocument({ id: inv.id, matchType: 'inventory-invoice-vendor', vendor: invoice.vendor }, v);
-                                    }
-                                    if (invoice.ocrContent) {
-                                        const v = await generateEmbedding(invoice.ocrContent);
-                                        vectorStore.upsertDocument({ id: inv.id, matchType: 'inventory-invoice-content', ocrContent: invoice.ocrContent }, v);
-                                    }
+                                    if (invoice.invoiceNo) parts.push(invoice.invoiceNo);
+                                    if (invoice.vendor) parts.push(invoice.vendor);
+                                    if (invoice.ocrContent) parts.push(invoice.ocrContent);
                                 }
                             }
                         }
+                    }
+                    const combined = parts.join(' \n ');
+                    if (combined.length > 5) {
+                        const v = await generateEmbedding(combined);
+                        vectorStore.upsertDocument({ id: inv.id, title: `inventory-${inv.id}`, ocrContent: combined, matchType: 'inventory' }, v);
+                        try { await knex('inventory').where('id', inv.id).update({ vector: JSON.stringify(v) }); } catch (e) { }
                     }
                 }
             }
