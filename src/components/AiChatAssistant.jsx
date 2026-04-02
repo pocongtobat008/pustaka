@@ -859,8 +859,18 @@ export default function AiChatAssistant({
                         </div>
 
                         {/* Quick Actions (only show if few messages) */}
-                        {messages.length <= 2 && !isLoading && (
+                        {!isLoading && (
                             <div className={`px-4 pb-2 flex flex-wrap gap-1.5 border-t pt-2 ${isDarkMode ? 'border-white/5' : 'border-slate-100'}`}>
+                                <button
+                                    onClick={clearChat}
+                                    className={`text-[11px] px-3 py-1.5 rounded-full font-medium transition-all flex items-center gap-1.5 ${isDarkMode
+                                        ? 'bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 border border-rose-500/20'
+                                        : 'bg-rose-50 text-rose-600 hover:bg-rose-100'
+                                        }`}
+                                >
+                                    <X size={12} />
+                                    <span>Mulai Awal</span>
+                                </button>
                                 {quickActions.map((qa, i) => (
                                     <button
                                         key={i}
