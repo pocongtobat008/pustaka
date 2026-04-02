@@ -20,14 +20,23 @@ const knex = knexLib({
 const isPg = DB_CLIENT.startsWith('pg');
 const q = process.argv[2] || 'osaka';
 
+const likeExpr = (col, q) => {
+  if (isPg) return { sql: `${col} ILIKE ?`, val: `%${q}%` };
+  return { sql: `LOWER(${col}) LIKE ?`, val: `%${q.toLowerCase()}%` };
+};
+
 async function run() {
   try {
     console.log(`Searching for '${q}' across tables...`);
 
     // documents
     const docsQuery = knex('documents').select('id','title','ocrContent','uploadDate').where(function(){
-      this.where('title','like',`%${q}%`).orWhere('ocrContent','like',`%${q}%`);
+      const t = likeExpr('title', q);
+      this.whereRaw(t.sql, [t.val]);
+      const o = likeExpr('ocrContent', q);
+      this.orWhereRaw(o.sql, [o.val]);
       if (isPg) this.orWhereRaw("COALESCE(file_data::text,'') ILIKE ?", [`%${q}%`]);
+      else this.orWhereRaw("LOWER(COALESCE(file_data,'')) LIKE ?", [`%${q.toLowerCase()}%`]);
     }).limit(20);
     const docs = await docsQuery;
     console.log('\ndocuments:', docs.length);
@@ -35,7 +44,12 @@ async function run() {
 
     // invoices
     const invQuery = knex('invoices').select('id','vendor','invoice_no','ocr_content').where(function(){
-      this.where('vendor','like',`%${q}%`).orWhere('invoice_no','like',`%${q}%`).orWhere('ocr_content','like',`%${q}%`);
+      const v = likeExpr('vendor', q);
+      this.whereRaw(v.sql, [v.val]);
+      const inv = likeExpr('invoice_no', q);
+      this.orWhereRaw(inv.sql, [inv.val]);
+      const o = likeExpr('ocr_content', q);
+      this.orWhereRaw(o.sql, [o.val]);
     }).limit(20);
     const inv = await invQuery;
     console.log('\ninvoices:', inv.length);
@@ -44,7 +58,7 @@ async function run() {
     // inventory
     const invtQuery = knex('inventory').select('id','box_data').where(function(){
       if (isPg) this.whereRaw("COALESCE(box_data::text,'') ILIKE ?", [`%${q}%`]);
-      else this.where('box_data','like',`%${q}%`);
+      else this.orWhereRaw("LOWER(COALESCE(box_data,'')) LIKE ?", [`%${q.toLowerCase()}%`]);
     }).limit(20);
     const invt = await invtQuery;
     console.log('\ninventory:', invt.length);
@@ -52,7 +66,12 @@ async function run() {
 
     // inventory_items
     const itemsQuery = knex('inventory_items').select('id','invoice_no','vendor','ocr_content').where(function(){
-      this.where('invoice_no','like',`%${q}%`).orWhere('vendor','like',`%${q}%`).orWhere('ocr_content','like',`%${q}%`);
+      const invn = likeExpr('invoice_no', q);
+      this.whereRaw(invn.sql, [invn.val]);
+      const vend = likeExpr('vendor', q);
+      this.orWhereRaw(vend.sql, [vend.val]);
+      const o = likeExpr('ocr_content', q);
+      this.orWhereRaw(o.sql, [o.val]);
     }).limit(20);
     const items = await itemsQuery;
     console.log('\ninventory_items:', items.length);
@@ -60,9 +79,12 @@ async function run() {
 
     // external_items
     const extQuery = knex('external_items').select('id','boxId','destination','boxData').where(function(){
-      this.where('boxId','like',`%${q}%`).orWhere('destination','like',`%${q}%`);
+      const b = likeExpr('boxId', q);
+      this.whereRaw(b.sql, [b.val]);
+      const d = likeExpr('destination', q);
+      this.orWhereRaw(d.sql, [d.val]);
       if (isPg) this.orWhereRaw('COALESCE("boxData"::text,\'\') ILIKE ?', [`%${q}%`]);
-      else this.orWhere('boxData','like',`%${q}%`);
+      else this.orWhereRaw("LOWER(COALESCE(boxData,'')) LIKE ?", [`%${q.toLowerCase()}%`]);
     }).limit(20);
     const ext = await extQuery;
     console.log('\nexternal_items:', ext.length);
@@ -70,14 +92,19 @@ async function run() {
 
     // document_approvals
     const appQuery = knex('document_approvals').select('id','title','ocr_content').where(function(){
-      this.where('title','like',`%${q}%`).orWhere('description','like',`%${q}%`).orWhere('ocr_content','like',`%${q}%`);
+      const t = likeExpr('title', q);
+      this.whereRaw(t.sql, [t.val]);
+      const d = likeExpr('description', q);
+      this.orWhereRaw(d.sql, [d.val]);
+      const o = likeExpr('ocr_content', q);
+      this.orWhereRaw(o.sql, [o.val]);
     }).limit(20);
     const apps = await appQuery;
     console.log('\ndocument_approvals:', apps.length);
     apps.forEach(r=>console.dir(r,{depth:1}));
 
     // tax_audit_notes
-    const notesQuery = knex('tax_audit_notes').select('id','text').where('text','like',`%${q}%`).limit(20);
+    const notesQuery = knex('tax_audit_notes').select('id','text').where(function(){ const t = likeExpr('text', q); this.whereRaw(t.sql, [t.val]); }).limit(20);
     const notes = await notesQuery;
     console.log('\ntax_audit_notes:', notes.length);
     notes.forEach(r=>console.dir(r,{depth:1}));

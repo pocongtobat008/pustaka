@@ -9,6 +9,16 @@ import { parseJsonSafe } from '../utils/jsonSafe.js';
 
 const isPg = (process.env.DB_CLIENT || '').toLowerCase().startsWith('pg');
 
+const makeLike = (q) => ({
+    pg: `%${q}%`,
+    other: `%${q.toLowerCase()}%`
+});
+
+const likeExpr = (col, q, pgOnly = false) => {
+    if (isPg) return { sql: `${col} ILIKE ?`, val: `%${q}%` };
+    if (pgOnly) return { sql: `${col} LIKE ?`, val: `%${q}%` };
+    return { sql: `LOWER(${col}) LIKE ?`, val: `%${q.toLowerCase()}%` };
+};
 export const getJobStatus = async (req, res) => {
     try {
         const { id } = req.params;
@@ -37,9 +47,14 @@ export const searchDocuments = async (req, res) => {
             return res.json({ jobId: job.id, status: 'processing', message: 'AI is searching semantically...' });
         }
 
+        const like = makeLike(q);
         const docs = await knex('documents')
-            .where('title', 'like', `%${q}%`)
-            .orWhere('ocrContent', 'like', `%${q}%`);
+            .where(function() {
+                const l = likeExpr('title', q);
+                this.whereRaw(l.sql, [l.val]);
+                const l2 = likeExpr('ocrContent', q);
+                this.orWhereRaw(l2.sql, [l2.val]);
+            });
         res.json(docs);
 
     } catch (err) {
@@ -78,26 +93,37 @@ export const semanticSearch = async (req, res) => {
         // 1. Run keyword queries across relevant tables (limit to 100 each)
         const [kwDocs, kwInvoices, kwTaxObjects, kwExternal, kwInventory, kwInvItems, kwApprovals, kwAuditNotes] = await Promise.all([
             knex('documents').select('id', 'title', 'ocrContent', 'url', 'uploadDate', 'size', 'folderId').where(function() {
-                this.where('title', 'like', `%${query}%`).orWhere('ocrContent', 'like', `%${query}%`);
+                const t = likeExpr('title', query);
+                this.whereRaw(t.sql, [t.val]);
+                const o = likeExpr('ocrContent', query);
+                this.orWhereRaw(o.sql, [o.val]);
                 if (isPg) this.orWhereRaw("COALESCE(file_data::text,'') ILIKE ?", [`%${query}%`]);
-                else this.orWhere('file_data', 'like', `%${query}%`);
+                else this.orWhereRaw("LOWER(COALESCE(file_data,'')) LIKE ?", [`%${query.toLowerCase()}%`]);
             }).limit(100),
             knex('invoices').select('id', 'vendor', 'invoice_no', 'tax_invoice_no', 'ocr_content', 'file_name', 'payment_date').where(function() {
-                this.where('vendor', 'like', `%${query}%`).orWhere('invoice_no', 'like', `%${query}%`).orWhere('ocr_content', 'like', `%${query}%`);
+                const v = likeExpr('vendor', query);
+                this.whereRaw(v.sql, [v.val]);
+                const inv = likeExpr('invoice_no', query);
+                this.orWhereRaw(inv.sql, [inv.val]);
+                const ocr = likeExpr('ocr_content', query);
+                this.orWhereRaw(ocr.sql, [ocr.val]);
             }).limit(100),
-            knex('tax_objects').select('id', 'name', 'identity_number').where(function() { this.where('name', 'like', `%${query}%`).orWhere('identity_number', 'like', `%${query}%`); }).limit(100),
+            knex('tax_objects').select('id', 'name', 'identity_number').where(function() { const n = likeExpr('name', query); this.whereRaw(n.sql, [n.val]); const idn = likeExpr('identity_number', query); this.orWhereRaw(idn.sql, [idn.val]); }).limit(100),
             knex('external_items').select('id', 'boxId', 'destination', 'boxData').where(function() {
-                this.where('boxId', 'like', `%${query}%`).orWhere('destination', 'like', `%${query}%`);
+                const b = likeExpr('boxId', query);
+                this.whereRaw(b.sql, [b.val]);
+                const d = likeExpr('destination', query);
+                this.orWhereRaw(d.sql, [d.val]);
                 if (isPg) this.orWhereRaw(`COALESCE("boxData"::text,'') ILIKE ?`, [`%${query}%`]);
-                else this.orWhere('boxData', 'like', `%${query}%`);
+                else this.orWhereRaw("LOWER(COALESCE(boxData,'')) LIKE ?", [`%${query.toLowerCase()}%`]);
             }).limit(100),
             knex('inventory').select('id', 'box_data').where(function() {
                 if (isPg) this.whereRaw("COALESCE(box_data::text,'') ILIKE ?", [`%${query}%`]);
-                else this.where('box_data', 'like', `%${query}%`);
+                else this.whereRaw("LOWER(COALESCE(box_data,'')) LIKE ?", [`%${query.toLowerCase()}%`]);
             }).limit(100),
-            knex('inventory_items').select('id', 'invoice_no', 'vendor', 'ocr_content').where(function() { this.where('invoice_no', 'like', `%${query}%`).orWhere('vendor', 'like', `%${query}%`).orWhere('ocr_content', 'like', `%${query}%`); }).limit(100),
-            knex('document_approvals').select('id', 'title', 'description', 'ocr_content', 'attachment_url').where(function() { this.where('title', 'like', `%${query}%`).orWhere('description', 'like', `%${query}%`).orWhere('ocr_content', 'like', `%${query}%`); }).limit(100),
-            knex('tax_audit_notes').select('id', 'text').where('text', 'like', `%${query}%`).limit(100)
+            knex('inventory_items').select('id', 'invoice_no', 'vendor', 'ocr_content').where(function() { const invn = likeExpr('invoice_no', query); this.whereRaw(invn.sql, [invn.val]); const vend = likeExpr('vendor', query); this.orWhereRaw(vend.sql, [vend.val]); const ocr = likeExpr('ocr_content', query); this.orWhereRaw(ocr.sql, [ocr.val]); }).limit(100),
+            knex('document_approvals').select('id', 'title', 'description', 'ocr_content', 'attachment_url').where(function() { const t = likeExpr('title', query); this.whereRaw(t.sql, [t.val]); const d = likeExpr('description', query); this.orWhereRaw(d.sql, [d.val]); const o = likeExpr('ocr_content', query); this.orWhereRaw(o.sql, [o.val]); }).limit(100),
+            knex('tax_audit_notes').select('id', 'text').where(function(){ const t = likeExpr('text', query); this.whereRaw(t.sql, [t.val]); }).limit(100)
         ]);
 
         // 2. Semantic vector search (use cached vectors if any)
