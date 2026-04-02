@@ -502,13 +502,14 @@ class InMemoryVectorStore {
 
     // Ultra-fast pure mathematical search across RAM
     searchNearest(queryVectorArray, minScore = 0.4, limit = 15) {
-        if (!this.isInitialized) {
+        // Allow searching against any vectors already cached even if full initialization
+        if (!this.isInitialized && this.cache.size === 0) {
             if (!this.isInitializing) {
                 this.initialize({ lazy: true }).catch((err) => {
                     console.error('[AI Search] Lazy initialization failed:', err.message);
                 });
             }
-            console.warn('[AI Search] Vector Store accessed before initialization. Returning empty result temporarily.');
+            console.warn('[AI Search] Vector Store accessed before initialization and cache empty. Returning empty result temporarily.');
             return [];
         }
 
