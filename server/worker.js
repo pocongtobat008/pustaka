@@ -717,12 +717,13 @@ async function startWorkerSystem() {
                 }
             }
             // Invoices: combine vendor, invoice numbers and any textual fields into one embedding
-            const invoices = await knex('invoices').select('id', 'vendor', 'invoice_no', 'tax_invoice_no', 'description');
+            const invoices = await knex('invoices').select('id', 'vendor', 'invoice_no', 'tax_invoice_no', 'ocr_content');
             for (const inv of invoices) {
-                const combined = `${inv.vendor || ''} ${inv.invoice_no || ''} ${inv.tax_invoice_no || ''} ${inv.description || ''}`.trim();
+                const textField = inv.ocr_content || inv.ocrContent || '';
+                const combined = `${inv.vendor || ''} ${inv.invoice_no || ''} ${inv.tax_invoice_no || ''} ${textField}`.trim();
                 if (combined.length > 5) {
                     const v = await generateEmbedding(combined);
-                    vectorStore.upsertDocument({ id: inv.id, title: `${inv.vendor || ''} ${inv.invoice_no || ''}`.trim(), ocrContent: inv.description || '', matchType: 'invoice' }, v);
+                    vectorStore.upsertDocument({ id: inv.id, title: `${inv.vendor || ''} ${inv.invoice_no || ''}`.trim(), ocrContent: textField, matchType: 'invoice' }, v);
                     try { await knex('invoices').where('id', inv.id).update({ vector: JSON.stringify(v) }); } catch (e) { }
                 }
             }
