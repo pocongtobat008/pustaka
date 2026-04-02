@@ -41,14 +41,14 @@ if (typeof pdf !== 'function' && pdf.default) {
 }
 
 // Connect to the main Node.js process to trigger UI refreshes
-const socket = ioClient(`http://localhost:${process.env.PORT || 5005}`, { reconnection: true });
+const socket = ioClient(`http://localhost:5005`, { reconnection: true });
 
 socket.on('connect', () => {
     console.log('[Worker] Terhubung ke server utama (IPC).');
 });
 
 socket.on('connect_error', (err) => {
-    console.warn(`[Worker] Gagal terhubung ke server utama (ECONNREFUSED). Pastikan server backend di port ${process.env.PORT || 5005} sudah jalan.`);
+    console.warn(`[Worker] Gagal terhubung ke server utama (ECONNREFUSED). Pastikan server backend di port 5005 sudah jalan.`);
 });
 
 // PDF.js worker setup

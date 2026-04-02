@@ -140,7 +140,8 @@ io.emit = (event, payload) => {
     return rawIoEmit(event, payload);
 };
 
-const PORT = process.env.PORT || 5005;
+// Memaksa penggunaan Port 5005 untuk menghindari konflik dengan port 5000 di .env
+const PORT = 5005;
 
 // Middleware
 app.use(cookieParser());
