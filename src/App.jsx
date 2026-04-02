@@ -4224,10 +4224,10 @@ export default function App() {
         isOpen={isFlowModalOpen}
         onClose={() => setIsFlowModalOpen(false)}
         title={editingFlow ? `Edit Alur: ${flowForm.name}` : "Desain Alur Baru"}
-        size="max-w-7xl"
+        size="max-w-[100vw] w-screen h-screen m-0 !rounded-none"
         noPadding
       >
-        <div className="flex h-full min-h-0 flex-col">
+        <div className="flex h-full min-h-[80vh] flex-col">
           {/* Header Controls (Name & Description) */}
           <div className="p-6 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-6">
             <div className="space-y-2">
