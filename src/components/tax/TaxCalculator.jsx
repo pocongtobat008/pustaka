@@ -133,7 +133,7 @@ export default function TaxCalculator({
 
                 let midPpn = 0;
                 if (effectiveUsePpn) {
-                    midPpn = Math.ceil((11 / 12) * (mid - discountValue) * 0.12);
+                    midPpn = Math.ceil((mid - discountValue) * (ppnRate / 100));
                 }
 
                 let currentNet = 0;
@@ -160,7 +160,7 @@ export default function TaxCalculator({
                     const val = parseFloat(part);
                     if (!isNaN(val) && val > 0) {
                         const partPph = isPph21BukanPegawai ? calculateProgressivePph(0.5 * val) : Math.ceil(val * pphRateFactor);
-                        const partPpn = usePpn ? Math.ceil((11 / 12) * val * 0.12) : 0;
+                        const partPpn = usePpn ? Math.ceil(val * (ppnRate / 100)) : 0;
                         breakdown.push({ label: part, value: val, pph: partPph, ppn: partPpn });
                     }
                 });
@@ -174,7 +174,6 @@ export default function TaxCalculator({
         }), { value: 0, pph: 0, ppn: 0 });
 
         const effectiveUsePpn = usePpn || markupMode === 'ppn';
-        const effectivePpnMultiplier = 1 + (11 / 12 * 0.12); // ~1.11 effective (mathematical consistency)
 
         if (isPph21BukanPegawai) {
             if (markupMode !== 'none') {
@@ -184,11 +183,11 @@ export default function TaxCalculator({
             if (markupMode === 'pph' && pphRateFactor < 1) {
                 calculationDpp = dppValue / (1 - pphRateFactor);
             } else if (markupMode === 'ppn') {
-                calculationDpp = dppValue / (1 + (11 / 12 * ppnRateMultiplier));
+                calculationDpp = dppValue / (1 + ppnRateMultiplier);
             }
         }
 
-        const dppNet = effectiveUsePpn ? (11 / 12) * (calculationDpp - discountValue) : 0;
+        const dppNet = calculationDpp - discountValue;
         let calculatedPph = 0;
 
         if (isPph21BukanPegawai) {
