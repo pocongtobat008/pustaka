@@ -30,13 +30,16 @@ async function run() {
     console.log(`Searching for '${q}' across tables...`);
 
     // documents
-    const docsQuery = knex('documents').select('id','title','ocrContent','uploadDate').where(function(){
+    const docsQuery = knex('documents').select(knex.raw("id, title, COALESCE(ocrContent, ocr_content) as ocrContent, uploadDate")).where(function(){
       const t = likeExpr('title', q);
       this.whereRaw(t.sql, [t.val]);
-      const o = likeExpr('ocrContent', q);
-      this.orWhereRaw(o.sql, [o.val]);
-      if (isPg) this.orWhereRaw("COALESCE(file_data::text,'') ILIKE ?", [`%${q}%`]);
-      else this.orWhereRaw("LOWER(COALESCE(file_data,'')) LIKE ?", [`%${q.toLowerCase()}%`]);
+      if (isPg) {
+        this.orWhereRaw("COALESCE(ocrContent::text, ocr_content::text, '') ILIKE ?", [`%${q}%`]);
+        this.orWhereRaw("COALESCE(file_data::text,'') ILIKE ?", [`%${q}%`]);
+      } else {
+        this.orWhereRaw("LOWER(COALESCE(ocrContent, ocr_content, '')) LIKE ?", [`%${q.toLowerCase()}%`]);
+        this.orWhereRaw("LOWER(COALESCE(file_data,'')) LIKE ?", [`%${q.toLowerCase()}%`]);
+      }
     }).limit(20);
     const docs = await docsQuery;
     console.log('\ndocuments:', docs.length);

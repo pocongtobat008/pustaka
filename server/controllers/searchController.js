@@ -92,13 +92,16 @@ export const semanticSearch = async (req, res) => {
         // Build a comprehensive hybrid search: keyword across many tables + semantic vector search
         // 1. Run keyword queries across relevant tables (limit to 100 each)
         const [kwDocs, kwInvoices, kwTaxObjects, kwExternal, kwInventory, kwInvItems, kwApprovals, kwAuditNotes] = await Promise.all([
-            knex('documents').select('id', 'title', 'ocrContent', 'url', 'uploadDate', 'size', 'folderId').where(function() {
+            knex('documents').select(knex.raw("id, title, COALESCE(ocrContent, ocr_content) as ocrContent, url, uploadDate, size, folderId")).where(function() {
                 const t = likeExpr('title', query);
                 this.whereRaw(t.sql, [t.val]);
-                const o = likeExpr('ocrContent', query);
-                this.orWhereRaw(o.sql, [o.val]);
-                if (isPg) this.orWhereRaw("COALESCE(file_data::text,'') ILIKE ?", [`%${query}%`]);
-                else this.orWhereRaw("LOWER(COALESCE(file_data,'')) LIKE ?", [`%${query.toLowerCase()}%`]);
+                if (isPg) {
+                    this.orWhereRaw("COALESCE(ocrContent::text, ocr_content::text, '') ILIKE ?", [`%${query}%`]);
+                    this.orWhereRaw("COALESCE(file_data::text,'') ILIKE ?", [`%${query}%`]);
+                } else {
+                    this.orWhereRaw("LOWER(COALESCE(ocrContent, ocr_content, '')) LIKE ?", [`%${query.toLowerCase()}%`]);
+                    this.orWhereRaw("LOWER(COALESCE(file_data,'')) LIKE ?", [`%${query.toLowerCase()}%`]);
+                }
             }).limit(100),
             knex('invoices').select('id', 'vendor', 'invoice_no', 'tax_invoice_no', 'ocr_content', 'file_name', 'payment_date').where(function() {
                 const v = likeExpr('vendor', query);
