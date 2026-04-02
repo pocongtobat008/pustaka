@@ -1082,7 +1082,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         <span className="font-bold text-emerald-600">{formatCurrency(calcData.totalPayable)}</span>
                                     </div>
                                     <div className="flex justify-between border-t border-gray-100 dark:border-slate-700 pt-2 mt-1">
-                                        <span className="text-gray-500">DPP + PPN:</span>
+                                    <span className="text-gray-500">DPP + PPN ({ppnRate}%):</span>
                                         <span className="font-bold text-indigo-600">{formatCurrency((calcData.calculationDpp || 0) + (calcData.ppn || 0))}</span>
                                     </div>
                                     <div className="flex justify-between">
@@ -1112,7 +1112,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                                         </div>
                                                         <div className="grid grid-cols-2 gap-2">
                                                             <div className="flex justify-between text-indigo-600 dark:text-indigo-400 font-bold">
-                                                                <span>PPN:</span>
+                                                        <span>PPN ({ppnRate}%):</span>
                                                                 <span>+{formatCurrency(item.ppn)}</span>
                                                             </div>
                                                             <div className="flex justify-between text-rose-600 dark:text-rose-400 font-bold">
@@ -1131,7 +1131,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                                     </div>
                                                     <div className="grid grid-cols-2 gap-2 border-t border-white/20 pt-1.5">
                                                         <div className="flex justify-between font-bold text-indigo-100">
-                                                            <span>Total PPN:</span>
+                                                    <span>Total PPN ({ppnRate}%):</span>
                                                             <span>+{formatCurrency(calcData.totalBreakdown?.ppn || 0)}</span>
                                                         </div>
                                                         <div className="flex justify-between font-bold text-rose-100">

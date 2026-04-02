@@ -12,6 +12,7 @@ export default function TaxCalculator({
     initialMarkupMode = 'none',
     initialIsPph21BukanPegawai = false,
     initialUsePpn = true,
+    initialPpnRate = 12,
     onCopy,
     isReadOnly = false
 }) {
@@ -21,6 +22,7 @@ export default function TaxCalculator({
     const [markupMode, setMarkupMode] = useState(initialMarkupMode);
     const [isPph21BukanPegawai, setIsPph21BukanPegawai] = useState(initialIsPph21BukanPegawai);
     const [usePpn, setUsePpn] = useState(initialUsePpn);
+    const [ppnRate, setPpnRate] = useState(initialPpnRate);
     const [pph, setPph] = useState(0);
     const [ppn, setPpn] = useState(0);
     const [dppNet, setDppNet] = useState(0);
@@ -55,10 +57,13 @@ export default function TaxCalculator({
         if (initialIsPph21BukanPegawai !== undefined && initialIsPph21BukanPegawai !== isPph21BukanPegawai) {
             setIsPph21BukanPegawai(initialIsPph21BukanPegawai);
         }
-        if (initialUsePpn !== undefined && initialUsePpn !== usePpn) {
+        if (initialUsePpn !== undefined && initialUsePpn !== usePpn) { // Corrected from initialPpnRate
             setUsePpn(initialUsePpn);
         }
-    }, [initialDpp, initialRate, initialDiscount, initialMarkupMode, initialIsPph21BukanPegawai, initialUsePpn]);
+        if (initialPpnRate !== undefined && initialPpnRate !== ppnRate) {
+            setPpnRate(initialPpnRate);
+        }
+    }, [initialDpp, initialRate, initialDiscount, initialMarkupMode, initialIsPph21BukanPegawai, initialUsePpn, initialPpnRate]);
 
     useEffect(() => {
         let dppValue = 0;
@@ -85,7 +90,7 @@ export default function TaxCalculator({
 
         const rateValue = parseFloat(rate) || 0;
         const discountValue = parseFloat(discount.toString().replace(/\./g, '')) || 0;
-        const ppnRateMultiplier = 0.12; // 12% PPN rate (2025+)
+        const ppnRateMultiplier = ppnRate / 100;
         const pphRateFactor = rateValue / 100;
 
         let calculationDpp = dppValue;
@@ -179,7 +184,7 @@ export default function TaxCalculator({
             if (markupMode === 'pph' && pphRateFactor < 1) {
                 calculationDpp = dppValue / (1 - pphRateFactor);
             } else if (markupMode === 'ppn') {
-                calculationDpp = dppValue / effectivePpnMultiplier;
+                calculationDpp = dppValue / (1 + (11 / 12 * ppnRateMultiplier));
             }
         }
 
@@ -193,7 +198,7 @@ export default function TaxCalculator({
             calculatedPph = Math.ceil(calculationDpp * pphRateFactor);
         }
 
-        const calculatedPpn = effectiveUsePpn ? Math.ceil(dppNet * 0.12) : 0;
+        const calculatedPpn = effectiveUsePpn ? Math.ceil(dppNet * ppnRateMultiplier) : 0;
         const calculatedTotal = Math.ceil((calculationDpp - discountValue) + calculatedPpn - calculatedPph);
         const totalDibukukan = Math.ceil(calculatedTotal + calculatedPph);
 
@@ -224,13 +229,13 @@ export default function TaxCalculator({
                 dppNet: dppNet,
                 markupMode: markupMode,
                 isPph21BukanPegawai,
-                usePpn,
+                usePpn: effectiveUsePpn,
                 calculationDpp: calculationDpp,
                 breakdown: breakdown,
                 totalBreakdown: totalBreakdown
             });
         }
-    }, [dpp, rate, discount, markupMode, isPph21BukanPegawai, usePpn, isCalcMode, onCalculate]);
+    }, [dpp, rate, discount, markupMode, isPph21BukanPegawai, usePpn, isCalcMode, onCalculate, ppnRate]);
 
     const getPph21Breakdown = (val) => {
         if (val === undefined || val === null) return { dppTax: 0, brackets: [], totalTax: 0 };
@@ -616,7 +621,7 @@ export default function TaxCalculator({
 
                         <div className="p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-100 dark:border-emerald-800">
                             <div className="flex justify-between items-center mb-1">
-                                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">PPN (12%)</span>
+                                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">PPN ({ppnRate}%)</span>
                                 <button onClick={() => copyToClipboard(ppn, 'ppn')} className="text-emerald-400 hover:text-emerald-600 transition-colors">
                                     {copied === 'ppn' ? <Check size={14} /> : <Copy size={14} />}
                                 </button>
