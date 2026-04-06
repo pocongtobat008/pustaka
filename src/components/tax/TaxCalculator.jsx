@@ -12,7 +12,7 @@ export default function TaxCalculator({
     initialMarkupMode = 'none',
     initialIsPph21BukanPegawai = false,
     initialUsePpn = true,
-    initialPpnRate = 12,
+    initialPpnRate = 11,
     onCopy,
     isReadOnly = false
 }) {
