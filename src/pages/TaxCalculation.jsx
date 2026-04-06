@@ -171,7 +171,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
     const [isLoading, setIsLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [calcData, setCalcData] = useState({ dpp: 0, rate: 0, pph: 0, ppn: 0, totalPayable: 0, discount: 0, dppNet: 0, markupMode: 'none', isPph21BukanPegawai: false, usePpn: true });
-    const [ppnRate, setPpnRate] = useState(12);
+    const [ppnRate, setPpnRate] = useState(11);
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 15;
     const [editingId, setEditingId] = useState(null);
@@ -486,7 +486,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
             dpp: item.dpp,
             rate: item.rate,
             pph: item.pph,
-            ppn: item.ppn || (!!item.use_ppn ? (((11 / 12) * (item.dpp - (item.discount || 0))) * ((item.ppnRate || 12) / 100)) : 0),
+            ppn: item.ppn || (!!item.use_ppn ? (((11 / 12) * (item.dpp - (item.discount || 0))) * ((item.ppnRate || 11) / 100)) : 0),
             discount: item.discount || 0,
             dppNet: !!item.use_ppn ? ((11 / 12) * (item.dpp - (item.discount || 0))) : 0,
             markupMode: item.markup_mode || 'none',
@@ -494,10 +494,10 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
             usePpn: item.use_ppn !== undefined ? !!item.use_ppn : true,
             totalPayable: item.total_payable || item.totalPayable ||
                 Math.ceil((item.dpp - (item.discount || 0)) + // Recalculate totalPayable if not present
-                    (item.ppn || (!!item.use_ppn ? (((11 / 12) * (item.dpp - (item.discount || 0))) * ((item.ppnRate || 12) / 100)) : 0)) -
+                    (item.ppn || (!!item.use_ppn ? (((11 / 12) * (item.dpp - (item.discount || 0))) * ((item.ppnRate || 11) / 100)) : 0)) -
                     item.pph)
         });
-        setPpnRate(item.ppnRate || 12);
+        setPpnRate(item.ppnRate || 11);
         setActiveTab('object');
     };
 
