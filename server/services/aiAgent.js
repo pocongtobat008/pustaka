@@ -30,7 +30,7 @@ export async function getAiModels() {
 }
 
 // ── Optimizations ──
-const MAX_ITERATIONS = 6;          // increased for multi-turn tool chaining
+const MAX_ITERATIONS = 4;
 const MAX_HISTORY = 5;             // last 5 messages sufficient for context
 const TOOL_RESULT_ROWS = 15;       // compact results, ask LLM for more if needed
 const TOOL_RESULT_ROWS_LIST = 15;  // default list limit

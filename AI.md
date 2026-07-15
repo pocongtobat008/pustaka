@@ -1109,7 +1109,7 @@ GET /api/ai/memory/stats
 ### Configuration
 ```javascript
 // In server/services/aiAgent.js
-const MAX_ITERATIONS = 6;  // Increased from 4 to support deeper chains
+const MAX_ITERATIONS = 4;
 const RAG_CONTEXT_LIMIT = 3;  // Max past conversations injected
 ```
 
