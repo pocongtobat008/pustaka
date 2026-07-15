@@ -30,12 +30,13 @@ export async function getAiModels() {
 }
 
 // ── Optimizations ──
-const MAX_ITERATIONS = 4;          // was 6 — intent pre-classify reduces needed loops
-const MAX_HISTORY = 5;             // was 10 — last 5 messages sufficient for context
-const TOOL_RESULT_ROWS = 15;       // was 50 — compact results, ask LLM for more if needed
+const MAX_ITERATIONS = 6;          // increased for multi-turn tool chaining
+const MAX_HISTORY = 5;             // last 5 messages sufficient for context
+const TOOL_RESULT_ROWS = 15;       // compact results, ask LLM for more if needed
 const TOOL_RESULT_ROWS_LIST = 15;  // default list limit
-const OCR_SNIPPET = 500;           // was 3000 — enough for context, saves tokens
+const OCR_SNIPPET = 500;           // enough for context, saves tokens
 const PARALLEL_EXECUTION = true;   // execute multiple tool calls concurrently
+const RAG_CONTEXT_LIMIT = 3;       // max relevant past conversations to retrieve
 
 // ── Intent pre-classification ──
 const INTENT_PATTERNS = {
@@ -701,6 +702,12 @@ Cara kerja:
 7. Untuk pertanyaan COA/akuntansi: gunakan \`search_coa_accounts\` untuk cari kode/nama akun, \`get_coa_hierarchy\` untuk struktur lengkap, \`get_coa_stats\` untuk statistik.
 8. Contoh pertanyaan COA: "akun 11110 itu apa?", "tampilkan sub COA untuk akun kas", "berapa jumlah akun di COA?", "cari departemen untuk akun pendapatan".
 
+Multi-turn Tool Chaining:
+9. Jika hasil pencarian mengembalikan ID, gunakan tool detail untuk mendapatkan informasi lengkap. Contoh: search_documents → get_document_detail(id).
+10. Jika perlu konteks terkait, panggil beberapa tool secara berurutan. Contoh: search_invoices → get_invoice_detail → search_documents(vendor).
+11. Gunakan SEMUA iterasi yang tersedia untuk mengumpulkan data lengkap sebelum memberikan jawaban akhir.
+12. Jangan terburu-buru memberikan jawaban jika masih ada data yang bisa diambil.
+
 Format laporan:
 - Gunakan heading (###, ####), tabel Markdown, dan bullet points.
 - Selalu cantumkan ID sumber (mis. Invoice #12, WP #5).
@@ -919,8 +926,23 @@ export async function runAgent(message, history = [], embedFn = null) {
             .slice(-MAX_HISTORY)
         : [];
 
+    // ── RAG: Retrieve relevant past conversations ──
+    let ragContext = '';
+    if (embedFn) {
+        try {
+            const { searchRelevantConversations } = await import('./conversationMemory.js');
+            const relevant = await searchRelevantConversations(message, embedFn, { limit: RAG_CONTEXT_LIMIT });
+            if (relevant.length > 0) {
+                ragContext = '\n\nKonteks dari percakapan lama:\n' +
+                    relevant.map((r, i) => `${i + 1}. [${r.keyTopics}] ${r.summary}`).join('\n');
+            }
+        } catch (err) {
+            console.warn(`[AI Agent] RAG context retrieval failed: ${err.message}`);
+        }
+    }
+
     const messages = [
-        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'system', content: SYSTEM_PROMPT + ragContext },
         ...hist,
         { role: 'user', content: message }
     ];

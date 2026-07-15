@@ -353,6 +353,20 @@ async function processJob(job) {
                     if (msgs.length <= 2) {
                         await generateTitle(sessionId, message);
                     }
+                    // Auto-summarize session for RAG memory (after 4+ messages)
+                    try {
+                        const { autoSummarizeSession } = await import('./services/conversationMemory.js');
+                        const allMsgs = await getMessages(sessionId, { limit: 50 });
+                        if (allMsgs && allMsgs.length >= 4) {
+                            // Get userId from session
+                            const session = await knex('ai_chat_sessions').where('id', sessionId).first();
+                            if (session) {
+                                await autoSummarizeSession(sessionId, session.user_id, generateEmbedding);
+                            }
+                        }
+                    } catch (sumErr) {
+                        console.warn(`[Worker] Auto-summarize failed: ${sumErr.message}`);
+                    }
                     console.log(`[Worker] Chat history saved for session ${sessionId}`);
                 } catch (saveErr) {
                     console.error(`[Worker] Failed to save chat history: ${saveErr.message}`);

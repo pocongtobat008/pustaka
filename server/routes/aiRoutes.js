@@ -4,6 +4,8 @@ import { getCacheStats, invalidateCache } from '../services/agentCache.js';
 import * as chatHistory from '../services/chatHistory.js';
 import { getWarmLogs, getLatestWarmLog, getWarmConfig, updateWarmConfig } from '../services/cacheWarmer.js';
 import { addCacheWarmJob } from '../queue.js';
+import { getProactiveInsights } from '../services/insightsEngine.js';
+import { getMemoryStats } from '../services/conversationMemory.js';
 import { checkAuth } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -130,6 +132,30 @@ router.get('/ai/cache/warm/logs', checkAuth, async (req, res) => {
         const offset = parseInt(req.query.offset) || 0;
         const logs = await getWarmLogs({ limit, offset });
         res.json(logs);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// --- Proactive Insights ---
+
+// GET /api/ai/insights — get proactive insights (anomaly detection)
+router.get('/ai/insights', checkAuth, async (req, res) => {
+    try {
+        const insights = await getProactiveInsights();
+        res.json(insights);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// --- Conversation Memory Stats ---
+
+// GET /api/ai/memory/stats — get RAG memory statistics
+router.get('/ai/memory/stats', checkAuth, async (req, res) => {
+    try {
+        const stats = await getMemoryStats();
+        res.json(stats);
     } catch (e) {
         res.status(500).json({ error: e.message });
     }

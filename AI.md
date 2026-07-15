@@ -920,3 +920,290 @@ Config example (PUT /api/ai/cache/warm/config):
 └─────────────────────────────┴───────────┴────────────────────────────┘
 ```
 
+---
+
+## 11. PROACTIVE INSIGHTS ENGINE
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                    INSIGHTS ENGINE FLOW                           │
+│                                                                  │
+│  ┌─────────────┐    ┌──────────────┐    ┌─────────────────┐     │
+│  │  DB Tables   │───▶│  7 Detectors │───▶│  Insights Array  │     │
+│  │              │    │  (parallel)  │    │  (1h cache TTL)  │     │
+│  └─────────────┘    └──────────────┘    └─────────────────┘     │
+│         │                  │                      │              │
+│         ▼                  ▼                      ▼              │
+│  tax_summaries       ┌──────────┐          ┌──────────┐        │
+│  invoices            │ Detector │          │ API:     │        │
+│  documents           │ Results  │          │ GET      │        │
+│  coa_accounts        │          │          │ /api/ai/ │        │
+│  tax_audits          │ cached   │          │ insights │        │
+│                      │ 1 hour   │          └──────────┘        │
+│                      └──────────┘                               │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### 7 Anomaly Detectors
+
+| # | Detector | Table | Condition | Severity |
+|---|----------|-------|-----------|----------|
+| 1 | **Tax Spike** | `tax_summaries` | PPH23+PPH42 month-over-month change >20% | medium/high |
+| 2 | **Overdue Invoices** | `invoices` | `payment_date` >30 days ago | medium/high |
+| 3 | **Stuck Documents** | `documents` | `status = 'processing'` | high |
+| 4 | **Audit Deadlines** | `tax_audits` | `startDate` within 7 days, status pending/in_progress | medium |
+| 5 | **Empty COA** | `coa_accounts` | Account with no sub-accounts | low |
+| 6 | **High Volume Folders** | `documents` | Folder with >50 documents | low |
+| 7 | **Recent Activity** | `documents` + `invoices` | Activity today >0 | info |
+
+### Insight Object Shape
+```json
+{
+  "type": "tax_spike",
+  "severity": "high|medium|low|info",
+  "icon": "📊",
+  "title": "Pajak bulan ini naik 35%",
+  "detail": "Bulan ini: Rp 75 Juta | Bulan lalu: Rp 55.6 Juta",
+  "action": "Lihat detail pajak"
+}
+```
+
+### API Endpoint
+```
+GET /api/ai/insights
+→ { insights: [...], generatedAt, fromCache }
+```
+
+### Source: `server/services/insightsEngine.js`
+- Results cached 1 hour (in-memory)
+- Each detector runs independently; failures are logged but don't block others
+- `invalidateInsightsCache()` called when data changes significantly
+
+---
+
+## 12. RAG-ENHANCED CONVERSATION MEMORY
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                     RAG MEMORY FLOW                               │
+│                                                                  │
+│  USER ASKS QUESTION                                              │
+│       │                                                          │
+│       ▼                                                          │
+│  ┌─────────────────┐    ┌──────────────────┐                    │
+│  │ Generate Embedding│───▶│ pgvector Search  │                    │
+│  │ (query text)     │    │ (cosine > 0.3)   │                    │
+│  └─────────────────┘    └──────────────────┘                    │
+│                               │                                  │
+│                               ▼                                  │
+│                    ┌──────────────────────┐                      │
+│                    │ Top 3 Relevant Past  │                      │
+│                    │ Conversation Summaries│                      │
+│                    └──────────────────────┘                      │
+│                               │                                  │
+│                               ▼                                  │
+│                    ┌──────────────────────┐                      │
+│                    │ Inject into AI Agent │                      │
+│                    │ System Prompt        │                      │
+│                    │ [RAG CONTEXT]        │                      │
+│                    └──────────────────────┘                      │
+│                               │                                  │
+│                               ▼                                  │
+│                    ┌──────────────────────┐                      │
+│                    │ LLM Generates Reply  │                      │
+│                    │ with enriched context │                      │
+│                    └──────────────────────┘                      │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### Database: `ai_conversation_summaries`
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│  TABLE: ai_conversation_summaries                                    │
+├──────────────────────┬───────────────┬────────────────────────────────┤
+│  COLUMN              │  TYPE         │  DESCRIPTION                  │
+├──────────────────────┼───────────────┼────────────────────────────────┤
+│  id                  │  INTEGER PK   │  Auto-increment               │
+│  session_id          │  INTEGER FK   │  → ai_chat_sessions.id        │
+│  user_id             │  INTEGER FK   │  → users.id                   │
+│  summary             │  TEXT         │  Conversation summary (max 2k)│
+│  key_topics          │  TEXT         │  Comma-separated topics       │
+│  message_count       │  INTEGER      │  Messages in session          │
+│  embedding           │  VECTOR(1536) │  pgvector for semantic search │
+│  created_at          │  TIMESTAMP    │  When summary was created     │
+└──────────────────────┴───────────────┴────────────────────────────────┘
+```
+
+### How Auto-Summary Works
+1. Worker saves chat messages to `ai_chat_messages`
+2. After 4+ messages, `autoSummarizeSession()` is called
+3. `generateSummaryFromMessages()` extracts: first user question + last assistant answer
+4. Key topics extracted via regex patterns (PPN, PPh, Invoice, COA, etc.)
+5. Summary + embedding saved to `ai_conversation_summaries`
+6. Semantic search uses pgvector cosine distance (threshold ≥ 0.3)
+
+### Topic Detection Patterns
+| Pattern | Topic |
+|---------|-------|
+| `ppn\|vat\|pajak pertambahan` | PPN |
+| `pph\|pajak penghasilan` | PPh |
+| `invoice\|faktur` | Invoice |
+| `dokumen\|arsip` | Dokumen |
+| `coa\|akun` | COA |
+| `inventory\|box\|rak` | Inventory |
+| `approval\|persetujuan` | Approval |
+| `wp\|wajib pajak` | Wajib Pajak |
+| `audit\|pemeriksaan` | Audit |
+
+### API Endpoint
+```
+GET /api/ai/memory/stats
+→ { totalSummaries: N, withEmbedding: N }
+```
+
+### Source: `server/services/conversationMemory.js`
+
+---
+
+## 13. MULTI-TOOL CHAINING (MAX 6 ITERATIONS)
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                   MULTI-TOOL CHAINING                             │
+│                                                                  │
+│  ITERATION 1: search_docs("PPN")                                │
+│       │  → found 3 documents                                    │
+│       ▼                                                          │
+│  ITERATION 2: search_invoices("PPN")                            │
+│       │  → found 5 invoices                                     │
+│       ▼                                                          │
+│  ITERATION 3: get_document_detail(id=42)                        │
+│       │  → retrieved full document content                       │
+│       ▼                                                          │
+│  ITERATION 4: search_coa("PPN Output")                          │
+│       │  → found COA code 4112.01                                │
+│       ▼                                                          │
+│  ITERATION 5: (analysis)                                         │
+│       │  → synthesizing all tool results                         │
+│       ▼                                                          │
+│  ITERATION 6: generate final answer                              │
+│                                                                  │
+│  ──────────────────────────────────────────────────────────────  │
+│  KEY CHAINING PATTERNS:                                          │
+│                                                                  │
+│  1. Search → Detail:                                             │
+│     search_docs → get_document_detail → answer                   │
+│                                                                  │
+│  2. Multi-source aggregation:                                    │
+│     search_docs + search_invoices + search_coa → answer          │
+│                                                                  │
+│  3. Search → Verify → Answer:                                    │
+│     search_docs → verify_amount → answer                         │
+│                                                                  │
+│  4. Complex multi-step:                                          │
+│     search_docs → get_document_detail → search_coa               │
+│     → search_invoices → answer                                   │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### Configuration
+```javascript
+// In server/services/aiAgent.js
+const MAX_ITERATIONS = 6;  // Increased from 4 to support deeper chains
+const RAG_CONTEXT_LIMIT = 3;  // Max past conversations injected
+```
+
+### Chaining Rules (in System Prompt)
+1. **Use all iterations**: Don't stop early if more tools can help
+2. **Search before answer**: Always use search tools before answering data questions
+3. **Chain tools**: After search results, use detail tools to get full data
+4. **Verify amounts**: Use search_invoices to cross-check financial figures
+5. **Complete before replying**: Gather all needed data before final answer
+6. **Don't duplicate**: If a tool was already called, don't call again with same params
+
+### Tool Chaining Examples
+```
+User: "Tunjukkan semua dokumen PPN dan total nilainya"
+
+Chain: search_docs("PPN")
+     → [3 docs found]
+     → get_document_detail(id=1) [amount: 10M]
+     → get_document_detail(id=2) [amount: 15M]
+     → get_document_detail(id=3) [amount: 25M]
+     → Answer: "3 dokumen PPN ditemukan. Total: Rp 50 Juta"
+```
+
+---
+
+## 14. COMPLETE API ENDPOINTS REFERENCE
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                    AI ASSISTANT ENDPOINTS                         │
+├──────────────────────────┬──────────┬────────────────────────────┤
+│  ENDPOINT                │  METHOD  │  DESCRIPTION               │
+├──────────────────────────┼──────────┼────────────────────────────┤
+│  /api/ai/agent           │  POST    │  Main chat endpoint        │
+│  /api/ai/config          │  GET     │  Get AI configuration      │
+│  /api/ai/config          │  PUT     │  Update AI config          │
+│  /api/ai/status          │  GET     │  System status             │
+│  /api/ai/models          │  GET     │  Available AI models       │
+│  /api/ai/sessions        │  GET     │  List chat sessions        │
+│  /api/ai/sessions        │  POST    │  Create new session        │
+│  /api/ai/sessions/:id    │  GET     │  Get session messages      │
+│  /api/ai/sessions/:id    │  DELETE  │  Delete session            │
+├──────────────────────────┼──────────┼────────────────────────────┤
+│  /api/ai/cache/stats     │  GET     │  Cache statistics          │
+│  /api/ai/cache/invalidate│  POST    │  Invalidate cache          │
+│  /api/ai/cache/rebuild   │  POST    │  Rebuild pgvector index    │
+├──────────────────────────┼──────────┼────────────────────────────┤
+│  /api/ai/cache/warm/config│  GET    │  Get warm config           │
+│  /api/ai/cache/warm/config│  PUT    │  Update warm config        │
+│  /api/ai/cache/warm      │  POST    │  Manual trigger warm       │
+│  /api/ai/cache/warm/latest│  GET    │  Latest warm log           │
+│  /api/ai/cache/warm/logs │  GET     │  Warm run history          │
+├──────────────────────────┼──────────┼────────────────────────────┤
+│  /api/ai/insights        │  GET     │  Proactive insights        │
+│  /api/ai/memory/stats    │  GET     │  RAG memory statistics     │
+└──────────────────────────┴──────────┴────────────────────────────┘
+```
+
+---
+
+## 15. FILE STRUCTURE REFERENCE
+
+```
+server/
+├── services/
+│   ├── aiAgent.js          # Core agent + RAG context injection
+│   ├── agentCache.js       # pgvector + SHA256 cache layer
+│   ├── chatHistory.js      # Session/message CRUD
+│   ├── conversationMemory.js # RAG memory (save/search/summarize)
+│   ├── insightsEngine.js   # 7 proactive insight detectors
+│   ├── cacheWarmer.js      # Scheduled cache warming
+│   └── embeddings.js       # (placeholder, real: ai_search.js)
+├── ai_search.js            # Embedding generation + vector search
+├── db.js                   # Knex DB connection
+├── queue.js                # BullMQ queue setup
+├── utils/
+│   └── queue.js            # Cache warm schedule + BullMQ jobs
+├── worker.js               # Job processor (ai-agent, cache-warm)
+├── routes/
+│   └── aiRoutes.js         # All AI API endpoints
+├── controllers/
+│   └── aiController.js     # Request handlers
+├── migrations/
+│   ├── 20260715000000_create_coa_tables.js
+│   ├── 20260715100000_create_ai_cache_warm_logs.js
+│   ├── 20260715110000_add_meta_to_ai_settings.js
+│   └── 20260715120000_create_conversation_summaries.js
+│
+src/
+├── components/
+│   └── AiChatAssistant.jsx # Chat UI component
+├── services/
+│   └── database.js         # Frontend API calls
+└── pages/
+    └── Book.jsx            # COA management page
+```
+
