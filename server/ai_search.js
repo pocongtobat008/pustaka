@@ -1,50 +1,101 @@
-import { pipeline, env } from '@xenova/transformers';
+import { knex } from './db.js';
 
-// Disable native node bindings to prevent C++ segmentation faults
-// when used alongside node-canvas or other native modules.
-env.backends.onnx.wasm.numThreads = 1;
-env.backends.onnx.wasm.simd = false;
+const EMBEDDING_MODEL = 'we/text-embedding-v3';
 
-// Suppress ONNX Runtime warnings
-if (env && env.onnx) {
-    env.onnx.logLevel = 'error';
-}
+let cachedEmbeddingSettings = null;
+let settingsFetchPromise = null;
 
-// Singleton Promise mechanism to prevent race conditions
-let embedderPromise = null;
-
-const isWorker = process.env.IS_WORKER === 'true' ||
-    process.env.WORKER_MODE ||
-    (typeof process !== 'undefined' && process.argv[1]?.includes('worker.js'));
-
-async function initEmbedder() {
-    if (!isWorker) {
-        console.warn('[AI Search] ATTEMPT TO LOAD HEAVY MODEL IN NON-WORKER PROCESS BLOCKED.');
-        throw new Error('Heavy AI models can only be loaded in the dedicated worker process.');
-    }
-    if (!embedderPromise) {
-        embedderPromise = (async () => {
-            console.log('[AI Search] Initializing sentence-transformer model (all-MiniLM-L6-v2)...');
-            const p = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
-            console.log('[AI Search] Sentence-transformer model loaded.');
-            return p;
+async function getEmbeddingSettings() {
+    if (cachedEmbeddingSettings) return cachedEmbeddingSettings;
+    if (!settingsFetchPromise) {
+        settingsFetchPromise = (async () => {
+            try {
+                const row = await knex('ai_settings').orderBy('id', 'asc').first();
+                if (row?.base_url && row?.api_key) {
+                    cachedEmbeddingSettings = { base_url: row.base_url, api_key: row.api_key };
+                    console.log('[AI Search] Embedding settings loaded from DB.');
+                }
+            } catch (err) {
+                console.warn('[AI Search] Failed to load embedding settings:', err.message);
+            }
+            settingsFetchPromise = null;
         })();
     }
-    return embedderPromise;
+    await settingsFetchPromise;
+    return cachedEmbeddingSettings;
 }
 
+export function invalidateEmbeddingSettings() {
+    cachedEmbeddingSettings = null;
+    settingsFetchPromise = null;
+}
 
 /**
- * Generate a vector embedding for a given text.
- * @param {string} text 
+ * Generate a vector embedding for a given text using remote API.
+ * @param {string} text
  * @returns {Promise<Array<number>>}
  */
 export async function generateEmbedding(text) {
-    console.log(`[AI Search] Generating embedding for: "${text.substring(0, 50)}..."`);
-    const pipe = await initEmbedder();
-    const output = await pipe(text, { pooling: 'mean', normalize: true });
-    console.log('[AI Search] Embedding generated.');
-    return Array.from(output.data);
+    const settings = await getEmbeddingSettings();
+    if (!settings) {
+        throw new Error('AI settings not configured — cannot generate embeddings');
+    }
+
+    const url = settings.base_url.replace(/\/+$/, '') + '/embeddings';
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${settings.api_key}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ model: EMBEDDING_MODEL, input: text }),
+    });
+
+    if (!res.ok) {
+        const errBody = await res.text().catch(() => '');
+        throw new Error(`Embedding API error ${res.status}: ${errBody.slice(0, 200)}`);
+    }
+
+    const data = await res.json();
+    const embedding = data?.data?.[0]?.embedding;
+    if (!Array.isArray(embedding) || embedding.length === 0) {
+        throw new Error('Embedding API returned empty result');
+    }
+    return embedding;
+}
+
+/**
+ * Generate embeddings for multiple texts in a single API call (much faster than N individual calls).
+ * @param {string[]} texts
+ * @returns {Promise<Array<Array<number>>>}
+ */
+export async function generateEmbeddingsBatch(texts) {
+    if (!texts.length) return [];
+    if (texts.length === 1) return [await generateEmbedding(texts[0])];
+
+    const settings = await getEmbeddingSettings();
+    if (!settings) throw new Error('AI settings not configured');
+
+    const url = settings.base_url.replace(/\/+$/, '') + '/embeddings';
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${settings.api_key}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ model: EMBEDDING_MODEL, input: texts }),
+    });
+
+    if (!res.ok) {
+        const errBody = await res.text().catch(() => '');
+        throw new Error(`Embedding API error ${res.status}: ${errBody.slice(0, 200)}`);
+    }
+
+    const data = await res.json();
+    const items = data?.data || [];
+    // Sort by index to preserve order
+    items.sort((a, b) => a.index - b.index);
+    return items.map(item => item.embedding);
 }
 
 /**
@@ -374,7 +425,6 @@ Answer:`;
  * Fast In-Memory Vector Cache (ANN Alternative)
  * Stores embeddings in RAM as Float32Array for <5ms cosine similarity searches across 10k+ docs.
  */
-import { knex } from './db.js';
 import { parseJsonArraySafe } from './utils/jsonSafe.js';
 
 class InMemoryVectorStore {

@@ -1349,5 +1349,131 @@ export const db = {
             throw new Error(errorData.error || `Server Error: ${response.status}`);
         }
         return await response.json();
+    },
+
+    // --- COA (BOOK) ---
+    async getCoaHierarchy(params = {}) {
+        try {
+            const query = new URLSearchParams(params).toString();
+            const response = await fetch(`${API_URL}/coa?${query}`, { credentials: 'include' });
+            if (!response.ok) throw new Error('Gagal mengambil data COA');
+            return await response.json();
+        } catch (e) { console.error("getCoaHierarchy Error:", e); return []; }
+    },
+
+    async searchCoa(q) {
+        try {
+            const response = await fetch(`${API_URL}/coa/search?q=${encodeURIComponent(q)}`, { credentials: 'include' });
+            if (!response.ok) return [];
+            return await response.json();
+        } catch { return []; }
+    },
+
+    async getCoaStats() {
+        try {
+            const response = await fetch(`${API_URL}/coa/stats`, { credentials: 'include' });
+            if (!response.ok) return { accounts: 0, sub_accounts: 0, departments: 0 };
+            return await response.json();
+        } catch { return { accounts: 0, sub_accounts: 0, departments: 0 }; }
+    },
+
+    async createCoa(data) {
+        try {
+            const response = await fetch(`${API_URL}/coa`, {
+                method: 'POST', credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (!response.ok) {
+                const err = await response.json().catch(() => ({}));
+                throw new Error(err.error || 'Gagal membuat COA');
+            }
+            return await response.json();
+        } catch (e) { console.error("createCoa Error:", e); throw e; }
+    },
+
+    async updateCoa(level, id, data) {
+        try {
+            const response = await fetch(`${API_URL}/coa/${level}/${id}`, {
+                method: 'PUT', credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (!response.ok) {
+                const err = await response.json().catch(() => ({}));
+                throw new Error(err.error || 'Gagal update COA');
+            }
+            return await response.json();
+        } catch (e) { console.error("updateCoa Error:", e); throw e; }
+    },
+
+    async deleteCoa(level, id) {
+        try {
+            const response = await fetch(`${API_URL}/coa/${level}/${id}`, {
+                method: 'DELETE', credentials: 'include'
+            });
+            if (!response.ok) {
+                const err = await response.json().catch(() => ({}));
+                throw new Error(err.error || 'Gagal hapus COA');
+            }
+            return await response.json();
+        } catch (e) { console.error("deleteCoa Error:", e); throw e; }
+    },
+
+    async deleteAllCoa() {
+        try {
+            const response = await fetch(`${API_URL}/coa/all`, {
+                method: 'DELETE', credentials: 'include'
+            });
+            if (!response.ok) {
+                const err = await response.json().catch(() => ({}));
+                throw new Error(err.error || 'Gagal hapus semua data COA');
+            }
+            return await response.json();
+        } catch (e) { console.error("deleteAllCoa Error:", e); throw e; }
+    },
+
+    async importCoaBatch(rows) {
+        try {
+            const response = await fetch(`${API_URL}/coa/import-batch`, {
+                method: 'POST', credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rows })
+            });
+            if (!response.ok) {
+                const err = await response.json().catch(() => ({}));
+                throw new Error(err.error || 'Gagal import batch');
+            }
+            return await response.json();
+        } catch (e) { console.error("importCoaBatch Error:", e); throw e; }
+    },
+
+    async importCoaExcel(file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await fetch(`${API_URL}/coa/import`, {
+            method: 'POST', credentials: 'include', body: formData
+        });
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.error || `Server Error: ${response.status}`);
+        }
+        return await response.json();
+    },
+
+    async downloadCoaTemplate() {
+        try {
+            const response = await fetch(`${API_URL}/coa/template`, { credentials: 'include' });
+            if (!response.ok) throw new Error('Gagal download template');
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'template_coa.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        } catch (e) { console.error("downloadCoaTemplate Error:", e); throw e; }
     }
 };

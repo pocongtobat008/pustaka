@@ -24,17 +24,8 @@ export const checkAuth = async (req, res, next) => {
         } else {
             user = await knex('users').where('token', token).first();
 
-            // Enforce session expiry if expiry field is present
-            if (user?.token_expires_at) {
-                const expiresAt = new Date(user.token_expires_at).getTime();
-                if (Number.isFinite(expiresAt) && Date.now() > expiresAt) {
-                    await knex('users').where('id', user.id).update({
-                        token: null,
-                        token_expires_at: null
-                    });
-                    return res.status(401).json({ error: "Session expired" });
-                }
-            }
+            // NOTE: token_expires_at is intentionally NOT enforced. Session tokens
+            // never expire server-side, so a "Session expired" 401 can never block login.
         }
 
         if (!user) return res.status(401).json({ error: "Invalid user session" });

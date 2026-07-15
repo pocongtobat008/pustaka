@@ -174,6 +174,20 @@ export const addAiSemanticSearchJob = async (query) => {
     }
 };
 
+export const addAiAgentJob = async (message, history = [], sessionId = null) => {
+    try {
+        console.log(`[Queue] Adding AI Agent Job. Message: "${String(message).substring(0, 30)}..."`);
+        return await ocrQueue.add('ai-agent', {
+            message,
+            history,
+            sessionId
+        }, { max_attempts: 1 });
+    } catch (err) {
+        console.error("AddAiAgentJob Error:", err);
+        return null;
+    }
+};
+
 // Add OCR job with lane routing (3 lanes by default)
 export const addOCRJobRouted = async (docId, filePath, fileType, originalName, context = {}) => {
     try {

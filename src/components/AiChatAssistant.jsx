@@ -1,9 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     MessageCircle, X, Send, FileText, FileSpreadsheet, Maximize2, Minimize2,
     Package, Sparkles, Search, ArrowRight, Loader2,
-    ChevronDown, Bot, User, Eye, TrendingUp, BarChart3, AlertCircle, CheckCircle2, Zap
+    ChevronDown, Bot, User, Eye, TrendingUp, BarChart3, AlertCircle, CheckCircle2, Zap,
+    History, Trash2, Plus
 } from 'lucide-react';
 import { SemanticAnalyzer, isTaxQuery, getResponseTemplate } from '../utils/semanticAnalyzer.js';
 
@@ -111,20 +112,29 @@ const ResultCard = ({ result, isDarkMode, onNavigate, onLocationClick }) => {
 };
 
 // Typing indicator
-const TypingIndicator = ({ isDarkMode }) => (
-    <div className="flex items-center gap-2 px-4 py-3">
-        <div className={`w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg text-xs`}>
+const TypingIndicator = ({ isDarkMode, status }) => (
+    <div className="flex items-start gap-2 px-4 py-3">
+        <div className={`w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg text-xs flex-shrink-0`}>
             🤖
         </div>
-        <div className="flex gap-1">
-            {[0, 1, 2].map(i => (
-                <motion.div
-                    key={i}
-                    className={`w-2 h-2 rounded-full ${isDarkMode ? 'bg-white/40' : 'bg-slate-400'}`}
-                    animate={{ scale: [1, 1.3, 1], opacity: [0.5, 1, 0.5] }}
-                    transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.15 }}
-                />
-            ))}
+        <div className={`px-4 py-3 rounded-2xl rounded-bl-lg ${isDarkMode ? 'bg-white/8 border border-white/5' : 'bg-slate-100'}`}>
+            <div className="flex items-center gap-2">
+                <div className="flex gap-1">
+                    {[0, 1, 2].map(i => (
+                        <motion.div
+                            key={i}
+                            className={`w-2 h-2 rounded-full ${isDarkMode ? 'bg-indigo-400' : 'bg-indigo-500'}`}
+                            animate={{ scale: [1, 1.3, 1], opacity: [0.5, 1, 0.5] }}
+                            transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.15 }}
+                        />
+                    ))}
+                </div>
+                {status && (
+                    <span className={`text-[11px] font-medium ${isDarkMode ? 'text-white/50' : 'text-slate-400'}`}>
+                        {status}
+                    </span>
+                )}
+            </div>
         </div>
     </div>
 );
@@ -482,21 +492,47 @@ export default function AiChatAssistant({
         if (!q || q.length < 2) return;
         setSemanticLoading(true);
         try {
-                const headers = { 'Content-Type': 'application/json' };
-                // In local dev, allow a dev-token bypass so searches work without login
-                try {
-                    const isLocal = API_URL.startsWith('http://localhost') || window.location.protocol === 'file:';
-                    if (isLocal) headers['Authorization'] = 'Bearer dev-token';
-                } catch (e) { /* ignore in non-browser env */ }
+            const headers = { 'Content-Type': 'application/json' };
+            // In local dev, allow a dev-token bypass so searches work without login
+            try {
+                const isLocal = API_URL.startsWith('http://localhost') || window.location.protocol === 'file:';
+                if (isLocal) headers['Authorization'] = 'Bearer dev-token';
+            } catch (e) { /* ignore in non-browser env */ }
 
-                const res = await fetch(`${API_URL}/search/ai`, {
-                    method: 'POST',
-                    headers,
-                    credentials: 'include',
-                    body: JSON.stringify({ query: q })
-                });
+            const res = await fetch(`${API_URL}/search/ai`, {
+                method: 'POST',
+                headers,
+                credentials: 'include',
+                body: JSON.stringify({ query: q })
+            });
+            if (!res.ok) throw new Error('Search request failed');
             const json = await res.json();
-            const results = (json.results || []).map(r => ({
+
+            // The backend processes semantic search asynchronously in the worker.
+            // If a jobId is returned, poll until completion; otherwise use direct results.
+            let results = [];
+            if (json.jobId) {
+                const start = Date.now();
+                const timeoutMs = 30000;
+                while (Date.now() - start < timeoutMs) {
+                    await new Promise(r => setTimeout(r, 700));
+                    try {
+                        const jr = await fetch(`${API_URL}/search/job/${json.jobId}`, { credentials: 'include' });
+                        if (!jr.ok) continue;
+                        const jdata = await jr.json();
+                        if (jdata.status === 'COMPLETED' || jdata.status === 'completed') {
+                            const payload = (jdata.result && (jdata.result.results || jdata.result)) || [];
+                            results = Array.isArray(payload) ? payload : [];
+                            break;
+                        }
+                        if (jdata.status === 'FAILED' || jdata.status === 'failed') break;
+                    } catch { /* ignore transient poll errors */ }
+                }
+            } else {
+                results = json.results || [];
+            }
+
+            results = results.map(r => ({
                 ...r,
                 title: r.title || r.name || r.filename || 'Untitled',
                 snippet: r.preview || r.snippet || '',
@@ -530,8 +566,93 @@ export default function AiChatAssistant({
     ]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [agentMode, setAgentMode] = useState(false);
+    const [agentStatus, setAgentStatus] = useState('');
+    const [sessionId, setSessionId] = useState(null);
+    const [sessions, setSessions] = useState([]);
+    const [showSidebar, setShowSidebar] = useState(false);
     const messagesEndRef = useRef(null);
     const inputRef = useRef(null);
+
+    // Load sessions list
+    const loadSessions = useCallback(async () => {
+        try {
+            const res = await fetch(`${API_URL}/ai/sessions`, { credentials: 'include' });
+            if (res.ok) {
+                const data = await res.json();
+                setSessions(data);
+            }
+        } catch { /* ignore */ }
+    }, []);
+
+    // Load messages for a session
+    const loadSessionMessages = useCallback(async (sid) => {
+        try {
+            const res = await fetch(`${API_URL}/ai/sessions/${sid}/messages`, { credentials: 'include' });
+            if (res.ok) {
+                const data = await res.json();
+                const mapped = data.map(m => ({
+                    role: m.role,
+                    text: m.content,
+                    results: [],
+                    isReport: m.role === 'assistant',
+                    toolCalls: m.tool_calls ? (typeof m.tool_calls === 'string' ? JSON.parse(m.tool_calls) : m.tool_calls) : [],
+                    fromCache: m.from_cache || false,
+                    cacheAge: m.cache_age || null,
+                }));
+                setMessages(mapped.length > 0 ? mapped : [{
+                    role: 'assistant',
+                    text: 'Halo! 👋 Saya asisten AI Pustaka Sistem. Tanyakan apa saja tentang dokumen, invoice, atau arsip Anda.',
+                    results: []
+                }]);
+                setSessionId(sid);
+                setShowSidebar(false);
+            }
+        } catch { /* ignore */ }
+    }, []);
+
+    // Create new session
+    const createNewSession = useCallback(async () => {
+        try {
+            const res = await fetch(`${API_URL}/ai/sessions`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({})
+            });
+            if (res.ok) {
+                const session = await res.json();
+                setSessionId(session.id);
+                setMessages([{
+                    role: 'assistant',
+                    text: 'Halo! 👋 Saya asisten AI Pustaka Sistem. Tanyakan apa saja tentang dokumen, invoice, atau arsip Anda.',
+                    results: []
+                }]);
+                setShowSidebar(false);
+                loadSessions();
+            }
+        } catch { /* ignore */ }
+    }, [loadSessions]);
+
+    // Delete a session
+    const deleteSession = useCallback(async (sid, e) => {
+        e.stopPropagation();
+        try {
+            await fetch(`${API_URL}/ai/sessions/${sid}`, { method: 'DELETE', credentials: 'include' });
+            if (sessionId === sid) {
+                setSessionId(null);
+                setMessages([{
+                    role: 'assistant',
+                    text: 'Halo! 👋 Saya asisten AI Pustaka Sistem. Tanyakan apa saja tentang dokumen, invoice, atau arsip Anda.',
+                    results: []
+                }]);
+            }
+            loadSessions();
+        } catch { /* ignore */ }
+    }, [sessionId, loadSessions]);
+
+    // Load sessions on mount
+    useEffect(() => { loadSessions(); }, [loadSessions]);
 
     // Auto-scroll to bottom
     useEffect(() => {
@@ -601,9 +722,15 @@ export default function AiChatAssistant({
         // Add user message
         setMessages(prev => [...prev, { role: 'user', text: msg }]);
         setInput('');
-        // Use send action to perform semantic search and append results into chat
         setIsLoading(true);
+        setAgentStatus('');
         try {
+            // Agent mode: delegate to the configured external LLM (function-calling over DB)
+            if (agentMode) {
+                await sendToAgent(msg);
+                return;
+            }
+
             // 1. Cek apakah ini permintaan analisis pajak
             const taxAnalysis = analyzeTaxData(msg, taxSummaries, taxConfig);
             if (taxAnalysis) {
@@ -625,7 +752,98 @@ export default function AiChatAssistant({
             console.error('Search send error', err);
             setMessages(prev => [...prev, { role: 'assistant', text: `Gagal mencari data: ${err.message}`, results: [] }]);
         } finally {
+            if (!agentMode) {
+                setIsLoading(false);
+                setAgentStatus('');
+            }
+        }
+    };
+
+    const sendToAgent = async (text) => {
+        try {
+            setAgentStatus('Mengirim ke Agent...');
+            const history = messages
+                .filter(m => m.role === 'user' || m.role === 'assistant')
+                .map(m => ({ role: m.role, content: m.text || '' }))
+                .slice(-8);
+
+            // Create session if none exists
+            let currentSessionId = sessionId;
+            if (!currentSessionId) {
+                try {
+                    const sRes = await fetch(`${API_URL}/ai/sessions`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({})
+                    });
+                    if (sRes.ok) {
+                        const session = await sRes.json();
+                        currentSessionId = session.id;
+                        setSessionId(currentSessionId);
+                        loadSessions();
+                    }
+                } catch { /* continue without session */ }
+            }
+
+            const res = await fetch(`${API_URL}/ai/agent`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ message: text, history, sessionId: currentSessionId })
+            });
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || (`HTTP ${res.status}`));
+            }
+            const data = await res.json();
+            const jobId = data.jobId;
+            if (!jobId) throw new Error('Tidak ada jobId yang dikembalikan.');
+
+            setAgentStatus('Agent menganalisis database...');
+
+            let pollCount = 0;
+            const poll = async () => {
+                pollCount++;
+                try {
+                    const jr = await fetch(`${API_URL}/search/job/${jobId}`, { credentials: 'include' });
+                    const jd = await jr.json();
+                    if (jd.status === 'completed') {
+                        const result = jd.result || {};
+                        setMessages(prev => [...prev, {
+                            role: 'assistant',
+                            text: result.reply || (result.toolCalls?.length
+                                ? `Agent telah mengambil ${result.toolCalls.length} data dari database, namun tidak menghasilkan ringkasan. Silakan coba pertanyaan yang lebih spesifik.`
+                                : 'Maaf, tidak ada respons dari Agent. Pastikan AI Agent sudah dikonfigurasi dengan benar di Master Data.'),
+                            results: [],
+                            isReport: true,
+                            toolCalls: result.toolCalls || [],
+                            fromCache: result.fromCache || false,
+                            cacheAge: result.cacheAge || null,
+                            suggestions: result.suggestions || []
+                        }]);
+                        setIsLoading(false);
+                        setAgentStatus('');
+                        return;
+                    }
+                    if (jd.status === 'failed') throw new Error(jd.error || 'Agent gagal memproses.');
+
+                    if (pollCount < 4) setAgentStatus('Agent menganalisis database...');
+                    else if (pollCount < 8) setAgentStatus('Agent mengumpulkan data...');
+                    else setAgentStatus('Agent menyusun laporan...');
+
+                    setTimeout(poll, 1500);
+                } catch (e) {
+                    setMessages(prev => [...prev, { role: 'assistant', text: `Agent Error: ${e.message}`, results: [] }]);
+                    setIsLoading(false);
+                    setAgentStatus('');
+                }
+            };
+            poll();
+        } catch (err) {
+            setMessages(prev => [...prev, { role: 'assistant', text: `Agent Error: ${err.message}`, results: [] }]);
             setIsLoading(false);
+            setAgentStatus('');
         }
     };
 
@@ -687,6 +905,7 @@ export default function AiChatAssistant({
     };
 
     const clearChat = () => {
+        setSessionId(null);
         setMessages([{
             role: 'assistant',
             text: 'Chat direset. Ada yang bisa saya bantu?',
@@ -750,6 +969,20 @@ export default function AiChatAssistant({
                                 </p>
                             </div>
                             <button
+                                onClick={() => setAgentMode(!agentMode)}
+                                className={`px-2.5 py-1.5 rounded-xl transition-all text-[10px] font-black uppercase tracking-wider flex items-center gap-1 ${agentMode ? 'bg-gradient-to-r from-indigo-600 to-purple-700 text-white shadow-lg shadow-indigo-500/30' : isDarkMode ? 'hover:bg-white/10 text-white/50' : 'hover:bg-slate-100 text-slate-400'}`}
+                                title="Mode Agent: gunakan LLM eksternal (function-calling) untuk mencari database & membuat laporan"
+                            >
+                                <Bot size={14} /> Agent
+                            </button>
+                            <button
+                                onClick={() => { setShowSidebar(!showSidebar); if (!showSidebar) loadSessions(); }}
+                                className={`p-2 rounded-xl transition-all ${isDarkMode ? 'hover:bg-white/10 text-white/50 hover:text-white/80' : 'hover:bg-slate-100 text-slate-400 hover:text-slate-600'}`}
+                                title="Riwayat Chat"
+                            >
+                                <History size={16} />
+                            </button>
+                            <button
                                 onClick={clearChat}
                                 className={`p-2 rounded-xl transition-all text-xs font-semibold ${isDarkMode ? 'hover:bg-white/10 text-white/50 hover:text-white/80' : 'hover:bg-slate-100 text-slate-400 hover:text-slate-600'
                                     }`}
@@ -774,6 +1007,58 @@ export default function AiChatAssistant({
                             </button>
                         </div>
 
+                        {/* Session Sidebar */}
+                        <AnimatePresence>
+                            {showSidebar && (
+                                <motion.div
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: 'auto', opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    className={`border-b overflow-hidden flex-shrink-0 ${isDarkMode ? 'border-white/10 bg-white/5' : 'border-slate-100 bg-slate-50'}`}
+                                >
+                                    <div className="p-3">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className={`text-xs font-bold ${isDarkMode ? 'text-white/70' : 'text-slate-500'}`}>Riwayat Chat</span>
+                                            <button
+                                                onClick={createNewSession}
+                                                className="flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
+                                            >
+                                                <Plus size={12} /> Baru
+                                            </button>
+                                        </div>
+                                        <div className="max-h-[200px] overflow-y-auto space-y-1 custom-scrollbar">
+                                            {sessions.length === 0 ? (
+                                                <p className={`text-[10px] text-center py-3 ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>
+                                                    Belum ada riwayat
+                                                </p>
+                                            ) : sessions.map(s => (
+                                                <div
+                                                    key={s.id}
+                                                    onClick={() => loadSessionMessages(s.id)}
+                                                    className={`flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer transition-all group ${
+                                                        sessionId === s.id
+                                                            ? isDarkMode ? 'bg-indigo-500/20 border border-indigo-500/30' : 'bg-indigo-50 border border-indigo-200'
+                                                            : isDarkMode ? 'hover:bg-white/5' : 'hover:bg-white'
+                                                    }`}
+                                                >
+                                                    <MessageCircle size={12} className={isDarkMode ? 'text-white/30' : 'text-slate-400'} />
+                                                    <span className={`flex-1 text-[11px] truncate ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>
+                                                        {s.title || 'Percakapan baru'}
+                                                    </span>
+                                                    <button
+                                                        onClick={(e) => deleteSession(s.id, e)}
+                                                        className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-100 hover:text-red-500 transition-all"
+                                                    >
+                                                        <Trash2 size={10} />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
                         {/* Semantic search moved into chat input (search button) */}
 
                         {/* Messages */}
@@ -794,6 +1079,20 @@ export default function AiChatAssistant({
                                             }`}>
                                             <MarkdownRenderer content={msg.text} isDarkMode={isDarkMode} />
                                         </div>
+
+                                        {/* Agent report badge */}
+                                        {msg.isReport && (
+                                            <div className="flex flex-wrap gap-1 px-1">
+                                                <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide ${isDarkMode ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' : 'bg-indigo-100 text-indigo-700 border border-indigo-200'}`}>
+                                                    🤖 AI Agent Report
+                                                </span>
+                                                {msg.fromCache && (
+                                                    <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide ${isDarkMode ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-emerald-100 text-emerald-700 border border-emerald-200'}`}>
+                                                        ⚡ Cached {msg.cacheAge ? `(${msg.cacheAge})` : ''}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        )}
 
                                         {/* Semantic analysis metadata - Tax analysis indicator */}
                                         {msg.isAnalysis && (
@@ -822,6 +1121,25 @@ export default function AiChatAssistant({
                                                         💰 ≤ {formatRupiah(msg.intent.maxAmount)}
                                                     </span>
                                                 )}
+                                            </div>
+                                        )}
+
+                                        {/* Proactive suggestions */}
+                                        {msg.isReport && msg.suggestions && msg.suggestions.length > 0 && (
+                                            <div className="flex flex-wrap gap-1.5 px-1 mt-1">
+                                                {msg.suggestions.map((s, si) => (
+                                                    <button
+                                                        key={si}
+                                                        onClick={() => handleSend(s)}
+                                                        className={`text-[10px] px-2.5 py-1 rounded-full font-medium transition-all flex items-center gap-1 ${isDarkMode
+                                                            ? 'bg-indigo-500/15 text-indigo-300 hover:bg-indigo-500/25 border border-indigo-500/20'
+                                                            : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border border-indigo-100'
+                                                        }`}
+                                                    >
+                                                        <ArrowRight size={10} />
+                                                        {s}
+                                                    </button>
+                                                ))}
                                             </div>
                                         )}
 
@@ -854,7 +1172,7 @@ export default function AiChatAssistant({
                                 </div>
                             ))}
 
-                            {isLoading && <TypingIndicator isDarkMode={isDarkMode} />}
+                            {isLoading && <TypingIndicator isDarkMode={isDarkMode} status={agentStatus} />}
                             <div ref={messagesEndRef} />
                         </div>
 

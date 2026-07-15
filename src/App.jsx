@@ -1,4 +1,4 @@
-﻿﻿import React, { useState, useEffect, useMemo, useRef, useCallback, Suspense, lazy } from 'react';
+﻿import React, { useState, useEffect, useMemo, useRef, useCallback, Suspense, lazy } from 'react';
 import * as XLSX from 'xlsx';
 import { motion, AnimatePresence } from 'framer-motion';
 import mammoth from 'mammoth';
@@ -107,6 +107,7 @@ const Pustaka = lazy(() => import('./pages/Pustaka'));
 const SystemLogs = lazy(() => import('./pages/SystemLogs'));
 const SopFlow = lazy(() => import('./pages/SopFlow'));
 const JobDueDate = lazy(() => import('./pages/JobDueDate'));
+const Book = lazy(() => import('./pages/Book'));
 const PdfViewer = lazy(() => import('./components/ui/PdfViewer'));
 import LoadingFallback from './components/common/LoadingFallback';
 import { useToast, ToastContainer } from './components/ui/Toast';
@@ -154,6 +155,7 @@ export default function App() {
         pustaka: { title: 'Knowledge Library', subtitle: 'Learning Center & Work Guidelines' },
         flow: { title: 'SOP List Menu', subtitle: 'Standard Operating Procedure' },
         'job-due-date': { title: 'Job Due Date Monitoring', subtitle: 'Task Deadline & Issue Monitoring' },
+        book: { title: 'Book / Daftar COA', subtitle: 'Chart of Accounts' },
       };
     }
 
@@ -169,6 +171,7 @@ export default function App() {
       pustaka: { title: 'Pustaka Pengetahuan', subtitle: 'Pusat Edukasi & Panduan Kerja' },
       flow: { title: 'SOP List Menu', subtitle: 'Standar Operasional Prosedur' },
       'job-due-date': { title: 'Job Due Date Monitoring', subtitle: 'Pemantauan Tenggat Waktu & Issue Kerja' },
+      book: { title: 'Book / Daftar COA', subtitle: 'Daftar Akun Pembukuan (Chart of Accounts)' },
     };
   }, [language]);
 
@@ -3887,6 +3890,11 @@ export default function App() {
                     hasPermission={hasPermission}
                     isDarkMode={isDarkMode}
                     onCopy={handleCopyToClipboard}
+                  />
+                )}
+                {activeTab === 'book' && (
+                  <Book
+                    hasPermission={hasPermission}
                   />
                 )}
               </Suspense>

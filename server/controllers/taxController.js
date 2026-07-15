@@ -467,6 +467,8 @@ export const upsertTaxSummary = async (req, res) => {
 
         // Clear tax cache
         await cache.delByPattern('tax:*');
+        // Invalidate agent cache (tax data changed)
+        try { const ac = await import('../services/agentCache.js'); await ac.invalidateCache(); } catch (e) { /* ignore */ }
 
         req.app.get('io')?.emit('data:changed', { channel: 'tax' });
         res.json({ success: true, id: recordId });
@@ -483,14 +485,15 @@ export const deleteTaxSummary = async (req, res) => {
         await systemLog('Admin', "Delete Tax Summary", `Deleted record ID: ${id}`);
         // Clear tax cache
         await cache.delByPattern('tax:*');
+        // Invalidate agent cache (tax data changed)
+        try { const ac = await import('../services/agentCache.js'); await ac.invalidateCache(); } catch (e) { /* ignore */ }
         req.app.get('io')?.emit('data:changed', { channel: 'tax' });
         res.json({ success: true });
-    } catch (e) {
-        handleError(res, e, "TAX Error");
+    } catch (err) {
+        handleError(res, err, "Delete Tax Summary");
     }
 };
 
-// --- DATABASE WP (tax_objects table) ---
 export const getTaxWp = async (req, res) => {
     try {
         const rows = await knex('tax_objects').select('*').orderBy('created_at', 'desc');

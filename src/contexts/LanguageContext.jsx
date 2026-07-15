@@ -11,6 +11,7 @@ const translations = {
     'sidebar.category.document': 'DOKUMEN',
     'sidebar.category.tax': 'PAJAK & KEPATUHAN',
     'sidebar.category.system': 'SISTEM',
+    'sidebar.category.accounting': 'AKUNTANSI',
 
     'sidebar.item.dashboard': 'Dashboard',
     'sidebar.item.myJob': 'Pekerjaan',
@@ -23,6 +24,7 @@ const translations = {
     'sidebar.item.taxCalc': 'Kalkulasi Pajak',
     'sidebar.item.reporting': 'Pelaporan',
     'sidebar.item.masterData': 'Master Data',
+    'sidebar.item.book': 'Book (COA)',
 
     'sidebar.ocr.ready': 'OCR Siap',
     'sidebar.ocr.queueEmpty': 'Antrian kosong',
@@ -46,6 +48,7 @@ const translations = {
     'sidebar.category.document': 'DOCUMENT',
     'sidebar.category.tax': 'TAX & COMPLIANCE',
     'sidebar.category.system': 'SYSTEM',
+    'sidebar.category.accounting': 'ACCOUNTING',
 
     'sidebar.item.dashboard': 'Dashboard',
     'sidebar.item.myJob': 'My Job',
@@ -58,6 +61,7 @@ const translations = {
     'sidebar.item.taxCalc': 'Tax Calc',
     'sidebar.item.reporting': 'Reporting',
     'sidebar.item.masterData': 'Master Data',
+    'sidebar.item.book': 'Book (COA)',
 
     'sidebar.ocr.ready': 'OCR Ready',
     'sidebar.ocr.queueEmpty': 'Queue is empty',

@@ -43,5 +43,6 @@ export const APP_MODULES = {
     pustaka: { id: 'pustaka', label: 'Pustaka Pengetahuan' },
     flow: { id: 'flow', label: 'SOP' },
     'job-due-date': { id: 'job-due-date', label: 'My Job' },
-    'ai-chat': { id: 'ai-chat', label: 'AI Chat Assistant' }
+    'ai-chat': { id: 'ai-chat', label: 'AI Chat Assistant' },
+    book: { id: 'book', label: 'Book (COA)' }
 };

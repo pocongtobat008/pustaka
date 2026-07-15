@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Plus, Edit3, Trash2, Building2, GitCommit, ShieldCheck, ChevronRight, ChevronLeft, Users, User, Shield, History, Search, Clock, ChevronDown, ChevronUp, AlertCircle, FileText, Activity } from 'lucide-react';
+import { Plus, Edit3, Trash2, Building2, GitCommit, ShieldCheck, ChevronRight, ChevronLeft, Users, User, Shield, History, Search, Clock, ChevronDown, ChevronUp, AlertCircle, FileText, Activity, Bot, Save, Loader2, Zap } from 'lucide-react';
 import { Card } from '../components/ui/Card';
+import { apiClient, API_URL } from '../services/apiClient.js';
 import { APP_MODULES } from '../utils/permissions';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -27,6 +28,7 @@ export default function MasterData({
                 departments: 'Departments',
                 flows: 'Flows',
                 logs: 'Logs',
+                ai: 'AI Agent',
             },
             noDepartment: 'No Department',
             usersManagement: 'User Management',
@@ -65,6 +67,18 @@ export default function MasterData({
             noServerLog: 'No server log (empty file).',
             noSystemError: 'No system errors (empty file).',
             noOcrFailure: 'No OCR failures (empty file).',
+            aiSettingsTitle: 'AI Agent Settings',
+            aiSettingsDesc: 'Configure the external LLM (OpenAI-compatible) used by the AI Agent in the Assistant to search the database and build reports.',
+            baseUrl: 'Base URL',
+            baseUrlPh: 'https://api.openai.com/v1',
+            apiKey: 'API Key',
+            apiKeyPh: 'sk-... (leave empty to keep existing)',
+            model: 'Model',
+            modelPh: 'gpt-4o-mini',
+            enabled: 'Enable AI Agent',
+            testConn: 'Test Connection',
+            save: 'Save',
+            aiStatus: 'Status',
             departmentList: 'Department List',
             newDepartment: 'New Department',
         }
@@ -75,6 +89,7 @@ export default function MasterData({
                 departments: 'Departments',
                 flows: 'Flows',
                 logs: 'Logs',
+                ai: 'AI Agent',
             },
             noDepartment: 'Tanpa Departemen',
             usersManagement: 'Manajemen User',
@@ -113,6 +128,18 @@ export default function MasterData({
             noServerLog: 'Tidak ada log server (File kosong).',
             noSystemError: 'Tidak ada error system (File kosong).',
             noOcrFailure: 'Tidak ada kegagalan OCR (File kosong).',
+            aiSettingsTitle: 'Pengaturan AI Agent',
+            aiSettingsDesc: 'Atur LLM eksternal (kompatibel OpenAI) yang dipakai AI Agent di Asisten untuk mencari database dan menyusun laporan.',
+            baseUrl: 'Base URL',
+            baseUrlPh: 'https://api.openai.com/v1',
+            apiKey: 'API Key',
+            apiKeyPh: 'sk-... (kosongkan untuk mempertahankan yang ada)',
+            model: 'Model',
+            modelPh: 'gpt-4o-mini',
+            enabled: 'Aktifkan AI Agent',
+            testConn: 'Tes Koneksi',
+            save: 'Simpan',
+            aiStatus: 'Status',
             departmentList: 'Daftar Departemen',
             newDepartment: 'Departemen Baru',
         };
@@ -126,6 +153,92 @@ export default function MasterData({
     const [logSource, setLogSource] = useState('database'); // 'database', 'error_file', 'ocr_file', 'server_file'
     const [fileLogs, setFileLogs] = useState({ error: '', ocr: '', server: '' });
     const [isFileLoading, setIsFileLoading] = useState(false);
+
+    // --- AI Agent settings (Master Data) ---
+    const [aiSettings, setAiSettings] = useState({ base_url: '', api_key: '', model: '', enabled: false, hasApiKey: false, apiKeyMasked: '' });
+    const [aiForm, setAiForm] = useState({ base_url: '', api_key: '', model: 'gpt-4o-mini', enabled: false });
+    const [aiLoading, setAiLoading] = useState(false);
+    const [aiTesting, setAiTesting] = useState(false);
+    const [aiMsg, setAiMsg] = useState(null);
+    const [aiModels, setAiModels] = useState([]);
+    const [modelsLoading, setModelsLoading] = useState(false);
+
+    const fetchAiModels = async (baseUrl, apiKey) => {
+        setModelsLoading(true);
+        try {
+            let url = `${API_URL}/settings/ai/models`;
+            if (baseUrl && apiKey) {
+                url += `?base_url=${encodeURIComponent(baseUrl)}&api_key=${encodeURIComponent(apiKey)}`;
+            }
+            const data = await apiClient.fetchJson(url);
+            setAiModels(Array.isArray(data.models) ? data.models : []);
+            if (data.current && !aiForm.model) {
+                setAiForm(f => ({ ...f, model: data.current }));
+            }
+        } catch (e) {
+            setAiModels([]);
+        } finally {
+            setModelsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (masterTab === 'ai') {
+            setAiLoading(true);
+            setAiMsg(null);
+            apiClient.fetchJson(`${API_URL}/settings/ai`)
+                .then(d => {
+                    setAiSettings(d);
+                    setAiForm({ base_url: d.base_url || '', api_key: '', model: d.model || 'gpt-4o-mini', enabled: !!d.enabled });
+                    if (d.base_url && d.hasApiKey) fetchAiModels();
+                })
+                .catch(e => setAiMsg({ type: 'error', text: 'Gagal memuat pengaturan: ' + e.message }))
+                .finally(() => setAiLoading(false));
+        }
+    }, [masterTab]);
+
+    useEffect(() => {
+        if (masterTab === 'ai' && aiForm.base_url && aiForm.api_key) {
+            fetchAiModels(aiForm.base_url, aiForm.api_key);
+        }
+    }, [aiForm.base_url, aiForm.api_key]);
+
+    const saveAiSettings = async () => {
+        setAiLoading(true);
+        setAiMsg(null);
+        try {
+            const body = { base_url: aiForm.base_url, api_key: aiForm.api_key, model: aiForm.model, enabled: aiForm.enabled };
+            const d = await apiClient.fetchJson(`${API_URL}/settings/ai`, { method: 'PUT', body: JSON.stringify(body) });
+            setAiSettings(d);
+            setAiForm(f => ({ ...f, base_url: d.base_url || '', model: d.model || 'gpt-4o-mini', enabled: !!d.enabled, api_key: '' }));
+            setAiMsg({ type: 'success', text: isEnglish ? 'AI Agent settings saved.' : 'Pengaturan AI Agent tersimpan.' });
+        } catch (e) {
+            setAiMsg({ type: 'error', text: (isEnglish ? 'Save failed: ' : 'Gagal menyimpan: ') + e.message });
+        } finally {
+            setAiLoading(false);
+        }
+    };
+
+    const testAiConnection = async () => {
+        setAiTesting(true);
+        setAiMsg(null);
+        try {
+            const body = { base_url: aiForm.base_url, api_key: aiForm.api_key, model: aiForm.model };
+            const d = await apiClient.fetchJson(`${API_URL}/settings/ai/test`, { method: 'POST', body: JSON.stringify(body) });
+            const parts = [];
+            if (d.modelsOk !== undefined) parts.push(isEnglish ? `Models: ${d.modelsCount} found` : `Models: ${d.modelsCount} model`);
+            if (d.chatOk) parts.push(isEnglish ? 'Chat: OK' : 'Chat: OK');
+            if (d.sample) parts.push(`Sample: ${d.sample}`);
+            if (d.modelsError) parts.push(`Models error: ${d.modelsError}`);
+            if (d.chatError) parts.push(`Chat error: ${d.chatError}`);
+            setAiMsg({ type: d.success ? 'success' : 'error', text: parts.join(' | ') || (d.error || 'Test failed') });
+            if (d.success) fetchAiModels();
+        } catch (e) {
+            setAiMsg({ type: 'error', text: (isEnglish ? 'Test failed: ' : 'Test gagal: ') + e.message });
+        } finally {
+            setAiTesting(false);
+        }
+    };
 
     useEffect(() => {
         if (logSource !== 'database' && masterTab === 'logs') {
@@ -185,7 +298,7 @@ export default function MasterData({
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             <div className="flex bg-gray-100 dark:bg-slate-800 border dark:border-slate-700/50 p-1 rounded-xl w-fit mb-4 shadow-inner">
-                {['users', 'roles', 'departments', 'flows', 'logs'].map(tab => (
+                {['users', 'roles', 'departments', 'flows', 'logs', 'ai'].map(tab => (
                     <button
                         key={tab}
                         onClick={() => setMasterTab(tab)}
@@ -583,6 +696,93 @@ export default function MasterData({
                                     )}
                                 </div>
                             ))}
+                        </div>
+                    </Card>
+                )
+            }
+
+            {
+                masterTab === 'ai' && (
+                    <Card>
+                        <div className="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 className="font-bold text-lg dark:text-white flex items-center gap-2">
+                                    <Bot size={20} className="text-indigo-500" /> {text.aiSettingsTitle}
+                                </h3>
+                                <p className="text-xs text-gray-500 mt-1">{text.aiSettingsDesc}</p>
+                            </div>
+                            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${aiSettings.enabled ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 border-emerald-200 dark:border-emerald-800' : 'bg-gray-100 dark:bg-slate-800 text-gray-400 border-gray-200 dark:border-slate-700'}`}>
+                                {text.aiStatus}: {aiSettings.enabled ? (isEnglish ? 'ON' : 'AKTIF') : (isEnglish ? 'OFF' : 'NONAKTIF')}
+                            </span>
+                        </div>
+
+                        <div className="space-y-4 max-w-2xl">
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{text.baseUrl}</label>
+                                <input
+                                    type="text" placeholder={text.baseUrlPh}
+                                    className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                    value={aiForm.base_url} onChange={(e) => setAiForm({ ...aiForm, base_url: e.target.value })}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{text.apiKey}</label>
+                                <input
+                                    type="password" placeholder={aiSettings.hasApiKey ? `${text.apiKeyPh} (${aiSettings.apiKeyMasked})` : text.apiKeyPh}
+                                    className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                    value={aiForm.api_key} onChange={(e) => setAiForm({ ...aiForm, api_key: e.target.value })}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{text.model}</label>
+                                <select
+                                    value={aiForm.model}
+                                    onChange={(e) => setAiForm({ ...aiForm, model: e.target.value })}
+                                    className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                >
+                                    {modelsLoading && <option value="">Memuat model...</option>}
+                                    {!modelsLoading && aiModels.length === 0 && <option value="">Tidak ada model</option>}
+                                    {aiModels.map(m => (
+                                        <option key={m} value={m}>{m}</option>
+                                    ))}
+                                </select>
+                                {!modelsLoading && aiModels.length > 0 && (
+                                    <p className="text-[10px] text-gray-400 mt-1">{aiModels.length} model tersedia</p>
+                                )}
+                            </div>
+                            <label className="flex items-center gap-3 cursor-pointer select-none">
+                                <input
+                                    type="checkbox" checked={aiForm.enabled}
+                                    onChange={(e) => setAiForm({ ...aiForm, enabled: e.target.checked })}
+                                    className="w-4 h-4 rounded text-indigo-600"
+                                />
+                                <span className="text-sm font-medium dark:text-slate-200">{text.enabled}</span>
+                            </label>
+
+                            {aiMsg && (
+                                <div className={`text-xs px-3 py-2 rounded-lg ${aiMsg.type === 'success' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300' : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300'}`}>
+                                    {aiMsg.text}
+                                </div>
+                            )}
+
+                            <div className="flex gap-2">
+                                {hasPermission('master', 'edit') && (
+                                    <button
+                                        onClick={saveAiSettings} disabled={aiLoading}
+                                        className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                                    >
+                                        {aiLoading ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />} {text.save}
+                                    </button>
+                                )}
+                                {hasPermission('master', 'edit') && (
+                                    <button
+                                        onClick={testAiConnection} disabled={aiTesting}
+                                        className="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-lg text-sm flex items-center gap-2 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
+                                    >
+                                        {aiTesting ? <Loader2 size={16} className="animate-spin" /> : <Zap size={16} />} {text.testConn}
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </Card>
                 )

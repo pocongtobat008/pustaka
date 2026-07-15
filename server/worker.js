@@ -23,6 +23,7 @@ import { pathToFileURL } from 'url';
 import { knex, initDb } from './db.js';
 import { JOB_STATUS, DOC_STATUS } from './constants/status.js';
 import { generateEmbedding, parseIntent, generateAnswer, vectorStore } from './ai_search.js';
+import { runAgent } from './services/aiAgent.js';
 import { Worker } from 'bullmq';
 import { connection, USE_BULLMQ } from './utils/queue.js';
 import { io as ioClient } from 'socket.io-client';
@@ -266,7 +267,9 @@ async function processJob(job) {
 
             // 2. Vector Search (Semantic)
             const queryVector = await generateEmbedding(query);
-            const semanticMatches = vectorStore.searchNearest(queryVector, 0.4, 15);
+            // Low threshold: document embeddings here are often weak (scanned
+            // images/PDFs with little OCR text), so a high cutoff hides all matches.
+            const semanticMatches = vectorStore.searchNearest(queryVector, 0.2, 20);
 
             const resultsMap = new Map();
             semanticMatches.forEach(r => resultsMap.set(`${r.matchType}-${r.id}`, r));
@@ -316,6 +319,56 @@ async function processJob(job) {
         } catch (err) {
             console.error(`[Worker] AI Semantic Search Job ${job.id} Failed:`, err);
             throw err;
+        }
+    }
+
+    if (jobName === 'ai-agent') {
+        const { message, history, sessionId } = job.data;
+        console.log(`[Worker] Processing AI Agent Job ${job.id}`);
+        try {
+            const result = await runAgent(message, history, generateEmbedding);
+            await knex('job_queue').where('id', job.id).update({
+                result: JSON.stringify(result),
+                status: JOB_STATUS.COMPLETED,
+                finished_at: knex.fn.now()
+            });
+
+            // Save messages to chat history if sessionId provided
+            if (sessionId) {
+                try {
+                    const { saveMessage, generateTitle, getMessages } = await import('./services/chatHistory.js');
+                    await saveMessage(sessionId, {
+                        role: 'user',
+                        content: message,
+                    });
+                    await saveMessage(sessionId, {
+                        role: 'assistant',
+                        content: result.reply,
+                        toolCalls: result.toolCalls || [],
+                        fromCache: result.fromCache || false,
+                        cacheAge: result.cacheAge || null,
+                    });
+                    // Auto-generate title from first user message
+                    const msgs = await getMessages(sessionId, { limit: 2 });
+                    if (msgs.length <= 2) {
+                        await generateTitle(sessionId, message);
+                    }
+                    console.log(`[Worker] Chat history saved for session ${sessionId}`);
+                } catch (saveErr) {
+                    console.error(`[Worker] Failed to save chat history: ${saveErr.message}`);
+                }
+            }
+
+            console.log(`[Worker] AI Agent Job ${job.id} Completed.`);
+            return;
+        } catch (err) {
+            console.error(`[Worker] AI Agent Job ${job.id} Failed:`, err.message);
+            await knex('job_queue').where('id', job.id).update({
+                status: JOB_STATUS.FAILED,
+                error: err.message,
+                finished_at: knex.fn.now()
+            });
+            return;
         }
     }
 
@@ -531,6 +584,8 @@ async function processJob(job) {
                 console.log(`[Worker] Updated document ${docId} with OCR results.`);
                 // Invalidate documents cache so frontend gets fresh data
                 try { await cache.delByPattern('documents:*'); } catch (ce) { /* ignore cache errors */ }
+                // Invalidate agent cache since document data changed
+                try { const ac = await import('./services/agentCache.js'); await ac.invalidateCache(); } catch (ce) { /* ignore */ }
             }
         }
 

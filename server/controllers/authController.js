@@ -36,22 +36,28 @@ export const login = async (req, res) => {
         }
 
         if (match) {
-            // Generate cryptographically secure session token with explicit expiry
-            const sessionTtlMs = Number(process.env.SESSION_TTL_MS || (7 * 24 * 60 * 60 * 1000));
+            // Generate cryptographically secure session token.
+            // Token has NO expiry: the session stays valid until the user logs out.
+            // (A past/expired token_expires_at in the DB is ignored on purpose so a
+            // session can never be killed server-side by a TTL.)
             const token = crypto.randomBytes(32).toString('hex');
-            const tokenExpiresAt = new Date(Date.now() + sessionTtlMs);
 
             await knex('users').where('id', user.id).update({
                 token,
-                token_expires_at: tokenExpiresAt
+                token_expires_at: null
             });
 
             // Set HttpOnly Cookie
+            // 'secure' must follow the real transport: a Secure cookie is dropped by
+            // browsers over plain HTTP, which silently breaks the session after login.
+            const forwardedProto = req.headers['x-forwarded-proto'];
+            const isHttps = req.secure ||
+                (typeof forwardedProto === 'string' && forwardedProto.split(',')[0].trim() === 'https');
             res.cookie('token', token, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
+                secure: isHttps,
                 sameSite: 'lax', // Use 'lax' for dev stability on network IPs
-                maxAge: sessionTtlMs
+                maxAge: 1000 * 60 * 60 * 24 * 365 * 20 // ~20 years: effectively persistent
             });
 
             const { password: _, ...userWithoutPass } = user;

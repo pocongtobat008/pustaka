@@ -3,6 +3,7 @@ const API_URL = '/api';
 const fetchAPI = async (endpoint, options = {}) => {
     const response = await fetch(`${API_URL}${endpoint}`, {
         ...options,
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
             ...options.headers,
@@ -16,6 +17,10 @@ const fetchAPI = async (endpoint, options = {}) => {
 };
 
 export const api = {
+    // Auth
+    login: (username, password) => fetchAPI('/login', { method: 'POST', body: JSON.stringify({ username, password }) }),
+    logout: () => fetchAPI('/logout', { method: 'POST' }),
+
     // Users
     getUsers: () => fetchAPI('/users'),
     createUser: (user) => fetchAPI('/users', { method: 'POST', body: JSON.stringify(user) }),

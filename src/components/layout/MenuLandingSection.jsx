@@ -279,6 +279,29 @@ const menuLandingConfig = {
       { label: 'Lihat Approval', tab: 'approvals', icon: CheckCircle2 },
     ],
   },
+  book: {
+    kicker: 'Accounting',
+    title: 'Daftar COA (Chart of Accounts)',
+    subtitle:
+      'Kelola struktur akun pembukuan secara hierarkis dengan pencarian cerdas dan import Excel untuk efisiensi input data.',
+    icon: BookOpen,
+    accent: 'from-indigo-500 to-purple-600',
+    features: [
+      'Struktur COA hierarkis: Induk, Sub COA, dan Departemen.',
+      'Pencarian semantic berbasis kode, nama, dan keterangan di semua level.',
+      'Import data massal dari Excel dengan template bawaan.',
+    ],
+    functions: [
+      'Membantu standarisasi akun pembukuan lintas departemen.',
+      'Mempercepat pencarian akun saat proses jurnal atau audit.',
+      'Menjadi referensi utama struktur chart of accounts perusahaan.',
+    ],
+    useCases: ['Setup awal COA', 'Revisi kode akun', 'Import data pembukuan'],
+    quickActions: [
+      { label: 'Kembali ke Dashboard', tab: 'dashboard', icon: Rocket },
+      { label: 'Ke Master Data', tab: 'master', icon: Users },
+    ],
+  },
 };
 
 const manualAdvantageMap = {
@@ -337,6 +360,11 @@ const manualAdvantageMap = {
     'Due date terpantau terpusat, bukan tersebar di catatan masing-masing.',
     'Eskalasi issue lebih cepat dengan status yang terlihat real-time.',
   ],
+  book: [
+    'Struktur COA tidak lagi dikelola manual di spreadsheet yang rawan inkonsistensi.',
+    'Pencarian akun lebih cepat dibanding scroll daftar panjang secara manual.',
+    'Import Excel mengurangi risiko input data salah saat setup awal COA.',
+  ],
 };
 
 export default function MenuLandingSection({
@@ -386,6 +414,7 @@ export default function MenuLandingSection({
       pustaka: 'Manual Book',
       flow: 'SOP Flow',
       'job-due-date': 'My Job',
+      book: 'Book (COA)',
     }
     : {
       dashboard: 'Dashboard',
@@ -399,6 +428,7 @@ export default function MenuLandingSection({
       pustaka: 'Manual Book',
       flow: 'SOP Flow',
       'job-due-date': 'My Job',
+      book: 'Book (COA)',
     };
 
   const englishHeadlineMap = {
@@ -445,6 +475,10 @@ export default function MenuLandingSection({
     'job-due-date': {
       title: 'Daily Job and Due Date Monitoring',
       subtitle: 'Track active work, deadlines, and execution priorities so teams stay focused on the highest-impact tasks.',
+    },
+    book: {
+      title: 'Chart of Accounts Management',
+      subtitle: 'Manage your accounting structure hierarchically with smart search and Excel import for efficient data entry.',
     },
   };
 
@@ -504,6 +538,11 @@ export default function MenuLandingSection({
       'Due date monitoring to prevent deliverable delays.',
       'Issue tracking for faster escalation and resolution.',
     ],
+    book: [
+      'Hierarchical COA structure: Parent, Sub Account, and Department.',
+      'Semantic search by code, name, and description across all levels.',
+      'Bulk data import from Excel with built-in template.',
+    ],
   };
 
   const englishFunctionsMap = {
@@ -562,6 +601,11 @@ export default function MenuLandingSection({
       'Serve as an execution reminder to achieve daily targets.',
       'Improve punctuality through operational priority alarms.',
     ],
+    book: [
+      'Standardize chart of accounts across departments.',
+      'Speed up account lookup during journal or audit processes.',
+      'Serve as the primary reference for company account structure.',
+    ],
   };
 
   const englishUseCasesMap = {
@@ -576,6 +620,7 @@ export default function MenuLandingSection({
     pustaka: ['Team onboarding', 'Operational self-learning', 'Work method standardization'],
     flow: ['New flow design', 'Old process optimization', 'Inter-unit SOP socialization'],
     'job-due-date': ['Daily standup', 'Internal SLA control', 'Critical task escalation'],
+    book: ['Initial COA setup', 'Account code revision', 'Accounting data import'],
   };
 
   const englishAdvantagesMap = {
@@ -633,6 +678,11 @@ export default function MenuLandingSection({
       'Work priority no longer depends on personal reminders that are often missed.',
       'Due dates are monitored centrally, not scattered in individual notes.',
       'Issue escalation is faster with status visible in real-time.',
+    ],
+    book: [
+      'COA structure is no longer managed manually in spreadsheets prone to inconsistency.',
+      'Account search is faster than scrolling through long lists manually.',
+      'Excel import reduces data entry errors during initial COA setup.',
     ],
   };
 

@@ -34,6 +34,9 @@ import pustakaRoutes from './routes/pustakaRoutes.js';
 import systemRoutes from './routes/systemRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import legacyRoutes from './routes/legacyRoutes.js';
+import settingsRoutes from './routes/settingsRoutes.js';
+import aiRoutes from './routes/aiRoutes.js';
+import coaRoutes from './routes/coaRoutes.js';
 
 import { checkAuth } from './middleware/auth.js';
 import { UPLOADS_DIR, upload } from './config/upload.js';
@@ -80,7 +83,8 @@ const channelLabelMap = {
     'sop-flows': 'SOP',
     'tax-monitoring': 'Tax Monitoring',
     'tax-summary': 'Tax Summary',
-    notifications: 'Notifikasi'
+    notifications: 'Notifikasi',
+    coa: 'COA (Book)'
 };
 
 const lastAutoNotificationByKey = new Map();
@@ -192,6 +196,8 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use('/api', authRoutes); // /api/login, /api/users
 app.use('/api', systemRoutes); // /api/logs, /api/roles, /api/departments, /api/folders
 app.use('/api', notificationRoutes); // /api/notifications
+app.use('/api', settingsRoutes); // /api/settings/ai
+app.use('/api', aiRoutes); // /api/ai/agent
 
 app.get('/api/system/ai-status', checkAuth, async (req, res) => {
     // API should not have its own vectorStore in microservice mode.
@@ -676,6 +682,7 @@ app.use('/api/tax', taxRoutes); // /api/tax/objects
 app.use('/api/search', searchRoutes);
 app.use('/api/ocr', ocrRoutes);
 app.use('/api/pustaka', pustakaRoutes);
+app.use('/api/coa', coaRoutes);
 
 // --- SOP FLOWS (STANDARDIZATION) ROUTES ---
 app.get('/api/sop-flows', checkAuth, async (req, res) => {

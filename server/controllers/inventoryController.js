@@ -255,7 +255,8 @@ export const updateInventoryItem = async (req, res) => {
         await systemLog('System', "Update Inventory", `Updated item ID: ${id}`);
 
         await cache.delByPattern('inventory:*');
-
+        // Invalidate agent cache (inventory data changed)
+        try { const ac = await import('../services/agentCache.js'); await ac.invalidateCache(); } catch (e) { /* ignore */ }
 
         await cache.delByPattern('inventory:*');
         req.app.get('io')?.emit('data:changed', { channel: 'inventory' });

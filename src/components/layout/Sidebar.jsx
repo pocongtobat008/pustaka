@@ -144,6 +144,12 @@ const Sidebar = ({
                         ]
                     },
                     {
+                        categoryKey: 'sidebar.category.accounting',
+                        items: [
+                            { id: 'book', icon: BookOpen, labelKey: 'sidebar.item.book' },
+                        ]
+                    },
+                    {
                         categoryKey: 'sidebar.category.system',
                         items: [
                             { id: 'master', icon: Settings, labelKey: 'sidebar.item.masterData' },
