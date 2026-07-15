@@ -2,6 +2,8 @@ import express from 'express';
 import { agentChat } from '../controllers/aiController.js';
 import { getCacheStats, invalidateCache } from '../services/agentCache.js';
 import * as chatHistory from '../services/chatHistory.js';
+import { getWarmLogs, getLatestWarmLog, getWarmConfig, updateWarmConfig } from '../services/cacheWarmer.js';
+import { addCacheWarmJob } from '../queue.js';
 import { checkAuth } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -72,6 +74,62 @@ router.delete('/ai/sessions/:id', checkAuth, async (req, res) => {
         const deleted = await chatHistory.deleteSession(Number(req.params.id), req.user.id);
         if (!deleted) return res.status(404).json({ error: 'Sesi tidak ditemukan' });
         res.json({ success: true });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// --- Cache Warmer (Scheduled Self-Improvement) ---
+
+// GET /api/ai/cache/warm/config — view warm schedule config
+router.get('/ai/cache/warm/config', checkAuth, async (req, res) => {
+    try {
+        const config = await getWarmConfig();
+        res.json(config);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// PUT /api/ai/cache/warm/config — update warm schedule config
+router.put('/ai/cache/warm/config', checkAuth, async (req, res) => {
+    try {
+        const { enabled, interval_hours } = req.body || {};
+        await updateWarmConfig({ enabled, interval_hours });
+        res.json({ success: true, message: 'Config updated. Restart worker to apply schedule changes.' });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// POST /api/ai/cache/warm — manual trigger cache warming
+router.post('/ai/cache/warm', checkAuth, async (req, res) => {
+    try {
+        const job = await addCacheWarmJob();
+        if (!job) return res.status(500).json({ error: 'Gagal mengantri cache warm job' });
+        res.json({ success: true, jobId: job.id, message: 'Cache warm job queued' });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// GET /api/ai/cache/warm/latest — get latest warm log
+router.get('/ai/cache/warm/latest', checkAuth, async (req, res) => {
+    try {
+        const log = await getLatestWarmLog();
+        res.json(log || null);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// GET /api/ai/cache/warm/logs — get warm run history
+router.get('/ai/cache/warm/logs', checkAuth, async (req, res) => {
+    try {
+        const limit = parseInt(req.query.limit) || 20;
+        const offset = parseInt(req.query.offset) || 0;
+        const logs = await getWarmLogs({ limit, offset });
+        res.json(logs);
     } catch (e) {
         res.status(500).json({ error: e.message });
     }

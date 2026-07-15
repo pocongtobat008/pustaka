@@ -188,6 +188,73 @@ export const addAiAgentJob = async (message, history = [], sessionId = null) => 
     }
 };
 
+// ── Cache Warmer Job ──
+export const addCacheWarmJob = async () => {
+    try {
+        console.log('[Queue] Adding Cache Warm Job');
+        if (USE_BULLMQ) {
+            return await ocrQueue.add('cache-warm', {}, { max_attempts: 1 });
+        }
+        // Fallback: insert into job_queue for MySQL polling
+        const [res] = await knex('job_queue').insert({
+            name: 'cache-warm',
+            data: JSON.stringify({}),
+            status: JOB_STATUS.WAITING,
+            created_at: knex.fn.now(),
+            max_attempts: 1,
+            retries: 0
+        }).returning('id');
+        const id = typeof res === 'object' ? res.id : res;
+        return { id, name: 'cache-warm', data: {} };
+    } catch (err) {
+        console.error("AddCacheWarmJob Error:", err);
+        return null;
+    }
+};
+
+// ── Setup repeatable cache warm job (called on server start) ──
+export const setupCacheWarmSchedule = async () => {
+    if (!USE_BULLMQ) {
+        console.log('[Queue] Redis unavailable, cache warm schedule skipped (will use DB polling fallback)');
+        return;
+    }
+    try {
+        // Remove existing repeatable jobs first
+        const existingJobs = await ocrQueue.getJobSchedulers();
+        for (const job of existingJobs) {
+            if (job.name === 'cache-warm') {
+                await ocrQueue.removeJobScheduler(job.id);
+                console.log(`[Queue] Removed old cache-warm scheduler: ${job.id}`);
+            }
+        }
+
+        // Get config from ai_settings
+        const { knex } = await import('../db.js');
+        const settings = await knex('ai_settings').where('id', 1).first();
+        let meta = {};
+        try { meta = JSON.parse(settings?.meta || '{}'); } catch { meta = {}; }
+
+        const enabled = meta.cache_warm_enabled !== false;
+        const intervalHours = meta.cache_warm_interval_hours || 6;
+
+        if (!enabled) {
+            console.log('[Queue] Cache warming disabled in settings');
+            return;
+        }
+
+        // Create repeatable job with cron expression
+        const cronExpr = `0 */${intervalHours} * * *`; // e.g., "0 */6 * * *"
+        await ocrQueue.add('cache-warm', {}, {
+            repeat: { cron: cronExpr },
+            max_attempts: 1,
+            jobId: 'cache-warm-scheduled',
+        });
+        console.log(`[Queue] Cache warm schedule active: ${cronExpr} (every ${intervalHours}h)`);
+    } catch (err) {
+        console.error(`[Queue] Failed to setup cache warm schedule: ${err.message}`);
+    }
+};
+
 // Add OCR job with lane routing (3 lanes by default)
 export const addOCRJobRouted = async (docId, filePath, fileType, originalName, context = {}) => {
     try {

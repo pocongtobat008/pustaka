@@ -751,3 +751,172 @@
 │  IVFFlat Probes        │  10       │  Akurasi vs speed vector      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## Scheduled Cache Warming (Self-Improvement)
+
+AI Assistant memiliki sistem **cache warming berkala** yang berjalan secara otomatis untuk menjaga cache tetap segar dan akurat, meskipun tidak ada user yang bertanya.
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│               SCHEDULED CACHE WARMER                                │
+│              (Self-Improvement System)                               │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  ┌─────────────────────────────────────────────────┐                │
+│  │  TRIGGER                                       │                │
+│  │                                                  │                │
+│  │  ┌──────────────┐  ┌──────────────────────────┐ │                │
+│  │  │ BullMQ       │  │ Polling Fallback          │ │                │
+│  │  │ Repeatable   │  │ (Redis unavailable)      │ │                │
+│  │  │ Job:         │  │ setInterval per N jam     │ │                │
+│  │  │ "0 */6 * * *"│  │                          │ │                │
+│  │  └──────┬───────┘  └────────────┬─────────────┘ │                │
+│  │         │                       │                │                │
+│  │         └───────────┬───────────┘                │                │
+│  └─────────────────────┼───────────────────────────┘                │
+│                         │                                            │
+│                         ▼                                            │
+│  ┌─────────────────────────────────────────────────┐                │
+│  │  WORKER: processJob('cache-warm')              │                │
+│  │                                                  │                │
+│  │  runCacheWarmer(generateEmbedding)               │                │
+│  └─────────────────────┬───────────────────────────┘                │
+│                         │                                            │
+│                         ▼                                            │
+│  ╔═══════════════════════════════════════════════════════════════╗   │
+│  ║              6 LANGKAH CACHE WARMING                        ║   │
+│  ╠═══════════════════════════════════════════════════════════════╣   │
+│  ║                                                               ║   │
+│  ║  ┌───────────────────────────────────────────────────────┐   ║   │
+│  ║  │ 1. RE-EMBED CHANGED DOCUMENTS                        │   ║   │
+│  ║  │    SELECT * FROM documents WHERE updated_at > lastRun │   ║   │
+│  ║  │    → generate new vectors                             │   ║   │
+│  ║  │    → update documents.vector column                   │   ║   │
+│  ║  └───────────────────────────────────────────────────────┘   ║   │
+│  ║                          │                                    ║   │
+│  ║  ┌───────────────────────▼───────────────────────────────┐   ║   │
+│  ║  │ 2. RE-EMBED CHANGED INVOICES                         │   ║   │
+│  ║  │    SELECT * FROM invoices WHERE updated_at > lastRun  │   ║   │
+│  ║  │    → generate new vectors                             │   ║   │
+│  ║  │    → update invoices.vector column                    │   ║   │
+│  ║  └───────────────────────────────────────────────────────┘   ║   │
+│  ║                          │                                    ║   │
+│  ║  ┌───────────────────────▼───────────────────────────────┐   ║   │
+│  ║  │ 3. RE-EMBED COA RECORDS                              │   ║   │
+│  ║  │    SELECT * FROM coa_accounts WHERE created_at > ...  │   ║   │
+│  ║  │    → warm embedding pipeline                          │   ║   │
+│  ║  └───────────────────────────────────────────────────────┘   ║   │
+│  ║                          │                                    ║   │
+│  ║  ┌───────────────────────▼───────────────────────────────┐   ║   │
+│  ║  │ 4. RE-EMBED INVENTORY RECORDS                        │   ║   │
+│  ║  │    SELECT * FROM inventory WHERE updated_at > lastRun │   ║   │
+│  ║  │    → parse box_data, embed combined text              │   ║   │
+│  ║  └───────────────────────────────────────────────────────┘   ║   │
+│  ║                          │                                    ║   │
+│  ║  ┌───────────────────────▼───────────────────────────────┐   ║   │
+│  ║  │ 5. PRE-WARM COMMON QUERIES                           │   ║   │
+│  ║  │                                                      │   ║   │
+│  ║  │  Untuk setiap query di WARM_QUERIES:                 │   ║   │
+│  ║  │    ├─ "ringkasan data"                               │   ║   │
+│  ║  │    ├─ "statistik dokumen"                            │   ║   │
+│  ║  │    ├─ "data pajak terbaru"                           │   ║   │
+│  ║  │    ├─ "invoice terbaru"                              │   ║   │
+│  ║  │    ├─ "akun COA terbaru"                             │   ║   │
+│  ║  │    ├─ "approval pending"                             │   ║   │
+│  ║  │    └─ "box inventory terbaru"                        │   ║   │
+│  ║  │                                                      │   ║   │
+│  ║  │    1. Check cache → sudah ada? skip                  │   ║   │
+│  ║  │    2. Belum ada? → runAgent(query) → auto-save cache │   ║   │
+│  ║  └───────────────────────────────────────────────────────┘   ║   │
+│  ║                          │                                    ║   │
+│  ║  ┌───────────────────────▼───────────────────────────────┐   ║   │
+│  ║  │ 6. REFRESH STALE HIGH-TRAFFIC CACHE                  │   ║   │
+│  ║  │                                                      │   ║   │
+│  ║  │  SELECT * FROM ai_agent_cache                        │   ║   │
+│  ║  │  WHERE hit_count >= 2 AND expires_at < NOW()         │   ║   │
+│  ║  │  ORDER BY hit_count DESC LIMIT 20                    │   ║   │
+│  ║  │                                                      │   ║   │
+│  ║  │  → Re-run setiap query yang sering ditanyakan        │   ║   │
+│  ║  │  → Simpan hasil baru ke cache                        │   ║   │
+│  ║  └───────────────────────────────────────────────────────┘   ║   │
+│  ║                          │                                    ║   │
+│  ║                          ▼                                    ║   │
+│  ║  ┌───────────────────────────────────────────────────────┐   ║   │
+│  ║  │ 7. REBUILD INDEX (conditional)                       │   ║   │
+│  ║  │    Jika ada > 10 record baru:                        │   ║   │
+│  ║  │    → DROP INDEX idx_agent_cache_embedding            │   ║   │
+│  ║  │    → CREATE INDEX ... USING ivfflat (vector)         │   ║   │
+│  ║  └───────────────────────────────────────────────────────┘   ║   │
+│  ║                                                               ║   │
+│  ╚═══════════════════════════════════════════════════════════════╝   │
+│                         │                                            │
+│                         ▼                                            │
+│  ┌─────────────────────────────────────────────────┐                │
+│  │  LOG RESULTS → ai_cache_warm_logs              │                │
+│  │                                                  │                │
+│  │  ┌────────────────────────────────────────┐     │                │
+│  │  │ Cache Warm Run #142                    │     │                │
+│  │  │ Status: success                        │     │                │
+│  │  │ Duration: 45s                          │     │                │
+│  │  │ Docs re-embedded: 12                   │     │                │
+│  │  │ Invoices re-embedded: 5                │     │                │
+│  │  │ COA re-embedded: 3                     │     │                │
+│  │  │ Pre-warmed queries: 7 (5 ok, 2 fail)  │     │                │
+│  │  │ Stale cache refreshed: 23              │     │                │
+│  │  │ Index rebuilt: YES                     │     │                │
+│  │  │ Cache: 145 → 168 entries              │     │                │
+│  │  └────────────────────────────────────────┘     │                │
+│  └─────────────────────────────────────────────────┘                │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+### Admin API Endpoints
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│  ENDPOINT                        │  METHOD  │  DESCRIPTION          │
+├──────────────────────────────────┼──────────┼───────────────────────┤
+│  /api/ai/cache/warm/config       │  GET     │  View warm config     │
+│  /api/ai/cache/warm/config       │  PUT     │  Update config        │
+│  /api/ai/cache/warm              │  POST    │  Manual trigger       │
+│  /api/ai/cache/warm/latest       │  GET     │  Latest warm log      │
+│  /api/ai/cache/warm/logs         │  GET     │  Warm run history     │
+│  /api/ai/cache/stats             │  GET     │  Cache statistics     │
+└──────────────────────────────────┴──────────┴───────────────────────┘
+
+Config example (PUT /api/ai/cache/warm/config):
+{
+  "enabled": true,
+  "interval_hours": 6
+}
+```
+
+### Database Schema: ai_cache_warm_logs
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│  TABLE: ai_cache_warm_logs                                          │
+├─────────────────────────────┬───────────┬────────────────────────────┤
+│  COLUMN                     │  TYPE     │  DESCRIPTION              │
+├─────────────────────────────┼───────────┼────────────────────────────┤
+│  id                         │  INTEGER  │  Primary key              │
+│  status                     │  VARCHAR  │  running/success/failed   │
+│  docs_embedded              │  INTEGER  │  Documents re-embedded    │
+│  invoices_embedded          │  INTEGER  │  Invoices re-embedded     │
+│  coa_embedded               │  INTEGER  │  COA records re-embedded  │
+│  inventory_embedded         │  INTEGER  │  Inventory re-embedded    │
+│  prewarmed_queries          │  INTEGER  │  Queries pre-warmed       │
+│  prewarm_failed             │  INTEGER  │  Pre-warm failures        │
+│  stale_refreshed            │  INTEGER  │  Stale cache refreshed    │
+│  index_rebuilt              │  BOOLEAN  │  Index rebuilt?           │
+│  cache_entries_before       │  INTEGER  │  Cache count before       │
+│  cache_entries_after        │  INTEGER  │  Cache count after        │
+│  duration_ms                │  INTEGER  │  Total duration (ms)      │
+│  error                      │  TEXT     │  Error message if failed  │
+│  started_at                 │  TIMESTAMP│  When run started         │
+│  finished_at                │  TIMESTAMP│  When run finished        │
+└─────────────────────────────┴───────────┴────────────────────────────┘
+```
+

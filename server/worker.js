@@ -25,7 +25,7 @@ import { JOB_STATUS, DOC_STATUS } from './constants/status.js';
 import { generateEmbedding, parseIntent, generateAnswer, vectorStore } from './ai_search.js';
 import { runAgent } from './services/aiAgent.js';
 import { Worker } from 'bullmq';
-import { connection, USE_BULLMQ } from './utils/queue.js';
+import { connection, USE_BULLMQ, setupCacheWarmSchedule } from './utils/queue.js';
 import { io as ioClient } from 'socket.io-client';
 import { parseJsonObjectSafe } from './utils/jsonSafe.js';
 import { cache } from './utils/cache.js';
@@ -363,6 +363,30 @@ async function processJob(job) {
             return;
         } catch (err) {
             console.error(`[Worker] AI Agent Job ${job.id} Failed:`, err.message);
+            await knex('job_queue').where('id', job.id).update({
+                status: JOB_STATUS.FAILED,
+                error: err.message,
+                finished_at: knex.fn.now()
+            });
+            return;
+        }
+    }
+
+    // ── Cache Warmer Job ──
+    if (jobName === 'cache-warm') {
+        console.log(`[Worker] Processing Cache Warm Job ${job.id}`);
+        try {
+            const { runCacheWarmer } = await import('./services/cacheWarmer.js');
+            const result = await runCacheWarmer(generateEmbedding);
+            await knex('job_queue').where('id', job.id).update({
+                result: JSON.stringify(result),
+                status: JOB_STATUS.COMPLETED,
+                finished_at: knex.fn.now()
+            });
+            console.log(`[Worker] Cache Warm Job ${job.id} Completed: ${result.status} (${result.duration_ms}ms)`);
+            return;
+        } catch (err) {
+            console.error(`[Worker] Cache Warm Job ${job.id} Failed:`, err.message);
             await knex('job_queue').where('id', job.id).update({
                 status: JOB_STATUS.FAILED,
                 error: err.message,
@@ -837,6 +861,9 @@ async function startWorkerSystem() {
                 }
             }
             console.log(`${tag} ✅ Semantic index complete.`);
+
+            // Setup cache warm schedule after indexing
+            await setupCacheWarmSchedule();
         } catch (e) {
             console.error(`${tag} ❌ Gagal inisialisasi Database/Vector Store:`, e.message);
         }
@@ -865,6 +892,25 @@ async function startWorkerSystem() {
     if (startPollingMode) {
         console.log(`${tag} 🐌 Menjalankan MySQL Polling (Sharp/PDF Worker)...`);
         startPolling(tag);
+    }
+
+    // ── Fallback: setInterval for cache warming when Redis is unavailable ──
+    if (!USE_BULLMQ) {
+        const { getWarmConfig } = await import('./services/cacheWarmer.js');
+        const config = await getWarmConfig();
+        if (config.enabled) {
+            const intervalMs = config.interval_hours * 3600 * 1000;
+            console.log(`${tag} 🔄 Cache warm schedule (polling fallback): every ${config.interval_hours}h`);
+            setInterval(async () => {
+                try {
+                    const { runCacheWarmer } = await import('./services/cacheWarmer.js');
+                    console.log('[Worker] Running scheduled cache warm (polling fallback)...');
+                    await runCacheWarmer(generateEmbedding);
+                } catch (err) {
+                    console.error(`[Worker] Scheduled cache warm failed: ${err.message}`);
+                }
+            }, intervalMs);
+        }
     }
 }
 
