@@ -419,31 +419,6 @@ export default function Book({ hasPermission }) {
         return [];
     }, [formLevel, data, allSubs]);
 
-    // Flatten overview hierarchy: one row per account→sub→dept path
-    const flatRows = useMemo(() => {
-        const baseData = filterStatus === 'all' ? data : filteredData;
-        const overviewData = filterCoa === 'all' ? baseData : baseData.filter(acc => String(acc.id) === String(filterCoa));
-        const rows = [];
-        overviewData.forEach(acc => {
-            const subs = acc.sub_accounts || [];
-            if (subs.length === 0) {
-                rows.push({ acc, sub: null, dep: null, accId: acc.id });
-            } else {
-                subs.forEach(sub => {
-                    const deps = sub.departments || [];
-                    if (deps.length === 0) {
-                        rows.push({ acc, sub, dep: null, accId: acc.id });
-                    } else {
-                        deps.forEach(dep => {
-                            rows.push({ acc, sub, dep, accId: acc.id });
-                        });
-                    }
-                });
-            }
-        });
-        return rows;
-    }, [data, filteredData, filterStatus, filterCoa]);
-
     const tabs = [
         { id: 'overview', label: text.tabs.overview },
         { id: 'accounts', label: text.tabs.accounts, count: stats.accounts },
@@ -541,15 +516,11 @@ export default function Book({ hasPermission }) {
     const renderOverview = () => {
         const baseData = filterStatus === 'all' ? data : filteredData;
         const overviewData = filterCoa === 'all' ? baseData : baseData.filter(acc => String(acc.id) === String(filterCoa));
-
         const totalSubs = overviewData.reduce((sum, a) => sum + (a.sub_accounts || []).length, 0);
         const totalDeps = overviewData.reduce((sum, a) => sum + (a.sub_accounts || []).reduce((s, sub) => s + (sub.departments || []).length, 0), 0);
-        const safePage = pageSize === 0 ? 0 : Math.min(page, Math.max(1, Math.ceil(flatRows.length / pageSize)) - 1);
-        const paged = pageSize === 0 ? flatRows : flatRows.slice(safePage * pageSize, (safePage + 1) * pageSize);
-        const totalPages = pageSize === 0 ? 1 : Math.max(1, Math.ceil(flatRows.length / pageSize));
-
-        // Track which accId starts a new group for visual stripe
-        let lastAccId = null;
+        const safePage = pageSize === 0 ? 0 : Math.min(page, Math.max(1, Math.ceil(overviewData.length / pageSize)) - 1);
+        const paged = pageSize === 0 ? overviewData : overviewData.slice(safePage * pageSize, (safePage + 1) * pageSize);
+        const totalPages = pageSize === 0 ? 1 : Math.max(1, Math.ceil(overviewData.length / pageSize));
 
         return (
             <div className="p-6 space-y-4">
@@ -588,104 +559,122 @@ export default function Book({ hasPermission }) {
                         <ChevronDown size={12} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                     </div>
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                        {flatRows.length} {isEnglish ? 'rows' : 'baris'}
+                        {overviewData.length} {text.tabs.accounts}
                     </span>
                 </div>
 
-                {flatRows.length === 0 && (
+                {overviewData.length === 0 && (
                     <div className="py-20 text-center text-slate-400 dark:text-slate-500">{text.noData}</div>
                 )}
 
-                {/* Flat Detail Table */}
-                {flatRows.length > 0 && (
+                {/* COA Table with Expand/Collapse */}
+                {overviewData.length > 0 && (
                     <div>
                         <div className="overflow-x-auto rounded-2xl border border-slate-100 dark:border-slate-800">
                             <table className="w-full text-sm text-left">
                                 <thead>
                                     <tr className="border-b border-slate-200 dark:border-slate-700/50 bg-slate-50/80 dark:bg-slate-800/50">
                                         <th className="px-4 py-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest w-10">#</th>
+                                        <th className="px-4 py-3 w-8" />
                                         <th className="px-4 py-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">COA</th>
                                         <th className="px-4 py-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{isEnglish ? 'Description' : 'Deskripsi'}</th>
-                                        <th className="px-4 py-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{isEnglish ? 'Sub COA' : 'Sub COA'}</th>
-                                        <th className="px-4 py-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{isEnglish ? 'Description' : 'Deskripsi'}</th>
-                                        <th className="px-4 py-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{isEnglish ? 'Department' : 'Departemen'}</th>
-                                        <th className="px-4 py-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{isEnglish ? 'Description' : 'Deskripsi'}</th>
+                                        <th className="px-4 py-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">{text.subCount}</th>
+                                        <th className="px-4 py-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">{text.depCount}</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-50 dark:divide-slate-800/50">
-                                    {paged.map((row, idx) => {
+                                    {paged.map((acc, idx) => {
                                         const globalIdx = pageSize === 0 ? idx : safePage * pageSize + idx;
-                                        const isNewGroup = row.accId !== lastAccId;
-                                        if (isNewGroup) lastAccId = row.accId;
-                                        const isFirstOfGroup = isNewGroup;
-                                        const nextRow = paged[idx + 1];
-                                        const isLastOfGroup = !nextRow || nextRow.accId !== row.accId;
+                                        const subCount = (acc.sub_accounts || []).length;
+                                        const depCount = (acc.sub_accounts || []).reduce((s, sub) => s + (sub.departments || []).length, 0);
+                                        const isExpanded = expandedAccounts.has(acc.id);
 
                                         return (
-                                            <tr
-                                                key={`${row.acc.id}-${row.sub?.id || 0}-${row.dep?.id || 0}`}
-                                                className={`transition-colors hover:bg-indigo-50/30 dark:hover:bg-indigo-900/10 ${
-                                                    isFirstOfGroup && !isLastOfGroup ? 'border-t-2 border-t-indigo-100 dark:border-t-indigo-900/30' :
-                                                    isFirstOfGroup ? '' : ''
-                                                }`}
-                                            >
-                                                <td className="px-4 py-2.5 text-xs text-slate-400 font-mono">{globalIdx + 1}</td>
-                                                {/* COA */}
-                                                <td className="px-4 py-2.5">
-                                                    {isFirstOfGroup ? (
+                                            <React.Fragment key={acc.id}>
+                                                {/* COA row */}
+                                                <tr
+                                                    className="hover:bg-indigo-50/30 dark:hover:bg-indigo-900/10 transition-colors cursor-pointer"
+                                                    onClick={() => toggleExpand(acc.id)}
+                                                >
+                                                    <td className="px-4 py-3 text-xs text-slate-400 font-mono">{globalIdx + 1}</td>
+                                                    <td className="px-4 py-3">
+                                                        <button className="p-1 rounded text-slate-400 hover:text-indigo-500 transition-all">
+                                                            {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                                                        </button>
+                                                    </td>
+                                                    <td className="px-4 py-3">
                                                         <div className="flex items-center gap-2">
-                                                            <span className="font-mono text-xs font-black text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 px-2 py-0.5 rounded-md">{row.acc.code}</span>
-                                                            <span className="text-xs font-bold text-slate-800 dark:text-white">{row.acc.name}</span>
+                                                            <span className="font-mono text-xs font-black text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 px-2 py-0.5 rounded-md">{acc.code}</span>
+                                                            <span className="text-xs font-bold text-slate-800 dark:text-white">{acc.name}</span>
                                                         </div>
-                                                    ) : <span />}
-                                                </td>
-                                                {/* Deskripsi COA */}
-                                                <td className="px-4 py-2.5">
-                                                    {isFirstOfGroup ? (
-                                                        <span className="text-[11px] text-slate-400 dark:text-slate-500 truncate max-w-[150px] block">{row.acc.description || '-'}</span>
-                                                    ) : <span />}
-                                                </td>
-                                                {/* Sub COA */}
-                                                <td className="px-4 py-2.5">
-                                                    {row.sub ? (
-                                                        <div className="flex items-center gap-2">
-                                                            <span className="font-mono text-[11px] font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-900/20 px-1.5 py-0.5 rounded">{row.sub.code}</span>
-                                                            <span className="text-[11px] font-medium text-slate-700 dark:text-slate-300">{row.sub.name}</span>
-                                                        </div>
-                                                    ) : (
-                                                        <span className="text-[10px] text-slate-300 dark:text-slate-600">—</span>
-                                                    )}
-                                                </td>
-                                                {/* Deskripsi Sub */}
-                                                <td className="px-4 py-2.5">
-                                                    {row.sub ? (
-                                                        <span className="text-[11px] text-slate-400 dark:text-slate-500 truncate max-w-[120px] block">{row.sub.description || '-'}</span>
-                                                    ) : <span className="text-[10px] text-slate-300 dark:text-slate-600">—</span>}
-                                                </td>
-                                                {/* Departemen */}
-                                                <td className="px-4 py-2.5">
-                                                    {row.dep ? (
-                                                        <div className="flex items-center gap-2">
-                                                            <span className="font-mono text-[11px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-1.5 py-0.5 rounded">{row.dep.code}</span>
-                                                            <span className="text-[11px] font-medium text-slate-700 dark:text-slate-300">{row.dep.name}</span>
-                                                        </div>
-                                                    ) : (
-                                                        <span className="text-[10px] text-slate-300 dark:text-slate-600">—</span>
-                                                    )}
-                                                </td>
-                                                {/* Deskripsi Dep */}
-                                                <td className="px-4 py-2.5">
-                                                    {row.dep ? (
-                                                        <span className="text-[11px] text-slate-400 dark:text-slate-500 truncate max-w-[120px] block">{row.dep.description || '-'}</span>
-                                                    ) : <span className="text-[10px] text-slate-300 dark:text-slate-600">—</span>}
-                                                </td>
-                                            </tr>
+                                                    </td>
+                                                    <td className="px-4 py-3 text-[11px] text-slate-400 dark:text-slate-500 truncate max-w-[200px]">{acc.description || '-'}</td>
+                                                    <td className="px-4 py-3 text-center">
+                                                        <span className="inline-flex items-center justify-center min-w-[28px] h-6 px-2 text-[10px] font-black rounded-full bg-cyan-50 text-cyan-600 dark:bg-cyan-900/20 dark:text-cyan-400">{subCount}</span>
+                                                    </td>
+                                                    <td className="px-4 py-3 text-center">
+                                                        <span className="inline-flex items-center justify-center min-w-[28px] h-6 px-2 text-[10px] font-black rounded-full bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400">{depCount}</span>
+                                                    </td>
+                                                </tr>
+
+                                                {/* Expanded: Sub-accounts + Departments */}
+                                                {isExpanded && (acc.sub_accounts || []).map(sub => (
+                                                    <React.Fragment key={sub.id}>
+                                                        {/* Sub COA row */}
+                                                        <tr className="bg-cyan-50/20 dark:bg-cyan-900/5">
+                                                            <td className="px-4 py-2" />
+                                                            <td className="px-4 py-2" />
+                                                            <td className="px-4 py-2 pl-8">
+                                                                <div className="flex items-center gap-2 border-l-2 border-cyan-200 dark:border-cyan-800 pl-3">
+                                                                    <span className="font-mono text-[11px] font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-900/20 px-1.5 py-0.5 rounded">{sub.code}</span>
+                                                                    <span className="text-[11px] font-medium text-slate-700 dark:text-slate-300">{sub.name}</span>
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-4 py-2 pl-8">
+                                                                <span className="text-[11px] text-slate-400 dark:text-slate-500 truncate max-w-[180px] block border-l-2 border-cyan-200 dark:border-cyan-800 pl-3">{sub.description || '-'}</span>
+                                                            </td>
+                                                            <td className="px-4 py-2 text-center">
+                                                                <span className="text-[10px] font-bold text-slate-400">{(sub.departments || []).length}</span>
+                                                            </td>
+                                                            <td className="px-4 py-2" />
+                                                        </tr>
+
+                                                        {/* Department rows */}
+                                                        {(sub.departments || []).map(dep => (
+                                                            <tr key={dep.id} className="bg-amber-50/15 dark:bg-amber-900/5">
+                                                                <td className="px-4 py-1.5" />
+                                                                <td className="px-4 py-1.5" />
+                                                                <td className="px-4 py-1.5 pl-14">
+                                                                    <div className="flex items-center gap-2 border-l-2 border-amber-200 dark:border-amber-800 pl-3">
+                                                                        <span className="font-mono text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-1.5 py-0.5 rounded">{dep.code}</span>
+                                                                        <span className="text-[11px] text-slate-600 dark:text-slate-400">{dep.name}</span>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="px-4 py-1.5 pl-14">
+                                                                    <span className="text-[10px] text-slate-400 dark:text-slate-500 truncate max-w-[160px] block border-l-2 border-amber-200 dark:border-amber-800 pl-3">{dep.description || '-'}</span>
+                                                                </td>
+                                                                <td className="px-4 py-1.5" />
+                                                                <td className="px-4 py-1.5" />
+                                                            </tr>
+                                                        ))}
+                                                    </React.Fragment>
+                                                ))}
+
+                                                {/* Expanded but no sub-accounts */}
+                                                {isExpanded && (!acc.sub_accounts || acc.sub_accounts.length === 0) && (
+                                                    <tr className="bg-slate-50/30 dark:bg-slate-800/20">
+                                                        <td className="px-4 py-3" />
+                                                        <td className="px-4 py-3" />
+                                                        <td colSpan={4} className="px-4 py-3 pl-10 text-[11px] text-slate-400 italic">{text.noData}</td>
+                                                    </tr>
+                                                )}
+                                            </React.Fragment>
                                         );
                                     })}
                                 </tbody>
                             </table>
                         </div>
-                        <Pagination total={totalPages} current={safePage} onChange={setPage} rowCount={flatRows.length} />
+                        <Pagination total={totalPages} current={safePage} onChange={setPage} rowCount={overviewData.length} />
                     </div>
                 )}
             </div>
