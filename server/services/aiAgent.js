@@ -281,7 +281,7 @@ function buildTools() {
             type: 'function',
             function: {
                 name: 'search_training_docs',
-                description: 'Cari dokumen training (peraturan pajak, standar akuntansi, prosedur, panduan) berdasarkan kata kunci. Gunakan untuk menjawab pertanyaan tentang aturan, regulasi, atau prosedur.',
+                description: 'PRIORITAS UTAMA - Cari dokumen training (peraturan pajak, standar akuntansi, prosedur, panduan). WAJIB dipanggil PERTAMA untuk setiap pertanyaan pengetahuan, definisi, atau regulasi.',
                 parameters: { type: 'object', properties: { query: { type: 'string', description: 'Kata kunci pencarian' }, category: { type: 'string', description: 'Filter kategori: tax_regulation, accounting_standard, procedure, guide, general' } }, required: ['query'] }
             }
         },
@@ -692,7 +692,10 @@ async function executeTool(name, args = {}) {
 }
 
 // ── Compressed system prompt (~200 tokens vs ~400 before) ──
-const SYSTEM_PROMPT = `Agent AI Pustaka — arsip, pajak & akuntansi. Gunakan tools untuk MENCARI data. Jangan jawab dari asumsi.
+const SYSTEM_PROMPT = `Agent AI Pustaka — arsip, pajak & akuntansi.
+
+⚠️ ATURAN PALING PENTING:
+SEBELUM menggunakan tool apapun, Anda WAJIB memanggil \`search_training_docs\` dengan query pertanyaan pengguna untuk mencari pengetahuan dari dokumen training. Jika hasil ditemukan, gunakan sebagai dasar utama jawaban. Ini adalah sumber pengetahuan utama.
 
 Database:
 - documents (id, title, type, uploadDate, size, folderId, ocrContent)
@@ -717,11 +720,10 @@ Hierarki COA: coa_accounts → coa_sub_accounts → coa_departments
 Setiap akun induk bisa punya banyak sub-akun, setiap sub-akun bisa punya banyak departemen.
 
 Cara kerja:
-1. Gunakan tools untuk MENCARI data dari database. Jangan pernah jawab dari asumsi atau pengetahuan umum.
-2. Untuk pertanyaan tentang peraturan/pajak/prosedur: gunakan \`search_training_docs\` untuk mencari dokumen training yang relevan.
+1. **PRIORITAS UTAMA**: Untuk pertanyaan pengetahuan, definisi, peraturan, prosedur, atau panduan — WAJIB gunakan \`search_training_docs\` terlebih dahulu. Tool ini mencari dokumen training yang sudah diunggah ke sistem. Jika ada hasil yang relevan, gunakan sebagai dasar jawaban.
+2. Untuk data transaksi/operasional (faktur, invoice, surat, dokumen arsip): gunakan \`search_documents\`, \`search_invoices\`, dll.
 3. Untuk laporan pajak: panggil \`get_tax_summaries\` untuk data angka, \`search_tax_wp\` atau \`list_tax_wp\` untuk data WP.
-3. Field \`data\` pada tax_summaries berisi JSON detail angka PPN (ppnIn, ppnOut) dan PPh. Baca dan jelaskan angka-angkanya.
-4. Untuk pencarian umum: gunakan \`search_documents\`, \`search_invoices\`, dll dengan kata kunci.
+4. Field \`data\` pada tax_summaries berisi JSON detail angka PPN (ppnIn, ppnOut) dan PPh. Baca dan jelaskan angka-angkanya.
 5. Untuk melihat semua data tanpa filter: gunakan \`list_documents\`, \`list_invoices\`, \`list_tax_wp\`.
 6. Bila pengguna meminta "laporan", "ringkasan", atau "rekap" — gunakan tools list/search lalu buat tabel markdown.
 7. Untuk pertanyaan COA/akuntansi: gunakan \`search_coa_accounts\` untuk cari kode/nama akun, \`get_coa_hierarchy\` untuk struktur lengkap, \`get_coa_stats\` untuk statistik.
@@ -968,17 +970,24 @@ export async function runAgent(message, history = [], embedFn = null) {
 
     // ── RAG: Retrieve relevant training documents ──
     let trainingContext = '';
+    console.log(`[AI Agent] embedFn type: ${typeof embedFn}`);
     if (embedFn) {
         try {
             const { searchTrainingDocs } = await import('./trainingDocs.js');
             const trainingDocs = await searchTrainingDocs(message, embedFn, { limit: 3 });
+            console.log(`[AI Agent] Training docs search returned: ${trainingDocs.length} results`);
             if (trainingDocs.length > 0) {
                 trainingContext = '\n\n[DOKUMEN TRAINING - Referensi]\n' +
                     trainingDocs.map((r, i) => `${i + 1}. [${r.title}] (similaritas: ${r.similarity})\n${r.contentPreview}`).join('\n\n');
+                console.log(`[AI Agent] Training docs found: ${trainingDocs.length} docs injected into context`);
+            } else {
+                console.log('[AI Agent] No training docs found for this query');
             }
         } catch (err) {
             console.warn(`[AI Agent] Training docs retrieval failed: ${err.message}`);
         }
+    } else {
+        console.log('[AI Agent] embedFn not provided — training docs search skipped');
     }
 
     const messages = [
