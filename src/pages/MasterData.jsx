@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Plus, Edit3, Trash2, Building2, GitCommit, ShieldCheck, ChevronRight, ChevronLeft, Users, User, Shield, History, Search, Clock, ChevronDown, ChevronUp, AlertCircle, FileText, Activity, Bot, Save, Loader2, Zap, Upload, Link, Eye, RefreshCw, X } from 'lucide-react';
+import { Plus, Edit3, Trash2, Building2, GitCommit, ShieldCheck, ChevronRight, ChevronLeft, Users, User, Shield, History, Search, Clock, ChevronDown, ChevronUp, AlertCircle, FileText, Activity, Bot, Save, Loader2, Zap, Upload, Link, Eye, RefreshCw, X, Info } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { apiClient, API_URL } from '../services/apiClient.js';
 import { APP_MODULES } from '../utils/permissions';
@@ -111,6 +111,13 @@ export default function MasterData({
             fileType: 'Tipe File',
             uploadedAt: 'Diunggah',
             contentPreview: 'Isi Dokumen',
+            refreshStatus: 'Refresh Status',
+            detailLearning: 'Detail Proses',
+            learningDetail: 'Detail Proses Learning',
+            chunks: 'Jumlah Chunks',
+            lastUpdated: 'Terakhir Diperbarui',
+            embeddingStatus: 'Status Embedding',
+            contentLength: 'Panjang Konten',
         }
         : {
             tabs: {
@@ -202,6 +209,13 @@ export default function MasterData({
             fileType: 'Tipe File',
             uploadedAt: 'Diunggah',
             contentPreview: 'Isi Dokumen',
+            refreshStatus: 'Refresh Status',
+            detailLearning: 'Detail Proses',
+            learningDetail: 'Detail Proses Learning',
+            chunks: 'Jumlah Chunks',
+            lastUpdated: 'Terakhir Diperbarui',
+            embeddingStatus: 'Status Embedding',
+            contentLength: 'Panjang Konten',
         };
     const [masterTab, setMasterTab] = useState('users');
     const [userSearchQuery, setUserSearchQuery] = useState('');
@@ -231,6 +245,7 @@ export default function MasterData({
     const [trainingForm, setTrainingForm] = useState({ title: '', category: 'general', tags: '', url: '' });
     const [trainingFile, setTrainingFile] = useState(null);
     const [trainingPreview, setTrainingPreview] = useState(null);
+    const [trainingDetail, setTrainingDetail] = useState(null);
     const [trainingMsg, setTrainingMsg] = useState(null);
 
     const fetchTrainingDocs = async () => {
@@ -300,6 +315,19 @@ export default function MasterData({
         try {
             const data = await apiClient.fetchJson(`${API_URL}/ai/training/${id}`);
             setTrainingPreview(data);
+        } catch (e) {
+            setTrainingMsg({ type: 'error', text: e.message });
+        }
+    };
+
+    const handleTrainingRefresh = () => {
+        fetchTrainingDocs();
+    };
+
+    const openTrainingDetail = async (doc) => {
+        try {
+            const data = await apiClient.fetchJson(`${API_URL}/ai/training/${doc.id}`);
+            setTrainingDetail(data);
         } catch (e) {
             setTrainingMsg({ type: 'error', text: e.message });
         }
@@ -1111,7 +1139,7 @@ export default function MasterData({
                                                 <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">{doc.file_type}</span>
                                             </td>
                                             <td className="px-4 py-3 text-gray-600 dark:text-slate-400">{text.categories[doc.category] || doc.category}</td>
-                                            <td className="px-4 py-3 text-gray-600 dark:text-slate-400">{new Date(doc.uploaded_at).toLocaleDateString()}</td>
+                                            <td className="px-4 py-3 text-gray-600 dark:text-slate-400">{new Date(doc.created_at).toLocaleDateString()}</td>
                                             <td className="px-4 py-3">
                                                 <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${doc.status === 'active' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : doc.status === 'processing' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' : 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'}`}>
                                                     {text[doc.status] || doc.status}
@@ -1119,6 +1147,14 @@ export default function MasterData({
                                             </td>
                                             <td className="px-4 py-3 text-right">
                                                 <div className="flex gap-1 justify-end">
+                                                    {doc.status === 'processing' && (
+                                                        <button onClick={() => handleTrainingRefresh()} className="p-1.5 rounded-lg text-gray-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors" title={text.refreshStatus}>
+                                                            <RefreshCw size={14} />
+                                                        </button>
+                                                    )}
+                                                    <button onClick={() => openTrainingDetail(doc)} className="p-1.5 rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" title={text.detailLearning}>
+                                                        <Info size={14} />
+                                                    </button>
                                                     <button onClick={() => openTrainingPreview(doc.id)} className="p-1.5 rounded-lg text-gray-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors" title={text.preview}>
                                                         <Eye size={14} />
                                                     </button>
@@ -1163,6 +1199,68 @@ export default function MasterData({
                         </div>
                         <div className="p-4 border-t dark:border-slate-700/50 flex justify-end">
                             <button onClick={() => setTrainingPreview(null)} className="px-4 py-2 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-200 rounded-lg text-sm hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Training Detail Modal */}
+            {trainingDetail && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setTrainingDetail(null)}>
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col border dark:border-slate-700/50" onClick={e => e.stopPropagation()}>
+                        <div className="flex items-center justify-between p-5 border-b dark:border-slate-700/50">
+                            <div className="flex items-center gap-2">
+                                <Info size={20} className="text-blue-500" />
+                                <h3 className="font-bold text-lg dark:text-white">{text.learningDetail}</h3>
+                            </div>
+                            <button onClick={() => setTrainingDetail(null)} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors">
+                                <X size={20} className="text-gray-400" />
+                            </button>
+                        </div>
+                        <div className="p-5 overflow-y-auto space-y-4">
+                            <div className="flex items-center gap-2">
+                                <FileText size={16} className="text-gray-400" />
+                                <span className="font-medium dark:text-white">{trainingDetail.title}</span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="bg-gray-50 dark:bg-slate-800/50 rounded-lg p-3">
+                                    <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">{text.fileType}</p>
+                                    <p className="text-sm font-bold dark:text-white">{trainingDetail.file_type}</p>
+                                </div>
+                                <div className="bg-gray-50 dark:bg-slate-800/50 rounded-lg p-3">
+                                    <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">{text.embeddingStatus}</p>
+                                    <span className={`text-sm font-bold ${trainingDetail.status === 'active' ? 'text-emerald-600 dark:text-emerald-400' : trainingDetail.status === 'processing' ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
+                                        {text[trainingDetail.status] || trainingDetail.status}
+                                    </span>
+                                </div>
+                                <div className="bg-gray-50 dark:bg-slate-800/50 rounded-lg p-3">
+                                    <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">{text.chunks}</p>
+                                    <p className="text-sm font-bold dark:text-white">{trainingDetail.chunk_count || 0}</p>
+                                </div>
+                                <div className="bg-gray-50 dark:bg-slate-800/50 rounded-lg p-3">
+                                    <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">{text.category}</p>
+                                    <p className="text-sm font-bold dark:text-white">{text.categories[trainingDetail.category] || trainingDetail.category}</p>
+                                </div>
+                                <div className="bg-gray-50 dark:bg-slate-800/50 rounded-lg p-3">
+                                    <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">{text.contentLength}</p>
+                                    <p className="text-sm font-bold dark:text-white">{trainingDetail.content ? `${trainingDetail.content.length.toLocaleString()} chars` : '-'}</p>
+                                </div>
+                                <div className="bg-gray-50 dark:bg-slate-800/50 rounded-lg p-3">
+                                    <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">{text.lastUpdated}</p>
+                                    <p className="text-sm font-bold dark:text-white">{trainingDetail.updated_at ? new Date(trainingDetail.updated_at).toLocaleString() : '-'}</p>
+                                </div>
+                            </div>
+                            {trainingDetail.tags && (
+                                <div className="bg-gray-50 dark:bg-slate-800/50 rounded-lg p-3">
+                                    <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">{text.tags}</p>
+                                    <p className="text-sm dark:text-white">{trainingDetail.tags}</p>
+                                </div>
+                            )}
+                        </div>
+                        <div className="p-4 border-t dark:border-slate-700/50 flex justify-end gap-2">
+                            <button onClick={() => setTrainingDetail(null)} className="px-4 py-2 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-200 rounded-lg text-sm hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors">
                                 Close
                             </button>
                         </div>
