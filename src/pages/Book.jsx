@@ -419,6 +419,31 @@ export default function Book({ hasPermission }) {
         return [];
     }, [formLevel, data, allSubs]);
 
+    // Flatten overview hierarchy: one row per account→sub→dept path
+    const flatRows = useMemo(() => {
+        const baseData = filterStatus === 'all' ? data : filteredData;
+        const overviewData = filterCoa === 'all' ? baseData : baseData.filter(acc => String(acc.id) === String(filterCoa));
+        const rows = [];
+        overviewData.forEach(acc => {
+            const subs = acc.sub_accounts || [];
+            if (subs.length === 0) {
+                rows.push({ acc, sub: null, dep: null, accId: acc.id });
+            } else {
+                subs.forEach(sub => {
+                    const deps = sub.departments || [];
+                    if (deps.length === 0) {
+                        rows.push({ acc, sub, dep: null, accId: acc.id });
+                    } else {
+                        deps.forEach(dep => {
+                            rows.push({ acc, sub, dep, accId: acc.id });
+                        });
+                    }
+                });
+            }
+        });
+        return rows;
+    }, [data, filteredData, filterStatus, filterCoa]);
+
     const tabs = [
         { id: 'overview', label: text.tabs.overview },
         { id: 'accounts', label: text.tabs.accounts, count: stats.accounts },
@@ -516,29 +541,6 @@ export default function Book({ hasPermission }) {
     const renderOverview = () => {
         const baseData = filterStatus === 'all' ? data : filteredData;
         const overviewData = filterCoa === 'all' ? baseData : baseData.filter(acc => String(acc.id) === String(filterCoa));
-
-        // Flatten hierarchy: one row per account→sub→dept path
-        const flatRows = useMemo(() => {
-            const rows = [];
-            overviewData.forEach(acc => {
-                const subs = acc.sub_accounts || [];
-                if (subs.length === 0) {
-                    rows.push({ acc, sub: null, dep: null, accId: acc.id });
-                } else {
-                    subs.forEach(sub => {
-                        const deps = sub.departments || [];
-                        if (deps.length === 0) {
-                            rows.push({ acc, sub, dep: null, accId: acc.id });
-                        } else {
-                            deps.forEach(dep => {
-                                rows.push({ acc, sub, dep, accId: acc.id });
-                            });
-                        }
-                    });
-                }
-            });
-            return rows;
-        }, [overviewData]);
 
         const totalSubs = overviewData.reduce((sum, a) => sum + (a.sub_accounts || []).length, 0);
         const totalDeps = overviewData.reduce((sum, a) => sum + (a.sub_accounts || []).reduce((s, sub) => s + (sub.departments || []).length, 0), 0);
