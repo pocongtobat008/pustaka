@@ -4,7 +4,8 @@ import {
     Plus, Edit3, Trash2, Search, BookOpen, ChevronRight, ChevronLeft, ChevronDown,
     Upload, FileSpreadsheet, Save, X, Loader2, AlertCircle, CheckCircle2,
     FolderOpen, FolderMinus, Building2, RefreshCw, Download, Filter,
-    Layers, ArrowRight, Eye, SlidersHorizontal, BarChart3, Trash, ChevronUp
+    Layers, ArrowRight, Eye, SlidersHorizontal, BarChart3, Trash, ChevronUp,
+    AlertTriangle
 } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { db as api } from '../services/database';
@@ -62,6 +63,16 @@ export default function Book({ hasPermission }) {
         deleteAll: 'Delete All',
         deleteAllConfirm: 'This will permanently delete ALL COA data. Are you sure?',
         deleteAllSuccess: 'All COA data deleted successfully',
+        deleteAllTitle: 'Delete All COA Data?',
+        deleteAllWarning: 'This action will permanently delete:',
+        deleteAllConsequences: [
+            'All COA accounts and their hierarchy',
+            'All sub-accounts and departments',
+            'This action cannot be undone',
+        ],
+        deleteAllTypeConfirm: 'Type DELETE to confirm',
+        deleteAllInputLabel: 'Confirmation',
+        filterCoaAll: 'All COA',
         pageAll: 'All',
         pageRows: 'rows',
         infoTitle: 'Book Information',
@@ -117,6 +128,16 @@ export default function Book({ hasPermission }) {
         deleteAll: 'Hapus Semua',
         deleteAllConfirm: 'Ini akan menghapus SEMUA data COA secara permanen. Yakin?',
         deleteAllSuccess: 'Semua data COA berhasil dihapus',
+        deleteAllTitle: 'Hapus Semua Data COA?',
+        deleteAllWarning: 'Aksi ini akan menghapus secara permanen:',
+        deleteAllConsequences: [
+            'Semua akun COA dan hierarkinya',
+            'Semua sub-akun dan departemen',
+            'Tindakan ini tidak dapat dibatalkan',
+        ],
+        deleteAllTypeConfirm: 'Ketik HAPUS untuk konfirmasi',
+        deleteAllInputLabel: 'Konfirmasi',
+        filterCoaAll: 'Semua COA',
         pageAll: 'Semua',
         pageRows: 'baris',
         infoTitle: 'Informasi Book (COA)',
@@ -148,7 +169,10 @@ export default function Book({ hasPermission }) {
     const [importFailed, setImportFailed] = useState(0);
     const [page, setPage] = useState(0);
     const [filterStatus, setFilterStatus] = useState('all');
+    const [filterCoa, setFilterCoa] = useState('all');
     const [pageSize, setPageSize] = useState(15);
+    const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
+    const [deleteConfirmText, setDeleteConfirmText] = useState('');
     const fileInputRef = useRef(null);
 
     const fetchData = useCallback(async () => {
@@ -241,10 +265,16 @@ export default function Book({ hasPermission }) {
     };
 
     const handleDeleteAll = async () => {
-        if (!window.confirm(text.deleteAllConfirm)) return;
+        setDeleteConfirmText('');
+        setShowDeleteAllModal(true);
+    };
+
+    const confirmDeleteAll = async () => {
         try {
             await api.deleteAllCoa();
             toast({ title: 'Berhasil', description: text.deleteAllSuccess, type: 'success' });
+            setShowDeleteAllModal(false);
+            setDeleteConfirmText('');
             fetchData();
         } catch (e) {
             toast({ title: 'Error', description: e.message || 'Gagal menghapus semua data', type: 'error' });
@@ -484,20 +514,16 @@ export default function Book({ hasPermission }) {
     };
 
     const renderOverview = () => {
-        const overviewData = filterStatus === 'all' ? data : filteredData;
+        const baseData = filterStatus === 'all' ? data : filteredData;
+        const overviewData = filterCoa === 'all' ? baseData : baseData.filter(acc => String(acc.id) === String(filterCoa));
         const totalSubs = overviewData.reduce((sum, a) => sum + (a.sub_accounts || []).length, 0);
         const totalDeps = overviewData.reduce((sum, a) => sum + (a.sub_accounts || []).reduce((s, sub) => s + (sub.departments || []).length, 0), 0);
-        const accentColors = [
-            'from-indigo-500 to-purple-600',
-            'from-cyan-500 to-blue-600',
-            'from-amber-500 to-orange-600',
-            'from-emerald-500 to-teal-600',
-            'from-rose-500 to-pink-600',
-            'from-violet-500 to-fuchsia-600',
-        ];
+        const safePage = pageSize === 0 ? 0 : Math.min(page, Math.max(1, Math.ceil(overviewData.length / pageSize)) - 1);
+        const paged = pageSize === 0 ? overviewData : overviewData.slice(safePage * pageSize, (safePage + 1) * pageSize);
+        const totalPages = pageSize === 0 ? 1 : Math.max(1, Math.ceil(overviewData.length / pageSize));
 
         return (
-            <div className="p-6 space-y-6">
+            <div className="p-6 space-y-4">
                 <div className="flex items-center justify-between">
                     <div>
                         <h2 className="text-xl font-extrabold text-slate-800 dark:text-white">{text.overviewTitle}</h2>
@@ -516,96 +542,132 @@ export default function Book({ hasPermission }) {
                     </div>
                 </div>
 
+                {/* COA Filter Dropdown */}
+                <div className="flex items-center gap-3">
+                    <div className="relative">
+                        <Filter size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                        <select
+                            value={filterCoa}
+                            onChange={(e) => { setFilterCoa(e.target.value); setPage(0); }}
+                            className="pl-9 pr-8 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 appearance-none cursor-pointer min-w-[180px]"
+                        >
+                            <option value="all">{text.filterCoaAll}</option>
+                            {data.map(acc => (
+                                <option key={acc.id} value={acc.id}>{acc.code} - {acc.name}</option>
+                            ))}
+                        </select>
+                        <ChevronDown size={12} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                    </div>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                        {overviewData.length} {text.tabs.accounts}
+                    </span>
+                </div>
+
                 {overviewData.length === 0 && (
                     <div className="py-20 text-center text-slate-400 dark:text-slate-500">{text.noData}</div>
                 )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                    {overviewData.map((acc, idx) => {
-                        const subCount = (acc.sub_accounts || []).length;
-                        const depCount = (acc.sub_accounts || []).reduce((s, sub) => s + (sub.departments || []).length, 0);
-                        const color = accentColors[idx % accentColors.length];
-                        const isExpanded = expandedAccounts.has(acc.id);
-                        return (
-                            <div key={acc.id} className="group bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-indigo-200 dark:hover:border-indigo-800/50 hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 overflow-hidden">
-                                <div className="relative p-5 cursor-pointer" onClick={() => toggleExpand(acc.id)}>
-                                    <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${color}`} />
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg flex-shrink-0`}>
-                                                <BookOpen size={18} className="text-white" />
-                                            </div>
-                                            <div>
-                                                <div className="flex items-center gap-2">
-                                                    <span className="font-mono text-sm font-black text-indigo-600 dark:text-indigo-400">{acc.code}</span>
-                                                    <span className={`px-1.5 py-0.5 text-[9px] font-bold rounded-full ${acc.is_active !== false ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400' : 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400'}`}>
-                                                        {acc.is_active !== false ? text.active : text.inactive}
-                                                    </span>
-                                                </div>
-                                                <h3 className="text-sm font-bold text-slate-800 dark:text-white mt-0.5">{acc.name}</h3>
-                                            </div>
-                                        </div>
-                                        <button className="p-1.5 rounded-lg text-slate-400 group-hover:text-indigo-500 transition-all">
-                                            {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-                                        </button>
-                                    </div>
-                                    <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 line-clamp-1">{acc.description || '-'}</p>
-                                    <div className="flex items-center gap-4 mt-3">
-                                        <div className="flex items-center gap-1.5">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-cyan-500" />
-                                            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">{subCount} <span className="font-normal">{text.subCount}</span></span>
-                                        </div>
-                                        <div className="flex items-center gap-1.5">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                                            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">{depCount} <span className="font-normal">{text.depCount}</span></span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {isExpanded && (acc.sub_accounts || []).length > 0 && (
-                                    <div className="border-t border-slate-100 dark:border-slate-800">
-                                        {(acc.sub_accounts || []).map(sub => (
-                                            <div key={sub.id} className="border-b border-slate-50 dark:border-slate-800/50 last:border-b-0">
-                                                <div className="px-5 py-3 ml-5 border-l-2 border-indigo-100 dark:border-indigo-900/30 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                                                    <div className="flex items-center justify-between">
-                                                        <div className="flex items-center gap-2">
-                                                            <span className="font-mono text-[11px] font-bold text-cyan-600 dark:text-cyan-400">{sub.code}</span>
-                                                            <span className="text-xs font-medium text-slate-700 dark:text-slate-300">{sub.name}</span>
-                                                        </div>
-                                                        <div className="flex items-center gap-1">
-                                                            <span className="text-[10px] text-slate-400">{(sub.departments || []).length} dep</span>
+                {/* Flat Table */}
+                {overviewData.length > 0 && (
+                    <div>
+                        <div className="overflow-x-auto rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <table className="w-full text-sm text-left">
+                                <thead>
+                                    <tr className="border-b border-slate-100 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-800/30">
+                                        <th className="px-5 py-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest w-12">#</th>
+                                        <th className="px-5 py-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{text.code}</th>
+                                        <th className="px-5 py-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{text.name}</th>
+                                        <th className="px-5 py-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{text.description}</th>
+                                        <th className="px-5 py-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">{text.subCount}</th>
+                                        <th className="px-5 py-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">{text.depCount}</th>
+                                        <th className="px-5 py-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{text.status}</th>
+                                        <th className="px-5 py-3 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-right">{text.actions}</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-50 dark:divide-slate-800/50">
+                                    {paged.map((acc, idx) => {
+                                        const subCount = (acc.sub_accounts || []).length;
+                                        const depCount = (acc.sub_accounts || []).reduce((s, sub) => s + (sub.departments || []).length, 0);
+                                        const globalIdx = pageSize === 0 ? idx : safePage * pageSize + idx;
+                                        return (
+                                            <React.Fragment key={acc.id}>
+                                                <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                                                    <td className="px-5 py-3 text-xs text-slate-400 font-mono">{globalIdx + 1}</td>
+                                                    <td className="px-5 py-3 font-mono text-sm font-black text-indigo-600 dark:text-indigo-400">{acc.code}</td>
+                                                    <td className="px-5 py-3 font-bold text-slate-800 dark:text-white">{acc.name}</td>
+                                                    <td className="px-5 py-3 text-xs text-slate-400 dark:text-slate-500 truncate max-w-[200px]">{acc.description || '-'}</td>
+                                                    <td className="px-5 py-3 text-center">
+                                                        <span className="inline-flex items-center justify-center min-w-[28px] h-6 px-2 text-[10px] font-black rounded-full bg-cyan-50 text-cyan-600 dark:bg-cyan-900/20 dark:text-cyan-400">{subCount}</span>
+                                                    </td>
+                                                    <td className="px-5 py-3 text-center">
+                                                        <span className="inline-flex items-center justify-center min-w-[28px] h-6 px-2 text-[10px] font-black rounded-full bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400">{depCount}</span>
+                                                    </td>
+                                                    <td className="px-5 py-3">
+                                                        <span className={`px-2 py-1 text-[10px] font-bold rounded-full ${acc.is_active !== false ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400' : 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400'}`}>
+                                                            {acc.is_active !== false ? text.active : text.inactive}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-5 py-3 text-right">
+                                                        <div className="flex items-center justify-end gap-1">
                                                             {hasPermission('book', 'edit') && (
-                                                                <button onClick={(e) => { e.stopPropagation(); openEditForm('sub_account', sub); }} className="p-1 rounded text-slate-400 hover:text-indigo-500 transition-all opacity-0 group-hover:opacity-100">
-                                                                    <Edit3 size={10} />
+                                                                <>
+                                                                    <button onClick={() => openAddForm('sub_account', acc.id)} className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all" title="Tambah Sub">
+                                                                        <Plus size={12} />
+                                                                    </button>
+                                                                    <button onClick={() => openEditForm('account', acc)} className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all" title="Edit">
+                                                                        <Edit3 size={12} />
+                                                                    </button>
+                                                                </>
+                                                            )}
+                                                            {hasPermission('book', 'delete') && (
+                                                                <button onClick={() => handleDelete('account', acc)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all" title="Hapus">
+                                                                    <Trash2 size={12} />
                                                                 </button>
                                                             )}
                                                         </div>
-                                                    </div>
-                                                    {(sub.departments || []).length > 0 && (
-                                                        <div className="mt-2 ml-3 space-y-1">
-                                                            {sub.departments.map(dep => (
-                                                                <div key={dep.id} className="flex items-center gap-2 py-1 border-l-2 border-cyan-100 dark:border-cyan-900/30 -ml-3 pl-3">
-                                                                    <span className="font-mono text-[10px] text-amber-600 dark:text-amber-400">{dep.code}</span>
-                                                                    <span className="text-[11px] text-slate-500 dark:text-slate-400">{dep.name}</span>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-
-                                {isExpanded && (acc.sub_accounts || []).length === 0 && (
-                                    <div className="px-5 py-4 border-t border-slate-100 dark:border-slate-800 text-center">
-                                        <p className="text-[11px] text-slate-400">{text.noData}</p>
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })}
-                </div>
+                                                    </td>
+                                                </tr>
+                                                {/* Expanded sub-accounts */}
+                                                {expandedAccounts.has(acc.id) && (acc.sub_accounts || []).map(sub => (
+                                                    <tr key={sub.id} className="bg-slate-50/30 dark:bg-slate-800/20">
+                                                        <td className="px-5 py-2" />
+                                                        <td className="px-5 py-2 pl-10 font-mono text-xs font-bold text-cyan-600 dark:text-cyan-400 border-l-2 border-cyan-200 dark:border-cyan-800">{sub.code}</td>
+                                                        <td className="px-5 py-2 text-sm font-medium text-slate-700 dark:text-slate-300">{sub.name}</td>
+                                                        <td className="px-5 py-2 text-xs text-slate-400 truncate">{sub.description || '-'}</td>
+                                                        <td className="px-5 py-2 text-center">
+                                                            <span className="text-[10px] font-bold text-slate-400">{(sub.departments || []).length}</span>
+                                                        </td>
+                                                        <td className="px-5 py-2" />
+                                                        <td className="px-5 py-2">
+                                                            <span className={`px-2 py-0.5 text-[9px] font-bold rounded-full ${sub.is_active !== false ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
+                                                                {sub.is_active !== false ? text.active : text.inactive}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-5 py-2 text-right">
+                                                            <div className="flex items-center justify-end gap-1">
+                                                                {hasPermission('book', 'edit') && (
+                                                                    <button onClick={() => openEditForm('sub_account', sub)} className="p-1 rounded text-slate-400 hover:text-indigo-500 transition-all">
+                                                                        <Edit3 size={10} />
+                                                                    </button>
+                                                                )}
+                                                                {hasPermission('book', 'delete') && (
+                                                                    <button onClick={() => handleDelete('sub_account', sub)} className="p-1 rounded text-slate-400 hover:text-red-500 transition-all">
+                                                                        <Trash2 size={10} />
+                                                                    </button>
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </React.Fragment>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                        <Pagination total={totalPages} current={safePage} onChange={setPage} rowCount={overviewData.length} />
+                    </div>
+                )}
             </div>
         );
     };
@@ -1068,6 +1130,91 @@ export default function Book({ hasPermission }) {
                         <div className="flex gap-3 mt-6">
                             <button onClick={() => setShowForm(false)} className="flex-1 py-3 bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white text-xs font-black rounded-2xl transition-all uppercase tracking-widest">{text.cancel}</button>
                             <button onClick={handleSave} className="flex-1 py-3 bg-indigo-600 text-white text-xs font-black rounded-2xl hover:bg-indigo-500 shadow-xl shadow-indigo-500/30 transition-all uppercase tracking-widest">{text.save}</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete All Confirmation Modal */}
+            {showDeleteAllModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md" onClick={() => { setShowDeleteAllModal(false); setDeleteConfirmText(''); }}>
+                    <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden border border-slate-100 dark:border-slate-800 animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
+                        {/* Header with animated warning */}
+                        <div className="relative px-8 pt-8 pb-6 text-center bg-gradient-to-b from-red-50 to-white dark:from-red-950/30 dark:to-slate-900">
+                            <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center animate-pulse">
+                                <div className="w-16 h-16 rounded-full bg-red-200 dark:bg-red-800/40 flex items-center justify-center">
+                                    <AlertTriangle size={32} className="text-red-600 dark:text-red-400" />
+                                </div>
+                            </div>
+                            <h3 className="text-xl font-extrabold text-slate-800 dark:text-white">{text.deleteAllTitle}</h3>
+                            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">{text.deleteAllWarning}</p>
+                        </div>
+
+                        {/* Content */}
+                        <div className="px-8 pb-6">
+                            {/* Stats being deleted */}
+                            <div className="flex items-center justify-center gap-6 py-4 mb-5 bg-slate-50 dark:bg-slate-800/50 rounded-2xl">
+                                <div className="text-center">
+                                    <p className="text-2xl font-extrabold text-slate-800 dark:text-white">{stats.accounts}</p>
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{text.stats.accounts}</p>
+                                </div>
+                                <div className="w-px h-8 bg-slate-200 dark:bg-slate-700" />
+                                <div className="text-center">
+                                    <p className="text-2xl font-extrabold text-slate-800 dark:text-white">{stats.sub_accounts}</p>
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{text.stats.subs}</p>
+                                </div>
+                                <div className="w-px h-8 bg-slate-200 dark:bg-slate-700" />
+                                <div className="text-center">
+                                    <p className="text-2xl font-extrabold text-slate-800 dark:text-white">{stats.departments}</p>
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{text.stats.deps}</p>
+                                </div>
+                            </div>
+
+                            {/* Consequences list */}
+                            <ul className="space-y-2.5 mb-6">
+                                {text.deleteAllConsequences.map((item, i) => (
+                                    <li key={i} className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400">
+                                        <div className="w-5 h-5 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                            <X size={10} className="text-red-500" />
+                                        </div>
+                                        {item}
+                                    </li>
+                                ))}
+                            </ul>
+
+                            {/* Type-to-confirm input */}
+                            <div className="space-y-2 mb-6">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{text.deleteAllInputLabel}</label>
+                                <input
+                                    type="text"
+                                    value={deleteConfirmText}
+                                    onChange={(e) => setDeleteConfirmText(e.target.value)}
+                                    placeholder={text.deleteAllTypeConfirm}
+                                    className="w-full px-4 py-3 bg-red-50 dark:bg-red-950/30 border-2 border-red-200 dark:border-red-800/50 rounded-xl text-sm font-mono text-red-600 dark:text-red-400 placeholder:text-red-300 dark:placeholder:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all"
+                                    autoFocus
+                                />
+                            </div>
+
+                            {/* Buttons */}
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => { setShowDeleteAllModal(false); setDeleteConfirmText(''); }}
+                                    className="flex-1 py-3 bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white text-xs font-black rounded-2xl transition-all uppercase tracking-widest"
+                                >
+                                    {text.cancel}
+                                </button>
+                                <button
+                                    onClick={confirmDeleteAll}
+                                    disabled={deleteConfirmText !== (isEnglish ? 'DELETE' : 'HAPUS')}
+                                    className={`flex-1 py-3 text-xs font-black rounded-2xl transition-all uppercase tracking-widest ${
+                                        deleteConfirmText === (isEnglish ? 'DELETE' : 'HAPUS')
+                                            ? 'bg-gradient-to-r from-red-500 to-rose-600 text-white shadow-xl shadow-red-500/30 hover:from-red-400 hover:to-rose-500 cursor-pointer'
+                                            : 'bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-500 cursor-not-allowed'
+                                    }`}
+                                >
+                                    {text.deleteAll}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
