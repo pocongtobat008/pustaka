@@ -27,9 +27,10 @@ export function chunkText(text, chunkSize = CHUNK_SIZE, overlap = CHUNK_OVERLAP)
 
 // ── PDF Parser ──
 export async function parsePdf(buffer) {
-    const pdfParse = (await import('pdf-parse')).default;
-    const data = await pdfParse(buffer);
-    return data.text || '';
+    const { PDFParse } = await import('pdf-parse');
+    const parser = new PDFParse({ data: buffer });
+    const result = await parser.getText();
+    return result.text || '';
 }
 
 // ── DOCX Parser ──
@@ -108,7 +109,13 @@ export async function generateDocEmbedding(docId, embedFn) {
     if (!embedFn) return;
 
     const doc = await knex('ai_training_documents').where('id', docId).first();
-    if (!doc || !doc.content) return;
+    if (!doc || !doc.content) {
+        // No content to embed — mark as error
+        await knex('ai_training_documents')
+            .where('id', docId)
+            .update({ status: 'error', updated_at: knex.fn.now() });
+        return;
+    }
 
     const chunks = chunkText(doc.content);
     if (chunks.length === 0) return;
