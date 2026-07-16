@@ -161,4 +161,150 @@ router.get('/ai/memory/stats', checkAuth, async (req, res) => {
     }
 });
 
+// --- Training Documents ---
+import multer from 'multer';
+import { saveDocument, parseDocument, generateDocEmbedding, searchTrainingDocs, getDocuments, getDocument, deleteDocument, reprocessDocument } from '../services/trainingDocs.js';
+import { generateEmbedding } from '../ai_search.js';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const UPLOAD_DIR = path.join(__dirname, '../../uploads/training');
+await fs.mkdir(UPLOAD_DIR, { recursive: true }).catch(() => {});
+
+const storage = multer.diskStorage({
+    destination: UPLOAD_DIR,
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        cb(null, `training_${Date.now()}${ext}`);
+    }
+});
+const upload = multer({
+    storage,
+    limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
+    fileFilter: (req, file, cb) => {
+        const allowed = ['.pdf', '.docx', '.doc', '.txt'];
+        const ext = path.extname(file.originalname).toLowerCase();
+        cb(null, allowed.includes(ext));
+    }
+});
+
+// POST /api/ai/training/upload — upload document file
+router.post('/ai/training/upload', checkAuth, upload.single('file'), async (req, res) => {
+    try {
+        if (!req.file) return res.status(400).json({ error: 'File tidak ditemukan' });
+
+        const { title, category, tags } = req.body;
+        const ext = path.extname(req.file.originalname).toLowerCase().replace('.', '');
+        const fileType = ext === 'doc' ? 'docx' : ext;
+
+        // Parse content
+        const buffer = await fs.readFile(req.file.path);
+        let content = '';
+        try {
+            content = await parseDocument(buffer, fileType, null);
+        } catch (parseErr) {
+            console.warn(`[Training] Parse failed: ${parseErr.message}`);
+        }
+
+        // Save to DB
+        const docId = await saveDocument({
+            title: title || req.file.originalname,
+            filename: req.file.originalname,
+            fileType,
+            filePath: req.file.filename,
+            content,
+            category: category || 'general',
+            tags: tags || null,
+            userId: req.user.id,
+        });
+
+        // Generate embedding (async, non-blocking)
+        generateDocEmbedding(docId, generateEmbedding).catch(err =>
+            console.warn(`[Training] Embed failed: ${err.message}`)
+        );
+
+        res.json({ id: docId, status: 'processing', message: 'File diunggah, sedang diproses...' });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// POST /api/ai/training/link — add URL link
+router.post('/ai/training/link', checkAuth, async (req, res) => {
+    try {
+        const { title, url, category, tags } = req.body;
+        if (!url) return res.status(400).json({ error: 'URL wajib diisi' });
+
+        // Parse content from URL
+        let content = '';
+        try {
+            content = await parseDocument(null, 'link', url);
+        } catch (parseErr) {
+            console.warn(`[Training] Link parse failed: ${parseErr.message}`);
+        }
+
+        const docId = await saveDocument({
+            title: title || url,
+            fileType: 'link',
+            fileUrl: url,
+            content,
+            category: category || 'general',
+            tags: tags || null,
+            userId: req.user.id,
+        });
+
+        generateDocEmbedding(docId, generateEmbedding).catch(err =>
+            console.warn(`[Training] Embed failed: ${err.message}`)
+        );
+
+        res.json({ id: docId, status: 'processing', message: 'Link ditambahkan, sedang diproses...' });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// GET /api/ai/training — list training documents
+router.get('/ai/training', checkAuth, async (req, res) => {
+    try {
+        const { category, status, search } = req.query;
+        const docs = await getDocuments({ category, status, search });
+        res.json(docs);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// GET /api/ai/training/:id — get document detail
+router.get('/ai/training/:id', checkAuth, async (req, res) => {
+    try {
+        const doc = await getDocument(req.params.id);
+        if (!doc) return res.status(404).json({ error: 'Dokumen tidak ditemukan' });
+        res.json(doc);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// DELETE /api/ai/training/:id — delete document
+router.delete('/ai/training/:id', checkAuth, async (req, res) => {
+    try {
+        await deleteDocument(req.params.id);
+        res.json({ success: true, message: 'Dokumen berhasil dihapus' });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// POST /api/ai/training/:id/reprocess — re-embed document
+router.post('/ai/training/:id/reprocess', checkAuth, async (req, res) => {
+    try {
+        await reprocessDocument(req.params.id, generateEmbedding);
+        res.json({ success: true, message: 'Dokumen sedang diproses ulang' });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 export default router;

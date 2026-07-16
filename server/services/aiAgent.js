@@ -276,6 +276,15 @@ function buildTools() {
                 parameters: { type: 'object', properties: {}, required: [] }
             }
         },
+        // ── Training Documents tools ──
+        {
+            type: 'function',
+            function: {
+                name: 'search_training_docs',
+                description: 'Cari dokumen training (peraturan pajak, standar akuntansi, prosedur, panduan) berdasarkan kata kunci. Gunakan untuk menjawab pertanyaan tentang aturan, regulasi, atau prosedur.',
+                parameters: { type: 'object', properties: { query: { type: 'string', description: 'Kata kunci pencarian' }, category: { type: 'string', description: 'Filter kategori: tax_regulation, accounting_standard, procedure, guide, general' } }, required: ['query'] }
+            }
+        },
     ];
 }
 
@@ -660,6 +669,20 @@ async function executeTool(name, args = {}) {
                     total: Number(accts?.count || 0) + Number(subs?.count || 0) + Number(deps?.count || 0)
                 };
             }
+            // ── Training Documents ──
+            case 'search_training_docs': {
+                const { searchTrainingDocs } = await import('./trainingDocs.js');
+                const results = await searchTrainingDocs(q, embedFn, { limit: 5, category: args.category || null });
+                return {
+                    count: results.length,
+                    docs: results.map(r => ({
+                        title: r.title,
+                        category: r.category,
+                        similarity: r.similarity,
+                        content: r.contentPreview
+                    }))
+                };
+            }
             default:
                 return { error: `Tool tidak dikenal: ${name}` };
         }
@@ -688,13 +711,15 @@ Database:
 - coa_accounts (id, code, name, description, is_active) — Akun Induk COA
 - coa_sub_accounts (id, account_id FK→coa_accounts, code, name, description, is_active) — Sub COA
 - coa_departments (id, sub_account_id FK→coa_sub_accounts, code, name, description, is_active) — Departemen
+- ai_training_documents (id, title, file_type, category, tags, content, status) — Dokumen training (peraturan, panduan, prosedur)
 
 Hierarki COA: coa_accounts → coa_sub_accounts → coa_departments
 Setiap akun induk bisa punya banyak sub-akun, setiap sub-akun bisa punya banyak departemen.
 
 Cara kerja:
 1. Gunakan tools untuk MENCARI data dari database. Jangan pernah jawab dari asumsi atau pengetahuan umum.
-2. Untuk laporan pajak: panggil \`get_tax_summaries\` untuk data angka, \`search_tax_wp\` atau \`list_tax_wp\` untuk data WP.
+2. Untuk pertanyaan tentang peraturan/pajak/prosedur: gunakan \`search_training_docs\` untuk mencari dokumen training yang relevan.
+3. Untuk laporan pajak: panggil \`get_tax_summaries\` untuk data angka, \`search_tax_wp\` atau \`list_tax_wp\` untuk data WP.
 3. Field \`data\` pada tax_summaries berisi JSON detail angka PPN (ppnIn, ppnOut) dan PPh. Baca dan jelaskan angka-angkanya.
 4. Untuk pencarian umum: gunakan \`search_documents\`, \`search_invoices\`, dll dengan kata kunci.
 5. Untuk melihat semua data tanpa filter: gunakan \`list_documents\`, \`list_invoices\`, \`list_tax_wp\`.
@@ -941,8 +966,23 @@ export async function runAgent(message, history = [], embedFn = null) {
         }
     }
 
+    // ── RAG: Retrieve relevant training documents ──
+    let trainingContext = '';
+    if (embedFn) {
+        try {
+            const { searchTrainingDocs } = await import('./trainingDocs.js');
+            const trainingDocs = await searchTrainingDocs(message, embedFn, { limit: 3 });
+            if (trainingDocs.length > 0) {
+                trainingContext = '\n\n[DOKUMEN TRAINING - Referensi]\n' +
+                    trainingDocs.map((r, i) => `${i + 1}. [${r.title}] (similaritas: ${r.similarity})\n${r.contentPreview}`).join('\n\n');
+            }
+        } catch (err) {
+            console.warn(`[AI Agent] Training docs retrieval failed: ${err.message}`);
+        }
+    }
+
     const messages = [
-        { role: 'system', content: SYSTEM_PROMPT + ragContext },
+        { role: 'system', content: SYSTEM_PROMPT + ragContext + trainingContext },
         ...hist,
         { role: 'user', content: message }
     ];

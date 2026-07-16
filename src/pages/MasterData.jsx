@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Plus, Edit3, Trash2, Building2, GitCommit, ShieldCheck, ChevronRight, ChevronLeft, Users, User, Shield, History, Search, Clock, ChevronDown, ChevronUp, AlertCircle, FileText, Activity, Bot, Save, Loader2, Zap } from 'lucide-react';
+import { Plus, Edit3, Trash2, Building2, GitCommit, ShieldCheck, ChevronRight, ChevronLeft, Users, User, Shield, History, Search, Clock, ChevronDown, ChevronUp, AlertCircle, FileText, Activity, Bot, Save, Loader2, Zap, Upload, Link, Eye, RefreshCw, X } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { apiClient, API_URL } from '../services/apiClient.js';
 import { APP_MODULES } from '../utils/permissions';
@@ -29,6 +29,7 @@ export default function MasterData({
                 flows: 'Flows',
                 logs: 'Logs',
                 ai: 'AI Agent',
+                training: 'Training AI',
             },
             noDepartment: 'No Department',
             usersManagement: 'User Management',
@@ -79,8 +80,37 @@ export default function MasterData({
             testConn: 'Test Connection',
             save: 'Save',
             aiStatus: 'Status',
-            departmentList: 'Department List',
-            newDepartment: 'New Department',
+            departmentList: 'Daftar Departemen',
+            newDepartment: 'Departemen Baru',
+            trainingTitle: 'Dokumen Training AI',
+            trainingDesc: 'Upload dokumen (PDF, DOCX, TXT, link) sebagai referensi untuk AI Assistant.',
+            uploadFile: 'Upload File',
+            addLink: 'Tambah Link',
+            title: 'Judul',
+            titlePh: 'Judul dokumen...',
+            category: 'Kategori',
+            categories: { general: 'Umum', tax_regulation: 'Peraturan Pajak', accounting_standard: 'Standar Akuntansi', procedure: 'Prosedur', guide: 'Panduan' },
+            tags: 'Tags',
+            tagsPh: 'pajak, ppn, spt (pisah koma)',
+            chooseFile: 'Pilih File',
+            orPasteUrl: 'atau tempel URL',
+            urlPh: 'https://...',
+            upload: 'Upload & Proses',
+            add: 'Tambah',
+            processing: 'Diproses',
+            active: 'Aktif',
+            error: 'Error',
+            preview: 'Lihat',
+            reprocess: 'Proses Ulang',
+            delete: 'Hapus',
+            noTrainingDocs: 'Belum ada dokumen training.',
+            uploadSuccess: 'File berhasil diunggah',
+            linkSuccess: 'Link berhasil ditambahkan',
+            deleteSuccess: 'Dokumen berhasil dihapus',
+            deleteConfirm: 'Hapus dokumen ini?',
+            fileType: 'Tipe File',
+            uploadedAt: 'Diunggah',
+            contentPreview: 'Isi Dokumen',
         }
         : {
             tabs: {
@@ -90,6 +120,7 @@ export default function MasterData({
                 flows: 'Flows',
                 logs: 'Logs',
                 ai: 'AI Agent',
+                training: 'Training AI',
             },
             noDepartment: 'Tanpa Departemen',
             usersManagement: 'Manajemen User',
@@ -142,6 +173,35 @@ export default function MasterData({
             aiStatus: 'Status',
             departmentList: 'Daftar Departemen',
             newDepartment: 'Departemen Baru',
+            trainingTitle: 'Dokumen Training AI',
+            trainingDesc: 'Upload dokumen (PDF, DOCX, TXT, link) sebagai referensi untuk AI Assistant.',
+            uploadFile: 'Upload File',
+            addLink: 'Tambah Link',
+            title: 'Judul',
+            titlePh: 'Judul dokumen...',
+            category: 'Kategori',
+            categories: { general: 'Umum', tax_regulation: 'Peraturan Pajak', accounting_standard: 'Standar Akuntansi', procedure: 'Prosedur', guide: 'Panduan' },
+            tags: 'Tags',
+            tagsPh: 'pajak, ppn, spt (pisah koma)',
+            chooseFile: 'Pilih File',
+            orPasteUrl: 'atau tempel URL',
+            urlPh: 'https://...',
+            upload: 'Upload & Proses',
+            add: 'Tambah',
+            processing: 'Diproses',
+            active: 'Aktif',
+            error: 'Error',
+            preview: 'Lihat',
+            reprocess: 'Proses Ulang',
+            delete: 'Hapus',
+            noTrainingDocs: 'Belum ada dokumen training.',
+            uploadSuccess: 'File berhasil diunggah',
+            linkSuccess: 'Link berhasil ditambahkan',
+            deleteSuccess: 'Dokumen berhasil dihapus',
+            deleteConfirm: 'Hapus dokumen ini?',
+            fileType: 'Tipe File',
+            uploadedAt: 'Diunggah',
+            contentPreview: 'Isi Dokumen',
         };
     const [masterTab, setMasterTab] = useState('users');
     const [userSearchQuery, setUserSearchQuery] = useState('');
@@ -162,6 +222,88 @@ export default function MasterData({
     const [aiMsg, setAiMsg] = useState(null);
     const [aiModels, setAiModels] = useState([]);
     const [modelsLoading, setModelsLoading] = useState(false);
+
+    // --- Training Documents (Master Data) ---
+    const [trainingDocs, setTrainingDocs] = useState([]);
+    const [trainingLoading, setTrainingLoading] = useState(false);
+    const [trainingUploading, setTrainingUploading] = useState(false);
+    const [trainingTab, setTrainingTab] = useState('upload'); // 'upload' or 'list'
+    const [trainingForm, setTrainingForm] = useState({ title: '', category: 'general', tags: '', url: '' });
+    const [trainingFile, setTrainingFile] = useState(null);
+    const [trainingPreview, setTrainingPreview] = useState(null);
+    const [trainingMsg, setTrainingMsg] = useState(null);
+
+    const fetchTrainingDocs = async () => {
+        setTrainingLoading(true);
+        try {
+            const data = await apiClient.fetchJson(`${API_URL}/ai/training`);
+            setTrainingDocs(data);
+        } catch (e) {
+            console.error('Failed to fetch training docs:', e);
+        } finally {
+            setTrainingLoading(false);
+        }
+    };
+
+    const handleTrainingUpload = async (e) => {
+        e.preventDefault();
+        if (!trainingFile && !trainingForm.url) return;
+        setTrainingUploading(true);
+        setTrainingMsg(null);
+        try {
+            if (trainingFile) {
+                const formData = new FormData();
+                formData.append('file', trainingFile);
+                formData.append('title', trainingForm.title);
+                formData.append('category', trainingForm.category);
+                formData.append('tags', trainingForm.tags);
+                await apiClient.fetchJson(`${API_URL}/ai/training/upload`, { method: 'POST', body: formData, headers: {} });
+                setTrainingMsg({ type: 'success', text: text.uploadSuccess });
+            } else {
+                await apiClient.fetchJson(`${API_URL}/ai/training/link`, {
+                    method: 'POST',
+                    body: JSON.stringify({ url: trainingForm.url, title: trainingForm.title, category: trainingForm.category, tags: trainingForm.tags }),
+                });
+                setTrainingMsg({ type: 'success', text: text.linkSuccess });
+            }
+            setTrainingForm({ title: '', category: 'general', tags: '', url: '' });
+            setTrainingFile(null);
+            fetchTrainingDocs();
+        } catch (e) {
+            setTrainingMsg({ type: 'error', text: e.message });
+        } finally {
+            setTrainingUploading(false);
+        }
+    };
+
+    const handleTrainingDelete = async (id) => {
+        if (!window.confirm(text.deleteConfirm)) return;
+        try {
+            await apiClient.fetchJson(`${API_URL}/ai/training/${id}`, { method: 'DELETE' });
+            setTrainingMsg({ type: 'success', text: text.deleteSuccess });
+            fetchTrainingDocs();
+        } catch (e) {
+            setTrainingMsg({ type: 'error', text: e.message });
+        }
+    };
+
+    const handleTrainingReprocess = async (id) => {
+        try {
+            await apiClient.fetchJson(`${API_URL}/ai/training/${id}/reprocess`, { method: 'POST' });
+            fetchTrainingDocs();
+        } catch (e) {
+            setTrainingMsg({ type: 'error', text: e.message });
+        }
+    };
+
+    const openTrainingPreview = async (id) => {
+        try {
+            const data = await apiClient.fetchJson(`${API_URL}/ai/training/${id}`);
+            setTrainingPreview(data);
+        } catch (e) {
+            setTrainingMsg({ type: 'error', text: e.message });
+        }
+    };
 
     const fetchAiModels = async (baseUrl, apiKey) => {
         setModelsLoading(true);
@@ -261,6 +403,10 @@ export default function MasterData({
         setLogCurrentPage(1);
     }, [logSearchQuery]);
 
+    useEffect(() => {
+        if (masterTab === 'training') fetchTrainingDocs();
+    }, [masterTab]);
+
     const toggleDept = (deptName) => {
         setExpandedDepts(prev => ({
             ...prev,
@@ -298,7 +444,7 @@ export default function MasterData({
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             <div className="flex bg-gray-100 dark:bg-slate-800 border dark:border-slate-700/50 p-1 rounded-xl w-fit mb-4 shadow-inner">
-                {['users', 'roles', 'departments', 'flows', 'logs', 'ai'].map(tab => (
+                {['users', 'roles', 'departments', 'flows', 'logs', 'ai', 'training'].map(tab => (
                     <button
                         key={tab}
                         onClick={() => setMasterTab(tab)}
@@ -787,6 +933,242 @@ export default function MasterData({
                     </Card>
                 )
             }
+
+            {
+                masterTab === 'training' && (
+                    <Card>
+                        <div className="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 className="font-bold text-lg dark:text-white flex items-center gap-2">
+                                    <FileText size={20} className="text-indigo-500" /> {text.trainingTitle}
+                                </h3>
+                                <p className="text-xs text-gray-500 mt-1">{text.trainingDesc}</p>
+                            </div>
+                            <div className="flex gap-1 bg-gray-100 dark:bg-slate-800 p-1 rounded-lg">
+                                <button
+                                    onClick={() => setTrainingTab('upload')}
+                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'upload' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
+                                >
+                                    {text.uploadFile}
+                                </button>
+                                <button
+                                    onClick={() => setTrainingTab('list')}
+                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'list' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
+                                >
+                                    {text.addLink}
+                                </button>
+                            </div>
+                        </div>
+
+                        {trainingMsg && (
+                            <div className={`mb-4 text-xs px-3 py-2 rounded-lg ${trainingMsg.type === 'success' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300' : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300'}`}>
+                                {trainingMsg.text}
+                            </div>
+                        )}
+
+                        {/* Upload Form */}
+                        {trainingTab === 'upload' && (
+                            <form onSubmit={handleTrainingUpload} className="space-y-4 max-w-2xl mb-6">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{text.title}</label>
+                                    <input
+                                        type="text"
+                                        placeholder={text.titlePh}
+                                        className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                        value={trainingForm.title}
+                                        onChange={(e) => setTrainingForm({ ...trainingForm, title: e.target.value })}
+                                        required
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{text.category}</label>
+                                        <select
+                                            className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                            value={trainingForm.category}
+                                            onChange={(e) => setTrainingForm({ ...trainingForm, category: e.target.value })}
+                                        >
+                                            {Object.entries(text.categories).map(([k, v]) => (
+                                                <option key={k} value={k}>{v}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{text.tags}</label>
+                                        <input
+                                            type="text"
+                                            placeholder={text.tagsPh}
+                                            className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                            value={trainingForm.tags}
+                                            onChange={(e) => setTrainingForm({ ...trainingForm, tags: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{text.chooseFile}</label>
+                                    <input
+                                        type="file"
+                                        accept=".pdf,.docx,.txt"
+                                        className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                        onChange={(e) => setTrainingFile(e.target.files[0])}
+                                    />
+                                    <p className="text-[10px] text-gray-400 mt-1">PDF, DOCX, TXT</p>
+                                </div>
+                                <button
+                                    type="submit"
+                                    disabled={trainingUploading || !trainingFile}
+                                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                                >
+                                    {trainingUploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />} {text.upload}
+                                </button>
+                            </form>
+                        )}
+
+                        {/* Link Form */}
+                        {trainingTab === 'list' && (
+                            <form onSubmit={handleTrainingUpload} className="space-y-4 max-w-2xl mb-6">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{text.title}</label>
+                                    <input
+                                        type="text"
+                                        placeholder={text.titlePh}
+                                        className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                        value={trainingForm.title}
+                                        onChange={(e) => setTrainingForm({ ...trainingForm, title: e.target.value })}
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{text.orPasteUrl}</label>
+                                    <input
+                                        type="url"
+                                        placeholder={text.urlPh}
+                                        className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                        value={trainingForm.url}
+                                        onChange={(e) => setTrainingForm({ ...trainingForm, url: e.target.value })}
+                                        required
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{text.category}</label>
+                                        <select
+                                            className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                            value={trainingForm.category}
+                                            onChange={(e) => setTrainingForm({ ...trainingForm, category: e.target.value })}
+                                        >
+                                            {Object.entries(text.categories).map(([k, v]) => (
+                                                <option key={k} value={k}>{v}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{text.tags}</label>
+                                        <input
+                                            type="text"
+                                            placeholder={text.tagsPh}
+                                            className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                            value={trainingForm.tags}
+                                            onChange={(e) => setTrainingForm({ ...trainingForm, tags: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                                <button
+                                    type="submit"
+                                    disabled={trainingUploading || !trainingForm.url}
+                                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                                >
+                                    {trainingUploading ? <Loader2 size={16} className="animate-spin" /> : <Link size={16} />} {text.add}
+                                </button>
+                            </form>
+                        )}
+
+                        {/* Document List */}
+                        <div className="border dark:border-slate-700/50 rounded-lg overflow-hidden">
+                            <table className="w-full text-sm">
+                                <thead>
+                                    <tr className="bg-gray-50 dark:bg-slate-800/50">
+                                        <th className="text-left px-4 py-3 font-bold text-gray-500 dark:text-slate-400 text-xs uppercase tracking-wider">{text.title}</th>
+                                        <th className="text-left px-4 py-3 font-bold text-gray-500 dark:text-slate-400 text-xs uppercase tracking-wider">{text.fileType}</th>
+                                        <th className="text-left px-4 py-3 font-bold text-gray-500 dark:text-slate-400 text-xs uppercase tracking-wider">{text.category}</th>
+                                        <th className="text-left px-4 py-3 font-bold text-gray-500 dark:text-slate-400 text-xs uppercase tracking-wider">{text.uploadedAt}</th>
+                                        <th className="text-left px-4 py-3 font-bold text-gray-500 dark:text-slate-400 text-xs uppercase tracking-wider">Status</th>
+                                        <th className="text-right px-4 py-3 font-bold text-gray-500 dark:text-slate-400 text-xs uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {trainingLoading ? (
+                                        <tr><td colSpan="6" className="px-4 py-8 text-center text-gray-400 dark:text-slate-500"><Loader2 size={20} className="animate-spin inline-block" /></td></tr>
+                                    ) : trainingDocs.length === 0 ? (
+                                        <tr><td colSpan="6" className="px-4 py-8 text-center text-gray-400 dark:text-slate-500">{text.noTrainingDocs}</td></tr>
+                                    ) : trainingDocs.map(doc => (
+                                        <tr key={doc.id} className="border-t dark:border-slate-700/50 hover:bg-gray-50 dark:hover:bg-slate-800/30 transition-colors">
+                                            <td className="px-4 py-3">
+                                                <span className="font-medium dark:text-white">{doc.title}</span>
+                                                {doc.tags && <p className="text-[10px] text-gray-400 mt-0.5">{doc.tags}</p>}
+                                            </td>
+                                            <td className="px-4 py-3">
+                                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">{doc.file_type}</span>
+                                            </td>
+                                            <td className="px-4 py-3 text-gray-600 dark:text-slate-400">{text.categories[doc.category] || doc.category}</td>
+                                            <td className="px-4 py-3 text-gray-600 dark:text-slate-400">{new Date(doc.uploaded_at).toLocaleDateString()}</td>
+                                            <td className="px-4 py-3">
+                                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${doc.status === 'active' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : doc.status === 'processing' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' : 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'}`}>
+                                                    {text[doc.status] || doc.status}
+                                                </span>
+                                            </td>
+                                            <td className="px-4 py-3 text-right">
+                                                <div className="flex gap-1 justify-end">
+                                                    <button onClick={() => openTrainingPreview(doc.id)} className="p-1.5 rounded-lg text-gray-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors" title={text.preview}>
+                                                        <Eye size={14} />
+                                                    </button>
+                                                    <button onClick={() => handleTrainingReprocess(doc.id)} className="p-1.5 rounded-lg text-gray-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors" title={text.reprocess}>
+                                                        <RefreshCw size={14} />
+                                                    </button>
+                                                    <button onClick={() => handleTrainingDelete(doc.id)} className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title={text.delete}>
+                                                        <Trash2 size={14} />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </Card>
+                )
+            }
+
+            {/* Training Preview Modal */}
+            {trainingPreview && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setTrainingPreview(null)}>
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col border dark:border-slate-700/50" onClick={e => e.stopPropagation()}>
+                        <div className="flex items-center justify-between p-5 border-b dark:border-slate-700/50">
+                            <div>
+                                <h3 className="font-bold text-lg dark:text-white">{trainingPreview.title}</h3>
+                                <p className="text-xs text-gray-500 mt-1">{text.categories[trainingPreview.category] || trainingPreview.category}</p>
+                            </div>
+                            <button onClick={() => setTrainingPreview(null)} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors">
+                                <X size={20} className="text-gray-400" />
+                            </button>
+                        </div>
+                        <div className="p-5 overflow-y-auto">
+                            <div className="flex gap-2 mb-4">
+                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">{trainingPreview.file_type}</span>
+                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${trainingPreview.status === 'active' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'}`}>
+                                    {text[trainingPreview.status] || trainingPreview.status}
+                                </span>
+                            </div>
+                            <pre className="text-sm text-gray-700 dark:text-slate-300 whitespace-pre-wrap font-sans">{trainingPreview.content}</pre>
+                        </div>
+                        <div className="p-4 border-t dark:border-slate-700/50 flex justify-end">
+                            <button onClick={() => setTrainingPreview(null)} className="px-4 py-2 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-200 rounded-lg text-sm hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div >
     );
 }
