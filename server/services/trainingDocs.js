@@ -2,6 +2,8 @@ import { knex } from '../db.js';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
+import os from 'os';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const UPLOAD_DIR = path.join(__dirname, '../../server/uploads/training');
@@ -25,18 +27,74 @@ export function chunkText(text, chunkSize = CHUNK_SIZE, overlap = CHUNK_OVERLAP)
     return chunks;
 }
 
-// ── PDF Parser ──
+// ── PDF Parser (with OCR fallback for scanned PDFs) ──
 export async function parsePdf(buffer) {
+    // Step 1: Try text extraction
     const { PDFParse } = await import('pdf-parse');
     const parser = new PDFParse({ data: buffer });
     const result = await parser.getText();
     const text = (result.text || '').trim();
-    // Filter out pdf.js artifacts (e.g. "-- 1 of 1 --")
     const cleaned = text.replace(/^--\s*\d+\s+of\s+\d+\s*--$/gm, '').trim();
-    if (cleaned.length < 10) {
-        throw new Error('PDF hanya berisi gambar (scanned) tanpa teks yang dapat diekstrak. Gunakan OCR atau upload versi teks.');
+
+    // If text extraction worked, return it
+    if (cleaned.length >= 10) {
+        return cleaned;
     }
-    return cleaned;
+
+    // Step 2: Text extraction failed (scanned PDF) — try OCR
+    console.log(`[TrainingDocs] PDF text extraction empty, trying OCR...`);
+    return await ocrPdf(buffer);
+}
+
+// ── OCR for scanned PDFs (pdftoppm + tesseract.js) ──
+async function ocrPdf(buffer) {
+    let tmpDir = null;
+    try {
+        // Write buffer to temp file
+        tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'ocr-'));
+        const tmpPdf = path.join(tmpDir, 'input.pdf');
+        await fs.writeFile(tmpPdf, buffer);
+
+        // Convert PDF pages to PNG images (300 DPI for good OCR quality)
+        execSync(`pdftoppm -png -r 300 "${tmpPdf}" "${tmpDir}/page"`, { timeout: 60000 });
+
+        // Get generated image files
+        const files = (await fs.readdir(tmpDir)).filter(f => f.endsWith('.png')).sort();
+        if (files.length === 0) {
+            throw new Error('Tidak ada halaman yang bisa diproses dari PDF ini.');
+        }
+
+        // OCR each page with tesseract.js
+        const Tesseract = (await import('tesseract.js')).default;
+        const allText = [];
+
+        for (let i = 0; i < files.length; i++) {
+            const imgPath = path.join(tmpDir, files[i]);
+            const result = await Tesseract.recognize(imgPath, 'ind+eng');
+            const pageText = result.data.text?.trim();
+            if (pageText) {
+                allText.push(`--- Halaman ${i + 1} ---\n${pageText}`);
+            }
+            console.log(`[TrainingDocs] OCR page ${i + 1}/${files.length}: ${pageText?.length || 0} chars, confidence: ${result.data.confidence}%`);
+        }
+
+        const ocrText = allText.join('\n\n');
+        if (ocrText.length < 10) {
+            throw new Error('OCR tidak dapat mengekstrak teks dari PDF ini. Pastikan gambar cukup jelas.');
+        }
+
+        return ocrText;
+    } catch (err) {
+        if (err.message.includes('OCR') || err.message.includes('halaman')) {
+            throw err;
+        }
+        throw new Error(`Gagal melakukan OCR: ${err.message}`);
+    } finally {
+        // Cleanup temp files
+        if (tmpDir) {
+            await fs.rm(tmpDir, { recursive: true }).catch(() => {});
+        }
+    }
 }
 
 // ── DOCX Parser ──
