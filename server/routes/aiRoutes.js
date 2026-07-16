@@ -7,6 +7,7 @@ import { addCacheWarmJob } from '../queue.js';
 import { getProactiveInsights } from '../services/insightsEngine.js';
 import { getMemoryStats } from '../services/conversationMemory.js';
 import { checkAuth } from '../middleware/auth.js';
+import { knex } from '../db.js';
 
 const router = express.Router();
 
@@ -202,9 +203,11 @@ router.post('/ai/training/upload', checkAuth, upload.single('file'), async (req,
         // Parse content
         const buffer = await fs.readFile(req.file.path);
         let content = '';
+        let parseError = null;
         try {
             content = await parseDocument(buffer, fileType, null);
         } catch (parseErr) {
+            parseError = parseErr.message;
             console.warn(`[Training] Parse failed: ${parseErr.message}`);
         }
 
@@ -219,6 +222,18 @@ router.post('/ai/training/upload', checkAuth, upload.single('file'), async (req,
             tags: tags || null,
             userId: req.user.id,
         });
+
+        // If parse failed or content empty, mark as error immediately
+        if (parseError || !content || content.trim().length < 10) {
+            await knex('ai_training_documents')
+                .where('id', docId)
+                .update({ status: 'error', updated_at: knex.fn.now() });
+            return res.json({
+                id: docId,
+                status: 'error',
+                message: parseError || 'Tidak dapat mengekstrak teks dari file ini.',
+            });
+        }
 
         // Generate embedding (async, non-blocking)
         generateDocEmbedding(docId, generateEmbedding).catch(err =>
@@ -239,9 +254,11 @@ router.post('/ai/training/link', checkAuth, async (req, res) => {
 
         // Parse content from URL
         let content = '';
+        let parseError = null;
         try {
             content = await parseDocument(null, 'link', url);
         } catch (parseErr) {
+            parseError = parseErr.message;
             console.warn(`[Training] Link parse failed: ${parseErr.message}`);
         }
 
@@ -254,6 +271,18 @@ router.post('/ai/training/link', checkAuth, async (req, res) => {
             tags: tags || null,
             userId: req.user.id,
         });
+
+        // If parse failed or content empty, mark as error immediately
+        if (parseError || !content || content.trim().length < 10) {
+            await knex('ai_training_documents')
+                .where('id', docId)
+                .update({ status: 'error', updated_at: knex.fn.now() });
+            return res.json({
+                id: docId,
+                status: 'error',
+                message: parseError || 'Tidak dapat mengekstrak teks dari URL ini.',
+            });
+        }
 
         generateDocEmbedding(docId, generateEmbedding).catch(err =>
             console.warn(`[Training] Embed failed: ${err.message}`)

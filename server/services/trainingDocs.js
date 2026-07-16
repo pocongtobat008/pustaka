@@ -30,7 +30,13 @@ export async function parsePdf(buffer) {
     const { PDFParse } = await import('pdf-parse');
     const parser = new PDFParse({ data: buffer });
     const result = await parser.getText();
-    return result.text || '';
+    const text = (result.text || '').trim();
+    // Filter out pdf.js artifacts (e.g. "-- 1 of 1 --")
+    const cleaned = text.replace(/^--\s*\d+\s+of\s+\d+\s*--$/gm, '').trim();
+    if (cleaned.length < 10) {
+        throw new Error('PDF hanya berisi gambar (scanned) tanpa teks yang dapat diekstrak. Gunakan OCR atau upload versi teks.');
+    }
+    return cleaned;
 }
 
 // ── DOCX Parser ──
