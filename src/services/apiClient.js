@@ -14,11 +14,13 @@ export const API_URL = getApiUrl();
 
 export const apiClient = {
     async fetchJson(url, options = {}) {
+        const isFormData = options.body instanceof FormData;
+        const defaultHeaders = isFormData ? {} : { 'Content-Type': 'application/json' };
         const response = await fetch(url, {
             ...options,
             credentials: 'include',
             headers: {
-                'Content-Type': 'application/json',
+                ...defaultHeaders,
                 ...options.headers,
             },
         });

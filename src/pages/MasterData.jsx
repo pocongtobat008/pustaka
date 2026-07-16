@@ -257,7 +257,7 @@ export default function MasterData({
                 formData.append('title', trainingForm.title);
                 formData.append('category', trainingForm.category);
                 formData.append('tags', trainingForm.tags);
-                await apiClient.fetchJson(`${API_URL}/ai/training/upload`, { method: 'POST', body: formData, headers: {} });
+                await apiClient.fetchJson(`${API_URL}/ai/training/upload`, { method: 'POST', body: formData });
                 setTrainingMsg({ type: 'success', text: text.uploadSuccess });
             } else {
                 await apiClient.fetchJson(`${API_URL}/ai/training/link`, {
