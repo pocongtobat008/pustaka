@@ -437,6 +437,11 @@
 │                         │  list_coa_accounts                       │
 │                         │  get_coa_hierarchy                       │
 │                         │  get_coa_stats                           │
+├─────────────────────────┼──────────────────────────────────────────┤
+│  ★ Training Docs (RAG)  │  search_training_docs  ← MANDATORY 1ST  │
+│  (Dokumen Training)     │  (query: string → top 5 chunks)         │
+│  ↑ PRIORITAS UTAMA      │  Called FIRST for any knowledge Q       │
+│                         │  Optional: category filter               │
 └─────────────────────────┴──────────────────────────────────────────┘
 ```
 
@@ -651,8 +656,8 @@
 │                               └──────────┬──────────┘             │
 │  Semua tabel ini di-query oleh           │                         │
 │  tools di aiAgent.js            ┌────────▼───────────┐             │
-│                                 │ coa_departments     │             │
-│                                 ├────────────────────┤             │
+│  + ai_training_documents        │ coa_departments     │             │
+│  + ai_training_chunks           ├────────────────────┤             │
 │                                 │ id, sub_account_id  │             │
 │                                 │ (FK), code, name... │             │
 │                                 └────────────────────┘             │
@@ -1065,13 +1070,16 @@ GET /api/ai/memory/stats
 
 ---
 
-## 13. MULTI-TOOL CHAINING (MAX 6 ITERATIONS)
+## 13. MULTI-TOOL CHAINING (MAX 4 ITERATIONS)
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │                   MULTI-TOOL CHAINING                             │
 │                                                                  │
-│  ITERATION 1: search_docs("PPN")                                │
+│  ITERATION 1: search_training_docs("PPN")  ← MANDATORY FIRST     │
+│       │  → found 2 chunks from training docs                     │
+│       ▼                                                          │
+│  ITERATION 2: search_docs("PPN")                                │
 │       │  → found 3 documents                                    │
 │       ▼                                                          │
 │  ITERATION 2: search_invoices("PPN")                            │
@@ -1114,12 +1122,13 @@ const RAG_CONTEXT_LIMIT = 3;  // Max past conversations injected
 ```
 
 ### Chaining Rules (in System Prompt)
-1. **Use all iterations**: Don't stop early if more tools can help
-2. **Search before answer**: Always use search tools before answering data questions
-3. **Chain tools**: After search results, use detail tools to get full data
-4. **Verify amounts**: Use search_invoices to cross-check financial figures
-5. **Complete before replying**: Gather all needed data before final answer
-6. **Don't duplicate**: If a tool was already called, don't call again with same params
+1. **Training docs FIRST**: Always call `search_training_docs` before answering knowledge questions
+2. **Use all iterations**: Don't stop early if more tools can help
+3. **Search before answer**: Always use search tools before answering data questions
+4. **Chain tools**: After search results, use detail tools to get full data
+5. **Verify amounts**: Use search_invoices to cross-check financial figures
+6. **Complete before replying**: Gather all needed data before final answer
+7. **Don't duplicate**: If a tool was already called, don't call again with same params
 
 ### Tool Chaining Examples
 ```
@@ -1165,6 +1174,16 @@ Chain: search_docs("PPN")
 ├──────────────────────────┼──────────┼────────────────────────────┤
 │  /api/ai/insights        │  GET     │  Proactive insights        │
 │  /api/ai/memory/stats    │  GET     │  RAG memory statistics     │
+├──────────────────────────┼──────────┼────────────────────────────┤
+│  TRAINING DOCUMENTS                                                   │
+├──────────────────────────┼──────────┼────────────────────────────┤
+│  /api/ai/training        │  GET     │  List training documents   │
+│  /api/ai/training        │  POST    │  Upload/link document      │
+│  /api/ai/training/:id    │  GET     │  Get document detail       │
+│  /api/ai/training/:id    │  DELETE  │  Delete document           │
+│  /api/ai/training/:id/reprocess │ POST │ Re-embed document      │
+│  /api/ai/training/upload │  POST    │  Upload file (multipart)   │
+│  /api/ai/training/link   │  POST    │  Add URL link              │
 └──────────────────────────┴──────────┴────────────────────────────┘
 ```
 
@@ -1175,35 +1194,481 @@ Chain: search_docs("PPN")
 ```
 server/
 ├── services/
-│   ├── aiAgent.js          # Core agent + RAG context injection
+│   ├── aiAgent.js          # Core agent + RAG context injection + training docs tool
 │   ├── agentCache.js       # pgvector + SHA256 cache layer
 │   ├── chatHistory.js      # Session/message CRUD
 │   ├── conversationMemory.js # RAG memory (save/search/summarize)
 │   ├── insightsEngine.js   # 7 proactive insight detectors
 │   ├── cacheWarmer.js      # Scheduled cache warming
+│   ├── trainingDocs.js     # Training doc parse/chunk/embed/search/CRUD
 │   └── embeddings.js       # (placeholder, real: ai_search.js)
-├── ai_search.js            # Embedding generation + vector search
+├── ai_search.js            # Embedding generation + vector search (1024-dim)
 ├── db.js                   # Knex DB connection
 ├── queue.js                # BullMQ queue setup
 ├── utils/
 │   └── queue.js            # Cache warm schedule + BullMQ jobs
 ├── worker.js               # Job processor (ai-agent, cache-warm)
 ├── routes/
-│   └── aiRoutes.js         # All AI API endpoints
+│   └── aiRoutes.js         # All AI API endpoints + training routes
 ├── controllers/
 │   └── aiController.js     # Request handlers
 ├── migrations/
 │   ├── 20260715000000_create_coa_tables.js
 │   ├── 20260715100000_create_ai_cache_warm_logs.js
 │   ├── 20260715110000_add_meta_to_ai_settings.js
-│   └── 20260715120000_create_conversation_summaries.js
-│
+│   ├── 20260715120000_create_conversation_summaries.js
+│   ├── 20260716000000_create_ai_training_documents.js
+│   └── 20260716010000_fix_training_embedding_dimension.js
+
 src/
 ├── components/
 │   └── AiChatAssistant.jsx # Chat UI component
 ├── services/
+│   ├── apiClient.js        # HTTP client (FormData auto-detect)
 │   └── database.js         # Frontend API calls
 └── pages/
-    └── Book.jsx            # COA management page
+    ├── Book.jsx            # COA management page
+    └── MasterData.jsx      # Training AI tab (upload/link/list/preview)
+```
+
+---
+
+## 16. AI TRAINING DOCUMENTS SYSTEM
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│                   TRAINING DOCUMENTS FLOW                                │
+│                                                                          │
+│  ┌─────────────┐     ┌──────────────────┐     ┌───────────────────┐     │
+│  │  User Upload │────▶│  Text Extraction  │────▶│  Chunking         │     │
+│  │  (PDF/DOCX/  │     │  (pdf-parse /     │     │  (1000 chars,     │     │
+│  │   TXT/URL)   │     │   mammoth /       │     │   200 overlap)    │     │
+│  └─────────────┘     │   cheerio)        │     └────────┬──────────┘     │
+│                       └──────────────────┘              │                 │
+│                                                          ▼                 │
+│  ┌──────────────────────────────────────────────────────────────────┐    │
+│  │                    Embedding + Storage                            │    │
+│  │                                                                  │    │
+│  │  ┌─────────────────┐    ┌─────────────────┐    ┌──────────────┐│    │
+│  │  │  generateEmbedding│───▶│  Vector Normalize │───▶│  INSERT INTO ││    │
+│  │  │  (1024-dim)     │    │  (unit vector)   │    │  pgvector    ││    │
+│  │  │  we/text-emb-v3 │    │                  │    │  + metadata  ││    │
+│  │  └─────────────────┘    └─────────────────┘    └──────────────┘│    │
+│  └──────────────────────────────────────────────────────────────────┘    │
+│                                    │                                     │
+│                                    ▼                                     │
+│  ┌──────────────────────────────────────────────────────────────────┐    │
+│  │                    AI Agent Query Flow                            │    │
+│  │                                                                  │    │
+│  │  User Question ──▶ Embed Query ──▶ pgvector Cosine Search       │    │
+│  │                    (1024-dim)      (threshold > 0.3, top 3)      │    │
+│  │                           │                                      │    │
+│  │                           ▼                                      │    │
+│  │                    ┌──────────────────┐                           │    │
+│  │                    │ Matched Chunks   │                           │    │
+│  │                    │ (score > 0.3)    │                           │    │
+│  │                    └────────┬─────────┘                           │    │
+│  │                             │                                     │    │
+│  │                             ▼                                     │    │
+│  │                    ┌──────────────────┐                           │    │
+│  │                    │ Inject into      │                           │    │
+│  │                    │ System Prompt    │                           │    │
+│  │                    │ as [DOKUMEN      │                           │    │
+│  │                    │  TRAINING]       │                           │    │
+│  │                    └──────────────────┘                           │    │
+│  └──────────────────────────────────────────────────────────────────┘    │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+### Database: `ai_training_documents`
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│  TABLE: ai_training_documents                                          │
+├──────────────────────┬────────────────┬────────────────────────────────┤
+│  COLUMN              │  TYPE          │  DESCRIPTION                  │
+├──────────────────────┼────────────────┼────────────────────────────────┤
+│  id                  │  INTEGER PK    │  Auto-increment               │
+│  title               │  VARCHAR(255)  │  Document title               │
+│  filename            │  VARCHAR(255)  │  Original filename            │
+│  file_type           │  VARCHAR(20)   │  pdf, docx, txt, md, link     │
+│  file_url            │  VARCHAR(500)  │  URL for linked docs          │
+│  file_path           │  VARCHAR(500)  │  Local file path              │
+│  content             │  TEXT          │  Full extracted text          │
+│  category            │  VARCHAR(50)   │  tax_regulation, accounting_  │
+│                      │                │  standard, procedure, guide,  │
+│                      │                │  general                      │
+│  tags                │  VARCHAR(255)  │  Comma-separated tags         │
+│  status              │  VARCHAR(20)   │  processing, active, error    │
+│  chunk_count         │  INTEGER       │  Number of text chunks        │
+│  embedding           │  VECTOR(1024)  │  pgvector embedding           │
+│  uploaded_by         │  INTEGER FK    │  → users.id                   │
+│  created_at          │  TIMESTAMP     │  Upload time                  │
+│  updated_at          │  TIMESTAMP     │  Last update time             │
+├──────────────────────┴────────────────┴────────────────────────────────┤
+│  INDEXES:                                                             │
+│  - training_embedding_idx  (ivfflat, vector_cosine_ops, lists=1)      │
+│  - training_status_idx     (status)                                    │
+│  - training_filetype_idx   (file_type)                                 │
+└────────────────────────────────────────────────────────────────────────┘
+
+NOTE: Embedding is stored at document level (first 2000 chars of first chunk).
+      For full RAG, each chunk should be embedded separately (future version).
+```
+
+### Text Extraction Pipeline
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                  FILE TYPE → EXTRACTOR                            │
+├─────────────────┬────────────────────────────────────────────────┤
+│  FILE TYPE      │  EXTRACTOR                                    │
+├─────────────────┼────────────────────────────────────────────────┤
+│  .pdf           │  pdf-parse (npm)                              │
+│  .docx          │  mammoth (npm)                                │
+│  .txt           │  fs.readFileSync (UTF-8)                      │
+│  .md            │  fs.readFileSync (UTF-8)                      │
+│  URL            │  cheerio (HTML → text, strips tags)           │
+└─────────────────┴────────────────────────────────────────────────┘
+```
+
+### Chunking Strategy
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                  CHUNKING PARAMETERS                              │
+├─────────────────────────┬────────────────────────────────────────┤
+│  PARAMETER              │  VALUE                                │
+├─────────────────────────┼────────────────────────────────────────┤
+│  chunk_size             │  1000 characters                      │
+│  overlap                │  200 characters                       │
+│  min_chunk_size         │  50 characters (skip empty/too short) │
+│  encoding               │  UTF-8                                │
+└─────────────────────────┴────────────────────────────────────────┘
+
+Splitting algorithm:
+1. Read extracted text
+2. Split by chunk_size (1000 chars)
+3. Overlap last 200 chars into next chunk
+4. Filter out chunks < 50 chars
+5. Return array of { content, chunk_index, token_count }
+
+NOTE: Currently only the first chunk (2000 chars) is embedded as document representative.
+      Full chunk-level embedding is planned for future version.
+```
+
+### Semantic Search Flow
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                  SEARCH TRAINING DOCS                             │
+│                                                                  │
+│  query_text (string)                                             │
+│       │                                                          │
+│       ▼                                                          │
+│  generateEmbedding(query_text)                                   │
+│  → 1024-dim vector                                               │
+│       │                                                          │
+│       ▼                                                          │
+│  SQL: SELECT id, title, filename, file_type, category, tags,     │
+│          content, chunk_count, created_at,                       │
+│          1 - (embedding <=> query_embedding) AS similarity       │
+│       FROM ai_training_documents                                 │
+│       WHERE embedding IS NOT NULL AND status = 'active'          │
+│       [AND category = ?]  -- optional filter                     │
+│       ORDER BY embedding <=> query_embedding                     │
+│       LIMIT 5                                                    │
+│       │                                                          │
+│       ▼                                                          │
+│  Filter: similarity >= 0.25                                      │
+│       │                                                          │
+│       ▼                                                          │
+│  Return: [{ id, title, fileType, category, tags,                │
+│              contentPreview (500 chars), similarity }]           │
+│                                                                  │
+│  ──────────────────────────────────────────────────────────────  │
+│  KEY PARAMETERS:                                                 │
+│  - Threshold: 0.25 (cosine similarity)                          │
+│  - Top K: 5 (max results)                                       │
+│  - Operator: <=> (pgvector cosine distance)                     │
+│  - Result: 1 - distance = similarity                            │
+│  - Optional: category filter (tax_regulation, etc.)              │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### AI Agent Integration (RAG Injection)
+```
+┌──────────────────────────────────────────────────────────────────┐
+│              TRAINING DOCS → SYSTEM PROMPT INJECTION              │
+│                                                                  │
+│  ┌──────────────────────────────────────────────────────────────┐│
+│  │  STEP 1: System prompt includes mandatory instruction        ││
+│  │                                                              ││
+│  │  "⚠️ ATURAN PALING PENTING:                                  ││
+│  │   SEBELUM menggunakan tool apapun, Anda WAJIB memanggil      ││
+│  │   search_training_docs dengan query pertanyaan pengguna      ││
+│  │   untuk mencari pengetahuan dari dokumen training.          ││
+│  │   Jika hasil ditemukan, gunakan sebagai dasar utama jawaban"││
+│  └──────────────────────────────────────────────────────────────┘│
+│                              │                                   │
+│                              ▼                                   │
+│  ┌──────────────────────────────────────────────────────────────┐│
+│  │  STEP 2: LLM calls search_training_docs FIRST               ││
+│  │                                                              ││
+│  │  search_training_docs({                                      ││
+│  │    query: "PPN adalah pajak pertambahan nilai",              ││
+│  │    category: "tax_regulation"                                ││
+│  │  })                                                          ││
+│  │  → Returns: { count: 2, docs: [...] }                       ││
+│  └──────────────────────────────────────────────────────────────┘│
+│                              │                                   │
+│                              ▼                                   │
+│  ┌──────────────────────────────────────────────────────────────┐│
+│  │  STEP 3: Tool result added to messages                      ││
+│  │                                                              ││
+│  │  { role: "tool", tool_call_id: "call_xyz",                  ││
+│  │    content: {                                                ││
+│  │      count: 2,                                               ││
+│  │      docs: [                                                 ││
+│  │        { title: "Peraturan PPN", category: "tax_regulation",││
+│  │          similarity: 0.95, content: "PPN dikenakan 11%..."  ││
+│  │        },                                                    ││
+│  │        { title: "Kebijakan Pajak", similarity: 0.88, ... } ││
+│  │      ]                                                       ││
+│  │    }                                                         ││
+│  │  }                                                           ││
+│  └──────────────────────────────────────────────────────────────┘│
+│                              │                                   │
+│                              ▼                                   │
+│  ┌──────────────────────────────────────────────────────────────┐│
+│  │  STEP 4: LLM generates answer using training context        ││
+│  │                                                              ││
+│  │  Answer: "Berdasarkan dokumen training, PPN adalah pajak    ││
+│  │  pertambahan nilai yang dikenakan sebesar 11%..."           ││
+│  └──────────────────────────────────────────────────────────────┘│
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### System Prompt Training Section
+```javascript
+// Actual system prompt in server/services/aiAgent.js (compressed ~200 tokens)
+
+const SYSTEM_PROMPT = `Agent AI Pustaka — arsip, pajak & akuntansi.
+
+⚠️ ATURAN PALING PENTING:
+SEBELUM menggunakan tool apapun, Anda WAJIB memanggil \`search_training_docs\` 
+dengan query pertanyaan pengguna untuk mencari pengetahuan dari dokumen training. 
+Jika hasil ditemukan, gunakan sebagai dasar utama jawaban. 
+Ini adalah sumber pengetahuan utama.
+
+... (database schema listed) ...
+
+Cara kerja:
+1. **PRIORITAS UTAMA**: Untuk pertanyaan pengetahuan, definisi, peraturan, prosedur, 
+   atau panduan — WAJIB gunakan \`search_training_docs\` terlebih dahulu. 
+   Tool ini mencari dokumen training yang sudah diunggah ke sistem. 
+   Jika ada hasil yang relevan, gunakan sebagai dasar jawaban.
+2. Untuk data transaksi/operasional (faktur, invoice, surat, dokumen arsip): 
+   gunakan \`search_documents\`, \`search_invoices\`, dll.
+3. Untuk laporan pajak: panggil \`get_tax_summary\` untuk data angka, 
+   \`search_tax_wp\` atau \`list_tax_wp\` untuk data WP.
+4. Field \`data\` pada tax_summaries berisi JSON detail angka PPN (ppnIn, ppnOut) 
+   dan PPh. Baca dan jelaskan angka-angkanya.
+5. Untuk melihat semua data tanpa filter: gunakan \`list_documents\`, 
+   \`list_invoices\`, \`list_tax_wp\`.
+6. Bila pengguna meminta "laporan", "ringkasan", atau "rekap" — 
+   gunakan tools list/search lalu buat tabel markdown.
+7. Untuk pertanyaan COA/akuntansi: gunakan \`search_coa_accounts\` untuk cari 
+   kode/nama akun, \`get_coa_hierarchy\` untuk struktur lengkap, 
+   \`get_coa_stats\` untuk statistik.
+8. Contoh pertanyaan COA: "akun 11110 itu apa?", "tampilkan sub COA untuk akun kas", 
+   "berapa jumlah akun di COA?", "cari departemen untuk akun pendapatan".
+
+Multi-turn Tool Chaining:
+9. Jika hasil pencarian mengembalikan ID, gunakan tool detail untuk mendapatkan 
+   informasi lengkap. Contoh: search_documents → get_document_detail(id).
+10. Jika perlu konteks terkait, panggil beberapa tool secara berurutan. 
+    Contoh: search_invoices → get_invoice_detail → search_documents(vendor).
+11. Gunakan SEMUA iterasi yang tersedia untuk mengumpulkan data lengkap 
+    sebelum memberikan jawaban akhir.
+12. Jangan terburu-buru memberikan jawaban jika masih ada data yang bisa diambil.
+
+Format laporan:
+- Gunakan heading (###, ####), tabel Markdown, dan bullet points.
+- Selalu cantumkan ID sumber (mis. Invoice #12, WP #5).
+- Untuk data pajak, tampilkan angka dalam format Rupiah dan jelaskan status (KB/LB).
+- Untuk data COA, tampilkan hierarki lengkap: Akun Induk → Sub COA → Departemen.
+- Bila data kosong, sampaikan jujur dan sarankan langkah selanjutnya.`;
+```
+
+### MasterData.jsx — Training AI Tab
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                   TRAINING AI TAB UI                              │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌────────────────────────────────────────────────────────────┐  │
+│  │  TABS: [Upload]  [Link]                                    │  │
+│  └────────────────────────────────────────────────────────────┘  │
+│                                                                  │
+│  ┌─── Upload Tab ─────────────────────────────────────────────┐ │
+│  │  Title: [__________]                                       │ │
+│  │  Category: [tax_regulation ▼]  (dropdown)                  │ │
+│  │  Tags: [__________] (optional)                             │ │
+│  │  ┌──────────────────────────────────────────────────────┐  │ │
+│  │  │  [Click to Upload] atau drag & drop                   │  │ │
+│  │  │  Format: PDF, DOCX, TXT, MD                           │  │ │
+│  │  └──────────────────────────────────────────────────────┘  │ │
+│  │  [Upload] button                                           │ │
+│  └────────────────────────────────────────────────────────────┘ │
+│                                                                  │
+│  ┌─── Link Tab ───────────────────────────────────────────────┐ │
+│  │  Title: [__________]                                       │ │
+│  │  URL: [https://...]                                        │ │
+│  │  Category: [tax_regulation ▼]  (dropdown)                  │ │
+│  │  Tags: [__________] (optional)                             │ │
+│  │  [Add Link] button                                         │ │
+│  └────────────────────────────────────────────────────────────┘ │
+│                                                                  │
+│  ┌─── Document List ──────────────────────────────────────────┐ │
+│  │  ┌─────────────────────────────────────────────────────┐   │ │
+│  │  │ 📄 Peraturan PPN.pdf     pdf    12 chunks  ✅ active│   │ │
+│  │  │    Category: tax_regulation | Tags: pajak, ppn      │   │ │
+│  │  │    [Preview]  [Re-process]  [Delete]                 │   │ │
+│  │  ├─────────────────────────────────────────────────────┤   │ │
+│  │  │ 🔗 https://example.com/kebijakan  link  3 chunks ✅ │   │ │
+│  │  │    Category: general | Tags: kebijakan              │   │ │
+│  │  │    [Preview]  [Re-process]  [Delete]                 │   │ │
+│  │  └─────────────────────────────────────────────────────┘   │ │
+│  └────────────────────────────────────────────────────────────┘ │
+│                                                                  │
+│  ┌─── Preview Modal ──────────────────────────────────────────┐ │
+│  │  Title: Peraturan PPN.pdf                                  │ │
+│  │  Category: tax_regulation                                  │ │
+│  │  Status: ✅ active | Type: pdf | Chunks: 12               │ │
+│  │                                                             │ │
+│  │  ┌─── Content ─────────────────────────────────────────┐   │ │
+│  │  │  [Full extracted text content]                        │   │ │
+│  │  └──────────────────────────────────────────────────────┘   │ │
+│  │  [Close]                                                    │ │
+│  └────────────────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### Re-processing Flow
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                  RE-PROCESS DOCUMENT                               │
+│                                                                  │
+│  POST /api/ai/training/:id/reprocess                             │
+│       │                                                          │
+│       ▼                                                          │
+│  1. Fetch document metadata from ai_training_documents            │
+│  2. Delete all existing chunks from ai_training_chunks            │
+│     (WHERE document_id = :id)                                     │
+│  3. Re-extract text from source file/URL                          │
+│  4. Re-chunk with current parameters                              │
+│  5. Re-embed each chunk                                           │
+│  6. Insert new chunks with new embeddings                         │
+│  7. Update document status + chunk_count                          │
+│                                                                  │
+│  USE CASES:                                                      │
+│  - Updated embedding model                                        │
+│  - Changed chunk size                                             │
+│  - Corrupted initial processing                                   │
+│  - Want different chunking strategy                               │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### API Endpoints Detail
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│  TRAINING DOCUMENTS API                                                │
+├──────────────────────────┬──────────┬──────────────────────────────────┤
+│  ENDPOINT                │  METHOD  │  REQUEST / RESPONSE              │
+├──────────────────────────┼──────────┼──────────────────────────────────┤
+│  /api/ai/training        │  GET     │  Query: ?category=&status=&      │
+│                          │          │          search=                 │
+│                          │          │  Response: [ {...}, {...} ]      │
+│                          │          │  (array of documents)            │
+├──────────────────────────┼──────────┼──────────────────────────────────┤
+│  /api/ai/training/upload │  POST    │  Body: FormData {                │
+│                          │          │    file: <File>,                 │
+│                          │          │    title: "Judul",               │
+│                          │          │    category: "tax_regulation",   │
+│                          │          │    tags: "pajak,ppn"             │
+│                          │          │  }                               │
+│                          │          │  Response: {                     │
+│                          │          │    id: 1,                        │
+│                          │          │    status: "processing",         │
+│                          │          │    message: "..."                │
+│                          │          │  }                               │
+├──────────────────────────┼──────────┼──────────────────────────────────┤
+│  /api/ai/training/link   │  POST    │  Body: JSON {                    │
+│                          │          │    url: "https://...",           │
+│                          │          │    title: "Judul",               │
+│                          │          │    category: "tax_regulation",   │
+│                          │          │    tags: "pajak,ppn"             │
+│                          │          │  }                               │
+│                          │          │  Response: {                     │
+│                          │          │    id: 2,                        │
+│                          │          │    status: "processing"          │
+│                          │          │  }                               │
+├──────────────────────────┼──────────┼──────────────────────────────────┤
+│  /api/ai/training/:id    │  GET     │  Response: {                     │
+│                          │          │    id, title, filename,          │
+│                          │          │    file_type, content,           │
+│                          │          │    category, tags, status,       │
+│                          │          │    chunk_count, created_at       │
+│                          │          │  }                               │
+├──────────────────────────┼──────────┼──────────────────────────────────┤
+│  /api/ai/training/:id    │  DELETE  │  Response: {                     │
+│                          │          │    success: true,                │
+│                          │          │    message: "..."                │
+│                          │          │  }                               │
+├──────────────────────────┼──────────┼──────────────────────────────────┤
+│  /api/ai/training/:id/re │  POST    │  Response: {                     │
+│  process                 │          │    success: true,                │
+│                          │          │    message: "..."                │
+│                          │          │  }                               │
+└──────────────────────────┴──────────┴──────────────────────────────────┘
+```
+
+### Source Files
+```
+server/services/trainingDocs.js   — saveDocument, generateDocEmbedding,
+                                    searchTrainingDocs, getDocuments,
+                                    getDocument, deleteDocument,
+                                    reprocessDocument, parseDocument,
+                                    chunkText
+
+server/routes/aiRoutes.js         — Training endpoints (multer for file upload,
+                                    link, list, detail, delete, reprocess)
+
+server/services/aiAgent.js        — search_training_docs tool definition (line 283)
+                                    + executeTool() case (line 673)
+                                    + System prompt with mandatory first tool rule
+
+server/migrations/                — 20260716000000_create_ai_training_documents.js
+                                    20260716010000_fix_training_embedding_dimension.js
+
+src/pages/MasterData.jsx          — Training AI tab (upload/link forms,
+                                    document list, preview modal)
+```
+
+### Embedding Dimensions
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                  EMBEDDING MODEL SPECS                            │
+├─────────────────────────┬────────────────────────────────────────┤
+│  MODEL                  │  we/text-embedding-v3                  │
+│  DIMENSIONS             │  1024                                  │
+│  MAX TOKENS             │  8192                                  │
+│  SIMILARITY             │  Cosine                                │
+│  INDEX TYPE             │  IVFFlat (lists=1)                     │
+│  THRESHOLD              │  > 0.25                                │
+│  TOP K                  │  5                                     │
+│  CHUNK SIZE             │  1000 chars                            │
+│  CHUNK OVERLAP          │  200 chars                             │
+└─────────────────────────┴────────────────────────────────────────┘
+
+NOTE: ai_conversation_summaries uses 1536-dim embeddings (different model).
+ai_training_documents uses 1024-dim embeddings (we/text-embedding-v3).
 ```
 
