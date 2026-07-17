@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Plus, Edit3, Trash2, Building2, GitCommit, ShieldCheck, ChevronRight, ChevronLeft, Users, User, Shield, History, Search, Clock, ChevronDown, ChevronUp, AlertCircle, FileText, Activity, Bot, Save, Loader2, Zap, Upload, Link, Eye, RefreshCw, X, Info } from 'lucide-react';
+import { Plus, Edit3, Trash2, Building2, GitCommit, ShieldCheck, ChevronRight, ChevronLeft, Users, User, Shield, History, Search, Clock, ChevronDown, ChevronUp, AlertCircle, FileText, Activity, Bot, Save, Loader2, Zap, Upload, Link, Eye, RefreshCw, X, Info, Brain } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { apiClient, API_URL } from '../services/apiClient.js';
 import { APP_MODULES } from '../utils/permissions';
@@ -248,11 +248,236 @@ export default function MasterData({
     const [trainingDetail, setTrainingDetail] = useState(null);
     const [trainingMsg, setTrainingMsg] = useState(null);
 
+    // --- Self-Improvement / Learning ---
+    const [learningStats, setLearningStats] = useState(null);
+    const [learningTopics, setLearningTopics] = useState([]);
+    const [learningLogs, setLearningLogs] = useState([]);
+    const [learningLoading, setLearningLoading] = useState(false);
+    const [learningAnalyzing, setLearningAnalyzing] = useState(false);
+    const [learningGenerating, setLearningGenerating] = useState(false);
+    const [learningMsg, setLearningMsg] = useState(null);
+
+    // --- Corrections ---
+    const [corrections, setCorrections] = useState([]);
+    const [correctionStats, setCorrectionStats] = useState(null);
+
+    // --- Evolution ---
+    const [evolutionStats, setEvolutionStats] = useState(null);
+    const [evolutionHistory, setEvolutionHistory] = useState([]);
+    const [evolutionScanning, setEvolutionScanning] = useState(false);
+
+    // --- Pagination ---
+    const [topicPage, setTopicPage] = useState(1);
+    const [logPage, setLogPage] = useState(1);
+    const [correctionPage, setCorrectionPage] = useState(1);
+    const [evolutionPage, setEvolutionPage] = useState(1);
+    const [docPage, setDocPage] = useState(1);
+    const ROWS_PER_PAGE = 8;
+
+    const fetchLearningData = async () => {
+        setLearningLoading(true);
+        try {
+            const [stats, topics, logs] = await Promise.all([
+                apiClient.fetchJson(`${API_URL}/ai/learning/stats`),
+                apiClient.fetchJson(`${API_URL}/ai/learning/topics?limit=10`),
+                apiClient.fetchJson(`${API_URL}/ai/learning/logs?limit=20`),
+            ]);
+            setLearningStats(stats);
+            setLearningTopics(topics);
+            setLearningLogs(logs);
+            setTopicPage(1);
+            setLogPage(1);
+            setCorrectionPage(1);
+            setEvolutionPage(1);
+            setDocPage(1);
+
+            // Also fetch corrections + evolution
+            try {
+                const [cStats, corrList, eStats, eHist] = await Promise.all([
+                    apiClient.fetchJson(`${API_URL}/ai/corrections/stats`),
+                    apiClient.fetchJson(`${API_URL}/ai/corrections?limit=20`),
+                    apiClient.fetchJson(`${API_URL}/ai/evolution/stats`),
+                    apiClient.fetchJson(`${API_URL}/ai/evolution/history?limit=10`),
+                ]);
+                setCorrectionStats(cStats);
+                setCorrections(corrList);
+                setEvolutionStats(eStats);
+                setEvolutionHistory(eHist);
+            } catch (e2) {
+                console.warn('Corrections/Evolution fetch failed (non-critical):', e2.message);
+            }
+        } catch (e) {
+            console.error('Failed to fetch learning data:', e);
+        } finally {
+            setLearningLoading(false);
+        }
+    };
+
+    const handleAnalyze = async () => {
+        setLearningAnalyzing(true);
+        setLearningMsg(null);
+        try {
+            const res = await apiClient.fetchJson(`${API_URL}/ai/learning/analyze`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ hours: 168 }),
+            });
+            setLearningMsg({ type: 'success', text: `Analisis selesai: ${res.processed} pesanan diproses dari ${res.total} total.` });
+            await fetchLearningData();
+        } catch (e) {
+            setLearningMsg({ type: 'error', text: `Gagal menganalisis: ${e.message}` });
+        } finally {
+            setLearningAnalyzing(false);
+        }
+    };
+
+    const handleGenerateFromKnowledge = async () => {
+        setLearningGenerating(true);
+        setLearningMsg(null);
+        try {
+            const res = await apiClient.fetchJson(`${API_URL}/ai/learning/generate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            setLearningMsg({
+                type: 'success',
+                text: `Berhasil generate ${res.generated?.length || 0} dokumen training dari knowledge otomatis.`
+            });
+            await fetchLearningData();
+        } catch (e) {
+            setLearningMsg({ type: 'error', text: `Gagal generate: ${e.message}` });
+        } finally {
+            setLearningGenerating(false);
+        }
+    };
+
+    const handleRunFullCycle = async () => {
+        setLearningAnalyzing(true);
+        setLearningGenerating(true);
+        setLearningMsg(null);
+        try {
+            const res = await apiClient.fetchJson(`${API_URL}/ai/learning/run-cycle`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            setLearningMsg({
+                type: 'success',
+                text: `Cycle selesai: ${res.analyzed?.processed || 0} dianalisis, ${res.generated?.generated?.length || 0} dokumen di-generate.`
+            });
+            await fetchLearningData();
+        } catch (e) {
+            setLearningMsg({ type: 'error', text: `Gagal: ${e.message}` });
+        } finally {
+            setLearningAnalyzing(false);
+            setLearningGenerating(false);
+        }
+    };
+
+    const [trainingSingle, setTrainingSingle] = useState(null);
+    const handleTrainSingle = async (logId, topic) => {
+        setTrainingSingle(logId);
+        setLearningMsg(null);
+        try {
+            const res = await apiClient.fetchJson(`${API_URL}/ai/learning/train/${logId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            setLearningMsg({
+                type: 'success',
+                text: `Berhasil train "${topic}" → doc ID ${res.docId}`
+            });
+            await fetchLearningData();
+        } catch (e) {
+            setLearningMsg({ type: 'error', text: `Gagal train "${topic}": ${e.message}` });
+        } finally {
+            setTrainingSingle(null);
+        }
+    };
+
+    const handleTrainAll = async () => {
+        setLearningGenerating(true);
+        setLearningMsg(null);
+        try {
+            const res = await apiClient.fetchJson(`${API_URL}/ai/learning/train-all`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            setLearningMsg({
+                type: 'success',
+                text: `Batch train selesai: ${res.trained}/${res.total} topik berhasil di-train.`
+            });
+            await fetchLearningData();
+        } catch (e) {
+            setLearningMsg({ type: 'error', text: `Gagal batch train: ${e.message}` });
+        } finally {
+            setLearningGenerating(false);
+        }
+    };
+
+    const handleTrainByTopic = async (topicName) => {
+        setTrainingSingle(topicName);
+        setLearningMsg(null);
+        try {
+            const res = await apiClient.fetchJson(`${API_URL}/ai/learning/train-by-topic`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ topic: topicName }),
+            });
+            setLearningMsg({
+                type: 'success',
+                text: `Berhasil train "${topicName}" → doc ID ${res.docId}`
+            });
+            await fetchLearningData();
+        } catch (e) {
+            setLearningMsg({ type: 'error', text: `Gagal train "${topicName}": ${e.message}` });
+        } finally {
+            setTrainingSingle(null);
+        }
+    };
+
+    const handleApplyCorrection = async (correctionId) => {
+        setLearningMsg(null);
+        try {
+            const res = await apiClient.fetchJson(`${API_URL}/ai/corrections/${correctionId}/apply`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            setLearningMsg({
+                type: 'success',
+                text: `Koreksi diterapkan → doc ID ${res.docId}`
+            });
+            await fetchLearningData();
+        } catch (e) {
+            setLearningMsg({ type: 'error', text: `Gagal apply koreksi: ${e.message}` });
+        }
+    };
+
+    const handleEvolutionScan = async () => {
+        setEvolutionScanning(true);
+        setLearningMsg(null);
+        try {
+            const res = await apiClient.fetchJson(`${API_URL}/ai/evolution/scan`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            setLearningMsg({
+                type: 'success',
+                text: `Evolution scan selesai: ${res.docsScanned} dokumen, ${res.correctionsApplied} koreksi diterapkan, ${res.knowledgePruned} knowledge dipangkas.`
+            });
+            await fetchLearningData();
+        } catch (e) {
+            setLearningMsg({ type: 'error', text: `Gagal evolution scan: ${e.message}` });
+        } finally {
+            setEvolutionScanning(false);
+        }
+    };
+
     const fetchTrainingDocs = async () => {
         setTrainingLoading(true);
         try {
             const data = await apiClient.fetchJson(`${API_URL}/ai/training`);
             setTrainingDocs(data);
+            setDocPage(1);
         } catch (e) {
             console.error('Failed to fetch training docs:', e);
         } finally {
@@ -468,6 +693,57 @@ export default function MasterData({
         const startIndex = (logCurrentPage - 1) * logsPerPage;
         return filteredLogs.slice(startIndex, startIndex + logsPerPage);
     }, [filteredLogs, logCurrentPage]);
+
+    // ── Reusable Table Pagination ──
+    const TablePagination = ({ total, page, setPage, perPage = ROWS_PER_PAGE }) => {
+        const totalPages = Math.ceil(total / perPage);
+        if (totalPages <= 1) return null;
+        const start = (page - 1) * perPage + 1;
+        const end = Math.min(page * perPage, total);
+        return (
+            <div className="flex items-center justify-between px-4 py-2 border-t dark:border-slate-700/50 bg-gray-50 dark:bg-slate-800/30">
+                <p className="text-xs text-gray-500">
+                    Menampilkan <span className="font-bold">{start}</span>–<span className="font-bold">{end}</span> dari <span className="font-bold">{total}</span>
+                </p>
+                <div className="flex items-center gap-1">
+                    <button
+                        onClick={() => setPage(p => Math.max(p - 1, 1))}
+                        disabled={page === 1}
+                        className="p-1 rounded text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-700 disabled:opacity-30"
+                    >
+                        <ChevronLeft size={16} />
+                    </button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                        .filter(p => p === 1 || p === totalPages || Math.abs(p - page) <= 1)
+                        .reduce((acc, p, idx, arr) => {
+                            if (idx > 0 && p - arr[idx - 1] > 1) acc.push('...');
+                            acc.push(p);
+                            return acc;
+                        }, [])
+                        .map((p, i) =>
+                            p === '...' ? (
+                                <span key={`e${i}`} className="px-1 text-xs text-gray-400">…</span>
+                            ) : (
+                                <button
+                                    key={p}
+                                    onClick={() => setPage(p)}
+                                    className={`px-2 py-0.5 rounded text-xs font-bold ${page === p ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:bg-gray-200 dark:hover:bg-slate-700'}`}
+                                >
+                                    {p}
+                                </button>
+                            )
+                        )}
+                    <button
+                        onClick={() => setPage(p => Math.min(p + 1, totalPages))}
+                        disabled={page === totalPages}
+                        className="p-1 rounded text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-700 disabled:opacity-30"
+                    >
+                        <ChevronRight size={16} />
+                    </button>
+                </div>
+            </div>
+        );
+    };
 
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
@@ -985,6 +1261,25 @@ export default function MasterData({
                                 >
                                     {text.addLink}
                                 </button>
+                                <button
+                                    onClick={() => { setTrainingTab('learning'); setTopicPage(1); setLogPage(1); fetchLearningData(); }}
+                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'learning' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
+                                >
+                                    Self-Improvement
+                                </button>
+                                <button
+                                    onClick={() => { setTrainingTab('corrections'); setCorrectionPage(1); fetchLearningData(); }}
+                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'corrections' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
+                                >
+                                    Corrections {correctionStats?.unapplied > 0 && <span className="ml-1 px-1 bg-red-500 text-white rounded-full text-[9px]">{correctionStats.unapplied}</span>}
+                                </button>
+                                <button
+                                    onClick={() => { setTrainingTab('evolution'); setEvolutionPage(1); fetchLearningData(); }}
+                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'evolution' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
+                                >
+                                >
+                                    Evolution
+                                </button>
                             </div>
                         </div>
 
@@ -1111,6 +1406,352 @@ export default function MasterData({
                             </form>
                         )}
 
+                        {/* Self-Improvement Tab */}
+                        {trainingTab === 'learning' && (
+                            <div className="space-y-6">
+                                {learningMsg && (
+                                    <div className={`text-xs px-3 py-2 rounded-lg ${learningMsg.type === 'success' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300' : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300'}`}>
+                                        {learningMsg.text}
+                                    </div>
+                                )}
+
+                                {/* Stats Cards */}
+                                {learningStats && (
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                        <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-3 text-center">
+                                            <div className="text-2xl font-black text-indigo-600 dark:text-indigo-300">{learningStats.totalKnowledgePoints}</div>
+                                            <div className="text-xs text-indigo-500 dark:text-indigo-400 mt-1">Knowledge Points</div>
+                                        </div>
+                                        <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-3 text-center">
+                                            <div className="text-2xl font-black text-emerald-600 dark:text-emerald-300">{learningStats.trainingEfficiency}</div>
+                                            <div className="text-xs text-emerald-500 dark:text-emerald-400 mt-1">Training Efficiency</div>
+                                        </div>
+                                        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3 text-center">
+                                            <div className="text-2xl font-black text-amber-600 dark:text-amber-300">{learningStats.untrainedPoints}</div>
+                                            <div className="text-xs text-amber-500 dark:text-amber-400 mt-1">Untrained Points</div>
+                                        </div>
+                                        <div className="bg-violet-50 dark:bg-violet-900/20 rounded-lg p-3 text-center">
+                                            <div className="text-2xl font-black text-violet-600 dark:text-violet-300">{learningStats.docsGenerated}</div>
+                                            <div className="text-xs text-violet-500 dark:text-violet-400 mt-1">Docs Generated</div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Action Buttons */}
+                                <div className="flex gap-3 flex-wrap">
+                                    <button
+                                        onClick={() => fetchLearningData()}
+                                        disabled={learningLoading}
+                                        className="px-4 py-2 bg-gray-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-gray-700 transition-colors disabled:opacity-50"
+                                    >
+                                        {learningLoading ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
+                                        Refresh
+                                    </button>
+                                    <button
+                                        onClick={handleAnalyze}
+                                        disabled={learningAnalyzing}
+                                        className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-blue-700 transition-colors disabled:opacity-50"
+                                    >
+                                        {learningAnalyzing ? <Loader2 size={16} className="animate-spin" /> : <Brain size={16} />}
+                                        Analisis Chat
+                                    </button>
+                                    <button
+                                        onClick={handleTrainAll}
+                                        disabled={learningGenerating}
+                                        className="px-4 py-2 bg-amber-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-amber-700 transition-colors disabled:opacity-50"
+                                    >
+                                        {learningGenerating ? <Loader2 size={16} className="animate-spin" /> : <Zap size={16} />}
+                                        Train All Pending
+                                    </button>
+                                    <button
+                                        onClick={handleRunFullCycle}
+                                        disabled={learningAnalyzing || learningGenerating}
+                                        className="px-4 py-2 bg-violet-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-violet-700 transition-colors disabled:opacity-50"
+                                    >
+                                        {learningAnalyzing || learningGenerating ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
+                                        Full Cycle
+                                    </button>
+                                </div>
+
+                                {/* Topic Summary */}
+                                {learningTopics.length > 0 && (
+                                    <div>
+                                        <h4 className="font-bold text-sm text-gray-700 dark:text-slate-300 mb-3">Topik Yang Sering Ditanyakan</h4>
+                                        <div className="border dark:border-slate-700/50 rounded-lg overflow-hidden">
+                                            <table className="w-full text-sm">
+                                                <thead>
+                                                    <tr className="bg-gray-50 dark:bg-slate-800/50">
+                                                        <th className="text-left px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Topik</th>
+                                                        <th className="text-left px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Kategori</th>
+                                                        <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Jumlah Tanya</th>
+                                                        <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Confidence</th>
+                                                        <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Trained</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {learningTopics.slice((topicPage - 1) * ROWS_PER_PAGE, topicPage * ROWS_PER_PAGE).map((t, i) => (
+                                                        <tr key={i} className="border-t dark:border-slate-700/50 hover:bg-gray-50 dark:hover:bg-slate-800/50">
+                                                            <td className="px-4 py-2 font-medium dark:text-white">{t.topic}</td>
+                                                            <td className="px-4 py-2">
+                                                                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-300">{t.category}</span>
+                                                            </td>
+                                                            <td className="px-4 py-2 text-center font-bold dark:text-white">{t.ask_count}</td>
+                                                            <td className="px-4 py-2 text-center">
+                                                                <span className={`text-xs font-bold ${parseFloat(t.avg_confidence) >= 0.7 ? 'text-emerald-600' : parseFloat(t.avg_confidence) >= 0.4 ? 'text-amber-600' : 'text-red-600'}`}>
+                                                                    {(parseFloat(t.avg_confidence) * 100).toFixed(0)}%
+                                                                </span>
+                                                            </td>
+                                                            <td className="px-4 py-2 text-center">
+                                                                {t.is_trained ? (
+                                                                    <span className="text-emerald-500 font-bold text-xs">✓ Yes</span>
+                                                                ) : (
+                                                                    <button
+                                                                        onClick={() => handleTrainByTopic(t.topic)}
+                                                                        disabled={trainingSingle === t.topic}
+                                                                        className="px-2 py-0.5 bg-amber-500 text-white rounded text-xs font-bold hover:bg-amber-600 transition-colors disabled:opacity-50"
+                                                                    >
+                                                                        {trainingSingle === t.topic ? <Loader2 size={10} className="animate-spin inline" /> : '⚡ Train'}
+                                                                    </button>
+                                                                )}
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                            <TablePagination total={learningTopics.length} page={topicPage} setPage={setTopicPage} />
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Recent Learning Logs */}
+                                {learningLogs.length > 0 && (
+                                    <div>
+                                        <h4 className="font-bold text-sm text-gray-700 dark:text-slate-300 mb-3">Recent Knowledge Extracted</h4>
+                                        <div className="space-y-2">
+                                            {learningLogs.slice((logPage - 1) * ROWS_PER_PAGE, logPage * ROWS_PER_PAGE).map((log, i) => (
+                                                <div key={i} className="border dark:border-slate-700/50 rounded-lg p-3 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-300">{log.category}</span>
+                                                        <span className="font-bold text-sm dark:text-white">{log.topic}</span>
+                                                        <span className="text-xs text-gray-400 ml-auto">×{log.repeat_count}</span>
+                                                        {log.used_in_training && <span className="text-xs text-emerald-500 font-bold">✓ Trained</span>}
+                                                    </div>
+                                                    <p className="text-xs text-gray-500 dark:text-slate-400 line-clamp-2">{log.knowledge_extracted}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="border dark:border-slate-700/50 rounded-lg overflow-hidden mt-2">
+                                            <TablePagination total={learningLogs.length} page={logPage} setPage={setLogPage} />
+                                        </div>
+                                    </div>
+                                )}
+
+                                {learningLoading && (
+                                    <div className="text-center py-8 text-gray-400">
+                                        <Loader2 size={24} className="animate-spin inline-block" />
+                                        <p className="mt-2 text-sm">Memuat data learning...</p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Corrections Tab */}
+                        {trainingTab === 'corrections' && (
+                            <div className="space-y-6">
+                                {learningMsg && (
+                                    <div className={`text-xs px-3 py-2 rounded-lg ${learningMsg.type === 'success' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300' : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300'}`}>
+                                        {learningMsg.text}
+                                    </div>
+                                )}
+
+                                {correctionStats && (
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                        <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-3 text-center">
+                                            <div className="text-2xl font-black text-red-600 dark:text-red-300">{correctionStats.total}</div>
+                                            <div className="text-xs text-red-500 dark:text-red-400 mt-1">Total Corrections</div>
+                                        </div>
+                                        <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-3 text-center">
+                                            <div className="text-2xl font-black text-emerald-600 dark:text-emerald-300">{correctionStats.applied}</div>
+                                            <div className="text-xs text-emerald-500 dark:text-emerald-400 mt-1">Applied</div>
+                                        </div>
+                                        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3 text-center">
+                                            <div className="text-2xl font-black text-amber-600 dark:text-amber-300">{correctionStats.unapplied}</div>
+                                            <div className="text-xs text-amber-500 dark:text-amber-400 mt-1">Pending Apply</div>
+                                        </div>
+                                        <div className="bg-violet-50 dark:bg-violet-900/20 rounded-lg p-3 text-center">
+                                            <div className="text-2xl font-black text-violet-600 dark:text-violet-300">{correctionStats.byType?.length || 0}</div>
+                                            <div className="text-xs text-violet-500 dark:text-violet-400 mt-1">Types</div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div className="flex gap-3 flex-wrap">
+                                    <button
+                                        onClick={() => fetchLearningData()}
+                                        disabled={learningLoading}
+                                        className="px-4 py-2 bg-gray-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-gray-700 transition-colors disabled:opacity-50"
+                                    >
+                                        {learningLoading ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
+                                        Refresh
+                                    </button>
+                                </div>
+
+                                {corrections.length > 0 ? (
+                                    <div className="border dark:border-slate-700/50 rounded-lg overflow-hidden">
+                                        <table className="w-full text-sm">
+                                            <thead>
+                                                <tr className="bg-gray-50 dark:bg-slate-800/50">
+                                                    <th className="text-left px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Topic</th>
+                                                    <th className="text-left px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Type</th>
+                                                    <th className="text-left px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Correct Answer</th>
+                                                    <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Severity</th>
+                                                    <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Status</th>
+                                                    <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {corrections.slice((correctionPage - 1) * ROWS_PER_PAGE, correctionPage * ROWS_PER_PAGE).map((c, i) => (
+                                                    <tr key={i} className="border-t dark:border-slate-700/50 hover:bg-gray-50 dark:hover:bg-slate-800/50">
+                                                        <td className="px-4 py-2 font-medium dark:text-white text-xs">{c.topic}</td>
+                                                        <td className="px-4 py-2">
+                                                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${c.correction_type === 'correction' ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-300' : 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-300'}`}>
+                                                                {c.correction_type}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-4 py-2 text-xs text-gray-600 dark:text-slate-400 max-w-[200px] truncate">{c.correct_answer}</td>
+                                                        <td className="px-4 py-2 text-center">
+                                                            <span className={`text-xs font-bold ${c.severity >= 0.7 ? 'text-red-600' : c.severity >= 0.4 ? 'text-amber-600' : 'text-gray-400'}`}>
+                                                                {(c.severity * 100).toFixed(0)}%
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-4 py-2 text-center">
+                                                            {c.applied ? (
+                                                                <span className="text-xs text-emerald-500 font-bold">✓ Applied</span>
+                                                            ) : (
+                                                                <span className="text-xs text-amber-500 font-bold">⏳ Pending</span>
+                                                            )}
+                                                        </td>
+                                                        <td className="px-4 py-2 text-center">
+                                                            {!c.applied && (
+                                                                <button
+                                                                    onClick={() => handleApplyCorrection(c.id)}
+                                                                    className="px-2 py-0.5 bg-emerald-500 text-white rounded text-[10px] font-bold hover:bg-emerald-600 transition-colors"
+                                                                >
+                                                                    Apply
+                                                                </button>
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                        <TablePagination total={corrections.length} page={correctionPage} setPage={setCorrectionPage} />
+                                    </div>
+                                ) : (
+                                    <div className="text-center py-8 text-gray-400 dark:text-slate-500 text-sm">
+                                        Belum ada koreksi. Ketik "datamu salah" atau "revisi" di chat untuk mengirim koreksi.
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Evolution Tab */}
+                        {trainingTab === 'evolution' && (
+                            <div className="space-y-6">
+                                {learningMsg && (
+                                    <div className={`text-xs px-3 py-2 rounded-lg ${learningMsg.type === 'success' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300' : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300'}`}>
+                                        {learningMsg.text}
+                                    </div>
+                                )}
+
+                                {/* Evolution Stats */}
+                                {evolutionStats && (
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 text-center">
+                                            <div className="text-2xl font-black text-blue-600 dark:text-blue-300">{evolutionStats.totalSnapshots}</div>
+                                            <div className="text-xs text-blue-500 dark:text-blue-400 mt-1">Data Snapshots</div>
+                                        </div>
+                                        <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-3 text-center">
+                                            <div className="text-2xl font-black text-emerald-600 dark:text-emerald-300">{evolutionStats.corrections?.applied || 0}</div>
+                                            <div className="text-xs text-emerald-500 dark:text-emerald-400 mt-1">Corrections Applied</div>
+                                        </div>
+                                        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3 text-center">
+                                            <div className="text-2xl font-black text-amber-600 dark:text-amber-300">{evolutionStats.corrections?.unapplied || 0}</div>
+                                            <div className="text-xs text-amber-500 dark:text-amber-400 mt-1">Pending Corrections</div>
+                                        </div>
+                                        <div className="bg-violet-50 dark:bg-violet-900/20 rounded-lg p-3 text-center">
+                                            <div className="text-2xl font-black text-violet-600 dark:text-violet-300">{evolutionStats.latestEvolution?.docs_scanned || 0}</div>
+                                            <div className="text-xs text-violet-500 dark:text-violet-400 mt-1">Docs Scanned</div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Action Buttons */}
+                                <div className="flex gap-3 flex-wrap">
+                                    <button
+                                        onClick={() => fetchLearningData()}
+                                        disabled={learningLoading}
+                                        className="px-4 py-2 bg-gray-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-gray-700 transition-colors disabled:opacity-50"
+                                    >
+                                        {learningLoading ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
+                                        Refresh
+                                    </button>
+                                    <button
+                                        onClick={handleEvolutionScan}
+                                        disabled={evolutionScanning}
+                                        className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-blue-700 transition-colors disabled:opacity-50"
+                                    >
+                                        {evolutionScanning ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
+                                        Run Evolution Scan
+                                    </button>
+                                </div>
+
+                                {/* Evolution History */}
+                                {evolutionHistory.length > 0 ? (
+                                    <div>
+                                        <h4 className="font-bold text-sm text-gray-700 dark:text-slate-300 mb-3">Riwayat Evolution Scan</h4>
+                                        <div className="border dark:border-slate-700/50 rounded-lg overflow-hidden">
+                                            <table className="w-full text-sm">
+                                                <thead>
+                                                    <tr className="bg-gray-50 dark:bg-slate-800/50">
+                                                        <th className="text-left px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Status</th>
+                                                        <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Docs Scanned</th>
+                                                        <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Docs Updated</th>
+                                                        <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Corrections</th>
+                                                        <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Pruned</th>
+                                                        <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">New Topics</th>
+                                                        <th className="text-right px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {evolutionHistory.slice((evolutionPage - 1) * ROWS_PER_PAGE, evolutionPage * ROWS_PER_PAGE).map((e, i) => (
+                                                        <tr key={i} className="border-t dark:border-slate-700/50 hover:bg-gray-50 dark:hover:bg-slate-800/50">
+                                                            <td className="px-4 py-2">
+                                                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${e.status === 'completed' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-300' : e.status === 'running' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300' : 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-300'}`}>
+                                                                    {e.status}
+                                                                </span>
+                                                            </td>
+                                                            <td className="px-4 py-2 text-center font-bold dark:text-white">{e.docs_scanned}</td>
+                                                            <td className="px-4 py-2 text-center font-bold dark:text-white">{e.docs_updated}</td>
+                                                            <td className="px-4 py-2 text-center font-bold dark:text-white">{e.corrections_applied}</td>
+                                                            <td className="px-4 py-2 text-center font-bold dark:text-white">{e.knowledge_pruned}</td>
+                                                            <td className="px-4 py-2 text-center font-bold dark:text-white">{e.new_topics_found}</td>
+                                                            <td className="px-4 py-2 text-right text-xs text-gray-400">{new Date(e.created_at).toLocaleDateString()}</td>
+                                                        </tr>
+                                                    ))}
+                                            </tbody>
+                                        </table>
+                                        <TablePagination total={evolutionHistory.length} page={evolutionPage} setPage={setEvolutionPage} />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="text-center py-8 text-gray-400 dark:text-slate-500 text-sm">
+                                        Belum ada riwayat evolution scan. Klik "Run Evolution Scan" untuk memulai.
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
                         {/* Document List */}
                         <div className="border dark:border-slate-700/50 rounded-lg overflow-hidden">
                             <table className="w-full text-sm">
@@ -1129,7 +1770,7 @@ export default function MasterData({
                                         <tr><td colSpan="6" className="px-4 py-8 text-center text-gray-400 dark:text-slate-500"><Loader2 size={20} className="animate-spin inline-block" /></td></tr>
                                     ) : trainingDocs.length === 0 ? (
                                         <tr><td colSpan="6" className="px-4 py-8 text-center text-gray-400 dark:text-slate-500">{text.noTrainingDocs}</td></tr>
-                                    ) : trainingDocs.map(doc => (
+                                    ) : trainingDocs.slice((docPage - 1) * ROWS_PER_PAGE, docPage * ROWS_PER_PAGE).map(doc => (
                                         <tr key={doc.id} className="border-t dark:border-slate-700/50 hover:bg-gray-50 dark:hover:bg-slate-800/30 transition-colors">
                                             <td className="px-4 py-3">
                                                 <span className="font-medium dark:text-white">{doc.title}</span>
@@ -1170,6 +1811,7 @@ export default function MasterData({
                                     ))}
                                 </tbody>
                             </table>
+                            <TablePagination total={trainingDocs.length} page={docPage} setPage={setDocPage} />
                         </div>
                     </Card>
                 )

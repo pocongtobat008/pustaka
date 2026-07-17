@@ -144,7 +144,7 @@ io.emit = (event, payload) => {
     return rawIoEmit(event, payload);
 };
 
-// Memaksa penggunaan Port 5005 untuk menghindari konflik dengan port 5000 di .env
+// Port
 const PORT = 5005;
 
 // Middleware

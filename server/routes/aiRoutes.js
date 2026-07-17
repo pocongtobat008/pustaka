@@ -164,7 +164,7 @@ router.get('/ai/memory/stats', checkAuth, async (req, res) => {
 
 // --- Training Documents ---
 import multer from 'multer';
-import { saveDocument, parseDocument, generateDocEmbedding, searchTrainingDocs, getDocuments, getDocument, deleteDocument, reprocessDocument } from '../services/trainingDocs.js';
+import { saveDocument, parseDocument, generateDocEmbedding, searchTrainingDocs, getDocuments, getDocument, getDocumentChunks, deleteDocument, reprocessDocument } from '../services/trainingDocs.js';
 import { generateEmbedding } from '../ai_search.js';
 import fs from 'fs/promises';
 import path from 'path';
@@ -305,6 +305,16 @@ router.get('/ai/training', checkAuth, async (req, res) => {
     }
 });
 
+// GET /api/ai/training/:id/chunks — get document chunks
+router.get('/ai/training/:id/chunks', checkAuth, async (req, res) => {
+    try {
+        const chunks = await getDocumentChunks(req.params.id);
+        res.json(chunks);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 // GET /api/ai/training/:id — get document detail
 router.get('/ai/training/:id', checkAuth, async (req, res) => {
     try {
@@ -331,6 +341,228 @@ router.post('/ai/training/:id/reprocess', checkAuth, async (req, res) => {
     try {
         await reprocessDocument(req.params.id, generateEmbedding);
         res.json({ success: true, message: 'Dokumen sedang diproses ulang' });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// ════════════════════════════════════════════════════════════════
+// ── SELF-IMPROVEMENT ROUTES ──
+// ════════════════════════════════════════════════════════════════
+import {
+    getLearningStats,
+    getTopicSummary,
+    getLearningLogs,
+    analyzeRecentChats,
+    generateTrainingDocsFromKnowledge,
+    runSelfImprovementCycle,
+    trainSingleTopic,
+    trainAllPending,
+    trainByTopic,
+} from '../services/selfImprovement.js';
+
+// GET /api/ai/learning/stats — learning statistics
+router.get('/ai/learning/stats', checkAuth, async (req, res) => {
+    try {
+        const stats = await getLearningStats();
+        res.json(stats);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// GET /api/ai/learning/topics — topic frequency summary
+router.get('/ai/learning/topics', checkAuth, async (req, res) => {
+    try {
+        const { category, limit } = req.query;
+        const topics = await getTopicSummary({ category, limit: parseInt(limit) || 20 });
+        res.json(topics);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// GET /api/ai/learning/logs — all learning logs
+router.get('/ai/learning/logs', checkAuth, async (req, res) => {
+    try {
+        const { category, untrained, limit } = req.query;
+        const logs = await getLearningLogs({
+            category,
+            untrainedOnly: untrained === 'true',
+            limit: parseInt(limit) || 50,
+        });
+        res.json(logs);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// POST /api/ai/learning/analyze — trigger analysis of recent chats
+router.post('/ai/learning/analyze', checkAuth, async (req, res) => {
+    try {
+        const { hours = 168 } = req.body || {};
+        const result = await analyzeRecentChats(hours);
+        res.json({ success: true, ...result });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// POST /api/ai/learning/generate — generate training docs from knowledge
+router.post('/ai/learning/generate', checkAuth, async (req, res) => {
+    try {
+        const result = await generateTrainingDocsFromKnowledge(generateEmbedding);
+        res.json({ success: true, ...result });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// POST /api/ai/learning/run-cycle — full self-improvement cycle
+router.post('/ai/learning/run-cycle', checkAuth, async (req, res) => {
+    try {
+        const result = await runSelfImprovementCycle(generateEmbedding);
+        res.json({ success: true, ...result });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// POST /api/ai/learning/train/:id — manually train a single topic
+router.post('/ai/learning/train/:id', checkAuth, async (req, res) => {
+    try {
+        const result = await trainSingleTopic(req.params.id, generateEmbedding);
+        res.json({ success: true, ...result });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// POST /api/ai/learning/train-all — manually train ALL pending topics
+router.post('/ai/learning/train-all', checkAuth, async (req, res) => {
+    try {
+        const result = await trainAllPending(generateEmbedding);
+        res.json({ success: true, ...result });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// POST /api/ai/learning/train-by-topic — train by topic name
+router.post('/ai/learning/train-by-topic', checkAuth, async (req, res) => {
+    try {
+        const { topic } = req.body;
+        if (!topic) return res.status(400).json({ error: 'topic is required' });
+        const result = await trainByTopic(topic, generateEmbedding);
+        res.json({ success: true, ...result });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// ════════════════════════════════════════════════════════════════
+// ── CORRECTIONS & EVOLUTION ROUTES ──
+// ════════════════════════════════════════════════════════════════
+import {
+    getCorrections,
+    getCorrectionStats,
+    logCorrection,
+    applyCorrection,
+    runEvolutionScan,
+    getEvolutionHistory,
+    getEvolutionStats,
+    getDataSnapshots,
+} from '../services/selfImprovement.js';
+
+// GET /api/ai/corrections — list all corrections
+router.get('/ai/corrections', checkAuth, async (req, res) => {
+    try {
+        const { type, unapplied, limit } = req.query;
+        const corrections = await getCorrections({
+            limit: parseInt(limit) || 50,
+            type,
+            unappliedOnly: unapplied === 'true',
+        });
+        res.json(corrections);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// GET /api/ai/corrections/stats — correction statistics
+router.get('/ai/corrections/stats', checkAuth, async (req, res) => {
+    try {
+        const stats = await getCorrectionStats();
+        res.json(stats);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// POST /api/ai/corrections — manually submit a correction
+router.post('/ai/corrections', checkAuth, async (req, res) => {
+    try {
+        const { sessionId, question, wrongAnswer, correctAnswer, correctionNote, correctionType, topic, category } = req.body;
+        if (!question || !correctAnswer) {
+            return res.status(400).json({ error: 'question and correctAnswer are required' });
+        }
+        const id = await logCorrection({
+            sessionId, question, wrongAnswer, correctAnswer,
+            correctionNote, correctionType, topic, category,
+        });
+        res.json({ success: true, id });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// POST /api/ai/corrections/:id/apply — apply a correction to knowledge base
+router.post('/ai/corrections/:id/apply', checkAuth, async (req, res) => {
+    try {
+        const result = await applyCorrection(parseInt(req.params.id), generateEmbedding);
+        res.json({ success: true, ...result });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// POST /api/ai/evolution/scan — run weekly evolution scan
+router.post('/ai/evolution/scan', checkAuth, async (req, res) => {
+    try {
+        const result = await runEvolutionScan(generateEmbedding);
+        res.json({ success: true, ...result });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// GET /api/ai/evolution/history — evolution scan history
+router.get('/ai/evolution/history', checkAuth, async (req, res) => {
+    try {
+        const { limit } = req.query;
+        const history = await getEvolutionHistory({ limit: parseInt(limit) || 10 });
+        res.json(history);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// GET /api/ai/evolution/stats — combined evolution + correction stats
+router.get('/ai/evolution/stats', checkAuth, async (req, res) => {
+    try {
+        const stats = await getEvolutionStats();
+        res.json(stats);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// GET /api/ai/evolution/snapshots — data change snapshots
+router.get('/ai/evolution/snapshots', checkAuth, async (req, res) => {
+    try {
+        const { type, limit } = req.query;
+        const snapshots = await getDataSnapshots({ type, limit: parseInt(limit) || 20 });
+        res.json(snapshots);
     } catch (e) {
         res.status(500).json({ error: e.message });
     }

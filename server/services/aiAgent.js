@@ -1,6 +1,56 @@
 import { knex } from '../db.js';
 import { findCachedReply, saveToCache } from './agentCache.js';
 
+// ── Self-improvement: log learning asynchronously (fire & forget) ──
+function logLearning(sessionId, message, reply, toolCalls) {
+    import('./selfImprovement.js').then(({ logInteraction }) => {
+        logInteraction({
+            sessionId,
+            messageId: null,
+            question: message,
+            answer: reply,
+            toolCalls,
+        }).catch(() => {});
+    }).catch(() => {});
+}
+
+// ── Correction detection: detect user corrections and log them ──
+function detectAndLogCorrection(sessionId, message, history) {
+    import('./selfImprovement.js').then(async ({ detectCorrection, logCorrection }) => {
+        const detection = detectCorrection(message);
+        if (!detection) return;
+
+        console.log(`[AI Agent] Correction detected (severity: ${detection.severity}) in: "${message.slice(0, 80)}"`);
+
+        // Get the last AI response from history to log as wrong answer
+        const lastAiResponse = history?.length > 0
+            ? [...history].reverse().find(m => m.role === 'assistant')?.content || ''
+            : '';
+
+        // Extract what the user says is correct (after the correction phrase)
+        let correctAnswer = message;
+        const correctionMarkers = [
+            /(?:salah|revisi|koreksi|bukan\s+begitu|yang\s+benar\s+adalah|yang\s+tepat\s+adalah|seharusnya|harusnya|maksudnya\s+bukan)\s*[:,]?\s*/i,
+        ];
+        for (const marker of correctionMarkers) {
+            const match = message.match(marker);
+            if (match && match.index !== undefined) {
+                correctAnswer = message.slice(match.index + match[0].length).trim();
+                break;
+            }
+        }
+
+        await logCorrection({
+            sessionId,
+            question: message,
+            wrongAnswer: lastAiResponse.slice(0, 2000),
+            correctAnswer: correctAnswer.slice(0, 2000),
+            correctionNote: null,
+            correctionType: detection.severity > 0.7 ? 'correction' : 'revision',
+        });
+    }).catch(() => {});
+}
+
 async function getAiSettings() {
     const row = await knex('ai_settings').orderBy('id', 'asc').first();
     if (!row) return { id: null, base_url: '', api_key: '', model: '', enabled: false };
@@ -679,7 +729,8 @@ async function executeTool(name, args = {}) {
                         title: r.title,
                         category: r.category,
                         similarity: r.similarity,
-                        content: r.contentPreview
+                        chunk: r.chunkIndex,
+                        content: r.content
                     }))
                 };
             }
@@ -922,7 +973,7 @@ function generateSuggestions(toolCallsLog, intent, message) {
 }
 
 // ── Main agent loop ──
-export async function runAgent(message, history = [], embedFn = null) {
+export async function runAgent(message, history = [], embedFn = null, sessionId = null) {
     const settings = await getAiSettings();
     if (!settings.enabled || !settings.api_key || !settings.base_url) {
         throw new Error('AI Agent belum dikonfigurasi. Atur Base URL & API Key di Master Data (Admin).');
@@ -952,6 +1003,9 @@ export async function runAgent(message, history = [], embedFn = null) {
             .filter(m => m.content)
             .slice(-MAX_HISTORY)
         : [];
+
+    // ── Correction detection (fire & forget) ──
+    detectAndLogCorrection(sessionId, message, hist);
 
     // ── RAG: Retrieve relevant past conversations ──
     let ragContext = '';
@@ -1027,6 +1081,7 @@ export async function runAgent(message, history = [], embedFn = null) {
                     console.warn(`[AI Agent] Cache save failed: ${e.message}`)
                 );
                 const suggestions = generateSuggestions(toolCallsLog, intent, message);
+                logLearning(sessionId, message, content, toolCallsLog);
                 return { reply: content, toolCalls: toolCallsLog, suggestions };
             }
             if (toolCallsLog.length > 0) {
@@ -1042,5 +1097,6 @@ export async function runAgent(message, history = [], embedFn = null) {
     }
 
     const maxIterSuggestions = generateSuggestions(toolCallsLog, intent, message);
+    logLearning(sessionId, message, 'Batas iterasi tercapai', toolCallsLog);
     return { reply: 'Maaf, batas iterasi pencarian tercapai. Berikut sebagian hasil yang berhasil dikumpulkan.', toolCalls: toolCallsLog, suggestions: maxIterSuggestions };
 }

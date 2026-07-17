@@ -657,7 +657,11 @@
 │  Semua tabel ini di-query oleh           │                         │
 │  tools di aiAgent.js            ┌────────▼───────────┐             │
 │  + ai_training_documents        │ coa_departments     │             │
-│  + ai_training_chunks           ├────────────────────┤             │
+│  + ai_training_chunks           │                     │             │
+│  + ai_learning_logs             │                     │             │
+│  + ai_learning_corrections      │                     │             │
+│  + ai_data_snapshots            │                     │             │
+│  + ai_evolution_logs            ├────────────────────┤             │
 │                                 │ id, sub_account_id  │             │
 │                                 │ (FK), code, name... │             │
 │                                 └────────────────────┘             │
@@ -1201,6 +1205,7 @@ server/
 │   ├── insightsEngine.js   # 7 proactive insight detectors
 │   ├── cacheWarmer.js      # Scheduled cache warming
 │   ├── trainingDocs.js     # Training doc parse/chunk/embed/search/CRUD
+│   ├── selfImprovement.js  # Learning from chat + corrections + evolution
 │   └── embeddings.js       # (placeholder, real: ai_search.js)
 ├── ai_search.js            # Embedding generation + vector search (1024-dim)
 ├── db.js                   # Knex DB connection
@@ -1218,7 +1223,10 @@ server/
 │   ├── 20260715110000_add_meta_to_ai_settings.js
 │   ├── 20260715120000_create_conversation_summaries.js
 │   ├── 20260716000000_create_ai_training_documents.js
-│   └── 20260716010000_fix_training_embedding_dimension.js
+│   ├── 20260716010000_fix_training_embedding_dimension.js
+│   ├── 20260716020000_create_training_chunks.js
+│   ├── 20260717000000_create_ai_learning_logs.js
+│   └── 20260717010000_create_ai_corrections_evolution.js
 
 src/
 ├── components/
@@ -1627,6 +1635,39 @@ Format laporan:
 │  process                 │          │    success: true,                │
 │                          │          │    message: "..."                │
 │                          │          │  }                               │
+├──────────────────────────┼──────────┼──────────────────────────────────┤
+│  SELF-IMPROVEMENT / LEARNING                                             │
+├──────────────────────────┼──────────┼──────────────────────────────────┤
+│  /api/ai/learning/stats  │  GET     │  Learning statistics             │
+│  /api/ai/learning/topics │  GET     │  Topic frequency summary         │
+│  /api/ai/learning/logs   │  GET     │  All learning logs               │
+│  /api/ai/learning/analyze│  POST    │  Analyze recent chats            │
+│  /api/ai/learning/       │  POST    │  Generate training docs from     │
+│  generate                │          │  accumulated knowledge           │
+│  /api/ai/learning/       │  POST    │  Full cycle (analyze + generate) │
+│  run-cycle               │          │                                  │
+│  /api/ai/learning/       │  POST    │  Train single topic by ID        │
+│  train/:id               │          │                                  │
+│  /api/ai/learning/       │  POST    │  Train all pending topics        │
+│  train-all               │          │                                  │
+│  /api/ai/learning/       │  POST    │  Train by topic name             │
+│  train-by-topic          │          │                                  │
+├──────────────────────────┼──────────┼──────────────────────────────────┤
+│  CORRECTIONS & EVOLUTION                                                  │
+├──────────────────────────┼──────────┼──────────────────────────────────┤
+│  /api/ai/corrections     │  GET     │  List corrections                │
+│  /api/ai/corrections     │  POST    │  Submit correction manually      │
+│  /api/ai/corrections/    │  GET     │  Correction statistics           │
+│  stats                   │          │                                  │
+│  /api/ai/corrections/    │  POST    │  Apply correction to knowledge   │
+│  :id/apply               │          │  base                            │
+│  /api/ai/evolution/scan  │  POST    │  Run full evolution scan         │
+│  /api/ai/evolution/      │  GET     │  Evolution scan history          │
+│  history                 │          │                                  │
+│  /api/ai/evolution/      │  GET     │  Combined correction + evolution │
+│  stats                   │          │  stats                           │
+│  /api/ai/evolution/      │  GET     │  Data change snapshots           │
+│  snapshots               │          │                                  │
 └──────────────────────────┴──────────┴──────────────────────────────────┘
 ```
 
@@ -1670,5 +1711,446 @@ src/pages/MasterData.jsx          — Training AI tab (upload/link forms,
 
 NOTE: ai_conversation_summaries uses 1536-dim embeddings (different model).
 ai_training_documents uses 1024-dim embeddings (we/text-embedding-v3).
+```
+
+---
+
+## 17. ERROR DETECTION & CORRECTION SYSTEM
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│                   CORRECTION FLOW                                         │
+│                                                                          │
+│  USER CHAT                                                               │
+│       │                                                                  │
+│       ▼                                                                  │
+│  ┌─────────────────────────────────────────────────┐                    │
+│  │  aiAgent.js: detectAndLogCorrection()          │                    │
+│  │  (fire & forget, async)                         │                    │
+│  │                                                  │                    │
+│  │  detectCorrection(message)                      │                    │
+│  │  → 25+ regex patterns for Bahasa Indonesia      │                    │
+│  │  → "datamu salah", "revisi", "koreksi",         │                    │
+│  │    "seharusnya", "bukan begitu", ...             │                    │
+│  │  → Returns: { detected, severity, matchedPattern }│                   │
+│  └─────────────────────┬───────────────────────────┘                    │
+│                        │ detected=true                                    │
+│                        ▼                                                  │
+│  ┌─────────────────────────────────────────────────┐                    │
+│  │  logCorrection()                                │                    │
+│  │                                                  │                    │
+│  │  1. Get last AI response from chat history      │                    │
+│  │     → stored as wrong_answer                    │                    │
+│  │  2. Extract correct answer from user message    │                    │
+│  │     (after correction marker phrase)            │                    │
+│  │  3. INSERT INTO ai_learning_corrections         │                    │
+│  │     (topic, wrong_answer, correct_answer,       │                    │
+│  │      severity, correction_type)                 │                    │
+│  └─────────────────────┬───────────────────────────┘                    │
+│                        │                                                  │
+│                        ▼                                                  │
+│  ┌─────────────────────────────────────────────────┐                    │
+│  │  applyCorrection(correctionId)  ← manual or auto │                    │
+│  │                                                  │                    │
+│  │  Creates training doc:                          │                    │
+│  │  "# KOREKSI: {topic}"                           │                    │
+│  │  "## ❌ Jawaban yang SALAH (jangan ulangi)"     │                    │
+│  │  "## ✅ Jawaban yang BENAR"                     │                    │
+│  │  → generateDocEmbedding() → pgvector            │                    │
+│  │  → Mark correction as applied                   │                    │
+│  │  → Snapshot the change to ai_data_snapshots     │                    │
+│  └─────────────────────────────────────────────────┘                    │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+### Correction Detection Patterns
+| Pattern | Severity | Type |
+|---------|----------|------|
+| `/datamu\s+salah/i` | 0.8 | correction |
+| `/jawabanmu\s+salah/i` | 0.8 | correction |
+| `/tidak\s+benar/i` | 0.9 | correction |
+| `/bukan\s+begitu/i` | 0.9 | correction |
+| `/revisi/i` | 0.5 | revision |
+| `/koreksi/i` | 0.5 | revision |
+| `/seharusnya/i` | 0.7 | correction |
+| `/harusnya/i` | 0.7 | correction |
+| `/yang\s+benar\s+adalah/i` | 0.7 | correction |
+| `/salah\s+satu/i` | 0.5 | correction |
+| `/tidak\s+sesuai/i` | 0.5 | feedback |
+| (25+ total patterns) | | |
+
+### Database: `ai_learning_corrections`
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│  TABLE: ai_learning_corrections                                        │
+├──────────────────────┬────────────────┬────────────────────────────────┤
+│  COLUMN              │  TYPE          │  DESCRIPTION                  │
+├──────────────────────┼────────────────┼────────────────────────────────┤
+│  id                  │  INTEGER PK    │  Auto-increment               │
+│  session_id          │  INTEGER FK    │  → ai_chat_sessions.id        │
+│  message_id          │  INTEGER FK    │  → ai_chat_messages.id        │
+│  correction_type     │  VARCHAR(50)   │  correction, revision,        │
+│                      │                │  feedback, wrong_data          │
+│  topic               │  VARCHAR(200)  │  Extracted topic              │
+│  category            │  VARCHAR(50)   │  general, tax, accounting, ...│
+│  original_question   │  TEXT          │  User's original question     │
+│  wrong_answer        │  TEXT          │  AI's incorrect response      │
+│  correct_answer      │  TEXT          │  User's correction            │
+│  correction_note     │  TEXT          │  Extra context from user      │
+│  applied             │  BOOLEAN       │  Applied to knowledge base?   │
+│  verified            │  BOOLEAN       │  Verified as correct?         │
+│  learning_log_id     │  INTEGER FK    │  → ai_learning_logs.id        │
+│  training_doc_id     │  INTEGER FK    │  → ai_training_documents.id   │
+│  severity            │  FLOAT         │  0-1 (error seriousness)      │
+│  created_at          │  TIMESTAMP     │  When correction was made     │
+│  updated_at          │  TIMESTAMP     │  Last update time             │
+└──────────────────────┴────────────────┴────────────────────────────────┘
+```
+
+### API Endpoints
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│  CORRECTIONS API                                                        │
+├──────────────────────────┬──────────┬──────────────────────────────────┤
+│  ENDPOINT                │  METHOD  │  DESCRIPTION                    │
+├──────────────────────────┼──────────┼──────────────────────────────────┤
+│  /api/ai/corrections     │  GET     │  List corrections               │
+│                          │          │  Query: ?type=&unapplied=&limit=│
+│  /api/ai/corrections     │  POST    │  Submit correction manually     │
+│                          │          │  Body: { question,              │
+│                          │          │    wrongAnswer, correctAnswer,  │
+│                          │          │    topic, category }            │
+│  /api/ai/corrections/    │  GET     │  Correction statistics          │
+│  stats                   │          │  → { total, applied, unapplied, │
+│                          │          │      byType }                   │
+│  /api/ai/corrections/    │  POST    │  Apply correction to            │
+│  :id/apply               │          │  knowledge base                 │
+│                          │          │  → creates training doc         │
+└──────────────────────────┴──────────┴──────────────────────────────────┘
+```
+
+### Source Files
+```
+server/services/selfImprovement.js  — detectCorrection(), logCorrection(),
+                                      applyCorrection(), getCorrections(),
+                                      getCorrectionStats()
+
+server/services/aiAgent.js          — detectAndLogCorrection() (fire & forget)
+                                      called in runAgent() after history compression
+
+server/routes/aiRoutes.js           — GET/POST /api/ai/corrections,
+                                      GET /api/ai/corrections/stats,
+                                      POST /api/ai/corrections/:id/apply
+
+server/migrations/
+  20260717010000_create_ai_corrections_evolution.js
+```
+
+---
+
+## 18. DATA EVOLUTION SCANNER (WEEKLY)
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│                   EVOLUTION SCAN FLOW                                     │
+│                                                                          │
+│  POST /api/ai/evolution/scan  ← manual trigger or scheduled             │
+│       │                                                                  │
+│       ▼                                                                  │
+│  ╔══════════════════════════════════════════════════════════════════╗    │
+│  ║  runEvolutionScan(embedFn)                                       ║    │
+│  ╠══════════════════════════════════════════════════════════════════╣    │
+│  ║                                                                  ║    │
+│  ║  STEP 1: scanTrainingDocsQuality()                              ║    │
+│  ║  ┌──────────────────────────────────────────────────────┐       ║    │
+│  ║  │  Check all active training docs for:                  │       ║    │
+│  ║  │  • content_too_short  (content < 50 chars)           │       ║    │
+│  ║  │  • no_chunks          (chunk_count == 0)             │       ║    │
+│  ║  │  • stale_content      (updated > 30 days ago)        │       ║    │
+│  ║  │  • thin_auto_doc      (auto-generated, 1 chunk)      │       ║    │
+│  ║  └──────────────────────────────────────────────────────┘       ║    │
+│  ║                          │                                      ║    │
+│  ║  STEP 2: scanKnowledgeBase()                                   ║    │
+│  ║  ┌──────────────────────────────────────────────────────┐       ║    │
+│  ║  │  Check ai_learning_logs for:                         │       ║    │
+│  ║  │  • lowConfidenceTopics   (confidence < 0.4)         │       ║    │
+│  ║  │  • repeatedUntrained     (repeat >= 3, not trained) │       ║    │
+│  ║  │  • unappliedCorrections  (from corrections table)    │       ║    │
+│  ║  └──────────────────────────────────────────────────────┘       ║    │
+│  ║                          │                                      ║    │
+│  ║  STEP 3: processCorrections(embedFn)                           ║    │
+│  ║  ┌──────────────────────────────────────────────────────┐       ║    │
+│  ║  │  For each unapplied correction:                      │       ║    │
+│  ║  │  → applyCorrection() → create training doc           │       ║    │
+│  ║  │  → embed with current model                          │       ║    │
+│  ║  └──────────────────────────────────────────────────────┘       ║    │
+│  ║                          │                                      ║    │
+│  ║  STEP 4: pruneKnowledge()                                     ║    │
+│  ║  ┌──────────────────────────────────────────────────────┐       ║    │
+│  ║  │  DELETE FROM ai_learning_logs WHERE:                  │       ║    │
+│  ║  │  • confidence < 0.2                                  │       ║    │
+│  ║  │  • repeat_count == 1                                 │       ║    │
+│  ║  │  • used_in_training == false                         │       ║    │
+│  ║  │  • created_at < 60 days ago                          │       ║    │
+│  ║  └──────────────────────────────────────────────────────┘       ║    │
+│  ║                          │                                      ║    │
+│  ║  STEP 5: generateTrainingDocsFromKnowledge()                   ║    │
+│  ║  ┌──────────────────────────────────────────────────────┐       ║    │
+│  ║  │  Auto-generate training docs for:                    │       ║    │
+│  ║  │  • untrained topics with repeat >= 3                 │       ║    │
+│  ║  │  • low-confidence topics                             │       ║    │
+│  ║  └──────────────────────────────────────────────────────┘       ║    │
+│  ║                          │                                      ║    │
+│  ║  STEP 6: Mark snapshots as processed                           ║    │
+│  ║                          │                                      ║    │
+│  ║                          ▼                                      ║    │
+│  ║  SAVE → ai_evolution_logs                                      ║    │
+│  ╚══════════════════════════════════════════════════════════════════╝    │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+### Database: `ai_data_snapshots`
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│  TABLE: ai_data_snapshots                                              │
+├──────────────────────┬────────────────┬────────────────────────────────┤
+│  COLUMN              │  TYPE          │  DESCRIPTION                  │
+├──────────────────────┼────────────────┼────────────────────────────────┤
+│  id                  │  INTEGER PK    │  Auto-increment               │
+│  snapshot_type       │  VARCHAR(50)   │  training_doc, correction,    │
+│                      │                │  knowledge, schema             │
+│  entity_id           │  INTEGER       │  ID of related entity         │
+│  entity_title        │  TEXT          │  Human-readable title         │
+│  before_data         │  TEXT (JSON)   │  Snapshot before change       │
+│  after_data          │  TEXT (JSON)   │  Snapshot after change        │
+│  change_reason       │  VARCHAR(100)  │  auto_evolution,              │
+│                      │                │  manual_correction, data_update│
+│  evolution_processed │  BOOLEAN       │  Processed in evolution scan?  │
+│  created_at          │  TIMESTAMP     │  When snapshot was created    │
+│  updated_at          │  TIMESTAMP     │  Last update time             │
+└──────────────────────┴────────────────┴────────────────────────────────┘
+```
+
+### Database: `ai_evolution_logs`
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│  TABLE: ai_evolution_logs                                              │
+├──────────────────────┬────────────────┬────────────────────────────────┤
+│  COLUMN              │  TYPE          │  DESCRIPTION                  │
+├──────────────────────┼────────────────┼────────────────────────────────┤
+│  id                  │  INTEGER PK    │  Auto-increment               │
+│  status              │  VARCHAR(20)   │  running, completed, failed   │
+│  summary             │  TEXT (JSON)   │  Full scan results            │
+│  docs_scanned        │  INTEGER       │  Training docs scanned        │
+│  docs_updated        │  INTEGER       │  Docs created/updated         │
+│  corrections_applied │  INTEGER       │  Corrections processed        │
+│  knowledge_pruned    │  INTEGER       │  Knowledge points pruned      │
+│  new_topics_found    │  INTEGER       │  New topics discovered        │
+│  error_message       │  TEXT          │  Error if failed              │
+│  created_at          │  TIMESTAMP     │  When scan started            │
+│  updated_at          │  TIMESTAMP     │  Last update time             │
+└──────────────────────┴────────────────┴────────────────────────────────┘
+```
+
+### API Endpoints
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│  EVOLUTION API                                                          │
+├──────────────────────────┬──────────┬──────────────────────────────────┤
+│  ENDPOINT                │  METHOD  │  DESCRIPTION                    │
+├──────────────────────────┼──────────┼──────────────────────────────────┤
+│  /api/ai/evolution/scan  │  POST    │  Run full evolution scan        │
+│                          │          │  → scans docs, knowledge,       │
+│                          │          │    corrections, prunes          │
+│  /api/ai/evolution/      │  GET     │  Evolution scan history         │
+│  history                 │          │  Query: ?limit=10               │
+│  /api/ai/evolution/      │  GET     │  Combined stats:                │
+│  stats                   │          │  corrections + latest evolution │
+│  /api/ai/evolution/      │  GET     │  Data change snapshots          │
+│  snapshots               │          │  Query: ?type=&limit=20         │
+└──────────────────────────┴──────────┴──────────────────────────────────┘
+```
+
+### Source Files
+```
+server/services/selfImprovement.js  — scanTrainingDocsQuality(),
+                                      scanKnowledgeBase(),
+                                      processCorrections(), pruneKnowledge(),
+                                      runEvolutionScan(), getEvolutionHistory(),
+                                      getEvolutionStats(), getDataSnapshots()
+
+server/routes/aiRoutes.js           — POST /api/ai/evolution/scan,
+                                      GET /api/ai/evolution/history,
+                                      GET /api/ai/evolution/stats,
+                                      GET /api/ai/evolution/snapshots
+
+server/migrations/
+  20260717010000_create_ai_corrections_evolution.js
+```
+
+---
+
+## 19. SELF-IMPROVEMENT SYSTEM (LEARNING FROM CHAT)
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│                   SELF-IMPROVEMENT FLOW                                   │
+│                                                                          │
+│  USER CHATS → AI RESPONDS → logLearning() (fire & forget)               │
+│       │                                                                  │
+│       ▼                                                                  │
+│  ┌─────────────────────────────────────────────────┐                    │
+│  │  logInteraction()                               │                    │
+│  │                                                  │                    │
+│  │  1. Classify intent from question + answer      │                    │
+│  │  2. Extract topic (regex patterns + fallback)   │                    │
+│  │  3. Extract knowledge (LLM or fallback)         │                    │
+│  │  4. INSERT INTO ai_learning_logs                │                    │
+│  │     (topic, category, knowledge_extracted,      │                    │
+│  │      confidence, question, answer)              │                    │
+│  │  5. Update repeat_count if topic exists         │                    │
+│  └─────────────────────────────────────────────────┘                    │
+│                                                                          │
+│  ACCUMULATION → TRAINING                                                │
+│       │                                                                  │
+│       ▼                                                                  │
+│  ┌─────────────────────────────────────────────────┐                    │
+│  │  generateTrainingDocsFromKnowledge()            │                    │
+│  │                                                  │                    │
+│  │  For topics with repeat_count >= 3:             │                    │
+│  │  → Create training doc from accumulated Q&A     │                    │
+│  │  → Embed and store in pgvector                  │                    │
+│  │  → Mark as used_in_training = true              │                    │
+│  └─────────────────────────────────────────────────┘                    │
+│                                                                          │
+│  MANUAL TRAINING (MasterData UI)                                        │
+│       │                                                                  │
+│       ▼                                                                  │
+│  ┌─────────────────────────────────────────────────┐                    │
+│  │  Train All Pending → all untrained topics       │                    │
+│  │  Train By Topic → specific topic                │                    │
+│  │  Full Cycle → analyze + generate + train        │                    │
+│  └─────────────────────────────────────────────────┘                    │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+### Database: `ai_learning_logs`
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│  TABLE: ai_learning_logs                                               │
+├──────────────────────┬────────────────┬────────────────────────────────┤
+│  COLUMN              │  TYPE          │  DESCRIPTION                  │
+├──────────────────────┼────────────────┼────────────────────────────────┤
+│  id                  │  INTEGER PK    │  Auto-increment               │
+│  session_id          │  INTEGER FK    │  → ai_chat_sessions.id        │
+│  message_id          │  INTEGER FK    │  → ai_chat_messages.id        │
+│  topic               │  VARCHAR(200)  │  Extracted topic              │
+│  category            │  VARCHAR(50)   │  general, tax, accounting, ...│
+│  knowledge_extracted │  TEXT          │  LLM-extracted knowledge      │
+│  confidence          │  FLOAT         │  0-1 extraction confidence    │
+│  repeat_count        │  INTEGER       │  How many times asked         │
+│  used_in_training    │  BOOLEAN       │  Already used for training?   │
+│  question            │  TEXT          │  Original user question       │
+│  answer              │  TEXT          │  AI's response                │
+│  created_at          │  TIMESTAMP     │  When first seen              │
+│  updated_at          │  TIMESTAMP     │  Last update time             │
+└──────────────────────┴────────────────┴────────────────────────────────┘
+```
+
+### View: `ai_learning_topic_summary`
+```sql
+SELECT topic, category,
+       COUNT(*) as ask_count,
+       AVG(confidence) as avg_confidence,
+       MAX(used_in_training) as is_trained
+FROM ai_learning_logs
+GROUP BY topic, category
+ORDER BY ask_count DESC
+```
+
+### API Endpoints
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│  LEARNING API                                                           │
+├──────────────────────────┬──────────┬──────────────────────────────────┤
+│  ENDPOINT                │  METHOD  │  DESCRIPTION                    │
+├──────────────────────────┼──────────┼──────────────────────────────────┤
+│  /api/ai/learning/stats  │  GET     │  Learning statistics            │
+│  /api/ai/learning/topics │  GET     │  Topic frequency summary        │
+│  /api/ai/learning/logs   │  GET     │  All learning logs              │
+│  /api/ai/learning/analyze│  POST    │  Analyze recent chats           │
+│  /api/ai/learning/       │  POST    │  Generate training docs from    │
+│  generate                │          │  accumulated knowledge          │
+│  /api/ai/learning/       │  POST    │  Full cycle (analyze + generate)│
+│  run-cycle               │          │                                 │
+│  /api/ai/learning/       │  POST    │  Train single topic             │
+│  train/:id               │          │                                 │
+│  /api/ai/learning/       │  POST    │  Train all pending topics       │
+│  train-all               │          │                                 │
+│  /api/ai/learning/       │  POST    │  Train by topic name            │
+│  train-by-topic          │          │                                 │
+└──────────────────────────┴──────────┴──────────────────────────────────┘
+```
+
+### Source Files
+```
+server/services/selfImprovement.js  — logInteraction(), extractKnowledge(),
+                                      analyzeRecentChats(),
+                                      generateTrainingDocsFromKnowledge(),
+                                      trainSingleTopic(), trainAllPending(),
+                                      trainByTopic(), runSelfImprovementCycle()
+
+server/services/aiAgent.js          — logLearning() (fire & forget after each response)
+
+server/routes/aiRoutes.js           — All /api/ai/learning/* endpoints
+
+server/migrations/
+  20260717000000_create_ai_learning_logs.js
+```
+
+### MasterData.jsx — Training AI Tab (5 Sub-tabs)
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                   TRAINING AI TAB UI                              │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌────────────────────────────────────────────────────────────┐  │
+│  │  SUB-TABS: [Upload] [List] [Self-Improvement]             │  │
+│  │            [Corrections] [Evolution]                       │  │
+│  └────────────────────────────────────────────────────────────┘  │
+│                                                                  │
+│  ┌─── Upload Tab ─────────────────────────────────────────────┐ │
+│  │  Upload file (PDF, DOCX, TXT, MD) with title, category,   │ │
+│  │  tags. Auto-extract text, chunk, embed, store.             │ │
+│  └────────────────────────────────────────────────────────────┘ │
+│                                                                  │
+│  ┌─── List Tab ───────────────────────────────────────────────┐ │
+│  │  Table of training docs with: title, file type, category,  │ │
+│  │  date, status. Actions: Preview, Re-process, Delete.       │ │
+│  │  Paginated (8 rows/page).                                  │ │
+│  └────────────────────────────────────────────────────────────┘ │
+│                                                                  │
+│  ┌─── Self-Improvement Tab ───────────────────────────────────┐ │
+│  │  Stats cards: Knowledge Points, Training Efficiency,       │ │
+│  │  Untrained Points, Docs Generated.                         │ │
+│  │  Actions: Refresh, Analisis Chat, Train All, Full Cycle.   │ │
+│  │  Topic table (paginated) with per-topic Train button.      │ │
+│  │  Recent Knowledge Extracted list (paginated).              │ │
+│  └────────────────────────────────────────────────────────────┘ │
+│                                                                  │
+│  ┌─── Corrections Tab ────────────────────────────────────────┐ │
+│  │  Stats cards: Total, Applied, Pending, Types.              │ │
+│  │  Corrections table (paginated): topic, type, correct       │ │
+│  │  answer, severity, status, Apply button.                   │ │
+│  │  Auto-detected when user says "datamu salah" in chat.      │ │
+│  └────────────────────────────────────────────────────────────┘ │
+│                                                                  │
+│  ┌─── Evolution Tab ──────────────────────────────────────────┐ │
+│  │  Stats cards: Snapshots, Applied, Pending, Docs Scanned.   │ │
+│  │  "Run Evolution Scan" button.                              │ │
+│  │  History table (paginated): status, docs scanned/updated,  │ │
+│  │  corrections applied, pruned, new topics, date.            │ │
+│  └────────────────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────────┘
 ```
 

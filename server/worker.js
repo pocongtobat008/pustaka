@@ -326,7 +326,7 @@ async function processJob(job) {
         const { message, history, sessionId } = job.data;
         console.log(`[Worker] Processing AI Agent Job ${job.id}`);
         try {
-            const result = await runAgent(message, history, generateEmbedding);
+            const result = await runAgent(message, history, generateEmbedding, sessionId);
             await knex('job_queue').where('id', job.id).update({
                 result: JSON.stringify(result),
                 status: JOB_STATUS.COMPLETED,

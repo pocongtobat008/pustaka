@@ -11,10 +11,15 @@ const UPLOAD_DIR = path.join(__dirname, '../../server/uploads/training');
 // Ensure upload directory exists
 fs.mkdir(UPLOAD_DIR, { recursive: true }).catch(() => {});
 
-// ── Text Chunking ──
+// ── Constants ──
 const CHUNK_SIZE = 1000;
 const CHUNK_OVERLAP = 200;
+const EMBED_BATCH_SIZE = 5;       // max concurrent embedding API calls
+const EMBED_RETRY_MAX = 3;        // max retry attempts
+const EMBED_RETRY_DELAY_MS = 1000; // base delay (exponential backoff)
+const CATEGORIES = ['general', 'tax_regulation', 'accounting_standard', 'procedure', 'guide'];
 
+// ── Text Chunking ──
 export function chunkText(text, chunkSize = CHUNK_SIZE, overlap = CHUNK_OVERLAP) {
     if (!text || text.length === 0) return [];
     const chunks = [];
@@ -46,39 +51,37 @@ export async function parsePdf(buffer) {
     return await ocrPdf(buffer);
 }
 
-// ── OCR for scanned PDFs (pdftoppm + tesseract.js) ──
+// ── OCR for scanned PDFs (pdftoppm + tesseract.js) — PARALLEL per page ──
 async function ocrPdf(buffer) {
     let tmpDir = null;
     try {
-        // Write buffer to temp file
         tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'ocr-'));
         const tmpPdf = path.join(tmpDir, 'input.pdf');
         await fs.writeFile(tmpPdf, buffer);
 
-        // Convert PDF pages to PNG images (300 DPI for good OCR quality)
+        // Convert PDF pages to PNG images (300 DPI)
         execSync(`pdftoppm -png -r 300 "${tmpPdf}" "${tmpDir}/page"`, { timeout: 60000 });
 
-        // Get generated image files
         const files = (await fs.readdir(tmpDir)).filter(f => f.endsWith('.png')).sort();
         if (files.length === 0) {
             throw new Error('Tidak ada halaman yang bisa diproses dari PDF ini.');
         }
 
-        // OCR each page with tesseract.js
+        // #2: OCR all pages in parallel
         const Tesseract = (await import('tesseract.js')).default;
-        const allText = [];
+        console.log(`[TrainingDocs] OCR: processing ${files.length} pages in parallel...`);
 
-        for (let i = 0; i < files.length; i++) {
-            const imgPath = path.join(tmpDir, files[i]);
-            const result = await Tesseract.recognize(imgPath, 'ind+eng');
-            const pageText = result.data.text?.trim();
-            if (pageText) {
-                allText.push(`--- Halaman ${i + 1} ---\n${pageText}`);
-            }
-            console.log(`[TrainingDocs] OCR page ${i + 1}/${files.length}: ${pageText?.length || 0} chars, confidence: ${result.data.confidence}%`);
-        }
+        const ocrResults = await Promise.all(
+            files.map(async (file, i) => {
+                const imgPath = path.join(tmpDir, file);
+                const result = await Tesseract.recognize(imgPath, 'ind+eng');
+                const pageText = result.data.text?.trim();
+                console.log(`[TrainingDocs] OCR page ${i + 1}/${files.length}: ${pageText?.length || 0} chars, confidence: ${result.data.confidence}%`);
+                return pageText ? `--- Halaman ${i + 1} ---\n${pageText}` : null;
+            })
+        );
 
-        const ocrText = allText.join('\n\n');
+        const ocrText = ocrResults.filter(Boolean).join('\n\n');
         if (ocrText.length < 10) {
             throw new Error('OCR tidak dapat mengekstrak teks dari PDF ini. Pastikan gambar cukup jelas.');
         }
@@ -90,7 +93,6 @@ async function ocrPdf(buffer) {
         }
         throw new Error(`Gagal melakukan OCR: ${err.message}`);
     } finally {
-        // Cleanup temp files
         if (tmpDir) {
             await fs.rm(tmpDir, { recursive: true }).catch(() => {});
         }
@@ -118,7 +120,6 @@ export async function parseLink(url) {
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const html = await res.text();
-        // Strip HTML tags, keep text content
         const text = html
             .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
             .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
@@ -146,6 +147,41 @@ export async function parseDocument(buffer, fileType, fileUrl) {
     }
 }
 
+// ── #7: Auto-categorize document content using LLM ──
+async function autoCategorize(content) {
+    try {
+        // Get AI settings from DB
+        const settings = await knex('ai_settings').where('enabled', true).first();
+        if (!settings || !settings.base_url || !settings.api_key) return null;
+
+        const prompt = `Kategorikan dokumen berikut ke dalam salah satu kategori ini: ${CATEGORIES.join(', ')}.
+Balas HANYA dengan satu kata kategori, tanpa penjelasan tambahan.
+
+Dokumen (500 karakter pertama):
+${content.slice(0, 500)}`;
+
+        const url = settings.base_url.replace(/\/+$/, '') + '/chat/completions';
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${settings.api_key}` },
+            body: JSON.stringify({
+                model: settings.model || 'gpt-3.5-turbo',
+                messages: [{ role: 'user', content: prompt }],
+                temperature: 0,
+                max_tokens: 20,
+            }),
+            signal: AbortSignal.timeout(10000),
+        });
+
+        if (!res.ok) return null;
+        const data = await res.json();
+        const category = (data?.choices?.[0]?.message?.content || '').trim().toLowerCase();
+        return CATEGORIES.includes(category) ? category : null;
+    } catch {
+        return null;
+    }
+}
+
 // ── Save document to DB ──
 export async function saveDocument({ title, filename, fileType, fileUrl, filePath, content, category, tags, userId }) {
     const [row] = await knex('ai_training_documents')
@@ -168,45 +204,92 @@ export async function saveDocument({ title, filename, fileType, fileUrl, filePat
     return typeof row === 'object' ? row.id : row;
 }
 
-// ── Generate embedding for a document ──
-export async function generateDocEmbedding(docId, embedFn) {
+// ── #3: Embed with retry + exponential backoff ──
+async function embedWithRetry(embedFn, text) {
+    for (let attempt = 1; attempt <= EMBED_RETRY_MAX; attempt++) {
+        try {
+            return await embedFn(text);
+        } catch (err) {
+            const isLast = attempt === EMBED_RETRY_MAX;
+            if (isLast) throw err;
+            const delay = EMBED_RETRY_DELAY_MS * Math.pow(2, attempt - 1);
+            console.warn(`[TrainingDocs] Embed attempt ${attempt}/${EMBED_RETRY_MAX} failed: ${err.message}. Retrying in ${delay}ms...`);
+            await new Promise(r => setTimeout(r, delay));
+        }
+    }
+}
+
+// ── #1: Generate chunk-level embeddings ──
+export async function generateDocEmbedding(docId, embedFn, { autoCat = true } = {}) {
     if (!embedFn) return;
 
     const doc = await knex('ai_training_documents').where('id', docId).first();
     if (!doc || !doc.content) {
-        // No content to embed — mark as error
         await knex('ai_training_documents')
             .where('id', docId)
             .update({ status: 'error', updated_at: knex.fn.now() });
         return;
     }
 
-    const chunks = chunkText(doc.content);
-    if (chunks.length === 0) return;
+    // #7: Auto-categorize if category is 'general' and content is long enough
+    if (autoCat && doc.category === 'general' && doc.content.length > 50) {
+        const detected = await autoCategorize(doc.content);
+        if (detected) {
+            await knex('ai_training_documents')
+                .where('id', docId)
+                .update({ category: detected });
+            console.log(`[TrainingDocs] Auto-categorized doc ${docId} as "${detected}"`);
+        }
+    }
 
-    // Embed first chunk (or a summary) as the document representative
-    // For full RAG, each chunk should be embedded separately in a future version
-    const representative = chunks[0].slice(0, 2000);
+    // Split into chunks
+    const chunks = chunkText(doc.content);
+    if (chunks.length === 0) {
+        await knex('ai_training_documents')
+            .where('id', docId)
+            .update({ status: 'error', updated_at: knex.fn.now() });
+        return;
+    }
+
     try {
-        const vector = await embedFn(representative);
-        const vecStr = '[' + vector.join(',') + ']';
+        // Delete old chunks (for reprocess)
+        await knex('ai_training_chunks').where('document_id', docId).del();
+
+        // Embed each chunk with retry
+        for (let i = 0; i < chunks.length; i++) {
+            const vector = await embedWithRetry(embedFn, chunks[i].slice(0, 2000));
+            const vecStr = '[' + vector.join(',') + ']';
+            await knex('ai_training_chunks').insert({
+                document_id: docId,
+                chunk_index: i,
+                content: chunks[i],
+                embedding: knex.raw('?::vector', [vecStr]),
+                token_count: Math.ceil(chunks[i].length / 4),
+            });
+        }
+
+        // Also store the first chunk's embedding in the document for backward compat
+        const firstVector = await embedWithRetry(embedFn, chunks[0].slice(0, 2000));
+        const firstVecStr = '[' + firstVector.join(',') + ']';
         await knex('ai_training_documents')
             .where('id', docId)
             .update({
-                embedding: knex.raw('?::vector', [vecStr]),
+                embedding: knex.raw('?::vector', [firstVecStr]),
                 chunk_count: chunks.length,
                 status: 'active',
                 updated_at: knex.fn.now(),
             });
+
+        console.log(`[TrainingDocs] Doc ${docId}: ${chunks.length} chunks embedded successfully`);
     } catch (err) {
-        console.warn(`[TrainingDocs] Embedding failed for doc ${docId}: ${err.message}`);
+        console.warn(`[TrainingDocs] Embedding failed for doc ${docId} after ${EMBED_RETRY_MAX} retries: ${err.message}`);
         await knex('ai_training_documents')
             .where('id', docId)
             .update({ status: 'error', updated_at: knex.fn.now() });
     }
 }
 
-// ── Search training documents via semantic similarity ──
+// ── #1: Search at chunk level via semantic similarity ──
 export async function searchTrainingDocs(query, embedFn, { limit = 5, category = null } = {}) {
     if (!embedFn) return [];
 
@@ -214,36 +297,81 @@ export async function searchTrainingDocs(query, embedFn, { limit = 5, category =
         const queryVector = await embedFn(query);
         const vecStr = '[' + queryVector.join(',') + ']';
 
+        // Try chunk-level search first
         let sql = `
-            SELECT id, title, filename, file_type, category, tags, content,
-                   chunk_count, created_at,
-                   1 - (embedding <=> ?::vector) AS similarity
-            FROM ai_training_documents
-            WHERE embedding IS NOT NULL AND status = 'active'
+            SELECT
+                c.id AS chunk_id,
+                c.document_id,
+                c.chunk_index,
+                c.content AS chunk_content,
+                c.token_count,
+                1 - (c.embedding <=> ?::vector) AS similarity,
+                d.title,
+                d.filename,
+                d.file_type,
+                d.category,
+                d.tags,
+                d.created_at
+            FROM ai_training_chunks c
+            JOIN ai_training_documents d ON d.id = c.document_id
+            WHERE c.embedding IS NOT NULL AND d.status = 'active'
         `;
         const params = [vecStr];
 
         if (category) {
-            sql += ` AND category = ?`;
+            sql += ` AND d.category = ?`;
             params.push(category);
         }
 
-        sql += ` ORDER BY embedding <=> ?::vector LIMIT ?`;
+        sql += ` ORDER BY c.embedding <=> ?::vector LIMIT ?`;
         params.push(vecStr, limit);
 
-        const results = await knex.raw(sql, params);
-        const rows = results.rows || [];
+        let results = await knex.raw(sql, params);
+        let rows = results.rows || [];
+
+        // Fallback to doc-level search if no chunks found
+        if (rows.length === 0) {
+            console.log('[TrainingDocs] No chunks found, falling back to doc-level search');
+            let docSql = `
+                SELECT
+                    d.id AS document_id,
+                    0 AS chunk_index,
+                    d.content AS chunk_content,
+                    NULL AS token_count,
+                    1 - (d.embedding <=> ?::vector) AS similarity,
+                    d.title,
+                    d.filename,
+                    d.file_type,
+                    d.category,
+                    d.tags,
+                    d.created_at
+                FROM ai_training_documents d
+                WHERE d.embedding IS NOT NULL AND d.status = 'active'
+            `;
+            const docParams = [vecStr];
+            if (category) {
+                docSql += ` AND d.category = ?`;
+                docParams.push(category);
+            }
+            docSql += ` ORDER BY d.embedding <=> ?::vector LIMIT ?`;
+            docParams.push(vecStr, limit);
+
+            results = await knex.raw(docSql, docParams);
+            rows = results.rows || [];
+        }
 
         return rows
             .filter(r => r.similarity >= 0.25)
             .map(r => ({
-                id: r.id,
+                documentId: r.document_id,
+                chunkIndex: r.chunk_index,
                 title: r.title,
                 fileType: r.file_type,
                 category: r.category,
                 tags: r.tags,
-                contentPreview: (r.content || '').slice(0, 500),
+                content: r.chunk_content,
                 similarity: Number(r.similarity).toFixed(3),
+                tokenCount: r.token_count,
                 createdAt: r.created_at,
             }));
     } catch (err) {
@@ -277,6 +405,14 @@ export async function getDocument(id) {
     return knex('ai_training_documents').where('id', id).first();
 }
 
+// ── Get document chunks ──
+export async function getDocumentChunks(documentId) {
+    return knex('ai_training_chunks')
+        .where('document_id', documentId)
+        .orderBy('chunk_index', 'asc')
+        .select('id', 'chunk_index', 'content', 'token_count', 'created_at');
+}
+
 // ── Delete document ──
 export async function deleteDocument(id) {
     const doc = await knex('ai_training_documents').where('id', id).first();
@@ -284,6 +420,7 @@ export async function deleteDocument(id) {
         const fullPath = path.join(UPLOAD_DIR, doc.file_path);
         await fs.unlink(fullPath).catch(() => {});
     }
+    // Chunks auto-deleted via CASCADE
     return knex('ai_training_documents').where('id', id).del();
 }
 
@@ -294,4 +431,42 @@ export async function reprocessDocument(id, embedFn) {
         .update({ status: 'processing', updated_at: knex.fn.now() });
 
     await generateDocEmbedding(id, embedFn);
+}
+
+// ── Backfill chunks from existing doc-level embeddings (when API is down) ──
+export async function backfillFromExistingEmbeddings() {
+    const docs = await knex('ai_training_documents')
+        .whereNotNull('embedding')
+        .where('content', '!=', '')
+        .whereNotNull('content')
+        .select('id', 'content', 'embedding', 'chunk_count');
+
+    let backfilled = 0;
+    for (const doc of docs) {
+        const existingChunks = await knex('ai_training_chunks').where('document_id', doc.id).count('* as total').first();
+        if (Number(existingChunks.total) > 0) continue; // already has chunks
+
+        if (!doc.content || !doc.embedding) continue;
+
+        const chunks = chunkText(doc.content);
+        if (chunks.length === 0) continue;
+
+        // Use the existing doc-level embedding for all chunks (shared vector)
+        // This is a temporary measure until the API is back and can re-embed per chunk
+        for (let i = 0; i < chunks.length; i++) {
+            await knex.raw(`
+                INSERT INTO ai_training_chunks (document_id, chunk_index, content, token_count, embedding, created_at)
+                VALUES (?, ?, ?, ?, ?::vector, NOW())
+            `, [doc.id, i, chunks[i], Math.ceil(chunks[i].length / 4), doc.embedding]);
+        }
+
+        await knex('ai_training_documents')
+            .where('id', doc.id)
+            .update({ chunk_count: chunks.length, status: 'active', updated_at: knex.fn.now() });
+
+        console.log(`[TrainingDocs] Backfilled doc ${doc.id} with ${chunks.length} chunks (using doc-level embedding)`);
+        backfilled++;
+    }
+
+    return backfilled;
 }
