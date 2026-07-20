@@ -566,7 +566,7 @@ export default function AiChatAssistant({
     ]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [agentMode, setAgentMode] = useState(false);
+    const [agentMode, setAgentMode] = useState(true);
     const [agentStatus, setAgentStatus] = useState('');
     const [sessionId, setSessionId] = useState(null);
     const [sessions, setSessions] = useState([]);
