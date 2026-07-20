@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Plus, Edit3, Trash2, Building2, GitCommit, ShieldCheck, ChevronRight, ChevronLeft, Users, User, Shield, History, Search, Clock, ChevronDown, ChevronUp, AlertCircle, FileText, Activity, Bot, Save, Loader2, Zap, Upload, Link, Eye, RefreshCw, X, Info, Brain } from 'lucide-react';
 import { Card } from '../components/ui/Card';
+import KnowledgeGraph from '../components/KnowledgeGraph.jsx';
 import { apiClient, API_URL } from '../services/apiClient.js';
 import { APP_MODULES } from '../utils/permissions';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -265,6 +266,27 @@ export default function MasterData({
     const [evolutionStats, setEvolutionStats] = useState(null);
     const [evolutionHistory, setEvolutionHistory] = useState([]);
     const [evolutionScanning, setEvolutionScanning] = useState(false);
+
+    // --- Knowledge Graph (brain view) ---
+    const [graphData, setGraphData] = useState(null);
+    const [graphLoading, setGraphLoading] = useState(false);
+    const fetchGraph = async () => {
+        setGraphLoading(true);
+        try {
+            const g = await apiClient.fetchJson(`${API_URL}/ai/graph`);
+            setGraphData(g);
+        } catch (e) {
+            console.warn('Graph fetch failed:', e.message);
+        } finally {
+            setGraphLoading(false);
+        }
+    };
+    useEffect(() => {
+        if (masterTab === 'training' && trainingTab === 'graph' && !graphData && !graphLoading) {
+            fetchGraph();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [masterTab, trainingTab]);
 
     // --- Pagination ---
     const [topicPage, setTopicPage] = useState(1);
@@ -1277,8 +1299,13 @@ export default function MasterData({
                                     onClick={() => { setTrainingTab('evolution'); setEvolutionPage(1); fetchLearningData(); }}
                                     className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'evolution' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
                                 >
-                                >
                                     Evolution
+                                </button>
+                                <button
+                                    onClick={() => { setTrainingTab('graph'); fetchGraph(); }}
+                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'graph' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
+                                >
+                                    🧠 Graph
                                 </button>
                             </div>
                         </div>
@@ -1748,6 +1775,34 @@ export default function MasterData({
                                     <div className="text-center py-8 text-gray-400 dark:text-slate-500 text-sm">
                                         Belum ada riwayat evolution scan. Klik "Run Evolution Scan" untuk memulai.
                                     </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Knowledge Graph (Brain) Tab */}
+                        {trainingTab === 'graph' && (
+                            <div className="space-y-3">
+                                <div className="flex justify-between items-center">
+                                    <div>
+                                        <h4 className="font-bold text-sm text-gray-700 dark:text-slate-300 flex items-center gap-2">
+                                            <Brain size={16} className="text-indigo-500" /> Peta Pengetahuan AI (Knowledge Brain)
+                                        </h4>
+                                        <p className="text-xs text-gray-500 mt-0.5">Visualisasi hubungan: dokumen training → chunk → knowledge → koreksi, dikelompokkan per kategori.</p>
+                                    </div>
+                                    <button
+                                        onClick={fetchGraph}
+                                        disabled={graphLoading}
+                                        className="px-3 py-1.5 bg-gray-600 text-white rounded-lg text-xs flex items-center gap-1.5 hover:bg-gray-700 transition-colors disabled:opacity-50"
+                                    >
+                                        {graphLoading ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />} Refresh
+                                    </button>
+                                </div>
+                                {graphLoading && !graphData ? (
+                                    <div className="text-center py-16 text-gray-400 dark:text-slate-500"><Loader2 size={28} className="animate-spin inline-block" /></div>
+                                ) : graphData && graphData.nodes?.length > 0 ? (
+                                    <KnowledgeGraph data={graphData} height={540} />
+                                ) : (
+                                    <div className="text-center py-16 text-gray-400 dark:text-slate-500 text-sm">Belum ada data pengetahuan untuk ditampilkan.</div>
                                 )}
                             </div>
                         )}

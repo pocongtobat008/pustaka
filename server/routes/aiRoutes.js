@@ -6,6 +6,7 @@ import { getWarmLogs, getLatestWarmLog, getWarmConfig, updateWarmConfig } from '
 import { addCacheWarmJob } from '../queue.js';
 import { getProactiveInsights } from '../services/insightsEngine.js';
 import { getMemoryStats } from '../services/conversationMemory.js';
+import { buildKnowledgeGraph } from '../services/knowledgeGraph.js';
 import { checkAuth } from '../middleware/auth.js';
 import { knex } from '../db.js';
 
@@ -157,6 +158,17 @@ router.get('/ai/memory/stats', checkAuth, async (req, res) => {
     try {
         const stats = await getMemoryStats();
         res.json(stats);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// --- Knowledge Graph (brain view) ---
+router.get('/ai/graph', checkAuth, async (req, res) => {
+    try {
+        const includeChunks = req.query.chunks !== 'false';
+        const graph = await buildKnowledgeGraph({ includeChunks });
+        res.json(graph);
     } catch (e) {
         res.status(500).json({ error: e.message });
     }
