@@ -37,6 +37,7 @@ import legacyRoutes from './routes/legacyRoutes.js';
 import settingsRoutes from './routes/settingsRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
 import coaRoutes from './routes/coaRoutes.js';
+import { getHealthStatus } from './services/healthCheck.js';
 
 import { checkAuth } from './middleware/auth.js';
 import { UPLOADS_DIR, upload } from './config/upload.js';
@@ -186,6 +187,18 @@ app.use(morgan('dev', {
 
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
+// ── Public health-check endpoint (no auth — for monitoring/uptime tools) ──
+// Registered BEFORE all other /api routers so it is never shadowed.
+app.get('/api/health', async (req, res) => {
+    try {
+        const status = await getHealthStatus();
+        const httpCode = status.status === 'ok' ? 200 : status.status === 'degraded' ? 200 : 503;
+        res.status(httpCode).json(status);
+    } catch (e) {
+        res.status(503).json({ status: 'critical', error: e.message, timestamp: new Date().toISOString() });
+    }
+});
 
 // Database Check
 // --- ROUTES ---

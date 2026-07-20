@@ -357,6 +357,9 @@ function formatRowsCompact(rows, maxRows = TOOL_RESULT_ROWS) {
     return lines.join('\n');
 }
 
+// ── Module-level reference to the embedding function (set per runAgent call) ──
+let embedFnRef = null;
+
 // ── Tool execution ──
 function resolveLimit(args, defaultVal = TOOL_RESULT_ROWS) {
     const n = parseInt(args.limit, 10);
@@ -722,7 +725,7 @@ async function executeTool(name, args = {}) {
             // ── Training Documents ──
             case 'search_training_docs': {
                 const { searchTrainingDocs } = await import('./trainingDocs.js');
-                const results = await searchTrainingDocs(q, embedFn, { limit: 5, category: args.category || null });
+                const results = await searchTrainingDocs(q, embedFnRef, { limit: 5, category: args.category || null });
                 return {
                     count: results.length,
                     docs: results.map(r => ({
@@ -819,30 +822,59 @@ export async function callLLM(messages, tools, settings) {
     if (contentType.includes('text/event-stream')) {
         const raw = await res.text();
         const lines = raw.split('\n');
-        let lastJSON = '';
+        // Accumulate content and tool_calls from streaming deltas
+        let accContent = '';
+        const accToolCalls = {};  // index → { id, type, function: { name, arguments } }
+        let finishReason = null;
+        let model = null;
         for (const line of lines) {
             if (line.startsWith('data: ') && line !== 'data: [DONE]') {
                 try {
                     const obj = JSON.parse(line.slice(6));
-                    if (obj.choices?.[0]?.message) {
-                        lastJSON = obj;
-                    } else if (obj.choices?.[0]?.delta?.content) {
-                        lastJSON = lastJSON || obj;
+                    if (obj.model) model = obj.model;
+                    const choice = obj.choices?.[0];
+                    if (!choice) continue;
+                    if (choice.finish_reason) finishReason = choice.finish_reason;
+                    // Non-streaming: full message object
+                    if (choice.message) {
+                        accContent = choice.message.content || accContent;
+                        if (choice.message.tool_calls) {
+                            for (const tc of choice.message.tool_calls) {
+                                accToolCalls[tc.index ?? 0] = tc;
+                            }
+                        }
+                    }
+                    // Streaming: delta object
+                    if (choice.delta) {
+                        if (choice.delta.content) accContent += choice.delta.content;
+                        if (choice.delta.reasoning_content) accContent += choice.delta.reasoning_content;
+                        if (choice.delta.tool_calls) {
+                            for (const tc of choice.delta.tool_calls) {
+                                const idx = tc.index ?? 0;
+                                if (!accToolCalls[idx]) {
+                                    accToolCalls[idx] = { id: tc.id, type: 'function', function: { name: '', arguments: '' } };
+                                }
+                                if (tc.id) accToolCalls[idx].id = tc.id;
+                                if (tc.function?.name) accToolCalls[idx].function.name += tc.function.name;
+                                if (tc.function?.arguments) accToolCalls[idx].function.arguments += tc.function.arguments;
+                            }
+                        }
                     }
                 } catch {}
             }
         }
-        data = lastJSON ? JSON.parse(typeof lastJSON === 'string' ? lastJSON : JSON.stringify(lastJSON)) : null;
-        if (data && data.choices && data.choices[0]) {
-            const choice = data.choices[0];
-            if (choice.delta && !choice.message) {
-                choice.message = {
+        const toolCallsArr = Object.values(accToolCalls).filter(tc => tc.function?.name);
+        data = {
+            choices: [{
+                message: {
                     role: 'assistant',
-                    content: choice.delta.content || choice.delta.reasoning_content || '',
-                    tool_calls: choice.delta.tool_calls || undefined,
-                };
-            }
-        }
+                    content: accContent || null,
+                    tool_calls: toolCallsArr.length > 0 ? toolCallsArr : undefined,
+                },
+                finish_reason: finishReason,
+            }],
+            model,
+        };
     } else {
         data = await res.json();
     }
@@ -974,6 +1006,7 @@ function generateSuggestions(toolCallsLog, intent, message) {
 
 // ── Main agent loop ──
 export async function runAgent(message, history = [], embedFn = null, sessionId = null) {
+    embedFnRef = embedFn;
     const settings = await getAiSettings();
     if (!settings.enabled || !settings.api_key || !settings.base_url) {
         throw new Error('AI Agent belum dikonfigurasi. Atur Base URL & API Key di Master Data (Admin).');

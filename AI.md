@@ -2149,8 +2149,72 @@ server/migrations/
 │  │  Stats cards: Snapshots, Applied, Pending, Docs Scanned.   │ │
 │  │  "Run Evolution Scan" button.                              │ │
 │  │  History table (paginated): status, docs scanned/updated,  │ │
-│  │  corrections applied, pruned, new topics, date.            │ │
-│  └────────────────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────────┘
+ │  │  corrections applied, pruned, new topics, date.            │ │
+ │  └────────────────────────────────────────────────────────────┘ │
+ └──────────────────────────────────────────────────────────────────┘
+ ```
+
+## 20. DEPLOYMENT & OPERATIONS
+
+### 20.1 PM2 Process Management (Ecosystem)
+All processes are managed by a single PM2 instance via `ecosystem.config.cjs`:
 ```
+archive-backend        → server/index.js          (port 5005, API)
+archive-worker-bullmq → server/worker.js --mode=bullmq
+archive-worker-polling→ server/worker.js --mode=polling
+archive-frontend      → node_modules/.bin/vite --host 0.0.0.0 --port 5174
+```
+- **Start:** `pm2 start ecosystem.config.cjs`
+- **Save (survive reboot):** `pm2 save`
+- **Restart all:** `pm2 restart ecosystem.config.cjs`
+- **Status:** `pm2 list`
+
+> CATATAN: Hanya gunakan SATU instance PM2. Jangan jalankan `npm run dev`
+> (concurrently) berbarengan — itu akan spawn worker terpisah yang tidak
+> terkelola dan menimbun proses orphaned (terjadi saat dev, worker pakai
+> kode lama 3 hari tanpa restart).
+
+### 20.2 Health-Check Endpoint
+Endpoint publik (TANPA auth) untuk uptime monitoring:
+```
+GET /api/health
+```
+Mengembalikan status 4 dependensi kritis + latency (ms):
+- `db`        — PostgreSQL (`SELECT 1`)
+- `redis`     — BullMQ queue (`PING`)
+- `embedding` — API embedding (`/embeddings`, model `we/text-embedding-v3`)
+- `llm`       — API LLM (`/models`)
+
+HTTP code: `200` (ok/degraded), `503` (critical). Contoh response:
+```json
+{
+  "status": "ok",
+  "timestamp": "2026-07-20T01:24:51.542Z",
+  "uptimeSeconds": 5,
+  "dependencies": {
+    "db":       { "status": "ok", "latencyMs": 4 },
+    "redis":    { "status": "ok", "latencyMs": 4 },
+    "embedding":{ "status": "ok", "latencyMs": 348 },
+    "llm":      { "status": "ok", "latencyMs": 606 }
+  }
+}
+```
+Status per-dependensi: `ok` | `degraded` (HTTP error/timeout) |
+`down` (gagal) | `not_configured` (belum diatur di `ai_settings`).
+Overall: `ok` (db+redis sehat), `degraded` (ada yg down/degraded),
+`critical` (db atau redis mati).
+
+Source: `server/services/healthCheck.js` (`getHealthStatus`), mounted di
+`server/index.js` SEBELUM router `/api` lainnya agar tidak ter-shadow.
+
+> PENTING: Route `/api/health` HARUS didaftarkan paling awal (sebelum
+> `app.use('/api', ...)`). Jika didaftarkan setelah router, request akan
+> ter-intersep middleware auth dan balas 401.
+
+### 20.3 Known Operational Gaps (belum ditangani)
+- `MAX_ITERATIONS = 4` cukup ketat untuk tool chaining panjang.
+- Tidak ada alert otomatis jika embedding/LLM API mati > X menit
+  (health endpoint ada, tapi belum ada monitor yang memanggilnya).
+- API key LLM/embedding disimpan di `ai_settings` (DB), bukan secret manager.
+
 

@@ -21,6 +21,13 @@ module.exports = {
       watch: false,
       env: { IS_WORKER: "true", NODE_ENV: "production", NODE_TLS_REJECT_UNAUTHORIZED: "0" },
       node_args: "--max-old-space-size=2048"
+    },
+    {
+      name: "archive-frontend",
+      script: "node_modules/.bin/vite",
+      args: "--host 0.0.0.0 --port 5174",
+      watch: false,
+      env: { NODE_ENV: "production", NODE_TLS_REJECT_UNAUTHORIZED: "0" }
     }
   ]
 };
