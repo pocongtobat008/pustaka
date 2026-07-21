@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Plus, Edit3, Trash2, Building2, GitCommit, ShieldCheck, ChevronRight, ChevronLeft, Users, User, Shield, History, Search, Clock, ChevronDown, ChevronUp, AlertCircle, FileText, Activity, Bot, Save, Loader2, Zap, Upload, Link, Eye, RefreshCw, X, Info, Brain } from 'lucide-react';
+import { Plus, Edit3, Trash2, Building2, GitCommit, ShieldCheck, ChevronRight, ChevronLeft, Users, User, Shield, History, Search, Clock, ChevronDown, ChevronUp, AlertCircle, FileText, Activity, Bot, Save, Loader2, Zap, Upload, Download, Link, Eye, RefreshCw, X, Info, Brain } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import KnowledgeGraph from '../components/KnowledgeGraph.jsx';
 import { apiClient, API_URL } from '../services/apiClient.js';
@@ -220,6 +220,58 @@ export default function MasterData({
         };
     const [masterTab, setMasterTab] = useState('users');
     const [userSearchQuery, setUserSearchQuery] = useState('');
+
+    // --- User Import from Excel ---
+    const [importLoading, setImportLoading] = useState(false);
+    const [importMsg, setImportMsg] = useState(null);
+    const [importResult, setImportResult] = useState(null);
+    const fileInputRef = React.useRef(null);
+
+    const handleDownloadTemplate = async () => {
+        try {
+            const res = await fetch(`${API_URL}/users/template`, { credentials: 'include' });
+            if (!res.ok) throw new Error('Gagal download template');
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'template_import_users.xlsx';
+            a.click();
+            URL.revokeObjectURL(url);
+        } catch (e) {
+            setImportMsg({ type: 'error', text: e.message });
+        }
+    };
+
+    const handleImportUsers = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setImportLoading(true);
+        setImportMsg(null);
+        setImportResult(null);
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            const res = await fetch(`${API_URL}/users/import`, {
+                method: 'POST',
+                credentials: 'include',
+                body: formData,
+            });
+            const data = await res.json();
+            if (!res.ok && !data.created) throw new Error(data.error || 'Gagal import');
+            setImportResult(data);
+            setImportMsg({
+                type: data.errors?.length > 0 ? 'warning' : 'success',
+                text: `Import selesai: ${data.created} user dibuat, ${data.skipped} dilewati dari ${data.totalRows} baris.`,
+            });
+            // Socket event 'data:changed: users' emitted by backend auto-refreshes the list.
+        } catch (e) {
+            setImportMsg({ type: 'error', text: `Gagal import: ${e.message}` });
+        } finally {
+            setImportLoading(false);
+            if (fileInputRef.current) fileInputRef.current.value = '';
+        }
+    };
     const [logSearchQuery, setLogSearchQuery] = useState('');
     const [expandedDepts, setExpandedDepts] = useState({});
     const [expandedLogId, setExpandedLogId] = useState(null);
@@ -791,15 +843,53 @@ export default function MasterData({
                                 value={userSearchQuery} onChange={(e) => setUserSearchQuery(e.target.value)}
                             />
                             {hasPermission('master', 'create') && (
-                                <button
-                                    onClick={handleCreateUser}
-                                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-indigo-700 transition-colors"
-                                >
-                                    <Plus size={16} /> {text.newUser}
-                                </button>
+                                <>
+                                    <button
+                                        onClick={handleDownloadTemplate}
+                                        className="px-3 py-2 bg-emerald-600 text-white rounded-lg text-sm flex items-center gap-1.5 hover:bg-emerald-700 transition-colors"
+                                        title="Download template Excel untuk import users"
+                                    >
+                                        <Download size={15} /> Template
+                                    </button>
+                                    <button
+                                        onClick={() => fileInputRef.current?.click()}
+                                        disabled={importLoading}
+                                        className="px-3 py-2 bg-amber-600 text-white rounded-lg text-sm flex items-center gap-1.5 hover:bg-amber-700 transition-colors disabled:opacity-50"
+                                        title="Import users dari file Excel"
+                                    >
+                                        {importLoading ? <Loader2 size={15} className="animate-spin" /> : <Upload size={15} />} Import
+                                    </button>
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        accept=".xlsx,.xls,.csv"
+                                        className="hidden"
+                                        onChange={handleImportUsers}
+                                    />
+                                    <button
+                                        onClick={handleCreateUser}
+                                        className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-indigo-700 transition-colors"
+                                    >
+                                        <Plus size={16} /> {text.newUser}
+                                    </button>
+                                </>
                             )}
                         </div>
                     </div>
+
+                    {/* Import message */}
+                    {importMsg && (
+                        <div className={`mb-4 text-xs px-4 py-2.5 rounded-lg ${importMsg.type === 'success' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800' : importMsg.type === 'warning' ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800' : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800'}`}>
+                            {importMsg.text}
+                            {importResult?.errors?.length > 0 && (
+                                <div className="mt-2 space-y-0.5">
+                                    {importResult.errors.map((e, i) => (
+                                        <div key={i} className="text-[11px] opacity-80">Row {e.row}: {e.error}</div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
                     <div className="space-y-4">
                         {Object.keys(groupedUsers).length === 0 ? (
                             <div className="text-center py-10 text-slate-400 italic">{text.userNotFound}</div>
