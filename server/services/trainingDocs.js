@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
 import os from 'os';
+import { sanitizeApiKey } from './aiAgent.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const UPLOAD_DIR = path.join(__dirname, '../../server/uploads/training');
@@ -163,7 +164,7 @@ ${content.slice(0, 500)}`;
         const url = settings.base_url.replace(/\/+$/, '') + '/chat/completions';
         const res = await fetch(url, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${settings.api_key}` },
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${sanitizeApiKey(settings.api_key)}` },
             body: JSON.stringify({
                 model: settings.model || 'gpt-3.5-turbo',
                 messages: [{ role: 'user', content: prompt }],

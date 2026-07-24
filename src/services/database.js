@@ -993,6 +993,63 @@ export const db = {
         } catch (e) { console.error(e); }
     },
 
+    async getEntertainmentExpenses() {
+        try {
+            const response = await fetch(`${API_URL}/entertainment-expenses`, {
+                credentials: 'include'
+            });
+            if (!response.ok) return [];
+            const data = await response.json();
+            return Array.isArray(data) ? data : [];
+        } catch { return []; }
+    },
+
+    async createEntertainmentExpense(formData) {
+        try {
+            const response = await fetch(`${API_URL}/entertainment-expenses`, {
+                method: 'POST',
+                credentials: 'include',
+                body: formData
+            });
+            if (!response.ok) throw new Error('Gagal menyimpan');
+            return await response.json();
+        } catch (e) { console.error(e); throw e; }
+    },
+
+    async updateEntertainmentExpense(id, formData) {
+        try {
+            const response = await fetch(`${API_URL}/entertainment-expenses/${id}`, {
+                method: 'PUT',
+                credentials: 'include',
+                body: formData
+            });
+            if (!response.ok) throw new Error('Gagal memperbarui');
+            return await response.json();
+        } catch (e) { console.error(e); throw e; }
+    },
+
+    async deleteEntertainmentExpense(id) {
+        try {
+            const response = await fetch(`${API_URL}/entertainment-expenses/${id}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+            if (!response.ok) throw new Error('Gagal menghapus');
+            return await response.json();
+        } catch (e) { console.error(e); throw e; }
+    },
+
+    async deleteEntertainmentExpenseAttachment(id, index) {
+        try {
+            const response = await fetch(`${API_URL}/entertainment-expenses/${id}/attachments/${index}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+            if (!response.ok) throw new Error('Gagal menghapus lampiran');
+            return await response.json();
+        } catch (e) { console.error(e); throw e; }
+    },
+
     // --- APPROVAL FLOWS (MASTER) ---
     async getApprovalFlows() {
         try {

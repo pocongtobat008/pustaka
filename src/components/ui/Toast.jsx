@@ -118,7 +118,7 @@ const TOAST_CONFIG = {
 // ─── Toast Container Component ─────────────────────────────
 export function ToastContainer({ toasts, onRemove }) {
     return (
-        <div className="fixed bottom-6 right-6 z-[40] flex flex-col gap-3 pointer-events-none max-w-sm w-full">
+        <div className="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none max-w-sm w-full sm:w-auto">
             <AnimatePresence mode="popLayout">
                 {toasts.map((toast) => {
                     const config = TOAST_CONFIG[toast.type] || TOAST_CONFIG.info;
@@ -129,9 +129,9 @@ export function ToastContainer({ toasts, onRemove }) {
                         <motion.div
                             key={toast.id}
                             layout
-                            initial={{ opacity: 0, y: 40, scale: 0.9 }}
+                            initial={{ opacity: 0, y: -16, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, x: 80, scale: 0.9 }}
+                            exit={{ opacity: 0, x: 60, scale: 0.95 }}
                             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
                             className={`
                 pointer-events-auto

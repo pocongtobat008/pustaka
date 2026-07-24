@@ -1292,7 +1292,21 @@ export default function MasterData({
                                 <input
                                     type="password" placeholder={aiSettings.hasApiKey ? `${text.apiKeyPh} (${aiSettings.apiKeyMasked})` : text.apiKeyPh}
                                     className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
-                                    value={aiForm.api_key} onChange={(e) => setAiForm({ ...aiForm, api_key: e.target.value })}
+                                    value={aiForm.api_key}
+                                    onChange={(e) => {
+                                        // Sanitize: remove non-ASCII characters (smart quotes, ellipsis, etc.)
+                                        const sanitized = e.target.value.replace(/[^\x00-\x7F]/g, '');
+                                        setAiForm({ ...aiForm, api_key: sanitized });
+                                    }}
+                                    onPaste={(e) => {
+                                        // Sanitize pasted content
+                                        const pasted = e.clipboardData.getData('text');
+                                        const sanitized = pasted.replace(/[^\x00-\x7F]/g, '');
+                                        if (sanitized !== pasted) {
+                                            e.preventDefault();
+                                            setAiForm({ ...aiForm, api_key: sanitized });
+                                        }
+                                    }}
                                 />
                             </div>
                             <div>

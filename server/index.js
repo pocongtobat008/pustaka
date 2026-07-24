@@ -37,6 +37,7 @@ import legacyRoutes from './routes/legacyRoutes.js';
 import settingsRoutes from './routes/settingsRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
 import coaRoutes from './routes/coaRoutes.js';
+import entertainmentRoutes from './routes/entertainmentRoutes.js';
 import { getHealthStatus } from './services/healthCheck.js';
 
 import { checkAuth } from './middleware/auth.js';
@@ -421,6 +422,201 @@ app.delete('/api/approvals/:id', checkAuth, async (req, res) => {
     }
 });
 
+// --- ENTERTAINMENT EXPENSES ROUTES ---
+const parseJsonField = (val) => {
+    if (Array.isArray(val)) return val;
+    if (typeof val === 'string') {
+        try { return JSON.parse(val); } catch { return val; }
+    }
+    return val || [];
+};
+
+app.get('/api/entertainment-expenses', checkAuth, async (req, res) => {
+    try {
+        let query = knex('entertainment_expenses');
+        const isAdmin = isAdminUser(req);
+        const username = req.user?.username;
+        const userDept = req.user?.department;
+
+        if (!isAdmin) {
+            query = query.where(function() {
+                this.where('privacy_type', 'public')
+                    .orWhere('requester_username', username)
+                    .orWhere(function() {
+                        this.where('privacy_type', 'department')
+                            .andWhere('allowed_departments', 'like', `%${userDept}%`);
+                    })
+                    .orWhere(function() {
+                        this.where('privacy_type', 'specific_users')
+                            .andWhere('allowed_users', 'like', `%${username}%`);
+                    });
+            });
+        }
+
+        const rows = await query.orderBy('created_at', 'desc');
+        const results = rows.map(r => ({
+            ...r,
+            relasi: parseJsonField(r.relasi),
+            attachments: parseJsonField(r.attachments),
+            allowed_departments: parseJsonField(r.allowed_departments),
+            allowed_users: parseJsonField(r.allowed_users),
+            nilai: parseFloat(r.nilai || 0)
+        }));
+        res.json(results);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.post('/api/entertainment-expenses', checkAuth, upload.array('files', 10), async (req, res) => {
+    try {
+        const files = req.files || [];
+        const body = req.body;
+        const relasi = parseJsonField(body.relasi);
+        const jumlahRelasi = Array.isArray(relasi) ? relasi.length : 0;
+
+        const attachments = files.map(f => ({
+            filename: f.filename,
+            originalname: f.originalname,
+            mimetype: f.mimetype,
+            size: f.size,
+            url: `/uploads/${f.filename}`,
+            preview_url: f.mimetype.startsWith('image/') ? `/uploads/${f.filename}` : null
+        }));
+
+        const allowedDepts = parseJsonField(body.allowed_departments);
+        const allowedUsers = parseJsonField(body.allowed_users);
+
+        const [dbRes] = await knex('entertainment_expenses').insert({
+            tanggal: body.tanggal || new Date().toISOString().split('T')[0],
+            tempat: body.tempat,
+            alamat: body.alamat,
+            jenis: body.jenis,
+            custom_jenis: body.jenis === 'Custom' ? body.custom_jenis : null,
+            nilai: parseFloat(body.nilai || 0),
+            no_gl: body.no_gl,
+            relasi: JSON.stringify(relasi),
+            jumlah_relasi: jumlahRelasi,
+            catatan_kode: body.catatan_kode,
+            attachments: JSON.stringify(attachments),
+            privacy_type: body.privacy_type || 'public',
+            allowed_departments: JSON.stringify(Array.isArray(allowedDepts) ? allowedDepts : []),
+            allowed_users: JSON.stringify(Array.isArray(allowedUsers) ? allowedUsers : []),
+            owner: req.user?.username,
+            requester_name: req.user?.name,
+            requester_username: req.user?.username,
+            status: 'active',
+            created_at: new Date(),
+            updated_at: new Date()
+        }).returning('id');
+
+        const id = typeof dbRes === 'object' ? dbRes.id : dbRes;
+        io.emit('data:changed', { channel: 'entertainment-expenses' });
+        res.json({ id, message: 'Pengeluaran berhasil disimpan' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.put('/api/entertainment-expenses/:id', checkAuth, upload.array('files', 10), async (req, res) => {
+    try {
+        const { id } = req.params;
+        const existing = await knex('entertainment_expenses').where({ id }).first();
+        if (!existing) return res.status(404).json({ error: 'Data tidak ditemukan' });
+
+        const isAdmin = isAdminUser(req);
+        if (!isAdmin && existing.requester_username !== req.user?.username) {
+            return res.status(403).json({ error: 'Anda tidak memiliki akses untuk mengedit data ini' });
+        }
+
+        const files = req.files || [];
+        const body = req.body;
+        const relasi = parseJsonField(body.relasi);
+        const jumlahRelasi = Array.isArray(relasi) ? relasi.length : 0;
+
+        let attachments = parseJsonField(existing.attachments || '[]');
+        const newFiles = files.map(f => ({
+            filename: f.filename,
+            originalname: f.originalname,
+            mimetype: f.mimetype,
+            size: f.size,
+            url: `/uploads/${f.filename}`,
+            preview_url: f.mimetype.startsWith('image/') ? `/uploads/${f.filename}` : null
+        }));
+        attachments = [...attachments, ...newFiles];
+
+        const allowedDepts = parseJsonField(body.allowed_departments);
+        const allowedUsers = parseJsonField(body.allowed_users);
+
+        await knex('entertainment_expenses').where({ id }).update({
+            tanggal: body.tanggal || existing.tanggal,
+            tempat: body.tempat || existing.tempat,
+            alamat: body.alamat || existing.alamat,
+            jenis: body.jenis || existing.jenis,
+            custom_jenis: (body.jenis || existing.jenis) === 'Custom' ? (body.custom_jenis || existing.custom_jenis) : null,
+            nilai: body.nilai !== undefined ? parseFloat(body.nilai) : existing.nilai,
+            no_gl: body.no_gl || existing.no_gl,
+            relasi: JSON.stringify(relasi),
+            jumlah_relasi: jumlahRelasi,
+            catatan_kode: body.catatan_kode || existing.catatan_kode,
+            attachments: JSON.stringify(attachments),
+            privacy_type: body.privacy_type || existing.privacy_type,
+            allowed_departments: JSON.stringify(Array.isArray(allowedDepts) ? allowedDepts : parseJsonField(existing.allowed_departments)),
+            allowed_users: JSON.stringify(Array.isArray(allowedUsers) ? allowedUsers : parseJsonField(existing.allowed_users)),
+            updated_at: new Date()
+        });
+
+        io.emit('data:changed', { channel: 'entertainment-expenses' });
+        res.json({ message: 'Data berhasil diperbarui' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.delete('/api/entertainment-expenses/:id', checkAuth, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const existing = await knex('entertainment_expenses').where({ id }).first();
+        if (!existing) return res.status(404).json({ error: 'Data tidak ditemukan' });
+        if (!isAdminUser(req) && existing.requester_username !== req.user?.username) {
+            return res.status(403).json({ error: 'Akses ditolak' });
+        }
+        await knex('entertainment_expenses').where({ id }).delete();
+        io.emit('data:changed', { channel: 'entertainment-expenses' });
+        res.json({ message: 'Data berhasil dihapus' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.delete('/api/entertainment-expenses/:id/attachments/:index', checkAuth, async (req, res) => {
+    try {
+        const { id, index } = req.params;
+        const existing = await knex('entertainment_expenses').where({ id }).first();
+        if (!existing) return res.status(404).json({ error: 'Data tidak ditemukan' });
+
+        const isAdmin = isAdminUser(req);
+        if (!isAdmin && existing.requester_username !== req.user?.username) {
+            return res.status(403).json({ error: 'Akses ditolak' });
+        }
+
+        let attachments = parseJsonField(existing.attachments || '[]');
+        const idx = parseInt(index, 10);
+        if (isNaN(idx) || idx < 0 || idx >= attachments.length) {
+            return res.status(400).json({ error: 'Index lampiran tidak valid' });
+        }
+        attachments.splice(idx, 1);
+        await knex('entertainment_expenses').where({ id }).update({
+            attachments: JSON.stringify(attachments),
+            updated_at: new Date()
+        });
+        io.emit('data:changed', { channel: 'entertainment-expenses' });
+        res.json({ message: 'Lampiran berhasil dihapus' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // --- JOB MONITORING ROUTES ---
 app.get('/api/jobs', checkAuth, async (req, res) => {
     try {
@@ -696,6 +892,7 @@ app.use('/api/search', searchRoutes);
 app.use('/api/ocr', ocrRoutes);
 app.use('/api/pustaka', pustakaRoutes);
 app.use('/api/coa', coaRoutes);
+app.use('/api/entertainment', entertainmentRoutes);
 
 // --- SOP FLOWS (STANDARDIZATION) ROUTES ---
 app.get('/api/sop-flows', checkAuth, async (req, res) => {

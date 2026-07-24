@@ -102,12 +102,12 @@ const TaxSummary = lazy(() => import('./pages/TaxSummary'));
 const TaxCalculation = lazy(() => import('./pages/TaxCalculation'));
 const MasterData = lazy(() => import('./pages/MasterData'));
 const Profile = lazy(() => import('./pages/Profile'));
-const DocumentApproval = lazy(() => import('./pages/DocumentApproval'));
 const Pustaka = lazy(() => import('./pages/Pustaka'));
 const SystemLogs = lazy(() => import('./pages/SystemLogs'));
 const SopFlow = lazy(() => import('./pages/SopFlow'));
 const JobDueDate = lazy(() => import('./pages/JobDueDate'));
 const Book = lazy(() => import('./pages/Book'));
+const EntertainmentExpenses = lazy(() => import('./pages/EntertainmentExpenses'));
 const PdfViewer = lazy(() => import('./components/ui/PdfViewer'));
 import LoadingFallback from './components/common/LoadingFallback';
 import { useToast, ToastContainer } from './components/ui/Toast';
@@ -156,6 +156,7 @@ export default function App() {
         flow: { title: 'SOP List Menu', subtitle: 'Standard Operating Procedure' },
         'job-due-date': { title: 'Job Due Date Monitoring', subtitle: 'Task Deadline & Issue Monitoring' },
         book: { title: 'Book / Daftar COA', subtitle: 'Chart of Accounts' },
+        entertainment: { title: 'Entertainment Expenses', subtitle: 'Expense Reporting & Management' },
       };
     }
 
@@ -172,6 +173,7 @@ export default function App() {
       flow: { title: 'SOP List Menu', subtitle: 'Standar Operasional Prosedur' },
       'job-due-date': { title: 'Job Due Date Monitoring', subtitle: 'Pemantauan Tenggat Waktu & Issue Kerja' },
       book: { title: 'Book / Daftar COA', subtitle: 'Daftar Akun Pembukuan (Chart of Accounts)' },
+      entertainment: { title: 'Entertainment Expenses', subtitle: 'Pelaporan & Manajemen Biaya Entertainment' },
     };
   }, [language]);
 
@@ -197,6 +199,7 @@ export default function App() {
           'tax-summary': { label: 'Tax Summary', description: 'Tax compliance summary' },
           master: { label: 'Master Data', description: 'Users, roles, and reference data settings' },
           profile: { label: 'Profile', description: 'User profile' },
+          entertainment: { label: 'Entertainment Expenses', description: 'Expense reporting and management' },
         },
         actions: {
           upload: { label: 'Upload Document', description: 'Open upload document modal' },
@@ -232,6 +235,7 @@ export default function App() {
         'tax-summary': { label: 'Tax Summary', description: 'Ringkasan kepatuhan pajak' },
         master: { label: 'Master Data', description: 'Pengaturan user, role, dan data referensi' },
         profile: { label: 'Profile', description: 'Profil pengguna' },
+        entertainment: { label: 'Entertainment Expenses', description: 'Pelaporan dan manajemen biaya entertainment' },
       },
       actions: {
         upload: { label: 'Upload Dokumen', description: 'Buka modal upload dokumen' },
@@ -3517,7 +3521,7 @@ export default function App() {
       { id: 'flow', tab: 'flow', label: commandTextMap.items.flow.label, description: commandTextMap.items.flow.description, group: commandTextMap.groups.general, icon: FileCheck, keywords: 'sop workflow' },
       { id: 'inventory', tab: 'inventory', label: commandTextMap.items.inventory.label, description: commandTextMap.items.inventory.description, group: commandTextMap.groups.documents, icon: Grid3x3, keywords: 'rak box warehouse' },
       { id: 'documents', tab: 'documents', label: commandTextMap.items.documents.label, description: commandTextMap.items.documents.description, group: commandTextMap.groups.documents, icon: FileStack, keywords: 'files upload folder' },
-      { id: 'approvals', tab: 'approvals', label: commandTextMap.items.approvals.label, description: commandTextMap.items.approvals.description, group: commandTextMap.groups.documents, icon: ShieldCheck, keywords: 'approval workflow review' },
+      { id: 'approvals', tab: 'entertainment', label: 'Entertainment', description: 'Entertainment expense reporting', group: commandTextMap.groups.documents, icon: ShieldCheck, keywords: 'approval entertainment expense klaim biaya' },
       { id: 'tax-monitoring', tab: 'tax-monitoring', label: commandTextMap.items['tax-monitoring'].label, description: commandTextMap.items['tax-monitoring'].description, group: commandTextMap.groups.tax, icon: Shield, keywords: 'audit pemeriksaan pajak' },
       { id: 'tax-calculation', tab: 'tax-calculation', label: commandTextMap.items['tax-calculation'].label, description: commandTextMap.items['tax-calculation'].description, group: commandTextMap.groups.tax, icon: Calculator, keywords: 'ppn pph hitung' },
       { id: 'tax-summary', tab: 'tax-summary', label: commandTextMap.items['tax-summary'].label, description: commandTextMap.items['tax-summary'].description, group: commandTextMap.groups.tax, icon: PieChart, keywords: 'summary compliance reporting' },
@@ -3794,18 +3798,7 @@ export default function App() {
                     syncAuditFolder={syncAuditFolder}
                   />
                 )}
-                {activeTab === 'approvals' && (
-                  <DocumentApproval
-                    approvals={approvals}
-                    users={users}
-                    departments={departments}
-                    currentUser={currentUser}
-                    onRefresh={fetchApprovals}
-                    hasPermission={hasPermission}
-                    flows={flows}
-                    syncApprovalFolder={syncApprovalFolder}
-                  />
-                )}
+
                 {activeTab === 'tax-summary' && (
                   <TaxSummary
                     taxSummaries={taxSummaries}
@@ -3895,6 +3888,13 @@ export default function App() {
                 {activeTab === 'book' && (
                   <Book
                     hasPermission={hasPermission}
+                  />
+                )}
+                {activeTab === 'entertainment' && (
+                  <EntertainmentExpenses
+                    currentUser={currentUser}
+                    hasPermission={hasPermission}
+                    toast={toast}
                   />
                 )}
               </Suspense>

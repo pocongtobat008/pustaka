@@ -1,6 +1,6 @@
 import { knex } from '../db.js';
 import { handleError } from '../utils/errorHandler.js';
-import { callLLM, maskKey, getAiModels } from '../services/aiAgent.js';
+import { callLLM, maskKey, getAiModels, sanitizeApiKey } from '../services/aiAgent.js';
 import { invalidateEmbeddingSettings } from '../ai_search.js';
 
 const isAdmin = (req) => String(req.user?.role || '').toLowerCase() === 'admin';
@@ -70,7 +70,7 @@ export const listAiModels = async (req, res) => {
         const qKey = req.query.api_key;
         if (qBase && qKey) {
             const url = String(qBase).trim().replace(/\/+$/, '') + '/models';
-            const r = await fetch(url, { headers: { Authorization: `Bearer ${String(qKey).trim()}` } });
+            const r = await fetch(url, { headers: { Authorization: `Bearer ${sanitizeApiKey(qKey)}` } });
             if (r.ok) {
                 const json = await r.json();
                 models = (json.data || []).map(m => m.id).filter(Boolean);
@@ -94,10 +94,10 @@ export const testAiSettings = async (req, res) => {
             return res.status(400).json({ success: false, error: 'Base URL wajib diisi untuk test.' });
         }
 
-        let resolvedKey = api_key && typeof api_key === 'string' ? api_key.trim() : '';
+        let resolvedKey = api_key && typeof api_key === 'string' ? sanitizeApiKey(api_key) : '';
         if (!resolvedKey) {
             const row = await knex('ai_settings').orderBy('id', 'asc').first();
-            if (row?.api_key) resolvedKey = row.api_key;
+            if (row?.api_key) resolvedKey = sanitizeApiKey(row.api_key);
         }
         if (!resolvedKey) {
             return res.status(400).json({ success: false, error: 'API Key wajib diisi untuk test.' });
@@ -114,7 +114,7 @@ export const testAiSettings = async (req, res) => {
         // 1) verify base_url + auth via /models
         try {
             const modelsRes = await fetch(`${settings.base_url}/models`, {
-                headers: { Authorization: `Bearer ${settings.api_key}` }
+                headers: { Authorization: `Bearer ${sanitizeApiKey(settings.api_key)}` }
             });
             if (modelsRes.ok) {
                 const json = await modelsRes.json().catch(() => ({}));

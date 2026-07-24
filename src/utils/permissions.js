@@ -44,5 +44,6 @@ export const APP_MODULES = {
     flow: { id: 'flow', label: 'SOP' },
     'job-due-date': { id: 'job-due-date', label: 'My Job' },
     'ai-chat': { id: 'ai-chat', label: 'AI Chat Assistant' },
+    'entertainment': { id: 'entertainment', label: 'Entertainment Expenses' },
     book: { id: 'book', label: 'Book (COA)' }
 };

@@ -72,7 +72,7 @@ export async function getAiModels() {
     if (!settings.base_url || !settings.api_key) return [];
     const url = (settings.base_url || '').replace(/\/+$/, '') + '/models';
     const res = await fetch(url, {
-        headers: { Authorization: `Bearer ${settings.api_key}` }
+        headers: { Authorization: `Bearer ${sanitizeApiKey(settings.api_key)}` }
     });
     if (!res.ok) throw new Error(`Models request failed (${res.status})`);
     const json = await res.json();
@@ -797,21 +797,28 @@ Format laporan:
 - Bila data kosong, sampaikan jujur dan sarankan langkah selanjutnya.`;
 
 // ── LLM call (SSE streaming) ──
+export function sanitizeApiKey(key) {
+  if (!key) return key;
+  // Remove non-ASCII characters (smart quotes, ellipsis, etc.) that break HTTP headers
+  return key.replace(/[^\x00-\x7F]/g, '').trim();
+}
+
 export async function callLLM(messages, tools, settings) {
-    const url = (settings.base_url || '').replace(/\/+$/, '') + '/chat/completions';
-    const body = {
-        model: settings.model || 'gpt-3.5-turbo',
-        messages,
-        tools,
-        temperature: 0.2,
-        max_tokens: 2000,
-        stream: false,
-    };
-    const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${settings.api_key}` },
-        body: JSON.stringify(body),
-    });
+  const url = (settings.base_url || '').replace(/\/+$/, '') + '/chat/completions';
+  const apiKey = sanitizeApiKey(settings.api_key);
+  const body = {
+    model: settings.model || 'gpt-3.5-turbo',
+    messages,
+    tools,
+    temperature: 0.2,
+    max_tokens: 2000,
+    stream: false,
+  };
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+    body: JSON.stringify(body),
+  });
     if (!res.ok) {
         const errText = await res.text().catch(() => '');
         throw new Error(`LLM API ${res.status}: ${errText.slice(0, 200)}`);

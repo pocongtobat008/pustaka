@@ -1,0 +1,518 @@
+DATABASE ROLES
+================
+                              List of roles
+  Role name  |                         Attributes                         
+-------------+------------------------------------------------------------
+ admin       | 
+ honcho_user | 
+ postgres    | Superuser, Create role, Create DB, Replication, Bypass RLS
+
+
+DATABASE STRUCTURE
+==================
+        table_name         |      column_name       |        data_type         | is_nullable |                    column_default                     
+---------------------------+------------------------+--------------------------+-------------+-------------------------------------------------------
+ ai_agent_cache            | id                     | integer                  | NO          | nextval('ai_agent_cache_id_seq'::regclass)
+ ai_agent_cache            | query_hash             | character varying        | NO          | 
+ ai_agent_cache            | query_text             | text                     | NO          | 
+ ai_agent_cache            | reply                  | text                     | NO          | 
+ ai_agent_cache            | tool_calls             | text                     | YES         | 
+ ai_agent_cache            | model                  | character varying        | YES         | 
+ ai_agent_cache            | hit_count              | integer                  | YES         | 0
+ ai_agent_cache            | last_hit_at            | timestamp with time zone | YES         | 
+ ai_agent_cache            | expires_at             | timestamp with time zone | NO          | 
+ ai_agent_cache            | created_at             | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ ai_agent_cache            | embedding              | USER-DEFINED             | YES         | 
+ ai_cache_warm_logs        | id                     | integer                  | NO          | nextval('ai_cache_warm_logs_id_seq'::regclass)
+ ai_cache_warm_logs        | status                 | character varying        | NO          | 'running'::character varying
+ ai_cache_warm_logs        | docs_embedded          | integer                  | YES         | 0
+ ai_cache_warm_logs        | invoices_embedded      | integer                  | YES         | 0
+ ai_cache_warm_logs        | coa_embedded           | integer                  | YES         | 0
+ ai_cache_warm_logs        | inventory_embedded     | integer                  | YES         | 0
+ ai_cache_warm_logs        | prewarmed_queries      | integer                  | YES         | 0
+ ai_cache_warm_logs        | prewarm_failed         | integer                  | YES         | 0
+ ai_cache_warm_logs        | stale_refreshed        | integer                  | YES         | 0
+ ai_cache_warm_logs        | index_rebuilt          | boolean                  | YES         | false
+ ai_cache_warm_logs        | cache_entries_before   | integer                  | YES         | 0
+ ai_cache_warm_logs        | cache_entries_after    | integer                  | YES         | 0
+ ai_cache_warm_logs        | duration_ms            | integer                  | YES         | 0
+ ai_cache_warm_logs        | error                  | text                     | YES         | 
+ ai_cache_warm_logs        | started_at             | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ ai_cache_warm_logs        | finished_at            | timestamp with time zone | YES         | 
+ ai_chat_messages          | id                     | integer                  | NO          | nextval('ai_chat_messages_id_seq'::regclass)
+ ai_chat_messages          | session_id             | integer                  | NO          | 
+ ai_chat_messages          | role                   | character varying        | NO          | 
+ ai_chat_messages          | content                | text                     | NO          | 
+ ai_chat_messages          | tool_calls             | json                     | YES         | 
+ ai_chat_messages          | from_cache             | boolean                  | YES         | false
+ ai_chat_messages          | cache_age              | character varying        | YES         | 
+ ai_chat_messages          | created_at             | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ ai_chat_sessions          | id                     | integer                  | NO          | nextval('ai_chat_sessions_id_seq'::regclass)
+ ai_chat_sessions          | user_id                | integer                  | YES         | 
+ ai_chat_sessions          | title                  | character varying        | YES         | 
+ ai_chat_sessions          | created_at             | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ ai_chat_sessions          | updated_at             | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ ai_conversation_summaries | id                     | integer                  | NO          | nextval('ai_conversation_summaries_id_seq'::regclass)
+ ai_conversation_summaries | session_id             | integer                  | YES         | 
+ ai_conversation_summaries | user_id                | integer                  | YES         | 
+ ai_conversation_summaries | summary                | text                     | NO          | 
+ ai_conversation_summaries | key_topics             | text                     | YES         | 
+ ai_conversation_summaries | message_count          | integer                  | YES         | 0
+ ai_conversation_summaries | created_at             | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ ai_conversation_summaries | embedding              | USER-DEFINED             | YES         | 
+ ai_data_snapshots         | id                     | integer                  | NO          | nextval('ai_data_snapshots_id_seq'::regclass)
+ ai_data_snapshots         | snapshot_type          | character varying        | NO          | 
+ ai_data_snapshots         | entity_id              | integer                  | YES         | 
+ ai_data_snapshots         | entity_title           | text                     | YES         | 
+ ai_data_snapshots         | before_data            | text                     | YES         | 
+ ai_data_snapshots         | after_data             | text                     | YES         | 
+ ai_data_snapshots         | change_reason          | character varying        | NO          | 
+ ai_data_snapshots         | evolution_processed    | boolean                  | NO          | false
+ ai_data_snapshots         | created_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ ai_data_snapshots         | updated_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ ai_evolution_logs         | id                     | integer                  | NO          | nextval('ai_evolution_logs_id_seq'::regclass)
+ ai_evolution_logs         | status                 | character varying        | NO          | 'running'::character varying
+ ai_evolution_logs         | summary                | text                     | YES         | 
+ ai_evolution_logs         | docs_scanned           | integer                  | NO          | 0
+ ai_evolution_logs         | docs_updated           | integer                  | NO          | 0
+ ai_evolution_logs         | corrections_applied    | integer                  | NO          | 0
+ ai_evolution_logs         | knowledge_pruned       | integer                  | NO          | 0
+ ai_evolution_logs         | new_topics_found       | integer                  | NO          | 0
+ ai_evolution_logs         | error_message          | text                     | YES         | 
+ ai_evolution_logs         | created_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ ai_evolution_logs         | updated_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ ai_learning_corrections   | id                     | integer                  | NO          | nextval('ai_learning_corrections_id_seq'::regclass)
+ ai_learning_corrections   | session_id             | integer                  | YES         | 
+ ai_learning_corrections   | message_id             | integer                  | YES         | 
+ ai_learning_corrections   | correction_type        | character varying        | NO          | 
+ ai_learning_corrections   | topic                  | character varying        | NO          | 
+ ai_learning_corrections   | category               | character varying        | NO          | 'general'::character varying
+ ai_learning_corrections   | original_question      | text                     | NO          | 
+ ai_learning_corrections   | wrong_answer           | text                     | NO          | 
+ ai_learning_corrections   | correct_answer         | text                     | NO          | 
+ ai_learning_corrections   | correction_note        | text                     | YES         | 
+ ai_learning_corrections   | applied                | boolean                  | NO          | false
+ ai_learning_corrections   | verified               | boolean                  | NO          | false
+ ai_learning_corrections   | learning_log_id        | integer                  | YES         | 
+ ai_learning_corrections   | training_doc_id        | integer                  | YES         | 
+ ai_learning_corrections   | severity               | real                     | NO          | '0.5'::real
+ ai_learning_corrections   | created_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ ai_learning_corrections   | updated_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ ai_learning_logs          | id                     | integer                  | NO          | nextval('ai_learning_logs_id_seq'::regclass)
+ ai_learning_logs          | session_id             | integer                  | YES         | 
+ ai_learning_logs          | message_id             | integer                  | YES         | 
+ ai_learning_logs          | category               | character varying        | NO          | 'general'::character varying
+ ai_learning_logs          | topic                  | character varying        | NO          | 
+ ai_learning_logs          | question_summary       | text                     | NO          | 
+ ai_learning_logs          | answer_summary         | text                     | NO          | 
+ ai_learning_logs          | knowledge_extracted    | text                     | NO          | 
+ ai_learning_logs          | source_type            | character varying        | NO          | 'chat'::character varying
+ ai_learning_logs          | used_in_training       | boolean                  | NO          | false
+ ai_learning_logs          | training_doc_id        | integer                  | YES         | 
+ ai_learning_logs          | confidence             | real                     | NO          | '0.5'::real
+ ai_learning_logs          | repeat_count           | integer                  | NO          | 1
+ ai_learning_logs          | created_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ ai_learning_logs          | updated_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ ai_learning_topic_summary | topic                  | character varying        | YES         | 
+ ai_learning_topic_summary | category               | character varying        | YES         | 
+ ai_learning_topic_summary | ask_count              | bigint                   | YES         | 
+ ai_learning_topic_summary | avg_confidence         | double precision         | YES         | 
+ ai_learning_topic_summary | last_asked             | timestamp with time zone | YES         | 
+ ai_learning_topic_summary | is_trained             | boolean                  | YES         | 
+ ai_settings               | id                     | integer                  | NO          | nextval('ai_settings_id_seq'::regclass)
+ ai_settings               | base_url               | character varying        | YES         | 
+ ai_settings               | api_key                | text                     | YES         | 
+ ai_settings               | model                  | character varying        | YES         | 
+ ai_settings               | enabled                | boolean                  | YES         | false
+ ai_settings               | created_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ ai_settings               | updated_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ ai_settings               | meta                   | text                     | YES         | 
+ ai_training_chunks        | id                     | integer                  | NO          | nextval('ai_training_chunks_id_seq'::regclass)
+ ai_training_chunks        | document_id            | integer                  | NO          | 
+ ai_training_chunks        | chunk_index            | integer                  | NO          | 0
+ ai_training_chunks        | content                | text                     | NO          | 
+ ai_training_chunks        | embedding              | USER-DEFINED             | YES         | 
+ ai_training_chunks        | token_count            | integer                  | YES         | 0
+ ai_training_chunks        | created_at             | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ ai_training_documents     | id                     | integer                  | NO          | nextval('ai_training_documents_id_seq'::regclass)
+ ai_training_documents     | title                  | character varying        | NO          | 
+ ai_training_documents     | filename               | character varying        | YES         | 
+ ai_training_documents     | file_type              | character varying        | YES         | 
+ ai_training_documents     | file_url               | text                     | YES         | 
+ ai_training_documents     | file_path              | text                     | YES         | 
+ ai_training_documents     | content                | text                     | YES         | 
+ ai_training_documents     | embedding              | USER-DEFINED             | YES         | 
+ ai_training_documents     | category               | character varying        | YES         | 'general'::character varying
+ ai_training_documents     | tags                   | text                     | YES         | 
+ ai_training_documents     | status                 | character varying        | YES         | 'processing'::character varying
+ ai_training_documents     | chunk_count            | integer                  | YES         | 0
+ ai_training_documents     | uploaded_by            | integer                  | YES         | 
+ ai_training_documents     | created_at             | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ ai_training_documents     | updated_at             | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ approval_flows            | id                     | integer                  | NO          | nextval('approval_flows_id_seq'::regclass)
+ approval_flows            | name                   | character varying        | NO          | 
+ approval_flows            | description            | text                     | YES         | 
+ approval_flows            | steps                  | json                     | YES         | 
+ approval_flows            | visual_config          | json                     | YES         | 
+ approval_flows            | owner                  | character varying        | YES         | 
+ approval_flows            | privacy                | character varying        | YES         | 'private'::character varying
+ approval_flows            | allowed_departments    | text                     | YES         | 
+ approval_flows            | allowed_users          | text                     | YES         | 
+ approval_steps            | id                     | integer                  | NO          | nextval('approval_steps_id_seq'::regclass)
+ approval_steps            | approval_id            | integer                  | YES         | 
+ approval_steps            | step_index             | integer                  | YES         | 
+ approval_steps            | approver_username      | text                     | YES         | 
+ approval_steps            | approver_name          | text                     | YES         | 
+ approval_steps            | status                 | character varying        | YES         | 'Pending'::character varying
+ approval_steps            | action_date            | timestamp with time zone | YES         | 
+ approval_steps            | note                   | text                     | YES         | 
+ approval_steps            | attachment_url         | text                     | YES         | 
+ approval_steps            | attachment_name        | text                     | YES         | 
+ approval_steps            | instruction            | text                     | YES         | 
+ approval_steps            | vector                 | text                     | YES         | 
+ approval_steps            | node_id                | character varying        | YES         | 
+ approval_steps            | flow_id                | integer                  | YES         | 
+ approval_steps            | order_index            | integer                  | YES         | 0
+ approval_steps            | step_name              | character varying        | YES         | 
+ approval_steps            | approver_role          | character varying        | YES         | 
+ approvals                 | id                     | integer                  | NO          | nextval('approvals_id_seq'::regclass)
+ approvals                 | title                  | character varying        | NO          | 
+ approvals                 | description            | text                     | YES         | 
+ approvals                 | division               | character varying        | YES         | 
+ approvals                 | requester_name         | character varying        | YES         | 
+ approvals                 | requester_username     | character varying        | YES         | 
+ approvals                 | attachment_url         | character varying        | YES         | 
+ approvals                 | attachment_name        | character varying        | YES         | 
+ approvals                 | ocr_content            | text                     | YES         | 
+ approvals                 | status                 | character varying        | YES         | 'Pending'::character varying
+ approvals                 | current_step_index     | integer                  | YES         | 0
+ approvals                 | flow_id                | integer                  | YES         | 
+ approvals                 | steps                  | json                     | YES         | 
+ approvals                 | created_at             | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ boxes                     | id                     | integer                  | NO          | nextval('boxes_id_seq'::regclass)
+ boxes                     | inventory_id           | integer                  | YES         | 
+ boxes                     | box_id                 | character varying        | YES         | 
+ boxes                     | created_at             | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ coa_accounts              | id                     | integer                  | NO          | nextval('coa_accounts_id_seq'::regclass)
+ coa_accounts              | code                   | character varying        | NO          | 
+ coa_accounts              | name                   | character varying        | NO          | 
+ coa_accounts              | description            | text                     | YES         | 
+ coa_accounts              | is_active              | boolean                  | YES         | true
+ coa_accounts              | created_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ coa_accounts              | updated_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ coa_departments           | id                     | integer                  | NO          | nextval('coa_departments_id_seq'::regclass)
+ coa_departments           | sub_account_id         | integer                  | YES         | 
+ coa_departments           | code                   | character varying        | NO          | 
+ coa_departments           | name                   | character varying        | NO          | 
+ coa_departments           | description            | text                     | YES         | 
+ coa_departments           | is_active              | boolean                  | YES         | true
+ coa_departments           | created_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ coa_departments           | updated_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ coa_sub_accounts          | id                     | integer                  | NO          | nextval('coa_sub_accounts_id_seq'::regclass)
+ coa_sub_accounts          | account_id             | integer                  | YES         | 
+ coa_sub_accounts          | code                   | character varying        | NO          | 
+ coa_sub_accounts          | name                   | character varying        | NO          | 
+ coa_sub_accounts          | description            | text                     | YES         | 
+ coa_sub_accounts          | is_active              | boolean                  | YES         | true
+ coa_sub_accounts          | created_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ coa_sub_accounts          | updated_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ comments                  | id                     | character varying        | NO          | 
+ comments                  | documentId             | character varying        | YES         | 
+ comments                  | user                   | character varying        | YES         | 
+ comments                  | text                   | text                     | YES         | 
+ comments                  | timestamp              | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ comments                  | attachment             | text                     | YES         | 
+ comments                  | attachment_name        | character varying        | YES         | 
+ comments                  | attachment_type        | character varying        | YES         | 
+ departments               | id                     | integer                  | NO          | nextval('departments_id_seq'::regclass)
+ departments               | name                   | character varying        | NO          | 
+ document_approvals        | id                     | integer                  | NO          | nextval('document_approvals_id_seq'::regclass)
+ document_approvals        | title                  | text                     | YES         | 
+ document_approvals        | description            | text                     | YES         | 
+ document_approvals        | division               | text                     | YES         | 
+ document_approvals        | requester_name         | text                     | YES         | 
+ document_approvals        | requester_username     | text                     | YES         | 
+ document_approvals        | attachment_url         | text                     | YES         | 
+ document_approvals        | attachment_name        | text                     | YES         | 
+ document_approvals        | status                 | character varying        | YES         | 'Pending'::character varying
+ document_approvals        | current_step_index     | integer                  | YES         | 0
+ document_approvals        | created_at             | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ document_approvals        | ocr_content            | text                     | YES         | 
+ document_approvals        | flow_id                | integer                  | YES         | 
+ document_approvals        | document_id            | character varying        | YES         | 
+ document_approvals        | current_step_id        | integer                  | YES         | 
+ document_approvals        | requester              | character varying        | YES         | 
+ document_approvals        | updated_at             | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ documents                 | id                     | character varying        | NO          | 
+ documents                 | title                  | character varying        | NO          | 
+ documents                 | type                   | character varying        | YES         | 
+ documents                 | size                   | character varying        | YES         | 
+ documents                 | uploadDate             | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ documents                 | folderId               | integer                  | YES         | 
+ documents                 | owner                  | character varying        | YES         | 
+ documents                 | ocrContent             | text                     | YES         | 
+ documents                 | url                    | character varying        | YES         | 
+ documents                 | file_data              | text                     | YES         | 
+ documents                 | version                | integer                  | YES         | 1
+ documents                 | versionsHistory        | json                     | YES         | 
+ documents                 | status                 | character varying        | YES         | 
+ documents                 | auditId                | character varying        | YES         | 
+ documents                 | stepIndex              | integer                  | YES         | 
+ documents                 | department             | character varying        | YES         | 
+ documents                 | vector                 | text                     | YES         | 
+ external_items            | id                     | integer                  | NO          | nextval('external_items_id_seq'::regclass)
+ external_items            | boxId                  | character varying        | NO          | 
+ external_items            | destination            | character varying        | YES         | 
+ external_items            | sentDate               | timestamp with time zone | YES         | 
+ external_items            | sender                 | character varying        | YES         | 
+ external_items            | boxData                | json                     | YES         | 
+ external_items            | history                | json                     | YES         | 
+ folders                   | id                     | integer                  | NO          | nextval('folders_id_seq'::regclass)
+ folders                   | name                   | character varying        | NO          | 
+ folders                   | parentId               | integer                  | YES         | 
+ folders                   | privacy                | character varying        | YES         | 'public'::character varying
+ folders                   | owner                  | character varying        | YES         | 
+ folders                   | allowedDepts           | json                     | YES         | 
+ folders                   | allowedUsers           | json                     | YES         | 
+ folders                   | created_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ folders                   | updated_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ folders                   | createdAt              | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ folders                   | updatedAt              | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ independent_issues        | id                     | integer                  | NO          | nextval('independent_issues_id_seq'::regclass)
+ independent_issues        | note                   | character varying        | NO          | 
+ independent_issues        | detail                 | text                     | YES         | 
+ independent_issues        | status                 | character varying        | YES         | 'pending'::character varying
+ independent_issues        | progress               | integer                  | YES         | 0
+ independent_issues        | history                | text                     | YES         | 
+ independent_issues        | assigned_to            | text                     | YES         | 
+ independent_issues        | resolved_at            | timestamp with time zone | YES         | 
+ independent_issues        | created_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ independent_issues        | updated_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ independent_issues        | owner                  | character varying        | YES         | 'system'::character varying
+ inventory                 | id                     | integer                  | NO          | 
+ inventory                 | status                 | character varying        | YES         | 'EMPTY'::character varying
+ inventory                 | lastUpdated            | timestamp with time zone | YES         | 
+ inventory                 | boxData                | json                     | YES         | 
+ inventory                 | history                | json                     | YES         | 
+ inventory                 | box_id                 | character varying        | YES         | 
+ inventory                 | rack                   | character varying        | YES         | 
+ inventory                 | shelf                  | integer                  | YES         | 
+ inventory                 | position               | integer                  | YES         | 
+ inventory                 | box_data               | text                     | YES         | 
+ inventory_items           | id                     | integer                  | NO          | nextval('inventory_items_id_seq'::regclass)
+ inventory_items           | inventory_id           | integer                  | YES         | 
+ inventory_items           | box_id                 | character varying        | YES         | 
+ inventory_items           | ordner_id              | character varying        | YES         | 
+ inventory_items           | invoice_no             | character varying        | YES         | 
+ inventory_items           | vendor                 | character varying        | YES         | 
+ inventory_items           | date                   | timestamp with time zone | YES         | 
+ inventory_items           | amount                 | numeric                  | YES         | 
+ inventory_items           | file_url               | text                     | YES         | 
+ inventory_items           | ocr_content            | text                     | YES         | 
+ inventory_items           | created_at             | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ inventory_items           | tax_invoice_no         | character varying        | YES         | 
+ inventory_items           | special_note           | text                     | YES         | 
+ invoices                  | id                     | integer                  | NO          | nextval('invoices_id_seq'::regclass)
+ invoices                  | ordner_ref_id          | integer                  | YES         | 
+ invoices                  | invoice_no             | character varying        | YES         | 
+ invoices                  | vendor                 | character varying        | YES         | 
+ invoices                  | payment_date           | character varying        | YES         | 
+ invoices                  | file_url               | text                     | YES         | 
+ invoices                  | file_name              | character varying        | YES         | 
+ invoices                  | ocr_content            | text                     | YES         | 
+ invoices                  | vector                 | text                     | YES         | 
+ invoices                  | tax_invoice_no         | character varying        | YES         | 
+ invoices                  | special_note           | text                     | YES         | 
+ job_due_dates             | id                     | integer                  | NO          | nextval('job_due_dates_id_seq'::regclass)
+ job_due_dates             | title                  | character varying        | NO          | 
+ job_due_dates             | due_date               | character varying        | YES         | 
+ job_due_dates             | assigned_to            | character varying        | NO          | 
+ job_due_dates             | privacy                | character varying        | YES         | 'public'::character varying
+ job_due_dates             | allowed_users          | text                     | YES         | 
+ job_due_dates             | allowed_depts          | text                     | YES         | 
+ job_due_dates             | type                   | character varying        | YES         | 'special'::character varying
+ job_due_dates             | target_dept            | character varying        | YES         | 
+ job_due_dates             | owner                  | character varying        | NO          | 
+ job_due_dates             | status                 | character varying        | YES         | 'pending'::character varying
+ job_due_dates             | completed_at           | timestamp with time zone | YES         | 
+ job_due_dates             | issues                 | text                     | YES         | 
+ job_due_dates             | kendala                | text                     | YES         | 
+ job_due_dates             | created_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ job_due_dates             | updated_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ job_due_dates             | completed_months       | text                     | YES         | 
+ job_queue                 | id                     | integer                  | NO          | nextval('job_queue_id_seq'::regclass)
+ job_queue                 | name                   | character varying        | YES         | 
+ job_queue                 | data                   | json                     | YES         | 
+ job_queue                 | status                 | character varying        | YES         | 'waiting'::character varying
+ job_queue                 | progress               | integer                  | YES         | 0
+ job_queue                 | created_at             | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ job_queue                 | processed_at           | timestamp with time zone | YES         | 
+ job_queue                 | finished_at            | timestamp with time zone | YES         | 
+ job_queue                 | error                  | text                     | YES         | 
+ job_queue                 | error_log              | text                     | YES         | 
+ job_queue                 | retries                | integer                  | YES         | 0
+ job_queue                 | max_attempts           | integer                  | YES         | 3
+ job_queue                 | result                 | text                     | YES         | 
+ job_queue                 | owner                  | character varying        | YES         | 
+ job_queue                 | privacy                | character varying        | YES         | 'private'::character varying
+ job_queue                 | allowed_departments    | text                     | YES         | 
+ job_queue                 | allowed_users          | text                     | YES         | 
+ knex_migrations           | id                     | integer                  | NO          | nextval('knex_migrations_id_seq'::regclass)
+ knex_migrations           | name                   | character varying        | YES         | 
+ knex_migrations           | batch                  | integer                  | YES         | 
+ knex_migrations           | migration_time         | timestamp with time zone | YES         | 
+ knex_migrations_lock      | index                  | integer                  | NO          | nextval('knex_migrations_lock_index_seq'::regclass)
+ knex_migrations_lock      | is_locked              | integer                  | YES         | 
+ logs                      | id                     | integer                  | NO          | nextval('logs_id_seq'::regclass)
+ logs                      | user                   | character varying        | YES         | 
+ logs                      | action                 | character varying        | YES         | 
+ logs                      | details                | text                     | YES         | 
+ logs                      | timestamp              | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ logs                      | oldValue               | text                     | YES         | 
+ logs                      | newValue               | text                     | YES         | 
+ master_tax_objects        | id                     | integer                  | NO          | nextval('master_tax_objects_id_seq'::regclass)
+ master_tax_objects        | tax_type               | character varying        | YES         | 
+ master_tax_objects        | code                   | character varying        | YES         | 
+ master_tax_objects        | name                   | text                     | YES         | 
+ master_tax_objects        | note                   | text                     | YES         | 
+ master_tax_objects        | rate                   | numeric                  | YES         | 
+ master_tax_objects        | vector                 | text                     | YES         | 
+ master_tax_objects        | created_at             | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ master_tax_objects        | is_pph21_bukan_pegawai | boolean                  | YES         | false
+ master_tax_objects        | use_ppn                | boolean                  | YES         | true
+ master_tax_objects        | markup_mode            | character varying        | YES         | 'none'::character varying
+ monitored_pics            | id                     | integer                  | NO          | nextval('monitored_pics_id_seq'::regclass)
+ monitored_pics            | username               | character varying        | NO          | 
+ monitored_pics            | privacy                | character varying        | YES         | 'public'::character varying
+ monitored_pics            | allowed_users          | text                     | YES         | 
+ monitored_pics            | allowed_depts          | text                     | YES         | 
+ monitored_pics            | created_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ monitored_pics            | updated_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ notification_reads        | id                     | integer                  | NO          | nextval('notification_reads_id_seq'::regclass)
+ notification_reads        | notification_id        | integer                  | NO          | 
+ notification_reads        | username               | character varying        | NO          | 
+ notification_reads        | read_at                | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ notifications             | id                     | integer                  | NO          | nextval('notifications_id_seq'::regclass)
+ notifications             | title                  | character varying        | NO          | 
+ notifications             | message                | text                     | NO          | 
+ notifications             | type                   | character varying        | NO          | 'info'::character varying
+ notifications             | channel                | character varying        | NO          | 'system'::character varying
+ notifications             | target_type            | character varying        | NO          | 'general'::character varying
+ notifications             | target_value           | character varying        | YES         | 
+ notifications             | created_by             | character varying        | NO          | 'System'::character varying
+ notifications             | meta                   | text                     | YES         | 
+ notifications             | created_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ notifications             | expires_at             | timestamp with time zone | YES         | 
+ ordners                   | id                     | integer                  | NO          | nextval('ordners_id_seq'::regclass)
+ ordners                   | box_ref_id             | integer                  | YES         | 
+ ordners                   | no_ordner              | character varying        | YES         | 
+ ordners                   | period                 | character varying        | YES         | 
+ pustaka_categories        | id                     | integer                  | NO          | nextval('pustaka_categories_id_seq'::regclass)
+ pustaka_categories        | name                   | character varying        | NO          | 
+ pustaka_guides            | id                     | integer                  | NO          | nextval('pustaka_guides_id_seq'::regclass)
+ pustaka_guides            | title                  | character varying        | NO          | 
+ pustaka_guides            | description            | text                     | YES         | 
+ pustaka_guides            | category               | character varying        | YES         | 
+ pustaka_guides            | icon                   | character varying        | YES         | 
+ pustaka_guides            | privacy                | character varying        | YES         | 'public'::character varying
+ pustaka_guides            | allowed_depts          | json                     | YES         | 
+ pustaka_guides            | allowed_users          | json                     | YES         | 
+ pustaka_guides            | owner                  | character varying        | YES         | 
+ pustaka_slides            | id                     | integer                  | NO          | nextval('pustaka_slides_id_seq'::regclass)
+ pustaka_slides            | guide_id               | integer                  | YES         | 
+ pustaka_slides            | title                  | character varying        | YES         | 
+ pustaka_slides            | content                | text                     | YES         | 
+ pustaka_slides            | image_url              | character varying        | YES         | 
+ pustaka_slides            | step_order             | integer                  | YES         | 
+ pustaka_slides            | image                  | character varying        | YES         | 
+ roles                     | id                     | character varying        | NO          | 
+ roles                     | label                  | character varying        | YES         | 
+ roles                     | access                 | json                     | YES         | 
+ sop_flows                 | id                     | integer                  | NO          | nextval('sop_flows_id_seq'::regclass)
+ sop_flows                 | title                  | character varying        | NO          | 
+ sop_flows                 | description            | text                     | YES         | 
+ sop_flows                 | category               | character varying        | YES         | 
+ sop_flows                 | steps                  | json                     | YES         | 
+ sop_flows                 | visual_config          | json                     | YES         | 
+ sop_flows                 | owner                  | character varying        | YES         | 
+ sop_flows                 | created_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ sop_flows                 | updated_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ sop_flows                 | privacy_type           | character varying        | YES         | 'public'::character varying
+ sop_flows                 | allowed_departments    | text                     | YES         | 
+ sop_flows                 | allowed_users          | text                     | YES         | 
+ tax_audit_notes           | id                     | integer                  | NO          | nextval('tax_audit_notes_id_seq'::regclass)
+ tax_audit_notes           | auditId                | character varying        | YES         | 
+ tax_audit_notes           | stepIndex              | integer                  | YES         | 
+ tax_audit_notes           | user                   | character varying        | YES         | 
+ tax_audit_notes           | text                   | text                     | YES         | 
+ tax_audit_notes           | timestamp              | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ tax_audit_notes           | attachmentName         | character varying        | YES         | 
+ tax_audit_notes           | attachmentUrl          | character varying        | YES         | 
+ tax_audit_notes           | attachmentType         | character varying        | YES         | 
+ tax_audit_notes           | attachmentSize         | character varying        | YES         | 
+ tax_audit_notes           | ocrContent             | text                     | YES         | 
+ tax_audits                | id                     | character varying        | NO          | 
+ tax_audits                | title                  | character varying        | NO          | 
+ tax_audits                | status                 | character varying        | YES         | 
+ tax_audits                | currentStep            | integer                  | YES         | 
+ tax_audits                | letterNumber           | character varying        | YES         | 
+ tax_audits                | auditor                | character varying        | YES         | 
+ tax_audits                | startDate              | timestamp with time zone | YES         | 
+ tax_audits                | steps                  | json                     | YES         | 
+ tax_objects               | id                     | integer                  | NO          | nextval('tax_objects_id_seq'::regclass)
+ tax_objects               | id_type                | character varying        | YES         | 
+ tax_objects               | identity_number        | character varying        | YES         | 
+ tax_objects               | name                   | character varying        | YES         | 
+ tax_objects               | email                  | character varying        | YES         | 
+ tax_objects               | tax_type               | character varying        | YES         | 
+ tax_objects               | tax_object_code        | character varying        | YES         | 
+ tax_objects               | tax_object_name        | character varying        | YES         | 
+ tax_objects               | dpp                    | numeric                  | YES         | 
+ tax_objects               | rate                   | numeric                  | YES         | 
+ tax_objects               | pph                    | numeric                  | YES         | 
+ tax_objects               | ppn                    | numeric                  | YES         | 
+ tax_objects               | total_payable          | numeric                  | YES         | 
+ tax_objects               | discount               | numeric                  | YES         | 
+ tax_objects               | dpp_net                | numeric                  | YES         | 
+ tax_objects               | created_at             | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ tax_objects               | is_pph21_bukan_pegawai | boolean                  | YES         | false
+ tax_objects               | markup_mode            | character varying        | YES         | 'none'::character varying
+ tax_objects               | use_ppn                | boolean                  | YES         | true
+ tax_summaries             | id                     | character varying        | NO          | 
+ tax_summaries             | type                   | character varying        | YES         | 
+ tax_summaries             | month                  | character varying        | YES         | 
+ tax_summaries             | year                   | integer                  | YES         | 
+ tax_summaries             | pembetulan             | integer                  | YES         | 0
+ tax_summaries             | data                   | json                     | YES         | 
+ tax_summaries             | pph23                  | numeric                  | YES         | 
+ tax_summaries             | pph42                  | numeric                  | YES         | 
+ tax_wp                    | id                     | integer                  | NO          | nextval('tax_wp_id_seq'::regclass)
+ tax_wp                    | name                   | character varying        | YES         | 
+ tax_wp                    | id_type                | character varying        | YES         | 'NPWP'::character varying
+ tax_wp                    | identity_number        | character varying        | YES         | 
+ tax_wp                    | email                  | character varying        | YES         | 
+ tax_wp                    | tax_type               | character varying        | YES         | 
+ tax_wp                    | tax_object_code        | character varying        | YES         | 
+ tax_wp                    | tax_object_name        | character varying        | YES         | 
+ tax_wp                    | markup_mode            | character varying        | YES         | 'none'::character varying
+ tax_wp                    | is_pph21_bukan_pegawai | boolean                  | YES         | false
+ tax_wp                    | use_ppn                | boolean                  | YES         | true
+ tax_wp                    | created_at             | timestamp with time zone | YES         | CURRENT_TIMESTAMP
+ tax_wp                    | dpp                    | numeric                  | YES         | '0'::numeric
+ tax_wp                    | discount               | numeric                  | YES         | '0'::numeric
+ tax_wp                    | dpp_net                | numeric                  | YES         | '0'::numeric
+ tax_wp                    | pph                    | numeric                  | YES         | '0'::numeric
+ tax_wp                    | ppn                    | numeric                  | YES         | '0'::numeric
+ tax_wp                    | total_payable          | numeric                  | YES         | '0'::numeric
+ users                     | id                     | integer                  | NO          | nextval('users_id_seq'::regclass)
+ users                     | username               | character varying        | NO          | 
+ users                     | password               | character varying        | NO          | 
+ users                     | name                   | character varying        | YES         | 
+ users                     | role                   | character varying        | YES         | 'viewer'::character varying
+ users                     | department             | character varying        | YES         | 
+ users                     | token                  | character varying        | YES         | 
+ users                     | created_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ users                     | updated_at             | timestamp with time zone | NO          | CURRENT_TIMESTAMP
+ users                     | token_expires_at       | timestamp with time zone | YES         | 
+(502 rows)
+

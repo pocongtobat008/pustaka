@@ -1,4 +1,5 @@
 import { knex } from './db.js';
+import { sanitizeApiKey } from './services/aiAgent.js';
 
 const EMBEDDING_MODEL = 'we/text-embedding-v3';
 
@@ -45,7 +46,7 @@ export async function generateEmbedding(text) {
     const res = await fetch(url, {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${settings.api_key}`,
+            'Authorization': `Bearer ${sanitizeApiKey(settings.api_key)}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ model: EMBEDDING_MODEL, input: text }),
@@ -80,7 +81,7 @@ export async function generateEmbeddingsBatch(texts) {
     const res = await fetch(url, {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${settings.api_key}`,
+            'Authorization': `Bearer ${sanitizeApiKey(settings.api_key)}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ model: EMBEDDING_MODEL, input: texts }),

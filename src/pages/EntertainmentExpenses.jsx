@@ -1,0 +1,1555 @@
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+    Plus, Trash2, Eye, FileSpreadsheet, FileText, Upload,
+    X, Search, Filter, Edit3,
+    Receipt, Save, ClipboardList,
+    DollarSign, Loader2, CheckCircle2
+} from 'lucide-react';
+import { entertainmentService } from '../services/entertainmentService';
+import { API_URL } from '../services/apiClient';
+import { SummaryCard } from '../components/ui/Card';
+
+const JENIS_OPTIONS = ['Breakfast', 'Lunch', 'Dinner', 'Event', 'Custom'];
+const JENIS_USAHA_OPTIONS = [
+    'MANUFACTURING', 'TRADING', 'SERVICES', 'FINANCE', 'TECHNOLOGY',
+    'CONSTRUCTION', 'TRANSPORTATION', 'AGRICULTURE', 'MINING',
+    'EDUCATION', 'HEALTHCARE', 'HOSPITALITY', 'MEDIA', 'OTHER', 'Custom'
+];
+const JENIS_USAHA_PRESET = JENIS_USAHA_OPTIONS.filter(j => j !== 'Custom');
+
+const emptyForm = () => ({
+    tanggal: '', tempat: '', alamat: '', jenis: '', custom_jenis: '',
+    nilai: '', no_gl: '', groups: [{ relasi: '', jabatan: '', nama_perusahaan: '' }],
+    jenis_usaha: '', custom_jenis_usaha: '', catatan_kode: ''
+});
+
+const silentToast = { success: () => {}, error: () => {}, info: () => {}, warning: () => {}, loading: () => {} };
+
+export default function EntertainmentExpenses({ currentUser, hasPermission, toast: toastProp }) {
+    const toast = toastProp || silentToast;
+    const fileInputRef = useRef(null);
+    const pasteZoneRef = useRef(null);
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [showForm, setShowForm] = useState(false);
+    const [editingId, setEditingId] = useState(null);
+    const [showPreview, setShowPreview] = useState(false);
+    const [previewData, setPreviewData] = useState(null);
+    const [searchParams, setSearchParams] = useState({ tanggal: '', jenis: '', search: '' });
+    const [exportingPdf, setExportingPdf] = useState(false);
+    const [exportingExcel, setExportingExcel] = useState(false);
+    
+    const [form, setForm] = useState(emptyForm);
+    const [errors, setErrors] = useState({});
+    const [attachments, setAttachments] = useState([]);
+    const [existingAttachments, setExistingAttachments] = useState([]);
+    const [submitting, setSubmitting] = useState(false);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalEntries, setTotalEntries] = useState(0);
+    const [tab, setTab] = useState('pending');
+    const [showSettleModal, setShowSettleModal] = useState(false);
+    const [settleItem, setSettleItem] = useState(null);
+    const [settleForm, setSettleForm] = useState({});
+    const [settleSubmitting, setSettleSubmitting] = useState(false);
+    const [settleAttachments, setSettleAttachments] = useState([]);
+    const [settleExistingAttachments, setSettleExistingAttachments] = useState([]);
+    const settleFileInputRef = useRef(null);
+    const [rules, setRules] = useState([]);
+    const [userPerms, setUserPerms] = useState({ view_all: false, can_create: true, can_edit: true, can_delete: true, can_settle: true, can_export: true });
+    const [showRuleForm, setShowRuleForm] = useState(false);
+    const [editingRule, setEditingRule] = useState(null);
+    const [ruleForm, setRuleForm] = useState({ rule_name: '', target_type: 'user', target_value: '', view_all: false, can_create: true, can_edit: true, can_delete: true, can_settle: true, can_export: true });
+    const [ruleSubmitting, setRuleSubmitting] = useState(false);
+    const [usersList, setUsersList] = useState([]);
+    const [departmentsList, setDepartmentsList] = useState([]);
+    const [rolesList, setRolesList] = useState([]);
+
+    const parseField = (val, fallback = []) => {
+        if (val == null || val === '') return fallback;
+        if (typeof val === 'string') {
+            try { return JSON.parse(val); } catch { return fallback; }
+        }
+        return val;
+    };
+
+    const fetchData = useCallback(async (opts = {}) => {
+        const silent = opts.silent === true;
+        try {
+            if (!silent) setLoading(true);
+            const params = { page, perPage: 15, status: tab === 'settled' ? 'settled' : 'active' };
+            if (searchParams.tanggal) params.tanggal = searchParams.tanggal;
+            if (searchParams.jenis) params.jenis = searchParams.jenis;
+            if (searchParams.search) params.search = searchParams.search;
+            const result = await entertainmentService.getAll(params);
+            const list = Array.isArray(result) ? result : (result?.data || []);
+            const parsed = list.map(item => ({
+                ...item,
+                relasi: parseField(item.relasi, []),
+                jabatan: parseField(item.jabatan, []),
+                nama_perusahaan: parseField(item.nama_perusahaan, []),
+                attachments: parseField(item.attachments, [])
+            }));
+            setData(parsed);
+            if (result && typeof result === 'object' && !Array.isArray(result)) {
+                setTotalEntries(result.total || 0);
+                setTotalPages(result.totalPages || 1);
+                if (result.permissions) setUserPerms(result.permissions);
+            } else {
+                setTotalEntries(parsed.length);
+                setTotalPages(1);
+            }
+        } catch (e) {
+            console.error('Fetch error:', e);
+            if (!silent) toast.error(e.message || 'Gagal memuat data');
+        } finally {
+            if (!silent) setLoading(false);
+        }
+    }, [searchParams, toast, page, tab]);
+
+    useEffect(() => { fetchData(); }, [fetchData]);
+
+    const resetForm = () => {
+        setForm(emptyForm());
+        setErrors({});
+        setAttachments([]);
+        setExistingAttachments([]);
+        setEditingId(null);
+    };
+
+    const resolveJenisUsaha = () => (
+        form.jenis_usaha === 'Custom' ? (form.custom_jenis_usaha || '').trim() : form.jenis_usaha
+    );
+
+    const validate = () => {
+        const errs = {};
+        if (!form.tanggal) errs.tanggal = 'Tanggal wajib diisi';
+        if (!form.tempat) errs.tempat = 'Tempat wajib diisi';
+        if (!form.alamat) errs.alamat = 'Alamat wajib diisi';
+        if (!form.jenis) errs.jenis = 'Jenis wajib diisi';
+        if (form.jenis === 'Custom' && !form.custom_jenis?.trim()) errs.custom_jenis = 'Custom jenis wajib diisi';
+        if (!form.nilai) errs.nilai = 'Nilai wajib diisi';
+        if (!form.no_gl) errs.no_gl = 'No GL wajib diisi';
+        if (!form.groups || form.groups.length === 0 || !form.groups[0].relasi?.trim()) errs.groups = 'Minimal 1 grup relasi wajib diisi';
+        if (!form.jenis_usaha) errs.jenis_usaha = 'Jenis Usaha wajib diisi';
+        if (form.jenis_usaha === 'Custom' && !form.custom_jenis_usaha?.trim()) {
+            errs.custom_jenis_usaha = 'Custom jenis usaha wajib diisi';
+        }
+        if (!form.catatan_kode) errs.catatan_kode = 'Catatan/Kode wajib diisi';
+        if (attachments.length === 0 && existingAttachments.length === 0) errs.attachments = 'Minimal 1 lampiran wajib diupload';
+        setErrors(errs);
+        return Object.keys(errs).length === 0;
+    };
+
+    const formatCurrency = (val) => {
+        if (!val) return '';
+        const num = val.toString().replace(/[^\d]/g, '');
+        return new Intl.NumberFormat('id-ID').format(num);
+    };
+
+    const parseCurrency = (val) => {
+        return val ? val.toString().replace(/[^\d]/g, '') : '';
+    };
+
+    const handleNilaiChange = (e) => {
+        const raw = parseCurrency(e.target.value);
+        setForm(prev => ({ ...prev, nilai: raw }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!validate()) {
+            toast.error('Harap isi semua field yang wajib');
+            return;
+        }
+        setSubmitting(true);
+        try {
+            const fd = new FormData();
+            fd.append('tanggal', form.tanggal);
+            fd.append('tempat', form.tempat);
+            fd.append('alamat', form.alamat);
+            fd.append('jenis', form.jenis);
+            fd.append('custom_jenis', form.custom_jenis);
+            fd.append('nilai', form.nilai);
+            fd.append('no_gl', form.no_gl);
+            const filledGroups = form.groups.filter(g => g.relasi?.trim());
+            const relasiArr = filledGroups.map(g => g.relasi.trim());
+            const jabatanArr = filledGroups.map(g => (g.jabatan || '').trim());
+            const perusahaanArr = filledGroups.map(g => (g.nama_perusahaan || '').trim());
+            fd.append('relasi', JSON.stringify(relasiArr));
+            fd.append('jabatan', JSON.stringify(jabatanArr));
+            fd.append('nama_perusahaan', JSON.stringify(perusahaanArr));
+            fd.append('jenis_usaha', resolveJenisUsaha());
+            fd.append('catatan_kode', form.catatan_kode);
+
+            if (editingId) {
+                fd.append('existing_attachments', JSON.stringify(existingAttachments));
+            }
+
+            attachments.forEach(file => {
+                fd.append('attachments', file);
+            });
+
+            if (editingId) {
+                await entertainmentService.update(editingId, fd);
+                toast.success('Data berhasil diupdate');
+            } else {
+                await entertainmentService.create(fd);
+                toast.success('Data berhasil disimpan');
+            }
+
+            resetForm();
+            setShowForm(false);
+            // Jangan reset filter dulu agar fetch tidak double-trigger error
+            await fetchData({ silent: false });
+        } catch (e) {
+            console.error('Submit error:', e);
+            const msg = e?.message || 'Terjadi kesalahan saat menyimpan';
+            // Tampilkan detail validasi jika ada
+            toast.error(msg);
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const handleEdit = (item) => {
+        let editGroups = item.groups || [];
+        if (!editGroups.length && (item.relasi || item.nama_perusahaan || item.jabatan)) {
+            const maxLen = Math.max(
+                (item.relasi || []).length,
+                (item.jabatan || []).length,
+                (item.nama_perusahaan || []).length
+            );
+            editGroups = Array.from({ length: maxLen || 1 }, (_, i) => ({
+                relasi: (item.relasi || [])[i] || '',
+                jabatan: (item.jabatan || [])[i] || '',
+                nama_perusahaan: (item.nama_perusahaan || [])[i] || ''
+            }));
+        }
+        const savedUsaha = item.jenis_usaha || '';
+        const isCustomUsaha = savedUsaha && !JENIS_USAHA_PRESET.includes(savedUsaha);
+        setForm({
+            tanggal: item.tanggal || '',
+            tempat: item.tempat || '',
+            alamat: item.alamat || '',
+            jenis: item.jenis || '',
+            custom_jenis: item.custom_jenis || '',
+            nilai: item.nilai ? String(item.nilai) : '',
+            no_gl: item.no_gl || '',
+            groups: editGroups.length > 0 ? editGroups : [{ relasi: '', jabatan: '', nama_perusahaan: '' }],
+            jenis_usaha: isCustomUsaha ? 'Custom' : savedUsaha,
+            custom_jenis_usaha: isCustomUsaha ? savedUsaha : '',
+            catatan_kode: item.catatan_kode || ''
+        });
+        setExistingAttachments(Array.isArray(item.attachments) ? item.attachments : []);
+        setAttachments([]);
+        setEditingId(item.id);
+        setShowForm(true);
+        setErrors({});
+    };
+
+    const handleDelete = async (id) => {
+        if (!confirm('Yakin ingin menghapus data ini?')) return;
+        try {
+            await entertainmentService.delete(id);
+            toast.success('Data berhasil dihapus');
+            fetchData();
+        } catch (e) {
+            toast.error(e.message);
+        }
+    };
+
+    const handlePreview = (item) => {
+        setPreviewData(item);
+        setShowPreview(true);
+    };
+
+    // File handling
+    const addFiles = useCallback((files) => {
+        const list = (files || []).filter(Boolean);
+        if (list.length === 0) return;
+        setAttachments(prev => [...prev, ...list]);
+        setErrors(prev => {
+            if (!prev.attachments) return prev;
+            const next = { ...prev };
+            delete next.attachments;
+            return next;
+        });
+    }, []);
+
+    const handleFileChange = (e) => {
+        addFiles(Array.from(e.target.files || []));
+        if (fileInputRef.current) fileInputRef.current.value = '';
+    };
+
+    const handlePaste = useCallback((e) => {
+        const clipboard = e.clipboardData || window.clipboardData;
+        const items = clipboard?.items;
+        if (!items) return;
+
+        const files = [];
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.kind === 'file' || item.type?.startsWith('image/')) {
+                let file = null;
+                try { file = item.getAsFile(); } catch { }
+                if (file) {
+                    if (!file.name || file.name.startsWith('image')) {
+                        const ext = (file.type || 'image/png').split('/')[1] || 'png';
+                        files.push(new File([file], `paste_${Date.now()}_${i}.${ext}`, { type: file.type }));
+                    } else {
+                        files.push(file);
+                    }
+                }
+            }
+        }
+
+        if (files.length > 0) {
+            e.preventDefault();
+            e.stopPropagation();
+            addFiles(files);
+            toast.success(`${files.length} file ditempel ke lampiran`);
+        }
+    }, [addFiles, toast]);
+
+    useEffect(() => {
+        if (!showForm) return;
+        const onDocPaste = (e) => {
+            const tag = (e.target?.tagName || '').toUpperCase();
+            if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target?.isContentEditable) return;
+            handlePaste(e);
+        };
+        document.addEventListener('paste', onDocPaste);
+        return () => document.removeEventListener('paste', onDocPaste);
+    }, [showForm, handlePaste]);
+
+    const removeAttachment = (index, e) => {
+        e?.stopPropagation?.();
+        setAttachments(prev => prev.filter((_, i) => i !== index));
+    };
+
+    const removeExistingAttachment = (index, e) => {
+        e?.stopPropagation?.();
+        setExistingAttachments(prev => prev.filter((_, i) => i !== index));
+    };
+
+    // Relasi helpers
+    const addGroup = () => setForm(prev => ({ ...prev, groups: [...prev.groups, { relasi: '', jabatan: '', nama_perusahaan: '' }] }));
+    const removeGroup = (idx) => {
+        if (form.groups.length <= 1) return;
+        setForm(prev => ({ ...prev, groups: prev.groups.filter((_, i) => i !== idx) }));
+    };
+    const updateGroup = (idx, field, val) => {
+        setForm(prev => {
+            const g = [...prev.groups];
+            g[idx] = { ...g[idx], [field]: val };
+            return { ...prev, groups: g };
+        });
+    };
+    const jumlahRelasi = form.groups.filter(g => g.relasi.trim()).length;
+
+    const totalNilai = data.reduce((sum, item) => sum + (parseFloat(item.nilai) || 0), 0);
+    const totalLampiran = data.reduce((sum, item) => {
+        const atts = item.attachments || [];
+        return sum + atts.length;
+    }, 0);
+
+    const handleSearchKeyDown = (e) => {
+        if (e.key === 'Enter') setPage(1);
+    };
+
+    const formatDateForInput = (date) => {
+        if (!date) return '';
+        if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}/.test(date)) return date.slice(0, 10);
+        try {
+            const d = new Date(date);
+            if (!isNaN(d.getTime())) return d.toISOString().split('T')[0];
+        } catch {}
+        return String(date).slice(0, 10);
+    };
+
+    const initSettleForm = (item) => ({
+        tanggal: formatDateForInput(item.tanggal),
+        tempat: item.tempat || '',
+        alamat: item.alamat || '',
+        jenis: item.jenis || '',
+        custom_jenis: item.custom_jenis || '',
+        nilai: item.nilai ? String(item.nilai) : '',
+        no_gl: item.no_gl || '',
+        groups: (item.relasi || []).map((relasi, i) => ({
+            relasi,
+            jabatan: (item.jabatan || [])[i] || '',
+            nama_perusahaan: (item.nama_perusahaan || [])[i] || ''
+        })),
+        jenis_usaha: item.jenis_usaha || '',
+        custom_jenis_usaha: (item.jenis_usaha && !JENIS_USAHA_PRESET.includes(item.jenis_usaha)) ? item.jenis_usaha : '',
+        catatan_kode: item.catatan_kode || '',
+        settle_date: item.settle_date || new Date().toISOString().split('T')[0]
+    });
+
+    const handleSettle = (item) => {
+        setSettleItem(item);
+        setSettleForm(initSettleForm(item));
+        setSettleExistingAttachments(Array.isArray(item.attachments) ? item.attachments : []);
+        setSettleAttachments([]);
+        setShowSettleModal(true);
+    };
+
+    const handleSettleSubmit = async () => {
+        if (!settleItem) return;
+        if (!settleForm.settle_date) {
+            toast.error('Tanggal settle wajib diisi');
+            return;
+        }
+        setSettleSubmitting(true);
+        try {
+            const fd = new FormData();
+            fd.append('tanggal', settleForm.tanggal);
+            fd.append('tempat', settleForm.tempat);
+            fd.append('alamat', settleForm.alamat);
+            fd.append('jenis', settleForm.jenis);
+            fd.append('custom_jenis', settleForm.jenis === 'Custom' ? settleForm.custom_jenis : '');
+            fd.append('nilai', settleForm.nilai);
+            fd.append('no_gl', settleForm.no_gl);
+            fd.append('settle_date', settleForm.settle_date);
+
+            const filledGroups = settleForm.groups.filter(g => g.relasi?.trim());
+            fd.append('relasi', JSON.stringify(filledGroups.map(g => g.relasi.trim())));
+            fd.append('jabatan', JSON.stringify(filledGroups.map(g => (g.jabatan || '').trim())));
+            fd.append('nama_perusahaan', JSON.stringify(filledGroups.map(g => (g.nama_perusahaan || '').trim())));
+            fd.append('jenis_usaha', settleForm.jenis_usaha === 'Custom' ? (settleForm.custom_jenis_usaha || '').trim() : settleForm.jenis_usaha);
+            fd.append('catatan_kode', settleForm.catatan_kode);
+            fd.append('existing_attachments', JSON.stringify(settleExistingAttachments));
+
+            settleAttachments.forEach(file => {
+                fd.append('attachments', file);
+            });
+
+            const result = await entertainmentService.settle(settleItem.id, fd);
+            if (result.changed) {
+                toast.success('Data diupdate dan berhasil di-settle');
+            } else {
+                toast.success('Berhasil di-settle');
+            }
+            setShowSettleModal(false);
+            setSettleItem(null);
+            setSettleAttachments([]);
+            setSettleExistingAttachments([]);
+            fetchData();
+        } catch (e) {
+            toast.error(e.message || 'Gagal settle');
+        } finally {
+            setSettleSubmitting(false);
+        }
+    };
+
+    const fetchRules = useCallback(async () => {
+        try {
+            const result = await entertainmentService.getRules();
+            setRules(Array.isArray(result) ? result : []);
+        } catch (e) {
+            console.error('Fetch rules error:', e);
+        }
+        try {
+            const res = await fetch(`${API_URL}/users`, { credentials: 'include' });
+            if (res.ok) {
+                const data = await res.json();
+                setUsersList(Array.isArray(data) ? data : (data?.users || []));
+            }
+        } catch {}
+        try {
+            const res = await fetch(`${API_URL}/departments`, { credentials: 'include' });
+            if (res.ok) {
+                const data = await res.json();
+                setDepartmentsList(Array.isArray(data) ? data : (data?.departments || []));
+            }
+        } catch {}
+        try {
+            const res = await fetch(`${API_URL}/system/roles`, { credentials: 'include' });
+            if (res.ok) {
+                const data = await res.json();
+                setRolesList(Array.isArray(data) ? data : (data?.roles || []));
+            }
+        } catch {}
+    }, []);
+
+    useEffect(() => { if (tab === 'rules') fetchRules(); }, [tab, fetchRules]);
+
+    const handleSaveRule = async () => {
+        if (!ruleForm.rule_name || !ruleForm.target_value) {
+            toast.error('Nama rule dan target wajib diisi');
+            return;
+        }
+        setRuleSubmitting(true);
+        try {
+            if (editingRule) {
+                await entertainmentService.updateRule(editingRule.id, ruleForm);
+                toast.success('Rule berhasil diupdate');
+            } else {
+                await entertainmentService.createRule(ruleForm);
+                toast.success('Rule berhasil dibuat');
+            }
+            setShowRuleForm(false);
+            setEditingRule(null);
+            setRuleForm({ rule_name: '', target_type: 'user', target_value: '', view_all: false, can_create: true, can_edit: true, can_delete: true, can_settle: true, can_export: true });
+            fetchRules();
+        } catch (e) {
+            toast.error(e.message || 'Gagal menyimpan rule');
+        } finally {
+            setRuleSubmitting(false);
+        }
+    };
+
+    const handleDeleteRule = async (id) => {
+        if (!confirm('Yakin ingin menghapus rule ini?')) return;
+        try {
+            await entertainmentService.deleteRule(id);
+            toast.success('Rule berhasil dihapus');
+            fetchRules();
+        } catch (e) {
+            toast.error(e.message);
+        }
+    };
+
+    const isAdmin = currentUser?.role === 'admin' || currentUser?.role === 'superadmin';
+
+    return (
+        <div className="space-y-6">
+            {/* Summary Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <SummaryCard
+                    title="Total Entries"
+                    value={totalEntries}
+                    icon={ClipboardList}
+                    colorClass="bg-indigo-100 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300"
+                    subtext="Semua data entertainment"
+                />
+                <SummaryCard
+                    title="Total Nilai"
+                    value={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(totalNilai)}
+                    icon={DollarSign}
+                    colorClass="bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300"
+                    subtext="Akumulasi seluruh biaya"
+                />
+                <SummaryCard
+                    title="Total Lampiran"
+                    value={totalLampiran}
+                    icon={FileText}
+                    colorClass="bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-300"
+                    subtext="Semua file terlampir"
+                />
+            </div>
+
+            {/* Header Actions */}
+            {tab !== 'rules' && (
+            <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex flex-wrap items-center gap-3">
+                    {userPerms.can_create && (
+                    <button
+                        onClick={() => { resetForm(); setShowForm(!showForm); }}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl hover:from-indigo-500 hover:to-blue-500 transition-all shadow-lg shadow-indigo-500/20 font-semibold text-sm"
+                    >
+                        {showForm ? <X size={18} /> : <Plus size={18} />}
+                        {showForm ? 'Tutup Form' : 'Tambah Entry Baru'}
+                    </button>
+                    )}
+                    {userPerms.can_export && (
+                    <>
+                    <button
+                        type="button"
+                        disabled={exportingPdf}
+                        onClick={async () => {
+                            setExportingPdf(true);
+                            try { await entertainmentService.exportPdf(); toast.success('PDF berhasil diexport'); }
+                            catch (e) { toast.error(e.message || 'Gagal export PDF'); }
+                            finally { setExportingPdf(false); }
+                        }}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl hover:from-red-700 hover:to-rose-700 transition-all shadow-lg shadow-red-500/20 font-semibold text-sm disabled:opacity-50"
+                    >
+                        {exportingPdf ? <Loader2 size={18} className="animate-spin" /> : <FileText size={18} />}
+                        Export All PDF
+                    </button>
+                    <button
+                        type="button"
+                        disabled={exportingExcel}
+                        onClick={async () => {
+                            setExportingExcel(true);
+                            try { await entertainmentService.exportExcel(); toast.success('Excel berhasil diexport'); }
+                            catch (e) { toast.error(e.message || 'Gagal export Excel'); }
+                            finally { setExportingExcel(false); }
+                        }}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all shadow-lg shadow-green-500/20 font-semibold text-sm disabled:opacity-50"
+                    >
+                        {exportingExcel ? <Loader2 size={18} className="animate-spin" /> : <FileSpreadsheet size={18} />}
+                        Export Excel
+                    </button>
+                    </>
+                    )}
+                </div>
+            </div>
+            )}
+
+            {/* Tab Navigation */}
+            <div className="flex gap-1 bg-white dark:bg-slate-800/50 rounded-2xl p-1 border border-slate-200 dark:border-slate-700">
+                <button
+                    onClick={() => { setTab('pending'); setPage(1); }}
+                    className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all ${
+                        tab === 'pending'
+                            ? 'bg-indigo-600 text-white shadow-md'
+                            : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
+                    }`}
+                >
+                    Daftar Entertainment
+                </button>
+                <button
+                    onClick={() => { setTab('settled'); setPage(1); }}
+                    className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all ${
+                        tab === 'settled'
+                            ? 'bg-emerald-600 text-white shadow-md'
+                            : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
+                    }`}
+                >
+                    Penyelesaian / Settle
+                </button>
+                {isAdmin && (
+                    <button
+                        onClick={() => { setTab('rules'); setPage(1); }}
+                        className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all ${
+                            tab === 'rules'
+                                ? 'bg-amber-600 text-white shadow-md'
+                                : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
+                        }`}
+                    >
+                        Rules
+                    </button>
+                )}
+            </div>
+
+            {/* Search / Filter */}
+            <div className="bg-white dark:bg-slate-800/50 rounded-2xl p-4 border border-slate-200 dark:border-slate-700">
+                <div className="flex flex-wrap items-end gap-3">
+                    <div className="flex-1 min-w-[150px]">
+                        <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Filter Tanggal</label>
+                        <input type="date" value={searchParams.tanggal}
+                            onChange={e => setSearchParams(p => ({ ...p, tanggal: e.target.value }))}
+                            className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500" />
+                    </div>
+                    <div className="flex-1 min-w-[150px]">
+                        <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Filter Jenis</label>
+                        <select value={searchParams.jenis}
+                            onChange={e => setSearchParams(p => ({ ...p, jenis: e.target.value }))}
+                            className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500">
+                            <option value="">Semua</option>
+                            {JENIS_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
+                        </select>
+                    </div>
+                    <div className="flex-[2] min-w-[200px]">
+                        <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Pencarian</label>
+                        <div className="relative">
+                            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                            <input type="text" placeholder="Cari tempat, alamat, no GL, relasi... (tekan Enter)" value={searchParams.search}
+                                onChange={e => setSearchParams(p => ({ ...p, search: e.target.value }))}
+                                onKeyDown={handleSearchKeyDown}
+                                className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500" />
+                        </div>
+                    </div>
+                    <button onClick={() => { setPage(1); }}
+                        className="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors text-sm font-semibold">
+                        <Filter size={16} className="inline-block mr-1" />
+                        Filter
+                    </button>
+                    <button onClick={() => { setSearchParams({ tanggal: '', jenis: '', search: '' }); setPage(1); }}
+                        className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-sm font-semibold">
+                        <X size={16} className="inline-block mr-1" />
+                        Reset
+                    </button>
+                </div>
+            </div>
+
+            {/* Rules Tab Content */}
+            {tab === 'rules' && isAdmin && (
+                <div className="bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+                    <div className="px-6 py-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                        <h3 className="font-bold text-slate-700 dark:text-slate-200">
+                            <ClipboardList size={18} className="inline-block mr-2" />
+                            Entertainment Rules
+                        </h3>
+                        <button onClick={() => { setShowRuleForm(!showRuleForm); setEditingRule(null); setRuleForm({ rule_name: '', target_type: 'user', target_value: '', view_all: false, can_create: true, can_edit: true, can_delete: true, can_settle: true, can_export: true }); }}
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-xl hover:bg-amber-700 transition-colors text-sm font-semibold">
+                            <Plus size={16} /> {showRuleForm ? 'Tutup' : 'Tambah Rule'}
+                        </button>
+                    </div>
+
+                    {/* Rule Form */}
+                    <AnimatePresence>
+                        {showRuleForm && (
+                            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+                                className="border-b border-slate-200 dark:border-slate-700 overflow-hidden">
+                                <div className="p-6 space-y-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div>
+                                            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Rule Name *</label>
+                                            <input type="text" value={ruleForm.rule_name}
+                                                onChange={e => setRuleForm(p => ({ ...p, rule_name: e.target.value }))}
+                                                placeholder="Contoh: Allow finance view all"
+                                                className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Target Type *</label>
+                                            <select value={ruleForm.target_type}
+                                                onChange={e => setRuleForm(p => ({ ...p, target_type: e.target.value, target_value: '' }))}
+                                                className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm">
+                                                <option value="user">User</option>
+                                                <option value="division">Divisi</option>
+                                                <option value="role">Role</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">
+                                                {ruleForm.target_type === 'user' ? 'Username' : ruleForm.target_type === 'division' ? 'Nama Divisi' : 'Role ID'} *
+                                            </label>
+                                            {ruleForm.target_type === 'user' ? (
+                                                <select value={ruleForm.target_value}
+                                                    onChange={e => setRuleForm(p => ({ ...p, target_value: e.target.value }))}
+                                                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm">
+                                                    <option value="">Pilih User</option>
+                                                    {usersList.map(u => (
+                                                        <option key={u.username || u.id} value={u.username}>{u.name || u.username}</option>
+                                                    ))}
+                                                </select>
+                                            ) : ruleForm.target_type === 'division' ? (
+                                                <select value={ruleForm.target_value}
+                                                    onChange={e => setRuleForm(p => ({ ...p, target_value: e.target.value }))}
+                                                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm">
+                                                    <option value="">Pilih Divisi</option>
+                                                    {departmentsList.map(d => (
+                                                        <option key={d.id || d.name} value={d.name}>{d.name || d.label}</option>
+                                                    ))}
+                                                </select>
+                                            ) : (
+                                                <select value={ruleForm.target_value}
+                                                    onChange={e => setRuleForm(p => ({ ...p, target_value: e.target.value }))}
+                                                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm">
+                                                    <option value="">Pilih Role</option>
+                                                    {rolesList.map(r => (
+                                                        <option key={r.id} value={r.id}>{r.label || r.id}</option>
+                                                    ))}
+                                                </select>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">Permissions</label>
+                                        <div className="flex flex-wrap gap-3">
+                                            {[
+                                                { key: 'view_all', label: 'Lihat Semua Data (Bypass Row Security)' },
+                                                { key: 'can_create', label: 'Bisa Create' },
+                                                { key: 'can_edit', label: 'Bisa Edit' },
+                                                { key: 'can_delete', label: 'Bisa Delete' },
+                                                { key: 'can_settle', label: 'Bisa Settle' },
+                                                { key: 'can_export', label: 'Bisa Export' }
+                                            ].map(p => (
+                                                <label key={p.key} className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-600 text-sm">
+                                                    <input type="checkbox" checked={!!ruleForm[p.key]}
+                                                        onChange={e => setRuleForm(prev => ({ ...prev, [p.key]: e.target.checked }))}
+                                                        className="rounded border-slate-300 text-amber-600 focus:ring-amber-500" />
+                                                    <span className="text-slate-700 dark:text-slate-300">{p.label}</span>
+                                                </label>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-3">
+                                        <button onClick={handleSaveRule} disabled={ruleSubmitting}
+                                            className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-600 text-white rounded-xl hover:bg-amber-700 transition-colors text-sm font-semibold disabled:opacity-50">
+                                            {ruleSubmitting ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+                                            {editingRule ? 'Update' : 'Simpan'}
+                                        </button>
+                                        <button onClick={() => { setShowRuleForm(false); setEditingRule(null); }}
+                                            className="px-5 py-2.5 border border-slate-300 dark:border-slate-600 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm">
+                                            Batal
+                                        </button>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Rules Table */}
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                            <thead>
+                                <tr className="bg-slate-50 dark:bg-slate-700/50 text-xs font-semibold text-slate-500 dark:text-slate-300 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-left">Rule Name</th>
+                                    <th className="px-4 py-3 text-center">Target Type</th>
+                                    <th className="px-4 py-3 text-left">Target Value</th>
+                                    <th className="px-4 py-3 text-center">View All</th>
+                                    <th className="px-4 py-3 text-center">Create</th>
+                                    <th className="px-4 py-3 text-center">Edit</th>
+                                    <th className="px-4 py-3 text-center">Delete</th>
+                                    <th className="px-4 py-3 text-center">Settle</th>
+                                    <th className="px-4 py-3 text-center">Export</th>
+                                    <th className="px-4 py-3 text-center">Active</th>
+                                    <th className="px-4 py-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+                                {rules.length === 0 ? (
+                                    <tr><td colSpan={11} className="px-4 py-8 text-center text-slate-400">Belum ada rules</td></tr>
+                                ) : rules.map(rule => (
+                                    <tr key={rule.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30">
+                                        <td className="px-4 py-3 font-semibold">{rule.rule_name}</td>
+                                        <td className="px-4 py-3 text-center">
+                                            <span className={`px-2 py-1 rounded-lg text-xs font-semibold ${
+                                                rule.target_type === 'user' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' :
+                                                rule.target_type === 'division' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300' :
+                                                'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300'
+                                            }`}>{rule.target_type}</span>
+                                        </td>
+                                        <td className="px-4 py-3">{rule.target_value}</td>
+                                        <td className="px-4 py-3 text-center">{rule.view_all ? <CheckCircle2 size={16} className="inline text-green-500" /> : <X size={16} className="inline text-slate-300" />}</td>
+                                        <td className="px-4 py-3 text-center">{rule.can_create ? <CheckCircle2 size={16} className="inline text-green-500" /> : <X size={16} className="inline text-red-400" />}</td>
+                                        <td className="px-4 py-3 text-center">{rule.can_edit ? <CheckCircle2 size={16} className="inline text-green-500" /> : <X size={16} className="inline text-red-400" />}</td>
+                                        <td className="px-4 py-3 text-center">{rule.can_delete ? <CheckCircle2 size={16} className="inline text-green-500" /> : <X size={16} className="inline text-red-400" />}</td>
+                                        <td className="px-4 py-3 text-center">{rule.can_settle ? <CheckCircle2 size={16} className="inline text-green-500" /> : <X size={16} className="inline text-red-400" />}</td>
+                                        <td className="px-4 py-3 text-center">{rule.can_export ? <CheckCircle2 size={16} className="inline text-green-500" /> : <X size={16} className="inline text-red-400" />}</td>
+                                        <td className="px-4 py-3 text-center">
+                                            <span className={`px-2 py-1 rounded-lg text-xs font-semibold ${rule.is_active ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
+                                                {rule.is_active ? 'Active' : 'Inactive'}
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-3 text-center">
+                                            <div className="flex items-center justify-center gap-1">
+                                                <button onClick={() => { setEditingRule(rule); setRuleForm({ rule_name: rule.rule_name, target_type: rule.target_type, target_value: rule.target_value, view_all: rule.view_all, can_create: rule.can_create, can_edit: rule.can_edit, can_delete: rule.can_delete, can_settle: rule.can_settle, can_export: rule.can_export }); setShowRuleForm(true); }}
+                                                    className="p-1.5 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg" title="Edit">
+                                                    <Edit3 size={16} />
+                                                </button>
+                                                <button onClick={() => handleDeleteRule(rule.id)}
+                                                    className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg" title="Hapus">
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            )}
+
+            {/* Form */}
+            <AnimatePresence>
+                {showForm && (
+                    <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
+                        className="bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+                        <div className="bg-gradient-to-r from-indigo-600 to-blue-600 px-6 py-4">
+                            <h3 className="text-white font-bold text-lg">{editingId ? 'Edit Entry' : 'Entry Baru'} Entertainment Expenses</h3>
+                        </div>
+                        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {/* Tanggal */}
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Tanggal *</label>
+                                    <input type="date" value={form.tanggal}
+                                        onChange={e => setForm(p => ({ ...p, tanggal: e.target.value }))}
+                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.tanggal ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
+                                    {errors.tanggal && <p className="text-red-500 text-xs mt-1">{errors.tanggal}</p>}
+                                </div>
+                                {/* Tempat */}
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Tempat *</label>
+                                    <input type="text" value={form.tempat}
+                                        onChange={e => setForm(p => ({ ...p, tempat: e.target.value }))}
+                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.tempat ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
+                                    {errors.tempat && <p className="text-red-500 text-xs mt-1">{errors.tempat}</p>}
+                                </div>
+                                {/* Jenis */}
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Jenis *</label>
+                                    <select value={form.jenis}
+                                        onChange={e => setForm(p => ({ ...p, jenis: e.target.value }))}
+                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.jenis ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`}>
+                                        <option value="">Pilih Jenis</option>
+                                        {JENIS_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
+                                    </select>
+                                    {errors.jenis && <p className="text-red-500 text-xs mt-1">{errors.jenis}</p>}
+                                    {form.jenis === 'Custom' && (
+                                        <input type="text" placeholder="Masukkan jenis custom..." value={form.custom_jenis}
+                                            onChange={e => setForm(p => ({ ...p, custom_jenis: e.target.value }))}
+                                            className={`mt-2 w-full px-3 py-2 rounded-xl border ${errors.custom_jenis ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm`} />
+                                    )}
+                                    {errors.custom_jenis && <p className="text-red-500 text-xs mt-1">{errors.custom_jenis}</p>}
+                                </div>
+                            </div>
+                            {/* Alamat (full width) */}
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Alamat *</label>
+                                <textarea value={form.alamat}
+                                    onChange={e => setForm(p => ({ ...p, alamat: e.target.value }))}
+                                    rows={2}
+                                    className={`w-full px-3 py-2.5 rounded-xl border ${errors.alamat ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
+                                {errors.alamat && <p className="text-red-500 text-xs mt-1">{errors.alamat}</p>}
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                {/* Nilai */}
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Nilai (Rp) *</label>
+                                    <div className="relative">
+                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">Rp</span>
+                                        <input type="text" value={form.nilai ? formatCurrency(form.nilai) : ''}
+                                            onChange={handleNilaiChange}
+                                            className={`w-full pl-10 pr-3 py-2.5 rounded-xl border ${errors.nilai ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
+                                    </div>
+                                    {errors.nilai && <p className="text-red-500 text-xs mt-1">{errors.nilai}</p>}
+                                </div>
+                                {/* No GL */}
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">No GL *</label>
+                                    <input type="text" value={form.no_gl}
+                                        onChange={e => setForm(p => ({ ...p, no_gl: e.target.value }))}
+                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.no_gl ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
+                                    {errors.no_gl && <p className="text-red-500 text-xs mt-1">{errors.no_gl}</p>}
+                                </div>
+                                {/* Jenis Usaha */}
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Jenis Usaha *</label>
+                                    <select value={form.jenis_usaha}
+                                        onChange={e => setForm(p => ({ ...p, jenis_usaha: e.target.value, custom_jenis_usaha: '' }))}
+                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.jenis_usaha ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`}>
+                                        <option value="">Pilih Jenis Usaha</option>
+                                        {JENIS_USAHA_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
+                                    </select>
+                                    {errors.jenis_usaha && <p className="text-red-500 text-xs mt-1">{errors.jenis_usaha}</p>}
+                                    {form.jenis_usaha === 'Custom' && (
+                                        <input type="text" placeholder="Masukkan jenis usaha custom..." value={form.custom_jenis_usaha}
+                                            onChange={e => setForm(p => ({ ...p, custom_jenis_usaha: e.target.value }))}
+                                            className={`mt-2 w-full px-3 py-2 rounded-xl border ${errors.custom_jenis_usaha ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm`} />
+                                    )}
+                                    {errors.custom_jenis_usaha && <p className="text-red-500 text-xs mt-1">{errors.custom_jenis_usaha}</p>}
+                                </div>
+                            </div>
+                            {/* Relasi + Jabatan + Perusahaan Group */}
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">Relasi & Perusahaan *</label>
+                                {form.groups.map((grp, idx) => (
+                                    <div key={idx} className="bg-slate-50 dark:bg-slate-700/30 rounded-xl p-3 mb-3 border border-slate-200 dark:border-slate-600">
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                                            <div>
+                                                <label className="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Nama Relasi *</label>
+                                                <input type="text" value={grp.relasi}
+                                                    onChange={e => updateGroup(idx, 'relasi', e.target.value)}
+                                                    placeholder={`Relasi ${idx + 1}`}
+                                                    className={`w-full px-3 py-2 rounded-lg border ${errors.groups ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm`} />
+                                            </div>
+                                            <div>
+                                                <label className="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Jabatan</label>
+                                                <input type="text" value={grp.jabatan}
+                                                    onChange={e => updateGroup(idx, 'jabatan', e.target.value)}
+                                                    placeholder={`Jabatan ${idx + 1}`}
+                                                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm" />
+                                            </div>
+                                            <div>
+                                                <label className="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Nama Perusahaan *</label>
+                                                <input type="text" value={grp.nama_perusahaan}
+                                                    onChange={e => updateGroup(idx, 'nama_perusahaan', e.target.value)}
+                                                    placeholder={`Perusahaan ${idx + 1}`}
+                                                    className={`w-full px-3 py-2 rounded-lg border ${errors.groups ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm`} />
+                                            </div>
+                                        </div>
+                                        {form.groups.length > 1 && (
+                                            <button type="button" onClick={() => removeGroup(idx)}
+                                                className="mt-2 p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-xs flex items-center gap-1">
+                                                <X size={14} /> Hapus Group
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
+                                <div className="flex flex-wrap items-center justify-between gap-3 mt-1">
+                                    <button type="button" onClick={addGroup}
+                                        className="inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-700 text-sm font-semibold">
+                                        <Plus size={14} /> Tambah Group Relasi
+                                    </button>
+                                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700">
+                                        <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-300 uppercase tracking-wide">Jumlah Relasi</span>
+                                        <span className="inline-flex items-center justify-center min-w-[28px] h-7 px-2 rounded-lg bg-indigo-600 text-white text-sm font-bold">
+                                            {jumlahRelasi}
+                                        </span>
+                                        <span className="text-xs text-slate-500 dark:text-slate-400">
+                                            orang diisi dari {form.groups.length} group
+                                        </span>
+                                    </div>
+                                </div>
+                                {errors.groups && <p className="text-red-500 text-xs mt-1">{errors.groups}</p>}
+                            </div>
+
+                            {/* Catatan/Kode */}
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Catatan/Kode *</label>
+                                <textarea value={form.catatan_kode}
+                                    onChange={e => setForm(p => ({ ...p, catatan_kode: e.target.value }))}
+                                    rows={2}
+                                    className={`w-full px-3 py-2.5 rounded-xl border ${errors.catatan_kode ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
+                                {errors.catatan_kode && <p className="text-red-500 text-xs mt-1">{errors.catatan_kode}</p>}
+                            </div>
+
+                            {/* Attachments */}
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">
+                                    Lampiran * {errors.attachments && <span className="text-red-500">- {errors.attachments}</span>}
+                                </label>
+                                <div
+                                    ref={pasteZoneRef}
+                                    tabIndex={0}
+                                    onPaste={handlePaste}
+                                    onFocus={e => e.currentTarget?.classList?.add('ring-2', 'ring-emerald-500')}
+                                    onBlur={e => e.currentTarget?.classList?.remove('ring-2', 'ring-emerald-500')}
+                                    className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-6 text-center hover:border-emerald-500 transition-colors cursor-pointer outline-none"
+                                    onClick={() => fileInputRef.current?.click()}
+                                >
+                                    <Upload size={32} className="mx-auto text-slate-400 mb-2" />
+                                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                                        Klik untuk upload atau <strong>Paste (Ctrl+V)</strong> dari clipboard
+                                    </p>
+                                    <p className="text-xs text-slate-400 mt-1">Support: PDF, JPG, PNG, DOCX, XLSX, dll</p>
+                                    <input ref={fileInputRef} type="file" multiple
+                                        onChange={handleFileChange}
+                                        accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx,.txt,.csv"
+                                        className="hidden" />
+                                </div>
+
+                                {/* Preview existing attachments */}
+                                {existingAttachments.length > 0 && (
+                                    <div className="mt-3">
+                                        <p className="text-xs font-semibold text-slate-500 mb-2">Lampiran Tersimpan ({existingAttachments.length}):</p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {existingAttachments.map((att, idx) => (
+                                                <div key={idx} className="relative group bg-slate-100 dark:bg-slate-700 rounded-lg p-2 flex items-center gap-2">
+                                                    {att.mimetype?.startsWith('image/') ? (
+                                                        <img src={att.url} alt={att.name} className="w-10 h-10 object-cover rounded" />
+                                                    ) : (
+                                                        <div className="w-10 h-10 flex items-center justify-center bg-slate-200 dark:bg-slate-600 rounded">
+                                                            <FileText size={20} className="text-slate-500" />
+                                                        </div>
+                                                    )}
+                                                    <span className="text-xs truncate max-w-[120px]">{att.name}</span>
+                                                    <button type="button" onClick={(e) => removeExistingAttachment(idx, e)}
+                                                        className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <X size={10} />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Preview new attachments */}
+                                {attachments.length > 0 && (
+                                    <div className="mt-3">
+                                        <p className="text-xs font-semibold text-slate-500 mb-2">Lampiran Baru ({attachments.length}):</p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {attachments.map((file, idx) => (
+                                                <div key={idx} className="relative group bg-slate-100 dark:bg-slate-700 rounded-lg p-2 flex items-center gap-2">
+                                                    {file.type?.startsWith('image/') ? (
+                                                        <img src={URL.createObjectURL(file)} alt={file.name} className="w-10 h-10 object-cover rounded" />
+                                                    ) : (
+                                                        <div className="w-10 h-10 flex items-center justify-center bg-slate-200 dark:bg-slate-600 rounded">
+                                                            <FileText size={20} className="text-slate-500" />
+                                                        </div>
+                                                    )}
+                                                    <span className="text-xs truncate max-w-[120px]">{file.name}</span>
+                                                    <button type="button" onClick={(e) => removeAttachment(idx, e)}
+                                                        className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <X size={10} />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Submit */}
+                            <div className="flex items-center gap-3 pt-2">
+                                <button type="submit" disabled={submitting}
+                                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl hover:from-indigo-500 hover:to-blue-500 transition-all shadow-lg font-semibold disabled:opacity-50">
+                                    {submitting ? (
+                                        <Loader2 size={18} className="animate-spin" />
+                                    ) : (
+                                        <Save size={18} />
+                                    )}
+                                    {submitting ? 'Menyimpan...' : (editingId ? 'Update' : 'Simpan')}
+                                </button>
+                                <button type="button" onClick={() => { resetForm(); setShowForm(false); }}
+                                    className="px-6 py-3 border border-slate-300 dark:border-slate-600 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                                    Batal
+                                </button>
+                            </div>
+                        </form>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+            {/* Table */}
+            <div className="bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+                <div className="px-6 py-4 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 border-b border-slate-200 dark:border-slate-700">
+                    <h3 className="font-bold text-slate-700 dark:text-slate-200">
+                        <ClipboardList size={18} className="inline-block mr-2" />
+                        Daftar Entertainment Expenses
+                        <span className="ml-2 text-sm font-normal text-slate-400">({totalEntries} entries)</span>
+                    </h3>
+                </div>
+                <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                        <thead>
+                            <tr className="bg-slate-50 dark:bg-slate-700/50 text-xs font-semibold text-slate-500 dark:text-slate-300 uppercase tracking-wider">
+                                <th className="px-4 py-3 text-center w-32">Aksi</th>
+                                <th className="px-4 py-3 text-left">Tanggal</th>
+                                <th className="px-4 py-3 text-left">No Ref</th>
+                                <th className="px-4 py-3 text-left">Nama Relasi</th>
+                                <th className="px-4 py-3 text-left">Jabatan</th>
+                                <th className="px-4 py-3 text-right">Nilai</th>
+                                <th className="px-4 py-3 text-left">Jenis</th>
+                                <th className="px-4 py-3 text-left">Pengaju</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+                            {loading ? (
+                                <tr><td colSpan={8} className="px-4 py-8 text-center text-slate-400">Memuat data...</td></tr>
+                            ) : data.length === 0 ? (
+                                <tr><td colSpan={8} className="px-4 py-8 text-center text-slate-400">Belum ada data</td></tr>
+                            ) : data.map(item => (
+                                <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
+                                    <td className="px-4 py-3">
+                                        {tab === 'pending' ? (
+                                            <div className="flex items-center justify-center gap-1">
+                                                <button onClick={() => handlePreview(item)}
+                                                    className="p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" title="Preview">
+                                                    <Eye size={16} />
+                                                </button>
+                                                {userPerms.can_edit && (
+                                                <button onClick={() => handleEdit(item)}
+                                                    className="p-1.5 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition-colors" title="Edit">
+                                                    <Edit3 size={16} />
+                                                </button>
+                                                )}
+                                                {userPerms.can_settle && (
+                                                <button onClick={() => handleSettle(item)}
+                                                    className="p-1.5 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors" title="Settle">
+                                                    <CheckCircle2 size={16} />
+                                                </button>
+                                                )}
+                                                {userPerms.can_export && (
+                                                <button type="button" onClick={async (ev) => {
+                                                        ev.stopPropagation();
+                                                        try { await entertainmentService.exportPdf(item.id); toast.success('PDF berhasil diexport'); }
+                                                        catch (e) { toast.error(e.message || 'Gagal export PDF'); }
+                                                    }}
+                                                    className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Export PDF">
+                                                    <FileText size={16} />
+                                                </button>
+                                                )}
+                                                {userPerms.can_delete && (
+                                                <button type="button" onClick={() => handleDelete(item.id)}
+                                                    className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Hapus">
+                                                    <Trash2 size={16} />
+                                                </button>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-center justify-center gap-1">
+                                                <button onClick={() => handlePreview(item)}
+                                                    className="p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" title="Preview">
+                                                    <Eye size={16} />
+                                                </button>
+                                                {userPerms.can_export && (
+                                                <button type="button" onClick={async (ev) => {
+                                                        ev.stopPropagation();
+                                                        try { await entertainmentService.exportPdf(item.id); toast.success('PDF berhasil diexport'); }
+                                                        catch (e) { toast.error(e.message || 'Gagal export PDF'); }
+                                                    }}
+                                                    className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Export PDF">
+                                                    <FileText size={16} />
+                                                </button>
+                                                )}
+                                            </div>
+                                        )}
+                                    </td>
+                                    <td className="px-4 py-3 whitespace-nowrap">{item.tanggal}</td>
+                                    <td className="px-4 py-3 font-mono text-xs">{item.no_ref || `ENT-${String(item.id).padStart(5, '0')}`}</td>
+                                    <td className="px-4 py-3 max-w-[150px] truncate" title={(item.relasi || []).join(', ')}>
+                                        {(item.relasi || []).join(', ') || '-'}
+                                    </td>
+                                    <td className="px-4 py-3 max-w-[120px] truncate" title={(item.nama_perusahaan || []).join(', ')}>
+                                        {(item.nama_perusahaan || []).join(', ') || '-'}
+                                    </td>
+                                    <td className="px-4 py-3 text-right font-mono whitespace-nowrap">
+                                        {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.nilai)}
+                                    </td>
+                                    <td className="px-4 py-3">
+                                        <span className="px-2 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-lg text-xs font-semibold">
+                                            {item.jenis === 'Custom' ? item.custom_jenis : item.jenis}
+                                        </span>
+                                    </td>
+                                    <td className="px-4 py-3 text-xs">{item.requester_name || item.requester_username}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {/* Pagination */}
+            {totalPages > 1 && (
+                <div className="flex items-center justify-between px-6 py-3 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+                    <div className="text-sm text-slate-500 dark:text-slate-400">
+                        Halaman {page} dari {totalPages} ({totalEntries} data)
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setPage(p => Math.max(1, p - 1))}
+                            disabled={page <= 1}
+                            className="px-3 py-1.5 text-sm font-semibold rounded-lg border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                            Previous
+                        </button>
+                        {Array.from({ length: totalPages }, (_, i) => i + 1)
+                            .filter(p => p === 1 || p === totalPages || Math.abs(p - page) <= 2)
+                            .map((p, idx, arr) => (
+                                <React.Fragment key={p}>
+                                    {idx > 0 && arr[idx - 1] !== p - 1 && (
+                                        <span className="px-1 text-slate-400">...</span>
+                                    )}
+                                    <button
+                                        onClick={() => setPage(p)}
+                                        className={`min-w-[36px] h-9 text-sm font-semibold rounded-lg transition-colors ${
+                                            p === page
+                                                ? 'bg-indigo-600 text-white shadow-md'
+                                                : 'border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
+                                        }`}
+                                    >
+                                        {p}
+                                    </button>
+                                </React.Fragment>
+                            ))}
+                        <button
+                            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                            disabled={page >= totalPages}
+                            className="px-3 py-1.5 text-sm font-semibold rounded-lg border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                            Next
+                        </button>
+                    </div>
+                </div>
+            )}
+            {/* Settle Modal */}
+            <AnimatePresence>
+                {showSettleModal && settleItem && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                        onClick={() => setShowSettleModal(false)}>
+                        <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }}
+                            className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto"
+                            onClick={e => e.stopPropagation()}>
+                            <div className="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+                                <h3 className="text-white font-bold text-lg flex items-center gap-2">
+                                    <CheckCircle2 size={20} /> Settle Entertainment
+                                </h3>
+                                <button onClick={() => setShowSettleModal(false)}
+                                    className="p-1.5 text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition-colors">
+                                    <X size={20} />
+                                </button>
+                            </div>
+                            <div className="p-6 space-y-5">
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <div>
+                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Tanggal</label>
+                                        <input type="date" value={settleForm.tanggal || ''}
+                                            onChange={e => setSettleForm(p => ({ ...p, tanggal: e.target.value }))}
+                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Tempat</label>
+                                        <input type="text" value={settleForm.tempat || ''}
+                                            onChange={e => setSettleForm(p => ({ ...p, tempat: e.target.value }))}
+                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Jenis</label>
+                                        <select value={settleForm.jenis || ''}
+                                            onChange={e => setSettleForm(p => ({ ...p, jenis: e.target.value }))}
+                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500">
+                                            <option value="">Pilih</option>
+                                            {JENIS_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
+                                        </select>
+                                        {settleForm.jenis === 'Custom' && (
+                                            <input type="text" placeholder="Custom jenis" value={settleForm.custom_jenis || ''}
+                                                onChange={e => setSettleForm(p => ({ ...p, custom_jenis: e.target.value }))}
+                                                className="mt-2 w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm" />
+                                        )}
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Alamat</label>
+                                    <textarea value={settleForm.alamat || ''}
+                                        onChange={e => setSettleForm(p => ({ ...p, alamat: e.target.value }))}
+                                        rows={2}
+                                        className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500" />
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Nilai (Rp)</label>
+                                        <input type="text" value={settleForm.nilai || ''}
+                                            onChange={e => setSettleForm(p => ({ ...p, nilai: e.target.value }))}
+                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">No GL</label>
+                                        <input type="text" value={settleForm.no_gl || ''}
+                                            onChange={e => setSettleForm(p => ({ ...p, no_gl: e.target.value }))}
+                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Jenis Usaha</label>
+                                        <select value={settleForm.jenis_usaha || ''}
+                                            onChange={e => setSettleForm(p => ({ ...p, jenis_usaha: e.target.value, custom_jenis_usaha: '' }))}
+                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500">
+                                            <option value="">Pilih</option>
+                                            {JENIS_USAHA_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
+                                        </select>
+                                        {settleForm.jenis_usaha === 'Custom' && (
+                                            <input type="text" placeholder="Custom jenis usaha" value={settleForm.custom_jenis_usaha || ''}
+                                                onChange={e => setSettleForm(p => ({ ...p, custom_jenis_usaha: e.target.value }))}
+                                                className="mt-2 w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm" />
+                                        )}
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">Relasi & Perusahaan</label>
+                                    {settleForm.groups && settleForm.groups.map((grp, idx) => (
+                                        <div key={idx} className="bg-slate-50 dark:bg-slate-700/30 rounded-xl p-3 mb-3 border border-slate-200 dark:border-slate-600">
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                                                <input type="text" value={grp.relasi || ''}
+                                                    onChange={e => {
+                                                        const g = [...settleForm.groups];
+                                                        g[idx] = { ...g[idx], relasi: e.target.value };
+                                                        setSettleForm(p => ({ ...p, groups: g }));
+                                                    }}
+                                                    placeholder="Nama Relasi"
+                                                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm" />
+                                                <input type="text" value={grp.jabatan || ''}
+                                                    onChange={e => {
+                                                        const g = [...settleForm.groups];
+                                                        g[idx] = { ...g[idx], jabatan: e.target.value };
+                                                        setSettleForm(p => ({ ...p, groups: g }));
+                                                    }}
+                                                    placeholder="Jabatan"
+                                                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm" />
+                                                <div className="flex gap-1">
+                                                    <input type="text" value={grp.nama_perusahaan || ''}
+                                                        onChange={e => {
+                                                            const g = [...settleForm.groups];
+                                                            g[idx] = { ...g[idx], nama_perusahaan: e.target.value };
+                                                            setSettleForm(p => ({ ...p, groups: g }));
+                                                        }}
+                                                        placeholder="Nama Perusahaan"
+                                                        className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm" />
+                                                    {settleForm.groups.length > 1 && (
+                                                        <button type="button" onClick={() => {
+                                                            const g = settleForm.groups.filter((_, i) => i !== idx);
+                                                            setSettleForm(p => ({ ...p, groups: g }));
+                                                        }} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg shrink-0" title="Hapus relasi">
+                                                            <Trash2 size={14} />
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <button type="button" onClick={() => {
+                                        const g = [...(settleForm.groups || []), { relasi: '', jabatan: '', nama_perusahaan: '' }];
+                                        setSettleForm(p => ({ ...p, groups: g }));
+                                    }} className="flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 font-semibold mt-1">
+                                        <Plus size={14} /> Tambah Relasi
+                                    </button>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Catatan/Kode</label>
+                                    <textarea value={settleForm.catatan_kode || ''}
+                                        onChange={e => setSettleForm(p => ({ ...p, catatan_kode: e.target.value }))}
+                                        rows={2}
+                                        className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500" />
+                                </div>
+                                {/* Tanggal Settle (required) */}
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">
+                                        Tanggal Settle <span className="text-red-500">*</span>
+                                    </label>
+                                    <input type="date" value={settleForm.settle_date || ''}
+                                        onChange={e => setSettleForm(p => ({ ...p, settle_date: e.target.value }))}
+                                        className="w-full px-3 py-2.5 rounded-xl border border-emerald-400 dark:border-emerald-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500" />
+                                </div>
+                                {/* Lampiran */}
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Lampiran</label>
+                                    <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-6 text-center hover:border-emerald-500 transition-colors cursor-pointer"
+                                        onClick={() => settleFileInputRef.current?.click()}>
+                                        <Upload size={24} className="mx-auto text-slate-400 mb-2" />
+                                        <p className="text-sm text-slate-500 dark:text-slate-400">Klik untuk upload lampiran tambahan</p>
+                                        <input ref={settleFileInputRef} type="file" multiple
+                                            onChange={(e) => {
+                                                const files = Array.from(e.target.files || []);
+                                                setSettleAttachments(prev => [...prev, ...files]);
+                                                if (settleFileInputRef.current) settleFileInputRef.current.value = '';
+                                            }}
+                                            className="hidden" />
+                                    </div>
+                                    {settleExistingAttachments.length > 0 && (
+                                        <div className="mt-3">
+                                            <p className="text-xs font-semibold text-slate-500 mb-2">Lampiran Tersimpan ({settleExistingAttachments.length}):</p>
+                                            <div className="flex flex-wrap gap-2">
+                                                {settleExistingAttachments.map((att, idx) => (
+                                                    <div key={idx} className="relative group bg-slate-100 dark:bg-slate-700 rounded-lg p-2 flex items-center gap-2">
+                                                        {att.mimetype?.startsWith('image/') ? (
+                                                            <img src={att.url} alt={att.name} className="w-10 h-10 object-cover rounded" />
+                                                        ) : (
+                                                            <div className="w-10 h-10 flex items-center justify-center bg-slate-200 dark:bg-slate-600 rounded">
+                                                                <FileText size={20} className="text-slate-500" />
+                                                            </div>
+                                                        )}
+                                                        <span className="text-xs truncate max-w-[120px]">{att.name}</span>
+                                                        <button type="button" onClick={(e) => { e.stopPropagation(); setSettleExistingAttachments(prev => prev.filter((_, i) => i !== idx)); }}
+                                                            className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <X size={10} />
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                    {settleAttachments.length > 0 && (
+                                        <div className="mt-3">
+                                            <p className="text-xs font-semibold text-slate-500 mb-2">Lampiran Baru ({settleAttachments.length}):</p>
+                                            <div className="flex flex-wrap gap-2">
+                                                {settleAttachments.map((file, idx) => (
+                                                    <div key={idx} className="relative group bg-slate-100 dark:bg-slate-700 rounded-lg p-2 flex items-center gap-2">
+                                                        {file.type?.startsWith('image/') ? (
+                                                            <img src={URL.createObjectURL(file)} alt={file.name} className="w-10 h-10 object-cover rounded" />
+                                                        ) : (
+                                                            <div className="w-10 h-10 flex items-center justify-center bg-slate-200 dark:bg-slate-600 rounded">
+                                                                <FileText size={20} className="text-slate-500" />
+                                                            </div>
+                                                        )}
+                                                        <span className="text-xs truncate max-w-[120px]">{file.name}</span>
+                                                        <button type="button" onClick={(e) => { e.stopPropagation(); setSettleAttachments(prev => prev.filter((_, i) => i !== idx)); }}
+                                                            className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <X size={10} />
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="flex items-center gap-3 pt-2 border-t border-slate-200 dark:border-slate-700">
+                                    <button type="button" disabled={settleSubmitting}
+                                        onClick={handleSettleSubmit}
+                                        className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl hover:from-emerald-500 hover:to-teal-500 transition-all shadow-lg font-semibold disabled:opacity-50">
+                                        {settleSubmitting ? (
+                                            <Loader2 size={18} className="animate-spin" />
+                                        ) : (
+                                            <CheckCircle2 size={18} />
+                                        )}
+                                        {settleSubmitting ? 'Processing...' : 'Settle'}
+                                    </button>
+                                    <button type="button" onClick={() => { setShowSettleModal(false); setSettleAttachments([]); setSettleExistingAttachments([]); }}
+                                        className="px-6 py-3 border border-slate-300 dark:border-slate-600 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                                        Batal
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+            {/* Preview Modal */}
+            <AnimatePresence>
+                {showPreview && previewData && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                        onClick={() => setShowPreview(false)}>
+                        <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }}
+                            className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+                            onClick={e => e.stopPropagation()}>
+                            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+                                <h3 className="text-white font-bold text-lg">Preview Entertainment Expenses</h3>
+                                <button onClick={() => setShowPreview(false)}
+                                    className="p-1.5 text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition-colors">
+                                    <X size={20} />
+                                </button>
+                            </div>
+                            <div className="p-6 space-y-4">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <DetailField label="Tanggal" value={previewData.tanggal} />
+                                    <DetailField label="Tempat" value={previewData.tempat} />
+                                    <DetailField label="Alamat" value={previewData.alamat} />
+                                    <DetailField label="Jenis" value={previewData.jenis === 'Custom' ? previewData.custom_jenis : previewData.jenis} />
+                                    <DetailField label="Nilai" value={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(previewData.nilai)} />
+                                    <DetailField label="No GL" value={previewData.no_gl} />
+                                    <DetailField label="Nama Relasi" value={(previewData.relasi || []).join(', ')} />
+                                    <DetailField label="Jabatan" value={(previewData.jabatan || []).join(', ')} />
+                                    <DetailField label="Jumlah Relasi" value={`${previewData.jumlah_relasi || (previewData.relasi || []).length || 0} orang`} />
+                                    <DetailField label="Nama Perusahaan" value={(previewData.nama_perusahaan || []).join(', ')} />
+                                    <DetailField label="Jenis Usaha" value={previewData.jenis_usaha} />
+                                    <DetailField label="Catatan/Kode" value={previewData.catatan_kode} />
+                                    <DetailField label="Pengaju" value={previewData.requester_name || previewData.requester_username} />
+                                </div>
+                                <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+                                    <h4 className="text-sm font-semibold text-slate-600 dark:text-slate-300 mb-3">Lampiran:</h4>
+                                    <div className="flex flex-wrap gap-3">
+                                        {(previewData.attachments || []).length === 0 ? (
+                                            <p className="text-sm text-slate-400">Tidak ada lampiran</p>
+                                        ) : previewData.attachments.map((att, idx) => (
+                                            <a key={idx} href={att.url} target="_blank" rel="noopener noreferrer"
+                                                className="flex items-center gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
+                                                {att.mimetype?.startsWith('image/') ? (
+                                                    <img src={att.url} alt={att.name} className="w-8 h-8 object-cover rounded" />
+                                                ) : (
+                                                    <FileText size={20} className="text-slate-500" />
+                                                )}
+                                                <span className="text-xs text-slate-600 dark:text-slate-300 truncate max-w-[150px]">{att.name}</span>
+                                            </a>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="border-t border-slate-200 dark:border-slate-700 pt-4 flex items-center gap-3">
+                                    <button type="button" onClick={async () => {
+                                            try { await entertainmentService.exportPdf(previewData.id); toast.success('PDF berhasil diexport'); }
+                                            catch (e) { toast.error(e.message || 'Gagal export PDF'); }
+                                        }}
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors text-sm font-semibold">
+                                        <FileText size={16} /> Export PDF
+                                    </button>
+                                    <button type="button" onClick={async () => {
+                                            try { await entertainmentService.exportExcel(previewData.id); toast.success('Excel berhasil diexport'); }
+                                            catch (e) { toast.error(e.message || 'Gagal export Excel'); }
+                                        }}
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors text-sm font-semibold">
+                                        <FileSpreadsheet size={16} /> Export Excel
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+            </div>
+    );
+}
+
+function DetailField({ label, value }) {
+    return (
+        <div>
+            <label className="block text-xs font-semibold text-slate-400 dark:text-slate-500 mb-0.5">{label}</label>
+            <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{value || '-'}</p>
+        </div>
+    );
+}

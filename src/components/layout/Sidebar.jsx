@@ -23,7 +23,8 @@ import {
     ClipboardCheck,
     Languages,
     Pin,
-    PinOff
+    PinOff,
+    Receipt,
 } from 'lucide-react';
 
 import './Sidebar.css';
@@ -132,7 +133,7 @@ const Sidebar = ({
                         items: [
                             { id: 'inventory', icon: Grid3x3, labelKey: 'sidebar.item.filling' },
                             { id: 'documents', icon: FileStack, labelKey: 'sidebar.item.documents' },
-                            { id: 'approvals', icon: FileCheck, labelKey: 'sidebar.item.approvals' },
+                            { id: 'entertainment', icon: Receipt, labelKey: 'sidebar.item.entertainment' },
                         ]
                     },
                     {

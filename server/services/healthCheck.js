@@ -1,5 +1,6 @@
 import { knex } from '../db.js';
 import { connection } from '../utils/queue.js';
+import { sanitizeApiKey } from './aiAgent.js';
 
 // ── Lightweight health checks for each critical dependency ──
 
@@ -40,7 +41,7 @@ async function checkEmbeddingApi() {
         const url = settings.base_url.replace(/\/+$/, '') + '/embeddings';
         const res = await fetch(url, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${settings.api_key}` },
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${sanitizeApiKey(settings.api_key)}` },
             body: JSON.stringify({ model: 'we/text-embedding-v3', input: 'health-check' }),
             signal: AbortSignal.timeout(4000),
         });
@@ -63,7 +64,7 @@ async function checkLlmApi() {
         const url = settings.base_url.replace(/\/+$/, '') + '/models';
         const res = await fetch(url, {
             method: 'GET',
-            headers: { Authorization: `Bearer ${settings.api_key}` },
+            headers: { Authorization: `Bearer ${sanitizeApiKey(settings.api_key)}` },
             signal: AbortSignal.timeout(4000),
         });
         const latencyMs = Date.now() - start;

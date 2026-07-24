@@ -1,4 +1,5 @@
 import { knex } from '../db.js';
+import { sanitizeApiKey } from './aiAgent.js';
 
 // ── Categories ──
 const CATEGORIES = ['tax_regulation', 'accounting_standard', 'procedure', 'guide', 'general'];
@@ -86,7 +87,7 @@ Ekstrak dalam format JSON (hanya JSON, tanpa penjelasan tambahan):
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${settings.api_key}`,
+                'Authorization': `Bearer ${sanitizeApiKey(settings.api_key)}`,
             },
             body: JSON.stringify({
                 model: settings.model || 'gpt-4',

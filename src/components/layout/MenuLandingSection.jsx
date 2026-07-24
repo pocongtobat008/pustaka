@@ -20,6 +20,7 @@ import {
   Rocket,
   ShieldCheck,
   Sparkles,
+  Receipt,
   Users,
   X,
   Zap,
@@ -302,6 +303,29 @@ const menuLandingConfig = {
       { label: 'Ke Master Data', tab: 'master', icon: Users },
     ],
   },
+  entertainment: {
+    kicker: 'Expense Management',
+    title: 'Entertainment Expenses Report',
+    subtitle:
+      'Kelola laporan biaya entertainment dengan lampiran, preview, dan export PDF/Excel untuk akuntabilitas yang jelas.',
+    icon: Receipt,
+    accent: 'from-emerald-500 to-teal-600',
+    features: [
+      'Formulir lengkap dengan validasi mandatory untuk semua field.',
+      'Upload multiple lampiran dengan paste dari clipboard.',
+      'Export PDF dan Excel untuk pelaporan keuangan.',
+    ],
+    functions: [
+      'Mencatat biaya entertainment secara terstruktur dan terverifikasi.',
+      'Memudahkan audit dan compliance dengan dokumen pendukung.',
+      'Mengotomatisasi pelaporan biaya ke finance atau akuntansi.',
+    ],
+    useCases: ['Klaim biaya meeting', 'Laporan entertainment client', 'Audit biaya operasional'],
+    quickActions: [
+      { label: 'Lihat Dokumen', tab: 'documents', icon: FileDigit },
+      { label: 'Ke Dashboard', tab: 'dashboard', icon: Rocket },
+    ],
+  },
 };
 
 const manualAdvantageMap = {
@@ -364,6 +388,11 @@ const manualAdvantageMap = {
     'Struktur COA tidak lagi dikelola manual di spreadsheet yang rawan inkonsistensi.',
     'Pencarian akun lebih cepat dibanding scroll daftar panjang secara manual.',
     'Import Excel mengurangi risiko input data salah saat setup awal COA.',
+  ],
+  entertainment: [
+    'Biaya entertainment tercatat lengkap dengan lampiran, bukan hanya nominal.',
+    'Validasi mandatory mencegah data tidak beraturan yang menyulitkan audit.',
+    'Export PDF/Excel mempermudah pelaporan ke finance tanpa rekap manual.',
   ],
 };
 
