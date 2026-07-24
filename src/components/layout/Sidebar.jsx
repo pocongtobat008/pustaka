@@ -133,7 +133,6 @@ const Sidebar = ({
                         items: [
                             { id: 'inventory', icon: Grid3x3, labelKey: 'sidebar.item.filling' },
                             { id: 'documents', icon: FileStack, labelKey: 'sidebar.item.documents' },
-                            { id: 'entertainment', icon: Receipt, labelKey: 'sidebar.item.entertainment' },
                         ]
                     },
                     {
@@ -147,6 +146,7 @@ const Sidebar = ({
                     {
                         categoryKey: 'sidebar.category.accounting',
                         items: [
+                            { id: 'entertainment', icon: Receipt, labelKey: 'sidebar.item.entertainment' },
                             { id: 'book', icon: BookOpen, labelKey: 'sidebar.item.book' },
                         ]
                     },

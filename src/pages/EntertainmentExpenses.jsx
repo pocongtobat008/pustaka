@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
     Plus, Trash2, Eye, FileSpreadsheet, FileText, Upload,
@@ -1241,15 +1242,17 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                 </div>
             )}
             {/* Settle Modal */}
+            {createPortal(
             <AnimatePresence>
                 {showSettleModal && settleItem && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                        className="fixed inset-0 z-50 flex items-start justify-center pt-[5vh] pb-4 px-4 bg-black/60 backdrop-blur-sm overflow-y-auto"
                         onClick={() => setShowSettleModal(false)}>
-                        <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }}
-                            className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto"
+                        <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
+                            className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-3xl w-full flex flex-col my-auto"
                             onClick={e => e.stopPropagation()}>
-                            <div className="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+                            {/* Header - fixed at top */}
+                            <div className="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-5 rounded-t-2xl flex items-center justify-between shrink-0">
                                 <h3 className="text-white font-bold text-lg flex items-center gap-2">
                                     <CheckCircle2 size={20} /> Settle Entertainment
                                 </h3>
@@ -1258,7 +1261,8 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     <X size={20} />
                                 </button>
                             </div>
-                            <div className="p-6 space-y-5">
+                            {/* Body - scrollable */}
+                            <div className="p-6 space-y-5 overflow-y-auto flex-1">
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     <div>
                                         <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Tanggal</label>
@@ -1470,7 +1474,9 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                     </motion.div>
                 )}
             </AnimatePresence>
+            , document.body)}
             {/* Preview Modal */}
+            {createPortal(
             <AnimatePresence>
                 {showPreview && previewData && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -1541,6 +1547,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                     </motion.div>
                 )}
             </AnimatePresence>
+            , document.body)}
             </div>
     );
 }
