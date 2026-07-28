@@ -10,6 +10,7 @@ import {
 import { entertainmentService } from '../services/entertainmentService';
 import { API_URL } from '../services/apiClient';
 import { SummaryCard } from '../components/ui/Card';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const JENIS_OPTIONS = ['Breakfast', 'Lunch', 'Dinner', 'Event', 'Custom'];
 const JENIS_USAHA_OPTIONS = [
@@ -29,6 +30,111 @@ const silentToast = { success: () => {}, error: () => {}, info: () => {}, warnin
 
 export default function EntertainmentExpenses({ currentUser, hasPermission, toast: toastProp }) {
     const toast = toastProp || silentToast;
+    const { language } = useLanguage();
+    const isEnglish = language === 'en';
+    const text = isEnglish ? {
+        // Summary
+        totalEntries: 'Total Entries', totalEntriesSub: 'All entertainment data',
+        totalNilai: 'Total Amount', totalNilaiSub: 'Accumulated total expenses',
+        totalLampiran: 'Total Attachments', totalLampiranSub: 'Files uploaded',
+        // Tabs
+        pending: 'Pending', settled: 'Settled',
+        // Buttons
+        addNew: 'Add New Entry', exportPdf: 'Export PDF', exportExcel: 'Export Excel',
+        searchPlaceholder: 'Search venue, type, GL...',
+        // Table
+        thAksi: 'Actions', thTanggal: 'Date', thNoRef: 'Ref No', thNamaRelasi: 'Relation',
+        thJabatan: 'Position', thNilai: 'Amount', thJenis: 'Type', thPengaju: 'Requester',
+        loading: 'Loading data...', empty: 'No data yet',
+        // Actions
+        preview: 'Preview', edit: 'Edit', settle: 'Settle', exportPdfBtn: 'Export PDF', delete: 'Delete',
+        // Form
+        formTitle: 'Entertainment Expenses', formEdit: 'Edit Entry', formNew: 'New Entry',
+        lblTanggal: 'Date *', lblTempat: 'Venue', lblJenis: 'Type *', lblCustomJenis: 'Custom type',
+        lblAlamat: 'Address', lblNilai: 'Amount (IDR) *', lblNoGl: 'GL Number',
+        lblJenisUsaha: 'Business Type', lblCustomJenisUsaha: 'Custom business type',
+        lblMomResult: 'MOM/Result *', lblLampiran: 'Attachments', lblDragDrop: 'Click or drag files here',
+        btnSave: 'Save', btnCancel: 'Cancel', btnUpdate: 'Update',
+        // Settle
+        settleTitle: 'Settle Entertainment', lblSettleDate: 'Settle Date *',
+        lblRelasiPerusahaan: 'Relation & Company', btnTambahRelasi: 'Add Relation',
+        lblCatatan: 'Notes', btnSettle: 'Settle', btnBatal: 'Cancel',
+        // Preview
+        previewTitle: 'Preview Entertainment Expenses',
+        detailTanggal: 'Date', detailTempat: 'Venue', detailJenis: 'Type',
+        detailAlamat: 'Address', detailNilai: 'Amount', detailNoGl: 'GL Number',
+        detailJenisUsaha: 'Business Type', detailRelasi: 'Relations',
+        detailJumlahRelasi: 'Relation Count', detailPerusahaan: 'Companies',
+        detailMomResult: 'MOM/Result', detailLampiran: 'Attachments',
+        // Rules
+        rulesTitle: 'Entertainment Rules', addRule: 'Add Rule', editRule: 'Edit Rule',
+        ruleName: 'Rule Name', targetType: 'Target Type', targetValue: 'Target Value',
+        viewAll: 'View All', canCreate: 'Create', canEdit: 'Edit', canDelete: 'Delete',
+        canSettle: 'Settle', canExport: 'Export', active: 'Active', aksi: 'Action',
+        noRules: 'No rules yet', addNewRule: 'Add New Rule',
+        // Validation
+        errTanggal: 'Date is required', errNilai: 'Amount is required', errMomResult: 'MOM/Result is required',
+        errSettleDate: 'Settle date is required',
+        // Misc
+        placeholdRelasi: 'Relation Name', placeholdJabatan: 'Position', placeholdPerusahaan: 'Company Name',
+        // Settle modal extra
+        selectOption: 'Select', lblNilai: 'Amount (Rp)', lblNoGl: 'GL Number', lblJenisUsaha: 'Business Type',
+        customJenisUsaha: 'Custom business type', removeRelation: 'Remove relation',
+        uploadAttachments: 'Click to upload additional attachments',
+        savedAttachments: 'Saved Attachments', newAttachments: 'New Attachments',
+        processing: 'Processing...',
+    } : {
+        // Summary
+        totalEntries: 'Total Entries', totalEntriesSub: 'Semua data entertainment',
+        totalNilai: 'Total Nilai', totalNilaiSub: 'Akumulasi seluruh biaya',
+        totalLampiran: 'Total Lampiran', totalLampiranSub: 'File yang diunggah',
+        // Tabs
+        pending: 'Pending', settled: 'Settled',
+        // Buttons
+        addNew: 'Tambah Entry Baru', exportPdf: 'Export PDF', exportExcel: 'Export Excel',
+        searchPlaceholder: 'Cari tempat, jenis, GL...',
+        // Table
+        thAksi: 'Aksi', thTanggal: 'Tanggal', thNoRef: 'No Ref', thNamaRelasi: 'Nama Relasi',
+        thJabatan: 'Jabatan', thNilai: 'Nilai', thJenis: 'Jenis', thPengaju: 'Pengaju',
+        loading: 'Memuat data...', empty: 'Belum ada data',
+        // Actions
+        preview: 'Preview', edit: 'Edit', settle: 'Settle', exportPdfBtn: 'Export PDF', delete: 'Hapus',
+        // Form
+        formTitle: 'Entertainment Expenses', formEdit: 'Edit Entry', formNew: 'Entry Baru',
+        lblTanggal: 'Tanggal *', lblTempat: 'Tempat', lblJenis: 'Jenis *', lblCustomJenis: 'Custom jenis',
+        lblAlamat: 'Alamat', lblNilai: 'Nilai (IDR) *', lblNoGl: 'No GL',
+        lblJenisUsaha: 'Jenis Usaha', lblCustomJenisUsaha: 'Custom jenis usaha',
+        lblMomResult: 'MOM/Result *', lblLampiran: 'Lampiran', lblDragDrop: 'Klik atau seret file ke sini',
+        btnSave: 'Simpan', btnCancel: 'Batal', btnUpdate: 'Update',
+        // Settle
+        settleTitle: 'Settle Entertainment', lblSettleDate: 'Tanggal Settle *',
+        lblRelasiPerusahaan: 'Relasi & Perusahaan', btnTambahRelasi: 'Tambah Relasi',
+        lblCatatan: 'Catatan', btnSettle: 'Settle', btnBatal: 'Batal',
+        // Preview
+        previewTitle: 'Preview Entertainment Expenses',
+        detailTanggal: 'Tanggal', detailTempat: 'Tempat', detailJenis: 'Jenis',
+        detailAlamat: 'Alamat', detailNilai: 'Nilai', detailNoGl: 'No GL',
+        detailJenisUsaha: 'Jenis Usaha', detailRelasi: 'Relasi',
+        detailJumlahRelasi: 'Jumlah Relasi', detailPerusahaan: 'Perusahaan',
+        detailMomResult: 'MOM/Result', detailLampiran: 'Lampiran',
+        // Rules
+        rulesTitle: 'Entertainment Rules', addRule: 'Tambah Rule', editRule: 'Edit Rule',
+        ruleName: 'Rule Name', targetType: 'Target Type', targetValue: 'Target Value',
+        viewAll: 'View All', canCreate: 'Create', canEdit: 'Edit', canDelete: 'Delete',
+        canSettle: 'Settle', canExport: 'Export', active: 'Active', aksi: 'Aksi',
+        noRules: 'Belum ada rule', addNewRule: 'Tambah Rule Baru',
+        // Validation
+        errTanggal: 'Tanggal wajib diisi', errNilai: 'Nilai wajib diisi', errMomResult: 'MOM/Result wajib diisi',
+        errSettleDate: 'Tanggal settle wajib diisi',
+        // Misc
+        placeholdRelasi: 'Nama Relasi', placeholdJabatan: 'Jabatan', placeholdPerusahaan: 'Nama Perusahaan',
+        // Settle modal extra
+        selectOption: 'Pilih', lblNilai: 'Nilai (Rp)', lblNoGl: 'No GL', lblJenisUsaha: 'Jenis Usaha',
+        customJenisUsaha: 'Custom jenis usaha', removeRelation: 'Hapus relasi',
+        uploadAttachments: 'Klik untuk upload lampiran tambahan',
+        savedAttachments: 'Lampiran Tersimpan', newAttachments: 'Lampiran Baru',
+        processing: 'Memproses...',
+    };
     const fileInputRef = useRef(null);
     const pasteZoneRef = useRef(null);
     const [data, setData] = useState([]);
@@ -125,19 +231,19 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
 
     const validate = () => {
         const errs = {};
-        if (!form.tanggal) errs.tanggal = 'Tanggal wajib diisi';
+        if (!form.tanggal) errs.tanggal = text.errTanggal;
         if (!form.tempat) errs.tempat = 'Tempat wajib diisi';
         if (!form.alamat) errs.alamat = 'Alamat wajib diisi';
         if (!form.jenis) errs.jenis = 'Jenis wajib diisi';
         if (form.jenis === 'Custom' && !form.custom_jenis?.trim()) errs.custom_jenis = 'Custom jenis wajib diisi';
-        if (!form.nilai) errs.nilai = 'Nilai wajib diisi';
+        if (!form.nilai) errs.nilai = text.errNilai;
         if (!form.no_gl) errs.no_gl = 'No GL wajib diisi';
         if (!form.groups || form.groups.length === 0 || !form.groups[0].relasi?.trim()) errs.groups = 'Minimal 1 grup relasi wajib diisi';
         if (!form.jenis_usaha) errs.jenis_usaha = 'Jenis Usaha wajib diisi';
         if (form.jenis_usaha === 'Custom' && !form.custom_jenis_usaha?.trim()) {
             errs.custom_jenis_usaha = 'Custom jenis usaha wajib diisi';
         }
-        if (!form.catatan_kode) errs.catatan_kode = 'Catatan/Kode wajib diisi';
+        if (!form.catatan_kode) errs.catatan_kode = text.errMomResult;
         if (attachments.length === 0 && existingAttachments.length === 0) errs.attachments = 'Minimal 1 lampiran wajib diupload';
         setErrors(errs);
         return Object.keys(errs).length === 0;
@@ -400,7 +506,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
     const handleSettleSubmit = async () => {
         if (!settleItem) return;
         if (!settleForm.settle_date) {
-            toast.error('Tanggal settle wajib diisi');
+            toast.error(text.errSettleDate);
             return;
         }
         setSettleSubmitting(true);
@@ -520,25 +626,25 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
             {/* Summary Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <SummaryCard
-                    title="Total Entries"
+                    title={text.totalEntries}
                     value={totalEntries}
                     icon={ClipboardList}
                     colorClass="bg-indigo-100 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300"
-                    subtext="Semua data entertainment"
+                    subtext={text.totalEntriesSub}
                 />
                 <SummaryCard
-                    title="Total Nilai"
+                    title={text.totalNilai}
                     value={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(totalNilai)}
                     icon={DollarSign}
                     colorClass="bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300"
-                    subtext="Akumulasi seluruh biaya"
+                    subtext={text.totalNilaiSub}
                 />
                 <SummaryCard
-                    title="Total Lampiran"
+                    title={text.totalLampiran}
                     value={totalLampiran}
                     icon={FileText}
                     colorClass="bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-300"
-                    subtext="Semua file terlampir"
+                    subtext={text.totalLampiranSub}
                 />
             </div>
 
@@ -552,7 +658,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                         className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl hover:from-indigo-500 hover:to-blue-500 transition-all shadow-lg shadow-indigo-500/20 font-semibold text-sm"
                     >
                         {showForm ? <X size={18} /> : <Plus size={18} />}
-                        {showForm ? 'Tutup Form' : 'Tambah Entry Baru'}
+                        {showForm ? (isEnglish ? 'Close Form' : 'Tutup Form') : text.addNew}
                     </button>
                     )}
                     {userPerms.can_export && (
@@ -601,7 +707,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                             : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
                     }`}
                 >
-                    Daftar Entertainment
+                    {isEnglish ? 'Entertainment List' : 'Daftar Entertainment'}
                 </button>
                 <button
                     onClick={() => { setTab('settled'); setPage(1); }}
@@ -611,7 +717,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                             : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
                     }`}
                 >
-                    Penyelesaian / Settle
+                    {isEnglish ? 'Settlement' : 'Penyelesaian / Settle'}
                 </button>
                 {isAdmin && (
                     <button
@@ -674,11 +780,11 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                     <div className="px-6 py-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
                         <h3 className="font-bold text-slate-700 dark:text-slate-200">
                             <ClipboardList size={18} className="inline-block mr-2" />
-                            Entertainment Rules
+                            {text.rulesTitle}
                         </h3>
                         <button onClick={() => { setShowRuleForm(!showRuleForm); setEditingRule(null); setRuleForm({ rule_name: '', target_type: 'user', target_value: '', view_all: false, can_create: true, can_edit: true, can_delete: true, can_settle: true, can_export: true }); }}
                             className="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-xl hover:bg-amber-700 transition-colors text-sm font-semibold">
-                            <Plus size={16} /> {showRuleForm ? 'Tutup' : 'Tambah Rule'}
+                            <Plus size={16} /> {showRuleForm ? (isEnglish ? 'Close' : 'Tutup') : text.addRule}
                         </button>
                     </div>
 
@@ -781,22 +887,22 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                         <table className="w-full text-sm">
                             <thead>
                                 <tr className="bg-slate-50 dark:bg-slate-700/50 text-xs font-semibold text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                                    <th className="px-4 py-3 text-left">Rule Name</th>
-                                    <th className="px-4 py-3 text-center">Target Type</th>
-                                    <th className="px-4 py-3 text-left">Target Value</th>
-                                    <th className="px-4 py-3 text-center">View All</th>
-                                    <th className="px-4 py-3 text-center">Create</th>
-                                    <th className="px-4 py-3 text-center">Edit</th>
-                                    <th className="px-4 py-3 text-center">Delete</th>
-                                    <th className="px-4 py-3 text-center">Settle</th>
-                                    <th className="px-4 py-3 text-center">Export</th>
-                                    <th className="px-4 py-3 text-center">Active</th>
-                                    <th className="px-4 py-3 text-center">Aksi</th>
+                                    <th className="px-4 py-3 text-left">{text.ruleName}</th>
+                                    <th className="px-4 py-3 text-center">{text.targetType}</th>
+                                    <th className="px-4 py-3 text-left">{text.targetValue}</th>
+                                    <th className="px-4 py-3 text-center">{text.viewAll}</th>
+                                    <th className="px-4 py-3 text-center">{text.canCreate}</th>
+                                    <th className="px-4 py-3 text-center">{text.canEdit}</th>
+                                    <th className="px-4 py-3 text-center">{text.canDelete}</th>
+                                    <th className="px-4 py-3 text-center">{text.canSettle}</th>
+                                    <th className="px-4 py-3 text-center">{text.canExport}</th>
+                                    <th className="px-4 py-3 text-center">{text.active}</th>
+                                    <th className="px-4 py-3 text-center">{text.aksi}</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                                 {rules.length === 0 ? (
-                                    <tr><td colSpan={11} className="px-4 py-8 text-center text-slate-400">Belum ada rules</td></tr>
+                                    <tr><td colSpan={11} className="px-4 py-8 text-center text-slate-400">{text.noRules}</td></tr>
                                 ) : rules.map(rule => (
                                     <tr key={rule.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30">
                                         <td className="px-4 py-3 font-semibold">{rule.rule_name}</td>
@@ -845,13 +951,13 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                     <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
                         className="bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
                         <div className="bg-gradient-to-r from-indigo-600 to-blue-600 px-6 py-4">
-                            <h3 className="text-white font-bold text-lg">{editingId ? 'Edit Entry' : 'Entry Baru'} Entertainment Expenses</h3>
+                            <h3 className="text-white font-bold text-lg">{editingId ? text.formEdit : text.formNew} Entertainment Expenses</h3>
                         </div>
                         <form onSubmit={handleSubmit} className="p-6 space-y-5">
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {/* Tanggal */}
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Tanggal *</label>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblTanggal}</label>
                                     <input type="date" value={form.tanggal}
                                         onChange={e => setForm(p => ({ ...p, tanggal: e.target.value }))}
                                         className={`w-full px-3 py-2.5 rounded-xl border ${errors.tanggal ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
@@ -859,7 +965,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 </div>
                                 {/* Tempat */}
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Tempat *</label>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblTempat} *</label>
                                     <input type="text" value={form.tempat}
                                         onChange={e => setForm(p => ({ ...p, tempat: e.target.value }))}
                                         className={`w-full px-3 py-2.5 rounded-xl border ${errors.tempat ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
@@ -867,7 +973,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 </div>
                                 {/* Jenis */}
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Jenis *</label>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblJenis}</label>
                                     <select value={form.jenis}
                                         onChange={e => setForm(p => ({ ...p, jenis: e.target.value }))}
                                         className={`w-full px-3 py-2.5 rounded-xl border ${errors.jenis ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`}>
@@ -885,7 +991,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                             </div>
                             {/* Alamat (full width) */}
                             <div>
-                                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Alamat *</label>
+                                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblAlamat}</label>
                                 <textarea value={form.alamat}
                                     onChange={e => setForm(p => ({ ...p, alamat: e.target.value }))}
                                     rows={2}
@@ -895,7 +1001,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 {/* Nilai */}
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Nilai (Rp) *</label>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblNilai}</label>
                                     <div className="relative">
                                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">Rp</span>
                                         <input type="text" value={form.nilai ? formatCurrency(form.nilai) : ''}
@@ -906,7 +1012,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 </div>
                                 {/* No GL */}
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">No GL *</label>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblNoGl}</label>
                                     <input type="text" value={form.no_gl}
                                         onChange={e => setForm(p => ({ ...p, no_gl: e.target.value }))}
                                         className={`w-full px-3 py-2.5 rounded-xl border ${errors.no_gl ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
@@ -914,11 +1020,11 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 </div>
                                 {/* Jenis Usaha */}
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Jenis Usaha *</label>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblJenisUsaha}</label>
                                     <select value={form.jenis_usaha}
                                         onChange={e => setForm(p => ({ ...p, jenis_usaha: e.target.value, custom_jenis_usaha: '' }))}
                                         className={`w-full px-3 py-2.5 rounded-xl border ${errors.jenis_usaha ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`}>
-                                        <option value="">Pilih Jenis Usaha</option>
+                                        <option value="">{isEnglish ? 'Select Business Type' : 'Pilih Jenis Usaha'}</option>
                                         {JENIS_USAHA_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
                                     </select>
                                     {errors.jenis_usaha && <p className="text-red-500 text-xs mt-1">{errors.jenis_usaha}</p>}
@@ -984,9 +1090,9 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 {errors.groups && <p className="text-red-500 text-xs mt-1">{errors.groups}</p>}
                             </div>
 
-                            {/* Catatan/Kode */}
+                            {/* MOM/Result */}
                             <div>
-                                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Catatan/Kode *</label>
+                                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblMomResult}</label>
                                 <textarea value={form.catatan_kode}
                                     onChange={e => setForm(p => ({ ...p, catatan_kode: e.target.value }))}
                                     rows={2}
@@ -997,7 +1103,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                             {/* Attachments */}
                             <div>
                                 <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">
-                                    Lampiran * {errors.attachments && <span className="text-red-500">- {errors.attachments}</span>}
+                                    {isEnglish ? 'Attachments' : 'Lampiran'} * {errors.attachments && <span className="text-red-500">- {errors.attachments}</span>}
                                 </label>
                                 <div
                                     ref={pasteZoneRef}
@@ -1022,7 +1128,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 {/* Preview existing attachments */}
                                 {existingAttachments.length > 0 && (
                                     <div className="mt-3">
-                                        <p className="text-xs font-semibold text-slate-500 mb-2">Lampiran Tersimpan ({existingAttachments.length}):</p>
+                                        <p className="text-xs font-semibold text-slate-500 mb-2">{isEnglish ? 'Saved Attachments' : 'Lampiran Tersimpan'} ({existingAttachments.length}):</p>
                                         <div className="flex flex-wrap gap-2">
                                             {existingAttachments.map((att, idx) => (
                                                 <div key={idx} className="relative group bg-slate-100 dark:bg-slate-700 rounded-lg p-2 flex items-center gap-2">
@@ -1047,7 +1153,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 {/* Preview new attachments */}
                                 {attachments.length > 0 && (
                                     <div className="mt-3">
-                                        <p className="text-xs font-semibold text-slate-500 mb-2">Lampiran Baru ({attachments.length}):</p>
+                                        <p className="text-xs font-semibold text-slate-500 mb-2">{isEnglish ? 'New Attachments' : 'Lampiran Baru'} ({attachments.length}):</p>
                                         <div className="flex flex-wrap gap-2">
                                             {attachments.map((file, idx) => (
                                                 <div key={idx} className="relative group bg-slate-100 dark:bg-slate-700 rounded-lg p-2 flex items-center gap-2">
@@ -1079,11 +1185,11 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     ) : (
                                         <Save size={18} />
                                     )}
-                                    {submitting ? 'Menyimpan...' : (editingId ? 'Update' : 'Simpan')}
+                                        {submitting ? (isEnglish ? 'Saving...' : 'Menyimpan...') : (editingId ? text.btnUpdate : text.btnSave)}
                                 </button>
                                 <button type="button" onClick={() => { resetForm(); setShowForm(false); }}
                                     className="px-6 py-3 border border-slate-300 dark:border-slate-600 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
-                                    Batal
+                                    {text.btnCancel}
                                 </button>
                             </div>
                         </form>
@@ -1095,29 +1201,29 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                 <div className="px-6 py-4 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 border-b border-slate-200 dark:border-slate-700">
                     <h3 className="font-bold text-slate-700 dark:text-slate-200">
                         <ClipboardList size={18} className="inline-block mr-2" />
-                        Daftar Entertainment Expenses
-                        <span className="ml-2 text-sm font-normal text-slate-400">({totalEntries} entries)</span>
+                        {isEnglish ? 'Entertainment Expenses List' : 'Daftar Entertainment Expenses'}
+                        <span className="ml-2 text-sm font-normal text-slate-400">({totalEntries} {isEnglish ? 'entries' : 'data'})</span>
                     </h3>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="bg-slate-50 dark:bg-slate-700/50 text-xs font-semibold text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                                <th className="px-4 py-3 text-center w-32">Aksi</th>
-                                <th className="px-4 py-3 text-left">Tanggal</th>
-                                <th className="px-4 py-3 text-left">No Ref</th>
-                                <th className="px-4 py-3 text-left">Nama Relasi</th>
-                                <th className="px-4 py-3 text-left">Jabatan</th>
-                                <th className="px-4 py-3 text-right">Nilai</th>
-                                <th className="px-4 py-3 text-left">Jenis</th>
-                                <th className="px-4 py-3 text-left">Pengaju</th>
+                                <th className="px-4 py-3 text-center w-32">{text.thAksi}</th>
+                                <th className="px-4 py-3 text-left">{text.thTanggal}</th>
+                                <th className="px-4 py-3 text-left">{text.thNoRef}</th>
+                                <th className="px-4 py-3 text-left">{text.thNamaRelasi}</th>
+                                <th className="px-4 py-3 text-left">{text.thJabatan}</th>
+                                <th className="px-4 py-3 text-right">{text.thNilai}</th>
+                                <th className="px-4 py-3 text-left">{text.thJenis}</th>
+                                <th className="px-4 py-3 text-left">{text.thPengaju}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                             {loading ? (
-                                <tr><td colSpan={8} className="px-4 py-8 text-center text-slate-400">Memuat data...</td></tr>
+                                <tr><td colSpan={8} className="px-4 py-8 text-center text-slate-400">{text.loading}</td></tr>
                             ) : data.length === 0 ? (
-                                <tr><td colSpan={8} className="px-4 py-8 text-center text-slate-400">Belum ada data</td></tr>
+                                <tr><td colSpan={8} className="px-4 py-8 text-center text-slate-400">{text.empty}</td></tr>
                             ) : data.map(item => (
                                 <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
                                     <td className="px-4 py-3">
@@ -1254,7 +1360,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                             {/* Header - fixed at top */}
                             <div className="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-5 rounded-t-2xl flex items-center justify-between shrink-0">
                                 <h3 className="text-white font-bold text-lg flex items-center gap-2">
-                                    <CheckCircle2 size={20} /> Settle Entertainment
+                                    <CheckCircle2 size={20} /> {text.settleTitle}
                                 </h3>
                                 <button onClick={() => setShowSettleModal(false)}
                                     className="p-1.5 text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition-colors">
@@ -1265,34 +1371,34 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                             <div className="p-6 space-y-5 overflow-y-auto flex-1">
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Tanggal</label>
+                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.detailTanggal}</label>
                                         <input type="date" value={settleForm.tanggal || ''}
                                             onChange={e => setSettleForm(p => ({ ...p, tanggal: e.target.value }))}
                                             className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500" />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Tempat</label>
+                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.detailTempat}</label>
                                         <input type="text" value={settleForm.tempat || ''}
                                             onChange={e => setSettleForm(p => ({ ...p, tempat: e.target.value }))}
                                             className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500" />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Jenis</label>
+                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.detailJenis}</label>
                                         <select value={settleForm.jenis || ''}
                                             onChange={e => setSettleForm(p => ({ ...p, jenis: e.target.value }))}
                                             className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500">
-                                            <option value="">Pilih</option>
+                                            <option value="">{text.selectOption}</option>
                                             {JENIS_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
                                         </select>
                                         {settleForm.jenis === 'Custom' && (
-                                            <input type="text" placeholder="Custom jenis" value={settleForm.custom_jenis || ''}
+                                            <input type="text" placeholder={isEnglish ? 'Custom type' : 'Custom jenis'} value={settleForm.custom_jenis || ''}
                                                 onChange={e => setSettleForm(p => ({ ...p, custom_jenis: e.target.value }))}
                                                 className="mt-2 w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm" />
                                         )}
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Alamat</label>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.detailAlamat}</label>
                                     <textarea value={settleForm.alamat || ''}
                                         onChange={e => setSettleForm(p => ({ ...p, alamat: e.target.value }))}
                                         rows={2}
@@ -1300,34 +1406,34 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Nilai (Rp)</label>
+                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblNilai}</label>
                                         <input type="text" value={settleForm.nilai || ''}
                                             onChange={e => setSettleForm(p => ({ ...p, nilai: e.target.value }))}
                                             className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500" />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">No GL</label>
+                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblNoGl}</label>
                                         <input type="text" value={settleForm.no_gl || ''}
                                             onChange={e => setSettleForm(p => ({ ...p, no_gl: e.target.value }))}
                                             className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500" />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Jenis Usaha</label>
+                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblJenisUsaha}</label>
                                         <select value={settleForm.jenis_usaha || ''}
                                             onChange={e => setSettleForm(p => ({ ...p, jenis_usaha: e.target.value, custom_jenis_usaha: '' }))}
                                             className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500">
-                                            <option value="">Pilih</option>
+                                            <option value="">{text.selectOption}</option>
                                             {JENIS_USAHA_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
                                         </select>
                                         {settleForm.jenis_usaha === 'Custom' && (
-                                            <input type="text" placeholder="Custom jenis usaha" value={settleForm.custom_jenis_usaha || ''}
+                                            <input type="text" placeholder={text.customJenisUsaha} value={settleForm.custom_jenis_usaha || ''}
                                                 onChange={e => setSettleForm(p => ({ ...p, custom_jenis_usaha: e.target.value }))}
                                                 className="mt-2 w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm" />
                                         )}
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">Relasi & Perusahaan</label>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">{text.lblRelasiPerusahaan}</label>
                                     {settleForm.groups && settleForm.groups.map((grp, idx) => (
                                         <div key={idx} className="bg-slate-50 dark:bg-slate-700/30 rounded-xl p-3 mb-3 border border-slate-200 dark:border-slate-600">
                                             <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
@@ -1337,7 +1443,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                                         g[idx] = { ...g[idx], relasi: e.target.value };
                                                         setSettleForm(p => ({ ...p, groups: g }));
                                                     }}
-                                                    placeholder="Nama Relasi"
+                                                    placeholder={text.placeholdRelasi}
                                                     className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm" />
                                                 <input type="text" value={grp.jabatan || ''}
                                                     onChange={e => {
@@ -1345,7 +1451,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                                         g[idx] = { ...g[idx], jabatan: e.target.value };
                                                         setSettleForm(p => ({ ...p, groups: g }));
                                                     }}
-                                                    placeholder="Jabatan"
+                                                    placeholder={text.placeholdJabatan}
                                                     className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm" />
                                                 <div className="flex gap-1">
                                                     <input type="text" value={grp.nama_perusahaan || ''}
@@ -1354,13 +1460,13 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                                             g[idx] = { ...g[idx], nama_perusahaan: e.target.value };
                                                             setSettleForm(p => ({ ...p, groups: g }));
                                                         }}
-                                                        placeholder="Nama Perusahaan"
+                                                        placeholder={text.placeholdPerusahaan}
                                                         className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm" />
                                                     {settleForm.groups.length > 1 && (
                                                         <button type="button" onClick={() => {
                                                             const g = settleForm.groups.filter((_, i) => i !== idx);
                                                             setSettleForm(p => ({ ...p, groups: g }));
-                                                        }} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg shrink-0" title="Hapus relasi">
+                                                         }} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg shrink-0" title={text.removeRelation}>
                                                             <Trash2 size={14} />
                                                         </button>
                                                     )}
@@ -1372,11 +1478,11 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                         const g = [...(settleForm.groups || []), { relasi: '', jabatan: '', nama_perusahaan: '' }];
                                         setSettleForm(p => ({ ...p, groups: g }));
                                     }} className="flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 font-semibold mt-1">
-                                        <Plus size={14} /> Tambah Relasi
+                                        <Plus size={14} /> {text.btnTambahRelasi}
                                     </button>
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Catatan/Kode</label>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblMomResult}</label>
                                     <textarea value={settleForm.catatan_kode || ''}
                                         onChange={e => setSettleForm(p => ({ ...p, catatan_kode: e.target.value }))}
                                         rows={2}
@@ -1385,7 +1491,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 {/* Tanggal Settle (required) */}
                                 <div>
                                     <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">
-                                        Tanggal Settle <span className="text-red-500">*</span>
+                                        {text.lblSettleDate}
                                     </label>
                                     <input type="date" value={settleForm.settle_date || ''}
                                         onChange={e => setSettleForm(p => ({ ...p, settle_date: e.target.value }))}
@@ -1393,11 +1499,11 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 </div>
                                 {/* Lampiran */}
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Lampiran</label>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblLampiran}</label>
                                     <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-6 text-center hover:border-emerald-500 transition-colors cursor-pointer"
                                         onClick={() => settleFileInputRef.current?.click()}>
                                         <Upload size={24} className="mx-auto text-slate-400 mb-2" />
-                                        <p className="text-sm text-slate-500 dark:text-slate-400">Klik untuk upload lampiran tambahan</p>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400">{text.uploadAttachments}</p>
                                         <input ref={settleFileInputRef} type="file" multiple
                                             onChange={(e) => {
                                                 const files = Array.from(e.target.files || []);
@@ -1408,7 +1514,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     </div>
                                     {settleExistingAttachments.length > 0 && (
                                         <div className="mt-3">
-                                            <p className="text-xs font-semibold text-slate-500 mb-2">Lampiran Tersimpan ({settleExistingAttachments.length}):</p>
+                                            <p className="text-xs font-semibold text-slate-500 mb-2">{text.savedAttachments} ({settleExistingAttachments.length}):</p>
                                             <div className="flex flex-wrap gap-2">
                                                 {settleExistingAttachments.map((att, idx) => (
                                                     <div key={idx} className="relative group bg-slate-100 dark:bg-slate-700 rounded-lg p-2 flex items-center gap-2">
@@ -1431,7 +1537,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     )}
                                     {settleAttachments.length > 0 && (
                                         <div className="mt-3">
-                                            <p className="text-xs font-semibold text-slate-500 mb-2">Lampiran Baru ({settleAttachments.length}):</p>
+                                            <p className="text-xs font-semibold text-slate-500 mb-2">{text.newAttachments} ({settleAttachments.length}):</p>
                                             <div className="flex flex-wrap gap-2">
                                                 {settleAttachments.map((file, idx) => (
                                                     <div key={idx} className="relative group bg-slate-100 dark:bg-slate-700 rounded-lg p-2 flex items-center gap-2">
@@ -1462,11 +1568,11 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                         ) : (
                                             <CheckCircle2 size={18} />
                                         )}
-                                        {settleSubmitting ? 'Processing...' : 'Settle'}
+                                        {settleSubmitting ? text.processing : text.btnSettle}
                                     </button>
                                     <button type="button" onClick={() => { setShowSettleModal(false); setSettleAttachments([]); setSettleExistingAttachments([]); }}
                                         className="px-6 py-3 border border-slate-300 dark:border-slate-600 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
-                                        Batal
+                                        {text.btnBatal}
                                     </button>
                                 </div>
                             </div>
@@ -1494,22 +1600,22 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                             </div>
                             <div className="p-6 space-y-4">
                                 <div className="grid grid-cols-2 gap-4">
-                                    <DetailField label="Tanggal" value={previewData.tanggal} />
-                                    <DetailField label="Tempat" value={previewData.tempat} />
-                                    <DetailField label="Alamat" value={previewData.alamat} />
-                                    <DetailField label="Jenis" value={previewData.jenis === 'Custom' ? previewData.custom_jenis : previewData.jenis} />
-                                    <DetailField label="Nilai" value={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(previewData.nilai)} />
-                                    <DetailField label="No GL" value={previewData.no_gl} />
-                                    <DetailField label="Nama Relasi" value={(previewData.relasi || []).join(', ')} />
-                                    <DetailField label="Jabatan" value={(previewData.jabatan || []).join(', ')} />
-                                    <DetailField label="Jumlah Relasi" value={`${previewData.jumlah_relasi || (previewData.relasi || []).length || 0} orang`} />
-                                    <DetailField label="Nama Perusahaan" value={(previewData.nama_perusahaan || []).join(', ')} />
-                                    <DetailField label="Jenis Usaha" value={previewData.jenis_usaha} />
-                                    <DetailField label="Catatan/Kode" value={previewData.catatan_kode} />
-                                    <DetailField label="Pengaju" value={previewData.requester_name || previewData.requester_username} />
+                                    <DetailField label={text.detailTanggal} value={previewData.tanggal} />
+                                    <DetailField label={text.detailTempat} value={previewData.tempat} />
+                                    <DetailField label={text.detailAlamat} value={previewData.alamat} />
+                                    <DetailField label={text.detailJenis} value={previewData.jenis === 'Custom' ? previewData.custom_jenis : previewData.jenis} />
+                                    <DetailField label={text.detailNilai} value={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(previewData.nilai)} />
+                                    <DetailField label={text.detailNoGl} value={previewData.no_gl} />
+                                    <DetailField label={text.thNamaRelasi} value={(previewData.relasi || []).join(', ')} />
+                                    <DetailField label={text.thJabatan} value={(previewData.jabatan || []).join(', ')} />
+                                    <DetailField label={text.detailJumlahRelasi} value={`${previewData.jumlah_relasi || (previewData.relasi || []).length || 0} ${isEnglish ? 'person(s)' : 'orang'}`} />
+                                    <DetailField label={text.detailPerusahaan} value={(previewData.nama_perusahaan || []).join(', ')} />
+                                    <DetailField label={text.detailJenisUsaha} value={previewData.jenis_usaha} />
+                                    <DetailField label={text.detailMomResult} value={previewData.catatan_kode} />
+                                    <DetailField label={text.thPengaju} value={previewData.requester_name || previewData.requester_username} />
                                 </div>
                                 <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
-                                    <h4 className="text-sm font-semibold text-slate-600 dark:text-slate-300 mb-3">Lampiran:</h4>
+                                    <h4 className="text-sm font-semibold text-slate-600 dark:text-slate-300 mb-3">{text.detailLampiran}:</h4>
                                     <div className="flex flex-wrap gap-3">
                                         {(previewData.attachments || []).length === 0 ? (
                                             <p className="text-sm text-slate-400">Tidak ada lampiran</p>

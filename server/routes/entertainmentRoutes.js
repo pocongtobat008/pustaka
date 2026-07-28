@@ -285,13 +285,24 @@ const resolveAttachmentPath = (att) => {
 router.get('/export/pdf', async (req, res) => {
     try {
         const { id } = req.query;
+        const user = req.authUser;
+        const perms = await getUserEntertainmentPerms(user);
+        const canViewAll = perms.view_all || user.role === 'admin' || user.role === 'superadmin';
+
         let data;
         if (id) {
             data = await knex('entertainment_expenses').where('id', id).first();
             if (!data) return res.status(404).json({ error: 'Data not found' });
             data = [data];
         } else {
-            data = await knex('entertainment_expenses').orderBy('created_at', 'desc');
+            let query = knex('entertainment_expenses');
+            if (!canViewAll) {
+                query = query.where(function() {
+                    this.where('requester_username', user.username)
+                        .orWhere('owner', user.username);
+                });
+            }
+            data = await query.orderBy('created_at', 'desc');
         }
 
         const pdfDoc = await PDFDocument.create();
@@ -753,13 +764,24 @@ router.get('/export/pdf', async (req, res) => {
 router.get('/export/excel', async (req, res) => {
     try {
         const { id } = req.query;
+        const user = req.authUser;
+        const perms = await getUserEntertainmentPerms(user);
+        const canViewAll = perms.view_all || user.role === 'admin' || user.role === 'superadmin';
+
         let data;
         if (id) {
             data = await knex('entertainment_expenses').where('id', id).first();
             if (!data) return res.status(404).json({ error: 'Data not found' });
             data = [data];
         } else {
-            data = await knex('entertainment_expenses').orderBy('created_at', 'desc');
+            let query = knex('entertainment_expenses');
+            if (!canViewAll) {
+                query = query.where(function() {
+                    this.where('requester_username', user.username)
+                        .orWhere('owner', user.username);
+                });
+            }
+            data = await query.orderBy('created_at', 'desc');
         }
 
         const rows = data.map(entry => {
