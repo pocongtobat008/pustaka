@@ -167,7 +167,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
     const [userPerms, setUserPerms] = useState({ view_all: false, can_create: true, can_edit: true, can_delete: true, can_settle: true, can_export: true });
     const [showRuleForm, setShowRuleForm] = useState(false);
     const [editingRule, setEditingRule] = useState(null);
-    const [ruleForm, setRuleForm] = useState({ rule_name: '', target_type: 'user', target_value: '', view_all: false, can_create: true, can_edit: true, can_delete: true, can_settle: true, can_export: true });
+    const [ruleForm, setRuleForm] = useState({ rule_name: '', target_type: 'user', target_value: '', view_all: false, can_create: true, can_edit: true, can_delete: true, can_settle: true, can_export: true, export_all: false });
     const [ruleSubmitting, setRuleSubmitting] = useState(false);
     const [usersList, setUsersList] = useState([]);
     const [departmentsList, setDepartmentsList] = useState([]);
@@ -599,7 +599,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
             }
             setShowRuleForm(false);
             setEditingRule(null);
-            setRuleForm({ rule_name: '', target_type: 'user', target_value: '', view_all: false, can_create: true, can_edit: true, can_delete: true, can_settle: true, can_export: true });
+            setRuleForm({ rule_name: '', target_type: 'user', target_value: '', view_all: false, can_create: true, can_edit: true, can_delete: true, can_settle: true, can_export: true, export_all: false });
             fetchRules();
         } catch (e) {
             toast.error(e.message || 'Gagal menyimpan rule');
@@ -782,7 +782,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                             <ClipboardList size={18} className="inline-block mr-2" />
                             {text.rulesTitle}
                         </h3>
-                        <button onClick={() => { setShowRuleForm(!showRuleForm); setEditingRule(null); setRuleForm({ rule_name: '', target_type: 'user', target_value: '', view_all: false, can_create: true, can_edit: true, can_delete: true, can_settle: true, can_export: true }); }}
+                        <button onClick={() => { setShowRuleForm(!showRuleForm); setEditingRule(null); setRuleForm({ rule_name: '', target_type: 'user', target_value: '', view_all: false, can_create: true, can_edit: true, can_delete: true, can_settle: true, can_export: true, export_all: false }); }}
                             className="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-xl hover:bg-amber-700 transition-colors text-sm font-semibold">
                             <Plus size={16} /> {showRuleForm ? (isEnglish ? 'Close' : 'Tutup') : text.addRule}
                         </button>
@@ -849,14 +849,15 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     <div>
                                         <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">Permissions</label>
                                         <div className="flex flex-wrap gap-3">
-                                            {[
-                                                { key: 'view_all', label: 'Lihat Semua Data (Bypass Row Security)' },
-                                                { key: 'can_create', label: 'Bisa Create' },
-                                                { key: 'can_edit', label: 'Bisa Edit' },
-                                                { key: 'can_delete', label: 'Bisa Delete' },
-                                                { key: 'can_settle', label: 'Bisa Settle' },
-                                                { key: 'can_export', label: 'Bisa Export' }
-                                            ].map(p => (
+                                                    {[
+                                                        { key: 'view_all', label: 'Lihat Semua Data (Bypass Row Security)' },
+                                                        { key: 'export_all', label: 'Export All' },
+                                                        { key: 'can_create', label: 'Bisa Create' },
+                                                        { key: 'can_edit', label: 'Bisa Edit' },
+                                                        { key: 'can_delete', label: 'Bisa Delete' },
+                                                        { key: 'can_settle', label: 'Bisa Settle' },
+                                                        { key: 'can_export', label: 'Bisa Export' }
+                                                    ].map(p => (
                                                 <label key={p.key} className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-600 text-sm">
                                                     <input type="checkbox" checked={!!ruleForm[p.key]}
                                                         onChange={e => setRuleForm(prev => ({ ...prev, [p.key]: e.target.checked }))}
@@ -891,6 +892,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     <th className="px-4 py-3 text-center">{text.targetType}</th>
                                     <th className="px-4 py-3 text-left">{text.targetValue}</th>
                                     <th className="px-4 py-3 text-center">{text.viewAll}</th>
+                                    <th className="px-4 py-3 text-center">Export All</th>
                                     <th className="px-4 py-3 text-center">{text.canCreate}</th>
                                     <th className="px-4 py-3 text-center">{text.canEdit}</th>
                                     <th className="px-4 py-3 text-center">{text.canDelete}</th>
@@ -902,7 +904,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                             </thead>
                             <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                                 {rules.length === 0 ? (
-                                    <tr><td colSpan={11} className="px-4 py-8 text-center text-slate-400">{text.noRules}</td></tr>
+                                    <tr><td colSpan={12} className="px-4 py-8 text-center text-slate-400">{text.noRules}</td></tr>
                                 ) : rules.map(rule => (
                                     <tr key={rule.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30">
                                         <td className="px-4 py-3 font-semibold">{rule.rule_name}</td>
@@ -915,6 +917,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                         </td>
                                         <td className="px-4 py-3">{rule.target_value}</td>
                                         <td className="px-4 py-3 text-center">{rule.view_all ? <CheckCircle2 size={16} className="inline text-green-500" /> : <X size={16} className="inline text-slate-300" />}</td>
+                                        <td className="px-4 py-3 text-center">{rule.export_all ? <CheckCircle2 size={16} className="inline text-green-500" /> : <X size={16} className="inline text-slate-300" />}</td>
                                         <td className="px-4 py-3 text-center">{rule.can_create ? <CheckCircle2 size={16} className="inline text-green-500" /> : <X size={16} className="inline text-red-400" />}</td>
                                         <td className="px-4 py-3 text-center">{rule.can_edit ? <CheckCircle2 size={16} className="inline text-green-500" /> : <X size={16} className="inline text-red-400" />}</td>
                                         <td className="px-4 py-3 text-center">{rule.can_delete ? <CheckCircle2 size={16} className="inline text-green-500" /> : <X size={16} className="inline text-red-400" />}</td>
@@ -927,7 +930,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                         </td>
                                         <td className="px-4 py-3 text-center">
                                             <div className="flex items-center justify-center gap-1">
-                                                <button onClick={() => { setEditingRule(rule); setRuleForm({ rule_name: rule.rule_name, target_type: rule.target_type, target_value: rule.target_value, view_all: rule.view_all, can_create: rule.can_create, can_edit: rule.can_edit, can_delete: rule.can_delete, can_settle: rule.can_settle, can_export: rule.can_export }); setShowRuleForm(true); }}
+                                                <button onClick={() => { setEditingRule(rule); setRuleForm({ rule_name: rule.rule_name, target_type: rule.target_type, target_value: rule.target_value, view_all: rule.view_all, can_create: rule.can_create, can_edit: rule.can_edit, can_delete: rule.can_delete, can_settle: rule.can_settle, can_export: rule.can_export, export_all: rule.export_all }); setShowRuleForm(true); }}
                                                     className="p-1.5 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg" title="Edit">
                                                     <Edit3 size={16} />
                                                 </button>

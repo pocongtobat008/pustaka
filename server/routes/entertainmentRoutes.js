@@ -22,8 +22,8 @@ router.use((req, res, next) => {
 });
 
 const getUserEntertainmentPerms = async (user) => {
-    const defaultPerms = { view_all: false, can_create: true, can_edit: true, can_delete: true, can_settle: true, can_export: true };
-    if (user.role === 'admin' || user.role === 'superadmin') return { ...defaultPerms, view_all: true };
+    const defaultPerms = { view_all: false, can_create: true, can_edit: true, can_delete: true, can_settle: true, can_export: true, export_all: false };
+    if (user.role === 'admin' || user.role === 'superadmin') return { ...defaultPerms, view_all: true, export_all: true };
     try {
         const rules = await knex('entertainment_rules').where('is_active', true);
         if (!rules.length) return defaultPerms;
@@ -35,6 +35,7 @@ const getUserEntertainmentPerms = async (user) => {
             if (r.target_type === 'role' && r.target_value === user.role) match = true;
             if (match) {
                 if (r.view_all) merged.view_all = true;
+                if (r.export_all) merged.export_all = true;
                 if (!r.can_create) merged.can_create = false;
                 if (!r.can_edit) merged.can_edit = false;
                 if (!r.can_delete) merged.can_delete = false;
@@ -77,7 +78,7 @@ router.post('/rules', async (req, res) => {
         if (req.authUser.role !== 'admin' && req.authUser.role !== 'superadmin') {
             return res.status(403).json({ error: 'Forbidden' });
         }
-        const { rule_name, target_type, target_value, view_all, can_create, can_edit, can_delete, can_settle, can_export } = req.body;
+        const { rule_name, target_type, target_value, view_all, can_create, can_edit, can_delete, can_settle, can_export, export_all } = req.body;
         if (!rule_name || !target_type || !target_value) {
             return res.status(400).json({ error: 'rule_name, target_type, target_value wajib diisi' });
         }
@@ -86,6 +87,7 @@ router.post('/rules', async (req, res) => {
             view_all: !!view_all, can_create: can_create !== false,
             can_edit: can_edit !== false, can_delete: can_delete !== false,
             can_settle: can_settle !== false, can_export: can_export !== false,
+            export_all: !!export_all,
             is_active: true
         }).returning('*');
         res.status(201).json(rule[0] || rule);
@@ -100,7 +102,7 @@ router.put('/rules/:id', async (req, res) => {
         if (req.authUser.role !== 'admin' && req.authUser.role !== 'superadmin') {
             return res.status(403).json({ error: 'Forbidden' });
         }
-        const { rule_name, target_type, target_value, view_all, can_create, can_edit, can_delete, can_settle, can_export, is_active } = req.body;
+        const { rule_name, target_type, target_value, view_all, can_create, can_edit, can_delete, can_settle, can_export, export_all, is_active } = req.body;
         const update = {};
         if (rule_name !== undefined) update.rule_name = rule_name;
         if (target_type !== undefined) update.target_type = target_type;
@@ -111,6 +113,7 @@ router.put('/rules/:id', async (req, res) => {
         if (can_delete !== undefined) update.can_delete = !!can_delete;
         if (can_settle !== undefined) update.can_settle = !!can_settle;
         if (can_export !== undefined) update.can_export = !!can_export;
+        if (export_all !== undefined) update.export_all = !!export_all;
         if (is_active !== undefined) update.is_active = !!is_active;
         update.updated_at = knex.fn.now();
         await knex('entertainment_rules').where('id', req.params.id).update(update);
@@ -287,7 +290,7 @@ router.get('/export/pdf', async (req, res) => {
         const { id } = req.query;
         const user = req.authUser;
         const perms = await getUserEntertainmentPerms(user);
-        const canViewAll = perms.view_all || user.role === 'admin' || user.role === 'superadmin';
+        const canExportAll = perms.export_all || user.role === 'admin' || user.role === 'superadmin';
 
         let data;
         if (id) {
@@ -296,7 +299,7 @@ router.get('/export/pdf', async (req, res) => {
             data = [data];
         } else {
             let query = knex('entertainment_expenses');
-            if (!canViewAll) {
+            if (!canExportAll) {
                 query = query.where(function() {
                     this.where('requester_username', user.username)
                         .orWhere('owner', user.username);
@@ -766,7 +769,7 @@ router.get('/export/excel', async (req, res) => {
         const { id } = req.query;
         const user = req.authUser;
         const perms = await getUserEntertainmentPerms(user);
-        const canViewAll = perms.view_all || user.role === 'admin' || user.role === 'superadmin';
+        const canExportAll = perms.export_all || user.role === 'admin' || user.role === 'superadmin';
 
         let data;
         if (id) {
@@ -775,7 +778,7 @@ router.get('/export/excel', async (req, res) => {
             data = [data];
         } else {
             let query = knex('entertainment_expenses');
-            if (!canViewAll) {
+            if (!canExportAll) {
                 query = query.where(function() {
                     this.where('requester_username', user.username)
                         .orWhere('owner', user.username);
