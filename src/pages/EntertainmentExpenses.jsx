@@ -42,6 +42,9 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         // Buttons
         addNew: 'Add New Entry', exportPdf: 'Export PDF', exportExcel: 'Export Excel',
         searchPlaceholder: 'Search venue, type, GL...',
+        // Filter
+        filterTanggal: 'Filter Date', filterJenis: 'Filter Type', filterSearch: 'Search',
+        filterAll: 'All', filterBtn: 'Filter', filterReset: 'Reset',
         // Table
         thAksi: 'Actions', thTanggal: 'Date', thNoRef: 'Ref No', thNamaRelasi: 'Relation',
         thJabatan: 'Position', thNilai: 'Amount', thJenis: 'Type', thPengaju: 'Requester',
@@ -124,6 +127,9 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         // Buttons
         addNew: 'Tambah Entry Baru', exportPdf: 'Export PDF', exportExcel: 'Export Excel',
         searchPlaceholder: 'Cari tempat, jenis, GL...',
+        // Filter
+        filterTanggal: 'Filter Tanggal', filterJenis: 'Filter Jenis', filterSearch: 'Pencarian',
+        filterAll: 'Semua', filterBtn: 'Filter', filterReset: 'Reset',
         // Table
         thAksi: 'Aksi', thTanggal: 'Tanggal', thNoRef: 'No Ref', thNamaRelasi: 'Nama Relasi',
         thJabatan: 'Jabatan', thNilai: 'Nilai', thJenis: 'Jenis', thPengaju: 'Pengaju',
@@ -799,25 +805,25 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
             <div className="bg-white dark:bg-slate-800/50 rounded-2xl p-4 border border-slate-200 dark:border-slate-700">
                 <div className="flex flex-wrap items-end gap-3">
                     <div className="flex-1 min-w-[150px]">
-                        <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Filter Tanggal</label>
+                        <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{text.filterTanggal}</label>
                         <input type="date" value={searchParams.tanggal}
                             onChange={e => setSearchParams(p => ({ ...p, tanggal: e.target.value }))}
                             className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500" />
                     </div>
                     <div className="flex-1 min-w-[150px]">
-                        <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Filter Jenis</label>
+                        <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{text.filterJenis}</label>
                         <select value={searchParams.jenis}
                             onChange={e => setSearchParams(p => ({ ...p, jenis: e.target.value }))}
                             className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500">
-                            <option value="">Semua</option>
+                            <option value="">{text.filterAll}</option>
                             {JENIS_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
                         </select>
                     </div>
                     <div className="flex-[2] min-w-[200px]">
-                        <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Pencarian</label>
+                        <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{text.filterSearch}</label>
                         <div className="relative">
                             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                            <input type="text" placeholder="Cari tempat, alamat, no GL, relasi... (tekan Enter)" value={searchParams.search}
+                            <input type="text" placeholder={text.searchPlaceholder + ' (Enter)'} value={searchParams.search}
                                 onChange={e => setSearchParams(p => ({ ...p, search: e.target.value }))}
                                 onKeyDown={handleSearchKeyDown}
                                 className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500" />
@@ -826,12 +832,12 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                     <button onClick={() => { setPage(1); }}
                         className="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors text-sm font-semibold">
                         <Filter size={16} className="inline-block mr-1" />
-                        Filter
+                        {text.filterBtn}
                     </button>
                     <button onClick={() => { setSearchParams({ tanggal: '', jenis: '', search: '' }); setPage(1); }}
                         className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-sm font-semibold">
                         <X size={16} className="inline-block mr-1" />
-                        Reset
+                        {text.filterReset}
                     </button>
                 </div>
             </div>
