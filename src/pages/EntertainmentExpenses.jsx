@@ -70,19 +70,50 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         rulesTitle: 'Entertainment Rules', addRule: 'Add Rule', editRule: 'Edit Rule',
         ruleName: 'Rule Name', targetType: 'Target Type', targetValue: 'Target Value',
         viewAll: 'View All', canCreate: 'Create', canEdit: 'Edit', canDelete: 'Delete',
-        canSettle: 'Settle', canExport: 'Export', active: 'Active', aksi: 'Action',
+        canSettle: 'Settle', canExport: 'Export',         active: 'Active', aksi: 'Action',
         noRules: 'No rules yet', addNewRule: 'Add New Rule',
+        targetUser: 'Select User', targetDivision: 'Select Division', targetRole: 'Select Role',
+        permViewAll: 'View All Data (Bypass Row Security)', permExportAll: 'Export All',
+        permCreate: 'Can Create', permEdit: 'Can Edit', permDelete: 'Can Delete',
+        permSettle: 'Can Settle', permExport: 'Can Export',
+        btnSaveRule: 'Save', btnCancelRule: 'Cancel', btnUpdateRule: 'Update',
         // Validation
-        errTanggal: 'Date is required', errNilai: 'Amount is required', errMomResult: 'MOM/Result is required',
+        errTanggal: 'Date is required', errTempat: 'Venue is required',
+        errAlamat: 'Address is required', errJenis: 'Type is required',
+        errCustomJenis: 'Custom type is required', errNoGl: 'GL Number is required',
+        errJenisUsaha: 'Business type is required', errCustomJenisUsaha: 'Custom business type is required',
+        errGroups: 'At least 1 relation group is required', errAttachments: 'At least 1 attachment is required',
+        errNilai: 'Amount is required', errMomResult: 'MOM/Result is required',
         errSettleDate: 'Settle date is required',
         // Misc
         placeholdRelasi: 'Relation Name', placeholdJabatan: 'Position', placeholdPerusahaan: 'Company Name',
         // Settle modal extra
-        selectOption: 'Select', lblNilai: 'Amount (Rp)', lblNoGl: 'GL Number', lblJenisUsaha: 'Business Type',
-        customJenisUsaha: 'Custom business type', removeRelation: 'Remove relation',
+        selectOption: 'Select', removeRelation: 'Remove relation',
         uploadAttachments: 'Click to upload additional attachments',
         savedAttachments: 'Saved Attachments', newAttachments: 'New Attachments',
         processing: 'Processing...',
+        // Missing form labels
+        pilihJenis: 'Select Type', customJenisPlaceholder: 'Enter custom type...',
+        customJenisUsahaPlaceholder: 'Enter custom business type...',
+        lblGroupRelasi: 'Relations & Companies *', lblGroupNamaRelasi: 'Relation Name *',
+        lblGroupJabatan: 'Position', lblGroupPerusahaan: 'Company Name * (Full Name)',
+        lblGroupRelasiPlaceholder: 'Relation {n}', lblGroupJabatanPlaceholder: 'Position {n}',
+        lblGroupPerusahaanPlaceholder: 'Company {n}', btnHapusGroup: 'Remove Group',
+        btnTambahGroupRelasi: 'Add Relation Group',
+        lblJumlahRelasi: 'Total Relations',
+        fromJumlahGroup: 'filled from {n} group(s)',
+        uploadPaste: 'Click to upload or <strong>Paste (Ctrl+V)</strong> from clipboard',
+        uploadSupport: 'Supports: PDF, JPG, PNG, DOCX, XLSX, etc.',
+        // Pagination
+        pagination: 'Page {page} of {totalPages} ({totalEntries} entries)',
+        // Toasts
+        pdfExportSuccess: 'PDF exported successfully', pdfExportFailed: 'Failed to export PDF',
+        excelExportSuccess: 'Excel exported successfully', excelExportFailed: 'Failed to export Excel',
+        exportExcelBtn: 'Export Excel',
+        // Preview
+        noAttachment: 'No attachments',
+        // Delete tooltip
+        deleteTitle: 'Delete',
     } : {
         // Summary
         totalEntries: 'Total Entries', totalEntriesSub: 'Semua data entertainment',
@@ -121,19 +152,50 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         rulesTitle: 'Entertainment Rules', addRule: 'Tambah Rule', editRule: 'Edit Rule',
         ruleName: 'Rule Name', targetType: 'Target Type', targetValue: 'Target Value',
         viewAll: 'View All', canCreate: 'Create', canEdit: 'Edit', canDelete: 'Delete',
-        canSettle: 'Settle', canExport: 'Export', active: 'Active', aksi: 'Aksi',
+        canSettle: 'Settle', canExport: 'Export',         active: 'Active', aksi: 'Aksi',
         noRules: 'Belum ada rule', addNewRule: 'Tambah Rule Baru',
+        targetUser: 'Pilih User', targetDivision: 'Pilih Divisi', targetRole: 'Pilih Role',
+        permViewAll: 'Lihat Semua Data (Bypass Row Security)', permExportAll: 'Export All',
+        permCreate: 'Bisa Create', permEdit: 'Bisa Edit', permDelete: 'Bisa Delete',
+        permSettle: 'Bisa Settle', permExport: 'Bisa Export',
+        btnSaveRule: 'Simpan', btnCancelRule: 'Batal', btnUpdateRule: 'Update',
         // Validation
-        errTanggal: 'Tanggal wajib diisi', errNilai: 'Nilai wajib diisi', errMomResult: 'MOM/Result wajib diisi',
+        errTanggal: 'Tanggal wajib diisi', errTempat: 'Tempat wajib diisi',
+        errAlamat: 'Alamat wajib diisi', errJenis: 'Jenis wajib diisi',
+        errCustomJenis: 'Custom jenis wajib diisi', errNoGl: 'No GL wajib diisi',
+        errJenisUsaha: 'Jenis Usaha wajib diisi', errCustomJenisUsaha: 'Custom jenis usaha wajib diisi',
+        errGroups: 'Minimal 1 grup relasi wajib diisi', errAttachments: 'Minimal 1 lampiran wajib diupload',
+        errNilai: 'Nilai wajib diisi', errMomResult: 'MOM/Result wajib diisi',
         errSettleDate: 'Tanggal settle wajib diisi',
         // Misc
         placeholdRelasi: 'Nama Relasi', placeholdJabatan: 'Jabatan', placeholdPerusahaan: 'Nama Perusahaan',
         // Settle modal extra
-        selectOption: 'Pilih', lblNilai: 'Nilai (Rp)', lblNoGl: 'No GL', lblJenisUsaha: 'Jenis Usaha',
-        customJenisUsaha: 'Custom jenis usaha', removeRelation: 'Hapus relasi',
+        selectOption: 'Pilih', removeRelation: 'Hapus relasi',
         uploadAttachments: 'Klik untuk upload lampiran tambahan',
         savedAttachments: 'Lampiran Tersimpan', newAttachments: 'Lampiran Baru',
         processing: 'Memproses...',
+        // Missing form labels
+        pilihJenis: 'Pilih Jenis', customJenisPlaceholder: 'Masukkan jenis custom...',
+        customJenisUsahaPlaceholder: 'Masukkan jenis usaha custom...',
+        lblGroupRelasi: 'Relasi & Perusahaan *', lblGroupNamaRelasi: 'Nama Relasi *',
+        lblGroupJabatan: 'Jabatan', lblGroupPerusahaan: 'Nama Perusahaan * (Full Name)',
+        lblGroupRelasiPlaceholder: 'Relasi {n}', lblGroupJabatanPlaceholder: 'Jabatan {n}',
+        lblGroupPerusahaanPlaceholder: 'Perusahaan {n}', btnHapusGroup: 'Hapus Group',
+        btnTambahGroupRelasi: 'Tambah Group Relasi',
+        lblJumlahRelasi: 'Jumlah Relasi',
+        fromJumlahGroup: 'diisi dari {n} group',
+        uploadPaste: 'Klik untuk upload atau <strong>Paste (Ctrl+V)</strong> dari clipboard',
+        uploadSupport: 'Support: PDF, JPG, PNG, DOCX, XLSX, dll',
+        // Pagination
+        pagination: 'Halaman {page} dari {totalPages} ({totalEntries} data)',
+        // Toasts
+        pdfExportSuccess: 'PDF berhasil diexport', pdfExportFailed: 'Gagal export PDF',
+        excelExportSuccess: 'Excel berhasil diexport', excelExportFailed: 'Gagal export Excel',
+        exportExcelBtn: 'Export Excel',
+        // Preview
+        noAttachment: 'Tidak ada lampiran',
+        // Delete tooltip
+        deleteTitle: 'Hapus',
     };
     const fileInputRef = useRef(null);
     const pasteZoneRef = useRef(null);
@@ -232,19 +294,19 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
     const validate = () => {
         const errs = {};
         if (!form.tanggal) errs.tanggal = text.errTanggal;
-        if (!form.tempat) errs.tempat = 'Tempat wajib diisi';
-        if (!form.alamat) errs.alamat = 'Alamat wajib diisi';
-        if (!form.jenis) errs.jenis = 'Jenis wajib diisi';
-        if (form.jenis === 'Custom' && !form.custom_jenis?.trim()) errs.custom_jenis = 'Custom jenis wajib diisi';
+        if (!form.tempat) errs.tempat = text.errTempat;
+        if (!form.alamat) errs.alamat = text.errAlamat;
+        if (!form.jenis) errs.jenis = text.errJenis;
+        if (form.jenis === 'Custom' && !form.custom_jenis?.trim()) errs.custom_jenis = text.errCustomJenis;
         if (!form.nilai) errs.nilai = text.errNilai;
-        if (!form.no_gl) errs.no_gl = 'No GL wajib diisi';
-        if (!form.groups || form.groups.length === 0 || !form.groups[0].relasi?.trim()) errs.groups = 'Minimal 1 grup relasi wajib diisi';
-        if (!form.jenis_usaha) errs.jenis_usaha = 'Jenis Usaha wajib diisi';
+        if (!form.no_gl) errs.no_gl = text.errNoGl;
+        if (!form.groups || form.groups.length === 0 || !form.groups[0].relasi?.trim()) errs.groups = text.errGroups;
+        if (!form.jenis_usaha) errs.jenis_usaha = text.errJenisUsaha;
         if (form.jenis_usaha === 'Custom' && !form.custom_jenis_usaha?.trim()) {
-            errs.custom_jenis_usaha = 'Custom jenis usaha wajib diisi';
+            errs.custom_jenis_usaha = text.errCustomJenisUsaha;
         }
         if (!form.catatan_kode) errs.catatan_kode = text.errMomResult;
-        if (attachments.length === 0 && existingAttachments.length === 0) errs.attachments = 'Minimal 1 lampiran wajib diupload';
+        if (attachments.length === 0 && existingAttachments.length === 0) errs.attachments = text.errAttachments;
         setErrors(errs);
         return Object.keys(errs).length === 0;
     };
@@ -668,8 +730,8 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                         disabled={exportingPdf}
                         onClick={async () => {
                             setExportingPdf(true);
-                            try { await entertainmentService.exportPdf(); toast.success('PDF berhasil diexport'); }
-                            catch (e) { toast.error(e.message || 'Gagal export PDF'); }
+                            try { await entertainmentService.exportPdf(); toast.success(text.pdfExportSuccess); }
+                            catch (e) { toast.error(e.message || text.pdfExportFailed); }
                             finally { setExportingPdf(false); }
                         }}
                         className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl hover:from-red-700 hover:to-rose-700 transition-all shadow-lg shadow-red-500/20 font-semibold text-sm disabled:opacity-50"
@@ -682,8 +744,8 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                         disabled={exportingExcel}
                         onClick={async () => {
                             setExportingExcel(true);
-                            try { await entertainmentService.exportExcel(); toast.success('Excel berhasil diexport'); }
-                            catch (e) { toast.error(e.message || 'Gagal export Excel'); }
+                            try { await entertainmentService.exportExcel(); toast.success(text.excelExportSuccess); }
+                            catch (e) { toast.error(e.message || text.excelExportFailed); }
                             finally { setExportingExcel(false); }
                         }}
                         className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all shadow-lg shadow-green-500/20 font-semibold text-sm disabled:opacity-50"
@@ -820,7 +882,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                                 <select value={ruleForm.target_value}
                                                     onChange={e => setRuleForm(p => ({ ...p, target_value: e.target.value }))}
                                                     className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm">
-                                                    <option value="">Pilih User</option>
+                                                    <option value="">{text.targetUser}</option>
                                                     {usersList.map(u => (
                                                         <option key={u.username || u.id} value={u.username}>{u.name || u.username}</option>
                                                     ))}
@@ -829,7 +891,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                                 <select value={ruleForm.target_value}
                                                     onChange={e => setRuleForm(p => ({ ...p, target_value: e.target.value }))}
                                                     className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm">
-                                                    <option value="">Pilih Divisi</option>
+                                                    <option value="">{text.targetDivision}</option>
                                                     {departmentsList.map(d => (
                                                         <option key={d.id || d.name} value={d.name}>{d.name || d.label}</option>
                                                     ))}
@@ -838,7 +900,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                                 <select value={ruleForm.target_value}
                                                     onChange={e => setRuleForm(p => ({ ...p, target_value: e.target.value }))}
                                                     className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm">
-                                                    <option value="">Pilih Role</option>
+                                                    <option value="">{text.targetRole}</option>
                                                     {rolesList.map(r => (
                                                         <option key={r.id} value={r.id}>{r.label || r.id}</option>
                                                     ))}
@@ -850,13 +912,13 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                         <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">Permissions</label>
                                         <div className="flex flex-wrap gap-3">
                                                     {[
-                                                        { key: 'view_all', label: 'Lihat Semua Data (Bypass Row Security)' },
-                                                        { key: 'export_all', label: 'Export All' },
-                                                        { key: 'can_create', label: 'Bisa Create' },
-                                                        { key: 'can_edit', label: 'Bisa Edit' },
-                                                        { key: 'can_delete', label: 'Bisa Delete' },
-                                                        { key: 'can_settle', label: 'Bisa Settle' },
-                                                        { key: 'can_export', label: 'Bisa Export' }
+                                                        { key: 'view_all', label: text.permViewAll },
+                                                        { key: 'export_all', label: text.permExportAll },
+                                                        { key: 'can_create', label: text.permCreate },
+                                                        { key: 'can_edit', label: text.permEdit },
+                                                        { key: 'can_delete', label: text.permDelete },
+                                                        { key: 'can_settle', label: text.permSettle },
+                                                        { key: 'can_export', label: text.permExport }
                                                     ].map(p => (
                                                 <label key={p.key} className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-600 text-sm">
                                                     <input type="checkbox" checked={!!ruleForm[p.key]}
@@ -871,11 +933,11 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                         <button onClick={handleSaveRule} disabled={ruleSubmitting}
                                             className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-600 text-white rounded-xl hover:bg-amber-700 transition-colors text-sm font-semibold disabled:opacity-50">
                                             {ruleSubmitting ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
-                                            {editingRule ? 'Update' : 'Simpan'}
+                                            {editingRule ? text.btnUpdateRule : text.btnSaveRule}
                                         </button>
                                         <button onClick={() => { setShowRuleForm(false); setEditingRule(null); }}
                                             className="px-5 py-2.5 border border-slate-300 dark:border-slate-600 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm">
-                                            Batal
+                                            {text.btnCancelRule}
                                         </button>
                                     </div>
                                 </div>
@@ -980,12 +1042,12 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     <select value={form.jenis}
                                         onChange={e => setForm(p => ({ ...p, jenis: e.target.value }))}
                                         className={`w-full px-3 py-2.5 rounded-xl border ${errors.jenis ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`}>
-                                        <option value="">Pilih Jenis</option>
+                                        <option value="">{text.pilihJenis}</option>
                                         {JENIS_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
                                     </select>
                                     {errors.jenis && <p className="text-red-500 text-xs mt-1">{errors.jenis}</p>}
                                     {form.jenis === 'Custom' && (
-                                        <input type="text" placeholder="Masukkan jenis custom..." value={form.custom_jenis}
+                                        <input type="text" placeholder={text.customJenisPlaceholder} value={form.custom_jenis}
                                             onChange={e => setForm(p => ({ ...p, custom_jenis: e.target.value }))}
                                             className={`mt-2 w-full px-3 py-2 rounded-xl border ${errors.custom_jenis ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm`} />
                                     )}
@@ -1032,7 +1094,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     </select>
                                     {errors.jenis_usaha && <p className="text-red-500 text-xs mt-1">{errors.jenis_usaha}</p>}
                                     {form.jenis_usaha === 'Custom' && (
-                                        <input type="text" placeholder="Masukkan jenis usaha custom..." value={form.custom_jenis_usaha}
+                                        <input type="text" placeholder={text.customJenisUsahaPlaceholder} value={form.custom_jenis_usaha}
                                             onChange={e => setForm(p => ({ ...p, custom_jenis_usaha: e.target.value }))}
                                             className={`mt-2 w-full px-3 py-2 rounded-xl border ${errors.custom_jenis_usaha ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm`} />
                                     )}
@@ -1041,36 +1103,36 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                             </div>
                             {/* Relasi + Jabatan + Perusahaan Group */}
                             <div>
-                                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">Relasi & Perusahaan *</label>
+                                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">{text.lblGroupRelasi}</label>
                                 {form.groups.map((grp, idx) => (
                                     <div key={idx} className="bg-slate-50 dark:bg-slate-700/30 rounded-xl p-3 mb-3 border border-slate-200 dark:border-slate-600">
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                                             <div>
-                                                <label className="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Nama Relasi *</label>
+                                                <label className="block text-[10px] font-semibold text-slate-500 uppercase mb-1">{text.lblGroupNamaRelasi}</label>
                                                 <input type="text" value={grp.relasi}
                                                     onChange={e => updateGroup(idx, 'relasi', e.target.value)}
-                                                    placeholder={`Relasi ${idx + 1}`}
+                                                    placeholder={text.lblGroupRelasiPlaceholder.replace('{n}', idx + 1)}
                                                     className={`w-full px-3 py-2 rounded-lg border ${errors.groups ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm`} />
                                             </div>
                                             <div>
-                                                <label className="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Jabatan</label>
+                                                <label className="block text-[10px] font-semibold text-slate-500 uppercase mb-1">{text.lblGroupJabatan}</label>
                                                 <input type="text" value={grp.jabatan}
                                                     onChange={e => updateGroup(idx, 'jabatan', e.target.value)}
-                                                    placeholder={`Jabatan ${idx + 1}`}
+                                                    placeholder={text.lblGroupJabatanPlaceholder.replace('{n}', idx + 1)}
                                                     className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm" />
                                             </div>
                                             <div>
-                                                <label className="block text-[10px] font-semibold text-slate-500 uppercase mb-1">Nama Perusahaan *</label>
+                                                <label className="block text-[10px] font-semibold text-slate-500 uppercase mb-1">{text.lblGroupPerusahaan}</label>
                                                 <input type="text" value={grp.nama_perusahaan}
                                                     onChange={e => updateGroup(idx, 'nama_perusahaan', e.target.value)}
-                                                    placeholder={`Perusahaan ${idx + 1}`}
+                                                    placeholder={text.lblGroupPerusahaanPlaceholder.replace('{n}', idx + 1)}
                                                     className={`w-full px-3 py-2 rounded-lg border ${errors.groups ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm`} />
                                             </div>
                                         </div>
                                         {form.groups.length > 1 && (
                                             <button type="button" onClick={() => removeGroup(idx)}
                                                 className="mt-2 p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-xs flex items-center gap-1">
-                                                <X size={14} /> Hapus Group
+                                                <X size={14} /> {text.btnHapusGroup}
                                             </button>
                                         )}
                                     </div>
@@ -1078,15 +1140,15 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 <div className="flex flex-wrap items-center justify-between gap-3 mt-1">
                                     <button type="button" onClick={addGroup}
                                         className="inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-700 text-sm font-semibold">
-                                        <Plus size={14} /> Tambah Group Relasi
+                                        <Plus size={14} /> {text.btnTambahGroupRelasi}
                                     </button>
                                     <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700">
-                                        <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-300 uppercase tracking-wide">Jumlah Relasi</span>
+                                        <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-300 uppercase tracking-wide">{text.lblJumlahRelasi}</span>
                                         <span className="inline-flex items-center justify-center min-w-[28px] h-7 px-2 rounded-lg bg-indigo-600 text-white text-sm font-bold">
                                             {jumlahRelasi}
                                         </span>
                                         <span className="text-xs text-slate-500 dark:text-slate-400">
-                                            orang diisi dari {form.groups.length} group
+                                            {text.fromJumlahGroup.replace('{n}', form.groups.length)}
                                         </span>
                                     </div>
                                 </div>
@@ -1105,8 +1167,8 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
 
                             {/* Attachments */}
                             <div>
-                                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">
-                                    {isEnglish ? 'Attachments' : 'Lampiran'} * {errors.attachments && <span className="text-red-500">- {errors.attachments}</span>}
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">
+                                    {text.lblLampiran} * {errors.attachments && <span className="text-red-500">- {errors.attachments}</span>}
                                 </label>
                                 <div
                                     ref={pasteZoneRef}
@@ -1118,10 +1180,8 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     onClick={() => fileInputRef.current?.click()}
                                 >
                                     <Upload size={32} className="mx-auto text-slate-400 mb-2" />
-                                    <p className="text-sm text-slate-500 dark:text-slate-400">
-                                        Klik untuk upload atau <strong>Paste (Ctrl+V)</strong> dari clipboard
-                                    </p>
-                                    <p className="text-xs text-slate-400 mt-1">Support: PDF, JPG, PNG, DOCX, XLSX, dll</p>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400" dangerouslySetInnerHTML={{ __html: text.uploadPaste }} />
+                                    <p className="text-xs text-slate-400 mt-1">{text.uploadSupport}</p>
                                     <input ref={fileInputRef} type="file" multiple
                                         onChange={handleFileChange}
                                         accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx,.txt,.csv"
@@ -1131,7 +1191,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 {/* Preview existing attachments */}
                                 {existingAttachments.length > 0 && (
                                     <div className="mt-3">
-                                        <p className="text-xs font-semibold text-slate-500 mb-2">{isEnglish ? 'Saved Attachments' : 'Lampiran Tersimpan'} ({existingAttachments.length}):</p>
+                                        <p className="text-xs font-semibold text-slate-500 mb-2">{text.savedAttachments} ({existingAttachments.length}):</p>
                                         <div className="flex flex-wrap gap-2">
                                             {existingAttachments.map((att, idx) => (
                                                 <div key={idx} className="relative group bg-slate-100 dark:bg-slate-700 rounded-lg p-2 flex items-center gap-2">
@@ -1156,7 +1216,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 {/* Preview new attachments */}
                                 {attachments.length > 0 && (
                                     <div className="mt-3">
-                                        <p className="text-xs font-semibold text-slate-500 mb-2">{isEnglish ? 'New Attachments' : 'Lampiran Baru'} ({attachments.length}):</p>
+                                        <p className="text-xs font-semibold text-slate-500 mb-2">{text.newAttachments} ({attachments.length}):</p>
                                         <div className="flex flex-wrap gap-2">
                                             {attachments.map((file, idx) => (
                                                 <div key={idx} className="relative group bg-slate-100 dark:bg-slate-700 rounded-lg p-2 flex items-center gap-2">
@@ -1233,34 +1293,34 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                         {tab === 'pending' ? (
                                             <div className="flex items-center justify-center gap-1">
                                                 <button onClick={() => handlePreview(item)}
-                                                    className="p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" title="Preview">
+                                                    className="p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" title={text.preview}>
                                                     <Eye size={16} />
                                                 </button>
                                                 {userPerms.can_edit && (
                                                 <button onClick={() => handleEdit(item)}
-                                                    className="p-1.5 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition-colors" title="Edit">
+                                                    className="p-1.5 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition-colors" title={text.edit}>
                                                     <Edit3 size={16} />
                                                 </button>
                                                 )}
                                                 {userPerms.can_settle && (
                                                 <button onClick={() => handleSettle(item)}
-                                                    className="p-1.5 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors" title="Settle">
+                                                    className="p-1.5 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors" title={text.settle}>
                                                     <CheckCircle2 size={16} />
                                                 </button>
                                                 )}
                                                 {userPerms.can_export && (
                                                 <button type="button" onClick={async (ev) => {
                                                         ev.stopPropagation();
-                                                        try { await entertainmentService.exportPdf(item.id); toast.success('PDF berhasil diexport'); }
-                                                        catch (e) { toast.error(e.message || 'Gagal export PDF'); }
+                                                        try { await entertainmentService.exportPdf(item.id); toast.success(text.pdfExportSuccess); }
+                                                        catch (e) { toast.error(e.message || text.pdfExportFailed); }
                                                     }}
-                                                    className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Export PDF">
+                                                    className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title={text.exportPdfBtn}>
                                                     <FileText size={16} />
                                                 </button>
                                                 )}
                                                 {userPerms.can_delete && (
                                                 <button type="button" onClick={() => handleDelete(item.id)}
-                                                    className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Hapus">
+                                                    className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title={text.deleteTitle}>
                                                     <Trash2 size={16} />
                                                 </button>
                                                 )}
@@ -1268,16 +1328,16 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                         ) : (
                                             <div className="flex items-center justify-center gap-1">
                                                 <button onClick={() => handlePreview(item)}
-                                                    className="p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" title="Preview">
+                                                    className="p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" title={text.preview}>
                                                     <Eye size={16} />
                                                 </button>
                                                 {userPerms.can_export && (
                                                 <button type="button" onClick={async (ev) => {
                                                         ev.stopPropagation();
-                                                        try { await entertainmentService.exportPdf(item.id); toast.success('PDF berhasil diexport'); }
-                                                        catch (e) { toast.error(e.message || 'Gagal export PDF'); }
+                                                        try { await entertainmentService.exportPdf(item.id); toast.success(text.pdfExportSuccess); }
+                                                        catch (e) { toast.error(e.message || text.pdfExportFailed); }
                                                     }}
-                                                    className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Export PDF">
+                                                    className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title={text.exportPdfBtn}>
                                                     <FileText size={16} />
                                                 </button>
                                                 )}
@@ -1311,7 +1371,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
             {totalPages > 1 && (
                 <div className="flex items-center justify-between px-6 py-3 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
                     <div className="text-sm text-slate-500 dark:text-slate-400">
-                        Halaman {page} dari {totalPages} ({totalEntries} data)
+                        {text.pagination.replace('{page}', page).replace('{totalPages}', totalPages).replace('{totalEntries}', totalEntries)}
                     </div>
                     <div className="flex items-center gap-2">
                         <button
@@ -1429,7 +1489,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                             {JENIS_USAHA_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
                                         </select>
                                         {settleForm.jenis_usaha === 'Custom' && (
-                                            <input type="text" placeholder={text.customJenisUsaha} value={settleForm.custom_jenis_usaha || ''}
+                                            <input type="text" placeholder={text.customJenisUsahaPlaceholder} value={settleForm.custom_jenis_usaha || ''}
                                                 onChange={e => setSettleForm(p => ({ ...p, custom_jenis_usaha: e.target.value }))}
                                                 className="mt-2 w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm" />
                                         )}
@@ -1595,7 +1655,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                             className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
                             onClick={e => e.stopPropagation()}>
                             <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
-                                <h3 className="text-white font-bold text-lg">Preview Entertainment Expenses</h3>
+                                <h3 className="text-white font-bold text-lg">{text.previewTitle}</h3>
                                 <button onClick={() => setShowPreview(false)}
                                     className="p-1.5 text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition-colors">
                                     <X size={20} />
@@ -1621,7 +1681,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     <h4 className="text-sm font-semibold text-slate-600 dark:text-slate-300 mb-3">{text.detailLampiran}:</h4>
                                     <div className="flex flex-wrap gap-3">
                                         {(previewData.attachments || []).length === 0 ? (
-                                            <p className="text-sm text-slate-400">Tidak ada lampiran</p>
+                                            <p className="text-sm text-slate-400">{text.noAttachment}</p>
                                         ) : previewData.attachments.map((att, idx) => (
                                             <a key={idx} href={att.url} target="_blank" rel="noopener noreferrer"
                                                 className="flex items-center gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
@@ -1637,18 +1697,18 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 </div>
                                 <div className="border-t border-slate-200 dark:border-slate-700 pt-4 flex items-center gap-3">
                                     <button type="button" onClick={async () => {
-                                            try { await entertainmentService.exportPdf(previewData.id); toast.success('PDF berhasil diexport'); }
-                                            catch (e) { toast.error(e.message || 'Gagal export PDF'); }
+                                            try { await entertainmentService.exportPdf(previewData.id); toast.success(text.pdfExportSuccess); }
+                                            catch (e) { toast.error(e.message || text.pdfExportFailed); }
                                         }}
                                         className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors text-sm font-semibold">
-                                        <FileText size={16} /> Export PDF
+                                        <FileText size={16} /> {text.exportPdfBtn}
                                     </button>
                                     <button type="button" onClick={async () => {
-                                            try { await entertainmentService.exportExcel(previewData.id); toast.success('Excel berhasil diexport'); }
-                                            catch (e) { toast.error(e.message || 'Gagal export Excel'); }
+                                            try { await entertainmentService.exportExcel(previewData.id); toast.success(text.excelExportSuccess); }
+                                            catch (e) { toast.error(e.message || text.excelExportFailed); }
                                         }}
                                         className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors text-sm font-semibold">
-                                        <FileSpreadsheet size={16} /> Export Excel
+                                        <FileSpreadsheet size={16} /> {text.exportExcelBtn}
                                     </button>
                                 </div>
                             </div>
