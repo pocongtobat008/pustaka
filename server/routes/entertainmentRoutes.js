@@ -49,6 +49,121 @@ const getUserEntertainmentPerms = async (user) => {
     }
 };
 
+// ─── Duplicate Anomaly Detection Helpers ────────────────────────────────────
+
+function normalizeText(str) {
+    if (!str || typeof str !== 'string') return '';
+    return str
+        .toLowerCase()
+        .replace(/[\s,.;:!?()\-'"\/\\]+/g, ' ')
+        .replace(/\b(pt|cv|tbk|ltd|inc|pd|fa|nv|ud|pn|persero|perseorangan|perum|bumn|bumd|yayasan|co|corp|corporation|company|limited)\b/gi, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function normalizeArray(arr) {
+    if (!Array.isArray(arr)) return [];
+    return arr.map(normalizeText).filter(Boolean).sort();
+}
+
+function arraysOverlap(a, b) {
+    const na = normalizeArray(a);
+    const nb = normalizeArray(b);
+    if (!na.length || !nb.length) return false;
+    const set = new Set(na);
+    return nb.some(x => set.has(x));
+}
+
+function arraysEqual(a, b) {
+    const na = normalizeArray(a);
+    const nb = normalizeArray(b);
+    if (na.length !== nb.length) return false;
+    return na.every((v, i) => v === nb[i]);
+}
+
+async function findAnomalies(knexInstance, data, excludeId) {
+    const { tanggal, tempat, alamat, nilai, no_gl, relasi, jenis_usaha, catatan_kode } = data;
+    if (!tanggal) return [];
+
+    let relasiArr = [];
+    try { relasiArr = typeof relasi === 'string' ? JSON.parse(relasi) : (relasi || []); } catch { relasiArr = []; }
+    if (!Array.isArray(relasiArr)) relasiArr = [];
+
+    // Build query safely
+    let query = knexInstance('entertainment_expenses')
+        .where('tanggal', tanggal)
+        .select('id', 'tempat', 'alamat', 'nilai', 'no_gl', 'relasi', 'jenis_usaha', 'catatan_kode', 'requester_name', 'requester_username');
+
+    if (excludeId) {
+        query = query.where('id', '!=', excludeId);
+    }
+
+    const candidates = await query;
+
+    const numNilai = parseFloat(String(nilai).replace(/[^\d.]/g, '')) || 0;
+    const normalizedTempat = normalizeText(tempat);
+    const normalizedAlamat = normalizeText(alamat);
+    const normalizedKode = normalizeText(catatan_kode);
+
+    const warnings = [];
+
+    for (const candidate of candidates) {
+        const cTempat = normalizeText(candidate.tempat);
+        const cAlamat = normalizeText(candidate.alamat);
+        const cKode = normalizeText(candidate.catatan_kode);
+        const cNilai = parseFloat(String(candidate.nilai).replace(/[^\d.]/g, '')) || 0;
+
+        let candidateRelasi = [];
+        try { candidateRelasi = typeof candidate.relasi === 'string' ? JSON.parse(candidate.relasi) : (candidate.relasi || []); } catch { candidateRelasi = []; }
+
+        const matchedPatterns = [];
+
+        // 1) nilai + tempat cocok → KUAT
+        if (numNilai && cNilai && numNilai === cNilai && normalizedTempat && cTempat && normalizedTempat === cTempat) {
+            matchedPatterns.push({ pola: 'Nilai dan tempat sama', level: 'kuat' });
+        }
+
+        // 2) nilai + alamat cocok → KUAT
+        if (numNilai && cNilai && numNilai === cNilai && normalizedAlamat && cAlamat && normalizedAlamat === cAlamat) {
+            matchedPatterns.push({ pola: 'Nilai dan alamat sama', level: 'kuat' });
+        }
+
+        // 3) nilai + no_gl cocok → SEDANG
+        if (numNilai && cNilai && numNilai === cNilai && no_gl && candidate.no_gl && no_gl === candidate.no_gl) {
+            matchedPatterns.push({ pola: 'Nilai dan No GL sama', level: 'sedang' });
+        }
+
+        // 4) tempat cocok + irisan relasi → SEDANG
+        if (normalizedTempat && cTempat && normalizedTempat === cTempat && arraysOverlap(relasiArr, candidateRelasi)) {
+            matchedPatterns.push({ pola: 'Tempat sama dan ada relasi yang sama', level: 'sedang' });
+        }
+
+        // 5) tempat cocok (nilai beda) → RINGAN
+        if (normalizedTempat && cTempat && normalizedTempat === cTempat && (!numNilai || !cNilai || numNilai !== cNilai)) {
+            matchedPatterns.push({ pola: 'Tempat sama dengan nilai berbeda', level: 'ringan' });
+        }
+
+        // 6) catatan_kode normalized cocok + nilai sama → SEDANG
+        if (normalizedKode && cKode && normalizedKode === cKode && numNilai && cNilai && numNilai === cNilai) {
+            matchedPatterns.push({ pola: 'Catatan/Kode dan nilai sama', level: 'sedang' });
+        }
+
+        if (matchedPatterns.length > 0) {
+            warnings.push({
+                id: candidate.id,
+                ref_no: `ENT-${String(candidate.id).padStart(5, '0')}`,
+                requester_name: candidate.requester_name,
+                requester_username: candidate.requester_username,
+                patterns: matchedPatterns,
+                highest_level: matchedPatterns.some(p => p.level === 'kuat') ? 'kuat' :
+                               matchedPatterns.some(p => p.level === 'sedang') ? 'sedang' : 'ringan'
+            });
+        }
+    }
+
+    return warnings;
+}
+
 // ─── Entertainment Rules CRUD (admin only) ──────────────────────────────────
 router.get('/rules', async (req, res) => {
     try {
@@ -969,7 +1084,13 @@ router.post('/:id/settle', upload.array('attachments', 10), async (req, res) => 
         await knex('entertainment_expenses').where('id', req.params.id).update(updatePayload);
 
         const updated = await knex('entertainment_expenses').where('id', req.params.id).first();
-        res.json({ ...updated, changed });
+
+        const warnings = await findAnomalies(knex, {
+            tanggal, tempat, alamat, nilai, no_gl, relasi, jenis_usaha, catatan_kode
+        }, req.params.id);
+        const responseData = { ...updated, changed };
+        if (warnings.length > 0) responseData.warnings = warnings;
+        res.json(responseData);
     } catch (error) {
         console.error('[Entertainment] Settle error:', error);
         if (req.files) req.files.forEach(f => fs.unlink(f.path, () => {}));
@@ -1060,7 +1181,13 @@ router.post('/', upload.array('attachments', 10), async (req, res) => {
         }
 
         const created = await knex('entertainment_expenses').where('id', insertedId).first();
-        res.status(201).json(created || { id: insertedId, ...insertPayload });
+
+        const warnings = await findAnomalies(knex, {
+            tanggal, tempat, alamat, nilai, no_gl, relasi, jenis_usaha, catatan_kode
+        }, insertedId);
+        const responseData = created || { id: insertedId, ...insertPayload };
+        if (warnings.length > 0) responseData.warnings = warnings;
+        res.status(201).json(responseData);
     } catch (error) {
         console.error('[Entertainment] POST error:', error);
         if (req.files) req.files.forEach(f => fs.unlink(f.path, () => {}));
@@ -1140,7 +1267,13 @@ router.put('/:id', upload.array('attachments', 10), async (req, res) => {
         });
 
         const updated = await knex('entertainment_expenses').where('id', req.params.id).first();
-        res.json(updated);
+
+        const warnings = await findAnomalies(knex, {
+            tanggal, tempat, alamat, nilai, no_gl, relasi, jenis_usaha, catatan_kode
+        }, req.params.id);
+        const responseData = { ...updated };
+        if (warnings.length > 0) responseData.warnings = warnings;
+        res.json(responseData);
     } catch (error) {
         console.error('[Entertainment] PUT error:', error);
         if (req.files) req.files.forEach(f => fs.unlink(f.path, () => {}));

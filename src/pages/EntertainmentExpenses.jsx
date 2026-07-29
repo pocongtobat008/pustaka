@@ -240,6 +240,24 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
     const [usersList, setUsersList] = useState([]);
     const [departmentsList, setDepartmentsList] = useState([]);
     const [rolesList, setRolesList] = useState([]);
+    const WARNINGS_KEY = 'entertainment_anomaly_warnings';
+
+    const [anomalyWarnings, setAnomalyWarnings] = useState(() => {
+        try {
+            const stored = localStorage.getItem(WARNINGS_KEY);
+            return stored ? JSON.parse(stored) : [];
+        } catch { return []; }
+    });
+
+    const persistWarnings = (warnings) => {
+        setAnomalyWarnings(warnings);
+        try { localStorage.setItem(WARNINGS_KEY, JSON.stringify(warnings)); } catch {}
+    };
+
+    const dismissWarnings = () => {
+        setAnomalyWarnings([]);
+        try { localStorage.removeItem(WARNINGS_KEY); } catch {}
+    };
 
     const parseField = (val, fallback = []) => {
         if (val == null || val === '') return fallback;
@@ -365,12 +383,23 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                 fd.append('attachments', file);
             });
 
+            let result;
             if (editingId) {
-                await entertainmentService.update(editingId, fd);
+                result = await entertainmentService.update(editingId, fd);
                 toast.success('Data berhasil diupdate');
             } else {
-                await entertainmentService.create(fd);
+                result = await entertainmentService.create(fd);
                 toast.success('Data berhasil disimpan');
+            }
+
+            const warns = result?.warnings;
+            if (warns && Array.isArray(warns) && warns.length > 0) {
+                persistWarnings(warns);
+                toast.warning(
+                    isEnglish
+                        ? `⚠️ ${warns.length} anomali terdeteksi! Cek ${warns.map(w => w.ref_no || `ENT-${String(w.id).padStart(5, '0')}`).join(', ')}`
+                        : `⚠️ ${warns.length} anomali terdeteksi! Cek ${warns.map(w => w.ref_no || `ENT-${String(w.id).padStart(5, '0')}`).join(', ')}`
+                );
             }
 
             resetForm();
@@ -621,6 +650,14 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
             });
 
             const result = await entertainmentService.settle(settleItem.id, fd);
+            if (result && result.warnings) {
+                persistWarnings(result.warnings);
+                toast.warning(
+                    isEnglish
+                        ? `⚠️ ${result.warnings.length} anomali terdeteksi! Cek ${result.warnings.map(w => w.ref_no || `ENT-${String(w.id).padStart(5, '0')}`).join(', ')}`
+                        : `⚠️ ${result.warnings.length} anomali terdeteksi! Cek ${result.warnings.map(w => w.ref_no || `ENT-${String(w.id).padStart(5, '0')}`).join(', ')}`
+                );
+            }
             if (result.changed) {
                 toast.success('Data diupdate dan berhasil di-settle');
             } else {
@@ -708,8 +745,50 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
 
     const isAdmin = currentUser?.role === 'admin' || currentUser?.role === 'superadmin';
 
+    const levelBadge = (level) => {
+        if (level === 'kuat') return <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300">KUAT</span>;
+        if (level === 'sedang') return <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-300">SEDANG</span>;
+        return <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">RINGAN</span>;
+    };
+
     return (
         <div className="space-y-6">
+            {/* Anomaly Warnings Banner */}
+            {anomalyWarnings.length > 0 && (
+                <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border border-amber-200 dark:border-amber-700/50 rounded-2xl p-4 relative">
+                    <button onClick={dismissWarnings} className="absolute top-3 right-3 p-1 rounded-lg hover:bg-amber-200/50 dark:hover:bg-amber-800/50 transition-colors">
+                        <X size={16} className="text-amber-600 dark:text-amber-400" />
+                    </button>
+                    <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-800/50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <svg className="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                            </svg>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <h4 className="text-sm font-bold text-amber-800 dark:text-amber-300 mb-2">
+                                {isEnglish ? 'Potential duplicate data detected:' : 'Data anomali terdeteksi:'}
+                            </h4>
+                            <div className="space-y-1.5">
+                                {anomalyWarnings.map((w, i) => (
+                                    <div key={i} className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-amber-700 dark:text-amber-400 bg-white/50 dark:bg-black/20 rounded-lg px-3 py-1.5">
+                                        <span className="font-mono font-bold text-amber-900 dark:text-amber-200">{w.ref_no || `ENT-${String(w.id).padStart(5, '0')}`}</span>
+                                        <span className="text-amber-600 dark:text-amber-400">
+                                            {isEnglish ? 'by' : 'oleh'} <span className="font-semibold">{w.requester_name || w.requester_username}</span>
+                                        </span>
+                                        <span className="hidden sm:inline text-amber-300 dark:text-amber-600">|</span>
+                                        <span className="text-amber-600 dark:text-amber-400">
+                                            {w.patterns.map(p => p.pola).join(', ')}
+                                        </span>
+                                        {levelBadge(w.highest_level)}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Summary Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <SummaryCard

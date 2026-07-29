@@ -2,9 +2,7 @@
 
 :root {
     --sidebar-width-collapsed: 72px;
-    /* Reduced from 90px */
     --sidebar-width-expanded: 260px;
-    /* Reduced from 300px */
     --sidebar-bg-light: #ffffff;
     --sidebar-bg-dark: #111c44;
     --body-bg-light: #f4f7fe;
@@ -65,12 +63,13 @@
 .magic-item.active {
     background: var(--active-bg-light) !important;
     color: #2b3674 !important;
-    /* Soft dark blue instead of indigo */
+    box-shadow: inset 3px 0 0 0 #4318FF !important;
 }
 
 .dark .magic-item.active {
     background: var(--active-bg-dark) !important;
     color: #fff !important;
+    box-shadow: inset 3px 0 0 0 #868CFF !important;
 }
 
 .magic-item:not(.active) {

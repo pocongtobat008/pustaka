@@ -89,11 +89,11 @@ const Sidebar = ({
                 <div className="flex items-center w-full relative">
                     {/* Fixed Icon for Center alignment when collapsed */}
                     <div className="w-[72px] flex-shrink-0 flex items-center justify-center">
-                        <div className="relative group cursor-pointer" onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}>
-                            <div className="absolute inset-0 bg-indigo-500 blur-2xl opacity-30 rounded-full group-hover:opacity-50 transition-opacity duration-300 animate-pulse-slow"></div>
-                            <div className="w-10 h-10 relative z-10 flex items-center justify-center bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-900/40 dark:to-[#111C44] rounded-xl shadow-lg transform group-hover:rotate-12 transition-transform duration-300 border border-white/20">
-                                <BookOpen className="text-indigo-600 dark:text-indigo-400" size={22} />
-                            </div>
+                            <div className="relative group cursor-pointer" onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}>
+                                <div className="absolute inset-0 bg-indigo-500 blur-2xl opacity-30 rounded-full group-hover:opacity-50 transition-opacity duration-300 animate-pulse-slow"></div>
+                                <div className="w-10 h-10 relative z-10 flex items-center justify-center bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-900/40 dark:to-[#111C44] rounded-xl shadow-lg transform group-hover:rotate-12 transition-transform duration-300 border border-white/20">
+                                    <BookOpen className="text-indigo-600 dark:text-indigo-400" size={22} />
+                                </div>
                         </div>
                     </div>
                     {/* Sliding Label & Pin */}
