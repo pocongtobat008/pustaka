@@ -544,11 +544,11 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
     };
     const formatDateId = (date) => {
         if (!date) return '-';
-        try {
-            const d = new Date(typeof date === 'string' ? date.slice(0, 10) : date);
-            if (isNaN(d.getTime())) return String(date).slice(0, 10);
-            return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-        } catch { return String(date).slice(0, 10); }
+        const raw = typeof date === 'string' ? date.slice(0, 10) : String(date).slice(0, 10);
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
+        const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        const [y, m, d] = raw.split('-');
+        return `${parseInt(d)} ${months[parseInt(m) - 1]} ${y}`;
     };
 
     const initSettleForm = (item) => ({
