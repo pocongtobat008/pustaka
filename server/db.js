@@ -4,6 +4,15 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 dotenv.config();
 
+// Force pg to return DATE/TIMESTAMP as strings (avoid timezone shift from UTC midnight)
+try {
+    const pg = (await import('pg')).default || (await import('pg'));
+    if (pg?.types?.setTypeParser) {
+        pg.types.setTypeParser(1082, (val) => val); // DATE → string
+        pg.types.setTypeParser(1114, (str) => str); // TIMESTAMP → string
+    }
+} catch {}
+
 const knex = knexLib(knexConfig.development);
 
 // Wrapper to mimic SQLite API (compat layer) - DEPRECATED: Use knex directly
