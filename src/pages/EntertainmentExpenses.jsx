@@ -56,7 +56,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         lblTanggal: 'Date *', lblTempat: 'Venue', lblJenis: 'Type *', lblCustomJenis: 'Custom type',
         lblAlamat: 'Address', lblNilai: 'Amount (IDR) *', lblNoGl: 'GL Number',
         lblJenisUsaha: 'Business Type', lblCustomJenisUsaha: 'Custom business type',
-        lblMomResult: 'MOM/Result *', lblLampiran: 'Attachments', lblDragDrop: 'Click or drag files here',
+        lblMomResult: 'MOM/Result', lblLampiran: 'Attachments', lblDragDrop: 'Click or drag files here',
         btnSave: 'Save', btnCancel: 'Cancel', btnUpdate: 'Update',
         // Settle
         settleTitle: 'Settle Entertainment', lblSettleDate: 'Settle Date *',
@@ -99,7 +99,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         pilihJenis: 'Select Type', customJenisPlaceholder: 'Enter custom type...',
         customJenisUsahaPlaceholder: 'Enter custom business type...',
         lblGroupRelasi: 'Relations & Companies *', lblGroupNamaRelasi: 'Relation Name *',
-        lblGroupJabatan: 'Position', lblGroupPerusahaan: 'Company Name * (Full Name)',
+        lblGroupJabatan: 'Position',         lblGroupPerusahaan: 'Company Name (Full Name)',
         lblGroupRelasiPlaceholder: 'Relation {n}', lblGroupJabatanPlaceholder: 'Position {n}',
         lblGroupPerusahaanPlaceholder: 'Company {n}', btnHapusGroup: 'Remove Group',
         btnTambahGroupRelasi: 'Add Relation Group',
@@ -141,7 +141,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         lblTanggal: 'Tanggal *', lblTempat: 'Tempat', lblJenis: 'Jenis *', lblCustomJenis: 'Custom jenis',
         lblAlamat: 'Alamat', lblNilai: 'Nilai (IDR) *', lblNoGl: 'No GL',
         lblJenisUsaha: 'Jenis Usaha', lblCustomJenisUsaha: 'Custom jenis usaha',
-        lblMomResult: 'MOM/Result *', lblLampiran: 'Lampiran', lblDragDrop: 'Klik atau seret file ke sini',
+        lblMomResult: 'MOM/Result', lblLampiran: 'Lampiran', lblDragDrop: 'Klik atau seret file ke sini',
         btnSave: 'Simpan', btnCancel: 'Batal', btnUpdate: 'Update',
         // Settle
         settleTitle: 'Settle Entertainment', lblSettleDate: 'Tanggal Settle *',
@@ -184,7 +184,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         pilihJenis: 'Pilih Jenis', customJenisPlaceholder: 'Masukkan jenis custom...',
         customJenisUsahaPlaceholder: 'Masukkan jenis usaha custom...',
         lblGroupRelasi: 'Relasi & Perusahaan *', lblGroupNamaRelasi: 'Nama Relasi *',
-        lblGroupJabatan: 'Jabatan', lblGroupPerusahaan: 'Nama Perusahaan * (Full Name)',
+        lblGroupJabatan: 'Jabatan',         lblGroupPerusahaan: 'Nama Perusahaan (Full Name)',
         lblGroupRelasiPlaceholder: 'Relasi {n}', lblGroupJabatanPlaceholder: 'Jabatan {n}',
         lblGroupPerusahaanPlaceholder: 'Perusahaan {n}', btnHapusGroup: 'Hapus Group',
         btnTambahGroupRelasi: 'Tambah Group Relasi',
@@ -301,19 +301,10 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
     const validate = () => {
         const errs = {};
         if (!form.tanggal) errs.tanggal = text.errTanggal;
-        if (!form.tempat) errs.tempat = text.errTempat;
-        if (!form.alamat) errs.alamat = text.errAlamat;
         if (!form.jenis) errs.jenis = text.errJenis;
         if (form.jenis === 'Custom' && !form.custom_jenis?.trim()) errs.custom_jenis = text.errCustomJenis;
         if (!form.nilai) errs.nilai = text.errNilai;
-        if (!form.no_gl) errs.no_gl = text.errNoGl;
         if (!form.groups || form.groups.length === 0 || !form.groups[0].relasi?.trim()) errs.groups = text.errGroups;
-        if (!form.jenis_usaha) errs.jenis_usaha = text.errJenisUsaha;
-        if (form.jenis_usaha === 'Custom' && !form.custom_jenis_usaha?.trim()) {
-            errs.custom_jenis_usaha = text.errCustomJenisUsaha;
-        }
-        if (!form.catatan_kode) errs.catatan_kode = text.errMomResult;
-        if (attachments.length === 0 && existingAttachments.length === 0) errs.attachments = text.errAttachments;
         setErrors(errs);
         return Object.keys(errs).length === 0;
     };
@@ -1043,7 +1034,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 </div>
                                 {/* Tempat */}
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblTempat} *</label>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblTempat}</label>
                                     <input type="text" value={form.tempat}
                                         onChange={e => setForm(p => ({ ...p, tempat: e.target.value }))}
                                         className={`w-full px-3 py-2.5 rounded-xl border ${errors.tempat ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
@@ -1181,7 +1172,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                             {/* Attachments */}
                             <div>
                                     <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">
-                                    {text.lblLampiran} * {errors.attachments && <span className="text-red-500">- {errors.attachments}</span>}
+                                    {text.lblLampiran} {errors.attachments && <span className="text-red-500">- {errors.attachments}</span>}
                                 </label>
                                 <div
                                     ref={pasteZoneRef}
@@ -1357,7 +1348,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                             </div>
                                         )}
                                     </td>
-                                    <td className="px-4 py-3 whitespace-nowrap">{item.tanggal}</td>
+                                    <td className="px-4 py-3 whitespace-nowrap">{(item.tanggal || '').slice(0, 10)}</td>
                                     <td className="px-4 py-3 font-mono text-xs">{item.no_ref || `ENT-${String(item.id).padStart(5, '0')}`}</td>
                                     <td className="px-4 py-3 max-w-[150px] truncate" title={(item.relasi || []).join(', ')}>
                                         {(item.relasi || []).join(', ') || '-'}
