@@ -54,9 +54,9 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         // Form
         formTitle: 'Entertainment Expenses', formEdit: 'Edit Entry', formNew: 'New Entry',
         lblTanggal: 'Date *', lblTempat: 'Venue', lblJenis: 'Type *', lblCustomJenis: 'Custom type',
-        lblAlamat: 'Address', lblNilai: 'Amount (IDR) *', lblNoGl: 'GL Number',
-        lblJenisUsaha: 'Business Type', lblCustomJenisUsaha: 'Custom business type',
-        lblMomResult: 'MOM/Result', lblLampiran: 'Attachments', lblDragDrop: 'Click or drag files here',
+        lblAlamat: 'Address *', lblNilai: 'Amount (IDR) *', lblNoGl: 'GL Number *',
+        lblJenisUsaha: 'Business Type *', lblCustomJenisUsaha: 'Custom business type',
+        lblMomResult: 'MOM/Result *', lblLampiran: 'Attachments', lblDragDrop: 'Click or drag files here',
         btnSave: 'Save', btnCancel: 'Cancel', btnUpdate: 'Update',
         // Settle
         settleTitle: 'Settle Entertainment', lblSettleDate: 'Settle Date *',
@@ -139,9 +139,9 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         // Form
         formTitle: 'Entertainment Expenses', formEdit: 'Edit Entry', formNew: 'Entry Baru',
         lblTanggal: 'Tanggal *', lblTempat: 'Tempat', lblJenis: 'Jenis *', lblCustomJenis: 'Custom jenis',
-        lblAlamat: 'Alamat', lblNilai: 'Nilai (IDR) *', lblNoGl: 'No GL',
-        lblJenisUsaha: 'Jenis Usaha', lblCustomJenisUsaha: 'Custom jenis usaha',
-        lblMomResult: 'MOM/Result', lblLampiran: 'Lampiran', lblDragDrop: 'Klik atau seret file ke sini',
+        lblAlamat: 'Alamat *', lblNilai: 'Nilai (IDR) *', lblNoGl: 'No GL *',
+        lblJenisUsaha: 'Jenis Usaha *', lblCustomJenisUsaha: 'Custom jenis usaha',
+        lblMomResult: 'MOM/Result *', lblLampiran: 'Lampiran', lblDragDrop: 'Klik atau seret file ke sini',
         btnSave: 'Simpan', btnCancel: 'Batal', btnUpdate: 'Update',
         // Settle
         settleTitle: 'Settle Entertainment', lblSettleDate: 'Tanggal Settle *',
@@ -301,11 +301,18 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
     const validate = () => {
         const errs = {};
         if (!form.tanggal) errs.tanggal = text.errTanggal;
+        if (!form.tempat) errs.tempat = text.errTempat;
+        if (!form.alamat) errs.alamat = text.errAlamat;
         if (!form.jenis) errs.jenis = text.errJenis;
         if (form.jenis === 'Custom' && !form.custom_jenis?.trim()) errs.custom_jenis = text.errCustomJenis;
         if (!form.nilai) errs.nilai = text.errNilai;
+        if (!form.no_gl) errs.no_gl = text.errNoGl;
         if (!form.groups || form.groups.length === 0 || !form.groups[0].relasi?.trim()) errs.groups = text.errGroups;
-        setErrors(errs);
+        if (!form.jenis_usaha) errs.jenis_usaha = text.errJenisUsaha;
+        if (form.jenis_usaha === 'Custom' && !form.custom_jenis_usaha?.trim()) {
+            errs.custom_jenis_usaha = text.errCustomJenisUsaha;
+        }
+        if (!form.catatan_kode) errs.catatan_kode = text.errMomResult;
         return Object.keys(errs).length === 0;
     };
 
@@ -535,6 +542,14 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         } catch {}
         return String(date).slice(0, 10);
     };
+    const formatDateId = (date) => {
+        if (!date) return '-';
+        try {
+            const d = new Date(typeof date === 'string' ? date.slice(0, 10) : date);
+            if (isNaN(d.getTime())) return String(date).slice(0, 10);
+            return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        } catch { return String(date).slice(0, 10); }
+    };
 
     const initSettleForm = (item) => ({
         tanggal: formatDateForInput(item.tanggal),
@@ -569,6 +584,18 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
             toast.error(text.errSettleDate);
             return;
         }
+        if (!settleForm.tanggal) { toast.error(text.errTanggal); return; }
+        if (!settleForm.tempat) { toast.error('Tempat wajib diisi'); return; }
+        if (!settleForm.alamat) { toast.error('Alamat wajib diisi'); return; }
+        if (!settleForm.jenis) { toast.error('Jenis wajib diisi'); return; }
+        if (settleForm.jenis === 'Custom' && !settleForm.custom_jenis?.trim()) { toast.error('Custom jenis wajib diisi'); return; }
+        if (!settleForm.nilai) { toast.error(text.errNilai); return; }
+        if (!settleForm.no_gl) { toast.error('No GL wajib diisi'); return; }
+        if (!settleForm.groups || !settleForm.groups[0]?.relasi?.trim()) { toast.error('Minimal 1 relasi wajib diisi'); return; }
+        if (!settleForm.jenis_usaha) { toast.error('Jenis Usaha wajib diisi'); return; }
+        if (settleForm.jenis_usaha === 'Custom' && !settleForm.custom_jenis_usaha?.trim()) { toast.error('Custom jenis usaha wajib diisi'); return; }
+        if (!settleForm.catatan_kode) { toast.error(text.errMomResult); return; }
+        if (settleExistingAttachments.length === 0 && settleAttachments.length === 0) { toast.error('Minimal 1 lampiran wajib diupload'); return; }
         setSettleSubmitting(true);
         try {
             const fd = new FormData();
@@ -1034,7 +1061,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 </div>
                                 {/* Tempat */}
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblTempat}</label>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblTempat} *</label>
                                     <input type="text" value={form.tempat}
                                         onChange={e => setForm(p => ({ ...p, tempat: e.target.value }))}
                                         className={`w-full px-3 py-2.5 rounded-xl border ${errors.tempat ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
@@ -1348,7 +1375,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                             </div>
                                         )}
                                     </td>
-                                    <td className="px-4 py-3 whitespace-nowrap">{(item.tanggal || '').slice(0, 10)}</td>
+                                    <td className="px-4 py-3 whitespace-nowrap">{formatDateId(item.tanggal)}</td>
                                     <td className="px-4 py-3 font-mono text-xs">{item.no_ref || `ENT-${String(item.id).padStart(5, '0')}`}</td>
                                     <td className="px-4 py-3 max-w-[150px] truncate" title={(item.relasi || []).join(', ')}>
                                         {(item.relasi || []).join(', ') || '-'}
