@@ -1121,8 +1121,6 @@ router.put('/:id', upload.array('attachments', 10), async (req, res) => {
             }));
             finalAttachments = [...finalAttachments, ...newAtt];
         }
-        if (finalAttachments.length === 0) errors.push('Minimal 1 lampiran wajib');
-
         if (errors.length > 0) {
             if (req.files) req.files.forEach(f => fs.unlink(f.path, () => {}));
             return res.status(400).json({ error: 'Validasi gagal', details: errors });
