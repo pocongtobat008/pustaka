@@ -41,9 +41,9 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         pending: 'Pending', settled: 'Settled',
         // Buttons
         addNew: 'Add New Entry', exportPdf: 'Export PDF', exportExcel: 'Export Excel',
-        searchPlaceholder: 'Search venue, type, GL...',
+        searchPlaceholder: 'Search venue, type, GL, requester, ref...',
         // Filter
-        filterTanggal: 'Filter Date', filterJenis: 'Filter Type', filterSearch: 'Search',
+        filterTanggalFrom: 'Date From', filterTanggalTo: 'Date To', filterJenis: 'Filter Type', filterSearch: 'Search',
         filterAll: 'All', filterBtn: 'Filter', filterReset: 'Reset',
         // Table
         thAksi: 'Actions', thTanggal: 'Date', thNoRef: 'Ref No', thNamaRelasi: 'Relation',
@@ -126,9 +126,9 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         pending: 'Pending', settled: 'Settled',
         // Buttons
         addNew: 'Tambah Entry Baru', exportPdf: 'Export PDF', exportExcel: 'Export Excel',
-        searchPlaceholder: 'Cari tempat, jenis, GL...',
+        searchPlaceholder: 'Cari tempat, jenis, GL, pengaju, ref...',
         // Filter
-        filterTanggal: 'Filter Tanggal', filterJenis: 'Filter Jenis', filterSearch: 'Pencarian',
+        filterTanggalFrom: 'Tgl Dari', filterTanggalTo: 'Tgl Sampai', filterJenis: 'Filter Jenis', filterSearch: 'Pencarian',
         filterAll: 'Semua', filterBtn: 'Filter', filterReset: 'Reset',
         // Table
         thAksi: 'Aksi', thTanggal: 'Tanggal', thNoRef: 'No Ref', thNamaRelasi: 'Nama Relasi',
@@ -211,7 +211,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
     const [editingId, setEditingId] = useState(null);
     const [showPreview, setShowPreview] = useState(false);
     const [previewData, setPreviewData] = useState(null);
-    const [searchParams, setSearchParams] = useState({ tanggal: '', jenis: '', search: '' });
+    const [searchParams, setSearchParams] = useState({ tanggal_from: '', tanggal_to: '', jenis: '', search: '' });
     const [exportingPdf, setExportingPdf] = useState(false);
     const [exportingExcel, setExportingExcel] = useState(false);
     
@@ -254,7 +254,8 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         try {
             if (!silent) setLoading(true);
             const params = { page, perPage: 15, status: tab === 'settled' ? 'settled' : 'active' };
-            if (searchParams.tanggal) params.tanggal = searchParams.tanggal;
+            if (searchParams.tanggal_from) params.tanggal_from = searchParams.tanggal_from;
+            if (searchParams.tanggal_to) params.tanggal_to = searchParams.tanggal_to;
             if (searchParams.jenis) params.jenis = searchParams.jenis;
             if (searchParams.search) params.search = searchParams.search;
             const result = await entertainmentService.getAll(params);
@@ -803,13 +804,19 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
 
             {/* Search / Filter */}
             <div className="bg-white dark:bg-slate-800/50 rounded-2xl p-4 border border-slate-200 dark:border-slate-700">
-                <div className="flex flex-wrap items-end gap-3">
-                    <div className="flex-1 min-w-[150px]">
-                        <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{text.filterTanggal}</label>
-                        <input type="date" value={searchParams.tanggal}
-                            onChange={e => setSearchParams(p => ({ ...p, tanggal: e.target.value }))}
-                            className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500" />
-                    </div>
+            <div className="flex flex-wrap items-end gap-3">
+                <div className="flex-1 min-w-[130px]">
+                    <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{text.filterTanggalFrom}</label>
+                    <input type="date" value={searchParams.tanggal_from}
+                        onChange={e => setSearchParams(p => ({ ...p, tanggal_from: e.target.value }))}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500" />
+                </div>
+                <div className="flex-1 min-w-[130px]">
+                    <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{text.filterTanggalTo}</label>
+                    <input type="date" value={searchParams.tanggal_to}
+                        onChange={e => setSearchParams(p => ({ ...p, tanggal_to: e.target.value }))}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500" />
+                </div>
                     <div className="flex-1 min-w-[150px]">
                         <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{text.filterJenis}</label>
                         <select value={searchParams.jenis}
@@ -834,7 +841,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                         <Filter size={16} className="inline-block mr-1" />
                         {text.filterBtn}
                     </button>
-                    <button onClick={() => { setSearchParams({ tanggal: '', jenis: '', search: '' }); setPage(1); }}
+                    <button onClick={() => { setSearchParams({ tanggal_from: '', tanggal_to: '', jenis: '', search: '' }); setPage(1); }}
                         className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-sm font-semibold">
                         <X size={16} className="inline-block mr-1" />
                         {text.filterReset}

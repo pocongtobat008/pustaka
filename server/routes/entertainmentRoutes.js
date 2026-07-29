@@ -141,7 +141,7 @@ router.delete('/rules/:id', async (req, res) => {
 // GET /api/entertainment - List all (with pagination & row-level security)
 router.get('/', async (req, res) => {
     try {
-        const { tanggal, jenis, search, status, page = 1, perPage = 15 } = req.query;
+        const { tanggal_from, tanggal_to, jenis, search, status, page = 1, perPage = 15 } = req.query;
         const pageNum = Math.max(1, parseInt(page) || 1);
         const limit = Math.max(1, Math.min(100, parseInt(perPage) || 15));
         const offset = (pageNum - 1) * limit;
@@ -162,9 +162,13 @@ router.get('/', async (req, res) => {
             countQuery = countQuery.where(filterFn);
         }
 
-        if (tanggal) {
-            query = query.where('tanggal', tanggal);
-            countQuery = countQuery.where('tanggal', tanggal);
+        if (tanggal_from) {
+            query = query.where('tanggal', '>=', tanggal_from);
+            countQuery = countQuery.where('tanggal', '>=', tanggal_from);
+        }
+        if (tanggal_to) {
+            query = query.where('tanggal', '<=', tanggal_to);
+            countQuery = countQuery.where('tanggal', '<=', tanggal_to);
         }
         if (jenis) {
             query = query.where('jenis', jenis);
@@ -177,7 +181,10 @@ router.get('/', async (req, res) => {
                     .orWhere('no_gl', 'ilike', `%${search}%`)
                     .orWhere('catatan_kode', 'ilike', `%${search}%`)
                     .orWhereRaw("relasi::text ilike ?", [`%${search}%`])
-                    .orWhereRaw("nama_perusahaan::text ilike ?", [`%${search}%`]);
+                    .orWhereRaw("nama_perusahaan::text ilike ?", [`%${search}%`])
+                    .orWhere('requester_name', 'ilike', `%${search}%`)
+                    .orWhere('requester_username', 'ilike', `%${search}%`)
+                    .orWhereRaw("id::text ilike ?", [`%${search}%`]);
             };
             query = query.where(searchFn);
             countQuery = countQuery.where(searchFn);
