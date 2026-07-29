@@ -336,8 +336,8 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
 
     const formatCurrency = (val) => {
         if (!val) return '';
-        const num = val.toString().replace(/[^\d]/g, '');
-        return new Intl.NumberFormat('id-ID').format(num);
+        const num = parseFloat(String(val).replace(/[^\d.-]/g, '')) || 0;
+        return new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(num);
     };
 
     const parseCurrency = (val) => {
@@ -438,7 +438,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
             alamat: item.alamat || '',
             jenis: item.jenis || '',
             custom_jenis: item.custom_jenis || '',
-            nilai: item.nilai ? String(item.nilai) : '',
+        nilai: item.nilai ? String(item.nilai).replace(/\.00$/, '') : '',
             no_gl: item.no_gl || '',
             groups: editGroups.length > 0 ? editGroups : [{ relasi: '', jabatan: '', nama_perusahaan: '' }],
             jenis_usaha: isCustomUsaha ? 'Custom' : savedUsaha,
@@ -1580,8 +1580,8 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
                                         <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblNilai}</label>
-                                        <input type="text" value={settleForm.nilai || ''}
-                                            onChange={e => setSettleForm(p => ({ ...p, nilai: e.target.value }))}
+                                        <input type="text" value={settleForm.nilai ? formatCurrency(settleForm.nilai) : ''}
+                                            onChange={e => setSettleForm(p => ({ ...p, nilai: parseCurrency(e.target.value) }))}
                                             className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500" />
                                     </div>
                                     <div>

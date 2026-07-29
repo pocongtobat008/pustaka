@@ -54,9 +54,12 @@ const getUserEntertainmentPerms = async (user) => {
 function normalizeText(str) {
     if (!str || typeof str !== 'string') return '';
     return str
+        .normalize('NFKD')
         .toLowerCase()
+        .replace(/[&]/g, ' dan ')
         .replace(/[\s,.;:!?()\-'"\/\\]+/g, ' ')
-        .replace(/\b(pt|cv|tbk|ltd|inc|pd|fa|nv|ud|pn|persero|perseorangan|perum|bumn|bumd|yayasan|co|corp|corporation|company|limited)\b/gi, '')
+        .replace(/\b(pt|cv|tbk|ltd|inc|pd|fa|nv|ud|pn|persero|perseorangan|perum|bumn|bumd|yayasan|co|corp|corporation|company|limited|tbk|tbk)\b/gi, '')
+        .replace(/\b(i|ii|iii|iv|v|vi|vii|viii|ix|x)\b/g, m => ['i','ii','iii','iv','v','vi','vii','viii','ix','x'].indexOf(m) + 1)
         .replace(/\s+/g, ' ')
         .trim();
 }
@@ -81,18 +84,39 @@ function arraysEqual(a, b) {
     return na.every((v, i) => v === nb[i]);
 }
 
+function arraysEqualAsSet(a, b) {
+    const na = normalizeArray(a);
+    const nb = normalizeArray(b);
+    if (na.length !== nb.length) return false;
+    const setA = new Set(na);
+    return nb.every(x => setA.has(x));
+}
+
+function checkNilaiAnomaly(oldNilai, newNilai) {
+    const old = parseFloat(String(oldNilai).replace(/[^\d.]/g, '')) || 0;
+    const nw = parseFloat(String(newNilai).replace(/[^\d.]/g, '')) || 0;
+    if (!old || !nw || old === nw) return null;
+    const ratio = nw / old;
+    for (const p of [0.0001, 0.001, 0.01, 0.1, 10, 100, 1000, 10000]) {
+        if (Math.abs(ratio - p) / p < 0.01) {
+            const factor = ratio > 1 ? `${ratio}x` : `${(1/ratio).toFixed(0)}x`;
+            return { pola: `Nilai berubah ${factor}`, level: 'sedang' };
+        }
+    }
+    return null;
+}
+
 async function findAnomalies(knexInstance, data, excludeId) {
-    const { tanggal, tempat, alamat, nilai, no_gl, relasi, jenis_usaha, catatan_kode } = data;
+    const { tanggal, tempat, alamat, nilai, relasi, catatan_kode } = data;
     if (!tanggal) return [];
 
     let relasiArr = [];
     try { relasiArr = typeof relasi === 'string' ? JSON.parse(relasi) : (relasi || []); } catch { relasiArr = []; }
     if (!Array.isArray(relasiArr)) relasiArr = [];
 
-    // Build query safely
     let query = knexInstance('entertainment_expenses')
         .where('tanggal', tanggal)
-        .select('id', 'tempat', 'alamat', 'nilai', 'no_gl', 'relasi', 'jenis_usaha', 'catatan_kode', 'requester_name', 'requester_username');
+        .select('id', 'tempat', 'alamat', 'nilai', 'relasi', 'requester_name', 'requester_username');
 
     if (excludeId) {
         query = query.where('id', '!=', excludeId);
@@ -128,14 +152,14 @@ async function findAnomalies(knexInstance, data, excludeId) {
             matchedPatterns.push({ pola: 'Nilai dan alamat sama', level: 'kuat' });
         }
 
-        // 3) nilai + no_gl cocok → SEDANG
-        if (numNilai && cNilai && numNilai === cNilai && no_gl && candidate.no_gl && no_gl === candidate.no_gl) {
-            matchedPatterns.push({ pola: 'Nilai dan No GL sama', level: 'sedang' });
-        }
-
         // 4) tempat cocok + irisan relasi → SEDANG
         if (normalizedTempat && cTempat && normalizedTempat === cTempat && arraysOverlap(relasiArr, candidateRelasi)) {
             matchedPatterns.push({ pola: 'Tempat sama dan ada relasi yang sama', level: 'sedang' });
+        }
+
+        // 7) relasi sama sebagai set (urutan diacak) → SEDANG
+        if (relasiArr.length > 0 && candidateRelasi.length > 0 && arraysEqualAsSet(relasiArr, candidateRelasi) && !arraysEqual(relasiArr, candidateRelasi)) {
+            matchedPatterns.push({ pola: 'Relasi sama (urutan berbeda)', level: 'sedang' });
         }
 
         // 5) tempat cocok (nilai beda) → RINGAN
@@ -1086,8 +1110,19 @@ router.post('/:id/settle', upload.array('attachments', 10), async (req, res) => 
         const updated = await knex('entertainment_expenses').where('id', req.params.id).first();
 
         const warnings = await findAnomalies(knex, {
-            tanggal, tempat, alamat, nilai, no_gl, relasi, jenis_usaha, catatan_kode
+            tanggal, tempat, alamat, nilai, relasi, catatan_kode
         }, req.params.id);
+
+        const nilaiAnomaly = checkNilaiAnomaly(existing.nilai, nilai);
+        if (nilaiAnomaly) warnings.push({
+            id: parseInt(req.params.id),
+            ref_no: `ENT-${String(req.params.id).padStart(5, '0')}`,
+            requester_name: existing.requester_name,
+            requester_username: existing.requester_username,
+            patterns: [nilaiAnomaly],
+            highest_level: 'sedang'
+        });
+
         const responseData = { ...updated, changed };
         if (warnings.length > 0) responseData.warnings = warnings;
         res.json(responseData);
@@ -1269,8 +1304,19 @@ router.put('/:id', upload.array('attachments', 10), async (req, res) => {
         const updated = await knex('entertainment_expenses').where('id', req.params.id).first();
 
         const warnings = await findAnomalies(knex, {
-            tanggal, tempat, alamat, nilai, no_gl, relasi, jenis_usaha, catatan_kode
+            tanggal, tempat, alamat, nilai, relasi, catatan_kode
         }, req.params.id);
+
+        const nilaiAnomaly = checkNilaiAnomaly(existing.nilai, nilai);
+        if (nilaiAnomaly) warnings.push({
+            id: parseInt(req.params.id),
+            ref_no: `ENT-${String(req.params.id).padStart(5, '0')}`,
+            requester_name: existing.requester_name,
+            requester_username: existing.requester_username,
+            patterns: [nilaiAnomaly],
+            highest_level: 'sedang'
+        });
+
         const responseData = { ...updated };
         if (warnings.length > 0) responseData.warnings = warnings;
         res.json(responseData);
