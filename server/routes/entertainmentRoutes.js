@@ -793,27 +793,29 @@ router.get('/export/excel', async (req, res) => {
             try { npArr = typeof entry.nama_perusahaan === 'string' ? JSON.parse(entry.nama_perusahaan) : (entry.nama_perusahaan || []); } catch { npArr = []; }
             try { attArr = typeof entry.attachments === 'string' ? JSON.parse(entry.attachments) : (entry.attachments || []); } catch { attArr = []; }
 
+            const catatanKode = [entry.catatan_kode, entry.no_gl].filter(Boolean).join(' - ');
             return {
-                ID: entry.id, Tanggal: entry.tanggal, Tempat: entry.tempat,
+                Tanggal: entry.tanggal, Tempat: entry.tempat,
                 Alamat: entry.alamat, Jenis: entry.jenis === 'Custom' ? entry.custom_jenis : entry.jenis,
-                Nilai: entry.nilai, 'No. GL': entry.no_gl,
+                Nilai: entry.nilai,
                 'Nama Relasi': relasiArr.join(', '),
                 Jabatan: (typeof entry.jabatan === 'string' ? (() => { try { return JSON.parse(entry.jabatan); } catch { return []; } })() : (entry.jabatan || [])).join(', '),
-                'Jumlah Relasi': entry.jumlah_relasi,
                 'Nama Perusahaan': npArr.join(', '), 'Jenis Usaha': entry.jenis_usaha,
-                'Catatan/Kode': entry.catatan_kode,
+                'Catatan/Kode': catatanKode,
                 Lampiran: attArr.map(a => a.name).join(', '),
                 Pengaju: entry.requester_name || entry.requester_username,
-                Status: entry.status, 'Dibuat Pada': entry.created_at
+                Status: entry.status, 'Dibuat Pada': entry.created_at,
+                ID: entry.id, 'No. GL': entry.no_gl, 'Jumlah Relasi': entry.jumlah_relasi,
             };
         });
 
         const wb = XLSX.utils.book_new();
         const ws = XLSX.utils.json_to_sheet(rows);
         ws['!cols'] = [
-            { wch: 5 }, { wch: 12 }, { wch: 20 }, { wch: 30 }, { wch: 12 },
-            { wch: 18 }, { wch: 12 }, { wch: 30 }, { wch: 12 }, { wch: 30 },
-            { wch: 15 }, { wch: 20 }, { wch: 30 }, { wch: 15 }, { wch: 10 }, { wch: 20 }
+            { wch: 12 }, { wch: 20 }, { wch: 30 }, { wch: 12 },
+            { wch: 18 }, { wch: 30 }, { wch: 12 }, { wch: 30 },
+            { wch: 15 }, { wch: 40 }, { wch: 30 }, { wch: 15 }, { wch: 15 }, { wch: 20 },
+            { wch: 5 }, { wch: 12 }, { wch: 12 }
         ];
         XLSX.utils.book_append_sheet(wb, ws, 'Entertainment Expenses');
         const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
