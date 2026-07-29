@@ -1021,7 +1021,6 @@ router.post('/', upload.array('attachments', 10), async (req, res) => {
                 size: f.size, mimetype: f.mimetype, url: `/uploads/${f.filename}`
             }));
         }
-        if (attachments.length === 0) errors.push('Minimal 1 lampiran wajib diupload');
 
         if (errors.length > 0) {
             if (req.files) req.files.forEach(f => fs.unlink(f.path, () => {}));
