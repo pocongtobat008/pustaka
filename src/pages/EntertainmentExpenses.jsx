@@ -56,7 +56,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         lblTanggal: 'Date *', lblTempat: 'Venue', lblJenis: 'Type *', lblCustomJenis: 'Custom type',
         lblAlamat: 'Address *', lblNilai: 'Amount (IDR) *', lblNoGl: 'GL Number *',
         lblJenisUsaha: 'Business Type *', lblCustomJenisUsaha: 'Custom business type',
-        lblMomResult: 'MOM/Result *', lblLampiran: 'Attachments', lblDragDrop: 'Click or drag files here',
+        lblPlan: 'Plan *', lblMomResult: 'MOM/Result *', lblLampiran: 'Attachments', lblDragDrop: 'Click or drag files here',
         btnSave: 'Save', btnCancel: 'Cancel', btnUpdate: 'Update',
         // Settle
         settleTitle: 'Settle Entertainment', lblSettleDate: 'Settle Date *',
@@ -68,7 +68,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         detailAlamat: 'Address', detailNilai: 'Amount', detailNoGl: 'GL Number',
         detailJenisUsaha: 'Business Type', detailRelasi: 'Relations',
         detailJumlahRelasi: 'Relation Count', detailPerusahaan: 'Companies',
-        detailMomResult: 'MOM/Result', detailLampiran: 'Attachments',
+        detailPlan: 'Plan', detailMomResult: 'MOM/Result', detailLampiran: 'Attachments',
         // Rules
         rulesTitle: 'Entertainment Rules', addRule: 'Add Rule', editRule: 'Edit Rule',
         ruleName: 'Rule Name', targetType: 'Target Type', targetValue: 'Target Value',
@@ -141,7 +141,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         lblTanggal: 'Tanggal *', lblTempat: 'Tempat', lblJenis: 'Jenis *', lblCustomJenis: 'Custom jenis',
         lblAlamat: 'Alamat *', lblNilai: 'Nilai (IDR) *', lblNoGl: 'No GL *',
         lblJenisUsaha: 'Jenis Usaha *', lblCustomJenisUsaha: 'Custom jenis usaha',
-        lblMomResult: 'MOM/Result *', lblLampiran: 'Lampiran', lblDragDrop: 'Klik atau seret file ke sini',
+        lblPlan: 'Plan *', lblMomResult: 'MOM/Result *', lblLampiran: 'Lampiran', lblDragDrop: 'Klik atau seret file ke sini',
         btnSave: 'Simpan', btnCancel: 'Batal', btnUpdate: 'Update',
         // Settle
         settleTitle: 'Settle Entertainment', lblSettleDate: 'Tanggal Settle *',
@@ -153,7 +153,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         detailAlamat: 'Alamat', detailNilai: 'Nilai', detailNoGl: 'No GL',
         detailJenisUsaha: 'Jenis Usaha', detailRelasi: 'Relasi',
         detailJumlahRelasi: 'Jumlah Relasi', detailPerusahaan: 'Perusahaan',
-        detailMomResult: 'MOM/Result', detailLampiran: 'Lampiran',
+        detailPlan: 'Plan', detailMomResult: 'MOM/Result', detailLampiran: 'Lampiran',
         // Rules
         rulesTitle: 'Entertainment Rules', addRule: 'Tambah Rule', editRule: 'Edit Rule',
         ruleName: 'Rule Name', targetType: 'Target Type', targetValue: 'Target Value',
@@ -1265,9 +1265,9 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 {errors.groups && <p className="text-red-500 text-xs mt-1">{errors.groups}</p>}
                             </div>
 
-                            {/* MOM/Result */}
+                            {/* Plan */}
                             <div>
-                                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblMomResult}</label>
+                                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblPlan}</label>
                                 <textarea value={form.catatan_kode}
                                     onChange={e => setForm(p => ({ ...p, catatan_kode: e.target.value }))}
                                     rows={2}
@@ -1784,7 +1784,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     <DetailField label={text.detailJumlahRelasi} value={`${previewData.jumlah_relasi || (previewData.relasi || []).length || 0} ${isEnglish ? 'person(s)' : 'orang'}`} />
                                     <DetailField label={text.detailPerusahaan} value={(previewData.nama_perusahaan || []).join(', ')} />
                                     <DetailField label={text.detailJenisUsaha} value={previewData.jenis_usaha} />
-                                    <DetailField label={text.detailMomResult} value={previewData.catatan_kode} />
+                                    <DetailField label={text.detailPlan} value={previewData.catatan_kode} />
                                     <DetailField label={text.thPengaju} value={previewData.requester_name || previewData.requester_username} />
                                 </div>
                                 <div className="border-t border-slate-200 dark:border-slate-700 pt-4">

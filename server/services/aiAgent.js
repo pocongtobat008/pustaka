@@ -1011,6 +1011,303 @@ function generateSuggestions(toolCallsLog, intent, message) {
     return unique;
 }
 
+// ── Keyword extraction helper ──
+function extractKeywords(text) {
+    const stopWords = new Set([
+        'cari', 'data', 'tampilkan', 'lihat', 'yang', 'dan', 'di', 'ke', 'dari',
+        'saya', 'kami', 'kita', 'pada', 'untuk', 'dengan', 'tentang', 'apa',
+        'tolong', 'mohon', 'bisa', 'akan', 'sudah', 'telah', 'sedang', 'ini',
+        'itu', 'saja', 'juga', 'ada', 'oleh', 'atau', 'tidak', 'semua',
+        'apakah', 'bagaimana', 'kenapa', 'mengapa', 'siapa', 'kapan', 'dimana',
+        'per', 'dan', 'the', 'a', 'an', 'in', 'of', 'to', 'is', 'are',
+        'the', 'please', 'show', 'find', 'search', 'list', 'get', 'give', 'tell',
+    ]);
+    const words = (text || '')
+        .toLowerCase()
+        .replace(/[^\w\s]/g, ' ')
+        .split(/\s+/)
+        .filter(w => w.length >= 2 && !stopWords.has(w));
+    return [...new Set(words)];
+}
+
+// ── Build OR conditions for keyword search ──
+function keywordWhere(builder, column, keywords) {
+    if (!keywords.length) return;
+    keywords.forEach((kw, i) => {
+        if (i === 0) builder.where(column, 'ilike', `%${kw}%`);
+        else builder.orWhere(column, 'ilike', `%${kw}%`);
+    });
+}
+
+// ── Direct Database Search (parallel, all tables, keyword-based) ──
+async function searchDatabaseDirect(query) {
+    const q = String(query || '').trim().slice(0, 120);
+    if (!q) return {};
+    const keywords = extractKeywords(q);
+    if (!keywords.length) return {};
+
+    const results = {};
+
+    await Promise.all([
+        (async () => {
+            try {
+                const rows = await knex('documents')
+                    .select('id', 'title', 'type', 'uploadDate')
+                    .where(function () { keywordWhere(this, 'title', keywords); })
+                    .orWhere(function () { keywordWhere(this, 'ocrContent', keywords); })
+                    .orderBy('uploadDate', 'desc')
+                    .limit(5);
+                if (rows.length) results.documents = rows;
+            } catch (e) {}
+        })(),
+        (async () => {
+            try {
+                const rows = await knex('invoices')
+                    .select('id', 'vendor', 'invoice_no', 'tax_invoice_no', 'payment_date')
+                    .where(function () { keywordWhere(this, 'vendor', keywords); })
+                    .orWhere(function () { keywordWhere(this, 'invoice_no', keywords); })
+                    .orWhere(function () { keywordWhere(this, 'tax_invoice_no', keywords); })
+                    .orderBy('id', 'desc')
+                    .limit(5);
+                if (rows.length) results.invoices = rows;
+            } catch (e) {}
+        })(),
+        (async () => {
+            try {
+                const rows = await knex('tax_wp')
+                    .select('id', 'name', 'identity_number', 'tax_type', 'tax_object_name', 'dpp', 'pph', 'ppn', 'total_payable')
+                    .where(function () { keywordWhere(this, 'name', keywords); })
+                    .orWhere(function () { keywordWhere(this, 'identity_number', keywords); })
+                    .orWhere(function () { keywordWhere(this, 'tax_object_name', keywords); })
+                    .orderBy('id', 'desc')
+                    .limit(5);
+                if (rows.length) results.tax_wp = rows;
+            } catch (e) {}
+        })(),
+        (async () => {
+            try {
+                const rows = await knex('master_tax_objects')
+                    .select('id', 'tax_type', 'code', 'name', 'rate')
+                    .where(function () { keywordWhere(this, 'name', keywords); })
+                    .orWhere(function () { keywordWhere(this, 'code', keywords); })
+                    .limit(5);
+                if (rows.length) results.tax_objects = rows;
+            } catch (e) {}
+        })(),
+        (async () => {
+            try {
+                const rows = await knex('tax_summaries')
+                    .select('id', 'type', 'month', 'year', 'pph23', 'pph42')
+                    .where(function () { keywordWhere(this, 'type', keywords); })
+                    .orWhere(function () { keywordWhere(this, 'month', keywords); })
+                    .orderBy('id', 'desc')
+                    .limit(5);
+                if (rows.length) results.tax_summaries = rows;
+            } catch (e) {}
+        })(),
+        (async () => {
+            try {
+                const rows = await knex('tax_audits')
+                    .select('id', 'title', 'status', 'auditor')
+                    .where(function () { keywordWhere(this, 'title', keywords); })
+                    .orWhere(function () { keywordWhere(this, 'auditor', keywords); })
+                    .orderBy('id', 'desc')
+                    .limit(5);
+                if (rows.length) results.tax_audits = rows;
+            } catch (e) {}
+        })(),
+        (async () => {
+            try {
+                const rows = await knex('inventory')
+                    .select('id', 'box_id', 'status', 'rack')
+                    .where(function () { keywordWhere(this, 'box_id', keywords); })
+                    .orWhere(function () { keywordWhere(this, 'status', keywords); })
+                    .orderBy('id', 'desc')
+                    .limit(5);
+                if (rows.length) results.inventory = rows;
+            } catch (e) {}
+        })(),
+        (async () => {
+            try {
+                const rows = await knex('inventory_items')
+                    .select('id', 'box_id', 'invoice_no', 'vendor', 'date', 'amount')
+                    .where(function () { keywordWhere(this, 'box_id', keywords); })
+                    .orWhere(function () { keywordWhere(this, 'vendor', keywords); })
+                    .orWhere(function () { keywordWhere(this, 'invoice_no', keywords); })
+                    .orderBy('id', 'desc')
+                    .limit(5);
+                if (rows.length) results.inventory_items = rows;
+            } catch (e) {}
+        })(),
+        (async () => {
+            try {
+                const rows = await knex('coa_accounts')
+                    .select('id', 'code', 'name', 'is_active')
+                    .where(function () { keywordWhere(this, 'name', keywords); })
+                    .orWhere(function () { keywordWhere(this, 'code', keywords); })
+                    .orderBy('code')
+                    .limit(5);
+                if (rows.length) results.coa_accounts = rows;
+            } catch (e) {}
+        })(),
+        (async () => {
+            try {
+                const rows = await knex('coa_sub_accounts')
+                    .select('id', 'code', 'name', 'is_active')
+                    .where(function () { keywordWhere(this, 'name', keywords); })
+                    .orWhere(function () { keywordWhere(this, 'code', keywords); })
+                    .orderBy('code')
+                    .limit(5);
+                if (rows.length) results.coa_sub_accounts = rows;
+            } catch (e) {}
+        })(),
+        (async () => {
+            try {
+                const rows = await knex('approvals')
+                    .select('id', 'title', 'requester_name', 'status')
+                    .where(function () { keywordWhere(this, 'title', keywords); })
+                    .orWhere(function () { keywordWhere(this, 'requester_name', keywords); })
+                    .orderBy('id', 'desc')
+                    .limit(5);
+                if (rows.length) results.approvals = rows;
+            } catch (e) {}
+        })(),
+        (async () => {
+            try {
+                const rows = await knex('external_items')
+                    .select('id', 'boxId', 'destination', 'sender')
+                    .where(function () { keywordWhere(this, 'boxId', keywords); })
+                    .orWhere(function () { keywordWhere(this, 'destination', keywords); })
+                    .orderBy('id', 'desc')
+                    .limit(5);
+                if (rows.length) results.external_items = rows;
+            } catch (e) {}
+        })(),
+        (async () => {
+            try {
+                const rows = await knex('users')
+                    .select('id', 'name', 'username', 'role', 'department')
+                    .where(function () { keywordWhere(this, 'name', keywords); })
+                    .orWhere(function () { keywordWhere(this, 'username', keywords); })
+                    .limit(5);
+                if (rows.length) results.users = rows;
+            } catch (e) {}
+        })(),
+    ]);
+
+    return results;
+}
+
+// ── Format DB results for LLM context ──
+function formatDbResultsForLLM(results) {
+    const parts = [];
+    for (const [table, rows] of Object.entries(results)) {
+        if (!rows || rows.length === 0) continue;
+        const label = {
+            documents: 'Dokumen',
+            invoices: 'Invoice/Faktur',
+            tax_wp: 'Wajib Pajak',
+            tax_objects: 'Objek Pajak',
+            tax_summaries: 'Ringkasan Pajak',
+            tax_audits: 'Pemeriksaan Pajak',
+            inventory: 'Inventory/Box',
+            inventory_items: 'Item Inventory',
+            coa_accounts: 'Akun COA',
+            coa_sub_accounts: 'Sub Akun COA',
+            approvals: 'Approval/Persetujuan',
+            external_items: 'Item Eksternal',
+            users: 'Pengguna',
+        }[table] || table;
+        parts.push(`=== ${label} ===`);
+        rows.forEach((r, i) => {
+            const fields = Object.entries(r)
+                .filter(([k]) => k !== 'id')
+                .map(([k, v]) => {
+                    if (v === null || v === undefined) return `${k}: -`;
+                    if (typeof v === 'number') return `${k}: ${v}`;
+                    const s = String(v);
+                    return `${k}: ${s.length > 100 ? s.slice(0, 97) + '...' : s}`;
+                })
+                .join(' | ');
+            parts.push(`  ${i + 1}. ${fields}`);
+        });
+    }
+    return parts.join('\n');
+}
+
+// ── Generate AI report from database data ──
+async function generateReportFromData(message, dbResults, settings) {
+    const dataStr = formatDbResultsForLLM(dbResults);
+    const messages = [
+        {
+            role: 'system',
+            content: `Anda adalah asisten AI Pustaka Sistem untuk laporan pajak, arsip & akuntansi.
+
+Buat laporan yang rapi dan informatif berdasarkan DATA dari database berikut.
+
+ATURAN:
+- Gunakan format Markdown: heading ###, tabel, bullet points
+- Tampilkan nominal uang dalam format Rupiah (Rp)
+- Cantumkan ID sumber data (mis. Dokumen #5, Invoice #12)
+- Jika data menyebutkan status, jelaskan artinya
+- Jawab dalam Bahasa Indonesia yang baik
+- Jangan menambahkan informasi yang tidak ada dalam data`
+        },
+        {
+            role: 'user',
+            content: `Pertanyaan: ${message}\n\nDATA DARI DATABASE:\n${dataStr}\n\nBuat laporan berdasarkan data di atas.`
+        }
+    ];
+    const data = await callLLM(messages, [], settings);
+    return data?.choices?.[0]?.message?.content?.trim() || 'Tidak dapat menghasilkan laporan dari data yang ditemukan.';
+}
+
+// ── Generate AI response from knowledge (training docs) ──
+async function generateReportWithKnowledge(message, knowledgeContext, settings) {
+    const messages = [
+        {
+            role: 'system',
+            content: `Anda adalah asisten AI Pustaka Sistem.
+
+Gunakan PENGETAHUAN dari dokumen training berikut untuk menjawab pertanyaan pengguna.
+Jika pengetahuan tidak cukup untuk menjawab, akui saja dengan jujur.
+
+ATURAN:
+- Gunakan format Markdown
+- Jawab dalam Bahasa Indonesia
+- Sebutkan sumber pengetahuan jika relevan`
+        },
+        {
+            role: 'user',
+            content: `Pertanyaan: ${message}\n\nPENGETAHUAN:\n${knowledgeContext}\n\nJawab pertanyaan berdasarkan pengetahuan di atas.`
+        }
+    ];
+    const data = await callLLM(messages, [], settings);
+    return data?.choices?.[0]?.message?.content?.trim() || 'Maaf, tidak dapat menjawab berdasarkan pengetahuan yang tersedia.';
+}
+
+// ── AI makes a decision/creative response when no data found ──
+async function aiGenerateResponse(message, history, settings) {
+    const messages = [
+        {
+            role: 'system',
+            content: `Anda adalah asisten AI Pustaka Sistem untuk manajemen arsip, pajak, dan akuntansi.
+
+Tugas Anda adalah membantu pengguna dengan informasi yang Anda miliki.
+
+ATURAN:
+- Jika ditanya tentang data spesifik (dokumen, invoice, pajak, dll) dan Anda tidak memiliki data, akui dengan jujur
+- Sarankan pengguna untuk mengunggah data atau menghubungi admin
+- Gunakan format Markdown
+- Jawab dalam Bahasa Indonesia yang ramah dan membantu`
+        },
+        ...(history || []).slice(-4),
+        { role: 'user', content: message }
+    ];
+    const data = await callLLM(messages, [], settings);
+    return data?.choices?.[0]?.message?.content?.trim() || 'Maaf, saya tidak dapat memproses pertanyaan Anda saat ini. Silakan coba lagi.';
+}
+
 // ── Main agent loop ──
 export async function runAgent(message, history = [], embedFn = null, sessionId = null) {
     embedFnRef = embedFn;
@@ -1024,11 +1321,11 @@ export async function runAgent(message, history = [], embedFn = null, sessionId 
         const cached = await findCachedReply(message, embedFn);
         if (cached) {
             console.log(`[AI Agent] Cache hit — returning cached reply (age: ${cached.cacheAge})`);
-            const suggestions = generateSuggestions(cached.toolCalls || [], intent, message);
+            const suggestions = generateSuggestions(cached.toolCalls || [], classifyIntent(message), message);
             return { reply: cached.reply, toolCalls: cached.toolCalls, fromCache: true, cacheAge: cached.cacheAge, suggestions };
         }
     } catch (err) {
-        console.warn(`[AI Agent] Cache check failed, proceeding with LLM: ${err.message}`);
+        console.warn(`[AI Agent] Cache check failed, proceeding: ${err.message}`);
     }
 
     // ── Intent pre-classification ──
@@ -1047,96 +1344,74 @@ export async function runAgent(message, history = [], embedFn = null, sessionId 
     // ── Correction detection (fire & forget) ──
     detectAndLogCorrection(sessionId, message, hist);
 
-    // ── RAG: Retrieve relevant past conversations ──
-    let ragContext = '';
-    if (embedFn) {
-        try {
-            const { searchRelevantConversations } = await import('./conversationMemory.js');
-            const relevant = await searchRelevantConversations(message, embedFn, { limit: RAG_CONTEXT_LIMIT });
-            if (relevant.length > 0) {
-                ragContext = '\n\nKonteks dari percakapan lama:\n' +
-                    relevant.map((r, i) => `${i + 1}. [${r.keyTopics}] ${r.summary}`).join('\n');
-            }
-        } catch (err) {
-            console.warn(`[AI Agent] RAG context retrieval failed: ${err.message}`);
+    const toolCallsLog = [];
+
+    // ── STEP 1: Search Database Directly ──
+    console.log(`[AI Agent] STEP 1: Mencari data di database...`);
+    const dbResults = await searchDatabaseDirect(message);
+    const dbFound = Object.values(dbResults).some(r => r && r.length > 0);
+
+    // Log found tables
+    for (const [table, rows] of Object.entries(dbResults)) {
+        if (rows && rows.length > 0) {
+            toolCallsLog.push({ name: `search_${table}`, args: { query: message }, result: { count: rows.length } });
+            console.log(`[AI Agent]   → ${table}: ${rows.length} hasil`);
         }
     }
 
-    // ── RAG: Retrieve relevant training documents ──
+    // ── STEP 2: If DB data found, process report with AI ──
+    if (dbFound) {
+        console.log(`[AI Agent] STEP 2: Data ditemukan di database. Mengolah laporan dengan AI...`);
+        const reply = await generateReportFromData(message, dbResults, settings);
+
+        saveToCache(message, reply, toolCallsLog, settings.model || 'unknown', embedFn).catch(e =>
+            console.warn(`[AI Agent] Cache save failed: ${e.message}`)
+        );
+        const suggestions = generateSuggestions(toolCallsLog, intent, message);
+        logLearning(sessionId, message, reply, toolCallsLog);
+        return { reply, toolCalls: toolCallsLog, suggestions };
+    }
+
+    // ── STEP 3: Search Knowledge (Training Docs) ──
+    console.log(`[AI Agent] STEP 3: Data tidak ditemukan. Mencari di knowledge (dokumen training)...`);
     let trainingContext = '';
-    console.log(`[AI Agent] embedFn type: ${typeof embedFn}`);
     if (embedFn) {
         try {
             const { searchTrainingDocs } = await import('./trainingDocs.js');
             const trainingDocs = await searchTrainingDocs(message, embedFn, { limit: 3 });
-            console.log(`[AI Agent] Training docs search returned: ${trainingDocs.length} results`);
+            console.log(`[AI Agent] Training docs search: ${trainingDocs.length} results`);
             if (trainingDocs.length > 0) {
-                trainingContext = '\n\n[DOKUMEN TRAINING - Referensi]\n' +
-                    trainingDocs.map((r, i) => `${i + 1}. [${r.title}] (similaritas: ${r.similarity})\n${r.contentPreview}`).join('\n\n');
-                console.log(`[AI Agent] Training docs found: ${trainingDocs.length} docs injected into context`);
-            } else {
-                console.log('[AI Agent] No training docs found for this query');
+                trainingContext = trainingDocs.map((r, i) =>
+                    `${i + 1}. [${r.title}] (similaritas: ${r.similarity})\n${r.content}`
+                ).join('\n\n');
+                toolCallsLog.push({ name: 'search_training_docs', args: { query: message }, result: { count: trainingDocs.length } });
+                console.log(`[AI Agent]   → ${trainingDocs.length} dokumen training relevan ditemukan`);
             }
         } catch (err) {
             console.warn(`[AI Agent] Training docs retrieval failed: ${err.message}`);
         }
-    } else {
-        console.log('[AI Agent] embedFn not provided — training docs search skipped');
     }
 
-    const messages = [
-        { role: 'system', content: SYSTEM_PROMPT + ragContext + trainingContext },
-        ...hist,
-        { role: 'user', content: message }
-    ];
+    if (trainingContext) {
+        console.log(`[AI Agent] STEP 3b: Pengetahuan ditemukan. Menghasilkan jawaban dengan AI...`);
+        const reply = await generateReportWithKnowledge(message, trainingContext, settings);
 
-    const tools = buildTools();
-    const toolCallsLog = [];
-
-    for (let i = 0; i < MAX_ITERATIONS; i++) {
-        const data = await callLLM(messages, tools, settings);
-        const choice = data?.choices?.[0]?.message;
-        const finishReason = data?.choices?.[0]?.finish_reason;
-        if (!choice) throw new Error('Respons LLM kosong atau tidak valid.');
-
-        if (choice.tool_calls && choice.tool_calls.length) {
-            messages.push(choice);
-            if (PARALLEL_EXECUTION && choice.tool_calls.length > 1) {
-                const results = await executeToolCalls(choice.tool_calls, messages);
-                toolCallsLog.push(...results.map(r => ({ name: r.name, args: r.args, result: r.result })));
-                console.log(`[AI Agent] Iterasi ${i}: ${choice.tool_calls.length} tools dieksekusi paralel`);
-            } else {
-                for (const tc of choice.tool_calls) {
-                    let args = {};
-                    try { args = tc.function.arguments ? JSON.parse(tc.function.arguments) : {}; } catch { args = {}; }
-                    const result = await executeTool(tc.function.name, args);
-                    toolCallsLog.push({ name: tc.function.name, args, result });
-                    messages.push({ role: 'tool', tool_call_id: tc.id, content: JSON.stringify(result) });
-                }
-            }
-        } else {
-            const content = (choice.content || '').trim();
-            if (content) {
-                saveToCache(message, content, toolCallsLog, settings.model || 'unknown', embedFn).catch(e =>
-                    console.warn(`[AI Agent] Cache save failed: ${e.message}`)
-                );
-                const suggestions = generateSuggestions(toolCallsLog, intent, message);
-                logLearning(sessionId, message, content, toolCallsLog);
-                return { reply: content, toolCalls: toolCallsLog, suggestions };
-            }
-            if (toolCallsLog.length > 0) {
-                console.log(`[AI Agent] Iterasi ${i}: content kosong setelah ${toolCallsLog.length} tool calls, meminta rangkuman...`);
-                messages.push({ role: 'assistant', content: ' ' });
-                messages.push({ role: 'user', content: 'Berdasarkan data yang baru saja Anda dapatkan dari tools, buatlah rangkuman atau jawaban untuk pertanyaan pengguna. Gunakan data yang sudah ada di percakapan ini.' });
-                continue;
-            }
-            console.log(`[AI Agent] Iterasi ${i}: content kosong tanpa tool calls. finish_reason:`, finishReason);
-            const fallbackSuggestions = generateSuggestions([], intent, message);
-            return { reply: 'Maaf, Agent tidak menghasilkan respons yang dapat dibaca. Silakan coba ajukan pertanyaan dengan cara yang berbeda.', toolCalls: toolCallsLog, suggestions: fallbackSuggestions };
-        }
+        saveToCache(message, reply, toolCallsLog, settings.model || 'unknown', embedFn).catch(e =>
+            console.warn(`[AI Agent] Cache save failed: ${e.message}`)
+        );
+        const suggestions = generateSuggestions(toolCallsLog, intent, message);
+        logLearning(sessionId, message, reply, toolCallsLog);
+        return { reply, toolCalls: toolCallsLog, suggestions };
     }
 
-    const maxIterSuggestions = generateSuggestions(toolCallsLog, intent, message);
-    logLearning(sessionId, message, 'Batas iterasi tercapai', toolCallsLog);
-    return { reply: 'Maaf, batas iterasi pencarian tercapai. Berikut sebagian hasil yang berhasil dikumpulkan.', toolCalls: toolCallsLog, suggestions: maxIterSuggestions };
+    // ── STEP 4: Make Decision Based on AI ──
+    console.log(`[AI Agent] STEP 4: Tidak ada data/knowledge. Mengambil keputusan berdasarkan AI...`);
+    const reply = await aiGenerateResponse(message, hist, settings);
+
+    saveToCache(message, reply, toolCallsLog, settings.model || 'unknown', embedFn).catch(e =>
+        console.warn(`[AI Agent] Cache save failed: ${e.message}`)
+    );
+    const suggestions = generateSuggestions(toolCallsLog, intent, message);
+    logLearning(sessionId, message, reply, toolCallsLog);
+    return { reply, toolCalls: toolCallsLog, suggestions };
 }
