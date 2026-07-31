@@ -978,13 +978,13 @@ router.get('/export/excel', async (req, res) => {
             return {
                 Tanggal: entry.tanggal, Tempat: entry.tempat,
                 Alamat: entry.alamat, Jenis: entry.jenis === 'Custom' ? entry.custom_jenis : entry.jenis,
-                Amount: displayAmount,
-                'Settle Amount': isSettled ? settle : '',
-                Selisih: isSettled ? diffLabel : '',
                 'Nama Relasi': relasiArr.join(', '),
                 Jabatan: (typeof entry.jabatan === 'string' ? (() => { try { return JSON.parse(entry.jabatan); } catch { return []; } })() : (entry.jabatan || [])).join(', '),
                 'Nama Perusahaan': npArr.join(', '), 'Jenis Usaha': entry.jenis_usaha,
                 'Catatan/Kode': catatanKode,
+                Amount: displayAmount,
+                'Settle Amount': isSettled ? settle : '',
+                Selisih: isSettled ? diffLabel : '',
                 Lampiran: attArr.map(a => a.name).join(', '),
                 Pengaju: entry.requester_name || entry.requester_username,
                 Status: entry.status, 'Dibuat Pada': entry.created_at,
@@ -996,9 +996,9 @@ router.get('/export/excel', async (req, res) => {
         const ws = XLSX.utils.json_to_sheet(rows);
         ws['!cols'] = [
             { wch: 12 }, { wch: 20 }, { wch: 30 }, { wch: 12 },
-            { wch: 18 }, { wch: 18 }, { wch: 18 }, { wch: 30 },
-            { wch: 12 }, { wch: 30 }, { wch: 15 }, { wch: 40 },
-            { wch: 30 }, { wch: 15 }, { wch: 15 }, { wch: 20 },
+            { wch: 30 }, { wch: 12 }, { wch: 30 }, { wch: 15 },
+            { wch: 40 }, { wch: 18 }, { wch: 18 }, { wch: 18 },
+            { wch: 30 }, { wch: 20 }, { wch: 15 }, { wch: 20 },
             { wch: 5 }, { wch: 12 }, { wch: 12 }
         ];
         XLSX.utils.book_append_sheet(wb, ws, 'Entertainment Expenses');
