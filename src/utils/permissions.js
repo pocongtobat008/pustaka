@@ -45,5 +45,6 @@ export const APP_MODULES = {
     'job-due-date': { id: 'job-due-date', label: 'My Job' },
     'ai-chat': { id: 'ai-chat', label: 'AI Chat Assistant' },
     'entertainment': { id: 'entertainment', label: 'Entertainment Expenses' },
+    'invoices': { id: 'invoices', label: 'Invoices' },
     book: { id: 'book', label: 'Book (COA)' }
 };

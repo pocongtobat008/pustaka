@@ -38,6 +38,7 @@ import settingsRoutes from './routes/settingsRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
 import coaRoutes from './routes/coaRoutes.js';
 import entertainmentRoutes from './routes/entertainmentRoutes.js';
+import invoiceRoutes from './routes/invoiceRoutes.js';
 import { getHealthStatus } from './services/healthCheck.js';
 
 import { checkAuth } from './middleware/auth.js';
@@ -893,6 +894,7 @@ app.use('/api/ocr', ocrRoutes);
 app.use('/api/pustaka', pustakaRoutes);
 app.use('/api/coa', coaRoutes);
 app.use('/api/entertainment', entertainmentRoutes);
+app.use('/api/invoices', invoiceRoutes);
 
 // --- SOP FLOWS (STANDARDIZATION) ROUTES ---
 app.get('/api/sop-flows', checkAuth, async (req, res) => {

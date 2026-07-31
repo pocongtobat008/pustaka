@@ -108,6 +108,7 @@ const SopFlow = lazy(() => import('./pages/SopFlow'));
 const JobDueDate = lazy(() => import('./pages/JobDueDate'));
 const Book = lazy(() => import('./pages/Book'));
 const EntertainmentExpenses = lazy(() => import('./pages/EntertainmentExpenses'));
+const Invoices = lazy(() => import('./pages/Invoices'));
 const PdfViewer = lazy(() => import('./components/ui/PdfViewer'));
 import LoadingFallback from './components/common/LoadingFallback';
 import { useToast, ToastContainer } from './components/ui/Toast';
@@ -157,6 +158,7 @@ export default function App() {
         'job-due-date': { title: 'Job Due Date Monitoring', subtitle: 'Task Deadline & Issue Monitoring' },
         book: { title: 'Book / Daftar COA', subtitle: 'Chart of Accounts' },
         entertainment: { title: 'Entertainment Expenses', subtitle: 'Expense Reporting & Management' },
+        invoices: { title: 'Invoices', subtitle: 'Proforma Invoice Management' },
       };
     }
 
@@ -174,6 +176,7 @@ export default function App() {
       'job-due-date': { title: 'Job Due Date Monitoring', subtitle: 'Pemantauan Tenggat Waktu & Issue Kerja' },
       book: { title: 'Book / Daftar COA', subtitle: 'Daftar Akun Pembukuan (Chart of Accounts)' },
       entertainment: { title: 'Entertainment Expenses', subtitle: 'Pelaporan & Manajemen Biaya Entertainment' },
+      invoices: { title: 'Invoices', subtitle: 'Manajemen Proforma Invoice' },
     };
   }, [language]);
 
@@ -200,6 +203,7 @@ export default function App() {
           master: { label: 'Master Data', description: 'Users, roles, and reference data settings' },
           profile: { label: 'Profile', description: 'User profile' },
           entertainment: { label: 'Entertainment Expenses', description: 'Expense reporting and management' },
+          invoices: { label: 'Invoices', description: 'Proforma invoice management' },
         },
         actions: {
           upload: { label: 'Upload Document', description: 'Open upload document modal' },
@@ -236,6 +240,7 @@ export default function App() {
         master: { label: 'Master Data', description: 'Pengaturan user, role, dan data referensi' },
         profile: { label: 'Profile', description: 'Profil pengguna' },
         entertainment: { label: 'Entertainment Expenses', description: 'Pelaporan dan manajemen biaya entertainment' },
+        invoices: { label: 'Invoices', description: 'Manajemen proforma invoice' },
       },
       actions: {
         upload: { label: 'Upload Dokumen', description: 'Buka modal upload dokumen' },
@@ -3892,6 +3897,13 @@ export default function App() {
                 )}
                 {activeTab === 'entertainment' && (
                   <EntertainmentExpenses
+                    currentUser={currentUser}
+                    hasPermission={hasPermission}
+                    toast={toast}
+                  />
+                )}
+                {activeTab === 'invoices' && (
+                  <Invoices
                     currentUser={currentUser}
                     hasPermission={hasPermission}
                     toast={toast}

@@ -25,6 +25,7 @@ import {
     Pin,
     PinOff,
     Receipt,
+    FileSignature,
 } from 'lucide-react';
 
 import './Sidebar.css';
@@ -147,6 +148,7 @@ const Sidebar = ({
                         categoryKey: 'sidebar.category.accounting',
                         items: [
                             { id: 'entertainment', icon: Receipt, labelKey: 'sidebar.item.entertainment' },
+                            { id: 'invoices', icon: FileSignature, labelKey: 'sidebar.item.invoices' },
                             { id: 'book', icon: BookOpen, labelKey: 'sidebar.item.book' },
                         ]
                     },
