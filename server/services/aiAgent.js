@@ -1,5 +1,6 @@
 import { knex } from '../db.js';
 import { findCachedReply, saveToCache } from './agentCache.js';
+import brain from './brainService.js';
 
 // ── Self-improvement: log learning asynchronously (fire & forget) ──
 function logLearning(sessionId, message, reply, toolCalls) {
@@ -357,8 +358,9 @@ function formatRowsCompact(rows, maxRows = TOOL_RESULT_ROWS) {
     return lines.join('\n');
 }
 
-// ── Module-level reference to the embedding function (set per runAgent call) ──
+// ── Module-level references (set per runAgent call) ──
 let embedFnRef = null;
+let brainContextRef = '';
 
 // ── Tool execution ──
 function resolveLimit(args, defaultVal = TOOL_RESULT_ROWS) {
@@ -1193,6 +1195,26 @@ async function searchDatabaseDirect(query) {
                 if (rows.length) results.users = rows;
             } catch (e) {}
         })(),
+        (async () => {
+            try {
+                const rows = await knex('ai_training_documents')
+                    .select('id', 'title', 'category', 'status')
+                    .where('status', 'active')
+                    .where(function () { keywordWhere(this, 'title', keywords); })
+                    .orWhere(function () { keywordWhere(this, 'content', keywords); })
+                    .limit(5);
+                if (rows.length) results.training_docs = rows;
+            } catch (e) {}
+        })(),
+        (async () => {
+            try {
+                const rows = await knex('ai_training_chunks')
+                    .select('id', 'document_id', 'chunk_index', 'content')
+                    .where(function () { keywordWhere(this, 'content', keywords); })
+                    .limit(5);
+                if (rows.length) results.training_chunks = rows;
+            } catch (e) {}
+        })(),
     ]);
 
     return results;
@@ -1217,6 +1239,8 @@ function formatDbResultsForLLM(results) {
             approvals: 'Approval/Persetujuan',
             external_items: 'Item Eksternal',
             users: 'Pengguna',
+            training_docs: 'Dokumen Training',
+            training_chunks: 'Potongan Dokumen Training',
         }[table] || table;
         parts.push(`=== ${label} ===`);
         rows.forEach((r, i) => {
@@ -1236,7 +1260,7 @@ function formatDbResultsForLLM(results) {
 }
 
 // ── Generate AI report from database data ──
-async function generateReportFromData(message, dbResults, settings) {
+async function generateReportFromData(message, dbResults, settings, lastTurns = []) {
     const dataStr = formatDbResultsForLLM(dbResults);
     const messages = [
         {
@@ -1253,9 +1277,10 @@ ATURAN:
 - Jawab dalam Bahasa Indonesia yang baik
 - Jangan menambahkan informasi yang tidak ada dalam data`
         },
+        ...(lastTurns || []),
         {
             role: 'user',
-            content: `Pertanyaan: ${message}\n\nDATA DARI DATABASE:\n${dataStr}\n\nBuat laporan berdasarkan data di atas.`
+            content: `Pertanyaan: ${message}\n\n${brainContextRef ? `MEMORI TERKAIT:\n${brainContextRef}\n\n` : ''}DATA DARI DATABASE:\n${dataStr}\n\nBuat laporan berdasarkan data di atas.`
         }
     ];
     const data = await callLLM(messages, [], settings);
@@ -1263,7 +1288,7 @@ ATURAN:
 }
 
 // ── Generate AI response from knowledge (training docs) ──
-async function generateReportWithKnowledge(message, knowledgeContext, settings) {
+async function generateReportWithKnowledge(message, knowledgeContext, settings, lastTurns = []) {
     const messages = [
         {
             role: 'system',
@@ -1277,9 +1302,10 @@ ATURAN:
 - Jawab dalam Bahasa Indonesia
 - Sebutkan sumber pengetahuan jika relevan`
         },
+        ...(lastTurns || []),
         {
             role: 'user',
-            content: `Pertanyaan: ${message}\n\nPENGETAHUAN:\n${knowledgeContext}\n\nJawab pertanyaan berdasarkan pengetahuan di atas.`
+            content: `Pertanyaan: ${message}\n\n${brainContextRef ? `MEMORI TERKAIT:\n${brainContextRef}\n\n` : ''}PENGETAHUAN:\n${knowledgeContext}\n\nJawab pertanyaan berdasarkan pengetahuan di atas.`
         }
     ];
     const data = await callLLM(messages, [], settings);
@@ -1302,7 +1328,7 @@ ATURAN:
 - Jawab dalam Bahasa Indonesia yang ramah dan membantu`
         },
         ...(history || []).slice(-4),
-        { role: 'user', content: message }
+        { role: 'user', content: `${brainContextRef ? `Memori terkait:\n${brainContextRef}\n\n` : ''}${message}` }
     ];
     const data = await callLLM(messages, [], settings);
     return data?.choices?.[0]?.message?.content?.trim() || 'Maaf, saya tidak dapat memproses pertanyaan Anda saat ini. Silakan coba lagi.';
@@ -1311,6 +1337,7 @@ ATURAN:
 // ── Main agent loop ──
 export async function runAgent(message, history = [], embedFn = null, sessionId = null) {
     embedFnRef = embedFn;
+    brainContextRef = '';
     const settings = await getAiSettings();
     if (!settings.enabled || !settings.api_key || !settings.base_url) {
         throw new Error('AI Agent belum dikonfigurasi. Atur Base URL & API Key di Master Data (Admin).');
@@ -1346,6 +1373,19 @@ export async function runAgent(message, history = [], embedFn = null, sessionId 
 
     const toolCallsLog = [];
 
+    // ── STEP 0: Recall relevant memories from 1MBrain ──
+    try {
+        const memories = await brain.recall(message, { limit: 5 });
+        if (memories && memories.length > 0) {
+            brainContextRef = memories.map((r, i) =>
+                `[Memory ${i + 1}] (${r.memory.type}, score: ${r.score.toFixed(2)})\n${r.memory.content}`
+            ).join('\n\n');
+            console.log(`[AI Agent] STEP 0: ${memories.length} relevant memories recalled from brain`);
+        }
+    } catch (err) {
+        console.warn(`[AI Agent] Brain recall failed: ${err.message}`);
+    }
+
     // ── STEP 1: Search Database Directly ──
     console.log(`[AI Agent] STEP 1: Mencari data di database...`);
     const dbResults = await searchDatabaseDirect(message);
@@ -1363,6 +1403,8 @@ export async function runAgent(message, history = [], embedFn = null, sessionId 
     if (dbFound) {
         console.log(`[AI Agent] STEP 2: Data ditemukan di database. Mengolah laporan dengan AI...`);
         const reply = await generateReportFromData(message, dbResults, settings);
+
+        brain.rememberTurn(message, reply, { sessionId, topics: [intent], importance: 0.7 }).catch(() => {});
 
         saveToCache(message, reply, toolCallsLog, settings.model || 'unknown', embedFn).catch(e =>
             console.warn(`[AI Agent] Cache save failed: ${e.message}`)
@@ -1396,6 +1438,8 @@ export async function runAgent(message, history = [], embedFn = null, sessionId 
         console.log(`[AI Agent] STEP 3b: Pengetahuan ditemukan. Menghasilkan jawaban dengan AI...`);
         const reply = await generateReportWithKnowledge(message, trainingContext, settings);
 
+        brain.rememberTurn(message, reply, { sessionId, topics: [intent, 'knowledge'], importance: 0.6 }).catch(() => {});
+
         saveToCache(message, reply, toolCallsLog, settings.model || 'unknown', embedFn).catch(e =>
             console.warn(`[AI Agent] Cache save failed: ${e.message}`)
         );
@@ -1407,6 +1451,8 @@ export async function runAgent(message, history = [], embedFn = null, sessionId 
     // ── STEP 4: Make Decision Based on AI ──
     console.log(`[AI Agent] STEP 4: Tidak ada data/knowledge. Mengambil keputusan berdasarkan AI...`);
     const reply = await aiGenerateResponse(message, hist, settings);
+
+    brain.rememberTurn(message, reply, { sessionId, topics: [intent], importance: 0.5 }).catch(() => {});
 
     saveToCache(message, reply, toolCallsLog, settings.model || 'unknown', embedFn).catch(e =>
         console.warn(`[AI Agent] Cache save failed: ${e.message}`)

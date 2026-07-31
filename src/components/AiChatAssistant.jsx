@@ -139,13 +139,53 @@ const TypingIndicator = ({ isDarkMode, status }) => (
     </div>
 );
 
+function formatInline(text) {
+  const parts = [];
+  let remaining = text;
+  let key = 0;
+
+  while (remaining.length > 0) {
+    // bold **text**
+    const boldMatch = remaining.match(/^(\*\*)(.+?)\1(.*)$/s);
+    if (boldMatch) {
+      parts.push(<b key={key++} className="font-bold text-indigo-400">{boldMatch[2]}</b>);
+      remaining = boldMatch[3];
+      continue;
+    }
+    // italic *text*
+    const italicMatch = remaining.match(/^(\*)(.+?)\1(.*)$/s);
+    if (italicMatch) {
+      parts.push(<i key={key++} className="italic text-indigo-300">{italicMatch[2]}</i>);
+      remaining = italicMatch[3];
+      continue;
+    }
+    // inline code `text`
+    const codeMatch = remaining.match(/^(`)(.+?)\1(.*)$/s);
+    if (codeMatch) {
+      parts.push(<code key={key++} className="px-1 py-0.5 rounded text-[11px] font-mono bg-slate-200 dark:bg-slate-700 text-pink-600 dark:text-pink-300">{codeMatch[2]}</code>);
+      remaining = codeMatch[3];
+      continue;
+    }
+    // plain text up to next special char
+    const next = remaining.match(/^([^*`]+)(.*)$/s);
+    if (next) {
+      parts.push(next[1]);
+      remaining = next[2];
+      continue;
+    }
+    // fallback: consume one char
+    parts.push(remaining[0]);
+    remaining = remaining.slice(1);
+  }
+
+  return parts.length === 1 ? parts[0] : parts;
+}
+
 // Simple Markdown component to handle basic formatting, alerts, and tables
 const MarkdownRenderer = ({ content, isDarkMode }) => {
     if (!content) return null;
 
     const lines = content.split('\n');
-    let inTable = false;
-    let tableRows = [];
 
     const renderLine = (line, index) => {
         // Handle Alerts
@@ -153,11 +193,7 @@ const MarkdownRenderer = ({ content, isDarkMode }) => {
             const match = line.match(/> \[!(\w+)\]/);
             const type = match ? match[1] : 'NOTE';
             const colors = {
-                NOTE: 'blue',
-                TIP: 'emerald',
-                IMPORTANT: 'indigo',
-                WARNING: 'amber',
-                CAUTION: 'red'
+                NOTE: 'blue', TIP: 'emerald', IMPORTANT: 'indigo', WARNING: 'amber', CAUTION: 'red'
             };
             const color = colors[type] || 'blue';
             return (
@@ -166,22 +202,34 @@ const MarkdownRenderer = ({ content, isDarkMode }) => {
                     : `bg-${color}-50 border-${color}-500 text-${color}-700`
                     }`}>
                     <span className="font-bold uppercase tracking-tight mr-1">{type}:</span>
-                    {line.replace(/> \[!\w+\]\s*/, '').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')}
+                    {formatInline(line.replace(/> \[!\w+\]\s*/, ''))}
                 </div>
             );
         }
 
         // Handle Headers
         if (line.startsWith('### ')) {
-            return <h3 key={index} className="text-sm font-bold mt-3 mb-1 text-indigo-500">{line.replace('### ', '')}</h3>;
+            return <h3 key={index} className="text-sm font-bold mt-3 mb-1 text-indigo-500">{formatInline(line.replace('### ', ''))}</h3>;
+        }
+        if (line.startsWith('## ')) {
+            return <h2 key={index} className="text-base font-bold mt-4 mb-1.5 text-indigo-500">{formatInline(line.replace('## ', ''))}</h2>;
+        }
+        if (line.startsWith('# ')) {
+            return <h1 key={index} className="text-lg font-bold mt-4 mb-1.5 text-indigo-500">{formatInline(line.replace('# ', ''))}</h1>;
         }
 
-        // Handle Bold
-        let formattedLine = line.split('**').map((part, i) => i % 2 === 1 ? <b key={i} className="font-bold text-indigo-400">{part}</b> : part);
+        const formattedLine = formatInline(line);
 
-        // Handle Lists
-        if (line.trim().startsWith('- ')) {
+        // Handle Unordered Lists (- or *)
+        if (line.trim().match(/^[-*]\s/)) {
             return <div key={index} className="flex gap-2 pl-1 my-0.5"><span className="text-indigo-500">•</span><div>{formattedLine}</div></div>;
+        }
+
+        // Handle Numbered Lists (e.g. "1. item", "2. item")
+        const numberedMatch = line.trim().match(/^(\d+)\.\s(.+)$/);
+        if (numberedMatch) {
+            const inner = formatInline(numberedMatch[2]);
+            return <div key={index} className="flex gap-2 pl-1 my-0.5"><span className="text-indigo-500 font-bold min-w-[1.2rem]">{numberedMatch[1]}.</span><div>{inner}</div></div>;
         }
 
         // Handle Tables (Minimalist)
@@ -196,6 +244,9 @@ const MarkdownRenderer = ({ content, isDarkMode }) => {
             }
             return null;
         }
+
+        // Empty line → spacer
+        if (line.trim() === '') return <div key={index} className="h-2" />;
 
         return <p key={index} className="mb-1">{formattedLine}</p>;
     };
@@ -792,11 +843,16 @@ export default function AiChatAssistant({
                 credentials: 'include',
                 body: JSON.stringify({ message: text, history, sessionId: currentSessionId })
             });
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || (`HTTP ${res.status}`));
+            let data;
+            const rawText = await res.text();
+            try {
+                data = JSON.parse(rawText);
+            } catch {
+                throw new Error(`Server returned non-JSON response (HTTP ${res.status}): ${rawText.slice(0, 200)}`);
             }
-            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data?.error || (`HTTP ${res.status}`));
+            }
             const jobId = data.jobId;
             if (!jobId) throw new Error('Tidak ada jobId yang dikembalikan.');
 
@@ -807,7 +863,8 @@ export default function AiChatAssistant({
                 pollCount++;
                 try {
                     const jr = await fetch(`${API_URL}/search/job/${jobId}`, { credentials: 'include' });
-                    const jd = await jr.json();
+                    let jd;
+                    try { jd = await jr.json(); } catch { throw new Error(`Invalid response from server (HTTP ${jr.status})`); }
                     if (jd.status === 'completed') {
                         const result = jd.result || {};
                         setMessages(prev => [...prev, {

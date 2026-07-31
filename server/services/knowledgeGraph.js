@@ -1,5 +1,12 @@
 import { knex } from '../db.js';
 
+// Lazy import to avoid circular dependency
+let brainService = null;
+async function getBrain() {
+  if (!brainService) brainService = (await import('./brainService.js')).default;
+  return brainService;
+}
+
 // ── Knowledge Graph builder ──
 // Aggregates training docs, chunks, learning logs (knowledge), and corrections
 // into a brain-style graph: nodes + edges for visualization.
@@ -162,6 +169,28 @@ export async function buildKnowledgeGraph({ includeChunks = true } = {}) {
                 type: 'refines',
             });
         }
+    }
+
+    // ── Include 1MBrain memories (fire-and-forget — don't block on failure) ──
+    try {
+        const brain = await getBrain();
+        const network = await brain.getNetworkData();
+        if (network?.nodes?.length) {
+            for (const bn of network.nodes) {
+                if (!nodes.some(n => n.id === bn.id)) {
+                    nodes.push(bn);
+                }
+            }
+        }
+        if (network?.edges?.length) {
+            for (const be of network.edges) {
+                if (!edges.some(e => e.id === be.id)) {
+                    edges.push(be);
+                }
+            }
+        }
+    } catch (e) {
+        // 1MBrain offline — skip
     }
 
     const stats = {

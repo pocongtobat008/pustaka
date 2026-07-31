@@ -340,6 +340,110 @@ export default function MasterData({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [masterTab, trainingTab]);
 
+    // --- 1MBrain Tab ---
+    const [brainHealth, setBrainHealth] = useState(null);
+    const [brainStats, setBrainStats] = useState(null);
+    const [brainMemories, setBrainMemories] = useState([]);
+    const [brainTotalMemories, setBrainTotalMemories] = useState(0);
+    const [brainLoading, setBrainLoading] = useState(false);
+    const [brainSearchQuery, setBrainSearchQuery] = useState('');
+    const [brainSearchResults, setBrainSearchResults] = useState([]);
+    const [brainSearching, setBrainSearching] = useState(false);
+    const [brainConsolidating, setBrainConsolidating] = useState(false);
+    const [brainConsolidateResult, setBrainConsolidateResult] = useState(null);
+    const [brainIngestForm, setBrainIngestForm] = useState({ title: '', markdown: '' });
+    const [brainIngesting, setBrainIngesting] = useState(false);
+    const [brainSyncing, setBrainSyncing] = useState(false);
+    const [brainSyncResult, setBrainSyncResult] = useState(null);
+
+    const fetchBrainData = async () => {
+        setBrainLoading(true);
+        try {
+            const [health, stats, memories] = await Promise.all([
+                apiClient.fetchJson(`${API_URL}/ai/brain/health`),
+                apiClient.fetchJson(`${API_URL}/ai/brain/stats`),
+                apiClient.fetchJson(`${API_URL}/ai/brain/memories?limit=20`),
+            ]);
+            if (health?.success) setBrainHealth(health.data);
+            if (stats?.success) setBrainStats(stats.data);
+            if (memories?.success) {
+                setBrainMemories(memories.data.memories || []);
+                setBrainTotalMemories(memories.data.total || 0);
+            }
+        } catch (e) {
+            console.warn('Brain data fetch failed:', e.message);
+        } finally {
+            setBrainLoading(false);
+        }
+    };
+
+    const handleBrainSearch = async () => {
+        if (!brainSearchQuery.trim()) return;
+        setBrainSearching(true);
+        try {
+            const res = await apiClient.fetchJson(`${API_URL}/ai/brain/recall`, {
+                method: 'POST',
+                body: JSON.stringify({ query: brainSearchQuery, limit: 20 }),
+            });
+            if (res?.success) setBrainSearchResults(res.data || []);
+        } catch (e) {
+            console.warn('Brain search failed:', e.message);
+        } finally {
+            setBrainSearching(false);
+        }
+    };
+
+    const handleBrainConsolidate = async () => {
+        setBrainConsolidating(true);
+        setBrainConsolidateResult(null);
+        try {
+            const res = await apiClient.fetchJson(`${API_URL}/ai/brain/consolidate`, {
+                method: 'POST',
+                body: JSON.stringify({}),
+            });
+            if (res?.success) setBrainConsolidateResult(res.data);
+        } catch (e) {
+            console.warn('Brain consolidate failed:', e.message);
+        } finally {
+            setBrainConsolidating(false);
+        }
+    };
+
+    const handleBrainIngest = async (e) => {
+        e.preventDefault();
+        if (!brainIngestForm.title.trim() || !brainIngestForm.markdown.trim()) return;
+        setBrainIngesting(true);
+        try {
+            const res = await apiClient.fetchJson(`${API_URL}/ai/brain/ingest`, {
+                method: 'POST',
+                body: JSON.stringify(brainIngestForm),
+            });
+            if (res?.success) {
+                setBrainIngestForm({ title: '', markdown: '' });
+                fetchBrainData();
+            }
+        } catch (e) {
+            console.warn('Brain ingest failed:', e.message);
+        } finally {
+            setBrainIngesting(false);
+        }
+    };
+
+    const handleBrainSyncTraining = async () => {
+        setBrainSyncing(true);
+        setBrainSyncResult(null);
+        try {
+            const res = await apiClient.fetchJson(`${API_URL}/ai/brain/sync-training`, {
+                method: 'POST',
+            });
+            if (res?.success) setBrainSyncResult(res.data);
+        } catch (e) {
+            console.warn('Brain sync failed:', e.message);
+        } finally {
+            setBrainSyncing(false);
+        }
+    };
+
     // --- Pagination ---
     const [topicPage, setTopicPage] = useState(1);
     const [logPage, setLogPage] = useState(1);
@@ -1411,6 +1515,12 @@ export default function MasterData({
                                 >
                                     🧠 Graph
                                 </button>
+                                <button
+                                    onClick={() => { setTrainingTab('brain'); fetchBrainData(); }}
+                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'brain' ? 'bg-white dark:bg-slate-700 text-amber-600 dark:text-amber-300 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
+                                >
+                                    1MBrain
+                                </button>
                             </div>
                         </div>
 
@@ -1880,6 +1990,192 @@ export default function MasterData({
                                         Belum ada riwayat evolution scan. Klik "Run Evolution Scan" untuk memulai.
                                     </div>
                                 )}
+                            </div>
+                        )}
+
+                        {/* 1MBrain Tab */}
+                        {trainingTab === 'brain' && (
+                            <div className="space-y-4">
+                                <div className="flex justify-between items-center">
+                                    <div>
+                                        <h4 className="font-bold text-sm text-gray-700 dark:text-slate-300 flex items-center gap-2">
+                                            <Brain size={16} className="text-amber-500" /> 1MBrain — Semantic Graph Memory
+                                        </h4>
+                                        <p className="text-xs text-gray-500 mt-0.5">Status, pencarian, konsolidasi, dan manajemen memori AI.</p>
+                                    </div>
+                                    <button
+                                        onClick={fetchBrainData}
+                                        disabled={brainLoading}
+                                        className="px-3 py-1.5 bg-gray-600 text-white rounded-lg text-xs flex items-center gap-1.5 hover:bg-gray-700 transition-colors disabled:opacity-50"
+                                    >
+                                        {brainLoading ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />} Refresh
+                                    </button>
+                                </div>
+
+                                {/* Health & Stats Cards */}
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                    <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3 text-center">
+                                        <div className="flex items-center justify-center gap-1 mb-1">
+                                            <span className={`w-2 h-2 rounded-full ${brainHealth?.status === 'ok' ? 'bg-emerald-500' : 'bg-red-500'}`} />
+                                            <span className="text-xs text-gray-500 dark:text-slate-400">Status</span>
+                                        </div>
+                                        <div className="text-sm font-black text-amber-600 dark:text-amber-300">{brainHealth?.status === 'ok' ? 'Connected' : 'Offline'}</div>
+                                    </div>
+                                    <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-3 text-center">
+                                        <div className="text-2xl font-black text-indigo-600 dark:text-indigo-300">{brainStats?.memoryCount ?? '-'}</div>
+                                        <div className="text-xs text-indigo-500 dark:text-indigo-400 mt-1">Memories</div>
+                                    </div>
+                                    <div className="bg-violet-50 dark:bg-violet-900/20 rounded-lg p-3 text-center">
+                                        <div className="text-2xl font-black text-violet-600 dark:text-violet-300">{brainStats?.associationCount ?? '-'}</div>
+                                        <div className="text-xs text-violet-500 dark:text-violet-400 mt-1">Associations</div>
+                                    </div>
+                                    <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-3 text-center">
+                                        <div className="text-2xl font-black text-emerald-600 dark:text-emerald-300">{brainTotalMemories}</div>
+                                        <div className="text-xs text-emerald-500 dark:text-emerald-400 mt-1">Total Listed</div>
+                                    </div>
+                                </div>
+
+                                {/* Info Row */}
+                                {brainHealth && (
+                                    <div className="flex flex-wrap gap-4 text-[11px] text-gray-500 dark:text-slate-400 bg-gray-50 dark:bg-slate-800/50 rounded-lg px-3 py-2">
+                                        <span>Uptime: <strong>{(brainHealth.uptime / 3600).toFixed(1)}h</strong></span>
+                                        <span>Embedding: <strong>{brainHealth.embedding}</strong></span>
+                                        <span>DB: <strong>{brainHealth.database}</strong></span>
+                                        <span>Version: <strong>{brainHealth.version}</strong></span>
+                                    </div>
+                                )}
+
+                                {/* Search */}
+                                <div className="bg-white dark:bg-slate-900 border dark:border-slate-700/50 rounded-lg p-3">
+                                    <h5 className="font-bold text-xs text-gray-600 dark:text-slate-300 mb-2 flex items-center gap-1.5"><Search size={13} /> Cari Memori</h5>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            placeholder="Kata kunci pencarian..."
+                                            className="flex-1 px-3 py-2 border rounded-lg dark:bg-slate-800 dark:border-slate-700 dark:text-white text-sm"
+                                            value={brainSearchQuery}
+                                            onChange={(e) => setBrainSearchQuery(e.target.value)}
+                                            onKeyDown={(e) => e.key === 'Enter' && handleBrainSearch()}
+                                        />
+                                        <button
+                                            onClick={handleBrainSearch}
+                                            disabled={brainSearching || !brainSearchQuery.trim()}
+                                            className="px-3 py-2 bg-indigo-600 text-white rounded-lg text-xs flex items-center gap-1 hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                                        >
+                                            {brainSearching ? <Loader2 size={13} className="animate-spin" /> : <Search size={13} />} Cari
+                                        </button>
+                                    </div>
+                                    {brainSearchResults.length > 0 && (
+                                        <div className="mt-2 space-y-1 max-h-48 overflow-y-auto">
+                                            {brainSearchResults.map((r, i) => (
+                                                <div key={r.memory?.id || i} className="text-xs bg-gray-50 dark:bg-slate-800/50 rounded p-2 border-l-2 border-indigo-400">
+                                                    <div className="flex items-center gap-2 mb-0.5">
+                                                        <span className="text-[10px] px-1 rounded bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">{r.memory?.type}</span>
+                                                        <span className="text-[10px] text-gray-400">score: {(r.score * 100).toFixed(0)}%</span>
+                                                    </div>
+                                                    <p className="text-gray-700 dark:text-slate-300 line-clamp-2">{r.memory?.content}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Consolidation */}
+                                <div className="bg-white dark:bg-slate-900 border dark:border-slate-700/50 rounded-lg p-3">
+                                    <h5 className="font-bold text-xs text-gray-600 dark:text-slate-300 mb-2 flex items-center gap-1.5"><Zap size={13} /> Konsolidasi Memori</h5>
+                                    <p className="text-[11px] text-gray-500 mb-2">Menjalankan konsolidasi akan mengelompokkan memori serupa, mengekstrak knowledge baru, dan mengarsipkan memori usang.</p>
+                                    <button
+                                        onClick={handleBrainConsolidate}
+                                        disabled={brainConsolidating}
+                                        className="px-3 py-2 bg-amber-600 text-white rounded-lg text-xs flex items-center gap-1 hover:bg-amber-700 transition-colors disabled:opacity-50"
+                                    >
+                                        {brainConsolidating ? <Loader2 size={13} className="animate-spin" /> : <Zap size={13} />} Run Consolidation
+                                    </button>
+                                    {brainConsolidateResult && (
+                                        <div className="mt-2 text-xs bg-emerald-50 dark:bg-emerald-900/20 rounded p-2 text-emerald-700 dark:text-emerald-300">
+                                            Stored: {brainConsolidateResult.storedCount} · Archived: {brainConsolidateResult.archivedCount} · Clusters: {brainConsolidateResult.clustersProcessed}
+                                            {brainConsolidateResult.summaryIds?.length > 0 && ` · Summaries: ${brainConsolidateResult.summaryIds.length}`}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Sync Training Docs to 1MBrain */}
+                                <div className="bg-white dark:bg-slate-900 border dark:border-slate-700/50 rounded-lg p-3">
+                                    <h5 className="font-bold text-xs text-gray-600 dark:text-slate-300 mb-2 flex items-center gap-1.5"><RefreshCw size={13} /> Sinkronisasi Data Training ke 1MBrain</h5>
+                                    <p className="text-[11px] text-gray-500 mb-2">Sinkronkan semua dokumen training yang aktif ke 1MBrain agar pencarian memori lebih terpusat.</p>
+                                    <button
+                                        onClick={handleBrainSyncTraining}
+                                        disabled={brainSyncing}
+                                        className="px-3 py-2 bg-indigo-600 text-white rounded-lg text-xs flex items-center gap-1 hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                                    >
+                                        {brainSyncing ? <Loader2 size={13} className="animate-spin" /> : <RefreshCw size={13} />} Sync Training ke 1MBrain
+                                    </button>
+                                    {brainSyncResult && (
+                                        <div className="mt-2 text-xs bg-emerald-50 dark:bg-emerald-900/20 rounded p-2 text-emerald-700 dark:text-emerald-300">
+                                            ✅ {brainSyncResult.synced} dokumen tersinkron · ❌ {brainSyncResult.errors} gagal · Total: {brainSyncResult.total}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Ingest Knowledge */}
+                                <div className="bg-white dark:bg-slate-900 border dark:border-slate-700/50 rounded-lg p-3">
+                                    <h5 className="font-bold text-xs text-gray-600 dark:text-slate-300 mb-2 flex items-center gap-1.5"><FileText size={13} /> Tambah Pengetahuan ke 1MBrain</h5>
+                                    <form onSubmit={handleBrainIngest} className="space-y-2">
+                                        <input
+                                            type="text"
+                                            placeholder="Judul..."
+                                            className="w-full px-3 py-2 border rounded-lg dark:bg-slate-800 dark:border-slate-700 dark:text-white text-sm"
+                                            value={brainIngestForm.title}
+                                            onChange={(e) => setBrainIngestForm({ ...brainIngestForm, title: e.target.value })}
+                                            required
+                                        />
+                                        <textarea
+                                            placeholder="Konten Markdown..."
+                                            rows={4}
+                                            className="w-full px-3 py-2 border rounded-lg dark:bg-slate-800 dark:border-slate-700 dark:text-white text-sm"
+                                            value={brainIngestForm.markdown}
+                                            onChange={(e) => setBrainIngestForm({ ...brainIngestForm, markdown: e.target.value })}
+                                            required
+                                        />
+                                        <button
+                                            type="submit"
+                                            disabled={brainIngesting || !brainIngestForm.title.trim() || !brainIngestForm.markdown.trim()}
+                                            className="px-3 py-2 bg-emerald-600 text-white rounded-lg text-xs flex items-center gap-1 hover:bg-emerald-700 transition-colors disabled:opacity-50"
+                                        >
+                                            {brainIngesting ? <Loader2 size={13} className="animate-spin" /> : <Upload size={13} />} Ingest ke 1MBrain
+                                        </button>
+                                    </form>
+                                </div>
+
+                                {/* Recent Memories */}
+                                <div className="bg-white dark:bg-slate-900 border dark:border-slate-700/50 rounded-lg p-3">
+                                    <h5 className="font-bold text-xs text-gray-600 dark:text-slate-300 mb-2 flex items-center gap-1.5"><Clock size={13} /> Memori Terbaru ({brainMemories.length})</h5>
+                                    {brainLoading ? (
+                                        <div className="text-center py-6 text-gray-400"><Loader2 size={20} className="animate-spin inline-block" /></div>
+                                    ) : brainMemories.length === 0 ? (
+                                        <div className="text-center py-6 text-gray-400 dark:text-slate-500 text-xs">Belum ada memori.</div>
+                                    ) : (
+                                        <div className="space-y-1 max-h-64 overflow-y-auto">
+                                            {brainMemories.map((m, i) => (
+                                                <div key={m.id || i} className="text-xs bg-gray-50 dark:bg-slate-800/50 rounded p-2 border-l-2 border-amber-400">
+                                                    <div className="flex items-center gap-2 mb-0.5">
+                                                        <span className="text-[10px] px-1 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">{m.type}</span>
+                                                        {m.importance && <span className="text-[10px] text-gray-400">importance: {(m.importance * 100).toFixed(0)}%</span>}
+                                                        {m.createdAt && <span className="text-[10px] text-gray-400 ml-auto">{new Date(m.createdAt).toLocaleDateString()}</span>}
+                                                    </div>
+                                                    <p className="text-gray-700 dark:text-slate-300 line-clamp-2">{m.content}</p>
+                                                    {m.tags?.length > 0 && (
+                                                        <div className="flex gap-1 mt-1 flex-wrap">
+                                                            {m.tags.map((t, ti) => (
+                                                                <span key={ti} className="text-[9px] px-1 rounded bg-gray-200 dark:bg-slate-700 text-gray-500 dark:text-slate-400">{t}</span>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         )}
 

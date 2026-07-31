@@ -124,6 +124,11 @@ export async function saveToCache(message, reply, toolCalls = [], model = '', em
         // Don't cache error/failure responses
         return;
     }
+    // Hanya cache jawaban ≥ 30 kata — jawaban pendek tidak perlu di-cache
+    if (reply.trim().split(/\s+/).length < 30) {
+        console.log(`[AgentCache] SKIP — reply too short (${reply.trim().split(/\s+/).length} words)`);
+        return;
+    }
 
     const hash = hashQuery(message);
     const now = new Date();

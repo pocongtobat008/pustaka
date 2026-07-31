@@ -60,6 +60,8 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         btnSave: 'Save', btnCancel: 'Cancel', btnUpdate: 'Update',
         // Settle
         settleTitle: 'Settle Entertainment', lblSettleDate: 'Settle Date *',
+        lblSettleAmount: 'Settle Amount', lblDraw: 'Draw (Same)',
+        lblOver: 'Over', lblShortage: 'Shortage', lblSame: 'Same',
         lblRelasiPerusahaan: 'Relation & Company', btnTambahRelasi: 'Add Relation',
         lblCatatan: 'Notes', btnSettle: 'Settle', btnBatal: 'Cancel',
         // Preview
@@ -145,6 +147,8 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         btnSave: 'Simpan', btnCancel: 'Batal', btnUpdate: 'Update',
         // Settle
         settleTitle: 'Settle Entertainment', lblSettleDate: 'Tanggal Settle *',
+        lblSettleAmount: 'Settle Amount', lblDraw: 'Draw (Sama)',
+        lblOver: 'Over', lblShortage: 'Shortage', lblSame: 'Same',
         lblRelasiPerusahaan: 'Relasi & Perusahaan', btnTambahRelasi: 'Tambah Relasi',
         lblCatatan: 'Catatan', btnSettle: 'Settle', btnBatal: 'Batal',
         // Preview
@@ -586,7 +590,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         alamat: item.alamat || '',
         jenis: item.jenis || '',
         custom_jenis: item.custom_jenis || '',
-        nilai: item.nilai ? String(item.nilai) : '',
+        nilai: item.nilai ? String(item.nilai).replace(/\.00$/, '') : '',
         no_gl: item.no_gl || '',
         groups: (item.relasi || []).map((relasi, i) => ({
             relasi,
@@ -596,7 +600,9 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         jenis_usaha: item.jenis_usaha || '',
         custom_jenis_usaha: (item.jenis_usaha && !JENIS_USAHA_PRESET.includes(item.jenis_usaha)) ? item.jenis_usaha : '',
         catatan_kode: item.catatan_kode || '',
-        settle_date: item.settle_date || new Date().toISOString().split('T')[0]
+        settle_date: item.settle_date || new Date().toISOString().split('T')[0],
+        settle_amount: item.settle_amount ? String(item.settle_amount).replace(/\.00$/, '') : '',
+        is_draw: !item.settle_amount
     });
 
     const handleSettle = (item) => {
@@ -619,6 +625,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         if (!settleForm.jenis) { toast.error('Jenis wajib diisi'); return; }
         if (settleForm.jenis === 'Custom' && !settleForm.custom_jenis?.trim()) { toast.error('Custom jenis wajib diisi'); return; }
         if (!settleForm.nilai) { toast.error(text.errNilai); return; }
+        if (!settleForm.is_draw && !settleForm.settle_amount) { toast.error(isEnglish ? 'Settle amount is required' : 'Settle amount wajib diisi'); return; }
         if (!settleForm.no_gl) { toast.error('No GL wajib diisi'); return; }
         if (!settleForm.groups || !settleForm.groups[0]?.relasi?.trim()) { toast.error('Minimal 1 relasi wajib diisi'); return; }
         if (!settleForm.jenis_usaha) { toast.error('Jenis Usaha wajib diisi'); return; }
@@ -634,6 +641,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
             fd.append('jenis', settleForm.jenis);
             fd.append('custom_jenis', settleForm.jenis === 'Custom' ? settleForm.custom_jenis : '');
             fd.append('nilai', settleForm.nilai);
+            fd.append('settle_amount', settleForm.is_draw ? settleForm.nilai : settleForm.settle_amount);
             fd.append('no_gl', settleForm.no_gl);
             fd.append('settle_date', settleForm.settle_date);
 
@@ -1463,7 +1471,18 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                         {(item.nama_perusahaan || []).join(', ') || '-'}
                                     </td>
                                     <td className="px-4 py-3 text-right font-mono whitespace-nowrap">
-                                        {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.nilai)}
+                                        {item.status === 'settled' && item.settle_amount ? (
+                                            <div className="flex flex-col items-end">
+                                                <span>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.settle_amount)}</span>
+                                                {parseFloat(item.settle_amount) !== parseFloat(item.nilai) && (
+                                                    <span className={`text-[10px] font-bold ${parseFloat(item.settle_amount) > parseFloat(item.nilai) ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                                                        {parseFloat(item.settle_amount) > parseFloat(item.nilai) ? 'Over' : 'Short'} {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(Math.abs(parseFloat(item.settle_amount) - parseFloat(item.nilai)))}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.nilai)
+                                        )}
                                     </td>
                                     <td className="px-4 py-3">
                                         <span className="px-2 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-lg text-xs font-semibold">
@@ -1604,6 +1623,44 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                                 className="mt-2 w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm" />
                                         )}
                                     </div>
+                                </div>
+                                {/* Settle Amount */}
+                                <div className="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+                                    <div className="flex items-center gap-4 mb-3">
+                                        <label className="flex items-center gap-2 cursor-pointer">
+                                            <input type="checkbox" checked={settleForm.is_draw || false}
+                                                onChange={e => setSettleForm(p => ({
+                                                    ...p,
+                                                    is_draw: e.target.checked,
+                                                    settle_amount: e.target.checked ? p.nilai : ''
+                                                }))}
+                                                className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
+                                            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{text.lblDraw}</span>
+                                        </label>
+                                    </div>
+                                    {!settleForm.is_draw && (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblSettleAmount} *</label>
+                                                <input type="text" value={settleForm.settle_amount ? formatCurrency(settleForm.settle_amount) : ''}
+                                                    onChange={e => setSettleForm(p => ({ ...p, settle_amount: parseCurrency(e.target.value) }))}
+                                                    placeholder={isEnglish ? 'Enter settle amount' : 'Masukkan jumlah settle'}
+                                                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500" />
+                                            </div>
+                                            <div className="flex items-end">
+                                                {settleForm.settle_amount && (
+                                                    (() => {
+                                                        const pengajuan = parseFloat(settleForm.nilai) || 0;
+                                                        const settle = parseFloat(settleForm.settle_amount) || 0;
+                                                        const diff = settle - pengajuan;
+                                                        if (diff === 0) return <span className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">{text.lblSame}</span>;
+                                                        if (diff > 0) return <span className="px-3 py-1.5 rounded-lg text-xs font-bold bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300">{text.lblOver} +{diff.toLocaleString('id-ID')}</span>;
+                                                        return <span className="px-3 py-1.5 rounded-lg text-xs font-bold bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300">{text.lblShortage} {diff.toLocaleString('id-ID')}</span>;
+                                                    })()
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                                 <div>
                                     <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">{text.lblRelasiPerusahaan}</label>
@@ -1777,7 +1834,11 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     <DetailField label={text.detailTempat} value={previewData.tempat} />
                                     <DetailField label={text.detailAlamat} value={previewData.alamat} />
                                     <DetailField label={text.detailJenis} value={previewData.jenis === 'Custom' ? previewData.custom_jenis : previewData.jenis} />
-                                    <DetailField label={text.detailNilai} value={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(previewData.nilai)} />
+                                    <DetailField label={text.detailNilai} value={
+                                        previewData.status === 'settled' && previewData.settle_amount
+                                            ? `${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(previewData.settle_amount)}${parseFloat(previewData.settle_amount) !== parseFloat(previewData.nilai) ? ` (${parseFloat(previewData.settle_amount) > parseFloat(previewData.nilai) ? 'Over' : 'Short'})` : ''}`
+                                            : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(previewData.nilai)
+                                    } />
                                     <DetailField label={text.detailNoGl} value={previewData.no_gl} />
                                     <DetailField label={text.thNamaRelasi} value={(previewData.relasi || []).join(', ')} />
                                     <DetailField label={text.thJabatan} value={(previewData.jabatan || []).join(', ')} />

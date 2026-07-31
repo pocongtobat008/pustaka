@@ -1003,7 +1003,7 @@ router.post('/:id/settle', upload.array('attachments', 10), async (req, res) => 
             return res.status(403).json({ error: 'Anda tidak memiliki izin untuk settle' });
         }
 
-        const { tanggal, tempat, alamat, jenis, custom_jenis, nilai, no_gl, relasi, jabatan, nama_perusahaan, jenis_usaha, catatan_kode, existing_attachments, settle_date } = req.body;
+        const { tanggal, tempat, alamat, jenis, custom_jenis, nilai, settle_amount, no_gl, relasi, jabatan, nama_perusahaan, jenis_usaha, catatan_kode, existing_attachments, settle_date } = req.body;
 
         if (!settle_date) {
             return res.status(400).json({ error: 'Tanggal settle wajib diisi' });
@@ -1103,6 +1103,11 @@ router.post('/:id/settle', upload.array('attachments', 10), async (req, res) => 
         updatePayload.settled_at = knex.fn.now();
         updatePayload.settled_by = user.username;
         updatePayload.settle_date = settle_date;
+        if (settle_amount !== undefined && settle_amount !== '') {
+            updatePayload.settle_amount = parseFloat(settle_amount);
+        } else {
+            updatePayload.settle_amount = parseFloat(nilai);
+        }
         updatePayload.updated_at = knex.fn.now();
 
         await knex('entertainment_expenses').where('id', req.params.id).update(updatePayload);

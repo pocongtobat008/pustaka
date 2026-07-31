@@ -252,6 +252,13 @@ router.post('/ai/training/upload', checkAuth, upload.single('file'), async (req,
             console.warn(`[Training] Embed failed: ${err.message}`)
         );
 
+        // Also ingest into 1MBrain knowledge base (async)
+        import('../services/brainService.js').then(brain => {
+            brain.default.ingestMarkdown(title || req.file.originalname, content, {
+                tags: ['training', category || 'general']
+            }).catch(err => console.warn(`[Brain] Ingest failed: ${err.message}`));
+        });
+
         res.json({ id: docId, status: 'processing', message: 'File diunggah, sedang diproses...' });
     } catch (e) {
         res.status(500).json({ error: e.message });
@@ -299,6 +306,13 @@ router.post('/ai/training/link', checkAuth, async (req, res) => {
         generateDocEmbedding(docId, generateEmbedding).catch(err =>
             console.warn(`[Training] Embed failed: ${err.message}`)
         );
+
+        // Also ingest into 1MBrain (async)
+        import('../services/brainService.js').then(brain => {
+            brain.default.ingestMarkdown(title || url, content, {
+                tags: ['training', 'link', category || 'general']
+            }).catch(err => console.warn(`[Brain] Ingest failed: ${err.message}`));
+        });
 
         res.json({ id: docId, status: 'processing', message: 'Link ditambahkan, sedang diproses...' });
     } catch (e) {
@@ -579,5 +593,20 @@ router.get('/ai/evolution/snapshots', checkAuth, async (req, res) => {
         res.status(500).json({ error: e.message });
     }
 });
+
+// ════════════════════════════════════════════════════════════════
+// ── 1MBrain Routes ──
+// ════════════════════════════════════════════════════════════════
+import * as brainCtrl from '../controllers/brainController.js';
+
+router.get('/ai/brain/health', checkAuth, brainCtrl.getBrainHealth);
+router.post('/ai/brain/recall', checkAuth, brainCtrl.recallMemories);
+router.post('/ai/brain/memory', checkAuth, brainCtrl.storeMemory);
+router.post('/ai/brain/ingest', checkAuth, brainCtrl.ingestKnowledge);
+router.post('/ai/brain/consolidate', checkAuth, brainCtrl.triggerConsolidation);
+router.get('/ai/brain/stats', checkAuth, brainCtrl.getMemoryStats);
+router.get('/ai/brain/memories', checkAuth, brainCtrl.listAllMemories);
+router.get('/ai/brain/network', checkAuth, brainCtrl.getNetworkGraph);
+router.post('/ai/brain/sync-training', checkAuth, brainCtrl.syncTrainingToBrain);
 
 export default router;

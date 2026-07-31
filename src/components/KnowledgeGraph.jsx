@@ -11,6 +11,7 @@ const TYPE_LABEL = {
     chunk: 'Chunk',
     knowledge: 'Knowledge',
     correction: 'Koreksi',
+    brain_memory: '1MBrain Memory',
 };
 
 export default function KnowledgeGraph({ data, height = 520 }) {
@@ -141,7 +142,7 @@ export default function KnowledgeGraph({ data, height = 520 }) {
             {/* Controls */}
             <div className="flex flex-wrap items-center gap-2 text-xs">
                 <span className="font-bold text-gray-500 dark:text-slate-400">Filter:</span>
-                {['all', 'category', 'training_doc', 'knowledge', 'correction'].map(f => (
+                {['all', 'category', 'training_doc', 'knowledge', 'correction', 'brain_memory'].map(f => (
                     <button key={f} onClick={() => setFilter(f)}
                         className={`px-2 py-1 rounded-md transition-colors ${filter === f ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700'}`}>
                         {f === 'all' ? 'Semua' : (TYPE_LABEL[f] || f)}
@@ -153,6 +154,7 @@ export default function KnowledgeGraph({ data, height = 520 }) {
                     <span>🧠 {stats.knowledge || 0} knowledge</span>
                     <span>✅ {stats.knowledgeTrained || 0} trained</span>
                     <span>🔧 {stats.corrections || 0} koreksi</span>
+                    <span>🧠 {stats.nodes || 0} memori</span>
                 </div>
             </div>
 
@@ -164,6 +166,7 @@ export default function KnowledgeGraph({ data, height = 520 }) {
                 <Legend color="#34d399" label="Knowledge (terlatih)" />
                 <Legend color="#a3a3a3" label="Knowledge (belum)" />
                 <Legend color="#f43f5e" label="Koreksi" />
+                <Legend color="#f59e0b" label="1MBrain Memory" />
             </div>
 
             <div ref={wrapRef} className="relative w-full rounded-xl border dark:border-slate-700/50 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 overflow-hidden">
