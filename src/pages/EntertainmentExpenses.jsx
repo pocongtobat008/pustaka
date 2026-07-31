@@ -535,6 +535,45 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         return () => document.removeEventListener('paste', onDocPaste);
     }, [showForm, handlePaste]);
 
+    // Settle paste handler
+    const handleSettlePaste = useCallback((e) => {
+        const items = e.clipboardData?.items;
+        if (!items) return;
+        const files = [];
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.kind === 'file' || item.type?.startsWith('image/')) {
+                let file = null;
+                try { file = item.getAsFile(); } catch { }
+                if (file) {
+                    if (!file.name || file.name.startsWith('image')) {
+                        const ext = (file.type || 'image/png').split('/')[1] || 'png';
+                        files.push(new File([file], `paste_${Date.now()}_${i}.${ext}`, { type: file.type }));
+                    } else {
+                        files.push(file);
+                    }
+                }
+            }
+        }
+        if (files.length > 0) {
+            e.preventDefault();
+            e.stopPropagation();
+            setSettleAttachments(prev => [...prev, ...files]);
+            toast.success(`${files.length} file ditempel ke lampiran`);
+        }
+    }, [toast]);
+
+    useEffect(() => {
+        if (!showSettleModal) return;
+        const onDocPaste = (e) => {
+            const tag = (e.target?.tagName || '').toUpperCase();
+            if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target?.isContentEditable) return;
+            handleSettlePaste(e);
+        };
+        document.addEventListener('paste', onDocPaste);
+        return () => document.removeEventListener('paste', onDocPaste);
+    }, [showSettleModal, handleSettlePaste]);
+
     const removeAttachment = (index, e) => {
         e?.stopPropagation?.();
         setAttachments(prev => prev.filter((_, i) => i !== index));
