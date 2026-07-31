@@ -968,10 +968,19 @@ router.get('/export/excel', async (req, res) => {
             try { attArr = typeof entry.attachments === 'string' ? JSON.parse(entry.attachments) : (entry.attachments || []); } catch { attArr = []; }
 
             const catatanKode = [entry.catatan_kode, entry.no_gl].filter(Boolean).join(' - ');
+            const pengajuan = parseFloat(entry.nilai) || 0;
+            const settle = parseFloat(entry.settle_amount) || 0;
+            const isSettled = entry.status === 'settled' && entry.settle_amount;
+            const displayAmount = isSettled ? settle : pengajuan;
+            const diff = isSettled ? settle - pengajuan : 0;
+            const diffLabel = diff === 0 ? 'Same' : diff > 0 ? `Over +${diff.toLocaleString('id-ID')}` : `Shortage ${diff.toLocaleString('id-ID')}`;
+
             return {
                 Tanggal: entry.tanggal, Tempat: entry.tempat,
                 Alamat: entry.alamat, Jenis: entry.jenis === 'Custom' ? entry.custom_jenis : entry.jenis,
-                Nilai: entry.nilai,
+                Amount: displayAmount,
+                'Settle Amount': isSettled ? settle : '',
+                Selisih: isSettled ? diffLabel : '',
                 'Nama Relasi': relasiArr.join(', '),
                 Jabatan: (typeof entry.jabatan === 'string' ? (() => { try { return JSON.parse(entry.jabatan); } catch { return []; } })() : (entry.jabatan || [])).join(', '),
                 'Nama Perusahaan': npArr.join(', '), 'Jenis Usaha': entry.jenis_usaha,
@@ -987,8 +996,9 @@ router.get('/export/excel', async (req, res) => {
         const ws = XLSX.utils.json_to_sheet(rows);
         ws['!cols'] = [
             { wch: 12 }, { wch: 20 }, { wch: 30 }, { wch: 12 },
-            { wch: 18 }, { wch: 30 }, { wch: 12 }, { wch: 30 },
-            { wch: 15 }, { wch: 40 }, { wch: 30 }, { wch: 15 }, { wch: 15 }, { wch: 20 },
+            { wch: 18 }, { wch: 18 }, { wch: 18 }, { wch: 30 },
+            { wch: 12 }, { wch: 30 }, { wch: 15 }, { wch: 40 },
+            { wch: 30 }, { wch: 15 }, { wch: 15 }, { wch: 20 },
             { wch: 5 }, { wch: 12 }, { wch: 12 }
         ];
         XLSX.utils.book_append_sheet(wb, ws, 'Entertainment Expenses');
