@@ -625,6 +625,34 @@ router.get('/export/pdf', async (req, res) => {
                 { label: 'Business Type', value: entry.jenis_usaha },
             ], y);
 
+            // Settle Amount info (if settled)
+            if (entry.status === 'settled' && entry.settle_amount) {
+                const pengajuan = parseFloat(entry.nilai) || 0;
+                const settle = parseFloat(entry.settle_amount) || 0;
+                const diff = settle - pengajuan;
+                let diffLabel = 'Same';
+                let diffColor = rgb(0.4, 0.42, 0.48);
+                if (diff > 0) { diffLabel = `Over +${diff.toLocaleString('id-ID')}`; diffColor = rgb(0.1, 0.6, 0.3); }
+                else if (diff < 0) { diffLabel = `Shortage ${diff.toLocaleString('id-ID')}`; diffColor = rgb(0.85, 0.15, 0.15); }
+
+                page.drawRectangle({
+                    x: MARGIN_X, y: y - 22, width: CONTENT_W, height: 30,
+                    color: diff === 0 ? rgb(0.96, 0.97, 0.99) : (diff > 0 ? rgb(0.94, 0.98, 0.94) : rgb(1, 0.94, 0.94)),
+                    borderColor: diff === 0 ? rgb(0.85, 0.87, 0.92) : (diff > 0 ? rgb(0.6, 0.78, 0.6) : rgb(0.9, 0.6, 0.6)),
+                    borderWidth: 0.8
+                });
+                page.drawText('SETTLE AMOUNT', {
+                    x: MARGIN_X + 8, y: y - 2, size: 7, font: fontBold, color: rgb(0.45, 0.48, 0.55)
+                });
+                page.drawText(formatIdr(entry.settle_amount), {
+                    x: MARGIN_X + 8, y: y - 15, size: 10, font: fontBold, color: rgb(0.12, 0.14, 0.2)
+                });
+                page.drawText(diffLabel, {
+                    x: MARGIN_X + CONTENT_W - 140, y: y - 15, size: 10, font: fontBold, color: diffColor
+                });
+                y -= 38;
+            }
+
             // Address full width card - calculate dimensions first
             const addrText = safeText(entry.alamat || '-', 500);
             const addrWords = addrText.split(/\s+/);

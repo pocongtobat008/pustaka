@@ -1653,9 +1653,9 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                                         const pengajuan = parseFloat(settleForm.nilai) || 0;
                                                         const settle = parseFloat(settleForm.settle_amount) || 0;
                                                         const diff = settle - pengajuan;
-                                                        if (diff === 0) return <span className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">{text.lblSame}</span>;
-                                                        if (diff > 0) return <span className="px-3 py-1.5 rounded-lg text-xs font-bold bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300">{text.lblOver} +{diff.toLocaleString('id-ID')}</span>;
-                                                        return <span className="px-3 py-1.5 rounded-lg text-xs font-bold bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300">{text.lblShortage} {diff.toLocaleString('id-ID')}</span>;
+                                                        if (diff === 0) return <span className="px-4 py-2 rounded-xl text-sm font-bold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">{text.lblSame}</span>;
+                                                        if (diff > 0) return <span className="px-4 py-2 rounded-xl text-sm font-bold bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300">{text.lblOver} +{diff.toLocaleString('id-ID')}</span>;
+                                                        return <span className="px-4 py-2 rounded-xl text-sm font-bold bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300">{text.lblShortage} {diff.toLocaleString('id-ID')}</span>;
                                                     })()
                                                 )}
                                             </div>
