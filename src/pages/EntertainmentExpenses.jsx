@@ -62,6 +62,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         settleTitle: 'Settle Entertainment', lblSettleDate: 'Settle Date *',
         lblSettleAmount: 'Settle Amount', lblDraw: 'Draw (Same)',
         lblOver: 'Over', lblShortage: 'Shortage', lblSame: 'Same',
+        filterAll: 'All', filterOver: 'Over', filterDraw: 'Draw', filterShortage: 'Shortage',
         lblRelasiPerusahaan: 'Relation & Company', btnTambahRelasi: 'Add Relation',
         lblCatatan: 'Notes', btnSettle: 'Settle', btnBatal: 'Cancel',
         // Preview
@@ -149,6 +150,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         settleTitle: 'Settle Entertainment', lblSettleDate: 'Tanggal Settle *',
         lblSettleAmount: 'Settle Amount', lblDraw: 'Draw (Sama)',
         lblOver: 'Over', lblShortage: 'Shortage', lblSame: 'Same',
+        filterAll: 'Semua', filterOver: 'Over', filterDraw: 'Draw', filterShortage: 'Shortage',
         lblRelasiPerusahaan: 'Relasi & Perusahaan', btnTambahRelasi: 'Tambah Relasi',
         lblCatatan: 'Catatan', btnSettle: 'Settle', btnBatal: 'Batal',
         // Preview
@@ -228,6 +230,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
     const [totalPages, setTotalPages] = useState(1);
     const [totalEntries, setTotalEntries] = useState(0);
     const [tab, setTab] = useState('pending');
+    const [settleFilter, setSettleFilter] = useState('all');
     const [showSettleModal, setShowSettleModal] = useState(false);
     const [settleItem, setSettleItem] = useState(null);
     const [settleForm, setSettleForm] = useState({});
@@ -276,6 +279,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         try {
             if (!silent) setLoading(true);
             const params = { page, perPage: 15, status: tab === 'settled' ? 'settled' : 'active' };
+            if (tab === 'settled' && settleFilter !== 'all') params.settle_status = settleFilter;
             if (searchParams.tanggal_from) params.tanggal_from = searchParams.tanggal_from;
             if (searchParams.tanggal_to) params.tanggal_to = searchParams.tanggal_to;
             if (searchParams.jenis) params.jenis = searchParams.jenis;
@@ -304,7 +308,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         } finally {
             if (!silent) setLoading(false);
         }
-    }, [searchParams, toast, page, tab]);
+    }, [searchParams, toast, page, tab, settleFilter]);
 
     useEffect(() => { fetchData(); }, [fetchData]);
 
@@ -874,7 +878,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
             {/* Tab Navigation */}
             <div className="flex gap-1 bg-white dark:bg-slate-800/50 rounded-2xl p-1 border border-slate-200 dark:border-slate-700">
                 <button
-                    onClick={() => { setTab('pending'); setPage(1); }}
+                    onClick={() => { setTab('pending'); setPage(1); setSettleFilter('all'); }}
                     className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all ${
                         tab === 'pending'
                             ? 'bg-indigo-600 text-white shadow-md'
@@ -884,7 +888,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                     {isEnglish ? 'Entertainment List' : 'Daftar Entertainment'}
                 </button>
                 <button
-                    onClick={() => { setTab('settled'); setPage(1); }}
+                    onClick={() => { setTab('settled'); setPage(1); setSettleFilter('all'); }}
                     className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all ${
                         tab === 'settled'
                             ? 'bg-emerald-600 text-white shadow-md'
@@ -895,7 +899,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                 </button>
                 {isAdmin && (
                     <button
-                        onClick={() => { setTab('rules'); setPage(1); }}
+                        onClick={() => { setTab('rules'); setPage(1); setSettleFilter('all'); }}
                         className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all ${
                             tab === 'rules'
                                 ? 'bg-amber-600 text-white shadow-md'
@@ -906,6 +910,32 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                     </button>
                 )}
             </div>
+
+            {/* Settle Status Filter — only on settled tab */}
+            {tab === 'settled' && (
+                <div className="flex gap-1 bg-white dark:bg-slate-800/50 rounded-2xl p-1 border border-slate-200 dark:border-slate-700">
+                    {[
+                        { key: 'all', label: text.filterAll },
+                        { key: 'over', label: text.filterOver, color: 'green' },
+                        { key: 'draw', label: text.filterDraw, color: 'slate' },
+                        { key: 'shortage', label: text.filterShortage, color: 'red' },
+                    ].map(f => (
+                        <button key={f.key}
+                            onClick={() => { setSettleFilter(f.key); setPage(1); }}
+                            className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
+                                settleFilter === f.key
+                                    ? f.key === 'over' ? 'bg-green-600 text-white shadow-md'
+                                      : f.key === 'shortage' ? 'bg-red-600 text-white shadow-md'
+                                      : f.key === 'draw' ? 'bg-slate-600 text-white shadow-md'
+                                      : 'bg-indigo-600 text-white shadow-md'
+                                    : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
+                            }`}
+                        >
+                            {f.label}
+                        </button>
+                    ))}
+                </div>
+            )}
 
             {/* Search / Filter */}
             <div className="bg-white dark:bg-slate-800/50 rounded-2xl p-4 border border-slate-200 dark:border-slate-700">

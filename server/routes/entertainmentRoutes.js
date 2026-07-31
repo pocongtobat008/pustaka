@@ -280,7 +280,7 @@ router.delete('/rules/:id', async (req, res) => {
 // GET /api/entertainment - List all (with pagination & row-level security)
 router.get('/', async (req, res) => {
     try {
-        const { tanggal_from, tanggal_to, jenis, search, status, page = 1, perPage = 15 } = req.query;
+        const { tanggal_from, tanggal_to, jenis, search, status, settle_status, page = 1, perPage = 15 } = req.query;
         const pageNum = Math.max(1, parseInt(page) || 1);
         const limit = Math.max(1, Math.min(100, parseInt(perPage) || 15));
         const offset = (pageNum - 1) * limit;
@@ -332,6 +332,19 @@ router.get('/', async (req, res) => {
         if (status) {
             query = query.where('status', status);
             countQuery = countQuery.where('status', status);
+        }
+
+        if (settle_status && status === 'settled') {
+            if (settle_status === 'over') {
+                query = query.whereRaw('settle_amount > nilai');
+                countQuery = countQuery.whereRaw('settle_amount > nilai');
+            } else if (settle_status === 'shortage') {
+                query = query.whereRaw('settle_amount < nilai');
+                countQuery = countQuery.whereRaw('settle_amount < nilai');
+            } else if (settle_status === 'draw') {
+                query = query.whereRaw('settle_amount = nilai');
+                countQuery = countQuery.whereRaw('settle_amount = nilai');
+            }
         }
 
         const [{ count }] = await countQuery.count('* as count');
