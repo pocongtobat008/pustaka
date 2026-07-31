@@ -895,38 +895,6 @@ router.get('/export/pdf', async (req, res) => {
                 }
             }
 
-            // Signature block
-            if (y < MARGIN_BOTTOM + 90) {
-                drawFooter(page, globalPageNo);
-                page = pdfDoc.addPage([PAGE_W, PAGE_H]);
-                globalPageNo += 1;
-                drawHeader(page, i + 1, totalEntries);
-                y = PAGE_H - 84;
-            }
-            y -= 10;
-            page.drawText('Prepared by,', {
-                x: MARGIN_X + 20, y, size: 9, font, color: rgb(0.3, 0.32, 0.38)
-            });
-            page.drawText('Acknowledged by,', {
-                x: PAGE_W - MARGIN_X - 150, y, size: 9, font, color: rgb(0.3, 0.32, 0.38)
-            });
-            y -= 50;
-            page.drawLine({
-                start: { x: MARGIN_X + 20, y }, end: { x: MARGIN_X + 160, y },
-                thickness: 0.6, color: rgb(0.5, 0.52, 0.58)
-            });
-            page.drawLine({
-                start: { x: PAGE_W - MARGIN_X - 160, y }, end: { x: PAGE_W - MARGIN_X - 20, y },
-                thickness: 0.6, color: rgb(0.5, 0.52, 0.58)
-            });
-            y -= 12;
-            page.drawText(safeText(entry.requester_name || entry.requester_username || 'Requester', 28), {
-                x: MARGIN_X + 20, y, size: 8, font: fontBold, color: rgb(0.2, 0.22, 0.28)
-            });
-            page.drawText('Supervisor / Finance', {
-                x: PAGE_W - MARGIN_X - 150, y, size: 8, font: fontBold, color: rgb(0.2, 0.22, 0.28)
-            });
-
             drawFooter(page, globalPageNo);
         }
 
