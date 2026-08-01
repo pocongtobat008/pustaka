@@ -258,10 +258,33 @@ export const invoiceService = {
         return response.json();
     },
 
-    async submitTaxRequest(id) {
-        return apiClient.fetchJson(`${API_URL}/invoices/${id}/submit-tax`, {
+    async submitTaxRequest(id, formData) {
+        const response = await fetch(`${API_URL}/invoices/${id}/submit-tax`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
+            credentials: 'include',
+            body: formData
+        });
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            const details = Array.isArray(err.details) ? err.details.join('; ') : '';
+            throw new Error(details ? `${err.error || 'Gagal mengajukan tax'}: ${details}` : (err.error || 'Gagal mengajukan tax'));
+        }
+        return response.json();
+    },
+
+    async sendbackTax(id, notes) {
+        return apiClient.fetchJson(`${API_URL}/invoices/${id}/tax/sendback`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ notes })
+        });
+    },
+
+    async sendbackProforma(id, notes) {
+        return apiClient.fetchJson(`${API_URL}/invoices/proforma/${id}/sendback`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ notes })
         });
     },
 

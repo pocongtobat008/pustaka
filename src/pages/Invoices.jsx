@@ -51,7 +51,9 @@ const formatRupiahInput = (val) => {
 const STATUS_MAP = {
     submitted: { label: 'Submitted', cls: 'bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400' },
     proforma: { label: 'Proforma', cls: 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400' },
+    sent_back: { label: 'Sent Back', cls: 'bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400' },
     tax_requested: { label: 'Tax Requested', cls: 'bg-orange-100 text-orange-700 dark:bg-orange-500/10 dark:text-orange-400' },
+    sent_back_tax: { label: 'Tax Sent Back', cls: 'bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400' },
     tax: { label: 'Faktur Pajak', cls: 'bg-violet-100 text-violet-700 dark:bg-violet-500/10 dark:text-violet-400' },
     settled: { label: 'Settled', cls: 'bg-slate-200 text-slate-700 dark:bg-slate-500/10 dark:text-slate-400' },
 };
@@ -207,6 +209,13 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
     const [showTax, setShowTax] = useState(false);
     const [taxTarget, setTaxTarget] = useState(null);
     const [taxForm, setTaxForm] = useState({ faktur_pajak_no: '', file: null });
+
+    // Tax request modal (ajukan ke bagian tax)
+    const [showTaxRequest, setShowTaxRequest] = useState(false);
+    const [taxRequestTarget, setTaxRequestTarget] = useState(null);
+    const [taxRequestFiles, setTaxRequestFiles] = useState([]);
+    const [taxRequestNotes, setTaxRequestNotes] = useState('');
+    const taxRequestFileRef = useRef(null);
 
     // Settle modal
     const [showSettle, setShowSettle] = useState(false);
@@ -431,6 +440,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
 
     const handleNewProforma = async () => {
         if (!proformaForm.invoice_ids.length) return toast?.error?.('Pilih minimal satu invoice');
+        if (!proformaFiles.length) return toast?.error?.('Lampiran wajib diunggah');
         const fd = new FormData();
         fd.append('invoice_ids', JSON.stringify(proformaForm.invoice_ids.map(Number)));
         proformaFiles.forEach(f => fd.append('attachments', f));
@@ -556,9 +566,48 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
     };
 
     const handleSubmitTax = async (invId) => {
+        if (!taxRequestFiles.length) return toast?.error?.('Lampiran wajib diunggah');
+        const fd = new FormData();
+        taxRequestFiles.forEach(f => fd.append('attachments', f));
+        fd.append('notes', taxRequestNotes);
         try {
-            await invoiceService.submitTaxRequest(invId);
+            await invoiceService.submitTaxRequest(invId, fd);
             toast?.success?.('Faktur pajak diajukan ke bagian tax');
+            setShowTaxRequest(false);
+            setTaxRequestFiles([]);
+            setTaxRequestNotes('');
+            setTaxRequestTarget(null);
+            loadAll();
+        } catch (e) {
+            toast?.error?.(e.message);
+        }
+    };
+
+    const openTaxRequest = (inv) => {
+        setTaxRequestTarget(inv);
+        setTaxRequestFiles([]);
+        setTaxRequestNotes('');
+        setShowTaxRequest(true);
+    };
+
+    const handleSendbackProforma = async (id) => {
+        const notes = window.prompt('Alasan sendback (kembali ke requester):') ?? '';
+        if (!notes.trim()) return;
+        try {
+            await invoiceService.sendbackProforma(id, notes);
+            toast?.success?.('Proforma dikembalikan ke requester');
+            loadAll();
+        } catch (e) {
+            toast?.error?.(e.message);
+        }
+    };
+
+    const handleSendbackTax = async (id) => {
+        const notes = window.prompt('Alasan sendback (kembali ke requester):') ?? '';
+        if (!notes.trim()) return;
+        try {
+            await invoiceService.sendbackTax(id, notes);
+            toast?.success?.('Tax request dikembalikan ke requester');
             loadAll();
         } catch (e) {
             toast?.error?.(e.message);
@@ -837,7 +886,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                     <Printer size={15} />
                                                 </button>
                                                 {inv.status === 'proforma' && perms.can_tax && proformaApprovedInvoiceIds.has(Number(inv.id)) && !taxRequestedInvoices.has(Number(inv.id)) && !taxDoneInvoiceIds.has(Number(inv.id)) && (
-                                                    <button onClick={() => handleSubmitTax(inv.id)} className="p-1.5 rounded-lg text-slate-500 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-slate-800" title="Ajukan Faktur Pajak">
+                                                    <button onClick={() => openTaxRequest(inv)} className="p-1.5 rounded-lg text-slate-500 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-slate-800" title="Ajukan Faktur Pajak">
                                                         <Upload size={15} />
                                                     </button>
                                                 )}
@@ -949,6 +998,9 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     <button onClick={() => handleApprove(p.id)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold">
                                         <CheckCircle2 size={15} /> Approve & No Proforma
                                     </button>
+                                    <button onClick={() => handleSendbackProforma(p.id)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 hover:bg-amber-100 dark:hover:bg-amber-500/20 text-sm font-semibold">
+                                        <RefreshCw size={15} /> Sendback
+                                    </button>
                                     <button onClick={() => handleReject(p.id)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-600 hover:bg-red-100 dark:hover:bg-red-500/20 text-sm font-semibold">
                                         <XCircle size={15} /> Reject
                                     </button>
@@ -965,6 +1017,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 <div className="text-xs text-slate-400 space-y-0.5">
                                     {p.approved_by && <div>Disetujui oleh: {p.approved_by} • {p.approved_at ? new Date(p.approved_at).toLocaleString('id-ID') : ''}</div>}
                                     {p.status === 'settled' && p.settled_by && <div className="text-teal-600 dark:text-teal-400">Settled oleh: {p.settled_by} • {p.settled_at ? new Date(p.settled_at).toLocaleString('id-ID') : ''} • Nominal: {formatCurrency(p.settled_amount)}</div>}
+                                    {p.sendback_notes && <div className="text-amber-600 dark:text-amber-400">Sendback: {p.sendback_notes}</div>}
                                     {p.notes && <div className="text-red-500">Catatan: {p.notes}</div>}
                                 </div>
                             )}
@@ -1025,9 +1078,14 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                     <span className="ml-auto text-[10px] text-violet-500 truncate max-w-[100px]" title={inv.faktur_pajak_no}>{inv.faktur_pajak_no}</span>
                                                 )}
                                                 {!isTaxDone && perms.can_tax && (
-                                                    <button onClick={() => openTax(inv)} className="ml-auto flex items-center gap-1 px-2 py-1 rounded-lg bg-violet-600 hover:bg-violet-700 text-white text-xs font-semibold">
-                                                        <FileText size={12} /> Lampirkan Faktur
-                                                    </button>
+                                                    <>
+                                                        <button onClick={() => openTax(inv)} className="ml-auto flex items-center gap-1 px-2 py-1 rounded-lg bg-violet-600 hover:bg-violet-700 text-white text-xs font-semibold">
+                                                            <FileText size={12} /> Lampirkan Faktur
+                                                        </button>
+                                                        <button onClick={() => handleSendbackTax(inv.id)} className="flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-600 hover:bg-amber-100 text-xs font-semibold" title="Sendback ke requester">
+                                                            <RefreshCw size={12} />
+                                                        </button>
+                                                    </>
                                                 )}
                                             </div>
                                         </div>
@@ -1035,7 +1093,23 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 })}
                             </div>
 
-                            {/* Tax info */}
+                            {/* Tax info & attachments */}
+                            {(p.invoices || []).filter(inv => parseJsonArray(inv.tax_request_attachments).length > 0).length > 0 && (
+                                <div className="border-t border-slate-100 dark:border-slate-800 pt-3 space-y-2">
+                                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Lampiran Tax Request</div>
+                                    {(p.invoices || []).filter(inv => parseJsonArray(inv.tax_request_attachments).length > 0).map(inv => (
+                                        <div key={inv.id} className="flex flex-wrap items-center gap-2">
+                                            <span className="text-xs text-slate-500">#{inv.id}:</span>
+                                            {parseJsonArray(inv.tax_request_attachments).map(f => (
+                                                <a key={f} href={`${API_URL}/invoices/files/${f}`} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-50 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 text-xs hover:bg-orange-100">
+                                                    <ImagePlus size={14} /> {f.length > 30 ? f.slice(0, 30) + '...' : f}
+                                                </a>
+                                            ))}
+                                            {inv.tax_request_notes && <span className="text-[10px] text-red-500">Catatan: {inv.tax_request_notes}</span>}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                             {p.notes && (
                                 <div className="text-xs text-red-500">Catatan: {p.notes}</div>
                             )}
@@ -1530,10 +1604,10 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             ))}
                         </div>
                         <div>
-                            <label className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 block">Lampiran Dokumen Pendukung</label>
+                            <label className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 block">Lampiran Dokumen Pendukung <span className="text-red-500">*</span></label>
                             <input ref={fileInputRef} type="file" multiple className="hidden" onChange={e => setProformaFiles([...e.target.files])} />
                             <button onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-300 text-sm w-full justify-center hover:border-indigo-400 hover:text-indigo-500">
-                                <Upload size={16} /> Pilih File Pendukung
+                                <Upload size={16} /> {proformaFiles.length ? `${proformaFiles.length} file dipilih` : 'Pilih File Pendukung'}
                             </button>
                             {proformaFiles.length > 0 && (
                                 <div className="mt-2 flex flex-wrap gap-2">
@@ -1577,6 +1651,36 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <button onClick={() => setShowTax(false)} className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm font-semibold">Batal</button>
                             <button onClick={handleTax} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-sm font-bold shadow-lg shadow-violet-500/25">
                                 <FileText size={16} /> Simpan Faktur Pajak
+                            </button>
+                        </div>
+                    </div>
+                </div>,
+                document.body
+            )}
+
+            {/* ── Tax Request Modal (Ajukan ke bagian tax) ── */}
+            {showTaxRequest && taxRequestTarget && createPortal(
+                <div className="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto" onClick={() => setShowTaxRequest(false)}>
+                    <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-lg my-8 p-6 space-y-5" onClick={e => e.stopPropagation()}>
+                        <div>
+                            <h3 className="text-xl font-black text-slate-800 dark:text-white">Ajukan Faktur Pajak</h3>
+                            <p className="text-xs text-slate-400">Invoice #{taxRequestTarget.id} • {taxRequestTarget.proforma_no} • {taxRequestTarget.dealer_name}</p>
+                        </div>
+                        <div>
+                            <label className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 block">Lampiran Pendukung <span className="text-red-500">*</span></label>
+                            <input ref={taxRequestFileRef} type="file" multiple className="hidden" onChange={e => setTaxRequestFiles([...(e.target.files || [])])} />
+                            <button onClick={() => taxRequestFileRef.current?.click()} className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-300 text-sm w-full justify-center hover:border-orange-400 hover:text-orange-500">
+                                <Upload size={16} /> {taxRequestFiles.length ? `${taxRequestFiles.length} file dipilih` : 'Pilih File Lampiran'}
+                            </button>
+                        </div>
+                        <div>
+                            <label className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 block">Catatan (opsional)</label>
+                            <textarea className={inputCls} rows={2} value={taxRequestNotes} onChange={e => setTaxRequestNotes(e.target.value)} placeholder="Catatan untuk bagian tax..." />
+                        </div>
+                        <div className="flex items-center justify-end gap-2">
+                            <button onClick={() => setShowTaxRequest(false)} className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm font-semibold">Batal</button>
+                            <button onClick={() => handleSubmitTax(taxRequestTarget.id)} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-sm font-bold shadow-lg shadow-orange-500/25">
+                                <Upload size={16} /> Ajukan ke Tax
                             </button>
                         </div>
                     </div>
@@ -1633,6 +1737,26 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             </a>
                                         ))}
                                     </div>
+                                    {proforma.sendback_notes && <div className="text-[10px] text-red-500 mt-1">Sendback: {proforma.sendback_notes}</div>}
+                                </div>
+                            );
+                        })()}
+                        {(() => {
+                            const taxAttach = parseJsonArray(detailTarget.tax_request_attachments) || [];
+                            if (!taxAttach.length && !detailTarget.tax_request_notes) return null;
+                            return (
+                                <div className="border-t border-slate-100 dark:border-slate-800 pt-4">
+                                    <h4 className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Lampiran Tax Request</h4>
+                                    {taxAttach.length > 0 && (
+                                        <div className="flex flex-wrap gap-2">
+                                            {taxAttach.map(f => (
+                                                <a key={f} href={`${API_URL}/invoices/files/${f}`} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-50 dark:bg-orange-500/10 text-orange-600 text-xs hover:bg-orange-100">
+                                                    <ImagePlus size={14} /> {f.length > 30 ? f.slice(0, 30) + '...' : f}
+                                                </a>
+                                            ))}
+                                        </div>
+                                    )}
+                                    {detailTarget.tax_request_notes && <div className="text-[10px] text-red-500 mt-1">Sendback Tax: {detailTarget.tax_request_notes}</div>}
                                 </div>
                             );
                         })()}

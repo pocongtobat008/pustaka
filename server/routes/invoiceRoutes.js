@@ -690,12 +690,13 @@ router.post('/proforma', upload.array('attachments', 10), async (req, res) => {
             }
         });
         for (const inv of invoices) {
-            if (inv.status !== 'submitted') return res.status(400).json({ error: `Invoice #${inv.id} bukan status submitted`, details: [] });
+            if (inv.status !== 'submitted' && inv.status !== 'sent_back') return res.status(400).json({ error: `Invoice #${inv.id} bukan status submitted`, details: [] });
             if (alreadyInProforma.has(Number(inv.id))) return res.status(400).json({ error: `Invoice #${inv.id} sudah ada di pengajuan proforma`, details: [] });
         }
 
         const totalNominal = round2(invoices.reduce((s, i) => s + round2(i.total_invoice), 0));
         const files = (req.files || []).map(f => f.filename);
+        if (!files.length) return res.status(400).json({ error: 'Lampiran wajib diunggah', details: ['Unggah minimal satu file pendukung'] });
 
         const [{ id }] = await knex('proforma_requests').insert({
             proforma_no: null,
@@ -807,8 +808,32 @@ router.post('/proforma/:id/reject', async (req, res) => {
     }
 });
 
+// ─── Proforma Sendback (kembalikan ke requester untuk diperbaiki) ────────────
+router.post('/proforma/:id/sendback', async (req, res) => {
+    try {
+        const perms = await getUserInvoicePerms(req.authUser);
+        if (!perms.can_approve) return res.status(403).json({ error: 'Anda tidak memiliki akses sendback proforma', details: [] });
+        const { id } = req.params;
+        const p = await knex('proforma_requests').where('id', id).first();
+        if (!p) return res.status(404).json({ error: 'Proforma tidak ditemukan', details: [] });
+        if (p.status !== 'pending') return res.status(400).json({ error: 'Hanya proforma pending yang bisa di-sendback', details: [] });
+        const notes = req.body?.notes || '';
+        if (!notes.trim()) return res.status(400).json({ error: 'Alasan sendback wajib diisi', details: [] });
+        await knex('proforma_requests').where('id', id).update({
+            status: 'sent_back',
+            sendback_notes: notes,
+            approved_by: getUsername(req),
+            approved_at: new Date(),
+        });
+        const row = await knex('proforma_requests').where('id', id).first();
+        res.json(row);
+    } catch (err) {
+        res.status(500).json({ error: 'Gagal sendback proforma', details: [err.message] });
+    }
+});
+
 // ─── Submit Tax Request (pengajuan ke bagian tax) ─────────────────────────────
-router.post('/:id/submit-tax', async (req, res) => {
+router.post('/:id/submit-tax', upload.array('attachments', 10), async (req, res) => {
     try {
         const { id } = req.params;
         const inv = await knex('proforma_invoices').where('id', id).first();
@@ -816,14 +841,42 @@ router.post('/:id/submit-tax', async (req, res) => {
         if (!inv.proforma_no) return res.status(400).json({ error: 'Invoice belum memiliki no proforma', details: ['Tunggu approval proforma terlebih dahulu'] });
         if (inv.status === 'tax_requested') return res.status(400).json({ error: 'Invoice sudah diajukan ke tax', details: [] });
         if (inv.status === 'tax' || inv.status === 'settled') return res.status(400).json({ error: 'Invoice sudah selesai', details: [] });
+        const files = (req.files || []).map(f => f.filename);
+        if (!files.length) return res.status(400).json({ error: 'Lampiran wajib diunggah', details: ['Unggah minimal satu file pendukung'] });
+        const notes = req.body?.notes || '';
         await knex('proforma_invoices').where('id', id).update({
             status: 'tax_requested',
+            tax_request_attachments: JSON.stringify(files),
+            tax_request_notes: notes || null,
             updated_at: knex.fn.now(),
         });
         const row = await knex('proforma_invoices').where('id', id).first();
         res.json(row);
     } catch (err) {
         res.status(500).json({ error: 'Gagal mengajukan tax', details: [err.message] });
+    }
+});
+
+// ─── Tax Sendback (kembalikan ke requester) ──────────────────────────────────
+router.post('/:id/tax/sendback', async (req, res) => {
+    try {
+        const perms = await getUserInvoicePerms(req.authUser);
+        if (!perms.can_tax) return res.status(403).json({ error: 'Anda tidak memiliki akses tax', details: [] });
+        const { id } = req.params;
+        const inv = await knex('proforma_invoices').where('id', id).first();
+        if (!inv) return res.status(404).json({ error: 'Invoice tidak ditemukan', details: [] });
+        if (inv.status !== 'tax_requested') return res.status(400).json({ error: 'Hanya invoice tax_requested yang bisa di-sendback', details: [] });
+        const notes = req.body?.notes || '';
+        if (!notes.trim()) return res.status(400).json({ error: 'Alasan sendback wajib diisi', details: [] });
+        await knex('proforma_invoices').where('id', id).update({
+            status: 'sent_back_tax',
+            tax_request_notes: notes,
+            updated_at: knex.fn.now(),
+        });
+        const row = await knex('proforma_invoices').where('id', id).first();
+        res.json(row);
+    } catch (err) {
+        res.status(500).json({ error: 'Gagal sendback tax', details: [err.message] });
     }
 });
 
