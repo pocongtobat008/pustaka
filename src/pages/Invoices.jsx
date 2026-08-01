@@ -1774,7 +1774,8 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
 };
 
 function parseJsonArray(str) {
-    try { return JSON.parse(str); } catch { return []; }
+    if (!str) return [];
+    try { const r = JSON.parse(str); return Array.isArray(r) ? r : []; } catch { return []; }
 }
 
 export default Invoices;
