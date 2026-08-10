@@ -174,13 +174,14 @@ export const addAiSemanticSearchJob = async (query) => {
     }
 };
 
-export const addAiAgentJob = async (message, history = [], sessionId = null) => {
+export const addAiAgentJob = async (message, history = [], sessionId = null, userContext = null) => {
     try {
         console.log(`[Queue] Adding AI Agent Job. Message: "${String(message).substring(0, 30)}..."`);
         return await ocrQueue.add('ai-agent', {
             message,
             history,
-            sessionId
+            sessionId,
+            userContext: userContext || null
         }, { max_attempts: 1 });
     } catch (err) {
         console.error("AddAiAgentJob Error:", err);

@@ -36,3 +36,16 @@ uploads/
 *.sqlite
 *.db
 src_zona1_backup/
+
+.test_*
+
+.env.local
+.env.production
+
+# env (rahasia — jangan commit)
+/.env
+/.env.*
+!.env.example
+
+# test artifacts
+.test_*

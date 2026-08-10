@@ -36,9 +36,12 @@ import notificationRoutes from './routes/notificationRoutes.js';
 import legacyRoutes from './routes/legacyRoutes.js';
 import settingsRoutes from './routes/settingsRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
+import { startBrainAutoSyncScheduler } from './controllers/brainController.js';
 import coaRoutes from './routes/coaRoutes.js';
 import entertainmentRoutes from './routes/entertainmentRoutes.js';
 import invoiceRoutes from './routes/invoiceRoutes.js';
+import anydocRoutes from './routes/anydocRoutes.js';
+import pdfTemplateRoutes from './routes/pdfTemplateRoutes.js';
 import { getHealthStatus } from './services/healthCheck.js';
 
 import { checkAuth } from './middleware/auth.js';
@@ -213,6 +216,7 @@ app.use('/api', systemRoutes); // /api/logs, /api/roles, /api/departments, /api/
 app.use('/api', notificationRoutes); // /api/notifications
 app.use('/api', settingsRoutes); // /api/settings/ai
 app.use('/api', aiRoutes); // /api/ai/agent
+app.use('/api/anydoc', anydocRoutes); // /api/anydoc/convert
 
 app.get('/api/system/ai-status', checkAuth, async (req, res) => {
     // API should not have its own vectorStore in microservice mode.
@@ -895,6 +899,7 @@ app.use('/api/pustaka', pustakaRoutes);
 app.use('/api/coa', coaRoutes);
 app.use('/api/entertainment', entertainmentRoutes);
 app.use('/api/invoices', invoiceRoutes);
+app.use('/api/pdf-templates', pdfTemplateRoutes);
 
 // --- SOP FLOWS (STANDARDIZATION) ROUTES ---
 app.get('/api/sop-flows', checkAuth, async (req, res) => {
@@ -1127,6 +1132,13 @@ const startServer = async () => {
             })().catch(err => {
                 logger.error("❌ Gagal inisialisasi database/AI:", err.message);
             });
+
+            // Sinkronisasi otomatis training → 1MBrain (interval dikonfigurasi via BRAIN_AUTO_SYNC_HOURS)
+            try {
+                startBrainAutoSyncScheduler();
+            } catch (err) {
+                console.warn('❌ Gagal memulai auto-sync training ke 1MBrain:', err.message);
+            }
         });
 
     } catch (err) {

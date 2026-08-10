@@ -5,7 +5,7 @@ import {
     Plus, Trash2, Eye, FileSpreadsheet, FileText, Upload,
     X, Search, Filter, Edit3,
     Receipt, Save, ClipboardList,
-    DollarSign, Loader2, CheckCircle2
+    DollarSign, Loader2, CheckCircle2, MoreVertical, Info
 } from 'lucide-react';
 import { entertainmentService } from '../services/entertainmentService';
 import { API_URL } from '../services/apiClient';
@@ -41,7 +41,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         pending: 'Pending', settled: 'Settled',
         // Buttons
         addNew: 'Add New Entry', exportPdf: 'Export PDF', exportExcel: 'Export Excel',
-        searchPlaceholder: 'Search venue, type, GL, requester, ref...',
+        searchPlaceholder: 'Search venue, type, AF, requester, ref...',
         // Filter
         filterTanggalFrom: 'Date From', filterTanggalTo: 'Date To', filterJenis: 'Filter Type', filterSearch: 'Search',
         filterAll: 'All', filterBtn: 'Filter', filterReset: 'Reset',
@@ -54,21 +54,21 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         // Form
         formTitle: 'Entertainment Expenses', formEdit: 'Edit Entry', formNew: 'New Entry',
         lblTanggal: 'Date *', lblTempat: 'Venue', lblJenis: 'Type *', lblCustomJenis: 'Custom type',
-        lblAlamat: 'Address *', lblNilai: 'Amount (IDR) *', lblNoGl: 'GL Number *',
+        lblAlamat: 'Address Venue *', lblNilai: 'Amount (IDR) *', lblNoGl: 'AF Number *',
         lblJenisUsaha: 'Business Type *', lblCustomJenisUsaha: 'Custom business type',
         lblPlan: 'Plan *', lblMomResult: 'MOM/Result *', lblLampiran: 'Attachments', lblDragDrop: 'Click or drag files here',
         btnSave: 'Save', btnCancel: 'Cancel', btnUpdate: 'Update',
         // Settle
         settleTitle: 'Settle Entertainment', lblSettleDate: 'Settle Date *',
         lblSettleAmount: 'Settle Amount', lblDraw: 'Draw (Same)',
-        lblOver: 'Over', lblShortage: 'Shortage', lblSame: 'Same',
+        lblOver: 'Over', lblShortage: 'Shortage', lblSame: 'Same', lblAfShortage: 'AF Shortage',
         filterAll: 'All', filterOver: 'Over', filterDraw: 'Draw', filterShortage: 'Shortage',
         lblRelasiPerusahaan: 'Relation & Company', btnTambahRelasi: 'Add Relation',
         lblCatatan: 'Notes', btnSettle: 'Settle', btnBatal: 'Cancel',
         // Preview
         previewTitle: 'Preview Entertainment Expenses',
         detailTanggal: 'Date', detailTempat: 'Venue', detailJenis: 'Type',
-        detailAlamat: 'Address', detailNilai: 'Amount', detailNoGl: 'GL Number',
+        detailAlamat: 'Address Venue', detailNilai: 'Amount', detailNoGl: 'AF Number',
         detailJenisUsaha: 'Business Type', detailRelasi: 'Relations',
         detailJumlahRelasi: 'Relation Count', detailPerusahaan: 'Companies',
         detailPlan: 'Plan', detailMomResult: 'MOM/Result', detailLampiran: 'Attachments',
@@ -86,7 +86,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         // Validation
         errTanggal: 'Date is required', errTempat: 'Venue is required',
         errAlamat: 'Address is required', errJenis: 'Type is required',
-        errCustomJenis: 'Custom type is required', errNoGl: 'GL Number is required',
+        errCustomJenis: 'Custom type is required', errNoGl: 'AF Number is required',
         errJenisUsaha: 'Business type is required', errCustomJenisUsaha: 'Custom business type is required',
         errGroups: 'At least 1 relation group is required', errAttachments: 'At least 1 attachment is required',
         errNilai: 'Amount is required', errMomResult: 'MOM/Result is required',
@@ -129,7 +129,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         pending: 'Pending', settled: 'Settled',
         // Buttons
         addNew: 'Tambah Entry Baru', exportPdf: 'Export PDF', exportExcel: 'Export Excel',
-        searchPlaceholder: 'Cari tempat, jenis, GL, pengaju, ref...',
+        searchPlaceholder: 'Cari tempat, jenis, AF, pengaju, ref...',
         // Filter
         filterTanggalFrom: 'Tgl Dari', filterTanggalTo: 'Tgl Sampai', filterJenis: 'Filter Jenis', filterSearch: 'Pencarian',
         filterAll: 'Semua', filterBtn: 'Filter', filterReset: 'Reset',
@@ -142,21 +142,21 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         // Form
         formTitle: 'Entertainment Expenses', formEdit: 'Edit Entry', formNew: 'Entry Baru',
         lblTanggal: 'Tanggal *', lblTempat: 'Tempat', lblJenis: 'Jenis *', lblCustomJenis: 'Custom jenis',
-        lblAlamat: 'Alamat *', lblNilai: 'Nilai (IDR) *', lblNoGl: 'No GL *',
+        lblAlamat: 'Alamat Venue *', lblNilai: 'Nilai (IDR) *', lblNoGl: 'No AF *',
         lblJenisUsaha: 'Jenis Usaha *', lblCustomJenisUsaha: 'Custom jenis usaha',
         lblPlan: 'Plan *', lblMomResult: 'MOM/Result *', lblLampiran: 'Lampiran', lblDragDrop: 'Klik atau seret file ke sini',
         btnSave: 'Simpan', btnCancel: 'Batal', btnUpdate: 'Update',
         // Settle
         settleTitle: 'Settle Entertainment', lblSettleDate: 'Tanggal Settle *',
         lblSettleAmount: 'Settle Amount', lblDraw: 'Draw (Sama)',
-        lblOver: 'Over', lblShortage: 'Shortage', lblSame: 'Same',
+        lblOver: 'Over', lblShortage: 'Shortage', lblSame: 'Same', lblAfShortage: 'AF Shortage',
         filterAll: 'Semua', filterOver: 'Over', filterDraw: 'Draw', filterShortage: 'Shortage',
         lblRelasiPerusahaan: 'Relasi & Perusahaan', btnTambahRelasi: 'Tambah Relasi',
         lblCatatan: 'Catatan', btnSettle: 'Settle', btnBatal: 'Batal',
         // Preview
         previewTitle: 'Preview Entertainment Expenses',
         detailTanggal: 'Tanggal', detailTempat: 'Tempat', detailJenis: 'Jenis',
-        detailAlamat: 'Alamat', detailNilai: 'Nilai', detailNoGl: 'No GL',
+        detailAlamat: 'Alamat Venue', detailNilai: 'Nilai', detailNoGl: 'No AF',
         detailJenisUsaha: 'Jenis Usaha', detailRelasi: 'Relasi',
         detailJumlahRelasi: 'Jumlah Relasi', detailPerusahaan: 'Perusahaan',
         detailPlan: 'Plan', detailMomResult: 'MOM/Result', detailLampiran: 'Lampiran',
@@ -174,7 +174,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         // Validation
         errTanggal: 'Tanggal wajib diisi', errTempat: 'Tempat wajib diisi',
         errAlamat: 'Alamat wajib diisi', errJenis: 'Jenis wajib diisi',
-        errCustomJenis: 'Custom jenis wajib diisi', errNoGl: 'No GL wajib diisi',
+        errCustomJenis: 'Custom jenis wajib diisi', errNoGl: 'No AF wajib diisi',
         errJenisUsaha: 'Jenis Usaha wajib diisi', errCustomJenisUsaha: 'Custom jenis usaha wajib diisi',
         errGroups: 'Minimal 1 grup relasi wajib diisi', errAttachments: 'Minimal 1 lampiran wajib diupload',
         errNilai: 'Nilai wajib diisi', errMomResult: 'MOM/Result wajib diisi',
@@ -217,11 +217,12 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
     const [editingId, setEditingId] = useState(null);
     const [showPreview, setShowPreview] = useState(false);
     const [previewData, setPreviewData] = useState(null);
-    const [searchParams, setSearchParams] = useState({ tanggal_from: '', tanggal_to: '', jenis: '', search: '' });
+    const [searchParams, setSearchParams] = useState({ tanggal_from: '', tanggal_to: '', jenis: '', search: '', entry_type: '' });
     const [exportingPdf, setExportingPdf] = useState(false);
     const [exportingExcel, setExportingExcel] = useState(false);
     
     const [form, setForm] = useState(emptyForm);
+    const [entryType, setEntryType] = useState('plan'); // 'plan' | 'reimburse'
     const [errors, setErrors] = useState({});
     const [attachments, setAttachments] = useState([]);
     const [existingAttachments, setExistingAttachments] = useState([]);
@@ -232,6 +233,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
     const [tab, setTab] = useState('pending');
     const [settleFilter, setSettleFilter] = useState('all');
     const [showSettleModal, setShowSettleModal] = useState(false);
+    const [settleConfirmOpen, setSettleConfirmOpen] = useState(false);
     const [settleItem, setSettleItem] = useState(null);
     const [settleForm, setSettleForm] = useState({});
     const [settleSubmitting, setSettleSubmitting] = useState(false);
@@ -240,10 +242,46 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
     const settleFileInputRef = useRef(null);
     const [rules, setRules] = useState([]);
     const [userPerms, setUserPerms] = useState({ view_all: false, can_create: true, can_edit: true, can_delete: true, can_settle: true, can_export: true });
+    const [unsettledCount, setUnsettledCount] = useState(0);
     const [showRuleForm, setShowRuleForm] = useState(false);
     const [editingRule, setEditingRule] = useState(null);
     const [ruleForm, setRuleForm] = useState({ rule_name: '', target_type: 'user', target_value: '', view_all: false, can_create: true, can_edit: true, can_delete: true, can_settle: true, can_export: true, export_all: false });
     const [ruleSubmitting, setRuleSubmitting] = useState(false);
+    const [deletingId, setDeletingId] = useState(null);
+    const [deletingRuleId, setDeletingRuleId] = useState(null);
+    const [exportingPdfId, setExportingPdfId] = useState(null);
+    const [previewExporting, setPreviewExporting] = useState(null);
+    const [deleteTarget, setDeleteTarget] = useState(null); // { type: 'data'|'rule', id, label }
+    // Row action menu (⋮) — harmonized with Invoices
+    const [actionMenu, setActionMenu] = useState(null);
+    const actionMenuRef = useRef(null);
+    const openRowMenu = (item, r) => {
+        const W = 220, GAP = 6;
+        const btnTop = r.top, btnBottom = r.bottom;
+        const x = Math.max(8, Math.min(r.left, window.innerWidth - W - 8));
+        const below = btnBottom + GAP;
+        const above = btnTop - GAP;
+        const openUp = (below + 300) > window.innerHeight && above > 8;
+        const dir = openUp ? 'up' : 'down';
+        const estH = 300;
+        const y = openUp ? Math.max(8, above - estH) : below;
+        const maxH = Math.max(120, window.innerHeight - y - 8);
+        return { item, tab: tab, x, y, maxH, btnTop, btnBottom, dir };
+    };
+    useEffect(() => {
+        if (!actionMenu || actionMenu._fixed || !actionMenuRef.current) return;
+        const h = actionMenuRef.current.offsetHeight;
+        const GAP = 6;
+        let y, maxH;
+        if (actionMenu.dir === 'up') {
+            y = Math.max(8, actionMenu.btnTop - GAP - h);
+            maxH = Math.max(120, actionMenu.btnTop - GAP - 8);
+        } else {
+            y = actionMenu.btnBottom + GAP;
+            maxH = Math.max(120, window.innerHeight - y - 8);
+        }
+        setActionMenu(a => a ? { ...a, y, maxH, _fixed: true } : a);
+    }, [actionMenu]);
     const [usersList, setUsersList] = useState([]);
     const [departmentsList, setDepartmentsList] = useState([]);
     const [rolesList, setRolesList] = useState([]);
@@ -278,12 +316,13 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         const silent = opts.silent === true;
         try {
             if (!silent) setLoading(true);
-            const params = { page, perPage: 15, status: tab === 'settled' ? 'settled' : 'active' };
+            const params = { page, perPage: 15, status: tab === 'settled' ? 'settled' : 'active,draft' };
             if (tab === 'settled' && settleFilter !== 'all') params.settle_status = settleFilter;
             if (searchParams.tanggal_from) params.tanggal_from = searchParams.tanggal_from;
             if (searchParams.tanggal_to) params.tanggal_to = searchParams.tanggal_to;
             if (searchParams.jenis) params.jenis = searchParams.jenis;
             if (searchParams.search) params.search = searchParams.search;
+            if (searchParams.entry_type) params.entry_type = searchParams.entry_type;
             const result = await entertainmentService.getAll(params);
             const list = Array.isArray(result) ? result : (result?.data || []);
             const parsed = list.map(item => ({
@@ -297,7 +336,10 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
             if (result && typeof result === 'object' && !Array.isArray(result)) {
                 setTotalEntries(result.total || 0);
                 setTotalPages(result.totalPages || 1);
-                if (result.permissions) setUserPerms(result.permissions);
+                if (result.permissions) {
+                    setUserPerms(result.permissions);
+                    setUnsettledCount(result.permissions.unsettledCount || 0);
+                }
             } else {
                 setTotalEntries(parsed.length);
                 setTotalPages(1);
@@ -314,6 +356,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
 
     const resetForm = () => {
         setForm(emptyForm());
+        setEntryType('plan');
         setErrors({});
         setAttachments([]);
         setExistingAttachments([]);
@@ -357,8 +400,9 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         setForm(prev => ({ ...prev, nilai: raw }));
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async (e, entryStatus) => {
+        if (e && e.preventDefault) e.preventDefault();
+        if (submitting) return; // anti double-submit
         if (!validate()) {
             toast.error('Harap isi semua field yang wajib');
             return;
@@ -381,6 +425,14 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
             fd.append('jabatan', JSON.stringify(jabatanArr));
             fd.append('nama_perusahaan', JSON.stringify(perusahaanArr));
             fd.append('jenis_usaha', resolveJenisUsaha());
+            fd.append('entry_type', entryType);
+            // Direct settle for reimburse (status 'settled') or save-as-draft (status 'draft')
+            if (entryStatus) {
+                fd.append('status', entryStatus);
+                if (entryStatus === 'settled') {
+                    fd.append('settle_date', form.tanggal || new Date().toISOString().split('T')[0]);
+                }
+            }
             fd.append('catatan_kode', form.catatan_kode);
 
             if (editingId) {
@@ -397,7 +449,13 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                 toast.success('Data berhasil diupdate');
             } else {
                 result = await entertainmentService.create(fd);
-                toast.success('Data berhasil disimpan');
+                if (entryStatus === 'settled') {
+                    toast.success(isEnglish ? 'Reimburse created and settled successfully' : 'Entry reimburse berhasil dibuat dan langsung di-settle');
+                } else if (entryStatus === 'draft') {
+                    toast.success(isEnglish ? 'Saved to draft' : 'Disimpan ke draft');
+                } else {
+                    toast.success('Data berhasil disimpan');
+                }
             }
 
             const warns = result?.warnings;
@@ -456,19 +514,15 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         setExistingAttachments(Array.isArray(item.attachments) ? item.attachments : []);
         setAttachments([]);
         setEditingId(item.id);
+        // Buka form sesuai tipe entry — draft reimburse langsung terbuka di tab Reimburse
+        setEntryType(item.entry_type === 'reimburse' ? 'reimburse' : 'plan');
         setShowForm(true);
         setErrors({});
     };
 
-    const handleDelete = async (id) => {
-        if (!confirm('Yakin ingin menghapus data ini?')) return;
-        try {
-            await entertainmentService.delete(id);
-            toast.success('Data berhasil dihapus');
-            fetchData();
-        } catch (e) {
-            toast.error(e.message);
-        }
+    const handleDelete = (id, label) => {
+        if (deletingId) return;
+        setDeleteTarget({ type: 'data', id, label });
     };
 
     const handlePreview = (item) => {
@@ -635,6 +689,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         custom_jenis: item.custom_jenis || '',
         nilai: item.nilai ? String(item.nilai).replace(/\.00$/, '') : '',
         no_gl: item.no_gl || '',
+        no_gl_shortage: item.no_gl_shortage || '',
         groups: (item.relasi || []).map((relasi, i) => ({
             relasi,
             jabatan: (item.jabatan || [])[i] || '',
@@ -658,6 +713,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
 
     const handleSettleSubmit = async () => {
         if (!settleItem) return;
+        if (settleSubmitting) return; // anti double-submit
         if (!settleForm.settle_date) {
             toast.error(text.errSettleDate);
             return;
@@ -669,7 +725,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         if (settleForm.jenis === 'Custom' && !settleForm.custom_jenis?.trim()) { toast.error('Custom jenis wajib diisi'); return; }
         if (!settleForm.nilai) { toast.error(text.errNilai); return; }
         if (!settleForm.is_draw && !settleForm.settle_amount) { toast.error(isEnglish ? 'Settle amount is required' : 'Settle amount wajib diisi'); return; }
-        if (!settleForm.no_gl) { toast.error('No GL wajib diisi'); return; }
+        if (!settleForm.no_gl) { toast.error('No AF wajib diisi'); return; }
         if (!settleForm.groups || !settleForm.groups[0]?.relasi?.trim()) { toast.error('Minimal 1 relasi wajib diisi'); return; }
         if (!settleForm.jenis_usaha) { toast.error('Jenis Usaha wajib diisi'); return; }
         if (settleForm.jenis_usaha === 'Custom' && !settleForm.custom_jenis_usaha?.trim()) { toast.error('Custom jenis usaha wajib diisi'); return; }
@@ -686,6 +742,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
             fd.append('nilai', settleForm.nilai);
             fd.append('settle_amount', settleForm.is_draw ? settleForm.nilai : settleForm.settle_amount);
             fd.append('no_gl', settleForm.no_gl);
+            fd.append('no_gl_shortage', settleForm.no_gl_shortage || '');
             fd.append('settle_date', settleForm.settle_date);
 
             const filledGroups = settleForm.groups.filter(g => g.relasi?.trim());
@@ -759,6 +816,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
     useEffect(() => { if (tab === 'rules') fetchRules(); }, [tab, fetchRules]);
 
     const handleSaveRule = async () => {
+        if (ruleSubmitting) return; // anti double-submit
         if (!ruleForm.rule_name || !ruleForm.target_value) {
             toast.error('Nama rule dan target wajib diisi');
             return;
@@ -783,15 +841,40 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         }
     };
 
-    const handleDeleteRule = async (id) => {
-        if (!confirm('Yakin ingin menghapus rule ini?')) return;
-        try {
-            await entertainmentService.deleteRule(id);
-            toast.success('Rule berhasil dihapus');
-            fetchRules();
-        } catch (e) {
-            toast.error(e.message);
+    const handleDeleteRule = (id, label) => {
+        if (deletingRuleId) return;
+        setDeleteTarget({ type: 'rule', id, label });
+    };
+
+    const confirmDelete = async () => {
+        if (!deleteTarget) return;
+        const { type, id } = deleteTarget;
+        if (type === 'data') {
+            if (deletingId) return; // anti double-submit
+            setDeletingId(id);
+            try {
+                await entertainmentService.delete(id);
+                toast.success('Data berhasil dihapus');
+                fetchData();
+            } catch (e) {
+                toast.error(e.message);
+            } finally {
+                setDeletingId(null);
+            }
+        } else {
+            if (deletingRuleId) return; // anti double-submit
+            setDeletingRuleId(id);
+            try {
+                await entertainmentService.deleteRule(id);
+                toast.success('Rule berhasil dihapus');
+                fetchRules();
+            } catch (e) {
+                toast.error(e.message);
+            } finally {
+                setDeletingRuleId(null);
+            }
         }
+        setDeleteTarget(null);
     };
 
     const isAdmin = currentUser?.role === 'admin' || currentUser?.role === 'superadmin';
@@ -865,14 +948,37 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                 />
             </div>
 
+            {/* Unsettled Block Warning (non-admin users) */}
+            {!isAdmin && unsettledCount > 0 && tab !== 'rules' && (
+                <div className="flex items-start gap-3 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border border-amber-300 dark:border-amber-700/50 rounded-2xl p-4">
+                    <div className="w-8 h-8 rounded-full bg-amber-200 dark:bg-amber-800/50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg className="w-4 h-4 text-amber-700 dark:text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-bold text-amber-800 dark:text-amber-300 mb-1">
+                            {isEnglish ? 'Entries not yet settled' : 'Terdapat entry yang belum settle'}
+                        </h4>
+                        <p className="text-xs text-amber-700 dark:text-amber-400 leading-relaxed">
+                            {isEnglish
+                                ? `Anda masih memiliki ${unsettledCount} entry yang belum settle. Semua entry harus berstatus "Settled" terlebih dahulu sebelum dapat membuat entry baru.`
+                                : `Anda masih memiliki ${unsettledCount} entry yang belum settle. Semua entry harus berstatus "Settle" terlebih dahulu sebelum dapat membuat entry / data baru.`}
+                        </p>
+                    </div>
+                </div>
+            )}
+
             {/* Header Actions */}
             {tab !== 'rules' && (
             <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="flex flex-wrap items-center gap-3">
                     {userPerms.can_create && (
                     <button
-                        onClick={() => { resetForm(); setShowForm(!showForm); }}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl hover:from-indigo-500 hover:to-blue-500 transition-all shadow-lg shadow-indigo-500/20 font-semibold text-sm"
+                        onClick={() => { if (!isAdmin && unsettledCount > 0) { if (showForm) setShowForm(false); toast.warning(isEnglish ? 'Settle all pending entries before creating a new one' : 'Selesaikan semua entry yang belum settle sebelum membuat entry baru.'); return; } resetForm(); setShowForm(!showForm); }}
+                        disabled={(!isAdmin && unsettledCount > 0) || submitting}
+                        title={(!isAdmin && unsettledCount > 0) ? (isEnglish ? 'Settle all pending entries first' : 'Selesaikan semua entry yang belum settle dulu') : ''}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl hover:from-indigo-500 hover:to-blue-500 transition-all shadow-lg shadow-indigo-500/20 font-semibold text-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
                     >
                         {showForm ? <X size={18} /> : <Plus size={18} />}
                         {showForm ? (isEnglish ? 'Close Form' : 'Tutup Form') : text.addNew}
@@ -884,6 +990,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                         type="button"
                         disabled={exportingPdf}
                         onClick={async () => {
+                            if (exportingPdf) return; // anti double-submit
                             setExportingPdf(true);
                             try { await entertainmentService.exportPdf(); toast.success(text.pdfExportSuccess); }
                             catch (e) { toast.error(e.message || text.pdfExportFailed); }
@@ -898,6 +1005,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                         type="button"
                         disabled={exportingExcel}
                         onClick={async () => {
+                            if (exportingExcel) return; // anti double-submit
                             setExportingExcel(true);
                             try { await entertainmentService.exportExcel(); toast.success(text.excelExportSuccess); }
                             catch (e) { toast.error(e.message || text.excelExportFailed); }
@@ -1000,6 +1108,16 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                             {JENIS_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
                         </select>
                     </div>
+                    <div className="flex-1 min-w-[150px]">
+                        <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{isEnglish ? 'Entry Type' : 'Tipe Entry'}</label>
+                        <select value={searchParams.entry_type}
+                            onChange={e => setSearchParams(p => ({ ...p, entry_type: e.target.value }))}
+                            className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500">
+                            <option value="">{text.filterAll}</option>
+                            <option value="reimburse">Reimburse</option>
+                            <option value="plan">Plan</option>
+                        </select>
+                    </div>
                     <div className="flex-[2] min-w-[200px]">
                         <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{text.filterSearch}</label>
                         <div className="relative">
@@ -1015,7 +1133,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                         <Filter size={16} className="inline-block mr-1" />
                         {text.filterBtn}
                     </button>
-                    <button onClick={() => { setSearchParams({ tanggal_from: '', tanggal_to: '', jenis: '', search: '' }); setPage(1); }}
+                    <button onClick={() => { setSearchParams({ tanggal_from: '', tanggal_to: '', jenis: '', search: '', entry_type: '' }); setPage(1); }}
                         className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-sm font-semibold">
                         <X size={16} className="inline-block mr-1" />
                         {text.filterReset}
@@ -1183,9 +1301,10 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                                     className="p-1.5 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg" title="Edit">
                                                     <Edit3 size={16} />
                                                 </button>
-                                                <button onClick={() => handleDeleteRule(rule.id)}
-                                                    className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg" title="Hapus">
-                                                    <Trash2 size={16} />
+                                                <button onClick={() => handleDeleteRule(rule.id, rule.rule_name)}
+                                                    disabled={deletingRuleId === rule.id}
+                                                    className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed" title="Hapus">
+                                                    {deletingRuleId === rule.id ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
                                                 </button>
                                             </div>
                                         </td>
@@ -1197,16 +1316,46 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                 </div>
             )}
 
-            {/* Form */}
+            {/* Form — slide-in-from-right drawer (modern) */}
+            {createPortal(
             <AnimatePresence>
                 {showForm && (
-                    <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-                        className="bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-                        <div className="bg-gradient-to-r from-indigo-600 to-blue-600 px-6 py-4">
+                    <>
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[70] bg-slate-900/50 backdrop-blur-sm"
+                        onClick={() => { resetForm(); setShowForm(false); }} />
+                    <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
+                        transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+                        className="fixed top-0 right-0 z-[71] h-full w-full max-w-[600px] bg-white dark:bg-slate-800 shadow-2xl flex flex-col">
+                        <div className="bg-gradient-to-r from-indigo-600 to-blue-600 px-6 py-4 flex items-center justify-between shrink-0">
                             <h3 className="text-white font-bold text-lg">{editingId ? text.formEdit : text.formNew} Entertainment Expenses</h3>
+                            <button type="button" onClick={() => { resetForm(); setShowForm(false); }}
+                                className="p-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
+                                <X size={20} />
+                            </button>
                         </div>
+                        <div className="flex-1 overflow-y-auto">
                         <form onSubmit={handleSubmit} className="p-6 space-y-5">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {/* Entry Type (Plan / Reimburse) */}
+                            <div className="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-slate-100 dark:bg-slate-700/40">
+                                <button type="button" onClick={() => setEntryType('plan')}
+                                    className={`py-2.5 rounded-xl text-sm font-bold transition-all ${entryType === 'plan' ? 'bg-white dark:bg-slate-800 text-indigo-600 shadow' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}>
+                                    Plan
+                                </button>
+                                <button type="button" onClick={() => setEntryType('reimburse')}
+                                    className={`py-2.5 rounded-xl text-sm font-bold transition-all ${entryType === 'reimburse' ? 'bg-white dark:bg-slate-800 text-emerald-600 shadow' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}>
+                                    Reimburse
+                                </button>
+                            </div>
+                            {entryType === 'reimburse' && (
+                                <div className="flex items-start gap-2 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-4 py-3">
+                                    <Info size={16} className="text-emerald-600 dark:text-emerald-400 mt-0.5 shrink-0" />
+                                    <p className="text-xs text-emerald-700 dark:text-emerald-300">
+                                        {isEnglish ? 'Reimburse entries go directly to settle — no approval needed. All fields are required.' : 'Entry tipe Reimburse langsung ke settle tanpa perlu pengajuan. Semua field wajib diisi.'}
+                                    </p>
+                                </div>
+                            )}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {/* Tanggal */}
                                 <div>
                                     <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblTanggal}</label>
@@ -1214,14 +1363,6 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                         onChange={e => setForm(p => ({ ...p, tanggal: e.target.value }))}
                                         className={`w-full px-3 py-2.5 rounded-xl border ${errors.tanggal ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
                                     {errors.tanggal && <p className="text-red-500 text-xs mt-1">{errors.tanggal}</p>}
-                                </div>
-                                {/* Tempat */}
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblTempat} *</label>
-                                    <input type="text" value={form.tempat}
-                                        onChange={e => setForm(p => ({ ...p, tempat: e.target.value }))}
-                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.tempat ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
-                                    {errors.tempat && <p className="text-red-500 text-xs mt-1">{errors.tempat}</p>}
                                 </div>
                                 {/* Jenis */}
                                 <div>
@@ -1241,14 +1382,27 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     {errors.custom_jenis && <p className="text-red-500 text-xs mt-1">{errors.custom_jenis}</p>}
                                 </div>
                             </div>
-                            {/* Alamat (full width) */}
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblAlamat}</label>
-                                <textarea value={form.alamat}
-                                    onChange={e => setForm(p => ({ ...p, alamat: e.target.value }))}
-                                    rows={2}
-                                    className={`w-full px-3 py-2.5 rounded-xl border ${errors.alamat ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
-                                {errors.alamat && <p className="text-red-500 text-xs mt-1">{errors.alamat}</p>}
+                            {/* Venue & Address Venue (1 card) */}
+                            <div className="border-2 border-slate-100 dark:border-slate-700 rounded-xl p-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    {/* Venue */}
+                                    <div>
+                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblTempat} *</label>
+                                        <input type="text" value={form.tempat}
+                                            onChange={e => setForm(p => ({ ...p, tempat: e.target.value }))}
+                                            className={`w-full px-3 py-2.5 rounded-xl border ${errors.tempat ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
+                                        {errors.tempat && <p className="text-red-500 text-xs mt-1">{errors.tempat}</p>}
+                                    </div>
+                                    {/* Address Venue */}
+                                    <div>
+                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblAlamat}</label>
+                                        <textarea value={form.alamat}
+                                            onChange={e => setForm(p => ({ ...p, alamat: e.target.value }))}
+                                            rows={2}
+                                            className={`w-full px-3 py-2.5 rounded-xl border ${errors.alamat ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
+                                        {errors.alamat && <p className="text-red-500 text-xs mt-1">{errors.alamat}</p>}
+                                    </div>
+                                </div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 {/* Nilai */}
@@ -1427,25 +1581,53 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                             </div>
 
                             {/* Submit */}
-                            <div className="flex items-center gap-3 pt-2">
-                                <button type="submit" disabled={submitting}
-                                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl hover:from-indigo-500 hover:to-blue-500 transition-all shadow-lg font-semibold disabled:opacity-50">
-                                    {submitting ? (
-                                        <Loader2 size={18} className="animate-spin" />
-                                    ) : (
-                                        <Save size={18} />
-                                    )}
+                            <div className="flex flex-wrap items-center gap-3 pt-2">
+                                {entryType === 'reimburse' ? (
+                                    <>
+                                        {/* Simpan ke Draft */}
+                                        <button type="submit" onClick={(e) => { e.preventDefault(); handleSubmit(e, 'draft'); }} disabled={submitting}
+                                            className="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-slate-800 border-2 border-emerald-500 text-emerald-600 dark:text-emerald-400 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-500/10 transition-all font-semibold disabled:opacity-50">
+                                            {submitting ? (
+                                                <Loader2 size={18} className="animate-spin" />
+                                            ) : (
+                                                <Save size={18} />
+                                            )}
+                                            {submitting ? (isEnglish ? 'Saving...' : 'Menyimpan...') : (isEnglish ? 'Save to Draft' : 'Simpan ke Draft')}
+                                        </button>
+                                        {/* Settle langsung — validasi dulu, baru buka konfirmasi ringkasan */}
+                                        <button type="button" onClick={() => { if (!validate()) { toast.error(isEnglish ? 'Please fill all required fields' : 'Harap isi semua field yang wajib'); return; } setSettleConfirmOpen(true); }} disabled={submitting}
+                                            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl hover:from-emerald-500 hover:to-teal-500 transition-all shadow-lg font-semibold disabled:opacity-50">
+                                            {submitting ? (
+                                                <Loader2 size={18} className="animate-spin" />
+                                            ) : (
+                                                <CheckCircle2 size={18} />
+                                            )}
+                                            {submitting ? (isEnglish ? 'Settling...' : 'Settle...') : (isEnglish ? 'Settle' : 'Settle')}
+                                        </button>
+                                    </>
+                                ) : (
+                                    <button type="submit" disabled={submitting}
+                                        className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl hover:from-indigo-500 hover:to-blue-500 transition-all shadow-lg font-semibold disabled:opacity-50">
+                                        {submitting ? (
+                                            <Loader2 size={18} className="animate-spin" />
+                                        ) : (
+                                            <Save size={18} />
+                                        )}
                                         {submitting ? (isEnglish ? 'Saving...' : 'Menyimpan...') : (editingId ? text.btnUpdate : text.btnSave)}
-                                </button>
+                                    </button>
+                                )}
                                 <button type="button" onClick={() => { resetForm(); setShowForm(false); }}
                                     className="px-6 py-3 border border-slate-300 dark:border-slate-600 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
                                     {text.btnCancel}
                                 </button>
                             </div>
                         </form>
+                        </div>
                     </motion.div>
+                    </>
                 )}
             </AnimatePresence>
+            , document.body)}
             {/* Table */}
             <div className="bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
                 <div className="px-6 py-4 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 border-b border-slate-200 dark:border-slate-700">
@@ -1476,63 +1658,38 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 <tr><td colSpan={8} className="px-4 py-8 text-center text-slate-400">{text.empty}</td></tr>
                             ) : data.map(item => (
                                 <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
-                                    <td className="px-4 py-3">
-                                        {tab === 'pending' ? (
-                                            <div className="flex items-center justify-center gap-1">
-                                                <button onClick={() => handlePreview(item)}
-                                                    className="p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" title={text.preview}>
-                                                    <Eye size={16} />
-                                                </button>
-                                                {userPerms.can_edit && (
-                                                <button onClick={() => handleEdit(item)}
-                                                    className="p-1.5 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition-colors" title={text.edit}>
-                                                    <Edit3 size={16} />
-                                                </button>
-                                                )}
-                                                {userPerms.can_settle && (
-                                                <button onClick={() => handleSettle(item)}
-                                                    className="p-1.5 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors" title={text.settle}>
-                                                    <CheckCircle2 size={16} />
-                                                </button>
-                                                )}
-                                                {userPerms.can_export && (
-                                                <button type="button" onClick={async (ev) => {
-                                                        ev.stopPropagation();
-                                                        try { await entertainmentService.exportPdf(item.id); toast.success(text.pdfExportSuccess); }
-                                                        catch (e) { toast.error(e.message || text.pdfExportFailed); }
-                                                    }}
-                                                    className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title={text.exportPdfBtn}>
-                                                    <FileText size={16} />
-                                                </button>
-                                                )}
-                                                {userPerms.can_delete && (
-                                                <button type="button" onClick={() => handleDelete(item.id)}
-                                                    className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title={text.deleteTitle}>
-                                                    <Trash2 size={16} />
-                                                </button>
-                                                )}
-                                            </div>
-                                        ) : (
-                                            <div className="flex items-center justify-center gap-1">
-                                                <button onClick={() => handlePreview(item)}
-                                                    className="p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" title={text.preview}>
-                                                    <Eye size={16} />
-                                                </button>
-                                                {userPerms.can_export && (
-                                                <button type="button" onClick={async (ev) => {
-                                                        ev.stopPropagation();
-                                                        try { await entertainmentService.exportPdf(item.id); toast.success(text.pdfExportSuccess); }
-                                                        catch (e) { toast.error(e.message || text.pdfExportFailed); }
-                                                    }}
-                                                    className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title={text.exportPdfBtn}>
-                                                    <FileText size={16} />
-                                                </button>
-                                                )}
-                                            </div>
-                                        )}
+                                    <td className="px-4 py-3 text-center">
+                                        <button
+                                            onClick={(e) => {
+                                                const r = e.currentTarget.getBoundingClientRect();
+                                                setActionMenu(prev => prev && prev.item?.id === item.id ? null : openRowMenu(item, r));
+                                            }}
+                                            className={`p-1.5 rounded-lg transition-colors ${actionMenu?.item?.id === item.id ? 'bg-indigo-50 text-indigo-600 dark:bg-slate-800' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200'}`}
+                                            title={text.aksi}
+                                        >
+                                            <MoreVertical size={16} />
+                                        </button>
                                     </td>
                                     <td className="px-4 py-3 whitespace-nowrap">{formatDateId(item.tanggal)}</td>
-                                    <td className="px-4 py-3 font-mono text-xs">{item.no_ref || `ENT-${String(item.id).padStart(5, '0')}`}</td>
+                                    <td className="px-4 py-3 font-mono text-xs">
+                                        <div className="flex items-center gap-1.5">
+                                            <span>{item.no_ref || `ENT-${String(item.id).padStart(5, '0')}`}</span>
+                                            {item.entry_type === 'reimburse' ? (
+                                                <span className="px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold">
+                                                    Reimburse
+                                                </span>
+                                            ) : (
+                                                <span className="px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-[10px] font-bold">
+                                                    Plan
+                                                </span>
+                                            )}
+                                            {item.status === 'draft' && (
+                                                <span className="px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300 text-[10px] font-bold">
+                                                    Draft
+                                                </span>
+                                            )}
+                                        </div>
+                                    </td>
                                     <td className="px-4 py-3 max-w-[150px] truncate" title={(item.relasi || []).join(', ')}>
                                         {(item.relasi || []).join(', ') || '-'}
                                     </td>
@@ -1574,7 +1731,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => setPage(p => Math.max(1, p - 1))}
-                            disabled={page <= 1}
+                            disabled={page <= 1 || loading}
                             className="px-3 py-1.5 text-sm font-semibold rounded-lg border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
                             Previous
@@ -1588,7 +1745,8 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     )}
                                     <button
                                         onClick={() => setPage(p)}
-                                        className={`min-w-[36px] h-9 text-sm font-semibold rounded-lg transition-colors ${
+                                        disabled={loading}
+                                        className={`min-w-[36px] h-9 text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                                             p === page
                                                 ? 'bg-indigo-600 text-white shadow-md'
                                                 : 'border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
@@ -1600,7 +1758,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                             ))}
                         <button
                             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                            disabled={page >= totalPages}
+                            disabled={page >= totalPages || loading}
                             className="px-3 py-1.5 text-sm font-semibold rounded-lg border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
                             Next
@@ -1608,29 +1766,31 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                     </div>
                 </div>
             )}
-            {/* Settle Modal */}
+            {/* Settle Modal — slide-in-from-right drawer (modern) */}
             {createPortal(
             <AnimatePresence>
                 {showSettleModal && settleItem && (
+                    <>
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 flex items-start justify-center pt-[5vh] pb-4 px-4 bg-black/60 backdrop-blur-sm overflow-y-auto"
-                        onClick={() => setShowSettleModal(false)}>
-                        <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
-                            className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-3xl w-full flex flex-col my-auto"
-                            onClick={e => e.stopPropagation()}>
-                            {/* Header - fixed at top */}
-                            <div className="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-5 rounded-t-2xl flex items-center justify-between shrink-0">
-                                <h3 className="text-white font-bold text-lg flex items-center gap-2">
-                                    <CheckCircle2 size={20} /> {text.settleTitle}
-                                </h3>
-                                <button onClick={() => setShowSettleModal(false)}
-                                    className="p-1.5 text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition-colors">
-                                    <X size={20} />
-                                </button>
-                            </div>
-                            {/* Body - scrollable */}
-                            <div className="p-6 space-y-5 overflow-y-auto flex-1">
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        className="fixed inset-0 z-[74] bg-slate-900/50 backdrop-blur-sm"
+                        onClick={() => { setShowSettleModal(false); setSettleAttachments([]); setSettleExistingAttachments([]); }} />
+                    <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
+                        transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+                        className="fixed top-0 right-0 z-[75] h-full w-full max-w-[600px] bg-white dark:bg-slate-800 shadow-2xl flex flex-col"
+                        onClick={e => e.stopPropagation()}>
+                        {/* Header - fixed at top */}
+                        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-4 flex items-center justify-between shrink-0">
+                            <h3 className="text-white font-bold text-lg flex items-center gap-2">
+                                <CheckCircle2 size={20} /> {text.settleTitle}
+                            </h3>
+                            <button onClick={() => { setShowSettleModal(false); setSettleAttachments([]); setSettleExistingAttachments([]); }}
+                                className="p-1.5 text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition-colors">
+                                <X size={20} />
+                            </button>
+                        </div>
+                        {/* Body - scrollable */}
+                        <div className="flex-1 overflow-y-auto p-6 space-y-5">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.detailTanggal}</label>
                                         <input type="date" value={settleForm.tanggal || ''}
@@ -1716,15 +1876,31 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                                     placeholder={isEnglish ? 'Enter settle amount' : 'Masukkan jumlah settle'}
                                                     className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500" />
                                             </div>
-                                            <div className="flex items-end">
+                                            <div className="flex flex-col gap-2 justify-end">
                                                 {settleForm.settle_amount && (
                                                     (() => {
                                                         const pengajuan = parseFloat(settleForm.nilai) || 0;
                                                         const settle = parseFloat(settleForm.settle_amount) || 0;
                                                         const diff = settle - pengajuan;
-                                                        if (diff === 0) return <span className="px-4 py-2 rounded-xl text-sm font-bold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">{text.lblSame}</span>;
-                                                        if (diff > 0) return <span className="px-4 py-2 rounded-xl text-sm font-bold bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300">{text.lblOver} +{diff.toLocaleString('id-ID')}</span>;
-                                                        return <span className="px-4 py-2 rounded-xl text-sm font-bold bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300">{text.lblShortage} {diff.toLocaleString('id-ID')}</span>;
+                                                        const isShortage = diff < 0;
+                                                        return (
+                                                            <>
+                                                                {isShortage && (
+                                                                    <div>
+                                                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblAfShortage}</label>
+                                                                        <input type="text" value={settleForm.no_gl_shortage || ''}
+                                                                            onChange={e => setSettleForm(p => ({ ...p, no_gl_shortage: e.target.value }))}
+                                                                            placeholder={isEnglish ? 'Enter AF for shortage' : 'Masukkan AF untuk shortage'}
+                                                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500" />
+                                                                    </div>
+                                                                )}
+                                                                <div className="flex items-center">
+                                                                    {diff === 0 ? <span className="px-4 py-2 rounded-xl text-sm font-bold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">{text.lblSame}</span>
+                                                                        : diff > 0 ? <span className="px-4 py-2 rounded-xl text-sm font-bold bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300">{text.lblOver} +{diff.toLocaleString('id-ID')}</span>
+                                                                        : <span className="px-4 py-2 rounded-xl text-sm font-bold bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300">{text.lblShortage} {diff.toLocaleString('id-ID')}</span>}
+                                                                </div>
+                                                            </>
+                                                        );
                                                     })()
                                                 )}
                                             </div>
@@ -1875,8 +2051,8 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     </button>
                                 </div>
                             </div>
-                        </motion.div>
                     </motion.div>
+                    </>
                 )}
             </AnimatePresence>
             , document.body)}
@@ -1937,18 +2113,26 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 </div>
                                 <div className="border-t border-slate-200 dark:border-slate-700 pt-4 flex items-center gap-3">
                                     <button type="button" onClick={async () => {
+                                            if (previewExporting) return;
+                                            setPreviewExporting('pdf');
                                             try { await entertainmentService.exportPdf(previewData.id); toast.success(text.pdfExportSuccess); }
                                             catch (e) { toast.error(e.message || text.pdfExportFailed); }
+                                            finally { setPreviewExporting(null); }
                                         }}
-                                        className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors text-sm font-semibold">
-                                        <FileText size={16} /> {text.exportPdfBtn}
+                                        disabled={!!previewExporting}
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed">
+                                        {previewExporting === 'pdf' ? <Loader2 size={16} className="animate-spin" /> : <FileText size={16} />} {text.exportPdfBtn}
                                     </button>
                                     <button type="button" onClick={async () => {
+                                            if (previewExporting) return;
+                                            setPreviewExporting('excel');
                                             try { await entertainmentService.exportExcel(previewData.id); toast.success(text.excelExportSuccess); }
                                             catch (e) { toast.error(e.message || text.excelExportFailed); }
+                                            finally { setPreviewExporting(null); }
                                         }}
-                                        className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors text-sm font-semibold">
-                                        <FileSpreadsheet size={16} /> {text.exportExcelBtn}
+                                        disabled={!!previewExporting}
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed">
+                                        {previewExporting === 'excel' ? <Loader2 size={16} className="animate-spin" /> : <FileSpreadsheet size={16} />} {text.exportExcelBtn}
                                     </button>
                                 </div>
                             </div>
@@ -1957,6 +2141,171 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                 )}
             </AnimatePresence>
             , document.body)}
+            {/* Settle Confirmation Modal — ringkasan sebelum entry reimburse di-settle langsung */}
+            {createPortal(
+            <AnimatePresence>
+                {settleConfirmOpen && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                        onClick={() => setSettleConfirmOpen(false)}>
+                        <motion.div initial={{ scale: 0.9, y: 24, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: 0.9, y: 24, opacity: 0 }}
+                            transition={{ type: 'spring', damping: 22, stiffness: 300 }}
+                            className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden"
+                            onClick={e => e.stopPropagation()}>
+                            <div className="pt-7 px-8 flex flex-col items-center text-center">
+                                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/40 dark:to-teal-900/30 flex items-center justify-center mb-4">
+                                    <CheckCircle2 size={28} className="text-emerald-600 dark:text-emerald-400" />
+                                </div>
+                                <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">
+                                    {isEnglish ? 'Settle This Entry?' : 'Settle Entry Ini?'}
+                                </h3>
+                                <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                                    {isEnglish
+                                        ? 'This reimburse entry will be directly marked as Settled with the summary below.'
+                                        : 'Entry reimburse ini akan langsung berstatus Settled dengan ringkasan berikut.'}
+                                </p>
+                            </div>
+                            <div className="mt-4 px-8 space-y-2">
+                                <div className="rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-700 p-4 text-sm">
+                                    <div className="flex justify-between py-1"><span className="text-slate-500 dark:text-slate-400">{isEnglish ? 'Date' : 'Tanggal'}</span><span className="font-semibold text-slate-700 dark:text-slate-200 tabular-nums">{form.tanggal || '-'}</span></div>
+                                    <div className="flex justify-between py-1"><span className="text-slate-500 dark:text-slate-400">{isEnglish ? 'Place' : 'Tempat'}</span><span className="font-semibold text-slate-700 dark:text-slate-200 truncate max-w-[60%]">{form.tempat || '-'}</span></div>
+                                    <div className="flex justify-between py-1"><span className="text-slate-500 dark:text-slate-400">{isEnglish ? 'Amount' : 'Nilai'}</span><span className="font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">Rp {formatCurrency(form.nilai)}</span></div>
+                                    <div className="flex justify-between py-1"><span className="text-slate-500 dark:text-slate-400">{isEnglish ? 'Relasi' : 'Relasi'}</span><span className="font-semibold text-slate-700 dark:text-slate-200 tabular-nums">{jumlahRelasi} {isEnglish ? 'person(s)' : 'orang'}</span></div>
+                                    <div className="flex justify-between py-1"><span className="text-slate-500 dark:text-slate-400">{isEnglish ? 'Attachments' : 'Lampiran'}</span><span className="font-semibold text-slate-700 dark:text-slate-200 tabular-nums">{existingAttachments.length + attachments.length}</span></div>
+                                    <div className="flex justify-between py-1 border-t border-slate-200 dark:border-slate-700 mt-1"><span className="text-slate-500 dark:text-slate-400">No. AF</span><span className="font-semibold text-slate-700 dark:text-slate-200">{form.no_gl || '-'}</span></div>
+                                </div>
+                            </div>
+                            <div className="mt-6 px-8 pb-8 flex items-center gap-3">
+                                <button type="button" onClick={() => setSettleConfirmOpen(false)}
+                                    disabled={submitting}
+                                    className="flex-1 px-4 py-3 rounded-2xl border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
+                                    {isEnglish ? 'Cancel' : 'Batal'}
+                                </button>
+                                <button type="button" onClick={() => { setSettleConfirmOpen(false); handleSubmit(null, 'settled'); }}
+                                    disabled={submitting}
+                                    className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-500 hover:to-teal-500 shadow-lg shadow-emerald-500/25 transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
+                                    {submitting ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle2 size={16} />}
+                                    {submitting ? (isEnglish ? 'Settling...' : 'Settle...') : (isEnglish ? 'Yes, Settle' : 'Ya, Settle')}
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+            , document.body)}
+            {/* Delete Confirmation Modal (modern) */}
+            {createPortal(
+            <AnimatePresence>
+                {deleteTarget && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                        onClick={() => setDeleteTarget(null)}>
+                        <motion.div initial={{ scale: 0.9, y: 24, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: 0.9, y: 24, opacity: 0 }}
+                            transition={{ type: 'spring', damping: 22, stiffness: 300 }}
+                            className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden"
+                            onClick={e => e.stopPropagation()}>
+                            <div className="pt-8 px-8 flex flex-col items-center text-center">
+                                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-100 to-rose-100 dark:from-red-900/40 dark:to-rose-900/30 flex items-center justify-center mb-4">
+                                    <Trash2 size={28} className="text-red-500 dark:text-red-400" />
+                                </div>
+                                <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">
+                                    {deleteTarget.type === 'rule'
+                                        ? (isEnglish ? 'Delete Rule?' : 'Hapus Rule?')
+                                        : (isEnglish ? 'Delete Data?' : 'Hapus Data?')}
+                                </h3>
+                                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                                    {deleteTarget.type === 'rule'
+                                        ? (isEnglish
+                                            ? `Are you sure you want to delete the rule "${deleteTarget.label}"? This action cannot be undone.`
+                                            : `Anda yakin ingin menghapus rule "${deleteTarget.label}"? Tindakan ini tidak dapat dibatalkan.`)
+                                        : (isEnglish
+                                            ? `Data "${deleteTarget.label}" will be permanently deleted. This action cannot be undone.`
+                                            : `Data "${deleteTarget.label}" akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.`)}
+                                </p>
+                            </div>
+                            <div className="mt-6 px-8 pb-8 flex items-center gap-3">
+                                <button type="button" onClick={() => setDeleteTarget(null)}
+                                    disabled={!!deletingId || !!deletingRuleId}
+                                    className="flex-1 px-4 py-3 rounded-2xl border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
+                                    {isEnglish ? 'Cancel' : 'Batal'}
+                                </button>
+                                <button type="button" onClick={confirmDelete}
+                                    disabled={!!deletingId || !!deletingRuleId}
+                                    className="flex-1 px-4 py-3 rounded-2xl bg-gradient-to-r from-red-600 to-rose-600 text-white hover:from-red-500 hover:to-rose-500 transition-all shadow-lg shadow-red-500/20 font-semibold disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2">
+                                    {!!deletingId || !!deletingRuleId
+                                        ? <Loader2 size={18} className="animate-spin" />
+                                        : <Trash2 size={18} />}
+                                    {!!deletingId || !!deletingRuleId
+                                        ? (isEnglish ? 'Deleting...' : 'Menghapus...')
+                                        : (isEnglish ? 'Delete' : 'Hapus')}
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+            , document.body)}
+            {/* Row Action Menu (⋮) — harmonized with Invoices */}
+            {actionMenu && createPortal(
+                <>
+                    <div className="fixed inset-0 z-[58]" onClick={() => setActionMenu(null)} />
+                    <div
+                        ref={actionMenuRef}
+                        className="fixed z-[59] min-w-[200px] max-w-[240px] bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 p-1.5 overflow-auto custom-scrollbar"
+                        style={{ left: actionMenu.x, top: actionMenu.y, maxHeight: actionMenu.maxH }}
+                    >
+                        {(() => {
+                            const item = actionMenu.item;
+                            const isPending = actionMenu.tab === 'pending';
+                            const label = item.no_ref || `ENT-${String(item.id).padStart(5, '0')}`;
+                            const itemCls = 'w-full flex items-center gap-2.5 px-3 py-2 text-sm text-left rounded-xl transition-colors disabled:opacity-40 disabled:cursor-not-allowed';
+                            return (
+                                <div className="py-0.5 space-y-0.5">
+                                    <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">{label} • {item.tempat || '-'}</div>
+
+                                    <button type="button" onClick={() => { setActionMenu(null); handlePreview(item); }} className={`${itemCls} text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700`}>
+                                        <Eye size={15} /> {text.preview}
+                                    </button>
+
+                                    {isPending && userPerms.can_edit && (
+                                        <button type="button" onClick={() => { setActionMenu(null); handleEdit(item); }} className={`${itemCls} text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/10`}>
+                                            <Edit3 size={15} /> {text.edit}
+                                        </button>
+                                    )}
+
+                                    {isPending && item.entry_type !== 'reimburse' && userPerms.can_settle && (
+                                        <button type="button" onClick={() => { setActionMenu(null); handleSettle(item); }} className={`${itemCls} text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/10`}>
+                                            <CheckCircle2 size={15} /> {text.settle}
+                                        </button>
+                                    )}
+
+                                    {userPerms.can_export && (
+                                        <button type="button"
+                                            disabled={exportingPdfId === item.id}
+                                            onClick={() => { setActionMenu(null); if (exportingPdfId) return; setExportingPdfId(item.id); entertainmentService.exportPdf(item.id).then(() => toast.success(text.pdfExportSuccess)).catch(e => toast.error(e.message || text.pdfExportFailed)).finally(() => setExportingPdfId(null)); }}
+                                            className={`${itemCls} text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10`}>
+                                            {exportingPdfId === item.id ? <Loader2 size={15} className="animate-spin" /> : <FileText size={15} />} {text.exportPdfBtn}
+                                        </button>
+                                    )}
+
+                                    {isPending && userPerms.can_delete && (
+                                        <>
+                                            <div className="my-1.5 border-t border-slate-100 dark:border-slate-700" />
+                                            <button type="button"
+                                                disabled={deletingId === item.id}
+                                                onClick={() => { setActionMenu(null); handleDelete(item.id, label); }}
+                                                className={`${itemCls} text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10`}>
+                                                {deletingId === item.id ? <Loader2 size={15} className="animate-spin" /> : <Trash2 size={15} />} {text.delete}
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
+                            );
+                        })()}
+                    </div>
+                </>,
+                document.body
+            )}
             </div>
     );
 }

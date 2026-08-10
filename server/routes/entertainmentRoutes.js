@@ -49,6 +49,26 @@ const getUserEntertainmentPerms = async (user) => {
     }
 };
 
+// ─── Unsettled Block Rule ───────────────────────────────────────────────────
+// Non-admin users cannot create new entries while they still have any
+// entertainment entry that is not yet settled (status != 'settled').
+const getUserUnsettled = async (user) => {
+    // Admins/superadmins are exempt from this rule
+    if (user.role === 'admin' || user.role === 'superadmin') return 0;
+    try {
+        const rows = await knex('entertainment_expenses')
+            .where(function () {
+                this.where('requester_username', user.username)
+                    .orWhere('owner', user.username);
+            })
+            .whereNot('status', 'settled');
+        return rows.length;
+    } catch (err) {
+        console.warn('[Entertainment] getUserUnsettled failed:', err.message);
+        return 0;
+    }
+};
+
 // ─── Duplicate Anomaly Detection Helpers ────────────────────────────────────
 
 function normalizeText(str) {
@@ -280,7 +300,7 @@ router.delete('/rules/:id', async (req, res) => {
 // GET /api/entertainment - List all (with pagination & row-level security)
 router.get('/', async (req, res) => {
     try {
-        const { tanggal_from, tanggal_to, jenis, search, status, settle_status, page = 1, perPage = 15 } = req.query;
+        const { tanggal_from, tanggal_to, jenis, search, status, settle_status, page = 1, perPage = 15, entry_type } = req.query;
         const pageNum = Math.max(1, parseInt(page) || 1);
         const limit = Math.max(1, Math.min(100, parseInt(perPage) || 15));
         const offset = (pageNum - 1) * limit;
@@ -313,6 +333,10 @@ router.get('/', async (req, res) => {
             query = query.where('jenis', jenis);
             countQuery = countQuery.where('jenis', jenis);
         }
+        if (entry_type === 'reimburse' || entry_type === 'plan') {
+            query = query.where('entry_type', entry_type);
+            countQuery = countQuery.where('entry_type', entry_type);
+        }
         if (search) {
             const searchFn = function() {
                 this.where('tempat', 'ilike', `%${search}%`)
@@ -330,8 +354,15 @@ router.get('/', async (req, res) => {
         }
 
         if (status) {
-            query = query.where('status', status);
-            countQuery = countQuery.where('status', status);
+            // Support comma-separated status list, e.g. "active,draft"
+            const statusList = String(status).split(',').map(s => s.trim()).filter(Boolean);
+            if (statusList.length === 1) {
+                query = query.where('status', statusList[0]);
+                countQuery = countQuery.where('status', statusList[0]);
+            } else if (statusList.length > 1) {
+                query = query.whereIn('status', statusList);
+                countQuery = countQuery.whereIn('status', statusList);
+            }
         }
 
         if (settle_status && status === 'settled') {
@@ -352,13 +383,15 @@ router.get('/', async (req, res) => {
 
         const data = await query.orderBy('created_at', 'desc').limit(limit).offset(offset);
 
+        const unsettledCount = await getUserUnsettled(user);
+
         res.json({
             data,
             total,
             page: pageNum,
             perPage: limit,
             totalPages: Math.ceil(total / limit),
-            permissions: perms
+            permissions: { ...perms, unsettledCount }
         });
     } catch (error) {
         console.error('[Entertainment] GET error:', error);
@@ -544,7 +577,7 @@ router.get('/export/pdf', async (req, res) => {
                 page.drawText(safeText(left.label, 28).toUpperCase(), {
                     x: MARGIN_X + 8, y: y - 2, size: 7, font: fontBold, color: rgb(0.45, 0.48, 0.55)
                 });
-                page.drawText(safeText(left.value, 42), {
+                page.drawText(safeText(left.value, left.max != null ? left.max : 42), {
                     x: MARGIN_X + 8, y: y - 15, size: 9, font: isLeftHighlight ? fontBold : font, color: rgb(0.12, 0.14, 0.2)
                 });
                 if (right) {
@@ -559,7 +592,7 @@ router.get('/export/pdf', async (req, res) => {
                     page.drawText(safeText(right.label, 28).toUpperCase(), {
                         x: rx + 8, y: y - 2, size: 7, font: fontBold, color: rgb(0.45, 0.48, 0.55)
                     });
-                    page.drawText(safeText(right.value, 42), {
+                    page.drawText(safeText(right.value, right.max != null ? right.max : 42), {
                         x: rx + 8, y: y - 15, size: 9, font: isRightHighlight ? fontBold : font, color: rgb(0.12, 0.14, 0.2)
                     });
                 }
@@ -632,11 +665,80 @@ router.get('/export/pdf', async (req, res) => {
             y = drawFieldGrid(page, [
                 { label: 'Date', value: formatDateId(entry.tanggal) },
                 { label: 'Entertainment Type', value: entry.jenis === 'Custom' ? entry.custom_jenis : entry.jenis },
-                { label: 'Venue', value: entry.tempat },
-                { label: 'GL Number', value: entry.no_gl },
+                { label: 'AF Number', value: entry.no_gl },
                 { label: 'Amount', value: formatIdr(entry.nilai), highlight: true },
-                { label: 'Business Type', value: entry.jenis_usaha },
             ], y);
+
+            // Venue & Address in one full width card (keeps them adjacent)
+            const rawVenue = safeText(entry.tempat || '-', 200);
+            let venueText = rawVenue;
+            while (font.widthOfTextAtSize(venueText, 10) > CONTENT_W - 16 && venueText.length > 1) {
+                venueText = venueText.slice(0, -1);
+            }
+            if (venueText !== rawVenue) venueText += '...';
+
+            const addrVenueText = safeText(entry.alamat || '-', 2000);
+            const addrWords = addrVenueText.split(/\s+/);
+            let addrLineCount = 1;
+            let tmpLine = '';
+            for (const w of addrWords) {
+                const test = tmpLine ? `${tmpLine} ${w}` : w;
+                if (font.widthOfTextAtSize(test, 9) > CONTENT_W - 24 && tmpLine) {
+                    addrLineCount++;
+                    tmpLine = w;
+                } else {
+                    tmpLine = test;
+                }
+            }
+            const addrPadTop = 8;
+            const venueLabelH = 10;
+            const venueValueH = 14;
+            const venueGap = 6;
+            const addrLabelH = 10;
+            const addrLabelGap = 4;
+            const addrTextH = addrLineCount * 12;
+            const addrPadBottom = 8;
+            const addrCardH = addrPadTop + venueLabelH + 2 + venueValueH + venueGap + addrLabelH + addrLabelGap + addrTextH + addrPadBottom;
+            const addrCardTopY = y - 10;
+            const addrCardBottomY = addrCardTopY - addrCardH;
+
+            page.drawRectangle({
+                x: MARGIN_X, y: addrCardBottomY, width: CONTENT_W, height: addrCardH,
+                color: rgb(0.98, 0.985, 0.995),
+                borderColor: rgb(0.82, 0.85, 0.9),
+                borderWidth: 1
+            });
+            const venueLabelY = addrCardTopY - addrPadTop - 7;
+            page.drawText('VENUE', {
+                x: MARGIN_X + 8, y: venueLabelY, size: 7, font: fontBold, color: rgb(0.45, 0.48, 0.55)
+            });
+            const venueValueY = venueLabelY - 2 - 11;
+            page.drawText(venueText, {
+                x: MARGIN_X + 8, y: venueValueY, size: 10, font: fontBold, color: rgb(0.12, 0.14, 0.2)
+            });
+            const addrLabelY = venueValueY - venueGap - 10;
+            page.drawText('ADDRESS VENUE', {
+                x: MARGIN_X + 8, y: addrLabelY, size: 7, font: fontBold, color: rgb(0.45, 0.48, 0.55)
+            });
+            const addrTextY = addrLabelY - addrLabelGap - 10;
+            let addrCy = addrTextY;
+            const addrWords2 = addrVenueText.split(/\s+/);
+            let addrLine = '';
+            for (const w of addrWords2) {
+                const test = addrLine ? `${addrLine} ${w}` : w;
+                if (font.widthOfTextAtSize(test, 9) > CONTENT_W - 24 && addrLine) {
+                    page.drawText(addrLine, { x: MARGIN_X + 8, y: addrCy, size: 9, font, color: rgb(0.15, 0.17, 0.22) });
+                    addrCy -= 12;
+                    addrLine = w;
+                } else {
+                    addrLine = test;
+                }
+            }
+            if (addrLine) {
+                page.drawText(addrLine, { x: MARGIN_X + 8, y: addrCy, size: 9, font, color: rgb(0.15, 0.17, 0.22) });
+            }
+            y = addrCardBottomY - 20;
+
 
             // Settle Amount info (if settled)
             if (entry.status === 'settled' && entry.settle_amount) {
@@ -666,68 +768,21 @@ router.get('/export/pdf', async (req, res) => {
                 y -= 38;
             }
 
-            // Address full width card - calculate dimensions first
-            const addrText = safeText(entry.alamat || '-', 500);
-            const addrWords = addrText.split(/\s+/);
-            let addrLineCount = 1;
-            let tmpLine = '';
-            for (const w of addrWords) {
-                const test = tmpLine ? `${tmpLine} ${w}` : w;
-                if (font.widthOfTextAtSize(test, 9) > CONTENT_W - 24 && tmpLine) {
-                    addrLineCount++;
-                    tmpLine = w;
-                } else {
-                    tmpLine = test;
-                }
-            }
-            // Card layout: topPadding(8) + label(7font ~10px) + gap(4) + textLines * lineH + bottomPadding(8)
-            const addrPadTop = 8;
-            const addrLabelH = 10;
-            const addrLabelGap = 4;
-            const addrTextH = addrLineCount * 12;
-            const addrPadBottom = 8;
-            const addrCardH = addrPadTop + addrLabelH + addrLabelGap + addrTextH + addrPadBottom;
-
-            // Card TOP starts below field grid with gap, then extends DOWNWARD
-            const addrCardTopY = y - 10;
-            const addrCardBottomY = addrCardTopY - addrCardH;
-
-            page.drawRectangle({
-                x: MARGIN_X, y: addrCardBottomY, width: CONTENT_W, height: addrCardH,
-                color: rgb(0.98, 0.985, 0.995),
-                borderColor: rgb(0.82, 0.85, 0.9),
-                borderWidth: 1
-            });
-
-            // Label "ADDRESS" inside card, below top padding
-            const addrLabelY = addrCardTopY - addrPadTop - 7;
-            page.drawText('ADDRESS', {
-                x: MARGIN_X + 8, y: addrLabelY, size: 7, font: fontBold, color: rgb(0.45, 0.48, 0.55)
-            });
-
-            // Address text below label
-            const addrTextY = addrLabelY - addrLabelGap - 10;
-            let addrCy = addrTextY;
-            const addrWords2 = addrText.split(/\s+/);
-            let addrLine = '';
-            for (const w of addrWords2) {
-                const test = addrLine ? `${addrLine} ${w}` : w;
-                if (font.widthOfTextAtSize(test, 9) > CONTENT_W - 24 && addrLine) {
-                    page.drawText(addrLine, { x: MARGIN_X + 8, y: addrCy, size: 9, font, color: rgb(0.15, 0.17, 0.22) });
-                    addrCy -= 12;
-                    addrLine = w;
-                } else {
-                    addrLine = test;
-                }
-            }
-            if (addrLine) {
-                page.drawText(addrLine, { x: MARGIN_X + 8, y: addrCy, size: 9, font, color: rgb(0.15, 0.17, 0.22) });
-            }
-
-            // Move y below the card
-            y = addrCardBottomY - 20;
-
             y = sectionTitle(page, 'B. RELATIONS & COMPANIES', y);
+            // Business Type box (same style as field grid boxes)
+            page.drawRectangle({
+                x: MARGIN_X, y: y - 22, width: CONTENT_W, height: 30,
+                color: rgb(0.98, 0.985, 0.995),
+                borderColor: rgb(0.88, 0.9, 0.94),
+                borderWidth: 0.5
+            });
+            page.drawText('BUSINESS TYPE', {
+                x: MARGIN_X + 8, y: y - 2, size: 7, font: fontBold, color: rgb(0.45, 0.48, 0.55)
+            });
+            page.drawText(safeText(entry.jenis_usaha || '-', 60), {
+                x: MARGIN_X + 8, y: y - 15, size: 9, font, color: rgb(0.12, 0.14, 0.2)
+            });
+            y -= 38;
             page.drawText(`Number of Relations: ${entry.jumlah_relasi || relasiArr.length || 0} person(s)`, {
                 x: MARGIN_X, y, size: 9, font: fontBold, color: rgb(0.18, 0.28, 0.55)
             });
@@ -776,7 +831,7 @@ router.get('/export/pdf', async (req, res) => {
                 y = PAGE_H - 100;
             }
 
-            y = sectionTitle(page, 'C. NOTES / CODE', y);
+            y = sectionTitle(page, 'C. NOTES / PURPOSE', y);
             page.drawRectangle({
                 x: MARGIN_X, y: y - 40, width: CONTENT_W, height: 48,
                 color: rgb(1, 1, 1),
@@ -1022,7 +1077,7 @@ router.post('/:id/settle', upload.array('attachments', 10), async (req, res) => 
             return res.status(403).json({ error: 'Anda tidak memiliki izin untuk settle' });
         }
 
-        const { tanggal, tempat, alamat, jenis, custom_jenis, nilai, settle_amount, no_gl, relasi, jabatan, nama_perusahaan, jenis_usaha, catatan_kode, existing_attachments, settle_date } = req.body;
+        const { tanggal, tempat, alamat, jenis, custom_jenis, nilai, settle_amount, no_gl, relasi, jabatan, nama_perusahaan, jenis_usaha, catatan_kode, existing_attachments, settle_date, no_gl_shortage } = req.body;
 
         if (!settle_date) {
             return res.status(400).json({ error: 'Tanggal settle wajib diisi' });
@@ -1054,6 +1109,9 @@ router.post('/:id/settle', upload.array('attachments', 10), async (req, res) => 
         }
         if (no_gl !== undefined && no_gl !== existing.no_gl) {
             updatePayload.no_gl = no_gl; changed = true;
+        }
+        if (no_gl_shortage !== undefined && no_gl_shortage !== existing.no_gl_shortage) {
+            updatePayload.no_gl_shortage = no_gl_shortage; changed = true;
         }
         if (jenis_usaha !== undefined && jenis_usaha !== existing.jenis_usaha) {
             updatePayload.jenis_usaha = jenis_usaha; changed = true;
@@ -1166,7 +1224,22 @@ router.post('/', upload.array('attachments', 10), async (req, res) => {
         if (!perms.can_create && user.role !== 'admin' && user.role !== 'superadmin') {
             return res.status(403).json({ error: 'Anda tidak memiliki izin untuk membuat entry' });
         }
-        const { tanggal, tempat, alamat, jenis, custom_jenis, nilai, no_gl, relasi, jabatan, nama_perusahaan, jenis_usaha, catatan_kode } = req.body;
+
+        // Rule: non-admin users may not create a new entry while they still have
+        // any unsettled (status != 'settled') entertainment entry.
+        // Exception: reimburse "direct settle" flow (status === 'settled') may proceed,
+        // because the entry is settled immediately and does not leave an unsettled item.
+        const reqStatus = typeof req.body.status === 'string' ? req.body.status : '';
+        if (user.role !== 'admin' && user.role !== 'superadmin' && reqStatus !== 'settled') {
+            const unsettledCount = await getUserUnsettled(user);
+            if (unsettledCount > 0) {
+                if (req.files) req.files.forEach(f => fs.unlink(f.path, () => {}));
+                return res.status(403).json({
+                    error: `Anda masih memiliki ${unsettledCount} entry yang belum settle. Semua entry harus berstatus settle terlebih dahulu sebelum dapat membuat entry baru.`
+                });
+            }
+        }
+        const { tanggal, tempat, alamat, jenis, custom_jenis, nilai, no_gl, relasi, jabatan, nama_perusahaan, jenis_usaha, catatan_kode, status, settle_date, entry_type } = req.body;
 
         const errors = [];
         if (!tanggal) errors.push('Tanggal wajib diisi');
@@ -1194,6 +1267,9 @@ router.post('/', upload.array('attachments', 10), async (req, res) => {
         if (!Array.isArray(namaPerusahaanArray) || namaPerusahaanArray.length === 0) errors.push('Nama Perusahaan wajib diisi');
         if (!jenis_usaha) errors.push('Jenis Usaha wajib diisi');
 
+        // Determine final status for direct settle / draft flows
+        const targetStatus = (status === 'settled') ? 'settled' : (status === 'draft' ? 'draft' : 'active');
+
         let attachments = [];
         if (req.files && req.files.length > 0) {
             attachments = req.files.map(f => ({
@@ -1209,6 +1285,7 @@ router.post('/', upload.array('attachments', 10), async (req, res) => {
 
         const isAdmin = user.role === 'admin' || user.role === 'superadmin';
         const insertPayload = {
+            entry_type: entry_type === 'reimburse' ? 'reimburse' : 'plan',
             tanggal, tempat, alamat, jenis,
             custom_jenis: jenis === 'Custom' ? custom_jenis : null,
             nilai: parseFloat(nilai), no_gl,
@@ -1224,8 +1301,16 @@ router.post('/', upload.array('attachments', 10), async (req, res) => {
             owner: user.username,
             requester_name: user.name || user.username,
             requester_username: user.username,
-            status: 'active'
+            status: targetStatus
         };
+
+        // Direct settle (reimburse): set settle fields immediately
+        if (targetStatus === 'settled') {
+            insertPayload.settled_at = knex.fn.now();
+            insertPayload.settled_by = user.username;
+            insertPayload.settle_date = settle_date || (tanggal || new Date().toISOString().split('T')[0]);
+            insertPayload.settle_amount = parseFloat(nilai);
+        }
 
         let insertedId;
         try {
@@ -1266,7 +1351,7 @@ router.put('/:id', upload.array('attachments', 10), async (req, res) => {
             return res.status(403).json({ error: 'Anda tidak memiliki izin untuk edit entry' });
         }
 
-        const { tanggal, tempat, alamat, jenis, custom_jenis, nilai, no_gl, relasi, jabatan, nama_perusahaan, jenis_usaha, catatan_kode, existing_attachments } = req.body;
+        const { tanggal, tempat, alamat, jenis, custom_jenis, nilai, no_gl, relasi, jabatan, nama_perusahaan, jenis_usaha, catatan_kode, existing_attachments, status, settle_date, entry_type } = req.body;
 
         const errors = [];
         if (!tanggal) errors.push('Tanggal wajib diisi');
@@ -1312,7 +1397,8 @@ router.put('/:id', upload.array('attachments', 10), async (req, res) => {
             return res.status(400).json({ error: 'Validasi gagal', details: errors });
         }
 
-        await knex('entertainment_expenses').where('id', req.params.id).update({
+        const updatePayload = {
+            entry_type: entry_type === 'reimburse' ? 'reimburse' : (existing.entry_type || 'plan'),
             tanggal, tempat, alamat, jenis,
             custom_jenis: jenis === 'Custom' ? custom_jenis : null,
             nilai: parseFloat(nilai), no_gl,
@@ -1323,7 +1409,18 @@ router.put('/:id', upload.array('attachments', 10), async (req, res) => {
             jenis_usaha, catatan_kode,
             attachments: JSON.stringify(finalAttachments),
             updated_at: knex.fn.now()
-        });
+        };
+
+        // Reimburse draft → settle langsung dari form edit (status='settled')
+        if (status === 'settled') {
+            updatePayload.status = 'settled';
+            updatePayload.settled_at = knex.fn.now();
+            updatePayload.settled_by = user.username;
+            updatePayload.settle_date = settle_date || (tanggal || new Date().toISOString().split('T')[0]);
+            updatePayload.settle_amount = parseFloat(nilai);
+        }
+
+        await knex('entertainment_expenses').where('id', req.params.id).update(updatePayload);
 
         const updated = await knex('entertainment_expenses').where('id', req.params.id).first();
 

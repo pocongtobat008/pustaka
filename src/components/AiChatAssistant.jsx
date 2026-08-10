@@ -4,7 +4,7 @@ import {
     MessageCircle, X, Send, FileText, FileSpreadsheet, Maximize2, Minimize2,
     Package, Sparkles, Search, ArrowRight, Loader2,
     ChevronDown, Bot, User, Eye, TrendingUp, BarChart3, AlertCircle, CheckCircle2, Zap,
-    History, Trash2, Plus
+    History, Trash2, Plus, Brain, Play, Copy
 } from 'lucide-react';
 import { SemanticAnalyzer, isTaxQuery, getResponseTemplate } from '../utils/semanticAnalyzer.js';
 
@@ -20,6 +20,22 @@ const API_URL = getApiUrl();
 const formatRupiah = (amount) => {
     if (!amount && amount !== 0) return '-';
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
+};
+
+// Relative time in Indonesian (e.g. "2 jam lalu")
+const formatRelativeTime = (dateStr) => {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '';
+    const diff = Date.now() - d.getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'baru saja';
+    if (mins < 60) return `${mins} mnt lalu`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours} jam lalu`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `${days} hari lalu`;
+    return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 };
 
 // Result card component
@@ -617,13 +633,16 @@ export default function AiChatAssistant({
     ]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [isStreaming, setIsStreaming] = useState(false);
     const [agentMode, setAgentMode] = useState(true);
     const [agentStatus, setAgentStatus] = useState('');
     const [sessionId, setSessionId] = useState(null);
+    const [sessionTitle, setSessionTitle] = useState('AI Agent Report');
     const [sessions, setSessions] = useState([]);
     const [showSidebar, setShowSidebar] = useState(false);
     const messagesEndRef = useRef(null);
     const inputRef = useRef(null);
+    const abortRef = useRef(null);
 
     // Load sessions list
     const loadSessions = useCallback(async () => {
@@ -650,6 +669,9 @@ export default function AiChatAssistant({
                     toolCalls: m.tool_calls ? (typeof m.tool_calls === 'string' ? JSON.parse(m.tool_calls) : m.tool_calls) : [],
                     fromCache: m.from_cache || false,
                     cacheAge: m.cache_age || null,
+                    partial: !!m.partial,
+                    reasoning: m.reasoning || '',
+                    thinkingSteps: m.thinking_steps ? (typeof m.thinking_steps === 'string' ? JSON.parse(m.thinking_steps) : m.thinking_steps) : [],
                 }));
                 setMessages(mapped.length > 0 ? mapped : [{
                     role: 'assistant',
@@ -657,10 +679,12 @@ export default function AiChatAssistant({
                     results: []
                 }]);
                 setSessionId(sid);
+                const sMeta = sessions.find(s => s.id === sid);
+                setSessionTitle(sMeta?.title || 'AI Agent Report');
                 setShowSidebar(false);
             }
         } catch { /* ignore */ }
-    }, []);
+    }, [sessions]);
 
     // Create new session
     const createNewSession = useCallback(async () => {
@@ -674,6 +698,7 @@ export default function AiChatAssistant({
             if (res.ok) {
                 const session = await res.json();
                 setSessionId(session.id);
+                setSessionTitle('AI Agent Report');
                 setMessages([{
                     role: 'assistant',
                     text: 'Halo! 👋 Saya asisten AI Pustaka Sistem. Tanyakan apa saja tentang dokumen, invoice, atau arsip Anda.',
@@ -704,6 +729,9 @@ export default function AiChatAssistant({
 
     // Load sessions on mount
     useEffect(() => { loadSessions(); }, [loadSessions]);
+
+    // Abort any in-flight stream when the widget unmounts
+    useEffect(() => () => abortRef.current?.abort(), []);
 
     // Auto-scroll to bottom
     useEffect(() => {
@@ -766,6 +794,72 @@ export default function AiChatAssistant({
         poll();
     };
 
+    const handleContinuePartial = (msg) => {
+        // Lanjutkan jawaban yang terhenti: kirim ulang pertanyaan + teks parsial sebagai konteks
+        const tail = (msg.text || '').trim().slice(-1200);
+        if (!tail) return;
+        const prompt = `Lanjutkan jawabanmu yang terhenti dari bagian berikut (jangan ulangi, lanjutkan dari akhirnya):\n\n${tail}`;
+        handleSend(prompt);
+    };
+
+    const [copiedId, setCopiedId] = useState(null);
+    const copyTimerRef = useRef(null);
+
+    const handleCopyAnswer = async (msg) => {
+        try {
+            const text = `*AI Agent Report*\n\n${msg.text || ''}`;
+            await navigator.clipboard.writeText(text);
+            setCopiedId(msg.streamId || 'x');
+            clearTimeout(copyTimerRef.current);
+            copyTimerRef.current = setTimeout(() => setCopiedId(null), 1800);
+        } catch {
+            // Fallback: textarea + execCommand
+            try {
+                const ta = document.createElement('textarea');
+                ta.value = msg.text || '';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                setCopiedId(msg.streamId || 'x');
+                clearTimeout(copyTimerRef.current);
+                copyTimerRef.current = setTimeout(() => setCopiedId(null), 1800);
+            } catch { /* ignore */ }
+        }
+    };
+
+    const handleDownloadPdf = async (msg) => {
+        try {
+            const res = await fetch(`${API_URL}/ai/agent/pdf`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({
+                    title: (sessionTitle || 'AI Agent Report'),
+                    content: msg.text || '',
+                    thinking: msg.reasoning || '',
+                }),
+            });
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.error || `HTTP ${res.status}`);
+            }
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `AI_Agent_Report_${Date.now()}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error('PDF export error', err);
+            setAgentStatus('Gagal download PDF: ' + (err.message || 'unknown'));
+            setTimeout(() => setAgentStatus(''), 4000);
+        }
+    };
+
     const handleSend = async (text = input) => {
         const msg = text.trim();
         if (!msg || isLoading) return;
@@ -811,6 +905,73 @@ export default function AiChatAssistant({
     };
 
     const sendToAgent = async (text) => {
+        const streamId = `stream-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        let accumulated = '';
+        let ac = null;
+        // Placeholder message bubble that grows as tokens stream in
+        setMessages(prev => [...prev, { role: 'assistant', text: '', results: [], isReport: true, streaming: true, streamId }]);
+        const patchStream = (patch) => setMessages(prev => prev.map(m => (m.streamId === streamId ? { ...m, ...patch } : m)));
+        const finish = (patch) => {
+            patchStream({ streaming: false, streamId: undefined, ...patch });
+            setIsLoading(false);
+            setIsStreaming(false);
+            setAgentStatus('');
+            abortRef.current = null;
+        };
+
+        // Legacy fallback: polling the job queue (used when the stream endpoint is unavailable)
+        const sendToAgentPoll = async (history, currentSessionId) => {
+            try {
+                const res = await fetch(`${API_URL}/ai/agent`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ message: text, history, sessionId: currentSessionId })
+                });
+                const rawText = await res.text();
+                let data;
+                try { data = JSON.parse(rawText); } catch { throw new Error(`Server returned non-JSON response (HTTP ${res.status})`); }
+                if (!res.ok) throw new Error(data?.error || `HTTP ${res.status}`);
+                const jobId = data.jobId;
+                if (!jobId) throw new Error('Tidak ada jobId yang dikembalikan.');
+
+                setAgentStatus('Agent menganalisis database...');
+                let pollCount = 0;
+                const poll = async () => {
+                    pollCount++;
+                    try {
+                        const jr = await fetch(`${API_URL}/search/job/${jobId}`, { credentials: 'include' });
+                        const jd = await jr.json();
+                        if (jd.status === 'completed') {
+                            const result = jd.result || {};
+                            finish({
+                                text: result.reply || (result.toolCalls?.length
+                                    ? `Agent telah mengambil ${result.toolCalls.length} data dari database, namun tidak menghasilkan ringkasan. Silakan coba pertanyaan yang lebih spesifik.`
+                                    : 'Maaf, tidak ada respons dari Agent. Pastikan AI Agent sudah dikonfigurasi dengan benar di Master Data.'),
+                                results: [],
+                                isReport: true,
+                                toolCalls: result.toolCalls || [],
+                                fromCache: result.fromCache || false,
+                                cacheAge: result.cacheAge || null,
+                                suggestions: result.suggestions || []
+                            });
+                            return;
+                        }
+                        if (jd.status === 'failed') throw new Error(jd.error || 'Agent gagal memproses.');
+                        if (pollCount < 4) setAgentStatus('Agent menganalisis database...');
+                        else if (pollCount < 8) setAgentStatus('Agent mengumpulkan data...');
+                        else setAgentStatus('Agent menyusun laporan...');
+                        setTimeout(poll, 1500);
+                    } catch (e) {
+                        finish({ text: `Agent Error: ${e.message}`, results: [] });
+                    }
+                };
+                poll();
+            } catch (err) {
+                finish({ text: `Agent Error: ${err.message}`, results: [] });
+            }
+        };
+
         try {
             setAgentStatus('Mengirim ke Agent...');
             const history = messages
@@ -837,70 +998,122 @@ export default function AiChatAssistant({
                 } catch { /* continue without session */ }
             }
 
-            const res = await fetch(`${API_URL}/ai/agent`, {
+            ac = new AbortController();
+            abortRef.current = ac;
+
+            const res = await fetch(`${API_URL}/ai/agent/stream`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
-                body: JSON.stringify({ message: text, history, sessionId: currentSessionId })
+                body: JSON.stringify({ message: text, history, sessionId: currentSessionId }),
+                signal: ac.signal
             });
-            let data;
-            const rawText = await res.text();
-            try {
-                data = JSON.parse(rawText);
-            } catch {
-                throw new Error(`Server returned non-JSON response (HTTP ${res.status}): ${rawText.slice(0, 200)}`);
-            }
-            if (!res.ok) {
-                throw new Error(data?.error || (`HTTP ${res.status}`));
-            }
-            const jobId = data.jobId;
-            if (!jobId) throw new Error('Tidak ada jobId yang dikembalikan.');
 
+            const contentType = res.headers.get('content-type') || '';
+            // Endpoint tidak tersedia / error → fallback ke polling klasik
+            if (!res.ok || !contentType.includes('text/event-stream')) {
+                await sendToAgentPoll(history, currentSessionId);
+                return;
+            }
+
+            setIsStreaming(true);
             setAgentStatus('Agent menganalisis database...');
 
-            let pollCount = 0;
-            const poll = async () => {
-                pollCount++;
-                try {
-                    const jr = await fetch(`${API_URL}/search/job/${jobId}`, { credentials: 'include' });
-                    let jd;
-                    try { jd = await jr.json(); } catch { throw new Error(`Invalid response from server (HTTP ${jr.status})`); }
-                    if (jd.status === 'completed') {
-                        const result = jd.result || {};
-                        setMessages(prev => [...prev, {
-                            role: 'assistant',
-                            text: result.reply || (result.toolCalls?.length
-                                ? `Agent telah mengambil ${result.toolCalls.length} data dari database, namun tidak menghasilkan ringkasan. Silakan coba pertanyaan yang lebih spesifik.`
-                                : 'Maaf, tidak ada respons dari Agent. Pastikan AI Agent sudah dikonfigurasi dengan benar di Master Data.'),
-                            results: [],
-                            isReport: true,
-                            toolCalls: result.toolCalls || [],
-                            fromCache: result.fromCache || false,
-                            cacheAge: result.cacheAge || null,
-                            suggestions: result.suggestions || []
-                        }]);
-                        setIsLoading(false);
-                        setAgentStatus('');
-                        return;
-                    }
-                    if (jd.status === 'failed') throw new Error(jd.error || 'Agent gagal memproses.');
-
-                    if (pollCount < 4) setAgentStatus('Agent menganalisis database...');
-                    else if (pollCount < 8) setAgentStatus('Agent mengumpulkan data...');
-                    else setAgentStatus('Agent menyusun laporan...');
-
-                    setTimeout(poll, 1500);
-                } catch (e) {
-                    setMessages(prev => [...prev, { role: 'assistant', text: `Agent Error: ${e.message}`, results: [] }]);
-                    setIsLoading(false);
-                    setAgentStatus('');
-                }
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let buf = '';
+            let currentEvent = '';
+            let toolCalls = [];
+            let fromCache = false;
+            let cacheAge = null;
+            let suggestions = [];
+            let reasoningText = '';
+            let thinkingSteps = [];
+            const seenSteps = new Set();
+            let lastReasoningFlush = 0;
+            const flushReasoning = () => {
+                patchStream({ reasoning: reasoningText });
+                lastReasoningFlush = Date.now();
             };
-            poll();
+
+            const pushStep = (type, label) => {
+                if (!label) return;
+                const key = type + ':' + label;
+                if (seenSteps.has(key)) return;
+                seenSteps.add(key);
+                thinkingSteps = [...thinkingSteps, { type, label }];
+                patchStream({ thinkingSteps: [...thinkingSteps] });
+            };
+
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+                buf += decoder.decode(value, { stream: true });
+                const lines = buf.split('\n');
+                buf = lines.pop();
+                for (const rawLine of lines) {
+                    const line = rawLine.trim();
+                    if (!line) continue;
+                    if (line.startsWith('event:')) { currentEvent = line.slice(6).trim(); continue; }
+                    if (!line.startsWith('data:')) continue;
+                    const payload = line.slice(5).trim();
+                    if (payload === '[DONE]') continue;
+                    let j;
+                    try { j = JSON.parse(payload); } catch { continue; }
+                    if (currentEvent === 'token' && typeof j.text === 'string' && j.text.length > 0) {
+                        accumulated += j.text;
+                        patchStream({ text: accumulated });
+                    } else if (currentEvent === 'reasoning' && typeof j.text === 'string' && j.text.length > 0) {
+                        reasoningText += j.text;
+                        // Throttle: hindari re-render per-delta pada reasoning yang panjang
+                        if (Date.now() - lastReasoningFlush > 60) flushReasoning();
+                    } else if (currentEvent === 'status' && j.text) {
+                        setAgentStatus(j.text);
+                        pushStep('status', j.text);
+                    } else if (currentEvent === 'tool' && j.name) {
+                        setAgentStatus(`🔧 ${j.name}`);
+                        pushStep('tool', j.name);
+                    } else if (currentEvent === 'done') {
+                        toolCalls = j.toolCalls || [];
+                        fromCache = !!j.fromCache;
+                        cacheAge = j.cacheAge || null;
+                        suggestions = j.suggestions || [];
+                        if (typeof j.reply === 'string' && j.reply.length > 0) accumulated = j.reply;
+                    } else if (currentEvent === 'error') {
+                        throw new Error(j.message || 'Terjadi kesalahan saat memproses.');
+                    }
+                }
+            }
+
+            if (reasoningText && Date.now() - lastReasoningFlush > 60) flushReasoning();
+
+            finish({
+                text: accumulated || (toolCalls.length
+                    ? `Agent telah mengambil ${toolCalls.length} data dari database, namun tidak menghasilkan ringkasan. Silakan coba pertanyaan yang lebih spesifik.`
+                    : 'Maaf, tidak ada respons dari Agent. Pastikan AI Agent sudah dikonfigurasi dengan benar di Master Data.'),
+                results: [],
+                isReport: true,
+                toolCalls,
+                fromCache,
+                cacheAge,
+                suggestions,
+                thinkingSteps: [...thinkingSteps],
+                reasoning: reasoningText,
+            });
         } catch (err) {
-            setMessages(prev => [...prev, { role: 'assistant', text: `Agent Error: ${err.message}`, results: [] }]);
-            setIsLoading(false);
-            setAgentStatus('');
+            if (err.name === 'AbortError' || ac?.signal?.aborted) {
+                // User menekan Stop — pertahankan teks yang sudah ter-stream
+                finish({
+                    text: accumulated || '⏹️ Respons dihentikan oleh pengguna.',
+                    results: [],
+                    isReport: true,
+                    partial: true,
+                });
+                return;
+            }
+            // Tutup koneksi upstream bila ada error (bukan abort)
+            ac?.abort?.();
+            finish({ text: `Agent Error: ${err.message}`, results: [] });
         }
     };
 
@@ -963,6 +1176,7 @@ export default function AiChatAssistant({
 
     const clearChat = () => {
         setSessionId(null);
+        setSessionTitle('AI Agent Report');
         setMessages([{
             role: 'assistant',
             text: 'Chat direset. Ada yang bisa saya bantu?',
@@ -1098,13 +1312,19 @@ export default function AiChatAssistant({
                                                             : isDarkMode ? 'hover:bg-white/5' : 'hover:bg-white'
                                                     }`}
                                                 >
-                                                    <MessageCircle size={12} className={isDarkMode ? 'text-white/30' : 'text-slate-400'} />
-                                                    <span className={`flex-1 text-[11px] truncate ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>
-                                                        {s.title || 'Percakapan baru'}
-                                                    </span>
+                                                    <MessageCircle size={12} className={`flex-shrink-0 ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`} />
+                                                    <div className="flex-1 min-w-0">
+                                                        <span className={`block text-[11px] truncate ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>
+                                                            {s.title || 'Percakapan baru'}
+                                                        </span>
+                                                        <span className={`block text-[9px] ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>
+                                                            {s.messageCount ? `${s.messageCount} pesan` : 'kosong'} • {formatRelativeTime(s.updated_at)}
+                                                        </span>
+                                                    </div>
                                                     <button
                                                         onClick={(e) => deleteSession(s.id, e)}
-                                                        className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-100 hover:text-red-500 transition-all"
+                                                        className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-100 hover:text-red-500 transition-all flex-shrink-0"
+                                                        title="Hapus sesi"
                                                     >
                                                         <Trash2 size={10} />
                                                     </button>
@@ -1134,7 +1354,39 @@ export default function AiChatAssistant({
                                                 ? 'bg-white/8 text-white/90 rounded-bl-lg border border-white/5'
                                                 : 'bg-slate-100 text-slate-700 rounded-bl-lg'
                                             }`}>
+                                            {/* Thinking (reasoning) panel — collapsible */}
+                                            {(msg.reasoning || (msg.thinkingSteps && msg.thinkingSteps.length > 0)) && (
+                                                <details className={`mb-2 rounded-xl overflow-hidden group ${isDarkMode ? 'bg-white/5 border border-white/10' : 'bg-slate-50 border border-slate-200'}`}>
+                                                    <summary className={`cursor-pointer select-none px-2.5 py-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide ${isDarkMode ? 'text-indigo-300 hover:text-indigo-200' : 'text-indigo-600 hover:text-indigo-500'}`}>
+                                                        <Brain size={12} className={msg.streaming ? 'animate-pulse' : ''} />
+                                                        Thinking
+                                                        {msg.streaming && <span className={`w-1 h-1 rounded-full ${isDarkMode ? 'bg-indigo-400' : 'bg-indigo-500'} animate-ping`} />}
+                                                    </summary>
+                                                    <div className={`px-3 py-2 border-t ${isDarkMode ? 'border-white/10' : 'border-slate-200'}`}>
+                                                        {/* Step trail: status + tool calls */}
+                                                        {msg.thinkingSteps && msg.thinkingSteps.length > 0 && (
+                                                            <ul className={`space-y-1 mb-1.5 ${isDarkMode ? 'text-white/60' : 'text-slate-500'}`}>
+                                                                {msg.thinkingSteps.map((s, si) => (
+                                                                    <li key={si} className="flex items-start gap-1.5 text-[11px]">
+                                                                        <span className="mt-0.5">{s.type === 'tool' ? '🔧' : '🔍'}</span>
+                                                                        <span className="flex-1 leading-snug">{s.label}</span>
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
+                                                        )}
+                                                        {/* Raw reasoning text from the model */}
+                                                        {msg.reasoning && (
+                                                            <p className={`text-[11px] leading-relaxed whitespace-pre-wrap border-t pt-1.5 ${isDarkMode ? 'text-white/50 border-white/10' : 'text-slate-500 border-slate-200'}`}>
+                                                                {msg.reasoning}
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                </details>
+                                            )}
                                             <MarkdownRenderer content={msg.text} isDarkMode={isDarkMode} />
+                                            {msg.streaming && (
+                                                <span className={`inline-block w-[2px] h-4 align-middle ml-0.5 animate-pulse ${isDarkMode ? 'bg-indigo-400' : 'bg-indigo-600'}`} />
+                                            )}
                                         </div>
 
                                         {/* Agent report badge */}
@@ -1143,10 +1395,52 @@ export default function AiChatAssistant({
                                                 <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide ${isDarkMode ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' : 'bg-indigo-100 text-indigo-700 border border-indigo-200'}`}>
                                                     🤖 AI Agent Report
                                                 </span>
+                                                {msg.partial && (
+                                                    <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide ${isDarkMode ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-amber-100 text-amber-700 border border-amber-200'}`}>
+                                                        ⏹️ Parsial
+                                                    </span>
+                                                )}
                                                 {msg.fromCache && (
                                                     <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide ${isDarkMode ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-emerald-100 text-emerald-700 border border-emerald-200'}`}>
                                                         ⚡ Cached {msg.cacheAge ? `(${msg.cacheAge})` : ''}
                                                     </span>
+                                                )}
+                                                {msg.partial && msg.text && (
+                                                    <button
+                                                        onClick={() => handleContinuePartial(msg)}
+                                                        className={`text-[9px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wide transition-all flex items-center gap-1 ${isDarkMode
+                                                            ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/35'
+                                                            : 'bg-indigo-100 text-indigo-700 border border-indigo-200 hover:bg-indigo-200'
+                                                            }`}
+                                                        title="Lanjutkan jawaban yang terhenti"
+                                                    >
+                                                        <Play size={10} /> Lanjutkan
+                                                    </button>
+                                                )}
+                                                {msg.text && !msg.streaming && (
+                                                    <>
+                                                        <button
+                                                            onClick={() => handleCopyAnswer(msg)}
+                                                            className={`text-[9px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wide transition-all flex items-center gap-1 ${isDarkMode
+                                                                ? 'bg-slate-500/20 text-slate-300 border border-slate-500/30 hover:bg-slate-500/35'
+                                                                : 'bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200'
+                                                                }`}
+                                                            title="Salin jawaban"
+                                                        >
+                                                            {copiedId === (msg.streamId || msg.text) ? <CheckCircle2 size={10} /> : <Copy size={10} />}
+                                                            {copiedId === (msg.streamId || msg.text) ? 'Tersalin' : 'Salin'}
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDownloadPdf(msg)}
+                                                            className={`text-[9px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wide transition-all flex items-center gap-1 ${isDarkMode
+                                                                ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30 hover:bg-rose-500/35'
+                                                                : 'bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100'
+                                                                }`}
+                                                            title="Unduh jawaban sebagai PDF"
+                                                        >
+                                                            <FileText size={10} /> PDF
+                                                        </button>
+                                                    </>
                                                 )}
                                             </div>
                                         )}
@@ -1229,7 +1523,7 @@ export default function AiChatAssistant({
                                 </div>
                             ))}
 
-                            {isLoading && <TypingIndicator isDarkMode={isDarkMode} status={agentStatus} />}
+                            {isLoading && !isStreaming && <TypingIndicator isDarkMode={isDarkMode} status={agentStatus} />}
                             <div ref={messagesEndRef} />
                         </div>
 
@@ -1284,14 +1578,19 @@ export default function AiChatAssistant({
                                 />
                                 {/* semantic search button removed per request */}
                                 <button
-                                    onClick={() => handleSend()}
-                                    disabled={!input.trim() || isLoading}
-                                    className={`p-2 rounded-xl transition-all ${input.trim() && !isLoading
-                                        ? 'bg-gradient-to-br from-indigo-600 to-purple-700 text-white shadow-lg shadow-indigo-500/30 hover:scale-105 active:scale-95'
-                                        : isDarkMode ? 'text-white/20' : 'text-slate-300'
+                                    onClick={() => (isStreaming ? abortRef.current?.abort() : handleSend())}
+                                    disabled={(!input.trim() || isLoading) && !isStreaming}
+                                    title={isStreaming ? 'Hentikan respons' : 'Kirim'}
+                                    className={`p-2 rounded-xl transition-all ${isStreaming
+                                        ? 'bg-red-500/15 text-red-400 hover:bg-red-500/25 hover:scale-105 active:scale-95'
+                                        : input.trim() && !isLoading
+                                            ? 'bg-gradient-to-br from-indigo-600 to-purple-700 text-white shadow-lg shadow-indigo-500/30 hover:scale-105 active:scale-95'
+                                            : isDarkMode ? 'text-white/20' : 'text-slate-300'
                                         }`}
                                 >
-                                    {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+                                    {isStreaming
+                                        ? <X size={16} />
+                                        : isLoading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
                                 </button>
                             </div>
                             <p className={`text-[9px] text-center mt-1.5 ${isDarkMode ? 'text-white/20' : 'text-slate-300'}`}>

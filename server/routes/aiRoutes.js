@@ -1,5 +1,5 @@
 import express from 'express';
-import { agentChat } from '../controllers/aiController.js';
+import { agentChat, agentChatStream } from '../controllers/aiController.js';
 import { getCacheStats, invalidateCache } from '../services/agentCache.js';
 import * as chatHistory from '../services/chatHistory.js';
 import { getWarmLogs, getLatestWarmLog, getWarmConfig, updateWarmConfig } from '../services/cacheWarmer.js';
@@ -9,11 +9,134 @@ import { getMemoryStats } from '../services/conversationMemory.js';
 import { buildKnowledgeGraph } from '../services/knowledgeGraph.js';
 import { checkAuth } from '../middleware/auth.js';
 import { knex } from '../db.js';
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 const router = express.Router();
 
 // --- Agent ---
 router.post('/ai/agent', checkAuth, agentChat);
+router.post('/ai/agent/stream', checkAuth, agentChatStream);
+
+// POST /api/ai/agent/pdf — export an AI Agent answer to a PDF document
+router.post('/ai/agent/pdf', checkAuth, async (req, res) => {
+    try {
+        const { title = 'AI Agent Report', content = '', thinking } = req.body || {};
+        if (!content || !String(content).trim()) {
+            return res.status(400).json({ error: 'Konten jawaban kosong.' });
+        }
+
+        const PAGE_W = 595.28; // A4
+        const PAGE_H = 841.89;
+        const MARGIN_X = 48;
+        const MARGIN_Y = 64;
+        const CONTENT_W = PAGE_W - MARGIN_X * 2;
+
+        const safeText = (v) => {
+            const s = String(v ?? '').replace(/[\r\n\t]+/g, ' ').trim();
+            return s.replace(/[^\x20-\x7E]/g, (ch) => {
+                const map = { '–': '-', '—': '-', '‘': "'", '’': "'", '“': '"', '”': '"', '•': '-', '·': '-', '→': '->', '°': ' deg ' };
+                return map[ch] || '';
+            });
+        };
+
+        const pdfDoc = await PDFDocument.create();
+        const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+        const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+        const fontMono = await pdfDoc.embedFont(StandardFonts.Courier);
+        let page = pdfDoc.addPage([PAGE_W, PAGE_H]);
+        let y = PAGE_H - MARGIN_Y;
+        const fontSize = 9.5;
+        const lineGap = 13.5;
+
+        const ensureSpace = (needed) => {
+            if (y - needed < 46) {
+                page = pdfDoc.addPage([PAGE_W, PAGE_H]);
+                y = PAGE_H - MARGIN_Y;
+            }
+        };
+
+        const writeLine = (text, opts = {}) => {
+            const words = safeText(text).split(' ');
+            let cur = '';
+            const flush = () => {
+                if (!cur) return;
+                ensureSpace(lineGap);
+                page.drawText(cur, {
+                    x: MARGIN_X,
+                    y,
+                    size: opts.size || fontSize,
+                    font: opts.bold ? fontBold : font,
+                    color: opts.color || rgb(0.15, 0.16, 0.2),
+                });
+                y -= lineGap;
+                cur = '';
+            };
+            for (const w of words) {
+                const test = cur ? cur + ' ' + w : w;
+                if (font.widthOfTextAtSize(test, opts.size || fontSize) > CONTENT_W) flush();
+                cur = cur ? cur + ' ' + w : w;
+            }
+            flush();
+        };
+
+        // ── Header ──
+        page.drawRectangle({ x: 0, y: PAGE_H - 50, width: PAGE_W, height: 50, color: rgb(0.16, 0.21, 0.5) });
+        page.drawRectangle({ x: 0, y: PAGE_H - 54, width: PAGE_W, height: 4, color: rgb(0.95, 0.72, 0.18) });
+        page.drawText('AI AGENT REPORT', {
+            x: MARGIN_X, y: PAGE_H - 34, size: 15, font: fontBold, color: rgb(1, 1, 1)
+        });
+        page.drawText(safeText(title).slice(0, 80), {
+            x: MARGIN_X, y: PAGE_H - 48, size: 8.5, font, color: rgb(0.85, 0.88, 1)
+        });
+
+        // ── Thinking section (collapsible analog) ──
+        if (thinking && String(thinking).trim()) {
+            ensureSpace(lineGap * 2);
+            writeLine('THINKING', { bold: true, size: 8, color: rgb(0.45, 0.42, 0.55) });
+            writeLine(String(thinking), { size: 8, color: rgb(0.45, 0.42, 0.55) });
+            y -= 8;
+        }
+
+        // ── Answer body ──
+        ensureSpace(lineGap * 2);
+        writeLine('JAWABAN', { bold: true, size: 8, color: rgb(0.45, 0.42, 0.55) });
+        for (const para of String(content).split(/\n{2,}/)) {
+            // Preserve simple markdown headings as bold lines
+            const trimmed = para.trim();
+            if (!trimmed) continue;
+            if (/^#{1,3}\s/.test(trimmed)) {
+                writeLine(trimmed.replace(/^#{1,3}\s*/, '').replace(/[*_`]/g, ''), { bold: true, size: 11 });
+            } else {
+                writeLine(trimmed.replace(/[*_`]/g, ''));
+            }
+            y -= 3;
+        }
+
+        // ── Footer ──
+        const totalPages = pdfDoc.getPageCount();
+        for (let i = 0; i < totalPages; i++) {
+            const p = pdfDoc.getPage(i);
+            p.drawLine({
+                start: { x: MARGIN_X, y: 40 }, end: { x: PAGE_W - MARGIN_X, y: 40 },
+                thickness: 0.6, color: rgb(0.75, 0.78, 0.85),
+            });
+            p.drawText(`Dibuat: ${new Date().toLocaleString('id-ID')}`, {
+                x: MARGIN_X, y: 24, size: 8, font, color: rgb(0.4, 0.42, 0.48)
+            });
+            p.drawText(`Halaman ${i + 1} / ${totalPages}`, {
+                x: PAGE_W - MARGIN_X - 90, y: 24, size: 8, font: fontMono, color: rgb(0.4, 0.42, 0.48)
+            });
+        }
+
+        const pdfBytes = await pdfDoc.save();
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=AI_Agent_Report_${Date.now()}.pdf`);
+        res.send(Buffer.from(pdfBytes));
+    } catch (e) {
+        console.error('[AI Agent] PDF export error:', e);
+        res.status(500).json({ error: e.message || 'Gagal membuat PDF' });
+    }
+});
 
 // --- Cache ---
 router.get('/ai/cache/stats', checkAuth, async (req, res) => {

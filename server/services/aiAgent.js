@@ -52,10 +52,17 @@ function detectAndLogCorrection(sessionId, message, history) {
     }).catch(() => {});
 }
 
-async function getAiSettings() {
+export async function getAiSettings() {
     const row = await knex('ai_settings').orderBy('id', 'asc').first();
-    if (!row) return { id: null, base_url: '', api_key: '', model: '', enabled: false };
-    return row;
+    if (!row) return { id: null, base_url: '', api_key: '', model: '', enabled: false, fallbackModels: [] };
+    let meta = {};
+    try { meta = row.meta ? JSON.parse(row.meta) : {}; } catch { meta = {}; }
+    return {
+        ...row,
+        fallbackModels: Array.isArray(meta.fallback_models)
+            ? meta.fallback_models.filter(m => typeof m === 'string' && m.trim())
+            : [],
+    };
 }
 
 /**
@@ -114,8 +121,9 @@ function classifyIntent(msg) {
 }
 
 // ── Tool definitions (OpenAI function-calling format) ──
-function buildTools() {
-    return [
+function buildTools(userContext = null) {
+    // Daftar tool inti yang dikirim ke semua user
+    const coreTools = [
         {
             type: 'function',
             function: {
@@ -210,14 +218,6 @@ function buildTools() {
                 name: 'get_approvals',
                 description: 'Ambil daftar pengajuan persetujuan (approvals) terbaru.',
                 parameters: { type: 'object', properties: { limit: { type: 'integer' } }, required: [] }
-            }
-        },
-        {
-            type: 'function',
-            function: {
-                name: 'get_users',
-                description: 'Ambil daftar pengguna sistem (id, nama, role, departemen).',
-                parameters: { type: 'object', properties: {}, required: [] }
             }
         },
         {
@@ -336,7 +336,62 @@ function buildTools() {
                 parameters: { type: 'object', properties: { query: { type: 'string', description: 'Kata kunci pencarian' }, category: { type: 'string', description: 'Filter kategori: tax_regulation, accounting_standard, procedure, guide, general' } }, required: ['query'] }
             }
         },
+        // ── NEW: 1MBrain semantic memory ──
+        {
+            type: 'function',
+            function: {
+                name: 'recall_brain_memories',
+                description: 'Cari memori semantik dari 1MBrain: dokumen training yang sudah disinkronkan, pengetahuan yang dipelajari dari percakapan, dan catatan internal. GUNAKAN jika pertanyaan pengetahuan/regulasi tidak terjawab dari tabel database atau untuk konteks tambahan.',
+                parameters: { type: 'object', properties: { query: { type: 'string', description: 'Pertanyaan atau kata kunci' }, limit: { type: 'integer', description: 'Jumlah hasil (default 8)' } }, required: ['query'] }
+            }
+        },
     ];
+
+    // Tools tambahan hanya untuk admin (tidak dikirim ke user non-admin)
+    if (isAdminUser(userContext)) {
+        coreTools.push(
+            {
+                type: 'function',
+                function: {
+                    name: 'get_users',
+                    description: 'Ambil daftar pengguna sistem (id, nama, role, departemen).',
+                    parameters: { type: 'object', properties: {}, required: [] }
+                }
+            },
+            {
+                type: 'function',
+                function: {
+                    name: 'search_audit_trail',
+                    description: 'Cari jejak audit / riwayat aktivitas sistem berdasarkan aksi, user, atau detail (misal: siapa yang mengubah apa, kapan).',
+                    parameters: { type: 'object', properties: { query: { type: 'string', description: 'Kata kunci (aksi/user/detail)' }, limit: { type: 'integer', description: 'Jumlah hasil (default 15)' } }, required: ['query'] }
+                }
+            },
+            {
+                type: 'function',
+                function: {
+                    name: 'get_notifications',
+                    description: 'Tampilkan notifikasi / pengumuman sistem terbaru.',
+                    parameters: { type: 'object', properties: { limit: { type: 'integer', description: 'Jumlah hasil (default 15)' } }, required: [] }
+                }
+            }
+        );
+    }
+
+    // Kirim hanya subset tool agar payload ringan & model lebih fokus.
+    // Tool lain tetap bisa dieksekusi jika dipanggil, tapi tidak diekspos ke LLM.
+    const CORE_NAMES = [
+        'search_documents', 'list_documents',
+        'search_invoices', 'list_invoices',
+        'search_tax_wp', 'search_tax_objects', 'search_inventory_items',
+        'get_tax_summary_aggregate', 'get_document_stats', 'get_tax_audits', 'get_approvals',
+        'search_boxes', 'search_coa_accounts', 'get_coa_stats',
+        'search_training_docs', 'recall_brain_memories',
+    ];
+    const ADMIN_NAMES = ['get_users', 'search_audit_trail', 'get_notifications'];
+    const allowed = isAdminUser(userContext)
+        ? [...CORE_NAMES, ...ADMIN_NAMES]
+        : CORE_NAMES;
+    return coreTools.filter(t => allowed.includes(t.function.name));
 }
 
 // ── Compact result formatting ──
@@ -361,6 +416,15 @@ function formatRowsCompact(rows, maxRows = TOOL_RESULT_ROWS) {
 // ── Module-level references (set per runAgent call) ──
 let embedFnRef = null;
 let brainContextRef = '';
+let agentUserRef = null;
+
+// Tools yang hanya boleh diakses admin (dari chat AI Agent)
+const SENSITIVE_TOOLS = ['search_audit_trail', 'get_notifications'];
+
+function isAdminUser(userContext) {
+    const role = String(userContext?.role || '').toLowerCase();
+    return role === 'admin' || role === 'superadmin';
+}
 
 // ── Tool execution ──
 function resolveLimit(args, defaultVal = TOOL_RESULT_ROWS) {
@@ -368,7 +432,7 @@ function resolveLimit(args, defaultVal = TOOL_RESULT_ROWS) {
     return Number.isFinite(n) ? Math.min(Math.max(n, 1), 50) : defaultVal;
 }
 
-async function executeTool(name, args = {}) {
+async function executeTool(name, args = {}, userContext = agentUserRef) {
     const q = String(args.query || '').trim().slice(0, 120);
     try {
         switch (name) {
@@ -739,6 +803,44 @@ async function executeTool(name, args = {}) {
                     }))
                 };
             }
+            // ── NEW: 1MBrain semantic memory ──
+            case 'recall_brain_memories': {
+                const limit = resolveLimit(args, 8);
+                const results = await brain.recall(q, { limit });
+                if (!results || !results.length) return { count: 0, rows: '(tidak ada memori relevan)' };
+                const rows = results.map(r => ({
+                    score: Number(r.score || 0).toFixed(2),
+                    type: r.memory?.type || 'semantic',
+                    content: String(r.memory?.content || '').slice(0, 300)
+                }));
+                return { count: rows.length, rows: formatRowsCompact(rows, limit) };
+            }
+            // ── NEW: Audit trail & notifications ──
+            case 'search_audit_trail': {
+                if (!isAdminUser(userContext)) {
+                    return { error: 'Akses ditolak: tool search_audit_trail hanya untuk admin.' };
+                }
+                const limit = resolveLimit(args, TOOL_RESULT_ROWS);
+                const rows = await knex('logs')
+                    .select('id', 'user', 'action', 'details', 'timestamp')
+                    .where('action', 'ilike', `%${q}%`)
+                    .orWhere('user', 'ilike', `%${q}%`)
+                    .orWhere('details', 'ilike', `%${q}%`)
+                    .orderBy('timestamp', 'desc')
+                    .limit(limit);
+                return { count: rows.length, rows: formatRowsCompact(rows, limit) };
+            }
+            case 'get_notifications': {
+                if (!isAdminUser(userContext)) {
+                    return { error: 'Akses ditolak: tool get_notifications hanya untuk admin.' };
+                }
+                const limit = resolveLimit(args, TOOL_RESULT_ROWS);
+                const rows = await knex('notifications')
+                    .select('id', 'title', 'message', 'type', 'created_at')
+                    .orderBy('created_at', 'desc')
+                    .limit(limit);
+                return { count: rows.length, rows: formatRowsCompact(rows, limit) };
+            }
             default:
                 return { error: `Tool tidak dikenal: ${name}` };
         }
@@ -796,7 +898,13 @@ Format laporan:
 - Selalu cantumkan ID sumber (mis. Invoice #12, WP #5).
 - Untuk data pajak, tampilkan angka dalam format Rupiah dan jelaskan status (KB/LB).
 - Untuk data COA, tampilkan hierarki lengkap: Akun Induk → Sub COA → Departemen.
-- Bila data kosong, sampaikan jujur dan sarankan langkah selanjutnya.`;
+- Bila data kosong, sampaikan jujur dan sarankan langkah selanjutnya.
+
+Tools tambahan:
+- recall_brain_memories: pengetahuan internal dari 1MBrain (dokumen training tersinkron, pelajaran dari percakapan).
+- search_audit_trail: riwayat aktivitas/jejak audit sistem (KHUSUS ADMIN).
+- get_notifications: notifikasi/pengumuman terbaru (KHUSUS ADMIN).
+- Jika pengguna bukan admin, JANGAN panggil search_audit_trail / get_notifications — jawab bahwa fitur tersebut khusus admin.`;
 
 // ── LLM call (SSE streaming) ──
 export function sanitizeApiKey(key) {
@@ -805,7 +913,10 @@ export function sanitizeApiKey(key) {
   return key.replace(/[^\x00-\x7F]/g, '').trim();
 }
 
-export async function callLLM(messages, tools, settings) {
+const LLM_TIMEOUT_MS = 75000; // timeout agar model yang menggantung (silent drop) tidak membekukan agent
+
+export async function callLLM(messages, tools, settings, opts = {}) {
+  const { stream = false, onToken = null, onReasoning = null, signal = null, maxTokens = null } = opts;
   const url = (settings.base_url || '').replace(/\/+$/, '') + '/chat/completions';
   const apiKey = sanitizeApiKey(settings.api_key);
   const body = {
@@ -813,71 +924,135 @@ export async function callLLM(messages, tools, settings) {
     messages,
     tools,
     temperature: 0.2,
-    max_tokens: 2000,
-    stream: false,
+    max_tokens: maxTokens || 2000,
+    stream,
   };
-  const res = await fetch(url, {
+  const ac = new AbortController();
+  const timer = setTimeout(() => ac.abort(), LLM_TIMEOUT_MS);
+  const onExternalAbort = () => ac.abort();
+  if (signal) {
+    if (signal.aborted) ac.abort();
+    else signal.addEventListener('abort', onExternalAbort, { once: true });
+  }
+  let res;
+  let consumedErr = null; // teks error 400 yang sudah dibaca → dipakai ulang di blok error (cegah double-read)
+  const doFetch = (payload) => fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-    body: JSON.stringify(body),
+    body: JSON.stringify(payload),
+    signal: ac.signal,
   });
+  try {
+    res = await doFetch(body);
+    // Gateway berbasis Gemini (mis. antigravity/gemini-*) menolak field 'stream' yang tidak dikenal
+    // → 400 "Invalid JSON payload / Unknown name stream". Retry sekali TANPA field itu;
+    // gateway ini tetap merespons via SSE (text/event-stream) sehingga streaming token tidak hilang.
+    if (res.status === 400 && 'stream' in body) {
+      consumedErr = await res.text().catch(() => '');
+      if (/unknown name.{0,20}stream|cannot find field|invalid json payload/i.test(consumedErr)) {
+        console.warn(`[AI Agent] Gateway menolak field 'stream' (${String(consumedErr).slice(0, 100)}). Retry tanpa stream...`);
+        const { stream: _drop, ...bodyNoStream } = body;
+        res = await doFetch(bodyNoStream);
+        consumedErr = null; // body baru → biarkan blok error membaca ulang
+      }
+    }
+  } catch (e) {
+    clearTimeout(timer);
+    if (signal) signal.removeEventListener('abort', onExternalAbort);
+    if (e.name === 'AbortError') {
+      // External abort (user menekan Stop) → jangan samarkan sebagai timeout,
+      // supaya controller bisa persist pesan parsial.
+      if (signal?.aborted) throw e;
+      throw new Error(`LLM API timeout setelah ${Math.round(LLM_TIMEOUT_MS / 1000)}s (model tidak merespons)`);
+    }
+    throw e;
+  } finally {
+    clearTimeout(timer);
+  }
     if (!res.ok) {
-        const errText = await res.text().catch(() => '');
+        const errText = consumedErr !== null ? consumedErr : await res.text().catch(() => '');
+        console.warn(`[AI Agent] LLM HTTP ${res.status} | model=${body.model} | tools=${Array.isArray(body.tools) ? body.tools.length : 'n/a'} | messages=${body.messages?.length || 0}`);
         throw new Error(`LLM API ${res.status}: ${errText.slice(0, 200)}`);
     }
     // Handle SSE/streaming response (text/event-stream)
     const contentType = res.headers.get('content-type') || '';
     let data;
     if (contentType.includes('text/event-stream')) {
-        const raw = await res.text();
-        const lines = raw.split('\n');
-        // Accumulate content and tool_calls from streaming deltas
+        // Akumulator konten & tool_calls (dipisah: reasoning_content TIDAK ikut jawaban final)
         let accContent = '';
+        let accReasoning = '';
         const accToolCalls = {};  // index → { id, type, function: { name, arguments } }
         let finishReason = null;
         let model = null;
-        for (const line of lines) {
-            if (line.startsWith('data: ') && line !== 'data: [DONE]') {
-                try {
-                    const obj = JSON.parse(line.slice(6));
-                    if (obj.model) model = obj.model;
-                    const choice = obj.choices?.[0];
-                    if (!choice) continue;
-                    if (choice.finish_reason) finishReason = choice.finish_reason;
-                    // Non-streaming: full message object
-                    if (choice.message) {
-                        accContent = choice.message.content || accContent;
-                        if (choice.message.tool_calls) {
-                            for (const tc of choice.message.tool_calls) {
-                                accToolCalls[tc.index ?? 0] = tc;
-                            }
+        const processLine = (line) => {
+            if (!line.startsWith('data: ') || line === 'data: [DONE]') return;
+            try {
+                const obj = JSON.parse(line.slice(6));
+                if (obj.model) model = obj.model;
+                const choice = obj.choices?.[0];
+                if (!choice) return;
+                if (choice.finish_reason) finishReason = choice.finish_reason;
+                // Non-streaming: full message object
+                if (choice.message) {
+                    if (choice.message.content) accContent = choice.message.content;
+                    if (choice.message.reasoning_content) accReasoning = choice.message.reasoning_content;
+                    if (choice.message.tool_calls) {
+                        for (const tc of choice.message.tool_calls) {
+                            accToolCalls[tc.index ?? 0] = tc;
                         }
                     }
-                    // Streaming: delta object
-                    if (choice.delta) {
-                        if (choice.delta.content) accContent += choice.delta.content;
-                        if (choice.delta.reasoning_content) accContent += choice.delta.reasoning_content;
-                        if (choice.delta.tool_calls) {
-                            for (const tc of choice.delta.tool_calls) {
-                                const idx = tc.index ?? 0;
-                                if (!accToolCalls[idx]) {
-                                    accToolCalls[idx] = { id: tc.id, type: 'function', function: { name: '', arguments: '' } };
-                                }
-                                if (tc.id) accToolCalls[idx].id = tc.id;
-                                if (tc.function?.name) accToolCalls[idx].function.name += tc.function.name;
-                                if (tc.function?.arguments) accToolCalls[idx].function.arguments += tc.function.arguments;
+                }
+                // Streaming: delta object
+                if (choice.delta) {
+                    if (choice.delta.content) {
+                        accContent += choice.delta.content;
+                        if (onToken) onToken(choice.delta.content);
+                    }
+                    if (choice.delta.reasoning_content) {
+                        accReasoning += choice.delta.reasoning_content;
+                        if (onReasoning) onReasoning(choice.delta.reasoning_content);
+                    }
+                    if (choice.delta.tool_calls) {
+                        for (const tc of choice.delta.tool_calls) {
+                            const idx = tc.index ?? 0;
+                            if (!accToolCalls[idx]) {
+                                accToolCalls[idx] = { id: tc.id, type: 'function', function: { name: '', arguments: '' } };
                             }
+                            if (tc.id) accToolCalls[idx].id = tc.id;
+                            if (tc.function?.name) accToolCalls[idx].function.name += tc.function.name;
+                            if (tc.function?.arguments) accToolCalls[idx].function.arguments += tc.function.arguments;
                         }
                     }
-                } catch {}
+                }
+            } catch {}
+        };
+        if (stream) {
+            // Streaming incremental: baca chunk demi chunk → token real-time
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let buf = '';
+            for (;;) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                buf += decoder.decode(value, { stream: true });
+                let idx;
+                while ((idx = buf.indexOf('\n')) >= 0) {
+                    const line = buf.slice(0, idx).replace(/\r$/, '');
+                    buf = buf.slice(idx + 1);
+                    processLine(line);
+                }
             }
+            if (buf.trim()) processLine(buf.trim());
+        } else {
+            // Buffered: gateway mengirim SSE walau diminta non-stream
+            for (const line of (await res.text()).split('\n')) processLine(line);
         }
         const toolCallsArr = Object.values(accToolCalls).filter(tc => tc.function?.name);
         data = {
             choices: [{
                 message: {
                     role: 'assistant',
-                    content: accContent || null,
+                    content: accContent || accReasoning || null,
                     tool_calls: toolCallsArr.length > 0 ? toolCallsArr : undefined,
                 },
                 finish_reason: finishReason,
@@ -897,15 +1072,103 @@ export async function callLLM(messages, tools, settings) {
     return data;
 }
 
+// ── Fall back on model-related failures & unresponsive models; NOT on transient 429/5xx ──
+function isModelRelatedError(err) {
+    const m = String(err?.message || '').toLowerCase();
+    if (/429|rate.?limit|quota|insufficient_quota/i.test(m)) return false;
+    if (/5\d\d|internal server error|bad gateway|gateway timeout|service unavailable/i.test(m)) return false;
+    return /model_not_found|no active credentials|invalid.*model|model.*not found|unknown model|not exist|not allowed|respons kosong|empty response|bad request.*model|timeout|aborted|fetch failed|econnrefused|enotfound|econnreset|network/i.test(m);
+}
+
+// ── Resilient LLM call: try main model first, then fallback models ──
+async function callLLMWithFallback(messages, tools, settings, opts = {}) {
+    const models = [settings?.model, ...(settings?.fallbackModels || [])]
+        .map(m => (typeof m === 'string' ? m.trim() : ''))
+        .filter(Boolean)
+        .filter((m, i, arr) => arr.indexOf(m) === i);
+    if (models.length === 0) return callLLM(messages, tools, settings, opts);
+
+    const tried = [];
+    let lastErr = null;
+    for (const model of models) {
+        tried.push(model);
+        try {
+            const data = await callLLM(messages, tools, { ...settings, model }, opts);
+            if (data?.choices?.length) return data;
+            lastErr = new Error('Respons kosong dari model');
+            console.warn(`[AI Agent] Model "${model}" balas kosong, coba model berikutnya...`);
+        } catch (e) {
+            // User membatalkan (Stop) → hentikan segera, jangan coba fallback model lain
+            if (e.name === 'AbortError' || opts.signal?.aborted) throw e;
+            if (!isModelRelatedError(e)) throw e; // transient issue → surface immediately
+            lastErr = e;
+            console.warn(`[AI Agent] Model "${model}" gagal (${String(e.message).slice(0, 140)}), coba model berikutnya...`);
+        }
+    }
+    throw new Error(`Semua model gagal (${tried.join(' → ')}). Cek kredensial/channel di gateway LLM. Detail: ${String(lastErr?.message || lastErr).slice(0, 160)}`);
+}
+
+// ── Tool-enabled LLM call: model boleh memanggil tools, hasil dieksekusi, loop sampai jawaban final ──
+async function callLLMWithTools(messages, settings, track = [], maxRounds = 6, userContext = null, opts = {}) {
+    const { onTool, signal } = opts;
+    for (let round = 0; round < maxRounds; round++) {
+        let data;
+        try {
+            data = await callLLMWithFallback(messages, buildTools(userContext), settings, { ...opts, signal });
+        } catch (e) {
+            // User membatalkan (Stop) → hentikan segera, jangan retry
+            if (e.name === 'AbortError' || signal?.aborted) throw e;
+            // Tool call ditolak gateway (mis. model memanggil tool yang tidak tersedia utk role ini)
+            // → retry sekali tanpa tools agar tidak error/gagal ke user.
+            const m = String(e?.message || '');
+            if (!isModelRelatedError(e) && /(11133|40000|function|tool|unknown.*name)/i.test(m)) {
+                console.warn(`[AI Agent] Tool call ditolak gateway (${m.slice(0, 120)}). Retry tanpa tools...`);
+                const retryMsgs = [
+                    ...messages,
+                    { role: 'system', content: 'CATATAN SISTEM: Beberapa tool tidak tersedia untuk sesi ini. JANGAN panggil tool apa pun; jawab berdasarkan data yang sudah ada di percakapan.' },
+                ];
+                const data2 = await callLLMWithFallback(retryMsgs, [], settings, { ...opts, signal });
+                return (data2?.choices?.[0]?.message?.content || '').trim() || '';
+            }
+            throw e;
+        }
+        const choice = data?.choices?.[0]?.message;
+        const toolCalls = choice?.tool_calls;
+        if (toolCalls && toolCalls.length) {
+            const results = await executeToolCalls(toolCalls, messages);
+            for (const r of results) {
+                track.push({ name: r.name, args: r.args });
+                console.log(`[AI Agent] Tool → ${r.name}${r.result?.error ? ' (error)' : ''}`);
+                if (onTool) onTool(r.name, r.args);
+            }
+            continue;
+        }
+        const reply = (choice?.content || '').trim();
+        if (reply) return reply;
+    }
+    return '';
+}
+
 // ── Parallel tool execution ──
-async function executeToolCalls(toolCalls, messages) {
+async function executeToolCalls(toolCalls, messages, userContext = agentUserRef) {
     const promises = toolCalls.map(async (tc) => {
         let args = {};
         try { args = tc.function.arguments ? JSON.parse(tc.function.arguments) : {}; } catch { args = {}; }
-        const result = await executeTool(tc.function.name, args);
+        const result = await executeTool(tc.function.name, args, userContext);
         return { id: tc.id, name: tc.function.name, args, result };
     });
     const results = await Promise.all(promises);
+    // API OpenAI-compatible WAJIB assistant message berisi tool_calls sebelum tool responses
+    const assistantToolMsg = {
+        role: 'assistant',
+        content: null,
+        tool_calls: results.map(r => ({
+            id: r.id,
+            type: 'function',
+            function: { name: r.name, arguments: JSON.stringify(r.args || {}) },
+        })),
+    };
+    messages.push(assistantToolMsg);
     for (const r of results) {
         messages.push({ role: 'tool', tool_call_id: r.id, content: JSON.stringify(r.result) });
     }
@@ -1260,7 +1523,7 @@ function formatDbResultsForLLM(results) {
 }
 
 // ── Generate AI report from database data ──
-async function generateReportFromData(message, dbResults, settings, lastTurns = []) {
+async function generateReportFromData(message, dbResults, settings, lastTurns = [], track = [], userContext = null, opts = {}) {
     const dataStr = formatDbResultsForLLM(dbResults);
     const messages = [
         {
@@ -1275,20 +1538,22 @@ ATURAN:
 - Cantumkan ID sumber data (mis. Dokumen #5, Invoice #12)
 - Jika data menyebutkan status, jelaskan artinya
 - Jawab dalam Bahasa Indonesia yang baik
-- Jangan menambahkan informasi yang tidak ada dalam data`
+- Jangan mengarang informasi yang tidak ada dalam data
+- Jika pengguna meminta data yang TIDAK ada dalam DATA di atas (mis. notifikasi, audit trail, pengguna, detail tertentu), WAJIB panggil tool yang tersedia untuk mengambilnya sebelum menjawab
+- JANGAN PERNAH menulis kalimat seperti "Saya akan memanggil tool..." sebagai jawaban — langsung panggil tool-nya sekarang`
         },
         ...(lastTurns || []),
         {
             role: 'user',
-            content: `Pertanyaan: ${message}\n\n${brainContextRef ? `MEMORI TERKAIT:\n${brainContextRef}\n\n` : ''}DATA DARI DATABASE:\n${dataStr}\n\nBuat laporan berdasarkan data di atas.`
+            content: `Pertanyaan: ${message}\n\n${brainContextRef ? `MEMORI TERKAIT:\n${brainContextRef}\n\n` : ''}DATA DARI DATABASE:\n${dataStr}\n\nBuat laporan berdasarkan data di atas.\n\nPENTING: Jika pengguna meminta data yang TIDAK tersedia dalam DATA di atas (mis. notifikasi, audit trail, detail pengguna, dsb), gunakan tools yang tersedia untuk mengambilnya sebelum menjawab.`
         }
     ];
-    const data = await callLLM(messages, [], settings);
-    return data?.choices?.[0]?.message?.content?.trim() || 'Tidak dapat menghasilkan laporan dari data yang ditemukan.';
+    const reply = await callLLMWithTools(messages, settings, track, 6, userContext, opts);
+    return reply || 'Tidak dapat menghasilkan laporan dari data yang ditemukan.';
 }
 
 // ── Generate AI response from knowledge (training docs) ──
-async function generateReportWithKnowledge(message, knowledgeContext, settings, lastTurns = []) {
+async function generateReportWithKnowledge(message, knowledgeContext, settings, lastTurns = [], track = [], userContext = null, opts = {}) {
     const messages = [
         {
             role: 'system',
@@ -1305,15 +1570,15 @@ ATURAN:
         ...(lastTurns || []),
         {
             role: 'user',
-            content: `Pertanyaan: ${message}\n\n${brainContextRef ? `MEMORI TERKAIT:\n${brainContextRef}\n\n` : ''}PENGETAHUAN:\n${knowledgeContext}\n\nJawab pertanyaan berdasarkan pengetahuan di atas.`
+            content: `Pertanyaan: ${message}\n\n${brainContextRef ? `MEMORI TERKAIT:\n${brainContextRef}\n\n` : ''}PENGETAHUAN:\n${knowledgeContext}\n\nJawab pertanyaan berdasarkan pengetahuan di atas.\n\nPENTING: Jika pengguna meminta data yang TIDAK tersedia dalam PENGETAHUAN di atas, gunakan tools yang tersedia untuk mengambilnya sebelum menjawab.`
         }
     ];
-    const data = await callLLM(messages, [], settings);
-    return data?.choices?.[0]?.message?.content?.trim() || 'Maaf, tidak dapat menjawab berdasarkan pengetahuan yang tersedia.';
+    const reply = await callLLMWithTools(messages, settings, track, 6, userContext, opts);
+    return reply || 'Maaf, tidak dapat menjawab berdasarkan pengetahuan yang tersedia.';
 }
 
 // ── AI makes a decision/creative response when no data found ──
-async function aiGenerateResponse(message, history, settings) {
+async function aiGenerateResponse(message, history, settings, userContext = null, opts = {}) {
     const messages = [
         {
             role: 'system',
@@ -1328,16 +1593,31 @@ ATURAN:
 - Jawab dalam Bahasa Indonesia yang ramah dan membantu`
         },
         ...(history || []).slice(-4),
-        { role: 'user', content: `${brainContextRef ? `Memori terkait:\n${brainContextRef}\n\n` : ''}${message}` }
+        { role: 'user', content: `${brainContextRef ? `Memori terkait:\n${brainContextRef}\n\n` : ''}${message}\n\nPENTING: Untuk menjawab, langsung panggil tool yang tersedia untuk mengambil data yang diperlukan. JANGAN menulis rencana — panggil tool-nya sekarang.` }
     ];
-    const data = await callLLM(messages, [], settings);
-    return data?.choices?.[0]?.message?.content?.trim() || 'Maaf, saya tidak dapat memproses pertanyaan Anda saat ini. Silakan coba lagi.';
+    // Tailor konteks per role: non-admin tidak boleh disuruh memakai tool khusus admin
+    if (!isAdminUser(userContext)) {
+        messages.push({
+            role: 'system',
+            content: 'CATATAN: Tool notifikasi (get_notifications), audit trail (search_audit_trail), dan daftar pengguna (get_users) HANYA untuk admin dan TIDAK tersedia untuk Anda. Jika pengguna menanyakan hal itu, sampaikan bahwa fitur tersebut khusus admin.',
+        });
+    }
+    const executedTools = [];
+    const reply = await callLLMWithTools(messages, settings, executedTools, 6, userContext, opts);
+    return {
+        reply: reply || 'Maaf, saya tidak dapat memproses pertanyaan Anda saat ini. Silakan coba lagi.',
+        toolCalls: executedTools,
+    };
 }
 
 // ── Main agent loop ──
-export async function runAgent(message, history = [], embedFn = null, sessionId = null) {
+export async function runAgent(message, history = [], embedFn = null, sessionId = null, userContext = null, opts = {}) {
+    const { onStatus = null, onToken = null, onTool = null, onReasoning = null, signal = null, stream = false } = opts;
+    const agentOpts = { onStatus, onToken, onTool, onReasoning, signal, stream };
+    const emitStatus = (text) => { try { onStatus?.(text); } catch {} };
     embedFnRef = embedFn;
     brainContextRef = '';
+    agentUserRef = userContext || null;
     const settings = await getAiSettings();
     if (!settings.enabled || !settings.api_key || !settings.base_url) {
         throw new Error('AI Agent belum dikonfigurasi. Atur Base URL & API Key di Master Data (Admin).');
@@ -1387,6 +1667,7 @@ export async function runAgent(message, history = [], embedFn = null, sessionId 
     }
 
     // ── STEP 1: Search Database Directly ──
+    emitStatus('Mencari data di database...');
     console.log(`[AI Agent] STEP 1: Mencari data di database...`);
     const dbResults = await searchDatabaseDirect(message);
     const dbFound = Object.values(dbResults).some(r => r && r.length > 0);
@@ -1401,20 +1682,30 @@ export async function runAgent(message, history = [], embedFn = null, sessionId 
 
     // ── STEP 2: If DB data found, process report with AI ──
     if (dbFound) {
+        emitStatus('Data ditemukan. Menyusun laporan...');
         console.log(`[AI Agent] STEP 2: Data ditemukan di database. Mengolah laporan dengan AI...`);
-        const reply = await generateReportFromData(message, dbResults, settings);
+        const agentTrack2 = [];
+        const reply = await generateReportFromData(message, dbResults, settings, [], agentTrack2, agentUserRef, agentOpts);
+        if (agentTrack2.length) {
+            toolCallsLog.push(...agentTrack2);
+            console.log(`[AI Agent]   → ${agentTrack2.length} tool dieksekusi: ${agentTrack2.map(t => t.name).join(', ')}`);
+        }
 
         brain.rememberTurn(message, reply, { sessionId, topics: [intent], importance: 0.7 }).catch(() => {});
 
-        saveToCache(message, reply, toolCallsLog, settings.model || 'unknown', embedFn).catch(e =>
-            console.warn(`[AI Agent] Cache save failed: ${e.message}`)
-        );
+        const sensitive2 = agentTrack2.some(t => SENSITIVE_TOOLS.includes(t.name));
+        if (!sensitive2) {
+            saveToCache(message, reply, toolCallsLog, settings.model || 'unknown', embedFn).catch(e =>
+                console.warn(`[AI Agent] Cache save failed: ${e.message}`)
+            );
+        }
         const suggestions = generateSuggestions(toolCallsLog, intent, message);
         logLearning(sessionId, message, reply, toolCallsLog);
         return { reply, toolCalls: toolCallsLog, suggestions };
     }
 
     // ── STEP 3: Search Knowledge (Training Docs) ──
+    emitStatus('Mencari di dokumen training...');
     console.log(`[AI Agent] STEP 3: Data tidak ditemukan. Mencari di knowledge (dokumen training)...`);
     let trainingContext = '';
     if (embedFn) {
@@ -1435,28 +1726,46 @@ export async function runAgent(message, history = [], embedFn = null, sessionId 
     }
 
     if (trainingContext) {
+        emitStatus('Pengetahuan ditemukan. Menyusun jawaban...');
         console.log(`[AI Agent] STEP 3b: Pengetahuan ditemukan. Menghasilkan jawaban dengan AI...`);
-        const reply = await generateReportWithKnowledge(message, trainingContext, settings);
+        const agentTrack3 = [];
+        const reply = await generateReportWithKnowledge(message, trainingContext, settings, [], agentTrack3, agentUserRef, agentOpts);
+        if (agentTrack3.length) {
+            toolCallsLog.push(...agentTrack3);
+            console.log(`[AI Agent]   → ${agentTrack3.length} tool dieksekusi: ${agentTrack3.map(t => t.name).join(', ')}`);
+        }
 
         brain.rememberTurn(message, reply, { sessionId, topics: [intent, 'knowledge'], importance: 0.6 }).catch(() => {});
 
-        saveToCache(message, reply, toolCallsLog, settings.model || 'unknown', embedFn).catch(e =>
-            console.warn(`[AI Agent] Cache save failed: ${e.message}`)
-        );
+        const sensitive3 = agentTrack3.some(t => SENSITIVE_TOOLS.includes(t.name));
+        if (!sensitive3) {
+            saveToCache(message, reply, toolCallsLog, settings.model || 'unknown', embedFn).catch(e =>
+                console.warn(`[AI Agent] Cache save failed: ${e.message}`)
+            );
+        }
         const suggestions = generateSuggestions(toolCallsLog, intent, message);
         logLearning(sessionId, message, reply, toolCallsLog);
         return { reply, toolCalls: toolCallsLog, suggestions };
     }
 
-    // ── STEP 4: Make Decision Based on AI ──
+    // ── STEP 4: Make Decision Based on AI (dengan tool loop) ──
+    emitStatus('Mengambil keputusan berdasarkan AI...');
     console.log(`[AI Agent] STEP 4: Tidak ada data/knowledge. Mengambil keputusan berdasarkan AI...`);
-    const reply = await aiGenerateResponse(message, hist, settings);
+    const { reply, toolCalls: agentToolCalls } = await aiGenerateResponse(message, hist, settings, agentUserRef, agentOpts);
+    if (agentToolCalls && agentToolCalls.length) {
+        toolCallsLog.push(...agentToolCalls);
+        console.log(`[AI Agent]   → ${agentToolCalls.length} tool dieksekusi: ${agentToolCalls.map(t => t.name).join(', ')}`);
+    }
 
     brain.rememberTurn(message, reply, { sessionId, topics: [intent], importance: 0.5 }).catch(() => {});
 
-    saveToCache(message, reply, toolCallsLog, settings.model || 'unknown', embedFn).catch(e =>
-        console.warn(`[AI Agent] Cache save failed: ${e.message}`)
-    );
+    // Jangan cache jawaban yang berasal dari tool sensitif (mencegah bocor antar-role)
+    const sensitiveUsed = (agentToolCalls || []).some(t => SENSITIVE_TOOLS.includes(t.name));
+    if (!sensitiveUsed) {
+        saveToCache(message, reply, toolCallsLog, settings.model || 'unknown', embedFn).catch(e =>
+            console.warn(`[AI Agent] Cache save failed: ${e.message}`)
+        );
+    }
     const suggestions = generateSuggestions(toolCallsLog, intent, message);
     logLearning(sessionId, message, reply, toolCallsLog);
     return { reply, toolCalls: toolCallsLog, suggestions };

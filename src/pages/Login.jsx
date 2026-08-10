@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { User, FileKey, AlertCircle, ShieldCheck, Zap, ArrowRight, BookOpen, Sun, Moon, Globe } from 'lucide-react';
+import { User, FileKey, AlertCircle, ShieldCheck, Zap, ArrowRight, BookOpen, Sun, Moon, Globe, Eye, EyeOff } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAppStore } from '../store/useAppStore';
 
 export default function Login({ onLogin }) {
     const [loginForm, setLoginForm] = useState({ username: '', password: '', error: '' });
+    const [showPassword, setShowPassword] = useState(false);
     const { language, setLanguage } = useLanguage();
     const { isDarkMode, setIsDarkMode } = useAppStore();
     const isEnglish = language === 'en';
@@ -178,12 +179,21 @@ export default function Login({ onLogin }) {
                             <div className="relative group-focus-within:scale-[1.01] transition-all duration-300">
                                 <FileKey className="absolute left-3 xl:left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors w-4 h-4 xl:w-5 xl:h-5" />
                                 <input
-                                    type="password"
+                                    type={showPassword ? 'text' : 'password'}
                                     value={loginForm.password}
                                     onChange={e => setLoginForm({ ...loginForm, password: e.target.value })}
-                                    className="w-full pl-10 xl:pl-12 pr-4 py-3 xl:py-4 bg-gray-50 dark:bg-slate-950 border-2 border-gray-100 dark:border-slate-800 rounded-xl xl:rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 dark:text-white transition-all text-sm xl:text-base font-bold outline-none"
+                                    className="w-full pl-10 xl:pl-12 pr-12 xl:pr-14 py-3 xl:py-4 bg-gray-50 dark:bg-slate-950 border-2 border-gray-100 dark:border-slate-800 rounded-xl xl:rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 dark:text-white transition-all text-sm xl:text-base font-bold outline-none"
                                     placeholder="••••••••"
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-3 xl:right-4 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors"
+                                    title={showPassword ? (isEnglish ? 'Hide password' : 'Sembunyikan password') : (isEnglish ? 'Show password' : 'Lihat password')}
+                                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                >
+                                    {showPassword ? <EyeOff size={18} className="xl:w-5 xl:h-5" /> : <Eye size={18} className="xl:w-5 xl:h-5" />}
+                                </button>
                             </div>
                         </div>
                         <button type="submit" className="w-full py-3 xl:py-4 bg-[#4318FF] hover:bg-indigo-700 text-white rounded-xl xl:rounded-2xl text-sm xl:text-base font-black shadow-xl shadow-indigo-500/30 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 xl:gap-3 group">

@@ -69,7 +69,7 @@ export const userCreateSchema = z.object({
 
 export const userUpdateSchema = z.object({
     username: z.string().min(1).optional(),
-    password: z.string().min(1).optional(),
+    password: z.preprocess((v) => (v === '' || v == null ? undefined : v), z.string().min(1).optional()),
     name: z.string().min(1).optional(),
     role: z.string().min(1).optional(),
     department: z.string().optional()

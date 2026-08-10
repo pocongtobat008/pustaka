@@ -1,5 +1,15 @@
 import { apiClient, API_URL } from './apiClient';
 
+const parseApiError = async (response, fallback) => {
+    try {
+        const err = await response.json();
+        const details = Array.isArray(err.details) ? err.details.join('; ') : (err.details || '');
+        return details ? `${err.error || fallback}: ${details}` : (err.error || fallback);
+    } catch {
+        return `${fallback} (HTTP ${response.status})`;
+    }
+};
+
 export const invoiceService = {
     // ── Invoices ──
     async getAll(params = {}) {
@@ -28,6 +38,20 @@ export const invoiceService = {
 
     async delete(id) {
         return apiClient.fetchJson(`${API_URL}/invoices/${id}`, { method: 'DELETE' });
+    },
+
+    async cancel(id) {
+        const response = await fetch(`${API_URL}/invoices/${id}/cancel`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({})
+        });
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.error || 'Gagal membatalkan invoice');
+        }
+        return response.json();
     },
 
     async update(id, data) {
@@ -215,6 +239,36 @@ export const invoiceService = {
         return response.json();
     },
 
+    async getSettleDraft(id) {
+        return apiClient.fetchJson(`${API_URL}/invoices/proforma/${id}/settle/draft`);
+    },
+
+    async getSettledInvoices(proformaId) {
+        return apiClient.fetchJson(`${API_URL}/invoices/proforma/${proformaId}/settled`);
+    },
+
+    async getSettleDrafts() {
+        return apiClient.fetchJson(`${API_URL}/invoices/proforma/settle/drafts`);
+    },
+
+    async saveSettleDraft(id, data) {
+        const response = await fetch(`${API_URL}/invoices/proforma/${id}/settle/draft`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.error || 'Gagal menyimpan draft');
+        }
+        return response.json();
+    },
+
+    async clearSettleDraft(id) {
+        return apiClient.fetchJson(`${API_URL}/invoices/proforma/${id}/settle/draft`, { method: 'DELETE' });
+    },
+
     // ── Rules ──
     async getRules() {
         return apiClient.fetchJson(`${API_URL}/invoices/rules`);
@@ -280,6 +334,21 @@ export const invoiceService = {
         });
     },
 
+    async duplicateForInput(id) {
+        return apiClient.fetchJson(`${API_URL}/invoices/${id}/duplicate-input`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        });
+    },
+
+    async rejectTax(id, notes) {
+        return apiClient.fetchJson(`${API_URL}/invoices/${id}/tax/reject`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ notes })
+        });
+    },
+
     async sendbackProforma(id, notes) {
         return apiClient.fetchJson(`${API_URL}/invoices/proforma/${id}/sendback`, {
             method: 'POST',
@@ -289,14 +358,115 @@ export const invoiceService = {
     },
 
     // ── PDF ──
+    async notifyProforma(id) {
+        return apiClient.fetchJson(`${API_URL}/invoices/proforma/${id}/notify`, { method: 'POST' });
+    },
+
+    async testEmail() {
+        return apiClient.fetchJson(`${API_URL}/invoices/test-email`, { method: 'POST' });
+    },
+
+    // ── Flow / Workflow ──
+    async getFlow() {
+        return apiClient.fetchJson(`${API_URL}/invoices/flow`);
+    },
+
+    async seedFlow() {
+        return apiClient.fetchJson(`${API_URL}/invoices/flow/seed`, { method: 'POST' });
+    },
+
+    async createFlowStep(data) {
+        return apiClient.fetchJson(`${API_URL}/invoices/flow`, { method: 'POST', body: JSON.stringify(data) });
+    },
+
+    async updateFlowStep(id, data) {
+        return apiClient.fetchJson(`${API_URL}/invoices/flow/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+    },
+
+    async deleteFlowStep(id) {
+        return apiClient.fetchJson(`${API_URL}/invoices/flow/${id}`, { method: 'DELETE' });
+    },
+
+    async reorderFlow(ids) {
+        return apiClient.fetchJson(`${API_URL}/invoices/flow/reorder`, { method: 'POST', body: JSON.stringify({ ids }) });
+    },
+
+    async getMailStatus() {
+        return apiClient.fetchJson(`${API_URL}/invoices/flow/mail-status`);
+    },
+
+    async getFlowRecipients({ event, stepId, assigneeType, assigneeValue, customEmails } = {}) {
+        const qs = new URLSearchParams();
+        if (event) qs.set('event', event);
+        if (stepId) qs.set('step_id', String(stepId));
+        if (assigneeType) qs.set('assignee_type', assigneeType);
+        if (assigneeValue) qs.set('assignee_value', assigneeValue);
+        if (customEmails) qs.set('custom_emails', String(customEmails));
+        const query = qs.toString();
+        return apiClient.fetchJson(`${API_URL}/invoices/flow/recipients${query ? '?' + query : ''}`);
+    },
+
+    async getEmailTemplates() {
+        return apiClient.fetchJson(`${API_URL}/invoices/flow/email-templates`);
+    },
+
+    async previewEmailTemplate(event, { subject, body_html, ctx } = {}) {
+        return apiClient.fetchJson(`${API_URL}/invoices/flow/email-templates/preview`, {
+            method: 'POST',
+            body: JSON.stringify({ event, subject, body_html, ctx: ctx || {} }),
+        });
+    },
+
+    async updateEmailTemplate(event, { subject, body_html }) {
+        return apiClient.fetchJson(`${API_URL}/invoices/flow/email-templates/${encodeURIComponent(event)}`, {
+            method: 'PUT',
+            body: JSON.stringify({ subject, body_html }),
+        });
+    },
+
+    async deleteEmailTemplate(event) {
+        return apiClient.fetchJson(`${API_URL}/invoices/flow/email-templates/${encodeURIComponent(event)}`, { method: 'DELETE' });
+    },
+
+    async exportExcel() {
+        const response = await fetch(`${API_URL}/invoices/export-excel`, { credentials: 'include' });
+        if (!response.ok) throw new Error('Gagal export Excel');
+        const blob = await response.blob();
+        const dateStr = new Date().toISOString().slice(0, 10);
+        const urlObj = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = urlObj;
+        a.download = `data_invoice_${dateStr}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(urlObj);
+    },
+
     async exportPdf(id) {
         const response = await fetch(`${API_URL}/invoices/${id}/pdf`, { credentials: 'include' });
-        if (!response.ok) throw new Error('Gagal export PDF');
+        if (!response.ok) throw new Error(await parseApiError(response, 'Gagal export PDF'));
         const blob = await response.blob();
+        if (!blob.type.includes('pdf')) throw new Error('Respons bukan file PDF. Pastikan template aktif sudah benar.');
         const urlObj = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = urlObj;
         a.download = `proforma_invoice_${id}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(urlObj);
+    },
+
+    async exportRequestPdf(id) {
+        const response = await fetch(`${API_URL}/invoices/${id}/pdf/request`, { credentials: 'include' });
+        if (!response.ok) throw new Error(await parseApiError(response, 'Gagal export pengajuan proforma'));
+        const blob = await response.blob();
+        if (!blob.type.includes('pdf')) throw new Error('Respons bukan file PDF. Pastikan template aktif sudah benar.');
+        const urlObj = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = urlObj;
+        a.download = `pengajuan_proforma_${id}.pdf`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);

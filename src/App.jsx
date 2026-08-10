@@ -109,6 +109,8 @@ const JobDueDate = lazy(() => import('./pages/JobDueDate'));
 const Book = lazy(() => import('./pages/Book'));
 const EntertainmentExpenses = lazy(() => import('./pages/EntertainmentExpenses'));
 const Invoices = lazy(() => import('./pages/Invoices'));
+const PdfTemplateDesigner = lazy(() => import('./pages/PdfTemplateDesigner'));
+const AnyDoc = lazy(() => import('./pages/AnyDoc'));
 const PdfViewer = lazy(() => import('./components/ui/PdfViewer'));
 import LoadingFallback from './components/common/LoadingFallback';
 import { useToast, ToastContainer } from './components/ui/Toast';
@@ -151,14 +153,16 @@ export default function App() {
         'tax-monitoring': { title: 'Audit Monitoring', subtitle: 'Tax Audit Monitoring System' },
         'tax-summary': { title: 'Tax Compliance', subtitle: 'Compliance & Payment Summary' },
         'tax-calculation': { title: 'Tax Calculation', subtitle: 'Tax Calculation & Reporting' },
-        master: { title: 'Master Data', subtitle: 'System Settings' },
-        approvals: { title: 'Document Approval', subtitle: 'Multi-level Document Approval System' },
+         master: { title: 'Master Data', subtitle: 'System Settings' },
+         'system-logs': { title: 'System Logs', subtitle: 'System Activity & Error Logs' },
+         approvals: { title: 'Document Approval', subtitle: 'Multi-level Document Approval System' },
         pustaka: { title: 'Knowledge Library', subtitle: 'Learning Center & Work Guidelines' },
         flow: { title: 'SOP List Menu', subtitle: 'Standard Operating Procedure' },
         'job-due-date': { title: 'Job Due Date Monitoring', subtitle: 'Task Deadline & Issue Monitoring' },
         book: { title: 'Book / Daftar COA', subtitle: 'Chart of Accounts' },
         entertainment: { title: 'Entertainment Expenses', subtitle: 'Expense Reporting & Management' },
         invoices: { title: 'Invoices', subtitle: 'Proforma Invoice Management' },
+        'pdf-templates': { title: 'Template PDF', subtitle: 'Custom PDF Template Designer' },
       };
     }
 
@@ -170,6 +174,7 @@ export default function App() {
       'tax-summary': { title: 'Kepatuhan Pajak', subtitle: 'Ringkasan Kepatuhan & Pembayaran' },
       'tax-calculation': { title: 'Kalkulasi Pajak', subtitle: 'Kalkulasi & Pelaporan Pajak' },
       master: { title: 'Master Data', subtitle: 'Pengaturan Sistem' },
+      'system-logs': { title: 'Log Sistem', subtitle: 'System Activity & Error Logs' },
       approvals: { title: 'Document Approval', subtitle: 'Sistem Persetujuan Dokumen Berjenjang' },
       pustaka: { title: 'Pustaka Pengetahuan', subtitle: 'Pusat Edukasi & Panduan Kerja' },
       flow: { title: 'SOP List Menu', subtitle: 'Standar Operasional Prosedur' },
@@ -177,6 +182,7 @@ export default function App() {
       book: { title: 'Book / Daftar COA', subtitle: 'Daftar Akun Pembukuan (Chart of Accounts)' },
       entertainment: { title: 'Entertainment Expenses', subtitle: 'Pelaporan & Manajemen Biaya Entertainment' },
       invoices: { title: 'Invoices', subtitle: 'Manajemen Proforma Invoice' },
+      'pdf-templates': { title: 'Template PDF', subtitle: 'Desainer Template PDF Custom' },
     };
   }, [language]);
 
@@ -204,6 +210,7 @@ export default function App() {
           profile: { label: 'Profile', description: 'User profile' },
           entertainment: { label: 'Entertainment Expenses', description: 'Expense reporting and management' },
           invoices: { label: 'Invoices', description: 'Proforma invoice management' },
+          anydoc: { label: 'AnyDoc Converter', description: 'Convert documents to Markdown' },
         },
         actions: {
           upload: { label: 'Upload Document', description: 'Open upload document modal' },
@@ -241,6 +248,7 @@ export default function App() {
         profile: { label: 'Profile', description: 'Profil pengguna' },
         entertainment: { label: 'Entertainment Expenses', description: 'Pelaporan dan manajemen biaya entertainment' },
         invoices: { label: 'Invoices', description: 'Manajemen proforma invoice' },
+        anydoc: { label: 'AnyDoc Converter', description: 'Konversi dokumen ke Markdown' },
       },
       actions: {
         upload: { label: 'Upload Dokumen', description: 'Buka modal upload dokumen' },
@@ -2399,27 +2407,30 @@ export default function App() {
   const handleSaveUser = async () => {
     try {
       const previousUsers = [...users];
+      // Jangan kirim password kosong (khusus saat edit, password field dikosongkan di form)
+      const payload = { ...userForm };
+      if (!payload.password) delete payload.password;
       // Optimistic Update
-      if (userForm.id) {
-        setUsers(users.map(u => u.id === userForm.id ? { ...u, ...userForm } : u));
+      if (payload.id) {
+        setUsers(users.map(u => u.id === payload.id ? { ...u, ...payload } : u));
       } else {
-        setUsers([...users, { ...userForm, id: Date.now().toString() }]);
+        setUsers([...users, { ...payload, id: Date.now().toString() }]);
       }
 
       setIsModalOpen(false);
 
       try {
         let res;
-        if (userForm.id) {
-          await api.updateUser(userForm.id, userForm);
+        if (payload.id) {
+          await api.updateUser(payload.id, payload);
         } else {
-          res = await api.createUser(userForm);
+          res = await api.createUser(payload);
           if (res && res.id) {
             const realId = res.id;
-            setUsers(prev => prev.map(u => u.username === userForm.username ? { ...u, id: realId } : u));
+            setUsers(prev => prev.map(u => u.username === payload.username ? { ...u, id: realId } : u));
           }
         }
-        addLog(currentUser?.name, userForm.id ? 'Update User' : 'Create User', userForm.username);
+        addLog(currentUser?.name, payload.id ? 'Update User' : 'Create User', payload.username);
       } catch (e) {
         setUsers(previousUsers);
         const msg = await parseApiError(e);
@@ -3526,6 +3537,7 @@ export default function App() {
       { id: 'flow', tab: 'flow', label: commandTextMap.items.flow.label, description: commandTextMap.items.flow.description, group: commandTextMap.groups.general, icon: FileCheck, keywords: 'sop workflow' },
       { id: 'inventory', tab: 'inventory', label: commandTextMap.items.inventory.label, description: commandTextMap.items.inventory.description, group: commandTextMap.groups.documents, icon: Grid3x3, keywords: 'rak box warehouse' },
       { id: 'documents', tab: 'documents', label: commandTextMap.items.documents.label, description: commandTextMap.items.documents.description, group: commandTextMap.groups.documents, icon: FileStack, keywords: 'files upload folder' },
+      { id: 'anydoc', tab: 'anydoc', label: commandTextMap.items.anydoc.label, description: commandTextMap.items.anydoc.description, group: commandTextMap.groups.documents, icon: FileText, keywords: 'convert markdown word excel pdf doc konversi' },
       { id: 'approvals', tab: 'entertainment', label: 'Entertainment', description: 'Entertainment expense reporting', group: commandTextMap.groups.documents, icon: ShieldCheck, keywords: 'approval entertainment expense klaim biaya' },
       { id: 'tax-monitoring', tab: 'tax-monitoring', label: commandTextMap.items['tax-monitoring'].label, description: commandTextMap.items['tax-monitoring'].description, group: commandTextMap.groups.tax, icon: Shield, keywords: 'audit pemeriksaan pajak' },
       { id: 'tax-calculation', tab: 'tax-calculation', label: commandTextMap.items['tax-calculation'].label, description: commandTextMap.items['tax-calculation'].description, group: commandTextMap.groups.tax, icon: Calculator, keywords: 'ppn pph hitung' },
@@ -3902,8 +3914,20 @@ export default function App() {
                     toast={toast}
                   />
                 )}
+                {activeTab === 'anydoc' && (
+                  <AnyDoc
+                    isDarkMode={isDarkMode}
+                  />
+                )}
                 {activeTab === 'invoices' && (
                   <Invoices
+                    currentUser={currentUser}
+                    hasPermission={hasPermission}
+                    toast={toast}
+                  />
+                )}
+                {activeTab === 'pdf-templates' && (
+                  <PdfTemplateDesigner
                     currentUser={currentUser}
                     hasPermission={hasPermission}
                     toast={toast}

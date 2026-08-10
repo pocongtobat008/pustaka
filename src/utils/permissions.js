@@ -46,5 +46,8 @@ export const APP_MODULES = {
     'ai-chat': { id: 'ai-chat', label: 'AI Chat Assistant' },
     'entertainment': { id: 'entertainment', label: 'Entertainment Expenses' },
     'invoices': { id: 'invoices', label: 'Invoices' },
-    book: { id: 'book', label: 'Book (COA)' }
+    'pdf-templates': { id: 'pdf-templates', label: 'Template PDF' },
+    book: { id: 'book', label: 'Book (COA)' },
+    'system-logs': { id: 'system-logs', label: 'Log Sistem' },
+    anydoc: { id: 'anydoc', label: 'AnyDoc Converter' }
 };

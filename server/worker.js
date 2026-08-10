@@ -323,10 +323,10 @@ async function processJob(job) {
     }
 
     if (jobName === 'ai-agent') {
-        const { message, history, sessionId } = job.data;
+        const { message, history, sessionId, userContext } = job.data;
         console.log(`[Worker] Processing AI Agent Job ${job.id}`);
         try {
-            const result = await runAgent(message, history, generateEmbedding, sessionId);
+            const result = await runAgent(message, history, generateEmbedding, sessionId, userContext);
             await knex('job_queue').where('id', job.id).update({
                 result: JSON.stringify(result),
                 status: JOB_STATUS.COMPLETED,
@@ -336,38 +336,25 @@ async function processJob(job) {
             // Save messages to chat history if sessionId provided
             if (sessionId) {
                 try {
-                    const { saveMessage, generateTitle, getMessages } = await import('./services/chatHistory.js');
-                    await saveMessage(sessionId, {
-                        role: 'user',
-                        content: message,
-                    });
-                    await saveMessage(sessionId, {
-                        role: 'assistant',
-                        content: result.reply,
-                        toolCalls: result.toolCalls || [],
-                        fromCache: result.fromCache || false,
-                        cacheAge: result.cacheAge || null,
-                    });
-                    // Auto-generate title from first user message
-                    const msgs = await getMessages(sessionId, { limit: 2 });
-                    if (msgs.length <= 2) {
-                        await generateTitle(sessionId, message);
+                    const { saveUserMessage, saveAssistantMessage } = await import('./services/chatHistory.js');
+                    // Resolve userId from session (helpers verify ownership)
+                    const session = await knex('ai_chat_sessions').where('id', sessionId).first();
+                    const ownerId = session?.user_id || userContext?.id || null;
+                    if (ownerId) {
+                        await saveUserMessage(sessionId, ownerId, message);
+                        await saveAssistantMessage(sessionId, ownerId, {
+                            content: result.reply,
+                            toolCalls: result.toolCalls || [],
+                            fromCache: result.fromCache || false,
+                            cacheAge: result.cacheAge || null,
+                            partial: false,
+                            reasoning: result.reasoning || null,
+                            thinkingSteps: result.thinkingSteps || null,
+                        });
+                        console.log(`[Worker] Chat history saved for session ${sessionId}`);
+                    } else {
+                        console.warn(`[Worker] Session ${sessionId} not found — chat history skipped`);
                     }
-                    // Auto-summarize session for RAG memory (after 4+ messages)
-                    try {
-                        const { autoSummarizeSession } = await import('./services/conversationMemory.js');
-                        const allMsgs = await getMessages(sessionId, { limit: 50 });
-                        if (allMsgs && allMsgs.length >= 4) {
-                            // Get userId from session
-                            const session = await knex('ai_chat_sessions').where('id', sessionId).first();
-                            if (session) {
-                                await autoSummarizeSession(sessionId, session.user_id, generateEmbedding);
-                            }
-                        }
-                    } catch (sumErr) {
-                        console.warn(`[Worker] Auto-summarize failed: ${sumErr.message}`);
-                    }
-                    console.log(`[Worker] Chat history saved for session ${sessionId}`);
                 } catch (saveErr) {
                     console.error(`[Worker] Failed to save chat history: ${saveErr.message}`);
                 }

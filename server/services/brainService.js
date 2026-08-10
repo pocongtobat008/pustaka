@@ -17,16 +17,35 @@ function getClient() {
   return client;
 }
 
-export async function remember(content, { type = 'episodic', importance = 0.6, tags = [], metadata = null, agentId } = {}) {
-  try {
-    const input = { content, type, importance, tags };
-    if (metadata) input.metadata = metadata;
-    if (agentId) input.agentId = agentId;
-    return await getClient().remember(input);
-  } catch (err) {
-    console.warn(`[BrainService] remember failed: ${err.message}`, err.details ? JSON.stringify(err.details).slice(0, 300) : '');
-    return null;
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+async function rememberWithRetry(content, input) {
+  let attempts = 0;
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    try {
+      return await getClient().remember(input);
+    } catch (err) {
+      const status = err?.details?.status || err?.status || err?.response?.status;
+      attempts++;
+      // Rate-limit (429): backoff lalu coba lagi — sinkronisasi training mengirim banyak chunk sekaligus
+      if (status === 429 && attempts <= 6) {
+        const wait = 800 * attempts; // 0.8s, 1.6s, 2.4s, ...
+        console.warn(`[BrainService] 429 rate-limited (attempt ${attempts}/6), retry in ${wait}ms`);
+        await sleep(wait);
+        continue;
+      }
+      console.warn(`[BrainService] remember failed: ${err.message}`, err.details ? JSON.stringify(err.details).slice(0, 300) : '');
+      return null;
+    }
   }
+}
+
+export async function remember(content, { type = 'episodic', importance = 0.6, tags = [], metadata = null, agentId } = {}) {
+  const input = { content, type, importance, tags };
+  if (metadata) input.metadata = metadata;
+  if (agentId) input.agentId = agentId;
+  return rememberWithRetry(content, input);
 }
 
 export async function recall(query, { limit = 8, type = null, maxHops = 2, agentId } = {}) {
