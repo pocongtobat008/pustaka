@@ -3648,8 +3648,6 @@ export default function App() {
         setActiveTab={setActiveTab}
         hasPermission={hasPermission}
         currentUser={currentUser}
-        isDarkMode={isDarkMode}
-        setIsDarkMode={setIsDarkMode}
         handleLogout={handleLogout}
         ocrStats={ocrStats}
         setModalTab={setModalTab}
@@ -3678,9 +3676,19 @@ export default function App() {
             </span>
           </div>
         </div>
-        <button onClick={() => setIsSidebarCollapsed(false)} className="neo-icon-btn w-10 h-10 text-slate-500 dark:text-slate-300">
-          <Menu size={20} />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            className="neo-icon-btn w-10 h-10 text-slate-500 dark:text-slate-300 hover:text-yellow-500 dark:hover:text-yellow-400"
+            title="Tema"
+          >
+            {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+          <button onClick={() => setIsSidebarCollapsed(false)} className="neo-icon-btn w-10 h-10 text-slate-500 dark:text-slate-300">
+            <Menu size={20} />
+          </button>
+        </div>
       </div>
 
       <main className="flex-1 overflow-y-auto relative scroll-smooth z-10 pt-16 md:pt-0">
