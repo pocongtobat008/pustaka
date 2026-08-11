@@ -1128,7 +1128,7 @@ export default function MasterData({
                                                             <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-black text-lg shadow-lg">
                                                                 {u.name.charAt(0)}
                                                             </div>
-                                                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-lg flex items-center justify-center border border-white/60 dark:border-white/10 shadow-sm">
+                                                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-white/70 dark:bg-slate-900/60 rounded-lg flex items-center justify-center border border-white/60 dark:border-white/10 shadow-sm">
                                                                 <Shield size={10} className="text-indigo-500" />
                                                             </div>
                                                         </div>
@@ -1224,7 +1224,7 @@ export default function MasterData({
                                         {Object.keys(perms)
                                             .filter(mod => !APP_MODULES[mod])
                                             .map(mod => (
-                                                <div key={mod} className="px-2 py-1 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded text-[10px] flex flex-col">
+                                                <div key={mod} className="px-2 py-1 bg-white/70 dark:bg-slate-900/60 border border-gray-200 dark:border-slate-700 rounded text-[10px] flex flex-col">
                                                     <span className="font-bold text-indigo-500 uppercase">{mod}</span>
                                                     <span className="text-gray-400">{Array.isArray(perms[mod]) ? perms[mod].join(', ') : ''}</span>
                                                 </div>
@@ -1356,7 +1356,7 @@ export default function MasterData({
                                                         </td>
                                                         <td className="px-6 py-4 font-bold text-slate-700 dark:text-slate-200">{log.user || text.system}</td>
                                                         <td className="px-6 py-4">
-                                                            <span className="px-2 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-lg text-[10px] font-black uppercase tracking-wider border border-indigo-100 dark:border-indigo-800">
+                                                            <span className="px-2 py-1 bg-indigo-50 dark:bg-indigo-900/30 dark:text-indigo-300 text-indigo-600 dark:text-indigo-400 rounded-lg text-[10px] font-black uppercase tracking-wider border border-indigo-100 dark:border-indigo-800">
                                                                 {log.action}
                                                             </span>
                                                         </td>
@@ -1599,7 +1599,7 @@ export default function MasterData({
                                 {hasPermission('master', 'edit') && (
                                     <button
                                         onClick={saveAiSettings} disabled={aiLoading}
-                                        className="px-4 py-2 gradient-bg text-white rounded-lg text-sm flex items-center gap-2 hover:opacity-95 transition-opacity disabled:opacity-50"
+                                        className="px-4 py-2 gradient-bg text-white rounded-lg text-sm flex items-center gap-2 hover:opacity-95 transition-opacity disabled:opacity-50 disabled:hover:opacity-50"
                                     >
                                         {aiLoading ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />} {text.save}
                                     </button>
@@ -1778,7 +1778,7 @@ export default function MasterData({
                                 <button
                                     type="submit"
                                     disabled={trainingUploading || !trainingFile}
-                                    className="px-4 py-2 gradient-bg text-white rounded-lg text-sm flex items-center gap-2 hover:opacity-95 transition-opacity disabled:opacity-50"
+                                    className="px-4 py-2 gradient-bg text-white rounded-lg text-sm flex items-center gap-2 hover:opacity-95 transition-opacity disabled:opacity-50 disabled:hover:opacity-50"
                                 >
                                     {trainingUploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />} {text.upload}
                                 </button>
@@ -1837,7 +1837,7 @@ export default function MasterData({
                                 <button
                                     type="submit"
                                     disabled={trainingUploading || !trainingForm.url}
-                                    className="px-4 py-2 gradient-bg text-white rounded-lg text-sm flex items-center gap-2 hover:opacity-95 transition-opacity disabled:opacity-50"
+                                    className="px-4 py-2 gradient-bg text-white rounded-lg text-sm flex items-center gap-2 hover:opacity-95 transition-opacity disabled:opacity-50 disabled:hover:opacity-50"
                                 >
                                     {trainingUploading ? <Loader2 size={16} className="animate-spin" /> : <Link size={16} />} {text.add}
                                 </button>
@@ -1931,7 +1931,7 @@ export default function MasterData({
                                                         <tr key={i} className="border-t dark:border-slate-700/50 hover:bg-gray-50 dark:hover:bg-slate-800/50">
                                                             <td className="px-4 py-2 font-medium dark:text-white">{t.topic}</td>
                                                             <td className="px-4 py-2">
-                                                                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-300">{t.category}</span>
+                                                                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-300 text-indigo-600 dark:text-indigo-300">{t.category}</span>
                                                             </td>
                                                             <td className="px-4 py-2 text-center font-bold dark:text-white">{t.ask_count}</td>
                                                             <td className="px-4 py-2 text-center">
@@ -1969,7 +1969,7 @@ export default function MasterData({
                                             {learningLogs.slice((logPage - 1) * ROWS_PER_PAGE, logPage * ROWS_PER_PAGE).map((log, i) => (
                                                 <div key={i} className="border dark:border-slate-700/50 rounded-lg p-3 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
                                                     <div className="flex items-center gap-2 mb-1">
-                                                        <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-300">{log.category}</span>
+                                                        <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-300 text-indigo-600 dark:text-indigo-300">{log.category}</span>
                                                         <span className="font-bold text-sm dark:text-white">{log.topic}</span>
                                                         <span className="text-xs text-gray-400 ml-auto">×{log.repeat_count}</span>
                                                         {log.used_in_training && <span className="text-xs text-emerald-500 font-bold">✓ Trained</span>}
@@ -2257,7 +2257,7 @@ export default function MasterData({
                                         <button
                                             onClick={handleBrainSearch}
                                             disabled={brainSearching || !brainSearchQuery.trim()}
-                                            className="px-3 py-2 gradient-bg text-white rounded-lg text-xs flex items-center gap-1 hover:opacity-95 transition-opacity disabled:opacity-50"
+                                            className="px-3 py-2 gradient-bg text-white rounded-lg text-xs flex items-center gap-1 hover:opacity-95 transition-opacity disabled:opacity-50 disabled:hover:opacity-50"
                                         >
                                             {brainSearching ? <Loader2 size={13} className="animate-spin" /> : <Search size={13} />} Cari
                                         </button>
@@ -2267,7 +2267,7 @@ export default function MasterData({
                                             {brainSearchResults.map((r, i) => (
                                                 <div key={r.memory?.id || i} className="text-xs bg-gray-50 dark:bg-slate-800/50 rounded p-2 border-l-2 border-indigo-400">
                                                     <div className="flex items-center gap-2 mb-0.5">
-                                                        <span className="text-[10px] px-1 rounded bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">{r.memory?.type}</span>
+                                                        <span className="text-[10px] px-1 rounded bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-300 text-indigo-600 dark:text-indigo-400">{r.memory?.type}</span>
                                                         <span className="text-[10px] text-gray-400">score: {(r.score * 100).toFixed(0)}%</span>
                                                     </div>
                                                     <p className="text-gray-700 dark:text-slate-300 line-clamp-2">{r.memory?.content}</p>
@@ -2303,7 +2303,7 @@ export default function MasterData({
                                     <button
                                         onClick={handleBrainSyncTraining}
                                         disabled={brainSyncing}
-                                        className="px-3 py-2 gradient-bg text-white rounded-lg text-xs flex items-center gap-1 hover:opacity-95 transition-opacity disabled:opacity-50"
+                                        className="px-3 py-2 gradient-bg text-white rounded-lg text-xs flex items-center gap-1 hover:opacity-95 transition-opacity disabled:opacity-50 disabled:hover:opacity-50"
                                     >
                                         {brainSyncing ? <Loader2 size={13} className="animate-spin" /> : <RefreshCw size={13} />} Sync Training ke 1MBrain
                                     </button>
@@ -2429,7 +2429,7 @@ export default function MasterData({
                                                 {doc.tags && <p className="text-[10px] text-gray-400 mt-0.5">{doc.tags}</p>}
                                             </td>
                                             <td className="px-4 py-3">
-                                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">{doc.file_type}</span>
+                                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-300 text-indigo-600 dark:text-indigo-400">{doc.file_type}</span>
                                             </td>
                                             <td className="px-4 py-3 text-gray-600 dark:text-slate-400">{text.categories[doc.category] || doc.category}</td>
                                             <td className="px-4 py-3 text-gray-600 dark:text-slate-400">{new Date(doc.created_at).toLocaleDateString()}</td>
@@ -2484,7 +2484,7 @@ export default function MasterData({
                         </div>
                         <div className="p-5 overflow-y-auto">
                             <div className="flex gap-2 mb-4">
-                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">{trainingPreview.file_type}</span>
+                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-300 text-indigo-600 dark:text-indigo-400">{trainingPreview.file_type}</span>
                                 <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${trainingPreview.status === 'active' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'}`}>
                                     {text[trainingPreview.status] || trainingPreview.status}
                                 </span>
