@@ -326,6 +326,167 @@ const menuLandingConfig = {
       { label: 'Ke Dashboard', tab: 'dashboard', icon: Rocket },
     ],
   },
+  invoices: {
+    kicker: 'Finance & Compliance',
+    title: 'Proforma Invoice Management',
+    subtitle:
+      'Kelola pengajuan proforma, approval, faktur pajak, hingga settlement dalam satu alur yang terstruktur dan dapat diaudit.',
+    icon: ClipboardCheck,
+    accent: 'from-violet-500 to-purple-600',
+    features: [
+      'Alur proforma terstruktur: submit, approve, tax, dan settle.',
+      'Faktur pajak 17 digit dengan lampiran untuk kepatuhan.',
+      'Settlement invoice otomatis dengan kalkulasi DPP & PPN.',
+    ],
+    functions: [
+      'Mengotomatisasi proses approval proforma lintas divisi.',
+      'Menjamin validitas faktur pajak sebelum settlement.',
+      'Menyediakan jejak audit lengkap untuk pemeriksaan.',
+    ],
+    useCases: ['Pengajuan proforma', 'Approval faktur pajak', 'Settlement invoice'],
+    quickActions: [
+      { label: 'Ke Master Data', tab: 'master', icon: Users },
+      { label: 'Ke Dashboard', tab: 'dashboard', icon: Rocket },
+    ],
+  },
+  anydoc: {
+    kicker: 'Document Converter',
+    title: 'AnyDoc Converter',
+    subtitle:
+      'Konversi berbagai format dokumen menjadi Markdown untuk diproses lebih lanjut oleh sistem dan AI.',
+    icon: FileDigit,
+    accent: 'from-sky-500 to-blue-600',
+    features: [
+      'Konversi PDF, Word, dan format lain menjadi Markdown.',
+      'Hasil siap diproses pipeline AI dan pencarian semantic.',
+      'Pratinjau hasil konversi secara langsung.',
+    ],
+    functions: [
+      'Menyiapkan dokumen untuk diolah AI document intelligence.',
+      'Memudahkan migrasi arsip ke format terstruktur.',
+      'Mempercepat digitalisasi konten non-digital.',
+    ],
+    useCases: ['Konversi PDF ke Markdown', 'Digitalisasi arsip', 'Persiapan data AI'],
+    quickActions: [
+      { label: 'AI Document Intelligence', tab: 'ai-doc-intel', icon: Brain },
+      { label: 'Ke Dashboard', tab: 'dashboard', icon: Rocket },
+    ],
+  },
+  'ai-doc-intel': {
+    kicker: 'AI Document Intelligence',
+    title: 'Ekstraksi Data Dokumen dengan AI',
+    subtitle:
+      'Ekstrak data terstruktur dari file PDF secara otomatis dengan model AI untuk mempercepat input data dan verifikasi.',
+    icon: Brain,
+    accent: 'from-fuchsia-500 to-purple-600',
+    features: [
+      'Ekstraksi otomatis field penting dari dokumen PDF.',
+      'Integrasi dengan template yang sudah dilatih.',
+      'Hasil ekstraksi siap diverifikasi dan disimpan.',
+    ],
+    functions: [
+      'Mengurangi input data manual yang rentan salah.',
+      'Mempercepat proses verifikasi dokumen.',
+      'Mendukung otomatisasi alur kerja dokumen.',
+    ],
+    useCases: ['Ekstrak faktur', 'Ekstrak invoice', 'Verifikasi dokumen otomatis'],
+    quickActions: [
+      { label: 'Training Dokumen', tab: 'ai-doc-train', icon: FileSearch },
+      { label: 'AnyDoc Converter', tab: 'anydoc', icon: FileDigit },
+    ],
+  },
+  'ai-doc-train': {
+    kicker: 'AI Document Training',
+    title: 'Training Template Dokumen AI',
+    subtitle:
+      'Latih template dokumen AI dengan contoh data agar model semakin akurat dalam mengekstrak informasi.',
+    icon: FileSearch,
+    accent: 'from-amber-500 to-orange-600',
+    features: [
+      'Kelola template dokumen untuk kebutuhan ekstraksi.',
+      'Latih model dengan data contoh berkualitas.',
+      'Evaluasi akurasi hasil ekstraksi per template.',
+    ],
+    functions: [
+      'Menyempurnakan model AI sesuai jenis dokumen.',
+      'Meningkatkan akurasi data terekstrak.',
+      'Menyimpan konfigurasi template untuk dipakai ulang.',
+    ],
+    useCases: ['Latih template faktur', 'Evaluasi akurasi AI', 'Perbaiki model ekstraksi'],
+    quickActions: [
+      { label: 'AI Document Intelligence', tab: 'ai-doc-intel', icon: Brain },
+      { label: 'AnyDoc Converter', tab: 'anydoc', icon: FileDigit },
+    ],
+  },
+  'ai-pdf-tools': {
+    kicker: 'AI PDF Tools',
+    title: 'AI PDF Tools',
+    subtitle:
+      'Konversi, kompres, gabung, pecah, buka proteksi, dan OCR PDF dengan bantuan AI dalam satu alat.',
+    icon: Zap,
+    accent: 'from-cyan-500 to-sky-600',
+    features: [
+      'Konversi PDF ke berbagai format dengan kualitas terjaga.',
+      'Kompresi, penggabungan, pemecahan, dan unlock proteksi.',
+      'OCR untuk dokumen scan menjadi teks yang dapat dicari.',
+    ],
+    functions: [
+      'Mempermudah pengolahan PDF tanpa software pihak ketiga.',
+      'Menjadikan dokumen scan dapat dicari dan diproses.',
+      'Mendukung kebutuhan format file untuk berbagai keperluan.',
+    ],
+    useCases: ['OCR dokumen scan', 'Gabung file PDF', 'Kompres untuk email'],
+    quickActions: [
+      { label: 'AnyDoc Converter', tab: 'anydoc', icon: FileDigit },
+      { label: 'Ke Dashboard', tab: 'dashboard', icon: Rocket },
+    ],
+  },
+  'system-logs': {
+    kicker: 'System Administration',
+    title: 'System Logs',
+    subtitle:
+      'Pantau log aktivitas sistem, error, dan jejak audit untuk memastikan aplikasi berjalan sehat dan aman.',
+    icon: LineChart,
+    accent: 'from-slate-600 to-slate-800',
+    features: [
+      'Pencatatan log aktivitas dan error secara terpusat.',
+      'Filter dan pencarian untuk analisis cepat.',
+      'Jejak untuk troubleshooting dan audit keamanan.',
+    ],
+    functions: [
+      'Memantau kesehatan aplikasi secara real-time.',
+      'Mempercepat identifikasi dan penyelesaian error.',
+      'Menyediakan bukti untuk investigasi keamanan.',
+    ],
+    useCases: ['Cek error aplikasi', 'Audit aktivitas pengguna', 'Troubleshooting sistem'],
+    quickActions: [
+      { label: 'Master Data', tab: 'master', icon: Users },
+      { label: 'Ke Dashboard', tab: 'dashboard', icon: Rocket },
+    ],
+  },
+  'pdf-templates': {
+    kicker: 'PDF Template Designer',
+    title: 'Desainer Template PDF',
+    subtitle:
+      'Rancang template PDF kustom untuk dokumen seperti proforma invoice dengan tampilan yang profesional dan konsisten.',
+    icon: FileCheck,
+    accent: 'from-rose-500 to-pink-600',
+    features: [
+      'Editor visual untuk tata letak template PDF.',
+      'Variabel dinamis untuk data dari sistem.',
+      'Pratinjau hasil cetak secara real-time.',
+    ],
+    functions: [
+      'Menstandarisasi format dokumen keluaran.',
+      'Menghasilkan dokumen profesional tanpa desain manual.',
+      'Mempercepat pembuatan variasi template.',
+    ],
+    useCases: ['Buat template proforma', 'Edit tata letak PDF', 'Standarisasi format cetak'],
+    quickActions: [
+      { label: 'Invoices', tab: 'invoices', icon: ClipboardCheck },
+      { label: 'Ke Dashboard', tab: 'dashboard', icon: Rocket },
+    ],
+  },
 };
 
 const manualAdvantageMap = {
@@ -394,6 +555,41 @@ const manualAdvantageMap = {
     'Validasi mandatory mencegah data tidak beraturan yang menyulitkan audit.',
     'Export PDF/Excel mempermudah pelaporan ke finance tanpa rekap manual.',
   ],
+  invoices: [
+    'Alur proforma terkontrol dan terlacak, bukan tersebar di pesan informal.',
+    'Faktur pajak tervalidasi 17 digit dan lampiran sebelum settlement.',
+    'Perhitungan settlement otomatis, mengurangi risiko salah hitung spreadsheet.',
+  ],
+  anydoc: [
+    'Konversi dokumen terpusat, tidak bergantung tools manual yang tersebar.',
+    'Output Markdown siap diproses AI dan pencarian.',
+    'Digitalisasi arsip lebih cepat dan konsisten.',
+  ],
+  'ai-doc-intel': [
+    'Ekstraksi data otomatis, bukan input manual yang lambat.',
+    'Verifikasi lebih cepat dengan output terstruktur.',
+    'Otomatisasi alur kerja mengurangi penanganan dokumen berulang.',
+  ],
+  'ai-doc-train': [
+    'Template terlatih meningkatkan akurasi model seiring waktu.',
+    'Evaluasi per template menjaga kualitas ekstraksi terukur.',
+    'Konfigurasi dapat dipakai ulang, tidak dibuat dari nol.',
+  ],
+  'ai-pdf-tools': [
+    'Pengolahan PDF tidak lagi bergantung banyak aplikasi pihak ketiga.',
+    'OCR menjadikan dokumen scan dapat dicari.',
+    'Penanganan file lebih cepat dan hemat biaya.',
+  ],
+  'system-logs': [
+    'Error terdeteksi lebih awal, bukan ditemukan oleh user.',
+    'Troubleshooting lebih cepat dengan log terpusat.',
+    'Audit keamanan memiliki jejak bukti yang andal.',
+  ],
+  'pdf-templates': [
+    'Dokumen keluaran memiliki tampilan profesional yang konsisten.',
+    'Desain dapat dipakai ulang, tidak dibuat ulang per dokumen.',
+    'Output siap cetak mengurangi pekerjaan format manual.',
+  ],
 };
 
 export default function MenuLandingSection({
@@ -405,7 +601,17 @@ export default function MenuLandingSection({
   language = 'id',
 }) {
   const isEnglish = language === 'en';
-  const config = menuLandingConfig[activeTab];
+  const config = menuLandingConfig[activeTab] || {
+    kicker: activeTab,
+    title: activeTab,
+    subtitle: '',
+    icon: Brain,
+    accent: 'from-slate-500 to-indigo-600',
+    features: [],
+    functions: [],
+    useCases: [],
+    quickActions: [],
+  };
   const manualAdvantages = manualAdvantageMap[activeTab] || [];
 
   const uiText = isEnglish
@@ -444,6 +650,14 @@ export default function MenuLandingSection({
       flow: 'SOP Flow',
       'job-due-date': 'My Job',
       book: 'Book (COA)',
+      entertainment: 'Entertainment Expenses',
+      invoices: 'Invoices',
+      anydoc: 'AnyDoc Converter',
+      'ai-doc-intel': 'AI Document Intelligence',
+      'ai-doc-train': 'Document Training',
+      'ai-pdf-tools': 'AI PDF Tools',
+      'system-logs': 'System Logs',
+      'pdf-templates': 'PDF Templates',
     }
     : {
       dashboard: 'Dashboard',
@@ -458,6 +672,14 @@ export default function MenuLandingSection({
       flow: 'SOP Flow',
       'job-due-date': 'My Job',
       book: 'Book (COA)',
+      entertainment: 'Entertainment Expenses',
+      invoices: 'Invoices',
+      anydoc: 'AnyDoc Converter',
+      'ai-doc-intel': 'AI Document Intelligence',
+      'ai-doc-train': 'Training Dokumen',
+      'ai-pdf-tools': 'AI PDF Tools',
+      'system-logs': 'System Logs',
+      'pdf-templates': 'Template PDF',
     };
 
   const englishHeadlineMap = {
@@ -508,6 +730,38 @@ export default function MenuLandingSection({
     book: {
       title: 'Chart of Accounts Management',
       subtitle: 'Manage your accounting structure hierarchically with smart search and Excel import for efficient data entry.',
+    },
+    entertainment: {
+      title: 'Entertainment Expenses Report',
+      subtitle: 'Manage entertainment expense reports with attachments, preview, and PDF/Excel export for clear accountability.',
+    },
+    invoices: {
+      title: 'Proforma Invoice Management',
+      subtitle: 'Manage proforma submissions, approvals, tax invoices, and settlement in one structured and auditable workflow.',
+    },
+    anydoc: {
+      title: 'AnyDoc Converter',
+      subtitle: 'Convert various document formats into Markdown for further processing by the system and AI.',
+    },
+    'ai-doc-intel': {
+      title: 'AI Document Intelligence',
+      subtitle: 'Extract structured data from PDF files automatically with AI models to speed up data entry and verification.',
+    },
+    'ai-doc-train': {
+      title: 'AI Document Training',
+      subtitle: 'Train AI document templates with sample data so the model extracts information with growing accuracy.',
+    },
+    'ai-pdf-tools': {
+      title: 'AI PDF Tools',
+      subtitle: 'Convert, compress, merge, split, unlock, and OCR PDF files with AI assistance in a single tool.',
+    },
+    'system-logs': {
+      title: 'System Logs',
+      subtitle: 'Monitor system activity, errors, and audit trails to keep the application healthy and secure.',
+    },
+    'pdf-templates': {
+      title: 'PDF Template Designer',
+      subtitle: 'Design custom PDF templates for documents such as proforma invoices with a professional and consistent look.',
     },
   };
 
@@ -572,6 +826,46 @@ export default function MenuLandingSection({
       'Semantic search by code, name, and description across all levels.',
       'Bulk data import from Excel with built-in template.',
     ],
+    entertainment: [
+      'Complete form with mandatory validation for every field.',
+      'Multiple attachments upload with clipboard paste.',
+      'PDF and Excel export for financial reporting.',
+    ],
+    invoices: [
+      'Structured proforma workflow: submit, approve, tax, and settle.',
+      '17-digit tax invoice with attachments for compliance.',
+      'Automatic invoice settlement with DPP & VAT calculation.',
+    ],
+    anydoc: [
+      'Convert PDF, Word, and other formats into Markdown.',
+      'Output ready for AI pipeline and semantic search processing.',
+      'Direct preview of conversion results.',
+    ],
+    'ai-doc-intel': [
+      'Automatic extraction of key fields from PDF documents.',
+      'Integration with trained document templates.',
+      'Extraction results ready to verify and save.',
+    ],
+    'ai-doc-train': [
+      'Manage document templates for extraction needs.',
+      'Train models with quality sample data.',
+      'Evaluate extraction accuracy per template.',
+    ],
+    'ai-pdf-tools': [
+      'PDF conversion to various formats with preserved quality.',
+      'Compression, merging, splitting, and unlock protection.',
+      'OCR for scanned documents into searchable text.',
+    ],
+    'system-logs': [
+      'Centralized activity and error logging.',
+      'Filter and search for fast analysis.',
+      'Trails for troubleshooting and security audits.',
+    ],
+    'pdf-templates': [
+      'Visual editor for PDF template layout.',
+      'Dynamic variables for system data.',
+      'Real-time print preview.',
+    ],
   };
 
   const englishFunctionsMap = {
@@ -635,6 +929,46 @@ export default function MenuLandingSection({
       'Speed up account lookup during journal or audit processes.',
       'Serve as the primary reference for company account structure.',
     ],
+    entertainment: [
+      'Record entertainment expenses in a structured and verified way.',
+      'Simplify audits and compliance with supporting documents.',
+      'Automate expense reporting to finance or accounting.',
+    ],
+    invoices: [
+      'Automate the proforma approval process across divisions.',
+      'Ensure tax invoice validity before settlement.',
+      'Provide a complete audit trail for inspection.',
+    ],
+    anydoc: [
+      'Prepare documents for AI document intelligence processing.',
+      'Simplify migration of archives into structured formats.',
+      'Speed up digitization of non-digital content.',
+    ],
+    'ai-doc-intel': [
+      'Reduce manual data entry that is prone to errors.',
+      'Speed up document verification processes.',
+      'Support document workflow automation.',
+    ],
+    'ai-doc-train': [
+      'Refine AI models according to document types.',
+      'Improve accuracy of extracted data.',
+      'Save template configurations for reuse.',
+    ],
+    'ai-pdf-tools': [
+      'Simplify PDF processing without third-party software.',
+      'Make scanned documents searchable and processable.',
+      'Support file format needs for various purposes.',
+    ],
+    'system-logs': [
+      'Monitor application health in real-time.',
+      'Accelerate error identification and resolution.',
+      'Provide evidence for security investigations.',
+    ],
+    'pdf-templates': [
+      'Standardize output document formats.',
+      'Produce professional documents without manual design.',
+      'Speed up the creation of template variations.',
+    ],
   };
 
   const englishUseCasesMap = {
@@ -650,6 +984,14 @@ export default function MenuLandingSection({
     flow: ['New flow design', 'Old process optimization', 'Inter-unit SOP socialization'],
     'job-due-date': ['Daily standup', 'Internal SLA control', 'Critical task escalation'],
     book: ['Initial COA setup', 'Account code revision', 'Accounting data import'],
+    entertainment: ['Meeting expense claim', 'Client entertainment report', 'Operational expense audit'],
+    invoices: ['Proforma submission', 'Tax invoice approval', 'Invoice settlement'],
+    anydoc: ['PDF to Markdown conversion', 'Archive digitization', 'AI data preparation'],
+    'ai-doc-intel': ['Invoice extraction', 'Faktur extraction', 'Automatic document verification'],
+    'ai-doc-train': ['Train faktur template', 'AI accuracy evaluation', 'Improve extraction model'],
+    'ai-pdf-tools': ['Scanned document OCR', 'Merge PDF files', 'Compress for email'],
+    'system-logs': ['Check application errors', 'User activity audit', 'System troubleshooting'],
+    'pdf-templates': ['Create proforma template', 'Edit PDF layout', 'Standardize print format'],
   };
 
   const englishAdvantagesMap = {
@@ -712,6 +1054,46 @@ export default function MenuLandingSection({
       'COA structure is no longer managed manually in spreadsheets prone to inconsistency.',
       'Account search is faster than scrolling through long lists manually.',
       'Excel import reduces data entry errors during initial COA setup.',
+    ],
+    entertainment: [
+      'Entertainment expenses are recorded completely with attachments, not just the amount.',
+      'Mandatory validation prevents irregular data that complicates audits.',
+      'PDF/Excel export makes reporting to finance easier without manual recaps.',
+    ],
+    invoices: [
+      'Proforma workflow is controlled and traceable instead of scattered across messages.',
+      'Tax invoices are validated with 17 digits and attachments before settlement.',
+      'Settlement calculations are automatic, reducing spreadsheet error risks.',
+    ],
+    anydoc: [
+      'Document conversion is centralized instead of relying on scattered manual tools.',
+      'Markdown output is ready for AI processing and search.',
+      'Digitization of archives becomes faster and more consistent.',
+    ],
+    'ai-doc-intel': [
+      'Data extraction is automated instead of slow manual entry.',
+      'Verification becomes faster with structured output.',
+      'Workflow automation reduces repetitive handling of documents.',
+    ],
+    'ai-doc-train': [
+      'Trained templates improve model accuracy over time.',
+      'Evaluation per template keeps extraction quality measurable.',
+      'Configurations are reusable instead of built from scratch.',
+    ],
+    'ai-pdf-tools': [
+      'PDF processing no longer depends on multiple third-party applications.',
+      'OCR makes scanned documents searchable for the first time.',
+      'File handling becomes faster and cost-effective.',
+    ],
+    'system-logs': [
+      'Errors are caught early instead of being discovered by users.',
+      'Troubleshooting is faster with centralized logs.',
+      'Security audits have reliable evidence trails.',
+    ],
+    'pdf-templates': [
+      'Output documents have a consistent professional look.',
+      'Design is reusable instead of recreated per document.',
+      'Print-ready output reduces manual formatting work.',
     ],
   };
 

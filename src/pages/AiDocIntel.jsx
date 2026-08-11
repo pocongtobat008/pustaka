@@ -1,10 +1,16 @@
 import React from 'react';
-import { FileSpreadsheet, Sparkles } from 'lucide-react';
+import { FileSpreadsheet } from 'lucide-react';
 import TemplateMapper from '../components/anydoc/TemplateMapper.jsx';
+import { useLanguage } from '../contexts/LanguageContext';
 
 // ── AI Document Intelligence — fokus ekstraksi data dari PDF asli ──
 // Menu terpisah dari Training Dokumen agar alur upload → ekstrak → Excel tidak ribet.
 export default function AiDocIntel({ isDarkMode }) {
+    const { isEnglish } = useLanguage();
+    const title = isEnglish ? 'AI Document Intelligence' : 'AI Document Intelligence';
+    const desc = isEnglish
+        ? <>Upload original PDF → auto-detect → extract data → export Excel. Template training is done in the{' '}<span className="font-bold text-indigo-500">Document Training</span> menu.</>
+        : <>Upload PDF asli → deteksi otomatis → ekstrak data → export Excel. Training template dilakukan di menu{' '}<span className="font-bold text-indigo-500">Training Dokumen</span>.</>;
     return (
         <div className="max-w-[1400px] mx-auto px-4 lg:px-6 py-6">
             {/* Header halaman */}
@@ -14,11 +20,10 @@ export default function AiDocIntel({ isDarkMode }) {
                 </div>
                 <div>
                     <h1 className={`text-lg font-black tracking-tight ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>
-                        AI Document Intelligence
+                        {title}
                     </h1>
                     <p className={`text-xs mt-0.5 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
-                        Upload PDF asli → deteksi otomatis → ekstrak data → export Excel. Training template dilakukan di menu{' '}
-                        <span className="font-bold text-indigo-500">Training Dokumen</span>.
+                        {desc}
                     </p>
                 </div>
             </div>

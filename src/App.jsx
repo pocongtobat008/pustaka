@@ -3974,7 +3974,7 @@ export default function App() {
           )}
 
           {showInitialLanding && (
-            <InitialLandingPage onClose={handleCloseLanding} />
+            <InitialLandingPage onClose={handleCloseLanding} language={language} />
           )}
         </AnimatePresence>
 

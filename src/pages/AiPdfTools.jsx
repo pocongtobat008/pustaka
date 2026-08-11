@@ -171,7 +171,7 @@ export default function AiPdfTools({ isDarkMode }) {
                 const arr = Array.isArray(j?.all) ? j.all : [];
                 setOcrLangs(arr);
                 // Pastikan bahasa yang dipilih valid; default 'eng' jika ada
-                if (arr.length && !arr.some(l => l.code === form.language)) {
+                if (arr.length && form.language !== 'auto' && !arr.some(l => l.code === form.language)) {
                     const def = arr.find(l => l.code === 'eng') || arr[0];
                     setForm(f => ({ ...f, language: def.code }));
                 }
@@ -258,6 +258,14 @@ export default function AiPdfTools({ isDarkMode }) {
                     <div className={`px-4 py-2.5 border-b flex items-center gap-2 ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
                         <ScanText size={13} className="text-cyan-500" />
                         <span className={`text-[11px] font-black uppercase tracking-wider ${isDarkMode ? 'text-white/60' : 'text-slate-500'}`}>Hasil OCR — {d.page_count || 0} halaman</span>
+                        {d.detected && (
+                            <span className={`ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${isDarkMode ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-300' : 'bg-cyan-50 border-cyan-200 text-cyan-600'}`}>
+                                <Sparkles size={10} /> Terdeteksi: {d.detected.name} · keyakinan {Math.min(100, d.detected.confidence)}%
+                            </span>
+                        )}
+                        {!d.detected && d.language_name && (
+                            <span className={`ml-2 text-[10px] font-bold ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Bahasa: {d.language_name}</span>
+                        )}
                     </div>
                     <div className="max-h-[320px] overflow-y-auto p-4 space-y-3">
                         {(d.pages || []).map((p, i) => (
@@ -402,6 +410,8 @@ export default function AiPdfTools({ isDarkMode }) {
                                                 >
                                                     {ocrLangsLoading && <option value="">Memuat daftar bahasa…</option>}
                                                     {!ocrLangsLoading && ocrLangs.length === 0 && <option value="">Bahasa tidak tersedia</option>}
+                                                    <option value="auto" className="font-bold">✨ Auto — deteksi otomatis</option>
+                                                    <option value="" disabled>────────── pilih manual ──────────</option>
                                                     {ocrLangs.map(l => (
                                                         <option key={l.code} value={l.code} disabled={!l.installed}>
                                                             {l.name}{!l.installed ? ' (pack belum terinstall)' : ''}

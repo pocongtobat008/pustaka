@@ -2,7 +2,28 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { X, Rocket, Target, AlertCircle, Sparkles, ShieldCheck, Calculator, FileCheck, BookOpen, HelpCircle, FolderOpen, ScanLine, Zap, ArrowRight } from 'lucide-react';
 
-const InitialLandingPage = ({ onClose }) => (
+const InitialLandingPage = ({ onClose, language = 'id' }) => {
+  const en = language === 'en';
+  const t = {
+    badge: en ? 'The Future of Knowledge' : 'Masa Depan Pengetahuan',
+    title1: en ? 'Pustaka System' : 'Sistem Pustaka',
+    title2: en ? 'Integrated' : 'Terintegrasi',
+    subtitle: en
+      ? 'A secure, accurate, and easy-to-use knowledge and document management hub.'
+      : 'Pusat pengelolaan pengetahuan dan dokumen yang aman, akurat, dan mudah digunakan.',
+    backgroundTitle: en ? 'Background' : 'Latar Belakang',
+    background: en
+      ? 'In a digital era demanding speed, accuracy, and transparency, companies need a centralized information management system. Much important data is still scattered and dependent on individuals, risking errors and knowledge loss.'
+      : 'Dalam era digital yang menuntut kecepatan, ketepatan, dan transparansi, perusahaan membutuhkan sistem pengelolaan informasi yang terpusat. Banyak data penting masih tersebar dan bergantung pada individu, yang berpotensi menimbulkan risiko kesalahan dan hilangnya pengetahuan.',
+    visionTitle: en ? 'Vision & Mission' : 'Visi & Misi',
+    vision: en
+      ? 'This system is designed to integrate all critical information in a single platform, ensuring operational continuity even with personnel changes or organizational restructuring.'
+      : 'Sistem ini dirancang untuk mengintegrasikan seluruh informasi penting dalam satu platform. Memastikan kontinuitas operasional tetap berjalan meskipun terjadi pergantian personel atau perubahan struktur organisasi.',
+    ctaTitle: en ? 'Ready to Start Your Transformation?' : 'Siap Memulai Transformasi?',
+    ctaButton: en ? 'Start Exploring' : 'Mulai Menjelajah',
+  };
+
+  return (
   <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
@@ -27,7 +48,7 @@ const InitialLandingPage = ({ onClose }) => (
           className="inline-flex items-center gap-2 px-6 py-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-full text-sm font-black uppercase tracking-widest mb-4"
         >
           <Rocket size={16} className="animate-bounce" />
-          <span>The Future of Knowledge</span>
+          <span>{t.badge}</span>
         </motion.div>
         <motion.h1
           initial={{ y: 20, opacity: 0 }}
@@ -35,8 +56,8 @@ const InitialLandingPage = ({ onClose }) => (
           transition={{ delay: 0.2 }}
           className="text-4xl md:text-6xl font-black text-[#2B3674] dark:text-white tracking-tight leading-tight"
         >
-          Sistem Pustaka <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Terintegrasi</span>
+          {t.title1} <br />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">{t.title2}</span>
         </motion.h1>
         <motion.p
           initial={{ y: 20, opacity: 0 }}
@@ -44,7 +65,7 @@ const InitialLandingPage = ({ onClose }) => (
           transition={{ delay: 0.3 }}
           className="text-lg text-slate-500 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed font-medium"
         >
-          Pusat pengelolaan pengetahuan dan dokumen yang aman, akurat, dan mudah digunakan.
+          {t.subtitle}
         </motion.p>
       </div>
 
@@ -61,9 +82,9 @@ const InitialLandingPage = ({ onClose }) => (
           <div className="w-14 h-14 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-2xl flex items-center justify-center mb-6 shadow-inner">
             <Target size={28} />
           </div>
-          <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-4 uppercase tracking-tight">Latar Belakang</h3>
+          <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-4 uppercase tracking-tight">{t.backgroundTitle}</h3>
           <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-            Dalam era digital yang menuntut kecepatan, ketepatan, dan transparansi, perusahaan membutuhkan sistem pengelolaan informasi yang terpusat. Banyak data penting masih tersebar dan bergantung pada individu, yang berpotensi menimbulkan risiko kesalahan dan hilangnya pengetahuan.
+            {t.background}
           </p>
         </motion.div>
 
@@ -79,9 +100,9 @@ const InitialLandingPage = ({ onClose }) => (
           <div className="w-14 h-14 bg-white/20 backdrop-blur-md text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg">
             <ShieldCheck size={28} />
           </div>
-          <h3 className="text-2xl font-black mb-4 uppercase tracking-tight">Visi & Misi</h3>
+          <h3 className="text-2xl font-black mb-4 uppercase tracking-tight">{t.visionTitle}</h3>
           <p className="text-indigo-50 leading-relaxed font-medium">
-            Sistem ini dirancang untuk mengintegrasikan seluruh informasi penting dalam satu platform. Memastikan kontinuitas operasional tetap berjalan meskipun terjadi pergantian personel atau perubahan struktur organisasi.
+            {t.vision}
           </p>
         </motion.div>
       </div>
@@ -92,16 +113,17 @@ const InitialLandingPage = ({ onClose }) => (
         transition={{ delay: 1.2 }}
         className="bg-indigo-600 rounded-[3rem] p-10 text-center text-white shadow-2xl shadow-indigo-500/40 relative overflow-hidden"
       >
-        <h3 className="text-3xl font-black mb-4 relative z-10">Siap Memulai Transformasi?</h3>
+        <h3 className="text-3xl font-black mb-4 relative z-10">{t.ctaTitle}</h3>
         <button
           onClick={onClose}
           className="px-12 py-5 bg-white text-indigo-600 rounded-[2rem] font-black uppercase tracking-widest shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3 mx-auto relative z-10"
         >
-          Mulai Menjelajah <ArrowRight size={20} />
+          {t.ctaButton} <ArrowRight size={20} />
         </button>
       </motion.div>
     </div>
   </motion.div>
-);
+  );
+};
 
 export default InitialLandingPage;
