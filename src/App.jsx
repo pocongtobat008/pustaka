@@ -90,7 +90,7 @@ import {
   RefreshCw,
   Activity,
   Rocket, Target, HelpCircle, Sparkles, Zap, Award, Globe, FileCheck, BookOpen, ScanLine,
-  Calculator, FlaskConical, Wand2
+  Calculator, FlaskConical, Wand2, ChevronDown
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 const Login = lazy(() => import('./pages/Login'));
@@ -144,7 +144,7 @@ const API_BASE = API_URL;
 export default function App() {
   // Toast Notification System
   const { toasts, toast, removeToast, updateToast } = useToast();
-  const { language } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const isEnglish = language === 'en';
 
   const tabTextMap = useMemo(() => {
@@ -238,6 +238,7 @@ export default function App() {
         labels: {
           loading: 'Loading Database...',
           infoMenu: 'Menu Info',
+          logout: 'Logout',
         },
       };
     }
@@ -279,6 +280,7 @@ export default function App() {
       labels: {
         loading: 'Memuat Database...',
         infoMenu: 'Info Menu',
+        logout: 'Keluar',
       },
     };
   }, [language]);
@@ -414,6 +416,25 @@ export default function App() {
   const [taxSummaries, setTaxSummaries] = useState([]);
 
   const [isFlowModalOpen, setIsFlowModalOpen] = useState(false);
+
+  // ── Dropdown profil di topbar (SaaS) ──
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef(null);
+
+  useEffect(() => {
+    const onClickOutside = (e) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(e.target)) {
+        setProfileMenuOpen(false);
+      }
+    };
+    const onEsc = (e) => { if (e.key === 'Escape') setProfileMenuOpen(false); };
+    document.addEventListener('mousedown', onClickOutside);
+    document.addEventListener('keydown', onEsc);
+    return () => {
+      document.removeEventListener('mousedown', onClickOutside);
+      document.removeEventListener('keydown', onEsc);
+    };
+  }, []);
   const [editingFlow, setEditingFlow] = useState(null);
   const [flowForm, setFlowForm] = useState({ name: '', description: '', steps: [], visual_config: null });
 
@@ -3739,28 +3760,71 @@ export default function App() {
 
               <NotificationBell variant="topbar" onOpenChannel={handleOpenNotificationChannel} />
 
-              <button
-                type="button"
-                onClick={() => setIsDarkMode(!isDarkMode)}
-                className="neo-icon-btn w-10 h-10 text-slate-500 dark:text-slate-300 hover:text-yellow-500 dark:hover:text-yellow-400"
-                title="Tema"
-              >
-                {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
-              </button>
+              {/* Profil dropdown — tema & bahasa ada di dalam (pola SaaS) */}
+              <div className="relative" ref={profileMenuRef}>
+                <button
+                  type="button"
+                  onClick={() => setProfileMenuOpen(o => !o)}
+                  className={'h-10 pl-1.5 pr-2.5 flex items-center gap-2 rounded-xl glass-btn group transition-all ' + (profileMenuOpen ? 'border-indigo-400/60 shadow-lg shadow-indigo-500/10' : 'hover:border-indigo-300/60')}
+                  title={currentUser?.name || ''}
+                >
+                  <div className="w-7 h-7 rounded-full gradient-bg flex items-center justify-center text-[10px] font-extrabold text-white shadow-sm group-hover:scale-105 transition-transform">
+                    {currentUser?.name ? currentUser.name.substring(0, 2).toUpperCase() : '?'}
+                  </div>
+                  <span className="hidden lg:block text-xs font-bold text-slate-600 dark:text-slate-300 max-w-[100px] truncate">
+                    {currentUser?.name || ''}
+                  </span>
+                  <ChevronDown size={14} className={'text-slate-400 transition-transform duration-200 ' + (profileMenuOpen ? 'rotate-180' : '')} />
+                </button>
 
-              <button
-                type="button"
-                onClick={() => setActiveTab('profile')}
-                className="h-10 pl-1.5 pr-3 flex items-center gap-2 rounded-xl glass-btn hover:border-indigo-300/60 group"
-                title={currentUser?.name || ''}
-              >
-                <div className="w-7 h-7 rounded-full gradient-bg flex items-center justify-center text-[10px] font-extrabold text-white shadow-sm group-hover:scale-105 transition-transform">
-                  {currentUser?.name ? currentUser.name.substring(0, 2).toUpperCase() : '?'}
-                </div>
-                <span className="hidden lg:block text-xs font-bold text-slate-600 dark:text-slate-300 max-w-[110px] truncate">
-                  {currentUser?.name || ''}
-                </span>
-              </button>
+                {profileMenuOpen && (
+                  <div className="absolute right-0 top-[calc(100%+10px)] w-64 glass-panel rounded-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150 z-[60]">
+                    {/* Header profil */}
+                    <div className="px-4 py-3.5 border-b border-white/40 dark:border-white/10 bg-gradient-to-r from-indigo-500/10 to-purple-500/10">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-xs font-extrabold text-white shadow-md">
+                          {currentUser?.name ? currentUser.name.substring(0, 2).toUpperCase() : '?'}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-extrabold text-slate-800 dark:text-white truncate">{currentUser?.name || 'Guest'}</p>
+                          <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider capitalize">{currentUser?.role || 'user'}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-1.5">
+                      <button
+                        onClick={() => { setProfileMenuOpen(false); setActiveTab('profile'); }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-indigo-50/80 dark:hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors text-left"
+                      >
+                        <User size={15} className="text-slate-400" /> {commandTextMap.items.profile.label}
+                      </button>
+                      <button
+                        onClick={() => { setProfileMenuOpen(false); setLanguage(isEnglish ? 'id' : 'en'); }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-indigo-50/80 dark:hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors text-left"
+                      >
+                        <Globe size={15} className="text-slate-400" /> {isEnglish ? 'Bahasa Indonesia' : 'English'}
+                        <span className="ml-auto text-[10px] font-black uppercase text-indigo-500 bg-indigo-50 dark:bg-indigo-500/15 px-1.5 py-0.5 rounded">{language}</span>
+                      </button>
+                      <button
+                        onClick={() => { setProfileMenuOpen(false); setIsDarkMode(!isDarkMode); }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-amber-50/80 dark:hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-300 transition-colors text-left"
+                      >
+                        {isDarkMode ? <Sun size={15} className="text-slate-400" /> : <Moon size={15} className="text-slate-400" />} {isDarkMode ? commandTextMap.actions.themeLight : commandTextMap.actions.themeDark}
+                      </button>
+                    </div>
+
+                    <div className="border-t border-white/40 dark:border-white/10 p-1.5">
+                      <button
+                        onClick={() => { setProfileMenuOpen(false); handleLogout(); }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors text-left"
+                      >
+                        <LogOut size={15} /> {commandTextMap.labels.logout}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

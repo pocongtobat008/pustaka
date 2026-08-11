@@ -106,7 +106,7 @@ const NotificationBell = ({ onOpenChannel, variant = 'floating' }) => {
     if (isHiddenByModal) return null;
 
     return (
-        <div className={isTopbar ? 'relative font-sans' : 'fixed top-4 right-20 z-[40] font-sans pointer-events-none'}>
+        <div className={isTopbar ? 'relative font-sans' : 'fixed top-[76px] right-4 z-[40] font-sans pointer-events-none'}>
             <div className="pointer-events-auto relative">
                 {/* Bell Icon Button */}
                 <button 

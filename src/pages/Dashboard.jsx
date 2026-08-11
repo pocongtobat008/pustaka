@@ -379,7 +379,7 @@ export default function Dashboard({
                             value={semanticQuery}
                             onChange={(e) => setSemanticQuery(e.target.value)}
                             placeholder={text.searchPlaceholder}
-                            className="w-full pl-5 pr-24 py-4 rounded-2xl bg-white dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium text-slate-700 dark:text-slate-200 shadow-sm"
+                            className="glass-input w-full pl-5 pr-24 py-4 rounded-2xl transition-all font-medium text-slate-700 dark:text-slate-200"
                         />
                         {semanticQuery && (
                             <button
@@ -394,7 +394,7 @@ export default function Dashboard({
                         <button
                             type="submit"
                             disabled={isSearching}
-                            className="absolute right-2 top-2 bottom-2 aspect-square bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl flex items-center justify-center transition-all disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-indigo-500/20 active:scale-95"
+                            className="absolute right-2 top-2 bottom-2 aspect-square gradient-bg hover:opacity-95 text-white rounded-xl flex items-center justify-center transition-all disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-indigo-500/20 active:scale-95"
                         >
                             {isSearching ? (
                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -418,7 +418,7 @@ export default function Dashboard({
                                 <div
                                     key={doc.id}
                                     onClick={() => handleViewDoc(doc)}
-                                    className="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10 cursor-pointer transition-all group/card relative overflow-hidden"
+                                    className="p-4 glass-card rounded-2xl cursor-pointer group/card relative overflow-hidden"
                                 >
                                     <div className="absolute top-0 right-0 p-2 opacity-10 group-hover/card:opacity-20 transition-opacity">
                                         <ScanLine size={100} />
@@ -618,11 +618,11 @@ export default function Dashboard({
                         </CardHeader>
                         <CardContent className="space-y-6 pt-4">
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                                <div className="rounded-2xl border border-slate-200/60 bg-white/80 p-4 dark:border-slate-700/50 dark:bg-slate-900/80 shadow-sm hover:shadow-md transition-shadow">
+                                <div className="glass-card rounded-2xl p-4">
                                     <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-1">{text.occupancy}</p>
                                     <p className="text-3xl font-black text-slate-900 dark:text-white">{bentoStats.occupancyPercent}%</p>
                                 </div>
-                                <div className="rounded-2xl border border-slate-200/60 bg-white/80 p-4 dark:border-slate-700/50 dark:bg-slate-900/80 shadow-sm hover:shadow-md transition-shadow">
+                                <div className="glass-card rounded-2xl p-4">
                                     <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-1">{text.usedSlots}</p>
                                     <p className="text-3xl font-black text-slate-900 dark:text-white">{bentoStats.usedSlots}</p>
                                 </div>
@@ -638,7 +638,7 @@ export default function Dashboard({
                                 </div>
                             </div>
                             <div className="flex flex-wrap gap-3">
-                                <button onClick={() => setActiveTab('inventory')} className="flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white transition-all hover:bg-slate-800 hover:shadow-lg dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 active:scale-95">
+                                <button onClick={() => setActiveTab('inventory')} className="flex items-center gap-2 rounded-xl gradient-bg px-4 py-2.5 text-xs font-bold text-white transition-all hover:shadow-lg hover:shadow-indigo-500/40 active:scale-95">
                                     {text.openInventory} <ArrowRight size={14} />
                                 </button>
                                 <button onClick={() => setActiveTab('documents')} className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 transition-all hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 active:scale-95">
