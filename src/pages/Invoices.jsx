@@ -205,14 +205,14 @@ const Pagination = ({ page, totalPages, setPage }) => {
     }
     const btnCls = "min-w-8 h-8 px-2 flex items-center justify-center rounded-lg text-xs font-bold transition-all";
     return (
-        <div className="flex items-center justify-between px-4 py-3 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <div className="flex items-center justify-between px-4 py-3 border-t border-white/60 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl">
             <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Page <span className="font-bold text-slate-800 dark:text-white">{page}</span> of {totalPages}</div>
             <div className="flex items-center gap-1">
                 <button disabled={page <= 1} onClick={() => setPage(page - 1)} className={`${btnCls} text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed`}>«</button>
                 {pages.map((p, i) => p === '...' ? (
                     <span key={`e${i}`} className="px-1 text-xs text-slate-400">…</span>
                 ) : (
-                    <button key={p} onClick={() => setPage(p)} className={`${btnCls} ${p === page ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'}`}>{p}</button>
+                    <button key={p} onClick={() => setPage(p)} className={`${btnCls} ${p === page ? 'gradient-bg text-white shadow-lg shadow-indigo-500/25' : 'text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'}`}>{p}</button>
                 ))}
                 <button disabled={page >= totalPages} onClick={() => setPage(page + 1)} className={`${btnCls} text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed`}>»</button>
             </div>
@@ -245,8 +245,8 @@ const StatusStepper = ({ status }) => {
 };
 
 // ── Gaya tabel profesional (dipakai dashboard & invoice) ──
-const TH_CLS = "px-4 py-3.5 text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50 sticky top-0 z-10 backdrop-blur";
-const TH_SORT_CLS = "px-4 py-3.5 text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50 sticky top-0 z-10 backdrop-blur cursor-pointer select-none hover:text-indigo-600 transition-colors";
+const TH_CLS = "px-4 py-3.5 text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-white/60 dark:border-white/10 bg-slate-50/80 dark:bg-slate-800/50 sticky top-0 z-10 backdrop-blur";
+const TH_SORT_CLS = "px-4 py-3.5 text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-white/60 dark:border-white/10 bg-slate-50/80 dark:bg-slate-800/50 sticky top-0 z-10 backdrop-blur cursor-pointer select-none hover:text-indigo-600 transition-colors";
 const TD_CLS = "px-4 py-3 text-sm text-slate-600 dark:text-slate-300";
 const TROW_CLS = "border-b border-slate-100 dark:border-slate-800/60 transition-colors hover:bg-indigo-50/70 dark:hover:bg-slate-800/50";
 const NUM_RIGHT = "px-4 py-3 text-right tabular-nums whitespace-nowrap";
@@ -282,7 +282,7 @@ const SearchAutocomplete = ({ value, options, labelKey, subKey, onSelect, classN
                 <Search size={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
             </div>
             {open && matches.length > 0 && (
-                <div className="absolute z-30 mt-1 w-full max-h-52 overflow-y-auto rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl">
+                <div className="absolute z-30 mt-1 w-full max-h-52 overflow-y-auto rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl shadow-xl">
                     {matches.slice(0, 50).map(o => (
                         <button
                             key={o.id}
@@ -1787,7 +1787,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
         const colSpan = withActions ? 11 : 10;
         if (loading) {
             return Array.from({ length: 5 }).map((_, i) => (
-                <tr key={`skel-${i}`} className="border-b border-slate-100 dark:border-slate-800">
+                <tr key={`skel-${i}`} className="border-b border-white/60 dark:border-white/10">
                     <td className="w-8 px-1 py-3"></td>
                     <td className="px-4 py-3"><div className="h-4 w-6 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div></td>
                     {withActions && <td className="px-4 py-3"><div className="h-6 w-6 bg-slate-200 dark:bg-slate-700 rounded-lg animate-pulse"></div></td>}
@@ -1810,7 +1810,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
             const kids = isDp ? childrenOf(inv.id) : [];
             const hasKids = kids.length > 0;
             const expanded = expandedDps.has(inv.id);
-            const rowBg = rowIdx % 2 === 0 ? 'bg-white dark:bg-slate-900' : 'bg-slate-50/70 dark:bg-slate-800/30';
+            const rowBg = rowIdx % 2 === 0 ? 'bg-white/60 dark:bg-slate-900/50' : 'bg-slate-50/70 dark:bg-slate-800/30';
             const rows = [];
             rows.push(
                 <tr key={inv.id} onClick={() => openDetail(inv)} className={TROW_CLS + ' ' + rowBg + ' cursor-pointer'}>
@@ -1962,14 +1962,14 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
         <button
             onClick={() => setTab(id)}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${tab === id
-                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25'
+                ? 'gradient-bg text-white shadow-lg shadow-indigo-500/25'
                 : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
         >
             {icon}{label}
         </button>
     );
 
-    const inputCls = "w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500";
+    const inputCls = "w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500";
 
     return (
         <div className="p-4 md:p-6 space-y-4">
@@ -2060,15 +2060,15 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
                                 placeholder="Cari (PO, proforma, dealer...)"
-                                className="pl-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 w-48"
+                                className="pl-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 w-48"
                             />
                         </div>
                     )}
                     {tab !== 'dashboard' && (
                         <>
-                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" title="Dari Tanggal" />
+                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2.5 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" title="Dari Tanggal" />
                             <span className="text-xs text-slate-400">s/d</span>
-                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" title="Sampai Tanggal" />
+                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2.5 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" title="Sampai Tanggal" />
                             {(search || dateFrom || dateTo) && (
                                 <button onClick={() => { setSearch(''); setDateFrom(''); setDateTo(''); }} className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-red-600 text-sm font-semibold" title="Reset filter">Reset</button>
                             )}
@@ -2094,7 +2094,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     {/* Charts */}
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                         {/* Status distribution */}
-                        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-sm">
+                        <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 p-5 shadow-sm">
                             <div className="flex items-center justify-between mb-4">
                                 <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
                                     <span className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"><PieChart size={14} /></span>
@@ -2130,7 +2130,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         </div>
 
                         {/* Monthly trend */}
-                        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 lg:col-span-2 shadow-sm">
+                        <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 p-5 lg:col-span-2 shadow-sm">
                             <div className="flex items-center justify-between mb-4">
                                 <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
                                     <span className="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"><TrendingUp size={14} /></span>
@@ -2159,7 +2159,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
 
                     {/* Dealer top + overview strip */}
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-sm">
+                        <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 p-5 shadow-sm">
                             <div className="flex items-center justify-between mb-4">
                                 <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
                                     <span className="p-1.5 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400"><Trophy size={14} /></span>
@@ -2211,8 +2211,8 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     </div>
 
                     {/* Table header + filters */}
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
-                        <div className="flex flex-wrap items-center justify-between gap-3 p-4 border-b border-slate-100 dark:border-slate-800">
+                    <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl shadow-sm border border-white/60 dark:border-white/10 overflow-hidden">
+                        <div className="flex flex-wrap items-center justify-between gap-3 p-4 border-b border-white/60 dark:border-white/10">
                             <div className="flex items-center gap-2">
                                 <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600"><LayoutDashboard size={16} /></div>
                                 <div>
@@ -2223,13 +2223,13 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <div className="flex items-center gap-2 flex-wrap">
                                 <div className="relative">
                                     <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                                    <input value={dashSearch} onChange={e => setDashSearch(e.target.value)} placeholder="Cari data..." className="pl-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                    <input value={dashSearch} onChange={e => setDashSearch(e.target.value)} placeholder="Cari data..." className="pl-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                                 </div>
-                                <select value={dashDealer} onChange={e => setDashDealer(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 max-w-[160px]">
+                                <select value={dashDealer} onChange={e => setDashDealer(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 max-w-[160px]">
                                     <option value="">Semua Dealer</option>
                                     {dashDealerOptions.map(d => <option key={d} value={d}>{d}</option>)}
                                 </select>
-                                <select value={dashStatus} onChange={e => setDashStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <select value={dashStatus} onChange={e => setDashStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                     <option value="">Semua Status</option>
                                     {dashStatusOptions.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                                 </select>
@@ -2261,25 +2261,25 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             </table>
                         </div>
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/40">
-                            <div className="flex flex-col gap-0.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-700 px-3 py-2">
+                            <div className="flex flex-col gap-0.5 rounded-xl bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-white/60 dark:border-white/10 px-3 py-2">
                                 <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Jumlah Data</span>
                                 <span className="text-sm font-bold text-slate-700 dark:text-slate-200 tabular-nums">{dashFiltered.length} invoice</span>
                             </div>
-                            <div className="flex flex-col gap-0.5 rounded-xl bg-white dark:bg-slate-900 border-l-4 border-l-teal-500 border border-slate-100 dark:border-slate-700 px-3 py-2">
+                            <div className="flex flex-col gap-0.5 rounded-xl bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border-l-4 border-l-teal-500 border border-white/60 dark:border-white/10 px-3 py-2">
                                 <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Invoice</span>
                                 <span className="text-sm font-black text-teal-600 dark:text-teal-400 tabular-nums whitespace-nowrap">{formatCurrency(dashFiltered.filter(r => !(r.pp_type === 'pelunasan')).reduce((s, r) => s + (parseFloat(r.total_invoice) || 0), 0))}</span>
                             </div>
-                            <div className="flex flex-col gap-0.5 rounded-xl bg-white dark:bg-slate-900 border-l-4 border-l-indigo-500 border border-slate-100 dark:border-slate-700 px-3 py-2">
+                            <div className="flex flex-col gap-0.5 rounded-xl bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border-l-4 border-l-indigo-500 border border-white/60 dark:border-white/10 px-3 py-2">
                                 <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Uang Masuk</span>
                                 <span className="text-sm font-black text-indigo-600 dark:text-indigo-400 tabular-nums whitespace-nowrap">{formatCurrency(dashFiltered.reduce((s, r) => s + (parseFloat(r.uang_masuk) || 0), 0))}</span>
                             </div>
-                            <div className="flex flex-col gap-0.5 rounded-xl bg-white dark:bg-slate-900 border-l-4 border-l-amber-500 border border-slate-100 dark:border-slate-700 px-3 py-2">
+                            <div className="flex flex-col gap-0.5 rounded-xl bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border-l-4 border-l-amber-500 border border-white/60 dark:border-white/10 px-3 py-2">
                                 <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Sisa (Total − Uang Masuk)</span>
                                 <span className="text-sm font-black text-amber-600 dark:text-amber-400 tabular-nums whitespace-nowrap">{formatCurrency(dashFiltered.filter(r => !(r.pp_type === 'pelunasan')).reduce((s, r) => s + (parseFloat(r.total_invoice) || 0), 0) - dashFiltered.reduce((s, r) => s + (parseFloat(r.uang_masuk) || 0), 0))}</span>
                             </div>
                         </div>
                         {(dashSearch || dashDealer || dashStatus) && (
-                            <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-t border-slate-100 dark:border-slate-800">
+                            <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-t border-white/60 dark:border-white/10">
                                 <button onClick={() => { setDashSearch(''); setDashDealer(''); setDashStatus(''); }} className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-600 hover:bg-red-100 dark:hover:bg-red-500/20 text-sm font-semibold transition-colors">
                                     <X size={14} /> Reset Filter
                                 </button>
@@ -2292,8 +2292,8 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
 
             {/* ── Invoice List Tab ── */}
             {tab === 'invoice' && (
-                <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
-                    <div className="flex flex-wrap items-center justify-between gap-3 p-4 border-b border-slate-100 dark:border-slate-800">
+                <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl shadow-sm border border-white/60 dark:border-white/10 overflow-hidden">
+                    <div className="flex flex-wrap items-center justify-between gap-3 p-4 border-b border-white/60 dark:border-white/10">
                         <div className="flex items-center gap-2">
                             <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600"><Receipt size={16} /></div>
                             <div>
@@ -2302,7 +2302,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             </div>
                         </div>
                         <div className="flex items-center gap-2 flex-wrap">
-                            <select value={invStatus} onChange={e => setInvStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <select value={invStatus} onChange={e => setInvStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <option value="">Semua Status</option>
                                 {dashStatusOptions.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                             </select>
@@ -2347,7 +2347,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <h3 className="font-bold text-slate-800 dark:text-white">Daftar Pengajuan Proforma</h3>
                         <div className="flex items-center gap-2">
-                            <select value={profStatus} onChange={e => setProfStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <select value={profStatus} onChange={e => setProfStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 {PROFORMA_STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                             </select>
                             {profStatus && <button onClick={() => setProfStatus('')} className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-red-600 text-sm font-semibold" title="Reset filter">Reset</button>}
@@ -2355,12 +2355,12 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     </div>
                     <div className="grid grid-cols-1 gap-4">
                     {filteredProformas.length === 0 && (
-                        <div className="bg-white dark:bg-slate-900 rounded-2xl p-10 text-center text-slate-400 border border-slate-100 dark:border-slate-800">
+                        <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl p-10 text-center text-slate-400 border border-white/60 dark:border-white/10">
                             Belum ada pengajuan proforma
                         </div>
                     )}
                     {pagedProformas.slice(filteredProformas).map((p, pi) => (
-                        <div key={p.id} className={`${pi % 2 === 0 ? 'bg-white dark:bg-slate-900' : 'bg-slate-50/70 dark:bg-slate-800/30'} rounded-2xl border border-slate-100 dark:border-slate-800 p-5 space-y-3 hover:border-indigo-200 dark:hover:border-indigo-500/40 transition-colors`}>
+                        <div key={p.id} className={`${pi % 2 === 0 ? 'bg-white/60 dark:bg-slate-900/50' : 'bg-slate-50/70 dark:bg-slate-800/30'} rounded-2xl border border-white/60 dark:border-white/10 p-5 space-y-3 hover:border-indigo-200 dark:hover:border-indigo-500/40 transition-colors`}>
                             <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
                                 <div className="flex items-center gap-3 min-w-0">
                                     <div className={`p-3 rounded-2xl shrink-0 ${p.status === 'approved' ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
@@ -2403,7 +2403,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         <History size={15} /> Audit
                                     </button>
                                     {/* Total amount — terpisah, tidak wrap */}
-                                    <div className="text-right pl-3 sm:pl-4 border-l-2 border-slate-100 dark:border-slate-700 max-w-full">
+                                    <div className="text-right pl-3 sm:pl-4 border-l-2 border-white/60 dark:border-white/10 max-w-full">
                                         <div className="text-[10px] text-slate-400 uppercase tracking-wider whitespace-nowrap">Total Proforma</div>
                                         <div className="text-lg font-black text-slate-800 dark:text-white tabular-nums whitespace-nowrap leading-tight max-w-full overflow-hidden" title={formatCurrency(p.total_nominal)}>{formatCurrency(p.total_nominal)}</div>
                                     </div>
@@ -2415,7 +2415,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     const invStatus = inv.status || 'proforma';
                                     const isTaxDone = invStatus === 'tax' || invStatus === 'settled';
                                     return (
-                                        <div key={inv.id} className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 min-w-[200px] max-w-full hover:border-indigo-200 dark:hover:border-indigo-500/40 transition-colors">
+                                        <div key={inv.id} className="flex items-center gap-3 px-3 py-2.5 rounded-xl gradient-bg-soft border border-white/60 dark:border-white/10 min-w-[200px] max-w-full hover:border-indigo-200 dark:hover:border-indigo-500/40 transition-colors">
                                             <div className="min-w-0 flex-1">
                                                 <div className="flex items-center gap-1.5">
                                                     <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold whitespace-nowrap ${paymentBadge(inv).cls}`}>{paymentBadge(inv).label}</span>
@@ -2491,19 +2491,19 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <h3 className="font-bold text-slate-800 dark:text-white">Daftar Faktur Pajak</h3>
                         <div className="flex items-center gap-2">
-                            <select value={taxStatus} onChange={e => setTaxStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <select value={taxStatus} onChange={e => setTaxStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 {TAX_STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                             </select>
                             {taxStatus && <button onClick={() => setTaxStatus('')} className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-red-600 text-sm font-semibold" title="Reset filter">Reset</button>}
                         </div>
                     </div>
                     {taxItems.length === 0 && (
-                        <div className="bg-white dark:bg-slate-900 rounded-2xl p-10 text-center text-slate-400 border border-slate-100 dark:border-slate-800">
+                        <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl p-10 text-center text-slate-400 border border-white/60 dark:border-white/10">
                             Belum ada data proforma
                         </div>
                     )}
                     {pagedTax.slice(taxItems).map((p, ti) => (
-                        <div key={p.id} className={`${ti % 2 === 0 ? 'bg-white dark:bg-slate-900' : 'bg-slate-50/70 dark:bg-slate-800/30'} rounded-2xl border border-slate-100 dark:border-slate-800 p-5 space-y-3 hover:border-violet-200 dark:hover:border-violet-500/40 transition-colors`}>
+                        <div key={p.id} className={`${ti % 2 === 0 ? 'bg-white/60 dark:bg-slate-900/50' : 'bg-slate-50/70 dark:bg-slate-800/30'} rounded-2xl border border-white/60 dark:border-white/10 p-5 space-y-3 hover:border-violet-200 dark:hover:border-violet-500/40 transition-colors`}>
                             <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
                                 <div className="flex items-center gap-3 min-w-0">
                                     <div className="p-3 rounded-2xl shrink-0 bg-violet-100 text-violet-600 dark:bg-violet-500/10 dark:text-violet-400">
@@ -2537,7 +2537,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         <History size={15} /> Audit
                                     </button>
                                     {/* Total amount — terpisah, tidak wrap */}
-                                    <div className="text-right pl-3 sm:pl-4 border-l-2 border-slate-100 dark:border-slate-700 max-w-full">
+                                    <div className="text-right pl-3 sm:pl-4 border-l-2 border-white/60 dark:border-white/10 max-w-full">
                                         <div className="text-[10px] text-slate-400 uppercase tracking-wider whitespace-nowrap">Total Proforma</div>
                                         <div className="text-lg font-black text-slate-800 dark:text-white tabular-nums whitespace-nowrap leading-tight max-w-full overflow-hidden" title={formatCurrency(p.total_nominal)}>{formatCurrency(p.total_nominal)}</div>
                                     </div>
@@ -2552,7 +2552,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     const isWaitingUpdate = invStatus === 'sent_back_tax' || invStatus === 'rejected';
                                     const isAwaitingTax = invStatus === 'proforma' || invStatus === 'tax_requested';
                                     return (
-                                        <div key={inv.id} className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 min-w-[200px] max-w-full flex-1 hover:border-violet-200 dark:hover:border-violet-500/40 transition-colors">
+                                        <div key={inv.id} className="flex items-center gap-3 px-3 py-2.5 rounded-xl gradient-bg-soft border border-white/60 dark:border-white/10 min-w-[200px] max-w-full flex-1 hover:border-violet-200 dark:hover:border-violet-500/40 transition-colors">
                                             <div className="min-w-0 flex-1">
                                                 <div className="flex items-center gap-1.5">
                                                     <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold whitespace-nowrap ${paymentBadge(inv).cls}`}>{paymentBadge(inv).label}</span>
@@ -2603,7 +2603,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
 
                             {/* Tax info & attachments */}
                             {(p.invoices || []).filter(inv => parseJsonArray(inv.tax_request_attachments).length > 0 || inv.tax_request_notes).length > 0 && (
-                                <div className="border-t border-slate-100 dark:border-slate-800 pt-3 space-y-2">
+                                <div className="border-t border-white/60 dark:border-white/10 pt-3 space-y-2">
                                     <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Lampiran Tax Request</div>
                                     {(p.invoices || []).filter(inv => parseJsonArray(inv.tax_request_attachments).length > 0 || inv.tax_request_notes).map(inv => (
                                         <div key={inv.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-slate-50/70 dark:bg-slate-800/40 px-3 py-2">
@@ -2631,7 +2631,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
             {tab === 'dealer' && (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                     {perms.can_manage_master && (
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 space-y-3 h-fit">
+                    <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 p-5 space-y-3 h-fit">
                         <div className="flex items-center justify-between gap-2">
                             <h3 className="font-bold text-slate-800 dark:text-white">{dealerEditId ? 'Edit Dealer' : 'Tambah Dealer'}</h3>
                             <div className="flex items-center gap-1">
@@ -2648,7 +2648,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         <input className={inputCls} placeholder="Nama Dealer" value={dealerForm.nama} onChange={e => setDealerForm({ ...dealerForm, nama: e.target.value })} />
                         <textarea className={inputCls} placeholder="Alamat" rows={2} value={dealerForm.alamat} onChange={e => setDealerForm({ ...dealerForm, alamat: e.target.value })} />
                         <div className="flex gap-2">
-                            <button onClick={saveDealer} disabled={savingDealer} className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
+                            <button onClick={saveDealer} disabled={savingDealer} className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl gradient-bg hover:opacity-95 text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
                                 <Plus size={15} /> {savingDealer ? 'Menyimpan...' : (dealerEditId ? 'Update' : 'Simpan')}
                             </button>
                             {dealerEditId && (
@@ -2660,7 +2660,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     </div>
                     )}
 
-                    <div className={`${perms.can_manage_master ? 'lg:col-span-2' : 'lg:col-span-3'} bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden`}>
+                    <div className={`${perms.can_manage_master ? 'lg:col-span-2' : 'lg:col-span-3'} bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 overflow-hidden`}>
                         <div className="overflow-auto max-h-[600px] custom-scrollbar">
                             <table className="w-full text-sm border-collapse">
                                 <thead>
@@ -2673,7 +2673,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 </thead>
                                 <tbody>
                                     {pagedDealers.slice(filteredDealers).map((d, di) => (
-                                        <tr key={d.id} className={`${TROW_CLS} ${di % 2 === 0 ? 'bg-white dark:bg-slate-900' : 'bg-slate-50/70 dark:bg-slate-800/30'}`}>
+                                        <tr key={d.id} className={`${TROW_CLS} ${di % 2 === 0 ? 'bg-white/60 dark:bg-slate-900/50' : 'bg-slate-50/70 dark:bg-slate-800/30'}`}>
                                             <td className="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-300 whitespace-nowrap">{d.npwp}</td>
                                             <td className="px-4 py-3 font-semibold text-slate-800 dark:text-white">{d.nama}</td>
                                             <td className="px-4 py-3 text-slate-500 dark:text-slate-400 text-xs">{d.alamat}</td>
@@ -2698,7 +2698,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
             {tab === 'barang' && (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                     {perms.can_manage_master && (
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 space-y-3 h-fit">
+                    <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 p-5 space-y-3 h-fit">
                         <div className="flex items-center justify-between gap-2">
                             <h3 className="font-bold text-slate-800 dark:text-white">{barangEditId ? 'Edit Barang' : 'Tambah Barang'}</h3>
                             <div className="flex items-center gap-1">
@@ -2715,7 +2715,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         <input className={inputCls} placeholder="Item Description" value={barangForm.item_description} onChange={e => setBarangForm({ ...barangForm, item_description: e.target.value })} />
                         <MoneyInput className={inputCls} placeholder="Harga" value={barangForm.harga} onChange={v => setBarangForm({ ...barangForm, harga: v })} />
                         <div className="flex gap-2">
-                            <button onClick={saveBarang} disabled={savingBarang} className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
+                            <button onClick={saveBarang} disabled={savingBarang} className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl gradient-bg hover:opacity-95 text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
                                 <Plus size={15} /> {savingBarang ? 'Menyimpan...' : (barangEditId ? 'Update' : 'Simpan')}
                             </button>
                             {barangEditId && (
@@ -2727,7 +2727,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     </div>
                     )}
 
-                    <div className={`${perms.can_manage_master ? 'lg:col-span-2' : 'lg:col-span-3'} bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden`}>
+                    <div className={`${perms.can_manage_master ? 'lg:col-span-2' : 'lg:col-span-3'} bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 overflow-hidden`}>
                         <div className="overflow-auto max-h-[600px] custom-scrollbar">
                             <table className="w-full text-sm border-collapse">
                                 <thead>
@@ -2740,7 +2740,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 </thead>
                                 <tbody>
                                     {pagedBarang.slice(filteredBarang).map((b, bi) => (
-                                        <tr key={b.id} className={`${TROW_CLS} ${bi % 2 === 0 ? 'bg-white dark:bg-slate-900' : 'bg-slate-50/70 dark:bg-slate-800/30'}`}>
+                                        <tr key={b.id} className={`${TROW_CLS} ${bi % 2 === 0 ? 'bg-white/60 dark:bg-slate-900/50' : 'bg-slate-50/70 dark:bg-slate-800/30'}`}>
                                             <td className="px-4 py-3 font-mono text-xs font-bold text-indigo-600 dark:text-indigo-400 whitespace-nowrap">{b.model}</td>
                                             <td className="px-4 py-3 text-slate-600 dark:text-slate-300 text-xs">{b.item_description}</td>
                                             <td className="px-4 py-3 text-right font-semibold text-slate-800 dark:text-white whitespace-nowrap tabular-nums">{formatCurrency(b.harga)}</td>
@@ -2765,7 +2765,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
             {tab === 'rule' && (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                     {perms.can_manage_rule && (
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 space-y-3 h-fit">
+                    <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 p-5 space-y-3 h-fit">
                         <h3 className="font-bold text-slate-800 dark:text-white">{ruleEditId ? 'Edit Rule' : 'Tambah Rule'}</h3>
                         <div>
                             <label className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 block">Tipe Target</label>
@@ -2842,7 +2842,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             Rule Aktif (matikan untuk nonaktifkan sementara)
                         </label>
                         <div className="flex gap-2 pt-1">
-                            <button onClick={saveRule} disabled={!ruleForm.target_value || savingRule} className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed">
+                            <button onClick={saveRule} disabled={!ruleForm.target_value || savingRule} className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl gradient-bg hover:opacity-95 text-white text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed">
                                 <Plus size={15} /> {savingRule ? 'Menyimpan...' : (ruleEditId ? 'Update' : 'Simpan')}
                             </button>
                             {ruleEditId && (
@@ -2855,7 +2855,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     </div>
                     )}
 
-                    <div className={`${perms.can_manage_rule ? 'lg:col-span-2' : 'lg:col-span-3'} bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden`}>
+                    <div className={`${perms.can_manage_rule ? 'lg:col-span-2' : 'lg:col-span-3'} bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 overflow-hidden`}>
                         <div className="overflow-auto max-h-[600px] custom-scrollbar">
                             <table className="w-full text-sm border-collapse">
                                 <thead>
@@ -2873,7 +2873,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 </thead>
                                 <tbody>
                                     {pagedRules.slice(filteredRules).map((r, ri) => (
-                                        <tr key={r.id} className={`${TROW_CLS} ${ri % 2 === 0 ? 'bg-white dark:bg-slate-900' : 'bg-slate-50/70 dark:bg-slate-800/30'}`}>
+                                        <tr key={r.id} className={`${TROW_CLS} ${ri % 2 === 0 ? 'bg-white/60 dark:bg-slate-900/50' : 'bg-slate-50/70 dark:bg-slate-800/30'}`}>
                                             <td className="px-4 py-3 whitespace-nowrap">
                                                 <div className="font-semibold text-slate-800 dark:text-white">{r.target_value}</div>
                                                 <div className="text-[10px] text-slate-400 uppercase font-medium">{r.target_type}</div>
@@ -2912,7 +2912,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
             {tab === 'flow' && (
                 <div className="space-y-6">
                     {/* Header bar */}
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+                    <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl p-5 border border-white/60 dark:border-white/10 flex flex-wrap items-center justify-between gap-3 shadow-sm">
                         <div className="flex items-center gap-3">
                             <div className="p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
                                 <Workflow size={20} />
@@ -2943,7 +2943,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             {perms.can_manage_rule && (
                                 <button
                                     onClick={() => openFlowForm(null)}
-                                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-lg shadow-indigo-500/25 transition-all"
+                                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl gradient-bg hover:opacity-95 text-white text-xs font-semibold shadow-lg shadow-indigo-500/25 transition-all"
                                 >
                                     <Plus size={14} /> Tambah Step Alur
                                 </button>
@@ -2953,8 +2953,8 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
 
                     {/* Inline Form (Add/Edit) */}
                     {flowOpen && (
-                        <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border-2 border-indigo-500/30 dark:border-indigo-500/40 space-y-4 shadow-xl">
-                            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                        <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl p-5 border-2 border-indigo-500/30 dark:border-indigo-500/40 space-y-4 shadow-xl">
+                            <div className="flex items-center justify-between border-b border-white/60 dark:border-white/10 pb-3">
                                 <h4 className="font-bold text-sm text-slate-800 dark:text-white">
                                     {flowForm.id ? 'Edit Step Alur' : 'Tambah Step Alur Baru'}
                                 </h4>
@@ -2971,7 +2971,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         value={flowForm.name}
                                         onChange={e => setFlowForm({ ...flowForm, name: e.target.value })}
                                         placeholder="Contoh: Approval Akunting"
-                                        className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                     />
                                 </div>
                                 <div>
@@ -2979,7 +2979,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     <select
                                         value={flowForm.event}
                                         onChange={e => setFlowForm({ ...flowForm, event: e.target.value })}
-                                        className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                     >
                                         {Object.entries(flowEvents).map(([k, v]) => (
                                             <option key={k} value={k}>{v}</option>
@@ -2992,7 +2992,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         <select
                                             value={flowForm.assignee_type}
                                             onChange={e => setFlowForm({ ...flowForm, assignee_type: e.target.value, assignee_value: '' })}
-                                            className="w-1/3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                            className="w-1/3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                         >
                                             <option value="all">Semua</option>
                                             <option value="role">Role</option>
@@ -3003,7 +3003,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             <select
                                                 value={flowForm.assignee_value}
                                                 onChange={e => setFlowForm({ ...flowForm, assignee_value: e.target.value })}
-                                                className="w-2/3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                className="w-2/3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                             >
                                                 <option value="">Pilih {flowForm.assignee_type}</option>
                                                 {flowForm.assignee_type === 'role' && flowAssigneeOptions.roles.map(r => <option key={r} value={r}>{r}</option>)}
@@ -3024,7 +3024,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     onChange={e => setFlowForm({ ...flowForm, custom_emails: e.target.value })}
                                     rows={2}
                                     placeholder="Ketik email bebas, pisahkan dengan koma / enter. Contoh: akunting@perusahaan.com, bos@perusahaan.com"
-                                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 />
                                 <p className="text-[11px] text-slate-400 mt-1">Email custom ikut menerima notifikasi selain penanggung jawab di atas. Bisa lebih dari satu.</p>
                             </div>
@@ -3062,7 +3062,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     <button onClick={() => setFlowOpen(false)} className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">
                                         Batal
                                     </button>
-                                    <button onClick={saveFlowStep} disabled={flowSaving} className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-lg shadow-indigo-500/25">
+                                    <button onClick={saveFlowStep} disabled={flowSaving} className="flex items-center gap-1.5 px-4 py-2 rounded-xl gradient-bg hover:opacity-95 text-white text-xs font-semibold shadow-lg shadow-indigo-500/25">
                                         <Save size={14} /> {flowSaving ? 'Menyimpan...' : 'Simpan Step'}
                                     </button>
                                 </div>
@@ -3071,13 +3071,13 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     )}
 
                     {/* Pipeline Visual Flow */}
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-100 dark:border-slate-800 shadow-sm space-y-4">
+                    <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl p-6 border border-white/60 dark:border-white/10 shadow-sm space-y-4">
                         <div className="text-xs font-bold uppercase tracking-wider text-slate-400">Visualisasi Alur Kerja (Pipeline)</div>
                         {flowSteps.length === 0 ? (
                             <div className="py-12 text-center text-slate-400 text-sm space-y-3">
                                 <div>Belum ada alur yang dikonfigurasi.</div>
                                 {perms.can_manage_rule && (
-                                    <button onClick={seedDefaultFlow} disabled={seeding} className="px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <button onClick={seedDefaultFlow} disabled={seeding} className="px-4 py-2 rounded-xl gradient-bg text-white text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
                                         {seeding ? 'Mengisi...' : 'Buat Alur Default (Contoh)'}
                                     </button>
                                 )}
@@ -3133,7 +3133,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                     </div>
 
                                                     {/* ── Template Email Notifikasi ── */}
-                                                    <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-100 dark:border-slate-800 space-y-4 shadow-sm">
+                                                    <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl p-5 border border-white/60 dark:border-white/10 space-y-4 shadow-sm">
                                                         <div className="flex flex-wrap items-center justify-between gap-3">
                                                             <div className="flex items-center gap-3">
                                                                 <div className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
@@ -3165,7 +3165,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                         ) : (
                                                             <div className="space-y-2">
                                                                 {emailTpl.items.map(item => (
-                                                                    <div key={item.event} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+                                                                    <div key={item.event} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-white/60 dark:border-white/10">
                                                                         <div className="min-w-0">
                                                                             <div className="text-sm font-semibold text-slate-800 dark:text-white truncate">{item.label}</div>
                                                                             <div className="text-[11px] text-slate-400 font-mono truncate">{item.custom ? item.subject : '(default) ' + item.subject}</div>
@@ -3195,7 +3195,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                                         type="text"
                                                                         value={emailTplEditing.subject}
                                                                         onChange={e => setEmailTplEditing({ ...emailTplEditing, subject: e.target.value })}
-                                                                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+                                                                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
                                                                     />
                                                                 </div>
                                                                 <div className="text-sm space-y-1">
@@ -3204,12 +3204,12 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                                         value={emailTplEditing.body_html}
                                                                         onChange={e => setEmailTplEditing({ ...emailTplEditing, body_html: e.target.value })}
                                                                         rows={8}
-                                                                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-mono text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 resize-y"
+                                                                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl text-sm font-mono text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 resize-y"
                                                                     />
                                                                 </div>
                                                                 {emailTplPreview && (
-                                                                    <div className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 overflow-hidden">
-                                                                        <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-500">Preview — {emailTplPreview.subject}</div>
+                                                                    <div className="rounded-xl bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+                                                                        <div className="px-3 py-2 border-b border-white/60 dark:border-white/10 text-xs font-bold text-slate-500">Preview — {emailTplPreview.subject}</div>
                                                                         <div className="p-3 text-sm text-slate-700 dark:text-slate-200" dangerouslySetInnerHTML={{ __html: emailTplPreview.body_html }} />
                                                                     </div>
                                                                 )}
@@ -3226,8 +3226,8 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     {/* ── Preview Penerima Notifikasi Modal ── */}
                     {recipOpen && createPortal(
                         <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setRecipOpen(false)}>
-                            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col" onClick={e => e.stopPropagation()}>
-                                <div className="flex items-center justify-between p-5 border-b border-slate-100 dark:border-slate-800">
+                            <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col" onClick={e => e.stopPropagation()}>
+                                <div className="flex items-center justify-between p-5 border-b border-white/60 dark:border-white/10">
                                     <div className="flex items-center gap-2">
                                         <Users size={18} className="text-indigo-600" />
                                         <h3 className="font-bold text-slate-800 dark:text-white">{recipTitle}</h3>
@@ -3247,7 +3247,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             <div className="text-xs text-slate-500 dark:text-slate-400 mb-3">{recipList.length} penerima (sudah di-dedup berdasarkan email)</div>
                                             <div className="space-y-2">
                                                 {recipList.map((r, i) => (
-                                                    <div key={i} className="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+                                                    <div key={i} className="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-white/60 dark:border-white/10">
                                                         <div className="min-w-0">
                                                             <div className="text-sm font-semibold text-slate-800 dark:text-white truncate">{r.custom ? r.email : r.name} {!r.custom && <span className="text-[10px] text-slate-400 font-normal">@{r.username}</span>}</div>
                                                             <div className={`text-[11px] truncate ${r.has_email ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500'}`}>{r.custom ? 'Email Custom' : r.email}</div>
@@ -3271,7 +3271,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
             {/* ── Settle Modal ── */}
             {showSettle && settleTarget && createPortal(
                 <div className="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto" onClick={() => setShowSettle(false)}>
-                    <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-5xl my-8 p-6 space-y-5" onClick={e => e.stopPropagation()}>
+                    <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-5xl my-8 p-6 space-y-5" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="text-xl font-black text-slate-800 dark:text-white">Settle Proforma → Invoice Asli</h3>
@@ -3286,7 +3286,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         <div className="overflow-x-auto">
                             <table className="w-full text-xs">
                                 <thead>
-                                    <tr className="text-left text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                                    <tr className="text-left text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-white/60 dark:border-white/10">
                                         <th className="px-2 py-2">#</th>
                                         <th className="px-2 py-2">No Invoice Asli *</th>
                                         <th className="px-2 py-2">Tgl Invoice *</th>
@@ -3387,7 +3387,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
             {/* ── New Invoice Modal ── */}
             {showNewInvoice && createPortal(
                 <div className="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto" onClick={() => setShowNewInvoice(false)}>
-                    <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-4xl my-8 p-6 space-y-5" onClick={e => e.stopPropagation()}>
+                    <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-4xl my-8 p-6 space-y-5" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="text-xl font-black text-slate-800 dark:text-white">{editInvoiceId ? `Edit Invoice #${editInvoiceId}` : 'Buat Invoice'}</h3>
@@ -3638,28 +3638,28 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 </div>
                                 <div className="h-[38px] flex items-center">
                                     {invForm.ppn_custom ? (
-                                        <MoneyInput className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 h-[38px] text-xs text-slate-800 dark:text-white tabular-nums" placeholder="Jumlah PPN" value={invForm.ppn_amount} onChange={v => setInvForm(prev => ({ ...prev, ppn_amount: v }))} />
+                                        <MoneyInput className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2 h-[38px] text-xs text-slate-800 dark:text-white tabular-nums" placeholder="Jumlah PPN" value={invForm.ppn_amount} onChange={v => setInvForm(prev => ({ ...prev, ppn_amount: v }))} />
                                     ) : (
-                                        <input className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 h-[38px] text-xs text-slate-800 dark:text-white tabular-nums" type="number" step="0.01" value={invForm.ppn_rate} onChange={e => setInvForm({ ...invForm, ppn_rate: e.target.value })} />
+                                        <input className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2 h-[38px] text-xs text-slate-800 dark:text-white tabular-nums" type="number" step="0.01" value={invForm.ppn_rate} onChange={e => setInvForm({ ...invForm, ppn_rate: e.target.value })} />
                                     )}
                                 </div>
                                 <div className="h-[12px] text-[9px] text-slate-500 truncate tabular-nums">{formatCurrency(ppnVal)}</div>
                             </div>
                             <div className="flex flex-col gap-1.5 min-w-0">
                                 <label className="text-[10px] font-bold text-slate-400 uppercase truncate">Diskon</label>
-                                <MoneyInput className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 h-[38px] text-xs text-slate-800 dark:text-white tabular-nums" placeholder="0" value={invForm.diskon} onChange={v => setInvForm(prev => ({ ...prev, diskon: v }))} />
+                                <MoneyInput className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2 h-[38px] text-xs text-slate-800 dark:text-white tabular-nums" placeholder="0" value={invForm.diskon} onChange={v => setInvForm(prev => ({ ...prev, diskon: v }))} />
                                 <div className="h-[12px] text-[9px] text-slate-400 truncate">Potongan harga</div>
                             </div>
                             <div className="flex flex-col gap-1.5 min-w-0">
                                 <label className="text-[10px] font-bold text-slate-400 uppercase truncate">Materai</label>
-                                <MoneyInput className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 h-[38px] text-xs text-slate-800 dark:text-white tabular-nums" placeholder="0" value={invForm.materai} onChange={v => setInvForm(prev => ({ ...prev, materai: v }))} />
+                                <MoneyInput className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2 h-[38px] text-xs text-slate-800 dark:text-white tabular-nums" placeholder="0" value={invForm.materai} onChange={v => setInvForm(prev => ({ ...prev, materai: v }))} />
                                 <div className="h-[12px] text-[9px] text-slate-400 truncate">Biaya materai</div>
                             </div>
                             <div className="flex flex-col gap-1.5 min-w-0">
                                 <label className="text-[10px] font-bold text-slate-400 uppercase truncate">Total Invoice {invForm.tipe === 'PP' ? '(Full Amount) *' : '*'}</label>
                                 <div className="h-[38px] flex items-center">
                                     <MoneyInput
-                                        className="w-full rounded-lg border border-emerald-200 dark:border-emerald-800 bg-white dark:bg-slate-800 px-2 h-[38px] text-sm font-black text-emerald-600 dark:text-emerald-400 tabular-nums"
+                                        className="w-full rounded-lg border border-emerald-200 dark:border-emerald-800 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2 h-[38px] text-sm font-black text-emerald-600 dark:text-emerald-400 tabular-nums"
                                         placeholder="0"
                                         value={invForm.total_invoice}
                                         onChange={v => {
@@ -3710,7 +3710,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
             {/* ── Proforma Request Modal ── */}
             {showProforma && createPortal(
                 <div className="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto" onClick={() => setShowProforma(false)}>
-                    <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-2xl my-8 p-6 space-y-5" onClick={e => e.stopPropagation()}>
+                    <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-2xl my-8 p-6 space-y-5" onClick={e => e.stopPropagation()}>
                         <div>
                             <h3 className="text-xl font-black text-slate-800 dark:text-white">{proformaResubmit ? 'Submit Ulang Proforma' : 'Ajukan No Proforma'}</h3>
                             <p className="text-xs text-slate-400">{proformaResubmit ? 'Perbaiki data & lampiran yang salah, lalu ajukan kembali' : 'Lampirkan dokumen pendukung untuk invoice terpilih'}</p>
@@ -3757,7 +3757,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         </div>
                         <div className="flex items-center justify-end gap-2">
                             <button onClick={() => setShowProforma(false)} className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm font-semibold">Batal</button>
-                            <button onClick={handleNewProforma} disabled={savingProforma} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold shadow-lg shadow-indigo-500/25 disabled:opacity-60 disabled:cursor-not-allowed">
+                            <button onClick={handleNewProforma} disabled={savingProforma} className="flex items-center gap-2 px-5 py-2.5 rounded-xl gradient-bg hover:opacity-95 text-white text-sm font-bold shadow-lg shadow-indigo-500/25 disabled:opacity-60 disabled:cursor-not-allowed">
                                 <FileSignature size={16} /> {savingProforma ? 'Mengirim...' : proformaResubmit ? 'Ajukan Ulang' : 'Ajukan'}
                             </button>
                         </div>
@@ -3769,7 +3769,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
             {/* ── Tax Modal ── */}
             {showTax && taxTarget && createPortal(
                 <div className="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto" onClick={() => setShowTax(false)}>
-                    <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-lg my-8 p-6 space-y-5" onClick={e => e.stopPropagation()}>
+                    <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-lg my-8 p-6 space-y-5" onClick={e => e.stopPropagation()}>
                         <div>
                             <h3 className="text-xl font-black text-slate-800 dark:text-white">Faktur Pajak</h3>
                             <p className="text-xs text-slate-400">Invoice #{taxTarget.id} • {taxTarget.proforma_no} • {taxTarget.dealer_name}</p>
@@ -3801,7 +3801,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
             {/* ── Tax Request Modal (Ajukan ke bagian tax) ── */}
             {showTaxRequest && taxRequestTarget && createPortal(
                 <div className="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto" onClick={() => setShowTaxRequest(false)}>
-                    <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-lg my-8 p-6 space-y-5" onClick={e => e.stopPropagation()}>
+                    <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-lg my-8 p-6 space-y-5" onClick={e => e.stopPropagation()}>
                         <div>
                             <h3 className="text-xl font-black text-slate-800 dark:text-white">Ajukan Faktur Pajak</h3>
                             <p className="text-xs text-slate-400">Invoice #{taxRequestTarget.id} • {taxRequestTarget.proforma_no} • {taxRequestTarget.dealer_name}</p>
@@ -3843,7 +3843,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.9, opacity: 0, y: 10 }}
                             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                            className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-md p-6 relative z-10 space-y-4 border border-slate-100 dark:border-slate-800" 
+                            className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-md p-6 relative z-10 space-y-4 border border-white/60 dark:border-white/10" 
                             onClick={e => e.stopPropagation()}
                         >
                             <div className="flex items-center gap-3">
@@ -3856,7 +3856,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 </div>
                             </div>
 
-                            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300 space-y-2">
+                            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-white/60 dark:border-white/10 text-xs text-slate-600 dark:text-slate-300 space-y-2">
                                 <p>Apakah Anda yakin ingin membatalkan invoice ini?</p>
                                 <ul className="list-disc list-inside text-[11px] text-slate-500 space-y-1 font-medium">
                                     <li>Data akan tetap tersimpan dalam riwayat (history).</li>
@@ -3900,7 +3900,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.9, opacity: 0, y: 10 }}
                             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                            className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-md p-6 relative z-10 space-y-4 border border-slate-100 dark:border-slate-800" 
+                            className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-md p-6 relative z-10 space-y-4 border border-white/60 dark:border-white/10" 
                             onClick={e => e.stopPropagation()}
                         >
                             <div className="flex items-center gap-3">
@@ -3913,7 +3913,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 </div>
                             </div>
 
-                            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300 space-y-2">
+                            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-white/60 dark:border-white/10 text-xs text-slate-600 dark:text-slate-300 space-y-2">
                                 <p>Apakah Anda yakin ingin menghapus invoice pengganti ini?</p>
                                 <ul className="list-disc list-inside text-[11px] text-slate-500 space-y-1 font-medium">
                                     <li>Invoice pengganti <b>{deleteReplTarget.no_invoice || '#' + deleteReplTarget.id}</b> akan dihapus permanen beserta item barangnya.</li>
@@ -3977,7 +3977,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         initial={{ scale: 0.95, y: 12 }}
                         animate={{ scale: 1, y: 0 }}
                         transition={{ type: 'spring', damping: 24, stiffness: 300 }}
-                        className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-2xl overflow-hidden"
+                        className="w-full max-w-md bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden"
                         onClick={e => e.stopPropagation()}
                     >
                         {(() => {
@@ -4013,7 +4013,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             </button>
                                         </div>
 
-                                        <div className="mt-5 space-y-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 p-4 text-sm">
+                                        <div className="mt-5 space-y-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-white/60 dark:border-white/10 p-4 text-sm">
                                             <div className="flex justify-between gap-3"><span className="text-xs text-slate-400 shrink-0">No Proforma</span><span className="font-semibold text-slate-700 dark:text-slate-200 text-right">{proformaNo}</span></div>
                                             <div className="flex justify-between gap-3"><span className="text-xs text-slate-400 shrink-0">Dealer</span><span className="font-semibold text-slate-700 dark:text-slate-200 text-right truncate max-w-[220px]">{dealer}</span></div>
                                             <div className="flex justify-between gap-3"><span className="text-xs text-slate-400 shrink-0">No. PO</span><span className="font-semibold text-slate-700 dark:text-slate-200 text-right">{po}</span></div>
@@ -4031,7 +4031,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                     value={actionModal.notes || ''}
                                                     onChange={e => setActionModal({ ...actionModal, notes: e.target.value })}
                                                     placeholder={config.notePlaceholder}
-                                                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/40 resize-none"
+                                                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/40 resize-none"
                                                 />
                                             </div>
                                         )}
@@ -4068,7 +4068,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     <div className="fixed inset-0 z-[58]" onClick={() => setActionMenu(null)} />
                     <div
                         ref={menuRef}
-                        className="fixed z-[59] min-w-[224px] max-w-[264px] bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 p-1.5 overflow-auto custom-scrollbar"
+                        className="fixed z-[59] min-w-[224px] max-w-[264px] bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/60 dark:border-white/10 p-1.5 overflow-auto custom-scrollbar"
                         style={{ left: actionMenu.x, top: actionMenu.y, maxHeight: actionMenu.maxH }}
                     >
                         {(() => {
@@ -4169,7 +4169,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         </button>
                                     )}
 
-                                    <div className="my-1.5 border-t border-slate-100 dark:border-slate-700" />
+                                    <div className="my-1.5 border-t border-white/60 dark:border-white/10" />
 
                                     <ActionBtn disabled={reqPdfBusy || rowBusy} loading={reqPdfBusy} icon={<FileDown size={15} />} label="Export Request PDF" onClick={() => { setActionMenu(null); handleExportPdf(inv.id, 'request'); }} />
                                     {(inv?.proforma_no || prof?.proforma_no) && (
@@ -4182,14 +4182,14 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
 
                                     {actionMenu.source !== 'dashboard' && perms.can_delete && st === 'submitted' && inv?.rejected_from_id && (
                                         <>
-                                            <div className="my-1.5 border-t border-slate-100 dark:border-slate-700" />
+                                            <div className="my-1.5 border-t border-white/60 dark:border-white/10" />
                                             <DangerBtn disabled={rowBusy} loading={false} icon={<Trash2 size={15} />} label="Hapus Pengganti" onClick={() => { setActionMenu(null); handleDeleteReplacement(inv); }} />
                                         </>
                                     )}
 
                                     {actionMenu.source !== 'dashboard' && perms.can_delete && !['settled', 'cancelled'].includes(st) && !(st === 'submitted' && inv?.rejected_from_id) && (
                                         <>
-                                            <div className="my-1.5 border-t border-slate-100 dark:border-slate-700" />
+                                            <div className="my-1.5 border-t border-white/60 dark:border-white/10" />
                                             <DangerBtn disabled={rowBusy} loading={false} icon={<XCircle size={15} />} label="Batalkan Invoice" onClick={() => { setActionMenu(null); handleCancelInvoice(inv); }} />
                                         </>
                                     )}

@@ -1046,7 +1046,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                     onClick={() => { setTab('pending'); setPage(1); setSettleFilter('all'); }}
                     className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all ${
                         tab === 'pending'
-                            ? 'bg-indigo-600 text-white shadow-md'
+                            ? 'gradient-bg text-white shadow-md'
                             : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
                     }`}
                 >
@@ -1092,7 +1092,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     ? f.key === 'over' ? 'bg-green-600 text-white shadow-md'
                                       : f.key === 'shortage' ? 'bg-red-600 text-white shadow-md'
                                       : f.key === 'draw' ? 'bg-slate-600 text-white shadow-md'
-                                      : 'bg-indigo-600 text-white shadow-md'
+                                      : 'gradient-bg text-white shadow-md'
                                     : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
                             }`}
                         >
@@ -1147,7 +1147,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                         </div>
                     </div>
                     <button onClick={() => { setPage(1); }}
-                        className="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors text-sm font-semibold">
+                        className="px-4 py-2 gradient-bg text-white rounded-xl hover:bg-indigo-700 transition-colors text-sm font-semibold">
                         <Filter size={16} className="inline-block mr-1" />
                         {text.filterBtn}
                     </button>
@@ -1344,7 +1344,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                         onClick={() => { resetForm(); setShowForm(false); }} />
                     <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
                         transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-                        className="fixed top-0 right-0 z-[71] h-full w-full max-w-[600px] bg-white dark:bg-slate-800 shadow-2xl flex flex-col">
+                        className="fixed top-0 right-0 z-[71] h-full w-full max-w-[600px] bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl shadow-2xl flex flex-col">
                         <div className="bg-gradient-to-r from-indigo-600 to-blue-600 px-6 py-4 flex items-center justify-between shrink-0">
                             <h3 className="text-white font-bold text-lg">{editingId ? text.formEdit : text.formNew} Entertainment Expenses</h3>
                             <button type="button" onClick={() => { resetForm(); setShowForm(false); }}
@@ -1357,11 +1357,11 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                             {/* Entry Type (Plan / Reimburse) */}
                             <div className="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-slate-100 dark:bg-slate-700/40">
                                 <button type="button" onClick={() => setEntryType('plan')}
-                                    className={`py-2.5 rounded-xl text-sm font-bold transition-all ${entryType === 'plan' ? 'bg-white dark:bg-slate-800 text-indigo-600 shadow' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}>
+                                    className={`py-2.5 rounded-xl text-sm font-bold transition-all ${entryType === 'plan' ? 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-indigo-600 shadow' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}>
                                     Plan
                                 </button>
                                 <button type="button" onClick={() => setEntryType('reimburse')}
-                                    className={`py-2.5 rounded-xl text-sm font-bold transition-all ${entryType === 'reimburse' ? 'bg-white dark:bg-slate-800 text-emerald-600 shadow' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}>
+                                    className={`py-2.5 rounded-xl text-sm font-bold transition-all ${entryType === 'reimburse' ? 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-emerald-600 shadow' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}>
                                     Reimburse
                                 </button>
                             </div>
@@ -1401,7 +1401,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 </div>
                             </div>
                             {/* Venue & Address Venue (1 card) */}
-                            <div className="border-2 border-slate-100 dark:border-slate-700 rounded-xl p-4">
+                            <div className="border-2 border-white/60 dark:border-white/10 rounded-xl p-4">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     {/* Venue */}
                                     <div>
@@ -1513,7 +1513,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     </button>
                                     <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700">
                                         <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-300 uppercase tracking-wide">{text.lblJumlahRelasi}</span>
-                                        <span className="inline-flex items-center justify-center min-w-[28px] h-7 px-2 rounded-lg bg-indigo-600 text-white text-sm font-bold">
+                                        <span className="inline-flex items-center justify-center min-w-[28px] h-7 px-2 rounded-lg gradient-bg text-white text-sm font-bold">
                                             {jumlahRelasi}
                                         </span>
                                         <span className="text-xs text-slate-500 dark:text-slate-400">
@@ -1614,7 +1614,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     <>
                                         {/* Simpan ke Draft */}
                                         <button type="submit" onClick={(e) => { e.preventDefault(); handleSubmit(e, 'draft'); }} disabled={submitting}
-                                            className="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-slate-800 border-2 border-emerald-500 text-emerald-600 dark:text-emerald-400 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-500/10 transition-all font-semibold disabled:opacity-50">
+                                            className="inline-flex items-center gap-2 px-6 py-3 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-2 border-emerald-500 text-emerald-600 dark:text-emerald-400 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-500/10 transition-all font-semibold disabled:opacity-50">
                                             {submitting ? (
                                                 <Loader2 size={18} className="animate-spin" />
                                             ) : (
@@ -1776,7 +1776,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                         disabled={loading}
                                         className={`min-w-[36px] h-9 text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                                             p === page
-                                                ? 'bg-indigo-600 text-white shadow-md'
+                                                ? 'gradient-bg text-white shadow-md'
                                                 : 'border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
                                         }`}
                                     >
@@ -1804,7 +1804,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                         onClick={() => { setShowSettleModal(false); setSettleAttachments([]); setSettleExistingAttachments([]); }} />
                     <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
                         transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-                        className="fixed top-0 right-0 z-[75] h-full w-full max-w-[600px] bg-white dark:bg-slate-800 shadow-2xl flex flex-col"
+                        className="fixed top-0 right-0 z-[75] h-full w-full max-w-[600px] bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl shadow-2xl flex flex-col"
                         onClick={e => e.stopPropagation()}>
                         {/* Header - fixed at top */}
                         <div className="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-4 flex items-center justify-between shrink-0">
@@ -1890,7 +1890,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     </div>
                                 </div>
                                 {/* Settle Amount */}
-                                <div className="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+                                <div className="gradient-bg-soft rounded-xl p-4 border border-slate-200 dark:border-slate-700">
                                     <div className="flex items-center gap-4 mb-3">
                                         <label className="flex items-center gap-2 cursor-pointer">
                                             <input type="checkbox" checked={settleForm.is_draw || false}
@@ -2100,7 +2100,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                         className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
                         onClick={() => setShowPreview(false)}>
                         <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }}
-                            className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+                            className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
                             onClick={e => e.stopPropagation()}>
                             <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
                                 <h3 className="text-white font-bold text-lg">{text.previewTitle}</h3>
@@ -2187,7 +2187,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                         onClick={() => setSettleConfirmOpen(false)}>
                         <motion.div initial={{ scale: 0.9, y: 24, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: 0.9, y: 24, opacity: 0 }}
                             transition={{ type: 'spring', damping: 22, stiffness: 300 }}
-                            className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden"
+                            className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-md overflow-hidden"
                             onClick={e => e.stopPropagation()}>
                             <div className="pt-7 px-8 flex flex-col items-center text-center">
                                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/40 dark:to-teal-900/30 flex items-center justify-center mb-4">
@@ -2203,7 +2203,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 </p>
                             </div>
                             <div className="mt-4 px-8 space-y-2">
-                                <div className="rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-700 p-4 text-sm">
+                                <div className="rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-white/60 dark:border-white/10 p-4 text-sm">
                                     <div className="flex justify-between py-1"><span className="text-slate-500 dark:text-slate-400">{isEnglish ? 'Date' : 'Tanggal'}</span><span className="font-semibold text-slate-700 dark:text-slate-200 tabular-nums">{form.tanggal || '-'}</span></div>
                                     <div className="flex justify-between py-1"><span className="text-slate-500 dark:text-slate-400">{isEnglish ? 'Place' : 'Tempat'}</span><span className="font-semibold text-slate-700 dark:text-slate-200 truncate max-w-[60%]">{form.tempat || '-'}</span></div>
                                     <div className="flex justify-between py-1"><span className="text-slate-500 dark:text-slate-400">{isEnglish ? 'Amount' : 'Nilai'}</span><span className="font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">Rp {formatCurrency(form.nilai)}</span></div>
@@ -2239,7 +2239,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                         onClick={() => setDeleteTarget(null)}>
                         <motion.div initial={{ scale: 0.9, y: 24, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: 0.9, y: 24, opacity: 0 }}
                             transition={{ type: 'spring', damping: 22, stiffness: 300 }}
-                            className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden"
+                            className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-md overflow-hidden"
                             onClick={e => e.stopPropagation()}>
                             <div className="pt-8 px-8 flex flex-col items-center text-center">
                                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-100 to-rose-100 dark:from-red-900/40 dark:to-rose-900/30 flex items-center justify-center mb-4">
@@ -2288,7 +2288,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                     <div className="fixed inset-0 z-[58]" onClick={() => setActionMenu(null)} />
                     <div
                         ref={actionMenuRef}
-                        className="fixed z-[59] min-w-[200px] max-w-[240px] bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 p-1.5 overflow-auto custom-scrollbar"
+                        className="fixed z-[59] min-w-[200px] max-w-[240px] bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/60 dark:border-white/10 p-1.5 overflow-auto custom-scrollbar"
                         style={{ left: actionMenu.x, top: actionMenu.y, maxHeight: actionMenu.maxH }}
                     >
                         {(() => {
@@ -2327,7 +2327,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
 
                                     {isPending && userPerms.can_delete && (
                                         <>
-                                            <div className="my-1.5 border-t border-slate-100 dark:border-slate-700" />
+                                            <div className="my-1.5 border-t border-white/60 dark:border-white/10" />
                                             <button type="button"
                                                 disabled={deletingId === item.id}
                                                 onClick={() => { setActionMenu(null); handleDelete(item.id, label); }}
