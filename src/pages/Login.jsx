@@ -56,24 +56,28 @@ export default function Login({ onLogin }) {
     };
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center bg-[#F4F7FE] dark:bg-[#0B1437] overflow-hidden relative p-4">
-            {/* Animated Background Elements */}
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/10 rounded-full blur-[120px] animate-pulse"></div>
-            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="min-h-screen w-full flex items-center justify-center overflow-hidden relative p-4">
+            {/* Animated Background Elements — gradient mesh */}
+            <div className="absolute top-[-15%] left-[-10%] w-[45%] h-[45%] bg-indigo-500/25 dark:bg-indigo-500/30 rounded-full blur-[120px] animate-pulse"></div>
+            <div className="absolute bottom-[-15%] right-[-10%] w-[45%] h-[45%] bg-purple-500/25 dark:bg-purple-500/30 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+            <div className="absolute top-[35%] right-[5%] w-[22%] h-[22%] bg-cyan-400/15 dark:bg-cyan-400/20 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '4s' }}></div>
+            <div className="absolute bottom-[10%] left-[20%] w-[18%] h-[18%] bg-pink-400/10 dark:bg-pink-400/15 rounded-full blur-[90px] animate-pulse" style={{ animationDelay: '3s' }}></div>
 
-            <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-0 bg-white/60 dark:bg-slate-900/60 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl border border-white/40 dark:border-white/10 overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-700">
+            <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-0 glass-panel rounded-[2.5rem] overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-700">
 
                 {/* Left Side: Branding & Illustration (Startup Style) */}
-                <div className="hidden lg:flex flex-col justify-between p-8 xl:p-12 bg-gradient-to-br from-indigo-600 to-purple-700 relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-10">
+                <div className="hidden lg:flex flex-col justify-between p-8 xl:p-12 gradient-bg relative overflow-hidden">
+                    <div className="absolute inset-0 opacity-[0.07]">
                         <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
                             <path d="M0 0 L100 0 L100 100 Z" fill="white" />
+                            <path d="M20 100 L100 40 L100 100 Z" fill="white" />
                         </svg>
                     </div>
+                    <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-white/10 blur-[80px]"></div>
 
                     <div className="relative z-10">
                         <div className="flex items-center gap-2 xl:gap-3 mb-4 xl:mb-8">
-                            <div className="p-1.5 xl:p-2 bg-white/20 backdrop-blur-md rounded-lg xl:rounded-xl">
+                            <div className="p-1.5 xl:p-2 bg-white/20 backdrop-blur-md rounded-lg xl:rounded-xl border border-white/25 shadow-lg">
                                 <BookOpen className="text-white w-5 h-5 xl:w-6 xl:h-6" />
                             </div>
                             <span className="text-xl xl:text-2xl font-black text-white tracking-tighter">Pustaka</span>
@@ -108,11 +112,13 @@ export default function Login({ onLogin }) {
                     </div>
 
                     <div className="relative z-10 flex gap-6">
-                        <div className="flex items-center gap-2 text-white/70 text-sm font-bold">
-                            <ShieldCheck size={18} className="text-emerald-400" /> {text.security}
-                        </div>
-                        <div className="flex items-center gap-2 text-white/70 text-sm font-bold">
-                            <Zap size={18} className="text-amber-400" /> {text.ocr}
+                        <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2 text-white/80 text-sm font-bold bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-3 py-2">
+                                <ShieldCheck size={18} className="text-emerald-300" /> {text.security}
+                            </div>
+                            <div className="flex items-center gap-2 text-white/80 text-sm font-bold bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-3 py-2">
+                                <Zap size={18} className="text-amber-300" /> {text.ocr}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -120,7 +126,7 @@ export default function Login({ onLogin }) {
                 {/* Right Side: Login Form */}
                 <div className="p-5 sm:p-8 xl:p-12 flex flex-col justify-center">
                     <div className="lg:hidden flex justify-center mb-4 xl:mb-8">
-                        <div className="w-12 h-12 xl:w-16 xl:h-16 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl flex items-center justify-center shadow-2xl">
+                        <div className="cf-logo-orb w-12 h-12 xl:w-16 xl:h-16 rounded-2xl flex items-center justify-center shadow-2xl">
                             <BookOpen className="text-white w-6 h-6 xl:w-8 xl:h-8" />
                         </div>
                     </div>
@@ -130,16 +136,16 @@ export default function Login({ onLogin }) {
                         <div className="absolute -top-2 xl:-top-4 right-0 flex items-center gap-2">
                             <button
                                 onClick={() => setLanguage(isEnglish ? 'id' : 'en')}
-                                className="flex items-center gap-1.5 px-2 py-1 xl:px-3 xl:py-1.5 bg-gray-50 dark:bg-slate-800 border-2 border-transparent hover:border-indigo-500/30 rounded-lg xl:rounded-xl transition-all group"
+                                className="neo-btn flex items-center gap-1.5 px-2.5 py-1.5 xl:px-3 xl:py-2 text-slate-500 dark:text-slate-300 hover:text-indigo-500 dark:hover:text-indigo-400 group"
                                 title={isEnglish ? 'Change to Indonesian' : 'Ganti ke Bahasa Inggris'}
                             >
-                                <Globe size={14} className="text-gray-400 group-hover:text-indigo-500 w-3 h-3 xl:w-3.5 xl:h-3.5" />
-                                <span className="text-[9px] xl:text-[10px] font-black text-gray-500 dark:text-slate-300 uppercase tracking-widest">{isEnglish ? 'EN' : 'ID'}</span>
+                                <Globe size={14} className="group-hover:text-indigo-500 w-3 h-3 xl:w-3.5 xl:h-3.5" />
+                                <span className="text-[9px] xl:text-[10px] font-black uppercase tracking-widest">{isEnglish ? 'EN' : 'ID'}</span>
                             </button>
 
                             <button
                                 onClick={() => setIsDarkMode(!isDarkMode)}
-                                className="p-1.5 xl:p-2 bg-gray-50 dark:bg-slate-800 border-2 border-transparent hover:border-indigo-500/30 rounded-lg xl:rounded-xl transition-all group"
+                                className="neo-icon-btn w-9 h-9 xl:w-10 xl:h-10 text-slate-500 dark:text-slate-300 hover:text-amber-500 dark:hover:text-amber-400 group"
                                 title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
                             >
                                 {isDarkMode ? (
@@ -169,7 +175,7 @@ export default function Login({ onLogin }) {
                                     type="text"
                                     value={loginForm.username}
                                     onChange={e => setLoginForm({ ...loginForm, username: e.target.value })}
-                                    className="w-full pl-10 xl:pl-12 pr-4 py-3 xl:py-4 bg-gray-50 dark:bg-slate-950 border-2 border-gray-100 dark:border-slate-800 rounded-xl xl:rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 dark:text-white transition-all text-sm xl:text-base font-bold outline-none"
+                                    className="neo-input w-full pl-10 xl:pl-12 pr-4 py-3 xl:py-4 dark:text-white transition-all text-sm xl:text-base font-bold"
                                     placeholder="admin / staff"
                                 />
                             </div>
@@ -182,7 +188,7 @@ export default function Login({ onLogin }) {
                                     type={showPassword ? 'text' : 'password'}
                                     value={loginForm.password}
                                     onChange={e => setLoginForm({ ...loginForm, password: e.target.value })}
-                                    className="w-full pl-10 xl:pl-12 pr-12 xl:pr-14 py-3 xl:py-4 bg-gray-50 dark:bg-slate-950 border-2 border-gray-100 dark:border-slate-800 rounded-xl xl:rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 dark:text-white transition-all text-sm xl:text-base font-bold outline-none"
+                                    className="neo-input w-full pl-10 xl:pl-12 pr-12 xl:pr-14 py-3 xl:py-4 dark:text-white transition-all text-sm xl:text-base font-bold"
                                     placeholder="••••••••"
                                 />
                                 <button
@@ -196,7 +202,7 @@ export default function Login({ onLogin }) {
                                 </button>
                             </div>
                         </div>
-                        <button type="submit" className="w-full py-3 xl:py-4 bg-[#4318FF] hover:bg-indigo-700 text-white rounded-xl xl:rounded-2xl text-sm xl:text-base font-black shadow-xl shadow-indigo-500/30 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 xl:gap-3 group">
+                        <button type="submit" className="w-full py-3 xl:py-4 gradient-bg text-white rounded-xl xl:rounded-2xl text-sm xl:text-base font-black shadow-xl shadow-indigo-500/35 transition-all hover:scale-[1.02] hover:shadow-indigo-500/50 active:scale-[0.98] flex items-center justify-center gap-2 xl:gap-3 group">
                             {text.submit}
                             <ArrowRight className="group-hover:translate-x-1 transition-transform w-4 h-4 xl:w-5 xl:h-5" />
                         </button>
@@ -210,7 +216,7 @@ export default function Login({ onLogin }) {
                         <button
                             type="button"
                             onClick={handleGuestLogin}
-                            className="w-full py-3 xl:py-4 bg-white dark:bg-slate-900/40 border-2 border-indigo-50 dark:border-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-xl xl:rounded-2xl text-sm xl:text-base font-black shadow-sm hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 xl:gap-3 group border-dashed"
+                            className="neo-btn w-full py-3 xl:py-4 text-indigo-600 dark:text-indigo-400 rounded-xl xl:rounded-2xl text-sm xl:text-base font-black hover:text-indigo-700 dark:hover:text-indigo-300 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 xl:gap-3 group"
                         >
                             <User className="group-hover:scale-110 transition-transform w-4 h-4 xl:w-5 xl:h-5" />
                             {text.guest}

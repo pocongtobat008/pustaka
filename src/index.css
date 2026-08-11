@@ -24,10 +24,25 @@
     --input: 240 5.9% 90%;
     --ring: 243 75% 59%;
     --radius: 1rem;
+
+    /* ── Neumorphism (light) ── */
+    --neo-bg: #eef1f8;
+    --neo-shadow: 7px 7px 16px rgba(163, 177, 198, 0.42), -7px -7px 16px rgba(255, 255, 255, 0.85);
+    --neo-shadow-sm: 4px 4px 9px rgba(163, 177, 198, 0.38), -4px -4px 9px rgba(255, 255, 255, 0.8);
+    --neo-shadow-hover: 9px 9px 20px rgba(163, 177, 198, 0.5), -9px -9px 20px rgba(255, 255, 255, 0.95);
+    --neo-inset: inset 3px 3px 7px rgba(163, 177, 198, 0.45), inset -3px -3px 7px rgba(255, 255, 255, 0.9);
+    --neo-inset-sm: inset 2px 2px 5px rgba(163, 177, 198, 0.4), inset -2px -2px 5px rgba(255, 255, 255, 0.85);
+
+    /* ── Glassmorphism (light) ── */
+    --glass-bg: rgba(255, 255, 255, 0.55);
+    --glass-bg-strong: rgba(255, 255, 255, 0.72);
+    --glass-border: rgba(255, 255, 255, 0.65);
+    --glass-border-soft: rgba(255, 255, 255, 0.35);
+    --glass-blur: 18px;
   }
 
   .dark {
-    --background: 240 10% 3.9%;
+    --background: 226 43% 12%;
     --foreground: 0 0% 98%;
     --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
@@ -46,6 +61,21 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 243 75% 59%;
+
+    /* ── Neumorphism (dark) ── */
+    --neo-bg: #101a33;
+    --neo-shadow: 6px 6px 14px rgba(0, 0, 0, 0.45), -6px -6px 14px rgba(148, 163, 255, 0.05);
+    --neo-shadow-sm: 4px 4px 9px rgba(0, 0, 0, 0.4), -4px -4px 9px rgba(148, 163, 255, 0.05);
+    --neo-shadow-hover: 8px 8px 18px rgba(0, 0, 0, 0.5), -8px -8px 18px rgba(148, 163, 255, 0.08);
+    --neo-inset: inset 3px 3px 7px rgba(0, 0, 0, 0.5), inset -3px -3px 7px rgba(148, 163, 255, 0.06);
+    --neo-inset-sm: inset 2px 2px 5px rgba(0, 0, 0, 0.45), inset -2px -2px 5px rgba(148, 163, 255, 0.06);
+
+    /* ── Glassmorphism (dark) ── */
+    --glass-bg: rgba(15, 23, 42, 0.5);
+    --glass-bg-strong: rgba(15, 23, 42, 0.68);
+    --glass-border: rgba(255, 255, 255, 0.09);
+    --glass-border-soft: rgba(255, 255, 255, 0.05);
+    --glass-blur: 18px;
   }
 }
 
@@ -95,33 +125,214 @@
   /* Reset for mobile */
 
   body {
-    @apply bg-background text-foreground min-h-screen antialiased selection:bg-indigo-500/30;
+    @apply text-foreground min-h-screen antialiased selection:bg-indigo-500/30;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    /* Soft premium dark mode background */
-    background-image:
-      radial-gradient(ellipse at top left, rgba(79, 70, 229, 0.05) 0%, transparent 40%),
-      radial-gradient(ellipse at top right, rgba(168, 85, 247, 0.05) 0%, transparent 40%),
-      radial-gradient(ellipse at bottom left, rgba(56, 189, 248, 0.03) 0%, transparent 40%);
+    color-scheme: light;
     background-attachment: fixed;
+    background-color: #eef1f8;
+    /* ── Gradient Mesh Background (light) ── */
+    background-image:
+      radial-gradient(ellipse 80% 60% at 12% -8%, rgba(79, 70, 229, 0.16) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 55% at 88% 0%, rgba(168, 85, 247, 0.14) 0%, transparent 55%),
+      radial-gradient(ellipse 65% 55% at 100% 88%, rgba(6, 182, 212, 0.12) 0%, transparent 55%),
+      radial-gradient(ellipse 55% 50% at 0% 92%, rgba(236, 72, 153, 0.10) 0%, transparent 55%),
+      linear-gradient(135deg, #eef1f8 0%, #e6ebf9 50%, #eef1f8 100%);
   }
 
-  /* Light mode override for cleaner look */
-  html:not(.dark) body {
+  html.dark body {
+    color-scheme: dark;
+    background-color: #0b1437;
+    /* ── Gradient Mesh Background (dark) ── */
     background-image:
-      radial-gradient(ellipse at top left, rgba(79, 70, 229, 0.03) 0%, transparent 40%),
-      radial-gradient(ellipse at top right, rgba(168, 85, 247, 0.03) 0%, transparent 40%),
-      radial-gradient(ellipse at bottom left, rgba(56, 189, 248, 0.02) 0%, transparent 40%);
-    background-color: #FAFAFB;
+      radial-gradient(ellipse 80% 60% at 12% -8%, rgba(99, 102, 241, 0.22) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 55% at 88% 0%, rgba(168, 85, 247, 0.16) 0%, transparent 55%),
+      radial-gradient(ellipse 65% 55% at 100% 88%, rgba(14, 165, 233, 0.14) 0%, transparent 55%),
+      radial-gradient(ellipse 55% 50% at 0% 92%, rgba(244, 63, 94, 0.10) 0%, transparent 55%),
+      linear-gradient(135deg, #0b1437 0%, #0d1440 50%, #0b1437 100%);
   }
 }
 
-@layer utilities {
+/* ═══════════════════════════════════════════════════════════
+   GLASSMORPHISM — frosted glass surfaces
+   ═══════════════════════════════════════════════════════════ */
+@layer components {
   .glass-panel {
-    @apply bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-white/20 dark:border-slate-700/50 shadow-xl;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4);
   }
 
   .glass-card {
-    @apply bg-white/80 dark:bg-slate-800/50 backdrop-blur-lg border border-gray-100/50 dark:border-slate-700/50 hover:shadow-lg transition-all duration-300;
+    background: var(--glass-bg-strong);
+    backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 24px rgba(31, 38, 135, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .glass-card:hover {
+    box-shadow: 0 14px 36px rgba(31, 38, 135, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .glass-input {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    transition: all 0.2s ease;
+  }
+
+  .glass-input:focus {
+    border-color: rgba(99, 102, 241, 0.55);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15), inset 0 2px 6px rgba(31, 38, 135, 0.05);
+  }
+
+  .glass-btn {
+    background: var(--glass-bg-strong);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 14px rgba(31, 38, 135, 0.10);
+    transition: all 0.25s ease;
+  }
+
+  .glass-btn:hover {
+    box-shadow: 0 8px 22px rgba(99, 102, 241, 0.22);
+    transform: translateY(-1px);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NEUMORPHISM — soft extruded surfaces
+   ═══════════════════════════════════════════════════════════ */
+@layer components {
+  .neo-card {
+    background: var(--neo-bg);
+    border-radius: 1.1rem;
+    box-shadow: var(--neo-shadow);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .neo-card:hover {
+    box-shadow: var(--neo-shadow-hover);
+  }
+
+  .dark .neo-card {
+    border-color: rgba(255, 255, 255, 0.04);
+  }
+
+  .neo-btn {
+    background: var(--neo-bg);
+    border-radius: 0.9rem;
+    box-shadow: var(--neo-shadow-sm);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    transition: all 0.2s ease;
+  }
+
+  .neo-btn:hover {
+    box-shadow: var(--neo-shadow-hover);
+    transform: translateY(-1px);
+  }
+
+  .neo-btn:active {
+    box-shadow: var(--neo-inset-sm);
+    transform: translateY(0);
+  }
+
+  .dark .neo-btn {
+    border-color: rgba(255, 255, 255, 0.04);
+  }
+
+  .neo-input {
+    background: var(--neo-bg);
+    border-radius: 0.85rem;
+    box-shadow: var(--neo-inset-sm);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.2s ease;
+  }
+
+  .neo-input:focus {
+    outline: none;
+    box-shadow: var(--neo-inset-sm), 0 0 0 3px rgba(99, 102, 241, 0.18);
+    border-color: rgba(99, 102, 241, 0.5);
+  }
+
+  .dark .neo-input {
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .neo-chip {
+    background: var(--neo-bg);
+    border-radius: 9999px;
+    box-shadow: var(--neo-shadow-sm);
+    transition: all 0.2s ease;
+  }
+
+  .neo-chip:hover {
+    box-shadow: var(--neo-shadow);
+  }
+
+  .neo-icon-btn {
+    background: var(--neo-bg);
+    border-radius: 0.75rem;
+    box-shadow: var(--neo-shadow-sm);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .neo-icon-btn:hover {
+    box-shadow: var(--neo-shadow);
+    transform: translateY(-1px);
+  }
+
+  .neo-icon-btn:active {
+    box-shadow: var(--neo-inset-sm);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   GRADIENT UI — brand gradients
+   ═══════════════════════════════════════════════════════════ */
+@layer utilities {
+  .gradient-text {
+    background: linear-gradient(120deg, #6366f1 0%, #8b5cf6 45%, #06b6d4 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  .gradient-bg {
+    background: linear-gradient(120deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+  }
+
+  .gradient-bg-soft {
+    background: linear-gradient(120deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.10), rgba(6, 182, 212, 0.10));
+  }
+
+  .gradient-border {
+    position: relative;
+    background-clip: padding-box;
+  }
+
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.7), rgba(168, 85, 247, 0.55), rgba(6, 182, 212, 0.6));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
   }
 
   .text-glow {
@@ -230,4 +441,9 @@ input::-webkit-contacts-auto-fill-button {
   pointer-events: none;
   position: absolute;
   right: 0;
+}
+
+/* ── Neumorphic base surface utility (bg color matching shadows) ── */
+.bg-neo {
+  background: var(--neo-bg);
 }

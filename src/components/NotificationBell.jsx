@@ -9,7 +9,8 @@ import { useAuthStore } from '../store/useAuthStore';
  * NotificationBell Component
  * Memberikan ringkasan hal-hal penting yang memerlukan perhatian user.
  */
-const NotificationBell = ({ onOpenChannel }) => {
+const NotificationBell = ({ onOpenChannel, variant = 'floating' }) => {
+    const isTopbar = variant === 'topbar';
     const [isOpen, setIsOpen] = useState(false);
     const [isHiddenByModal, setIsHiddenByModal] = useState(false);
     const [notifications, setNotifications] = useState([]);
@@ -105,17 +106,26 @@ const NotificationBell = ({ onOpenChannel }) => {
     if (isHiddenByModal) return null;
 
     return (
-        <div className="fixed top-4 right-20 z-[40] font-sans pointer-events-none">
+        <div className={isTopbar ? 'relative font-sans' : 'fixed top-4 right-20 z-[40] font-sans pointer-events-none'}>
             <div className="pointer-events-auto relative">
                 {/* Bell Icon Button */}
                 <button 
                     onClick={() => setIsOpen(!isOpen)}
-                    className="relative p-3 bg-white/80 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-2xl shadow-lg hover:scale-110 transition-all group active:scale-95"
+                    className={
+                        isTopbar
+                            ? 'neo-icon-btn relative w-10 h-10 group text-slate-500 dark:text-slate-300 hover:text-indigo-500 dark:hover:text-indigo-400'
+                            : 'relative p-3 bg-white/80 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-2xl shadow-lg hover:scale-110 transition-all group active:scale-95'
+                    }
                 >
-                    <Bell size={24} className={`${unreadCount > 0 ? 'text-indigo-600 dark:text-indigo-400 animate-pulse' : 'text-slate-500 dark:text-slate-400'} group-hover:text-indigo-500 transition-colors`} />
+                    <Bell size={isTopbar ? 18 : 24} className={`${unreadCount > 0 ? 'text-indigo-600 dark:text-indigo-400 animate-pulse' : 'text-slate-500 dark:text-slate-400'} group-hover:text-indigo-500 transition-colors`} />
                     {unreadCount > 0 && (
-                        <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-rose-500 text-[10px] font-black text-white shadow-lg border-2 border-white dark:border-slate-900">
-                            {unreadCount}
+                        <span className={
+                            'absolute flex items-center justify-center rounded-full bg-rose-500 font-black text-white shadow-lg border-2 border-white dark:border-slate-900 ' +
+                            (isTopbar
+                                ? '-top-0.5 -right-0.5 h-4 w-4 text-[9px]'
+                                : '-top-1 -right-1 h-5 w-5 text-[10px]')
+                        }>
+                            {unreadCount > 9 ? '9+' : unreadCount}
                         </span>
                     )}
                 </button>

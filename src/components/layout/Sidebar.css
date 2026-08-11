@@ -1,30 +1,33 @@
 /* ─────────────────────────────────────────────
-   Cloudflare-style Modern Sidebar for Pustaka
-   Clean, elegant, startup aesthetic
+   Pustaka Sidebar — Gradient + Glass + Neumorphism
+   Contextual, premium, SaaS-grade
    ───────────────────────────────────────────── */
 
 :root {
-    --accent: #4318ff;
-    --accent-dark: #868cff;
-    --sidebar-bg-light: #ffffff;
-    --sidebar-bg-dark: #0b1437;
-    --border-light: rgba(226, 232, 240, 0.55);
-    --border-dark: rgba(30, 41, 59, 0.6);
+    --accent: #6366f1;
+    --accent-2: #8b5cf6;
+    --accent-3: #06b6d4;
+    --border-light: rgba(226, 232, 240, 0.6);
+    --border-dark: rgba(30, 41, 59, 0.55);
 }
 
-/* ── Sidebar root ── */
+/* ── Sidebar root: frosted glass ── */
 .cf-sidebar {
-    box-shadow: 2px 0 8px -4px rgba(15, 23, 42, 0.04);
+    background: rgba(255, 255, 255, 0.62);
+    backdrop-filter: blur(22px) saturate(160%);
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
     border-right: 1px solid var(--border-light);
+    box-shadow: 2px 0 18px -6px rgba(15, 23, 42, 0.10), inset -1px 0 0 rgba(255, 255, 255, 0.6);
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .dark .cf-sidebar {
-    box-shadow: 2px 0 8px -4px rgba(0, 0, 0, 0.25);
+    background: rgba(13, 20, 60, 0.55);
+    box-shadow: 2px 0 18px -6px rgba(0, 0, 0, 0.4), inset -1px 0 0 rgba(255, 255, 255, 0.03);
     border-right-color: var(--border-dark);
 }
 
-/* Rail mode: narrow, hover-to-expand, no shadow */
+/* Rail mode: narrow, hover-to-expand */
 .cf-rail {
     width: 72px;
     box-shadow: none;
@@ -32,11 +35,11 @@
 
 .cf-rail:hover {
     width: 260px;
-    box-shadow: 2px 0 8px -4px rgba(15, 23, 42, 0.06);
+    box-shadow: 2px 0 18px -6px rgba(15, 23, 42, 0.12);
 }
 
 .dark .cf-rail:hover {
-    box-shadow: 2px 0 8px -4px rgba(0, 0, 0, 0.35);
+    box-shadow: 2px 0 18px -6px rgba(0, 0, 0, 0.45);
 }
 
 /* Expanded mode: always wide */
@@ -72,46 +75,116 @@
     scrollbar-width: none;
 }
 
-/* ── Rail-mode icon button ── */
-.cf-rail-item {
-    border-radius: 10px;
-    transition: all 0.2s ease;
+/* ── Brand logo: gradient orb + glow ── */
+.cf-logo-orb {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #06b6d4 100%);
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
-/* Active rail item */
+.dark .cf-logo-orb {
+    box-shadow: 0 4px 18px rgba(139, 92, 246, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* ── Search trigger: neumorphic inset ── */
+.cf-search-trigger {
+    background: rgba(238, 241, 248, 0.8);
+    box-shadow: inset 2px 2px 5px rgba(163, 177, 198, 0.30), inset -2px -2px 5px rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    transition: all 0.25s ease;
+}
+
+.dark .cf-search-trigger {
+    background: rgba(16, 26, 51, 0.75);
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.35), inset -2px -2px 5px rgba(148, 163, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+.cf-search-trigger:hover {
+    border-color: rgba(99, 102, 241, 0.45);
+    box-shadow: inset 2px 2px 5px rgba(163, 177, 198, 0.30), inset -2px -2px 5px rgba(255, 255, 255, 0.85), 0 0 0 3px rgba(99, 102, 241, 0.10);
+}
+
+.dark .cf-search-trigger:hover {
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.35), inset -2px -2px 5px rgba(148, 163, 255, 0.05), 0 0 0 3px rgba(139, 92, 246, 0.18);
+}
+
+/* ── Contextual section chip (menunjukkan posisi menu saat ini) ── */
+.cf-context-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 9999px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: linear-gradient(120deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.10), rgba(6, 182, 212, 0.10));
+    color: #6366f1;
+    border: 1px solid rgba(99, 102, 241, 0.22);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dark .cf-context-chip {
+    background: linear-gradient(120deg, rgba(99, 102, 241, 0.20), rgba(139, 92, 246, 0.16), rgba(6, 182, 212, 0.14));
+    color: #c7d2fe;
+    border-color: rgba(129, 140, 248, 0.30);
+}
+
+/* ── Rail-mode icon button: neumorphic ── */
+.cf-rail-item {
+    border-radius: 12px;
+    transition: all 0.22s ease;
+    background: transparent;
+}
+
+.cf-rail-item:hover {
+    background: rgba(99, 102, 241, 0.07);
+    transform: translateY(-1px);
+}
+
+/* Active rail item: gradient orb */
 .cf-rail-item.cf-active {
-    background: rgba(67, 24, 255, 0.08);
-    color: var(--accent);
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: #ffffff;
+    box-shadow: 0 5px 14px rgba(99, 102, 241, 0.45);
 }
 
 .dark .cf-rail-item.cf-active {
-    background: rgba(134, 140, 255, 0.15);
-    color: #ffffff;
+    box-shadow: 0 5px 16px rgba(139, 92, 246, 0.5);
 }
 
 .cf-rail-item.cf-active svg {
-    color: var(--accent) !important;
-}
-
-.dark .cf-rail-item.cf-active svg {
-    color: #868cff !important;
+    color: #ffffff !important;
 }
 
 /* ── Group Headers (accordion) ── */
 .cf-group-header {
     font-size: 11px;
     letter-spacing: 0.06em;
-    font-weight: 700;
+    font-weight: 800;
     border-radius: 10px;
     transition: all 0.2s ease;
 }
 
 .cf-group-header:hover {
-    background: rgba(67, 24, 255, 0.06);
+    background: rgba(99, 102, 241, 0.07);
 }
 
 .dark .cf-group-header:hover {
-    background: rgba(134, 140, 255, 0.10);
+    background: rgba(139, 92, 246, 0.14);
+}
+
+.cf-group-header.cf-header-active {
+    background: linear-gradient(120deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.10));
+    color: #6366f1;
+}
+
+.dark .cf-group-header.cf-header-active {
+    background: linear-gradient(120deg, rgba(99, 102, 241, 0.22), rgba(139, 92, 246, 0.16));
+    color: #c7d2fe;
 }
 
 /* ── Category items container (submenu indentation + smooth animation) ── */
@@ -135,15 +208,15 @@
 
 /* ── Nav Items (expanded mode — submenu of category) ── */
 .cf-nav-subitem {
-    border-radius: 10px;
+    border-radius: 12px;
     position: relative;
     overflow: hidden;
-    transition: all 0.2s ease;
+    transition: all 0.22s ease;
 }
 
 /* Inactive state */
 .cf-nav-subitem.cf-inactive {
-    color: #6474a5;
+    color: #64748b;
 }
 
 .dark .cf-nav-subitem.cf-inactive {
@@ -151,33 +224,33 @@
 }
 
 .cf-nav-subitem.cf-inactive:hover {
-    background: rgba(67, 24, 255, 0.04);
+    background: rgba(99, 102, 241, 0.06);
     color: #2b3674;
+    transform: translateX(2px);
 }
 
 .dark .cf-nav-subitem.cf-inactive:hover {
-    background: rgba(134, 140, 255, 0.10);
+    background: rgba(139, 92, 246, 0.14);
     color: #e2e8f0;
 }
 
-/* Active state — clean: left accent bar + subtle bg */
+/* Active state — glass pill + gradient glow */
 .cf-nav-subitem.cf-active {
-    color: var(--accent);
-    background: rgba(67, 24, 255, 0.05);
+    color: #ffffff;
+    background: linear-gradient(120deg, #6366f1 0%, #8b5cf6 100%);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
 }
 
 .dark .cf-nav-subitem.cf-active {
-    color: #ffffff;
-    background: rgba(134, 140, 255, 0.08);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45);
 }
 
-/* Active icon color */
 .cf-nav-subitem.cf-active svg {
-    color: var(--accent) !important;
+    color: #ffffff !important;
 }
 
-.dark .cf-nav-subitem.cf-active svg {
-    color: #868cff !important;
+.cf-nav-subitem.cf-active .cf-nav-label {
+    color: #ffffff !important;
 }
 
 /* Active left accent bar */
@@ -185,11 +258,12 @@
     content: '';
     position: absolute;
     left: 0;
-    top: 4px;
-    bottom: 4px;
-    width: 3px;
-    border-radius: 4px;
-    background: linear-gradient(to bottom, var(--accent), var(--accent-dark));
+    top: 6px;
+    bottom: 6px;
+    width: 3.5px;
+    border-radius: 6px;
+    background: linear-gradient(to bottom, #ffffff, rgba(255, 255, 255, 0.55));
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
 }
 
 /* Search results */
@@ -199,11 +273,40 @@
 }
 
 .saas-search-results button:hover {
-    background: rgba(67, 24, 255, 0.05);
+    background: rgba(99, 102, 241, 0.06);
 }
 
 .dark .saas-search-results button:hover {
-    background: rgba(134, 140, 255, 0.10);
+    background: rgba(139, 92, 246, 0.14);
+}
+
+/* ── Footer user card: glass chip ── */
+.cf-user-card {
+    background: rgba(238, 241, 248, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 14px;
+    box-shadow: inset 2px 2px 5px rgba(163, 177, 198, 0.25), inset -2px -2px 5px rgba(255, 255, 255, 0.85);
+}
+
+.dark .cf-user-card {
+    background: rgba(16, 26, 51, 0.7);
+    border-color: rgba(255, 255, 255, 0.05);
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.35), inset -2px -2px 5px rgba(148, 163, 255, 0.04);
+}
+
+/* ── Command palette: glass panel ── */
+.cf-palette-panel {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(24px) saturate(170%);
+    -webkit-backdrop-filter: blur(24px) saturate(170%);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    box-shadow: 0 24px 60px rgba(31, 38, 135, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.dark .cf-palette-panel {
+    background: rgba(15, 23, 42, 0.85);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 /* ── Mobile sidebar ── */
@@ -216,7 +319,12 @@
         top: 0;
         bottom: 0;
         z-index: 1000 !important;
+        background: rgba(255, 255, 255, 0.88);
         box-shadow: 8px 0 30px -8px rgba(0, 0, 0, 0.25) !important;
+    }
+
+    .dark .cf-sidebar {
+        background: rgba(11, 20, 55, 0.92);
     }
 
     .cf-sidebar.mobile-open {

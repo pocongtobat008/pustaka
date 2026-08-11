@@ -151,6 +151,12 @@ const Sidebar = ({
         [visibleSections]
     );
 
+    // Contextual: section (kategori) tempat menu aktif berada
+    const activeSection = useMemo(
+        () => visibleSections.find(sec => sec.items.some(item => item.id === activeTab)),
+        [visibleSections, activeTab]
+    );
+
     // Per-category expand state
     const storageKey = 'archive_sidebar_expanded';
     const [expandedCategories, setExpandedCategories] = useState(() => {
@@ -260,8 +266,8 @@ const Sidebar = ({
             {/* Header: logo + name + lock button */}
             <div className={'h-16 flex items-center px-3 shrink-0 relative ' + (isRail && !showLabels ? 'border-b border-slate-200/5 dark:border-slate-700/5' : 'border-b border-slate-200/30 dark:border-slate-700/30')}>
                 <div className="flex items-center gap-2">
-                    <div className={'w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0 transition-shadow ' + (showLabels ? 'shadow-md' : 'shadow-none')}>
-                        <BookOpen size={16} className="text-white" />
+                    <div className={'cf-logo-orb w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all ' + (showLabels ? 'shadow-lg scale-100' : 'shadow-none scale-95')}>
+                        <BookOpen size={16} className="text-white" strokeWidth={2.4} />
                     </div>
                     <div
                         className={
@@ -291,14 +297,24 @@ const Sidebar = ({
             <div className={'cf-search-box px-3 pb-2 pt-2 shrink-0 transition-all duration-300 ' + (!showLabels ? 'opacity-0 h-0 py-0 pointer-events-none' : 'opacity-100 h-auto')}>
                 <button
                     onClick={() => setPaletteOpen(true)}
-                    className="w-full h-9 px-3 flex items-center gap-2 rounded-lg border border-slate-200/60 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 text-slate-400 hover:border-indigo-300 hover:text-slate-600 dark:hover:text-slate-300 focus:border-indigo-400 transition-colors text-sm"
+                    className="cf-search-trigger w-full h-9 px-3 flex items-center gap-2 rounded-xl text-slate-400 focus:outline-none text-sm"
                     title={shortcutKey}
                 >
                     <Search size={15} className="shrink-0" />
                     <span className="flex-1 text-left truncate">{t('sidebar.search.placeholder')}</span>
-                    <kbd className="shrink-0 text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-400 font-semibold">{shortcutKey}</kbd>
+                    <kbd className="shrink-0 text-[9px] px-1.5 py-0.5 rounded bg-slate-100/80 dark:bg-slate-700 text-slate-400 font-semibold">{shortcutKey}</kbd>
                 </button>
             </div>
+
+            {/* Contextual section chip — posisi menu saat ini */}
+            {activeSection && (
+                <div className={'px-3 pb-1 shrink-0 transition-all duration-300 ' + (!showLabels ? 'opacity-0 h-0 py-0 pointer-events-none overflow-hidden' : 'opacity-100 h-auto')}>
+                    <div className="cf-context-chip">
+                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0"></span>
+                        <span className="truncate">{t(activeSection.categoryKey)}</span>
+                    </div>
+                </div>
+            )}
 
             {/* Nav: flat icon grid (rail) or grouped accordion (expanded) */}
             <nav className="flex-1 overflow-y-auto py-2 px-3">
@@ -340,9 +356,9 @@ const Sidebar = ({
                                     <button
                                         onClick={() => toggleCategory(section.id)}
                                         className={
-                                            'cf-group-header flex items-center gap-2 w-full px-2.5 h-8 rounded-lg text-xs font-semibold uppercase tracking-wider transition-colors ' +
+                                            'cf-group-header flex items-center gap-2 w-full px-2.5 h-8 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ' +
                                             (isActiveGroup
-                                                ? 'text-indigo-600 dark:text-indigo-300'
+                                                ? 'cf-header-active'
                                                 : 'text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300')
                                         }
                                     >
@@ -442,7 +458,7 @@ const Sidebar = ({
                     <div className="flex flex-col items-center gap-2">
                         <button
                             onClick={() => navigate('profile')}
-                            className="w-9 h-9 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-600 dark:text-indigo-300 text-xs font-extrabold"
+                            className="w-9 h-9 rounded-full gradient-bg flex items-center justify-center text-white text-xs font-extrabold shadow-md"
                             title={currentUser && currentUser.name ? currentUser.name : t('sidebar.user.guest')}
                         >
                             {currentUser && currentUser.name ? currentUser.name.substring(0, 2).toUpperCase() : '?'}
@@ -471,12 +487,12 @@ const Sidebar = ({
                     </div>
                 ) : (
                     <>
-                        <div className="flex items-center gap-2 mb-2">
+                        <div className="cf-user-card flex items-center gap-2 mb-2 px-1.5 py-1.5">
                             <button
                                 onClick={() => navigate('profile')}
-                                className="flex-1 flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-left"
+                                className="flex-1 flex items-center gap-2 px-2 py-1 rounded-xl hover:bg-indigo-50/70 dark:hover:bg-indigo-900/20 text-left"
                             >
-                                <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-[10px] font-extrabold text-indigo-600 dark:text-indigo-300 shrink-0">
+                                <div className="w-8 h-8 rounded-full gradient-bg flex items-center justify-center text-[10px] font-extrabold text-white shrink-0 shadow-md">
                                     {currentUser && currentUser.name ? currentUser.name.substring(0, 2).toUpperCase() : '?'}
                                 </div>
                                 <span className="cf-user-label min-w-0 flex-1 text-xs font-semibold text-slate-700 dark:text-slate-200 truncate">
@@ -485,7 +501,7 @@ const Sidebar = ({
                             </button>
                             <button
                                 onClick={() => setIsDarkMode(!isDarkMode)}
-                                className="w-9 h-9 rounded-lg flex items-center justify-center text-slate-400 hover:text-yellow-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                                className="neo-icon-btn w-9 h-9 text-slate-400 hover:text-yellow-500 dark:hover:text-yellow-400"
                                 title="Tema"
                             >
                                 {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
@@ -494,7 +510,7 @@ const Sidebar = ({
                         <div className="grid grid-cols-3 gap-1">
                             <button
                                 onClick={(e) => { e.stopPropagation(); setLanguage(language === 'id' ? 'en' : 'id'); }}
-                                className="flex items-center justify-center gap-1.5 h-9 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-300 hover:text-indigo-500 hover:border-indigo-300 transition-colors text-xs font-semibold"
+                                className="neo-btn flex items-center justify-center gap-1.5 h-9 text-slate-500 dark:text-slate-300 hover:text-indigo-500 dark:hover:text-indigo-300 text-xs font-semibold"
                                 title={t('settings.language.title')}
                             >
                                 <Languages size={13} />
@@ -502,14 +518,14 @@ const Sidebar = ({
                             </button>
                             <button
                                 onClick={() => setIsDarkMode(!isDarkMode)}
-                                className="flex items-center justify-center gap-1.5 h-9 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-300 hover:text-yellow-500 hover:border-yellow-300 transition-colors"
+                                className="neo-btn flex items-center justify-center gap-1.5 h-9 text-slate-500 dark:text-slate-300 hover:text-yellow-500 dark:hover:text-yellow-400"
                                 title="Tema"
                             >
                                 {isDarkMode ? <Sun size={14} /> : <Moon size={14} />}
                             </button>
                             <button
                                 onClick={handleLogout}
-                                className="flex items-center justify-center h-9 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-300 hover:text-red-500 hover:border-red-300 transition-colors"
+                                className="neo-btn flex items-center justify-center h-9 text-slate-500 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400"
                                 title="Logout"
                             >
                                 <LogOut size={14} />
@@ -527,7 +543,7 @@ const Sidebar = ({
                 >
                     <div
                         onClick={e => e.stopPropagation()}
-                        className="w-full max-w-md rounded-xl bg-white dark:bg-slate-800 shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden"
+                        className="cf-palette-panel w-full max-w-md rounded-2xl overflow-hidden"
                     >
                         <div className="flex items-center gap-2 px-4 h-12 border-b border-slate-100 dark:border-slate-700">
                             <Search size={16} className="text-slate-400" />
