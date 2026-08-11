@@ -127,6 +127,9 @@ router.post('/pdf-tools/history', uploadAny, async (req, res) => {
         if (tool === 'ocr') {
             const textContent = String(req.body.text_content || '');
             if (!textContent.trim()) return res.status(400).json({ error: 'Teks hasil OCR kosong.' });
+            if (Buffer.byteLength(textContent, 'utf8') > 200 * 1024) {
+                return res.status(400).json({ error: 'Teks hasil OCR terlalu besar untuk riwayat (maks 200 KB).' });
+            }
             const title = String(req.body.title || 'Hasil OCR Teks').trim().slice(0, 255);
             const [id] = await knex('pdf_tool_history').insert({
                 tool,
