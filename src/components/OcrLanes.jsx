@@ -106,14 +106,18 @@ const OcrLanes = ({ variant = 'floating' }) => {
       <div className="relative font-sans" ref={wrapRef}>
         <button
           onClick={() => setIsExpanded(o => !o)}
-          className="neo-icon-btn relative w-10 h-10 group text-slate-500 dark:text-slate-300 hover:text-emerald-500 dark:hover:text-emerald-400"
-          title="OCR Monitor"
+          className={'neo-icon-btn relative w-10 h-10 group ' + (totalActive > 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-300 hover:text-emerald-500 dark:hover:text-emerald-400')}
+          title={totalActive > 0 ? `OCR Monitor — ${totalActive} proses aktif` : 'OCR Monitor'}
         >
           <ScanLine size={18} />
           {totalActive > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[9px] font-black text-white shadow-lg border-2 border-white dark:border-slate-900">
-              {totalActive > 9 ? '9+' : totalActive}
-            </span>
+            <>
+              {/* Ping ring — indikator proses aktif */}
+              <span className="absolute inset-0 rounded-xl bg-emerald-400/30 animate-ping pointer-events-none"></span>
+              <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[9px] font-black text-white shadow-lg border-2 border-white dark:border-slate-900">
+                {totalActive > 9 ? '9+' : totalActive}
+              </span>
+            </>
           )}
         </button>
 

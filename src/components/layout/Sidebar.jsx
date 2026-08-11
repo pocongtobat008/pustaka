@@ -266,7 +266,7 @@ const Sidebar = ({
                         }
                     >
                         <div className="font-extrabold text-sm text-slate-800 dark:text-white leading-tight">Pustaka</div>
-                        <div className="text-[10px] text-slate-400 dark:text-slate-500 leading-tight">Document OS</div>
+                        <div className="text-[10px] text-slate-400 dark:text-slate-500 leading-tight">v1.0.0</div>
                     </div>
                 </div>
 
@@ -500,11 +500,6 @@ const Sidebar = ({
                         </div>
                     </>
                 )}
-            </div>
-
-            {/* Label versi — hanya desktop (footer user card disembunyikan di desktop) */}
-            <div className="hidden md:flex shrink-0 items-center justify-center py-3">
-                <span className="text-[9px] font-bold text-slate-300 dark:text-slate-600 uppercase tracking-[0.15em]">Pustaka • v1.0.0</span>
             </div>
 
             {/* Command Palette */}
