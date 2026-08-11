@@ -1,11 +1,9 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import * as XLSX from 'xlsx';
-import TemplateMapper from '../components/anydoc/TemplateMapper.jsx';
 import {
     UploadCloud, FileText, FileSpreadsheet, File as FileIcon, Copy, Check, Download,
     Archive, Brain, Loader2, X, History, Sparkles, AlertCircle, CheckCircle2, Eye,
     FileCode2, Trash2, Clock, BookOpen, Plus, ListChecks, Table2, ChevronDown, ChevronRight,
-    Layers,
 } from 'lucide-react';
 
 const getApiUrl = () => {
@@ -177,7 +175,7 @@ export default function AnyDoc({ isDarkMode }) {
     const copyTimerRef = useRef(null);
 
     // ── Mode Ekstrak Data → Excel ──
-    const [mode, setMode] = useState('convert'); // 'convert' | 'extract' | 'template'
+    const [mode, setMode] = useState('convert'); // 'convert' | 'extract'
     const [extractFiles, setExtractFiles] = useState([]);
     const [dragOver2, setDragOver2] = useState(false);
     const [fields, setFields] = useState(['No. Faktur Pajak', 'Tanggal', 'No. Invoice', 'Customer', 'NPWP', 'Alamat', 'Total', 'PPN', 'DP', 'Keterangan']);
@@ -430,14 +428,6 @@ export default function AnyDoc({ isDarkMode }) {
                 >
                     <FileSpreadsheet size={14} /> Ekstrak Data → Excel
                 </button>
-                <button
-                    onClick={() => setMode('template')}
-                    className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${mode === 'template'
-                        ? 'bg-gradient-to-r from-amber-600 to-orange-700 text-white shadow-md shadow-amber-500/25'
-                        : isDarkMode ? 'text-white/50 hover:text-white/90 hover:bg-white/5' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
-                >
-                    <Layers size={14} /> Template PDF
-                </button>
             </div>
 
             {/* History drawer */}
@@ -647,11 +637,6 @@ export default function AnyDoc({ isDarkMode }) {
                     )}
                 </div>
             </div>
-            )}
-
-            {/* ── MODE: TEMPLATE PDF (sampel → mapping → ekstrak) ── */}
-            {mode === 'template' && (
-                <TemplateMapper isDarkMode={isDarkMode} />
             )}
 
             {/* ── MODE: EKSTRAK DATA → EXCEL ── */}
