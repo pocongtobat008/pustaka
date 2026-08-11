@@ -383,12 +383,7 @@ export default function Dashboard({
                             <div className="p-2 gradient-bg rounded-xl text-white shadow-lg shadow-indigo-500/30">
                                 <Sparkles size={18} />
                             </div>
-                            <div>
-                                <span className="block font-black text-[10px] uppercase tracking-widest text-indigo-600 dark:text-indigo-400">{text.workLabel}</span>
-                                <span className="block text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-                                    {isEnglish ? 'Hourly Motivation' : 'Motivasi Per Jam'}
-                                </span>
-                            </div>
+                            <span className="font-black text-[10px] uppercase tracking-widest text-indigo-600 dark:text-indigo-400">{text.workLabel}</span>
                         </div>
                         <p className="text-sm font-bold text-slate-700 dark:text-slate-200 leading-snug italic">
                             <span className="text-indigo-400 select-none">“</span>

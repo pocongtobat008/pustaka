@@ -3776,7 +3776,7 @@ export default function App() {
 
               {/* Profil dropdown — tema & bahasa ada di dalam (pola SaaS) */}
               <div className="relative group" ref={profileMenuRef}>
-                <span className="saas-tooltip">{commandTextMap.items.profile.label}</span>
+                {!profileMenuOpen && <span className="saas-tooltip">{commandTextMap.items.profile.label}</span>}
                 <button
                   type="button"
                   onClick={() => setProfileMenuOpen(o => !o)}
