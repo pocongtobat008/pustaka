@@ -3778,9 +3778,9 @@ export default function App() {
                 </button>
 
                 {profileMenuOpen && (
-                  <div className="absolute right-0 top-[calc(100%+10px)] w-64 glass-panel rounded-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150 z-[60]">
+                  <div className="absolute right-0 top-[calc(100%+10px)] w-64 bg-white/95 dark:bg-[#0d1440]/95 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-2xl overflow-hidden shadow-2xl shadow-indigo-500/10 dark:shadow-black/40 animate-in fade-in zoom-in-95 duration-150 z-[60]">
                     {/* Header profil */}
-                    <div className="px-4 py-3.5 border-b border-white/40 dark:border-white/10 bg-gradient-to-r from-indigo-500/10 to-purple-500/10">
+                    <div className="px-4 py-3.5 border-b border-slate-100 dark:border-white/10 bg-gradient-to-r from-indigo-500/10 to-purple-500/10">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-xs font-extrabold text-white shadow-md">
                           {currentUser?.name ? currentUser.name.substring(0, 2).toUpperCase() : '?'}
@@ -3814,7 +3814,7 @@ export default function App() {
                       </button>
                     </div>
 
-                    <div className="border-t border-white/40 dark:border-white/10 p-1.5">
+                    <div className="border-t border-slate-100 dark:border-white/10 p-1.5">
                       <button
                         onClick={() => { setProfileMenuOpen(false); handleLogout(); }}
                         className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors text-left"
