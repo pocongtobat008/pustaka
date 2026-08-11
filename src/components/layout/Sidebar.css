@@ -109,31 +109,6 @@
     box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.35), inset -2px -2px 5px rgba(148, 163, 255, 0.05), 0 0 0 3px rgba(139, 92, 246, 0.18);
 }
 
-/* ── Contextual section chip (menunjukkan posisi menu saat ini) ── */
-.cf-context-chip {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px 10px;
-    border-radius: 9999px;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    background: linear-gradient(120deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.10), rgba(6, 182, 212, 0.10));
-    color: #6366f1;
-    border: 1px solid rgba(99, 102, 241, 0.22);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.dark .cf-context-chip {
-    background: linear-gradient(120deg, rgba(99, 102, 241, 0.20), rgba(139, 92, 246, 0.16), rgba(6, 182, 212, 0.14));
-    color: #c7d2fe;
-    border-color: rgba(129, 140, 248, 0.30);
-}
-
 /* ── Rail-mode icon button: neumorphic ── */
 .cf-rail-item {
     border-radius: 12px;

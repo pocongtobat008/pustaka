@@ -3759,6 +3759,7 @@ export default function App() {
               )}
 
               <NotificationBell variant="topbar" onOpenChannel={handleOpenNotificationChannel} />
+              <OcrLanes variant="topbar" />
 
               {/* Profil dropdown — tema & bahasa ada di dalam (pola SaaS) */}
               <div className="relative" ref={profileMenuRef}>
@@ -4484,11 +4485,11 @@ export default function App() {
 
       {/* Toast Notification System */}
       <ToastContainer toasts={toasts} onRemove={removeToast} />
-      {/* Notifikasi floating hanya untuk mobile (desktop pakai bell di topbar) */}
+      {/* Notifikasi + OCR floating hanya untuk mobile (desktop pakai di topbar) */}
       <div className="md:hidden">
         <NotificationBell onOpenChannel={handleOpenNotificationChannel} />
+        <OcrLanes />
       </div>
-      <OcrLanes />
 
       {/* Floating AI Chat Assistant - Dengan kontrol visibility untuk guest/viewer */}
       {currentUser && activeTab !== 'pustaka' && checkPermission(currentUser, roles, 'ai-chat', 'view') && (

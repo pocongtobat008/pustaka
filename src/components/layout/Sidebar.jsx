@@ -147,12 +147,6 @@ const Sidebar = ({
         [visibleSections]
     );
 
-    // Contextual: section (kategori) tempat menu aktif berada
-    const activeSection = useMemo(
-        () => visibleSections.find(sec => sec.items.some(item => item.id === activeTab)),
-        [visibleSections, activeTab]
-    );
-
     // Per-category expand state
     const storageKey = 'archive_sidebar_expanded';
     const [expandedCategories, setExpandedCategories] = useState(() => {
@@ -302,15 +296,6 @@ const Sidebar = ({
                 </button>
             </div>
 
-            {/* Contextual section chip — posisi menu saat ini */}
-            {activeSection && (
-                <div className={'px-3 pb-1 shrink-0 transition-all duration-300 ' + (!showLabels ? 'opacity-0 h-0 py-0 pointer-events-none overflow-hidden' : 'opacity-100 h-auto')}>
-                    <div className="cf-context-chip">
-                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0"></span>
-                        <span className="truncate">{t(activeSection.categoryKey)}</span>
-                    </div>
-                </div>
-            )}
 
             {/* Nav: flat icon grid (rail) or grouped accordion (expanded) */}
             <nav className="flex-1 overflow-y-auto py-2 px-3">
@@ -448,8 +433,8 @@ const Sidebar = ({
                 )}
             </nav>
 
-            {/* Footer: user + actions */}
-            <div className={'shrink-0 ' + (isRail && !showLabels ? 'border-t border-slate-200/10 dark:border-slate-700/10 p-2' : 'border-t border-slate-200/30 dark:border-slate-700/30 p-3')}>
+            {/* Footer: user + actions — hanya untuk mobile (desktop pakai dropdown profil di header) */}
+            <div className={'md:hidden shrink-0 ' + (isRail && !showLabels ? 'border-t border-slate-200/10 dark:border-slate-700/10 p-2' : 'border-t border-slate-200/30 dark:border-slate-700/30 p-3')}>
                 {isRail && !showLabels ? (
                     <div className="flex flex-col items-center gap-2">
                         <button
@@ -515,6 +500,11 @@ const Sidebar = ({
                         </div>
                     </>
                 )}
+            </div>
+
+            {/* Label versi — hanya desktop (footer user card disembunyikan di desktop) */}
+            <div className="hidden md:flex shrink-0 items-center justify-center py-3">
+                <span className="text-[9px] font-bold text-slate-300 dark:text-slate-600 uppercase tracking-[0.15em]">Pustaka • v1.0.0</span>
             </div>
 
             {/* Command Palette */}
