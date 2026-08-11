@@ -1030,12 +1030,36 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                         {showMonitor && (
                             <div className={`border-t ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
                                 {extractionSummary.length === 0 && (
-                                    <p className={`px-4 py-4 text-[11px] italic ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>
-                                        Belum ada riwayat. Lakukan ekstraksi — hasil terekam otomatis per periode dokumen (bulan dari nomor nota / tanggal).
-                                    </p>
+                                    <div className={`px-6 py-8 text-center ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                        <div className={`w-12 h-12 mx-auto mb-3 rounded-2xl flex items-center justify-center ${isDarkMode ? 'bg-white/5 text-white/30' : 'bg-slate-100 text-slate-300'}`}>
+                                            <BarChart3 size={22} />
+                                        </div>
+                                        <p className={`text-xs font-bold ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>Belum ada riwayat ekstraksi</p>
+                                        <p className="text-[10px] mt-1 max-w-[280px] mx-auto leading-relaxed">
+                                            Lakukan ekstraksi — hasil terekam otomatis per periode dokumen (bulan dari nomor nota / tanggal).
+                                        </p>
+                                    </div>
                                 )}
                                 {extractionSummary.length > 0 && (
-                                    <div className="overflow-x-auto">
+                                    <>
+                                        <div className={`grid grid-cols-3 gap-2 px-4 py-3 border-b ${isDarkMode ? 'border-white/5 bg-white/5' : 'border-slate-100 bg-slate-50/50'}`}>
+                                            {[
+                                                { label: 'Periode', value: extractionSummary.length, icon: BarChart3 },
+                                                { label: 'Dokumen', value: extractionSummary.reduce((a, s) => a + (Number(s.doc_count) || 0), 0), icon: FileSpreadsheet },
+                                                { label: 'Baris Data', value: extractionSummary.reduce((a, s) => a + (Number(s.total_rows) || 0), 0), icon: Table2 },
+                                            ].map(st => {
+                                                const Icon = st.icon;
+                                                return (
+                                                    <div key={st.label} className={`rounded-xl px-3 py-2 border ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'}`}>
+                                                        <div className={`flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>
+                                                            <Icon size={10} className={isDarkMode ? 'text-cyan-300' : 'text-cyan-600'} /> {st.label}
+                                                        </div>
+                                                        <p className={`mt-0.5 text-sm font-black tabular-nums ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>{st.value.toLocaleString('id-ID')}</p>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                        <div className="overflow-x-auto">
                                         <table className="w-full text-left text-[11px]">
                                             <thead>
                                                 <tr className={`border-b ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
@@ -1072,7 +1096,8 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                                 })}
                                             </tbody>
                                         </table>
-                                    </div>
+                                        </div>
+                                    </>
                                 )}
 
                                 {extractions.length > 0 && (

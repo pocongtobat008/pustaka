@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
     FileText, FileArchive, Scissors, LockOpen, ScanText,
     UploadCloud, Download, Loader2, X, AlertCircle, Layers,
-    FileDown, Wand2, Sparkles,
+    FileDown, Wand2, Sparkles, History, Trash2, RefreshCw, ChevronDown,
 } from 'lucide-react';
 
 const getApiUrl = () => (window.location.protocol === 'file:' ? 'http://localhost:5005/api' : '/api');
@@ -13,6 +13,11 @@ const formatFileSize = (b) => {
     if (b < 1024) return b + ' B';
     if (b < 1024 * 1024) return (b / 1024).toFixed(1) + ' KB';
     return (b / 1024 / 1024).toFixed(2) + ' MB';
+};
+
+const compressPct = (row) => {
+    if (!row.original_size || !row.file_size || row.file_size >= row.original_size) return null;
+    return (1 - row.file_size / row.original_size) * 100;
 };
 
 // ── Definisi 6 tool ──
@@ -81,7 +86,62 @@ export default function AiPdfTools({ isDarkMode }) {
     const [error, setError] = useState('');
     const [dragOver, setDragOver] = useState(false);
     const [serviceOk, setServiceOk] = useState(true);
+    const [history, setHistory] = useState([]);
+    const [showHistory, setShowHistory] = useState(false);
+    const [historyBusy, setHistoryBusy] = useState(false);
+    const [delHistTarget, setDelHistTarget] = useState(null);
+    const [delHistBusy, setDelHistBusy] = useState(false);
     const inputRef = useRef(null);
+
+    const loadHistory = useCallback(async () => {
+        setHistoryBusy(true);
+        try {
+            const res = await fetch(`${API_URL}/pdf-tools/history`, { credentials: 'include' });
+            if (res.ok) setHistory(await res.json());
+        } catch { /* ignore */ }
+        finally { setHistoryBusy(false); }
+    }, []);
+
+    useEffect(() => { loadHistory(); }, [loadHistory]);
+
+    const downloadHistFile = async (row) => {
+        try {
+            const res = await fetch(row.downloadUrl, { credentials: 'include' });
+            if (!res.ok) throw new Error('Gagal mengunduh.');
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = row.file_name || 'hasil';
+            document.body.appendChild(a); a.click(); a.remove();
+            URL.revokeObjectURL(url);
+        } catch (e) { setError(e.message || 'Gagal mengunduh.'); }
+    };
+
+    const confirmDeleteHist = async () => {
+        if (!delHistTarget) return;
+        setDelHistBusy(true);
+        try {
+            const res = await fetch(`${API_URL}/pdf-tools/history/${delHistTarget.id}`, { method: 'DELETE', credentials: 'include' });
+            const j = await res.json();
+            if (!res.ok) throw new Error(j.error || 'Gagal menghapus.');
+            setHistory(prev => prev.filter(h => h.id !== delHistTarget.id));
+            setDelHistTarget(null);
+        } catch (e) { setError(e.message || 'Gagal menghapus.'); }
+        finally { setDelHistBusy(false); }
+    };
+
+    const TOOL_LABEL = { convert: 'PDF → Word', compress: 'Kompres', merge: 'Gabung', split: 'Pecah', unlock: 'Buka Proteksi' };
+    const saveToHistory = async (blob, filename, origSize) => {
+        try {
+            const fd = new FormData();
+            fd.append('file', blob, filename);
+            fd.append('tool', tool.id);
+            fd.append('title', filename);
+            if (origSize) fd.append('originalSize', String(origSize));
+            await fetch(`${API_URL}/pdf-tools/history`, { method: 'POST', credentials: 'include', body: fd });
+            loadHistory();
+        } catch { /* best-effort — unduhan lokal tetap jalan */ }
+    };
 
     const tool = TOOLS.find(t => t.id === activeTool);
 
@@ -157,6 +217,8 @@ export default function AiPdfTools({ isDarkMode }) {
                     origSize: origSize ? Number(origSize) : null,
                     compSize: compSize ? Number(compSize) : null,
                 });
+                // Simpan ke riwayat (best-effort) agar bisa diunduh ulang tanpa proses ulang
+                saveToHistory(blob, filename, origSize ? Number(origSize) : null);
             }
         } catch (e) {
             setError(e.message || 'Terjadi kesalahan.');
@@ -341,8 +403,130 @@ export default function AiPdfTools({ isDarkMode }) {
                     </div>
 
                     {renderResult()}
+
+                    {/* ── Riwayat hasil AI PDF Tools ── */}
+                    <div className={`rounded-2xl border overflow-hidden ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`}>
+                        <button
+                            onClick={() => setShowHistory(s => !s)}
+                            className={`w-full flex items-center gap-2.5 px-4 py-3 text-left transition-colors ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-slate-50'}`}
+                        >
+                            <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isDarkMode ? 'bg-indigo-500/15 text-indigo-300' : 'bg-indigo-100 text-indigo-600'}`}>
+                                <History size={15} />
+                            </div>
+                            <div className="flex-1">
+                                <p className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>Riwayat Hasil PDF Tools</p>
+                                <p className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>File yang pernah diproses — unduh ulang tanpa proses ulang</p>
+                            </div>
+                            {history.length > 0 && (
+                                <span className={`px-2 py-0.5 rounded-full text-[9px] font-black ${isDarkMode ? 'bg-indigo-500/20 text-indigo-300' : 'bg-indigo-100 text-indigo-600'}`}>
+                                    {history.length}
+                                </span>
+                            )}
+                            <button
+                                onClick={e => { e.stopPropagation(); loadHistory(); }}
+                                className={`p-1.5 rounded-lg ${isDarkMode ? 'hover:bg-white/10 text-white/50' : 'hover:bg-slate-200 text-slate-400'}`} title="Muat ulang"
+                            >
+                                <RefreshCw size={12} className={historyBusy ? 'animate-spin' : ''} />
+                            </button>
+                            <span className={`transition-transform ${showHistory ? 'rotate-180' : ''}`}>
+                                <ChevronDown size={15} className={isDarkMode ? 'text-white/40' : 'text-slate-400'} />
+                            </span>
+                        </button>
+
+                        {showHistory && (
+                            <div className={`border-t ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
+                                {history.length === 0 && (
+                                    <p className={`px-4 py-4 text-[11px] italic ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>
+                                        Belum ada hasil tersimpan. Proses file apa pun — hasil otomatis tersimpan di sini untuk diunduh ulang.
+                                    </p>
+                                )}
+                                {history.length > 0 && (
+                                    <div className="max-h-[280px] overflow-y-auto">
+                                        {history.map(x => {
+                                            const t = x.created_at ? new Date(x.created_at) : null;
+                                            const dateStr = t && !isNaN(t) ? t.toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : '';
+                                            return (
+                                                <div key={x.id} className={`flex items-center gap-2.5 px-4 py-2.5 border-b last:border-b-0 ${isDarkMode ? 'border-white/5 hover:bg-white/5' : 'border-slate-50 hover:bg-slate-50'}`}>
+                                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${isDarkMode ? 'bg-indigo-500/10 text-indigo-300' : 'bg-indigo-50 text-indigo-600'}`}>
+                                                        <FileText size={14} />
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className={`text-[11px] font-bold truncate ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>
+                                                            <span className={`mr-1.5 px-1.5 py-0.5 rounded-md text-[9px] font-black ${isDarkMode ? 'bg-indigo-500/15 text-indigo-300' : 'bg-indigo-100 text-indigo-600'}`}>
+                                                                {TOOL_LABEL[x.tool] || x.tool}
+                                                            </span>
+                                                            {x.title}
+                                                        </p>
+                                                        <p className={`text-[9px] truncate ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>
+                                                            {dateStr}{dateStr ? ' • ' : ''}{formatFileSize(x.file_size)}
+                                                            {compressPct(x) !== null && <span className="text-emerald-500 font-bold"> • −{compressPct(x).toFixed(0)}%</span>}
+                                                        </p>
+                                                    </div>
+                                                    {x.fileExists === false && (
+                                                        <span className={`text-[9px] font-bold ${isDarkMode ? 'text-rose-300' : 'text-rose-500'}`} title="File hilang dari disk">hilang</span>
+                                                    )}
+                                                    <button
+                                                        onClick={() => downloadHistFile(x)}
+                                                        disabled={x.fileExists === false}
+                                                        title="Unduh ulang hasil ini"
+                                                        className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold transition-all ${x.fileExists === false ? 'opacity-40 cursor-not-allowed' : 'hover:scale-[1.02]'} ${isDarkMode ? 'bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'}`}
+                                                    >
+                                                        <Download size={11} /> Unduh
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setDelHistTarget(x)}
+                                                        title="Hapus riwayat ini"
+                                                        className={`p-1.5 rounded-lg transition-colors ${isDarkMode ? 'text-white/25 hover:text-rose-300 hover:bg-rose-500/15' : 'text-slate-300 hover:text-rose-500 hover:bg-rose-50'}`}
+                                                    >
+                                                        <Trash2 size={12} />
+                                                    </button>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
+
+            {/* ── Modal konfirmasi hapus riwayat ── */}
+            {delHistTarget && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setDelHistTarget(null)}>
+                    <div
+                        onClick={e => e.stopPropagation()}
+                        className={`w-full max-w-sm rounded-2xl border p-5 shadow-2xl animate-[fadeInUp_.2s_ease] ${isDarkMode ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-200'}`}
+                    >
+                        <div className="flex items-start gap-3">
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${isDarkMode ? 'bg-rose-500/15 text-rose-300' : 'bg-rose-50 text-rose-500'}`}>
+                                <AlertCircle size={18} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>Hapus riwayat ini?</p>
+                                <p className={`text-[11px] mt-1 leading-relaxed ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>
+                                    <b className={isDarkMode ? 'text-white/80' : 'text-slate-700'}>{delHistTarget.title}</b> akan dihapus permanen beserta file-nya di server.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="mt-5 flex justify-end gap-2">
+                            <button
+                                onClick={() => setDelHistTarget(null)}
+                                className={`px-3.5 py-2 rounded-xl text-[11px] font-bold transition-colors ${isDarkMode ? 'bg-white/10 text-white/70 hover:bg-white/15' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                            >
+                                Batal
+                            </button>
+                            <button
+                                onClick={confirmDeleteHist}
+                                disabled={delHistBusy}
+                                className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[11px] font-bold transition-all ${delHistBusy ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02]'} ${isDarkMode ? 'bg-rose-500/20 text-rose-300 hover:bg-rose-500/30' : 'bg-rose-500 text-white hover:bg-rose-600'}`}
+                            >
+                                {delHistBusy ? <Loader2 size={12} className="animate-spin" /> : <Trash2 size={12} />} Hapus Permanen
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
