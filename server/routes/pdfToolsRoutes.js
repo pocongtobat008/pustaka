@@ -120,9 +120,37 @@ router.get('/pdf-tools/languages', async (req, res) => {
 router.post('/pdf-tools/history', uploadAny, async (req, res) => {
     try {
         const file = (req.files || [])[0];
-        if (!file) return res.status(400).json({ error: 'File hasil wajib diunggah.' });
         const tool = String(req.body.tool || '').replace(/[^a-z]/g, '');
-        if (!TOOL_MAP[tool] || tool === 'ocr') return res.status(400).json({ error: 'Tool tidak valid untuk riwayat.' });
+        if (!TOOL_MAP[tool]) return res.status(400).json({ error: 'Tool tidak valid untuk riwayat.' });
+
+        // Mode OCR: hasil berupa TEKS (bukan file) — simpan teks + bahasa + orientasi
+        if (tool === 'ocr') {
+            const textContent = String(req.body.text_content || '');
+            if (!textContent.trim()) return res.status(400).json({ error: 'Teks hasil OCR kosong.' });
+            const title = String(req.body.title || 'Hasil OCR Teks').trim().slice(0, 255);
+            const [id] = await knex('pdf_tool_history').insert({
+                tool,
+                title,
+                file_path: `ocr-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`, // tanpa file di disk
+                file_name: `${title.replace(/\.[^.]+$/, '')}.txt`,
+                file_size: Buffer.byteLength(textContent, 'utf8'),
+                language: String(req.body.language || '').slice(0, 30),
+                language_name: String(req.body.language_name || '').slice(0, 100),
+                orientation: String(req.body.orientation || '').slice(0, 20),
+                text_content: textContent,
+                created_by: req.user?.username || req.user?.name || 'System',
+            }).returning('id');
+            const histId = typeof id === 'object' ? id.id : id;
+            return res.status(201).json({
+                id: histId, tool, title,
+                file_name: `${title.replace(/\.[^.]+$/, '')}.txt`,
+                file_size: Buffer.byteLength(textContent, 'utf8'),
+                created_at: new Date().toISOString(),
+                downloadUrl: `/api/pdf-tools/history/file?id=${histId}`,
+            });
+        }
+
+        if (!file) return res.status(400).json({ error: 'File hasil wajib diunggah.' });
 
         const title = String(req.body.title || file.originalname || 'Hasil PDF Tools').trim().slice(0, 255);
         const diskName = `tool-${Date.now()}-${Math.random().toString(36).slice(2, 6)}-${path.basename(file.originalname || 'hasil')}`;
@@ -217,7 +245,8 @@ router.get('/pdf-tools/history', async (req, res) => {
         const out = rows.map(r => ({
             ...r,
             downloadUrl: `/api/pdf-tools/history/file?id=${r.id}`,
-            fileExists: fs.existsSync(path.join(TOOL_HISTORY_DIR, path.basename(r.file_path))),
+            // Baris OCR menyimpan teks di DB (bukan file) → selalu tersedia
+            fileExists: r.tool === 'ocr' ? true : fs.existsSync(path.join(TOOL_HISTORY_DIR, path.basename(r.file_path))),
         }));
         res.json(out);
     } catch (e) {
@@ -232,6 +261,16 @@ router.get('/pdf-tools/history/file', async (req, res) => {
         if (!Number.isFinite(id)) return res.status(400).json({ error: 'ID wajib diisi.' });
         const row = await knex('pdf_tool_history').where('id', id).first();
         if (!row) return res.status(404).json({ error: 'Riwayat tidak ditemukan.' });
+
+        // Baris OCR → kirim teks sebagai file .txt (di-generate on-the-fly)
+        if (row.tool === 'ocr') {
+            const txt = String(row.text_content || '');
+            const name = String(row.file_name || 'hasil_ocr.txt').replace(/[\"\r\n]/g, '_');
+            res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+            res.setHeader('Content-Disposition', `attachment; filename="${name}"`);
+            return res.send(txt);
+        }
+
         const safe = path.basename(row.file_path);
         const fp = path.join(TOOL_HISTORY_DIR, safe);
         if (!fs.existsSync(fp)) return res.status(404).json({ error: 'File hilang dari disk.' });

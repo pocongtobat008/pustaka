@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
-    FileText, FileArchive, Scissors, LockOpen, ScanText,
+    FileText, FileArchive, Scissors, LockOpen, ScanText, RotateCw, Eye,
     UploadCloud, Download, Loader2, X, AlertCircle, Layers,
     FileDown, Wand2, Sparkles, History, Trash2, RefreshCw, ChevronDown,
 } from 'lucide-react';
@@ -80,7 +80,7 @@ const ToolCard = ({ tool, active, onClick, isDarkMode }) => {
 export default function AiPdfTools({ isDarkMode }) {
     const [activeTool, setActiveTool] = useState('convert');
     const [files, setFiles] = useState([]);
-    const [form, setForm] = useState({ quality: 'medium', mode: 'all', pages: '', language: 'eng', password: '' });
+    const [form, setForm] = useState({ quality: 'medium', mode: 'all', pages: '', language: 'eng', password: '', autoRotate: true, perPage: false });
     const [busy, setBusy] = useState(false);
     const [result, setResult] = useState(null); // { type: 'file'|'json', ... }
     const [error, setError] = useState('');
@@ -93,6 +93,7 @@ export default function AiPdfTools({ isDarkMode }) {
     const [historyBusy, setHistoryBusy] = useState(false);
     const [delHistTarget, setDelHistTarget] = useState(null);
     const [delHistBusy, setDelHistBusy] = useState(false);
+    const [viewTextTarget, setViewTextTarget] = useState(null); // baris riwayat OCR yang teksnya dilihat
     const inputRef = useRef(null);
 
     const loadHistory = useCallback(async () => {
@@ -132,7 +133,7 @@ export default function AiPdfTools({ isDarkMode }) {
         finally { setDelHistBusy(false); }
     };
 
-    const TOOL_LABEL = { convert: 'PDF → Word', compress: 'Kompres', merge: 'Gabung', split: 'Pecah', unlock: 'Buka Proteksi' };
+    const TOOL_LABEL = { convert: 'PDF → Word', compress: 'Kompres', merge: 'Gabung', split: 'Pecah', unlock: 'Buka Proteksi', ocr: 'OCR Teks' };
     const saveToHistory = async (blob, filename, origSize) => {
         try {
             const fd = new FormData();
@@ -143,6 +144,21 @@ export default function AiPdfTools({ isDarkMode }) {
             await fetch(`${API_URL}/pdf-tools/history`, { method: 'POST', credentials: 'include', body: fd });
             loadHistory();
         } catch { /* best-effort — unduhan lokal tetap jalan */ }
+    };
+
+    // Simpan hasil OCR Teks ke riwayat (teks + bahasa + orientasi)
+    const saveToHistoryOcr = async (data) => {
+        try {
+            const fd = new FormData();
+            fd.append('tool', 'ocr');
+            fd.append('title', files[0]?.name || 'Hasil OCR Teks');
+            fd.append('text_content', data.text || '');
+            fd.append('language', data.language || '');
+            fd.append('language_name', data.language_name || '');
+            if (data.orientation?.detected) fd.append('orientation', `${data.orientation.degrees}°`);
+            await fetch(`${API_URL}/pdf-tools/history`, { method: 'POST', credentials: 'include', body: fd });
+            loadHistory();
+        } catch { /* best-effort */ }
     };
 
     const tool = TOOLS.find(t => t.id === activeTool);
@@ -212,7 +228,11 @@ export default function AiPdfTools({ isDarkMode }) {
             const fd = new FormData();
             if (tool.multiple) files.forEach(f => fd.append('files', f));
             else fd.append('file', files[0]);
-            Object.entries(form).forEach(([k, v]) => { if (v) fd.append(k, v); });
+            Object.entries(form).forEach(([k, v]) => { if (v && k !== 'autoRotate' && k !== 'perPage') fd.append(k, v); });
+            if (tool.id === 'ocr') {
+                fd.append('auto_rotate', form.autoRotate ? 'true' : 'false');
+                fd.append('per_page', form.perPage ? 'true' : 'false');
+            }
 
             const res = await fetch(`${API_URL}/pdf-tools/${tool.id}`, { method: 'POST', credentials: 'include', body: fd });
             const contentType = res.headers.get('content-type') || '';
@@ -228,6 +248,7 @@ export default function AiPdfTools({ isDarkMode }) {
             if (contentType.includes('application/json')) {
                 const j = await res.json();
                 setResult({ type: 'json', data: j, tool: tool.id });
+                if (tool.id === 'ocr') saveToHistoryOcr(j); // simpan otomatis agar bisa dilihat/unduh ulang
             } else {
                 const blob = await res.blob();
                 const origSize = res.headers.get('x-original-size');
@@ -265,6 +286,20 @@ export default function AiPdfTools({ isDarkMode }) {
                         )}
                         {!d.detected && d.language_name && (
                             <span className={`ml-2 text-[10px] font-bold ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Bahasa: {d.language_name}</span>
+                        )}
+                        {d.orientation?.detected && (
+                            <span className={`ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${isDarkMode ? 'bg-amber-500/10 border-amber-500/30 text-amber-300' : 'bg-amber-50 border-amber-200 text-amber-600'}`}>
+                                <RotateCw size={10} /> Rotasi {d.orientation.degrees}° diperbaiki
+                            </span>
+                        )}
+                        {d.per_page_languages?.length > 0 && (
+                            <span className={`ml-2 inline-flex items-center gap-1 flex-wrap text-[10px] font-bold ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                {d.per_page_languages.map(p => (
+                                    <span key={p.page} className={`px-1.5 py-0.5 rounded-md ${isDarkMode ? 'bg-white/10 text-white/60' : 'bg-slate-100 text-slate-500'}`} title={`Halaman ${p.page}`}>
+                                        Hal {p.page}: {p.name}
+                                    </span>
+                                ))}
+                            </span>
                         )}
                     </div>
                     <div className="max-h-[320px] overflow-y-auto p-4 space-y-3">
@@ -431,6 +466,32 @@ export default function AiPdfTools({ isDarkMode }) {
                             </div>
                         )}
 
+                        {/* Opsi OCR: orientasi & deteksi per halaman */}
+                        {tool.id === 'ocr' && (
+                            <div className="mt-4 space-y-2">
+                                <label className="flex items-center gap-2 cursor-pointer select-none">
+                                    <input
+                                        type="checkbox"
+                                        checked={form.autoRotate}
+                                        onChange={e => setForm({ ...form, autoRotate: e.target.checked })}
+                                        className="accent-indigo-500 w-3.5 h-3.5"
+                                    />
+                                    <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>Putar otomatis — deteksi orientasi halaman (landscape / miring)</span>
+                                </label>
+                                {form.language === 'auto' && (
+                                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                                        <input
+                                            type="checkbox"
+                                            checked={form.perPage}
+                                            onChange={e => setForm({ ...form, perPage: e.target.checked })}
+                                            className="accent-indigo-500 w-3.5 h-3.5"
+                                        />
+                                        <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>Deteksi bahasa per halaman (dokumen campuran bahasa — lebih lambat)</span>
+                                    </label>
+                                )}
+                            </div>
+                        )}
+
                         {/* Tombol proses */}
                         <button
                             onClick={run}
@@ -501,23 +562,38 @@ export default function AiPdfTools({ isDarkMode }) {
                                                             <span className={`mr-1.5 px-1.5 py-0.5 rounded-md text-[9px] font-black ${isDarkMode ? 'bg-indigo-500/15 text-indigo-300' : 'bg-indigo-100 text-indigo-600'}`}>
                                                                 {TOOL_LABEL[x.tool] || x.tool}
                                                             </span>
+                                                            {x.tool === 'ocr' && x.language_name && (
+                                                                <span className={`mr-1.5 px-1.5 py-0.5 rounded-md text-[9px] font-black ${isDarkMode ? 'bg-cyan-500/15 text-cyan-300' : 'bg-cyan-50 text-cyan-600'}`}>
+                                                                    {x.language_name}
+                                                                </span>
+                                                            )}
                                                             {x.title}
                                                         </p>
                                                         <p className={`text-[9px] truncate ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>
                                                             {dateStr}{dateStr ? ' • ' : ''}{formatFileSize(x.file_size)}
                                                             {compressPct(x) !== null && <span className="text-emerald-500 font-bold"> • −{compressPct(x).toFixed(0)}%</span>}
+                                                            {x.tool === 'ocr' && x.orientation && <span className="text-amber-500 font-bold"> • rotasi {x.orientation}</span>}
                                                         </p>
                                                     </div>
                                                     {x.fileExists === false && (
                                                         <span className={`text-[9px] font-bold ${isDarkMode ? 'text-rose-300' : 'text-rose-500'}`} title="File hilang dari disk">hilang</span>
                                                     )}
+                                                    {x.tool === 'ocr' && (
+                                                        <button
+                                                            onClick={() => setViewTextTarget(x)}
+                                                            title="Lihat teks hasil OCR"
+                                                            className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold transition-all hover:scale-[1.02] ${isDarkMode ? 'bg-indigo-500/15 text-indigo-300 hover:bg-indigo-500/25' : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'}`}
+                                                        >
+                                                            <Eye size={11} /> Lihat
+                                                        </button>
+                                                    )}
                                                     <button
                                                         onClick={() => downloadHistFile(x)}
                                                         disabled={x.fileExists === false}
-                                                        title="Unduh ulang hasil ini"
+                                                        title={x.tool === 'ocr' ? 'Unduh teks sebagai .txt' : 'Unduh ulang hasil ini'}
                                                         className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold transition-all ${x.fileExists === false ? 'opacity-40 cursor-not-allowed' : 'hover:scale-[1.02]'} ${isDarkMode ? 'bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'}`}
                                                     >
-                                                        <Download size={11} /> Unduh
+                                                        <Download size={11} /> {x.tool === 'ocr' ? '.txt' : 'Unduh'}
                                                     </button>
                                                     <button
                                                         onClick={() => setDelHistTarget(x)}
@@ -536,6 +612,46 @@ export default function AiPdfTools({ isDarkMode }) {
                     </div>
                 </div>
             </div>
+
+            {/* ── Modal lihat teks hasil OCR ── */}
+            {viewTextTarget && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setViewTextTarget(null)}>
+                    <div
+                        onClick={e => e.stopPropagation()}
+                        className={`w-full max-w-2xl rounded-2xl border shadow-2xl animate-[fadeInUp_.2s_ease] overflow-hidden ${isDarkMode ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-200'}`}
+                    >
+                        <div className={`flex items-center gap-2.5 px-4 py-3 border-b ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${isDarkMode ? 'bg-cyan-500/15 text-cyan-300' : 'bg-cyan-50 text-cyan-600'}`}>
+                                <ScanText size={14} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className={`text-xs font-black truncate ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>{viewTextTarget.title}</p>
+                                <p className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                    {viewTextTarget.language_name || viewTextTarget.language || 'Bahasa tidak diketahui'}
+                                    {viewTextTarget.orientation ? ` • rotasi ${viewTextTarget.orientation}` : ''}
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => setViewTextTarget(null)}
+                                className={`p-1.5 rounded-lg ${isDarkMode ? 'hover:bg-white/10 text-white/50' : 'hover:bg-slate-100 text-slate-400'}`}
+                            >
+                                <X size={14} />
+                            </button>
+                        </div>
+                        <pre className={`max-h-[420px] overflow-y-auto p-4 text-xs whitespace-pre-wrap leading-relaxed ${isDarkMode ? 'bg-black/30 text-white/80' : 'bg-slate-50 text-slate-600'}`}>
+                            {viewTextTarget.text_content || '(kosong)'}
+                        </pre>
+                        <div className={`flex justify-end gap-2 px-4 py-3 border-t ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
+                            <button
+                                onClick={() => downloadHistFile(viewTextTarget)}
+                                className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[11px] font-bold transition-all hover:scale-[1.02] ${isDarkMode ? 'bg-emerald-500/15 text-emerald-300' : 'bg-emerald-50 text-emerald-600'}`}
+                            >
+                                <Download size={12} /> Unduh .txt
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* ── Modal konfirmasi hapus riwayat ── */}
             {delHistTarget && (
