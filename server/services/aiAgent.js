@@ -916,7 +916,7 @@ export function sanitizeApiKey(key) {
 const LLM_TIMEOUT_MS = 75000; // timeout agar model yang menggantung (silent drop) tidak membekukan agent
 
 export async function callLLM(messages, tools, settings, opts = {}) {
-  const { stream = false, onToken = null, onReasoning = null, signal = null, maxTokens = null } = opts;
+  const { stream = false, onToken = null, onReasoning = null, signal = null, maxTokens = null, timeoutMs = null } = opts;
   const url = (settings.base_url || '').replace(/\/+$/, '') + '/chat/completions';
   const apiKey = sanitizeApiKey(settings.api_key);
   const body = {
@@ -928,7 +928,7 @@ export async function callLLM(messages, tools, settings, opts = {}) {
     stream,
   };
   const ac = new AbortController();
-  const timer = setTimeout(() => ac.abort(), LLM_TIMEOUT_MS);
+  const timer = setTimeout(() => ac.abort(), timeoutMs || LLM_TIMEOUT_MS);
   const onExternalAbort = () => ac.abort();
   if (signal) {
     if (signal.aborted) ac.abort();
@@ -963,7 +963,7 @@ export async function callLLM(messages, tools, settings, opts = {}) {
       // External abort (user menekan Stop) → jangan samarkan sebagai timeout,
       // supaya controller bisa persist pesan parsial.
       if (signal?.aborted) throw e;
-      throw new Error(`LLM API timeout setelah ${Math.round(LLM_TIMEOUT_MS / 1000)}s (model tidak merespons)`);
+      throw new Error(`LLM API timeout setelah ${Math.round((timeoutMs || LLM_TIMEOUT_MS) / 1000)}s (model tidak merespons)`);
     }
     throw e;
   } finally {

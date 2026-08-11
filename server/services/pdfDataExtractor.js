@@ -9,8 +9,13 @@ export const DEFAULT_FIELDS = [
 ];
 export const DEFAULT_ITEM_FIELDS = ['Model', 'Deskripsi', 'Qty', 'Harga', 'Subtotal'];
 
-const MAX_TEXT_CHARS = 40000; // cukup untuk nota berapa pun halamannya
-const LLM_MAX_TOKENS = 4096;  // cukup untuk banyak field + banyak item
+// Teks dokumen panjang (mis. 58 halaman nota retur = 65rb karakter) dipecah menjadi
+// beberapa chunk agar halaman BELAKANG tetap terbaca LLM — dulu dipotong di 40.000
+// karakter sehingga dokumen di halaman 40+ tidak pernah terekstrak.
+const CHUNK_CHARS = 8000;    // karakter per chunk — model gateway lambat, 8rb ≈ 80s
+const CHUNK_OVERLAP = 1200;  // overlap agar item di perbatasan chunk tidak terpotong
+const LLM_MAX_TOKENS = 4096; // output per chunk (maxTokens besar → model menulis terlalu lama & timeout)
+const LLM_TIMEOUT_MS = 240000; // chunk bisa sangat lambat saat gateway sibuk
 
 // Ekstrak teks dari buffer dokumen.
 // - PDF: pdf-parse; bila kosong (hasil scan) → OCR otomatis (tesseract) lewat trainingDocs.
@@ -72,14 +77,34 @@ function pickField(obj, field) {
     return '';
 }
 
-function buildExtractionPrompt(text, fields, itemFields) {
+// Pecah teks panjang menjadi beberapa chunk (potongan di baris baru agar tidak
+// memotong satu baris item di tengah). Return array — untuk teks pendek: [text].
+function splitTextChunks(text) {
+    if (!text || text.length <= CHUNK_CHARS) return [text];
+    const chunks = [];
+    let start = 0;
+    while (start < text.length) {
+        let end = Math.min(start + CHUNK_CHARS, text.length);
+        if (end < text.length) {
+            // Potong di baris baru terdekat sebelum batas (jangan di tengah baris item)
+            const nl = text.lastIndexOf('\n', end);
+            if (nl > start + Math.floor(CHUNK_CHARS * 0.5)) end = nl + 1;
+        }
+        chunks.push(text.slice(start, end));
+        start = Math.max(end - CHUNK_OVERLAP, start + 1);
+        if (start >= end) break; // keamanan anti-loop tak terbatas
+    }
+    return chunks;
+}
+
+function buildExtractionPrompt(text, fields, itemFields, chunkLabel) {
     return [
-        'Baca dokumen berikut SECARA LENGKAP — dokumen bisa terdiri dari 1 halaman atau lebih. JANGAN berhenti di halaman pertama; baca SEMUA halaman sebelum mengekstrak.',
+        'Baca dokumen berikut SECARA LENGKAP — dokumen bisa terdiri dari 1 halaman atau lebih, atau berisi BANYAK dokumen dalam satu file. JANGAN berhenti di halaman pertama; baca SEMUA halaman sebelum mengekstrak.' + (chunkLabel ? ` ${chunkLabel}` : ''),
         '',
         'Ekstrak data sesuai daftar field berikut (gunakan persis nama ini sebagai key JSON):',
         fields.map(f => `- ${f}`).join('\n'),
         '',
-        'Item barang (bisa 0 sampai banyak baris, semua baris item di dokumen harus diambil):',
+        'Item barang (bisa 0 sampai banyak baris, semua baris item dari SEMUA dokumen di dalam teks harus diambil):',
         itemFields.map(f => `- ${f}`).join('\n'),
         '',
         'Aturan:',
@@ -93,11 +118,13 @@ function buildExtractionPrompt(text, fields, itemFields) {
         `{"data":{${fields.map(f => `"${f}":""`).join(',')}},"items":[{${itemFields.map(f => `"${f}":""`).join(',')}}]}`,
         '',
         '=== TEKS DOKUMEN ===',
-        text.slice(0, MAX_TEXT_CHARS),
+        text,
     ].join('\n');
 }
 
 // Ekstrak field + item dari teks dokumen via LLM.
+// Teks panjang otomatis dipecah menjadi beberapa chunk; hasil tiap chunk digabung
+// (data: field pertama yang terisi; items: semua baris, dideduplikasi persis).
 // Kembalikan { data: {field: value}, items: [{itemField: value}] } — key persis sesuai permintaan.
 export async function extractFieldsFromText(text, fields, itemFields) {
     const settings = await getAiSettings();
@@ -106,38 +133,68 @@ export async function extractFieldsFromText(text, fields, itemFields) {
     }
     const fList = (Array.isArray(fields) ? fields : []).map(f => String(f).trim()).filter(Boolean);
     const iList = (Array.isArray(itemFields) ? itemFields : []).map(f => String(f).trim()).filter(Boolean);
+    const fieldKeys = fList.length ? fList : DEFAULT_FIELDS;
+    const itemKeys = iList.length ? iList : DEFAULT_ITEM_FIELDS;
 
-    const messages = [
-        { role: 'system', content: 'Anda adalah ekstraktor data dokumen bisnis (faktur, nota retur, invoice). Anda selalu membalas HANYA JSON valid tanpa markdown.' },
-        { role: 'user', content: buildExtractionPrompt(text, fList.length ? fList : DEFAULT_FIELDS, iList.length ? iList : DEFAULT_ITEM_FIELDS) },
-    ];
-
-    // Gateway LLM di lingkungan ini HANYA merespons via streaming (SSE); non-stream menggantung.
-    // callLLM dengan stream:true membaca token streaming dan mengembalikan konten lengkap.
-    const data = await callLLM(messages, [], settings, { maxTokens: LLM_MAX_TOKENS, stream: true });
-    const content = data?.choices?.[0]?.message?.content || '';
-    if (!content.trim()) throw new Error('LLM tidak mengembalikan respons. Coba lagi.');
-
-    const parsed = parseLlmJson(content);
-    if (!parsed) throw new Error('Respons LLM tidak valid (bukan JSON). Coba lagi.');
-
-    const rawData = parsed.data && typeof parsed.data === 'object' && !Array.isArray(parsed.data) ? parsed.data : {};
-    const rawItems = Array.isArray(parsed.items) ? parsed.items.filter(it => it && typeof it === 'object' && !Array.isArray(it)) : [];
-
+    const chunks = splitTextChunks(String(text || ''));
     const dataOut = {};
-    for (const f of (fList.length ? fList : DEFAULT_FIELDS)) {
-        const v = pickField(rawData, f);
-        dataOut[f] = v === null || v === undefined ? '' : (typeof v === 'object' ? JSON.stringify(v) : v);
+    const itemsOut = [];
+    const seen = new Set(); // dedupe baris item persis
+
+    for (let ci = 0; ci < chunks.length; ci++) {
+        const chunk = chunks[ci];
+        const chunkLabel = chunks.length > 1
+            ? `(Bagian ${ci + 1} dari ${chunks.length} — ini LANJUTAN dokumen, jangan lewati item di bagian ini)`
+            : '';
+
+        const messages = [
+            { role: 'system', content: 'Anda adalah ekstraktor data dokumen bisnis (faktur, nota retur, invoice). Anda selalu membalas HANYA JSON valid tanpa markdown.' },
+            { role: 'user', content: buildExtractionPrompt(chunk, fieldKeys, itemKeys, chunkLabel) },
+        ];
+
+        // Gateway LLM di lingkungan ini HANYA merespons via streaming (SSE); non-stream menggantung.
+        // callLLM dengan stream:true membaca token streaming dan mengembalikan konten lengkap.
+        const data = await callLLM(messages, [], settings, { maxTokens: LLM_MAX_TOKENS, stream: true, timeoutMs: LLM_TIMEOUT_MS });
+        const content = data?.choices?.[0]?.message?.content || '';
+        if (!content.trim()) {
+            if (chunks.length === 1) throw new Error('LLM tidak mengembalikan respons. Coba lagi.');
+            continue; // satu chunk gagal → lanjut chunk berikutnya
+        }
+
+        const parsed = parseLlmJson(content);
+        if (!parsed) {
+            if (chunks.length === 1) throw new Error('Respons LLM tidak valid (bukan JSON). Coba lagi.');
+            continue;
+        }
+
+        const rawData = parsed.data && typeof parsed.data === 'object' && !Array.isArray(parsed.data) ? parsed.data : {};
+        const rawItems = Array.isArray(parsed.items) ? parsed.items.filter(it => it && typeof it === 'object' && !Array.isArray(it)) : [];
+
+        // Data: isi field yang belum terisi (chunk pertama yang punya nilai menang)
+        for (const f of fieldKeys) {
+            if (dataOut[f]) continue;
+            const v = pickField(rawData, f);
+            if (v !== null && v !== undefined && String(v).trim() !== '') {
+                dataOut[f] = typeof v === 'object' ? JSON.stringify(v) : v;
+            }
+        }
+
+        // Items: gabung semua baris, dedupe baris yang persis sama (muncul di overlap chunk)
+        for (const it of rawItems) {
+            const row = {};
+            for (const f of itemKeys) {
+                const v = pickField(it, f);
+                row[f] = v === null || v === undefined ? '' : (typeof v === 'object' ? JSON.stringify(v) : v);
+            }
+            const sig = itemKeys.map(k => String(row[k]).trim()).join('\u0001');
+            if (seen.has(sig)) continue;
+            seen.add(sig);
+            itemsOut.push(row);
+        }
     }
 
-    const itemsOut = rawItems.map(it => {
-        const row = {};
-        for (const f of (iList.length ? iList : DEFAULT_ITEM_FIELDS)) {
-            const v = pickField(it, f);
-            row[f] = v === null || v === undefined ? '' : (typeof v === 'object' ? JSON.stringify(v) : v);
-        }
-        return row;
-    });
+    // Pastikan semua key field ada (kosong bila tidak terisi)
+    for (const f of fieldKeys) if (!dataOut[f]) dataOut[f] = '';
 
     return { data: dataOut, items: itemsOut };
 }

@@ -22,7 +22,7 @@ const JENIS_USAHA_PRESET = JENIS_USAHA_OPTIONS.filter(j => j !== 'Custom');
 
 const emptyForm = () => ({
     tanggal: '', tempat: '', alamat: '', jenis: '', custom_jenis: '',
-    nilai: '', no_gl: '', groups: [{ relasi: '', jabatan: '', nama_perusahaan: '' }],
+    nilai: '', no_gl: '', gl_number: '', groups: [{ relasi: '', jabatan: '', nama_perusahaan: '' }],
     jenis_usaha: '', custom_jenis_usaha: '', catatan_kode: ''
 });
 
@@ -54,7 +54,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         // Form
         formTitle: 'Entertainment Expenses', formEdit: 'Edit Entry', formNew: 'New Entry',
         lblTanggal: 'Date *', lblTempat: 'Venue', lblJenis: 'Type *', lblCustomJenis: 'Custom type',
-        lblAlamat: 'Address Venue *', lblNilai: 'Amount (IDR) *', lblNoGl: 'AF Number *',
+        lblAlamat: 'Address Venue *', lblNilai: 'Amount (IDR) *', lblNoGl: 'AF Number *', lblGl: 'No GL *',
         lblJenisUsaha: 'Business Type *', lblCustomJenisUsaha: 'Custom business type',
         lblPlan: 'Plan *', lblMomResult: 'MOM/Result *', lblLampiran: 'Attachments', lblDragDrop: 'Click or drag files here',
         btnSave: 'Save', btnCancel: 'Cancel', btnUpdate: 'Update',
@@ -69,6 +69,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         previewTitle: 'Preview Entertainment Expenses',
         detailTanggal: 'Date', detailTempat: 'Venue', detailJenis: 'Type',
         detailAlamat: 'Address Venue', detailNilai: 'Amount', detailNoGl: 'AF Number',
+        detailGl: 'No GL',
         detailJenisUsaha: 'Business Type', detailRelasi: 'Relations',
         detailJumlahRelasi: 'Relation Count', detailPerusahaan: 'Companies',
         detailPlan: 'Plan', detailMomResult: 'MOM/Result', detailLampiran: 'Attachments',
@@ -86,7 +87,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         // Validation
         errTanggal: 'Date is required', errTempat: 'Venue is required',
         errAlamat: 'Address is required', errJenis: 'Type is required',
-        errCustomJenis: 'Custom type is required', errNoGl: 'AF Number is required',
+        errCustomJenis: 'Custom type is required', errNoGl: 'AF Number is required', errNoGlFormat: 'AF Number must be PR followed by 6 digits (e.g. PR000001)',
         errJenisUsaha: 'Business type is required', errCustomJenisUsaha: 'Custom business type is required',
         errGroups: 'At least 1 relation group is required', errAttachments: 'At least 1 attachment is required',
         errNilai: 'Amount is required', errMomResult: 'MOM/Result is required',
@@ -142,7 +143,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         // Form
         formTitle: 'Entertainment Expenses', formEdit: 'Edit Entry', formNew: 'Entry Baru',
         lblTanggal: 'Tanggal *', lblTempat: 'Tempat', lblJenis: 'Jenis *', lblCustomJenis: 'Custom jenis',
-        lblAlamat: 'Alamat Venue *', lblNilai: 'Nilai (IDR) *', lblNoGl: 'No AF *',
+        lblAlamat: 'Alamat Venue *', lblNilai: 'Nilai (IDR) *', lblNoGl: 'No AF *', lblGl: 'No GL *', lblGl: 'No GL *',
         lblJenisUsaha: 'Jenis Usaha *', lblCustomJenisUsaha: 'Custom jenis usaha',
         lblPlan: 'Plan *', lblMomResult: 'MOM/Result *', lblLampiran: 'Lampiran', lblDragDrop: 'Klik atau seret file ke sini',
         btnSave: 'Simpan', btnCancel: 'Batal', btnUpdate: 'Update',
@@ -157,6 +158,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         previewTitle: 'Preview Entertainment Expenses',
         detailTanggal: 'Tanggal', detailTempat: 'Tempat', detailJenis: 'Jenis',
         detailAlamat: 'Alamat Venue', detailNilai: 'Nilai', detailNoGl: 'No AF',
+        detailGl: 'No GL',
         detailJenisUsaha: 'Jenis Usaha', detailRelasi: 'Relasi',
         detailJumlahRelasi: 'Jumlah Relasi', detailPerusahaan: 'Perusahaan',
         detailPlan: 'Plan', detailMomResult: 'MOM/Result', detailLampiran: 'Lampiran',
@@ -174,7 +176,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         // Validation
         errTanggal: 'Tanggal wajib diisi', errTempat: 'Tempat wajib diisi',
         errAlamat: 'Alamat wajib diisi', errJenis: 'Jenis wajib diisi',
-        errCustomJenis: 'Custom jenis wajib diisi', errNoGl: 'No AF wajib diisi',
+        errCustomJenis: 'Custom jenis wajib diisi', errNoGl: 'No AF wajib diisi', errNoGlFormat: 'No AF harus format PR diikuti 6 digit (contoh: PR000001)', errNoGlFormat: 'No AF harus format PR diikuti 6 digit (contoh: PR000001)',
         errJenisUsaha: 'Jenis Usaha wajib diisi', errCustomJenisUsaha: 'Custom jenis usaha wajib diisi',
         errGroups: 'Minimal 1 grup relasi wajib diisi', errAttachments: 'Minimal 1 lampiran wajib diupload',
         errNilai: 'Nilai wajib diisi', errMomResult: 'MOM/Result wajib diisi',
@@ -375,7 +377,12 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         if (!form.jenis) errs.jenis = text.errJenis;
         if (form.jenis === 'Custom' && !form.custom_jenis?.trim()) errs.custom_jenis = text.errCustomJenis;
         if (!form.nilai) errs.nilai = text.errNilai;
-        if (!form.no_gl) errs.no_gl = text.errNoGl;
+        if (!form.no_gl) {
+            errs.no_gl = text.errNoGl;
+        } else if (!/^PR\d{6}$/.test(String(form.no_gl).toUpperCase())) {
+            errs.no_gl = text.errNoGlFormat;
+        }
+        if (!form.gl_number) errs.gl_number = isEnglish ? 'No GL is required' : 'No GL wajib diisi';
         if (!form.groups || form.groups.length === 0 || !form.groups[0].relasi?.trim()) errs.groups = text.errGroups;
         if (!form.jenis_usaha) errs.jenis_usaha = text.errJenisUsaha;
         if (form.jenis_usaha === 'Custom' && !form.custom_jenis_usaha?.trim()) {
@@ -389,6 +396,11 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         if (!val) return '';
         const num = parseFloat(String(val).replace(/[^\d.-]/g, '')) || 0;
         return new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(num);
+    };
+
+    const formatAf = (val) => {
+        const digits = String(val || '').replace(/[^0-9]/g, '').slice(0, 6);
+        return digits ? `PR${digits}` : '';
     };
 
     const parseCurrency = (val) => {
@@ -416,7 +428,8 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
             fd.append('jenis', form.jenis);
             fd.append('custom_jenis', form.custom_jenis);
             fd.append('nilai', form.nilai);
-            fd.append('no_gl', form.no_gl);
+            fd.append('no_gl', String(form.no_gl).toUpperCase());
+            fd.append('gl_number', form.gl_number);
             const filledGroups = form.groups.filter(g => g.relasi?.trim());
             const relasiArr = filledGroups.map(g => g.relasi.trim());
             const jabatanArr = filledGroups.map(g => (g.jabatan || '').trim());
@@ -506,6 +519,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
             custom_jenis: item.custom_jenis || '',
         nilai: item.nilai ? String(item.nilai).replace(/\.00$/, '') : '',
             no_gl: item.no_gl || '',
+            gl_number: item.gl_number || '',
             groups: editGroups.length > 0 ? editGroups : [{ relasi: '', jabatan: '', nama_perusahaan: '' }],
             jenis_usaha: isCustomUsaha ? 'Custom' : savedUsaha,
             custom_jenis_usaha: isCustomUsaha ? savedUsaha : '',
@@ -689,6 +703,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         custom_jenis: item.custom_jenis || '',
         nilai: item.nilai ? String(item.nilai).replace(/\.00$/, '') : '',
         no_gl: item.no_gl || '',
+        gl_number: item.gl_number || '',
         no_gl_shortage: item.no_gl_shortage || '',
         groups: (item.relasi || []).map((relasi, i) => ({
             relasi,
@@ -726,6 +741,8 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         if (!settleForm.nilai) { toast.error(text.errNilai); return; }
         if (!settleForm.is_draw && !settleForm.settle_amount) { toast.error(isEnglish ? 'Settle amount is required' : 'Settle amount wajib diisi'); return; }
         if (!settleForm.no_gl) { toast.error('No AF wajib diisi'); return; }
+        if (!/^PR\d{6}$/.test(String(settleForm.no_gl).toUpperCase())) { toast.error(isEnglish ? 'AF Number must be PR followed by 6 digits (e.g. PR000001)' : 'No AF harus format PR diikuti 6 digit (contoh: PR000001)'); return; }
+        if (!settleForm.gl_number) { toast.error(isEnglish ? 'No GL is required' : 'No GL wajib diisi'); return; }
         if (!settleForm.groups || !settleForm.groups[0]?.relasi?.trim()) { toast.error('Minimal 1 relasi wajib diisi'); return; }
         if (!settleForm.jenis_usaha) { toast.error('Jenis Usaha wajib diisi'); return; }
         if (settleForm.jenis_usaha === 'Custom' && !settleForm.custom_jenis_usaha?.trim()) { toast.error('Custom jenis usaha wajib diisi'); return; }
@@ -741,7 +758,8 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
             fd.append('custom_jenis', settleForm.jenis === 'Custom' ? settleForm.custom_jenis : '');
             fd.append('nilai', settleForm.nilai);
             fd.append('settle_amount', settleForm.is_draw ? settleForm.nilai : settleForm.settle_amount);
-            fd.append('no_gl', settleForm.no_gl);
+            fd.append('no_gl', String(settleForm.no_gl).toUpperCase());
+            fd.append('gl_number', settleForm.gl_number);
             fd.append('no_gl_shortage', settleForm.no_gl_shortage || '');
             fd.append('settle_date', settleForm.settle_date);
 
@@ -1404,7 +1422,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     </div>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {/* Nilai */}
                                 <div>
                                     <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblNilai}</label>
@@ -1416,13 +1434,23 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     </div>
                                     {errors.nilai && <p className="text-red-500 text-xs mt-1">{errors.nilai}</p>}
                                 </div>
-                                {/* No GL */}
+                                {/* No AF */}
                                 <div>
                                     <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblNoGl}</label>
                                     <input type="text" value={form.no_gl}
-                                        onChange={e => setForm(p => ({ ...p, no_gl: e.target.value }))}
+                                        onChange={e => setForm(p => ({ ...p, no_gl: formatAf(e.target.value) }))}
+                                        placeholder="PR000001"
                                         className={`w-full px-3 py-2.5 rounded-xl border ${errors.no_gl ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
                                     {errors.no_gl && <p className="text-red-500 text-xs mt-1">{errors.no_gl}</p>}
+                                </div>
+                                {/* No GL */}
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblGl}</label>
+                                    <input type="text" value={form.gl_number}
+                                        onChange={e => setForm(p => ({ ...p, gl_number: e.target.value }))}
+                                        placeholder={isEnglish ? 'Enter GL number' : 'Isi No GL'}
+                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.gl_number ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
+                                    {errors.gl_number && <p className="text-red-500 text-xs mt-1">{errors.gl_number}</p>}
                                 </div>
                                 {/* Jenis Usaha */}
                                 <div>
@@ -1825,7 +1853,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                         rows={2}
                                         className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500" />
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                                     <div>
                                         <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblNilai}</label>
                                         <input type="text" value={settleForm.nilai ? formatCurrency(settleForm.nilai) : ''}
@@ -1835,7 +1863,15 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                     <div>
                                         <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblNoGl}</label>
                                         <input type="text" value={settleForm.no_gl || ''}
-                                            onChange={e => setSettleForm(p => ({ ...p, no_gl: e.target.value }))}
+                                            onChange={e => setSettleForm(p => ({ ...p, no_gl: formatAf(e.target.value) }))}
+                                            placeholder="PR000001"
+                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblGl}</label>
+                                        <input type="text" value={settleForm.gl_number || ''}
+                                            onChange={e => setSettleForm(p => ({ ...p, gl_number: e.target.value }))}
+                                            placeholder={isEnglish ? 'Enter GL number' : 'Isi No GL'}
                                             className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-emerald-500" />
                                     </div>
                                     <div>
@@ -2085,6 +2121,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                             : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(previewData.nilai)
                                     } />
                                     <DetailField label={text.detailNoGl} value={previewData.no_gl} />
+                                    <DetailField label={text.detailGl} value={previewData.gl_number} />
                                     <DetailField label={text.thNamaRelasi} value={(previewData.relasi || []).join(', ')} />
                                     <DetailField label={text.thJabatan} value={(previewData.jabatan || []).join(', ')} />
                                     <DetailField label={text.detailJumlahRelasi} value={`${previewData.jumlah_relasi || (previewData.relasi || []).length || 0} ${isEnglish ? 'person(s)' : 'orang'}`} />

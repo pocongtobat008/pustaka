@@ -342,6 +342,7 @@ router.get('/', async (req, res) => {
                 this.where('tempat', 'ilike', `%${search}%`)
                     .orWhere('alamat', 'ilike', `%${search}%`)
                     .orWhere('no_gl', 'ilike', `%${search}%`)
+                    .orWhere('gl_number', 'ilike', `%${search}%`)
                     .orWhere('catatan_kode', 'ilike', `%${search}%`)
                     .orWhereRaw("relasi::text ilike ?", [`%${search}%`])
                     .orWhereRaw("nama_perusahaan::text ilike ?", [`%${search}%`])
@@ -666,6 +667,7 @@ router.get('/export/pdf', async (req, res) => {
                 { label: 'Date', value: formatDateId(entry.tanggal) },
                 { label: 'Entertainment Type', value: entry.jenis === 'Custom' ? entry.custom_jenis : entry.jenis },
                 { label: 'AF Number', value: entry.no_gl },
+                { label: 'No GL', value: entry.gl_number },
                 { label: 'Amount', value: formatIdr(entry.nilai), highlight: true },
             ], y);
 
@@ -1024,7 +1026,7 @@ router.get('/export/excel', async (req, res) => {
                 Lampiran: attArr.map(a => a.name).join(', '),
                 Pengaju: entry.requester_name || entry.requester_username,
                 Status: entry.status, 'Dibuat Pada': entry.created_at,
-                ID: entry.id, 'No. GL': entry.no_gl, 'Jumlah Relasi': entry.jumlah_relasi,
+                ID: entry.id, 'No. GL': entry.gl_number, 'No. AF': entry.no_gl, 'Jumlah Relasi': entry.jumlah_relasi,
             };
         });
 
@@ -1077,10 +1079,14 @@ router.post('/:id/settle', upload.array('attachments', 10), async (req, res) => 
             return res.status(403).json({ error: 'Anda tidak memiliki izin untuk settle' });
         }
 
-        const { tanggal, tempat, alamat, jenis, custom_jenis, nilai, settle_amount, no_gl, relasi, jabatan, nama_perusahaan, jenis_usaha, catatan_kode, existing_attachments, settle_date, no_gl_shortage } = req.body;
+        const { tanggal, tempat, alamat, jenis, custom_jenis, nilai, settle_amount, no_gl, gl_number, relasi, jabatan, nama_perusahaan, jenis_usaha, catatan_kode, existing_attachments, settle_date, no_gl_shortage } = req.body;
 
         if (!settle_date) {
             return res.status(400).json({ error: 'Tanggal settle wajib diisi' });
+        }
+
+        if (no_gl !== undefined && !/^PR\d{6}$/i.test(String(no_gl || ''))) {
+            return res.status(400).json({ error: 'No AF harus format PR diikuti 6 digit (contoh: PR000001)' });
         }
 
         const updatePayload = {};
@@ -1108,7 +1114,10 @@ router.post('/:id/settle', upload.array('attachments', 10), async (req, res) => 
             updatePayload.nilai = parseFloat(nilai); changed = true;
         }
         if (no_gl !== undefined && no_gl !== existing.no_gl) {
-            updatePayload.no_gl = no_gl; changed = true;
+            updatePayload.no_gl = String(no_gl).toUpperCase(); changed = true;
+        }
+        if (gl_number !== undefined && gl_number !== existing.gl_number) {
+            updatePayload.gl_number = gl_number; changed = true;
         }
         if (no_gl_shortage !== undefined && no_gl_shortage !== existing.no_gl_shortage) {
             updatePayload.no_gl_shortage = no_gl_shortage; changed = true;
@@ -1239,7 +1248,7 @@ router.post('/', upload.array('attachments', 10), async (req, res) => {
                 });
             }
         }
-        const { tanggal, tempat, alamat, jenis, custom_jenis, nilai, no_gl, relasi, jabatan, nama_perusahaan, jenis_usaha, catatan_kode, status, settle_date, entry_type } = req.body;
+        const { tanggal, tempat, alamat, jenis, custom_jenis, nilai, no_gl, gl_number, relasi, jabatan, nama_perusahaan, jenis_usaha, catatan_kode, status, settle_date, entry_type } = req.body;
 
         const errors = [];
         if (!tanggal) errors.push('Tanggal wajib diisi');
@@ -1248,7 +1257,9 @@ router.post('/', upload.array('attachments', 10), async (req, res) => {
         if (!jenis) errors.push('Jenis wajib diisi');
         if (jenis === 'Custom' && !custom_jenis) errors.push('Custom jenis wajib diisi');
         if (!nilai) errors.push('Nilai wajib diisi');
-        if (!no_gl) errors.push('No GL wajib diisi');
+        if (!no_gl) errors.push('No AF wajib diisi');
+        if (!/^PR\d{6}$/i.test(String(no_gl || ''))) errors.push('No AF harus format PR diikuti 6 digit (contoh: PR000001)');
+        if (!gl_number) errors.push('No GL wajib diisi');
         if (!catatan_kode) errors.push('Catatan/Kode wajib diisi');
 
         let relasiArray = [];
@@ -1288,7 +1299,7 @@ router.post('/', upload.array('attachments', 10), async (req, res) => {
             entry_type: entry_type === 'reimburse' ? 'reimburse' : 'plan',
             tanggal, tempat, alamat, jenis,
             custom_jenis: jenis === 'Custom' ? custom_jenis : null,
-            nilai: parseFloat(nilai), no_gl,
+            nilai: parseFloat(nilai), no_gl: String(no_gl).toUpperCase(), gl_number,
             relasi: JSON.stringify(relasiArray),
             jabatan: JSON.stringify(jabatanArray),
             jumlah_relasi: relasiArray.length,
@@ -1351,7 +1362,7 @@ router.put('/:id', upload.array('attachments', 10), async (req, res) => {
             return res.status(403).json({ error: 'Anda tidak memiliki izin untuk edit entry' });
         }
 
-        const { tanggal, tempat, alamat, jenis, custom_jenis, nilai, no_gl, relasi, jabatan, nama_perusahaan, jenis_usaha, catatan_kode, existing_attachments, status, settle_date, entry_type } = req.body;
+        const { tanggal, tempat, alamat, jenis, custom_jenis, nilai, no_gl, gl_number, relasi, jabatan, nama_perusahaan, jenis_usaha, catatan_kode, existing_attachments, status, settle_date, entry_type } = req.body;
 
         const errors = [];
         if (!tanggal) errors.push('Tanggal wajib diisi');
@@ -1360,7 +1371,9 @@ router.put('/:id', upload.array('attachments', 10), async (req, res) => {
         if (!jenis) errors.push('Jenis wajib diisi');
         if (jenis === 'Custom' && !custom_jenis) errors.push('Custom jenis wajib diisi');
         if (!nilai) errors.push('Nilai wajib diisi');
-        if (!no_gl) errors.push('No GL wajib diisi');
+        if (!no_gl) errors.push('No AF wajib diisi');
+        if (!/^PR\d{6}$/i.test(String(no_gl || ''))) errors.push('No AF harus format PR diikuti 6 digit (contoh: PR000001)');
+        if (!gl_number) errors.push('No GL wajib diisi');
         if (!catatan_kode) errors.push('Catatan/Kode wajib diisi');
 
         let relasiArray = [];
@@ -1401,7 +1414,7 @@ router.put('/:id', upload.array('attachments', 10), async (req, res) => {
             entry_type: entry_type === 'reimburse' ? 'reimburse' : (existing.entry_type || 'plan'),
             tanggal, tempat, alamat, jenis,
             custom_jenis: jenis === 'Custom' ? custom_jenis : null,
-            nilai: parseFloat(nilai), no_gl,
+            nilai: parseFloat(nilai), no_gl: String(no_gl).toUpperCase(), gl_number,
             relasi: JSON.stringify(relasiArray),
             jabatan: JSON.stringify(jabatanArray),
             jumlah_relasi: relasiArray.length,
