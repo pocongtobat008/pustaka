@@ -27,7 +27,11 @@ export function categoryColor(cat) {
     return CATEGORY_COLORS[cat] || CATEGORY_COLORS.general;
 }
 
-export async function buildKnowledgeGraph({ includeChunks = true } = {}) {
+// Bobot prioritas saat graph membesar: kategori & dokumen selalu dipertahankan,
+// chunk (detail terkecil) yang paling dulu dipangkas agar respons tetap ringan.
+const NODE_PRIORITY = { category: 0, training_doc: 1, knowledge: 2, correction: 3, chunk: 4 };
+
+export async function buildKnowledgeGraph({ includeChunks = true, limit = 2500, brainLimit = 400, edgeLimit = 4000 } = {}) {
     // Normalize inconsistent category labels across tables so related
     // nodes cluster under one hub (docs use 'tax', logs use 'tax_regulation').
     const normCat = (c) => {
@@ -109,7 +113,10 @@ export async function buildKnowledgeGraph({ includeChunks = true } = {}) {
     }
 
     // ── Knowledge (learning logs) ──
+    const knowledgeByTopic = new Map();
     for (const k of knowledge) {
+        // Pertahankan match pertama (semantik Array.find sebelumnya)
+        if (!knowledgeByTopic.has(k.topic)) knowledgeByTopic.set(k.topic, k);
         const catId = ensureCategory(normCat(k.category));
         nodes.push({
             id: `know:${k.id}`,
@@ -160,7 +167,8 @@ export async function buildKnowledgeGraph({ includeChunks = true } = {}) {
             });
         }
 
-        const matchKnow = knowledge.find(k => k.topic === c.topic);
+        // O(1) lookup via Map — sebelumnya knowledge.find() per korreksi (O(N^2))
+        const matchKnow = knowledgeByTopic.get(c.topic);
         if (matchKnow) {
             edges.push({
                 id: `e-corr-know-${c.id}`,
@@ -175,18 +183,24 @@ export async function buildKnowledgeGraph({ includeChunks = true } = {}) {
     try {
         const brain = await getBrain();
         const network = await brain.getNetworkData();
-        if (network?.nodes?.length) {
-            for (const bn of network.nodes) {
-                if (!nodes.some(n => n.id === bn.id)) {
+        const nodeIds = new Set(nodes.map(n => n.id));
+        const brainNodes = (network?.nodes || []).slice(0, brainLimit);
+        if (brainNodes.length) {
+            for (const bn of brainNodes) {
+                if (!nodeIds.has(bn.id)) {
+                    nodeIds.add(bn.id);
                     nodes.push(bn);
                 }
             }
         }
+        const edgeIds = new Set(edges.map(e => e.id));
         if (network?.edges?.length) {
             for (const be of network.edges) {
-                if (!edges.some(e => e.id === be.id)) {
-                    edges.push(be);
-                }
+                if (edgeIds.has(be.id)) continue;
+                // Hanya edge yang menghubungkan node yang benar-benar ditampilkan
+                if (!nodeIds.has(be.source) || !nodeIds.has(be.target)) continue;
+                edgeIds.add(be.id);
+                edges.push(be);
             }
         }
     } catch (e) {
@@ -203,5 +217,17 @@ export async function buildKnowledgeGraph({ includeChunks = true } = {}) {
         correctionsApplied: corrections.filter(c => c.applied).length,
     };
 
-    return { nodes, edges, stats };
+    // ── Batasi ukuran payload agar server & browser tidak kewalahan ──
+    let resultNodes = nodes;
+    let resultEdges = edges.length > edgeLimit ? edges.slice(0, edgeLimit) : edges;
+    if (nodes.length > limit) {
+        const sorted = [...nodes].sort(
+            (a, b) => (NODE_PRIORITY[a.type] ?? 5) - (NODE_PRIORITY[b.type] ?? 5)
+        );
+        resultNodes = sorted.slice(0, limit);
+        const keepIds = new Set(resultNodes.map(n => n.id));
+        resultEdges = edges.filter(e => keepIds.has(e.source) && keepIds.has(e.target));
+    }
+
+    return { nodes: resultNodes, edges: resultEdges, stats };
 }

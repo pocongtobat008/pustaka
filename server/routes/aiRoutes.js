@@ -287,11 +287,31 @@ router.get('/ai/memory/stats', checkAuth, async (req, res) => {
 });
 
 // --- Knowledge Graph (brain view) ---
+// Cache in-memory 60 detik: graph tidak berubah tiap detik dan build-nya mahal
+// (aggregasi ribuan node + data 1MBrain). Cache mencegah server hang/lemot.
+let graphCache = { data: null, at: 0, key: '', pending: null };
 router.get('/ai/graph', checkAuth, async (req, res) => {
     try {
         const includeChunks = req.query.chunks !== 'false';
-        const graph = await buildKnowledgeGraph({ includeChunks });
-        res.json(graph);
+        const limit = Math.min(parseInt(req.query.limit, 10) || 2500, 5000);
+        const cacheKey = `${includeChunks}:${limit}`;
+        const now = Date.now();
+        if (graphCache.data && graphCache.key === cacheKey && now - graphCache.at < 60000) {
+            return res.json(graphCache.data);
+        }
+        // Dedup: request bersamaan menunggu build yang sama (hindari rebuild ganda)
+        if (graphCache.pending && graphCache.key === cacheKey) {
+            return res.json(await graphCache.pending);
+        }
+        graphCache.key = cacheKey;
+        graphCache.pending = buildKnowledgeGraph({ includeChunks, limit })
+            .then(graph => {
+                graphCache.data = graph;
+                graphCache.at = Date.now();
+                return graph;
+            })
+            .finally(() => { graphCache.pending = null; });
+        res.json(await graphCache.pending);
     } catch (e) {
         res.status(500).json({ error: e.message });
     }

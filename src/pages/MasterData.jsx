@@ -347,7 +347,7 @@ export default function MasterData({
     const fetchGraph = async () => {
         setGraphLoading(true);
         try {
-            const g = await apiClient.fetchJson(`${API_URL}/ai/graph`);
+            const g = await apiClient.fetchJson(`${API_URL}/ai/graph?chunks=false&limit=1500`);
             setGraphData(g);
         } catch (e) {
             console.warn('Graph fetch failed:', e.message);
