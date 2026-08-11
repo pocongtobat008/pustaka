@@ -24,7 +24,7 @@ const MOTIVATION_QUOTES = {
     'Waktu terbaik untuk memulai adalah sekarang.'
   ]
 };
-import { Grid3x3, ScanLine, History, PieChart, FileText, FileDigit, ChevronDown, ChevronUp, ArrowRight, ArrowUpRight, Package, Truck, FileBarChart, Download, X, CheckCircle2, FileSearch, FolderOpen, Users, Sparkles, Clock, Eye, Info, MessageSquare, BookOpen, FileCheck, ClipboardCheck, ChevronLeft, ChevronRight, User } from 'lucide-react';
+import { Grid3x3, ScanLine, History, PieChart, FileText, FileDigit, ChevronDown, ChevronUp, ArrowRight, ArrowUpRight, Package, Truck, FileBarChart, Download, X, CheckCircle2, FileSearch, FolderOpen, Users, Sparkles, Clock, Eye, Info, MessageSquare, BookOpen, FileCheck, ClipboardCheck, ChevronLeft, ChevronRight, User, RefreshCw } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Card as ShadCard, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
 import { Badge } from '../components/ui/badge';
@@ -219,6 +219,9 @@ export default function Dashboard({
     const [currentPage, setCurrentPage] = useState(1);
     // Tick per menit agar kutipan motivasi berganti otomatis tiap jam baru
     const [hourTick, setHourTick] = useState(new Date());
+    // Override manual kutipan motivasi + key animasi (refresh)
+    const [quoteOverride, setQuoteOverride] = useState(null);
+    const [quoteAnimKey, setQuoteAnimKey] = useState(0);
     const resultsPerPage = 10;
 
     const handleSearch = async (e) => {
@@ -314,10 +317,22 @@ export default function Dashboard({
     };
 
     const getWorkSuggestion = () => {
-        // Kutipan motivasi berganti setiap jam (dengan offset hari agar bervariasi antar hari)
+        // Otomatis berganti tiap jam (offset hari) — bisa dioverride manual dengan tombol refresh
         const quotes = MOTIVATION_QUOTES[isEnglish ? 'en' : 'id'];
-        const idx = (hourTick.getHours() + hourTick.getDate()) % quotes.length;
+        const autoIdx = (hourTick.getHours() + hourTick.getDate()) % quotes.length;
+        const idx = quoteOverride !== null ? quoteOverride % quotes.length : autoIdx;
         return quotes[idx];
+    };
+
+    // Ganti kutipan secara manual (tombol refresh)
+    const handleRefreshQuote = () => {
+        const quotes = MOTIVATION_QUOTES[isEnglish ? 'en' : 'id'];
+        setQuoteOverride(prev => {
+            const autoIdx = (hourTick.getHours() + hourTick.getDate()) % quotes.length;
+            const base = prev === null ? autoIdx : prev;
+            return (base + 1) % quotes.length;
+        });
+        setQuoteAnimKey(k => k + 1);
     };
 
     // Perbarui setiap menit — kutipan otomatis berganti saat jam baru tiba
@@ -378,14 +393,24 @@ export default function Dashboard({
                         </p>
                     </div>
 
-                    <div className="glass-card p-6 rounded-[2rem] md:max-w-xs w-full hover:scale-[1.02] transition-all duration-300">
-                        <div className="flex items-center gap-3 mb-3">
+                    <div className="glass-card p-6 rounded-[2rem] md:max-w-xs w-full hover:scale-[1.02] transition-all duration-300 relative">
+                        {/* Tombol refresh — ganti kutipan secara manual */}
+                        <button
+                            type="button"
+                            onClick={handleRefreshQuote}
+                            className="absolute top-4 right-4 w-8 h-8 neo-icon-btn text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-400"
+                            title={isEnglish ? 'New quote' : 'Kutipan baru'}
+                        >
+                            <RefreshCw key={'spin' + quoteAnimKey} size={14} className="animate-spin-once" />
+                        </button>
+
+                        <div className="flex items-center gap-3 mb-3 pr-9">
                             <div className="p-2 gradient-bg rounded-xl text-white shadow-lg shadow-indigo-500/30">
                                 <Sparkles size={18} />
                             </div>
                             <span className="font-black text-[10px] uppercase tracking-widest text-indigo-600 dark:text-indigo-400">{text.workLabel}</span>
                         </div>
-                        <p className="text-sm font-bold text-slate-700 dark:text-slate-200 leading-snug italic">
+                        <p key={'quote' + quoteAnimKey} className="text-sm font-bold text-slate-700 dark:text-slate-200 leading-snug italic animate-in fade-in slide-in-from-bottom-1 duration-300">
                             <span className="text-indigo-400 select-none">“</span>
                             {getWorkSuggestion()}
                             <span className="text-indigo-400 select-none">”</span>

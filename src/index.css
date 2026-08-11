@@ -448,6 +448,20 @@ input::-webkit-contacts-auto-fill-button {
   background: var(--neo-bg);
 }
 
+/* Animasi spin sekali (untuk ikon refresh kutipan) */
+@keyframes spin-once {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-once {
+  animation: spin-once 0.5s ease;
+}
+
 /* ── Tooltip SaaS (muncul di BAWAH ikon saat hover — aman tidak terpotong topbar) ── */
 .saas-tooltip {
   position: absolute;
