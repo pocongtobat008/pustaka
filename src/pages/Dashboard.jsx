@@ -11,7 +11,13 @@ const MOTIVATION_QUOTES = {
     'Great work happens when discipline meets curiosity.',
     'Every expert was once a beginner. Keep learning.',
     'Done is better than perfect — ship it, then refine.',
-    'The best time to start was yesterday. The next best time is now.'
+    'The best time to start was yesterday. The next best time is now.',
+    'Success is the sum of small efforts, repeated day in and day out.',
+    'You do not have to be great to start, but you have to start to be great.',
+    'Happiness lies in the joy of achievement and the thrill of creative effort.',
+    'Quality is never an accident; it is always the result of intelligent effort.',
+    'The only way to do great work is to love what you do.',
+    'Discipline is choosing between what you want now and what you want most.'
   ],
   id: [
     'Progres kecil tetaplah progres. Teruslah melangkah.',
@@ -21,7 +27,13 @@ const MOTIVATION_QUOTES = {
     'Hasil hebat lahir saat disiplin bertemu rasa ingin tahu.',
     'Setiap ahli dulunya pemula. Teruslah belajar.',
     'Selesai lebih baik daripada sempurna — kerjakan, lalu sempurnakan.',
-    'Waktu terbaik untuk memulai adalah sekarang.'
+    'Waktu terbaik untuk memulai adalah sekarang.',
+    'Kesuksesan adalah jumlah usaha kecil yang diulang setiap hari.',
+    'Kamu tidak harus hebat untuk memulai, tapi kamu harus memulai untuk menjadi hebat.',
+    'Kebahagiaan terletak pada kepuasan mencapai tujuan dan semangat berkarya.',
+    'Kualitas bukan kebetulan; ia selalu hasil dari usaha yang cerdas.',
+    'Satu-satunya cara melakukan pekerjaan hebat adalah mencintai apa yang kamu kerjakan.',
+    'Disiplin adalah memilih antara apa yang kamu inginkan sekarang dan yang paling kamu inginkan.'
   ]
 };
 import { Grid3x3, ScanLine, History, PieChart, FileText, FileDigit, ChevronDown, ChevronUp, ArrowRight, ArrowUpRight, Package, Truck, FileBarChart, Download, X, CheckCircle2, FileSearch, FolderOpen, Users, Sparkles, Clock, Eye, Info, MessageSquare, BookOpen, FileCheck, ClipboardCheck, ChevronLeft, ChevronRight, User, RefreshCw } from 'lucide-react';

@@ -90,7 +90,7 @@ import {
   RefreshCw,
   Activity,
   Rocket, Target, HelpCircle, Sparkles, Zap, Award, Globe, FileCheck, BookOpen, ScanLine,
-  Calculator, FlaskConical, Wand2, ChevronDown
+  Calculator, FlaskConical, Wand2, ChevronDown, Info
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 const Login = lazy(() => import('./pages/Login'));
@@ -123,6 +123,7 @@ import CommandPalette from './components/ui/CommandPalette';
 import AiChatAssistant from './components/AiChatAssistant';
 import OcrLanes from './components/OcrLanes';
 import NotificationBell from './components/NotificationBell';
+import AboutSystemModal from './components/modals/AboutSystemModal';
 import { useLanguage } from './contexts/LanguageContext';
 
 
@@ -419,6 +420,7 @@ export default function App() {
 
   // ── Dropdown profil di topbar (SaaS) ──
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [showAboutModal, setShowAboutModal] = useState(false);
   const profileMenuRef = useRef(null);
 
   useEffect(() => {
@@ -3831,6 +3833,12 @@ export default function App() {
 
                     <div className="border-t border-slate-100 dark:border-white/10 p-1.5">
                       <button
+                        onClick={() => { setProfileMenuOpen(false); setShowAboutModal(true); }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50/80 dark:hover:bg-slate-700/30 hover:text-slate-800 dark:hover:text-white transition-colors text-left"
+                      >
+                        <Info size={15} className="text-slate-400" /> {isEnglish ? 'About System' : 'Tentang Sistem'}
+                      </button>
+                      <button
                         onClick={() => { setProfileMenuOpen(false); handleLogout(); }}
                         className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors text-left"
                       >
@@ -4496,6 +4504,9 @@ export default function App() {
         </div>
       </Modal>
 
+
+      {/* Tentang Sistem — visi misi & ringkasan fitur */}
+      <AboutSystemModal isOpen={showAboutModal} onClose={() => setShowAboutModal(false)} />
 
       {/* Toast Notification System */}
       <ToastContainer toasts={toasts} onRemove={removeToast} />
