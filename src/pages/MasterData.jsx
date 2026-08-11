@@ -1006,7 +1006,7 @@ export default function MasterData({
                                 <button
                                     key={p}
                                     onClick={() => setPage(p)}
-                                    className={`px-2 py-0.5 rounded text-xs font-bold ${page === p ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:bg-gray-200 dark:hover:bg-slate-700'}`}
+                                    className={`px-2 py-0.5 rounded text-xs font-bold ${page === p ? 'gradient-bg text-white' : 'text-gray-500 hover:bg-gray-200 dark:hover:bg-slate-700'}`}
                                 >
                                     {p}
                                 </button>
@@ -1031,7 +1031,7 @@ export default function MasterData({
                     <button
                         key={tab}
                         onClick={() => setMasterTab(tab)}
-                        className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${masterTab === tab ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-md' : 'text-gray-500 dark:text-slate-500 hover:bg-gray-200 dark:hover:bg-slate-700 dark:hover:text-slate-300'}`}
+                        className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${masterTab === tab ? 'gradient-bg text-white shadow-md' : 'text-gray-500 dark:text-slate-500 hover:bg-gray-200 dark:hover:bg-slate-700 dark:hover:text-slate-300'}`}
                     >
                         {text.tabs[tab] || tab}
                     </button>
@@ -1073,7 +1073,7 @@ export default function MasterData({
                                     />
                                     <button
                                         onClick={handleCreateUser}
-                                        className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-indigo-700 transition-colors"
+                                        className="px-4 py-2 gradient-bg text-white rounded-lg text-sm flex items-center gap-2 hover:opacity-95 transition-opacity"
                                     >
                                         <Plus size={16} /> {text.newUser}
                                     </button>
@@ -1103,7 +1103,7 @@ export default function MasterData({
                                 <div key={deptName} className="space-y-2">
                                     <button
                                         onClick={() => toggleDept(deptName)}
-                                        className="w-full flex items-center justify-between p-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl hover:shadow-md transition-all group"
+                                        className="w-full flex items-center justify-between p-4 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-white/60 dark:border-white/10 rounded-2xl hover:shadow-md transition-all group"
                                     >
                                         <div className="flex items-center gap-3">
                                             <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl text-indigo-600">
@@ -1114,7 +1114,7 @@ export default function MasterData({
                                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{deptUsers.length} {text.registeredMembers}</p>
                                             </div>
                                         </div>
-                                        <div className={`p-2 rounded-xl transition-all ${expandedDepts[deptName] ? 'bg-indigo-600 text-white rotate-90' : 'bg-slate-50 dark:bg-slate-800 text-slate-400 group-hover:text-indigo-600'}`}>
+                                        <div className={`p-2 rounded-xl transition-all ${expandedDepts[deptName] ? 'gradient-bg text-white rotate-90' : 'gradient-bg-soft text-slate-400 group-hover:text-indigo-600'}`}>
                                             <ChevronRight size={18} />
                                         </div>
                                     </button>
@@ -1128,7 +1128,7 @@ export default function MasterData({
                                                             <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-black text-lg shadow-lg">
                                                                 {u.name.charAt(0)}
                                                             </div>
-                                                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-white dark:bg-slate-900 rounded-lg flex items-center justify-center border border-slate-100 dark:border-slate-800 shadow-sm">
+                                                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-lg flex items-center justify-center border border-white/60 dark:border-white/10 shadow-sm">
                                                                 <Shield size={10} className="text-indigo-500" />
                                                             </div>
                                                         </div>
@@ -1166,7 +1166,7 @@ export default function MasterData({
                         {hasPermission('master', 'create') && (
                             <button
                                 onClick={handleCreateRole}
-                                className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-indigo-700 transition-colors"
+                                className="px-4 py-2 gradient-bg text-white rounded-lg text-sm flex items-center gap-2 hover:opacity-95 transition-opacity"
                             >
                                 <Plus size={16} /> {text.newRole}
                             </button>
@@ -1207,9 +1207,9 @@ export default function MasterData({
                                                     title={hasRule ? actions.join(', ') : (hasPermission('master', 'edit') ? text.setNow : text.noPermissionSet)}
                                                     className={`px-2 py-1 rounded text-[10px] flex flex-col text-left border transition-all ${hasPermission('master', 'edit')
                                                         ? (hasRule
-                                                            ? 'bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600 cursor-pointer'
+                                                            ? 'bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border-gray-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600 cursor-pointer'
                                                             : 'bg-amber-50 dark:bg-amber-500/10 border-dashed border-amber-300 dark:border-amber-500/40 hover:border-amber-400 cursor-pointer')
-                                                        : 'bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700 cursor-default opacity-70'}`}
+                                                        : 'bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border-gray-200 dark:border-slate-700 cursor-default opacity-70'}`}
                                                 >
                                                     <span className={`font-bold uppercase ${hasRule ? 'text-indigo-500' : 'text-amber-500 dark:text-amber-400'}`}>
                                                         {mod.label}
@@ -1224,7 +1224,7 @@ export default function MasterData({
                                         {Object.keys(perms)
                                             .filter(mod => !APP_MODULES[mod])
                                             .map(mod => (
-                                                <div key={mod} className="px-2 py-1 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded text-[10px] flex flex-col">
+                                                <div key={mod} className="px-2 py-1 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded text-[10px] flex flex-col">
                                                     <span className="font-bold text-indigo-500 uppercase">{mod}</span>
                                                     <span className="text-gray-400">{Array.isArray(perms[mod]) ? perms[mod].join(', ') : ''}</span>
                                                 </div>
@@ -1242,7 +1242,7 @@ export default function MasterData({
                     <div className="flex justify-between items-center mb-6">
                         <h3 className="font-bold text-lg dark:text-white">{text.approvalFlowMaster}</h3>
                         {hasPermission('master', 'create') && (
-                            <button onClick={() => handleCreateFlow()} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-indigo-700 transition-colors">
+                            <button onClick={() => handleCreateFlow()} className="px-4 py-2 gradient-bg text-white rounded-lg text-sm flex items-center gap-2 hover:opacity-95 transition-opacity">
                                 <Plus size={16} /> {text.newFlow}
                             </button>
                         )}
@@ -1286,28 +1286,28 @@ export default function MasterData({
                                 <History size={20} className="text-indigo-500" />
                                 {logSource === 'database' ? text.auditTrailSystem : `${text.systemLogFile}: ${logSource.split('_')[0].toUpperCase()} File`}
                             </h3>
-                            <div className="flex bg-gray-100 dark:bg-slate-900 p-1 rounded-xl mt-3 w-fit border border-slate-200 dark:border-slate-700">
+                            <div className="flex bg-gray-100 dark:bg-slate-900 p-1 rounded-xl mt-3 w-fit border border-white/60 dark:border-white/10">
                                 <button
                                     onClick={() => setLogSource('database')}
-                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'database' ? 'bg-white dark:bg-slate-800 text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'database' ? 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                                 >
                                     <History size={12} /> Database
                                 </button>
                                 <button
                                     onClick={() => setLogSource('server_file')}
-                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'server_file' ? 'bg-white dark:bg-slate-800 text-teal-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'server_file' ? 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-teal-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                                 >
                                     <Activity size={12} /> {text.serverLogs}
                                 </button>
                                 <button
                                     onClick={() => setLogSource('error_file')}
-                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'error_file' ? 'bg-white dark:bg-slate-800 text-red-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'error_file' ? 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-red-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                                 >
                                     <AlertCircle size={12} /> {text.errors}
                                 </button>
                                 <button
                                     onClick={() => setLogSource('ocr_file')}
-                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'ocr_file' ? 'bg-white dark:bg-slate-800 text-orange-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'ocr_file' ? 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-orange-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                                 >
                                     <FileText size={12} /> {text.ocrFailures}
                                 </button>
@@ -1319,7 +1319,7 @@ export default function MasterData({
                                 <input
                                     type="text"
                                     placeholder={text.searchLogs}
-                                    className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white"
+                                    className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-white/60 dark:border-white/10 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white"
                                     value={logSearchQuery}
                                     onChange={(e) => setLogSearchQuery(e.target.value)}
                                 />
@@ -1328,9 +1328,9 @@ export default function MasterData({
                     </div>
                     {logSource === 'database' ? (
                         <>
-                            <div className="overflow-x-auto rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <div className="overflow-x-auto rounded-2xl border border-white/60 dark:border-white/10">
                                 <table className="w-full text-sm text-left">
-                                    <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 font-black uppercase tracking-widest text-[10px]">
+                                    <thead className="gradient-bg-soft text-slate-500 dark:text-slate-400 font-black uppercase tracking-widest text-[10px]">
                                         <tr>
                                             <th className="px-6 py-4">{text.time}</th>
                                             <th className="px-6 py-4">{text.user}</th>
@@ -1375,7 +1375,7 @@ export default function MasterData({
                                                     {expandedLogId === log.id && (
                                                         <tr>
                                                             <td colSpan="5" className="px-6 pb-4 pt-0">
-                                                                <div className="bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-4 border border-slate-100 dark:border-slate-800 grid grid-cols-1 md:grid-cols-2 gap-4 animate-in slide-in-from-top-2">
+                                                                <div className="bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-4 border border-white/60 dark:border-white/10 grid grid-cols-1 md:grid-cols-2 gap-4 animate-in slide-in-from-top-2">
                                                                     {log.oldValue && <div className="space-y-1"><p className="text-[9px] font-black text-red-500 uppercase ml-1">{text.beforeOld}</p><pre className="text-[10px] font-mono p-3 bg-red-50/50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 rounded-xl text-red-700 dark:text-red-400 overflow-x-auto">{log.oldValue.startsWith('{') ? JSON.stringify(JSON.parse(log.oldValue), null, 2) : log.oldValue}</pre></div>}
                                                                     {log.newValue && <div className="space-y-1"><p className="text-[9px] font-black text-emerald-500 uppercase ml-1">{text.afterNew}</p><pre className="text-[10px] font-mono p-3 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/20 rounded-xl text-emerald-700 dark:text-emerald-400 overflow-x-auto">{log.newValue.startsWith('{') ? JSON.stringify(JSON.parse(log.newValue), null, 2) : log.newValue}</pre></div>}
                                                                 </div>
@@ -1415,7 +1415,7 @@ export default function MasterData({
                                                     <button
                                                         key={page}
                                                         onClick={() => setLogCurrentPage(page)}
-                                                        className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${logCurrentPage === page ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'text-slate-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20'}`}
+                                                        className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${logCurrentPage === page ? 'gradient-bg text-white shadow-md shadow-indigo-500/20' : 'text-slate-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20'}`}
                                                     >
                                                         {page}
                                                     </button>
@@ -1465,7 +1465,7 @@ export default function MasterData({
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="font-bold text-lg dark:text-white">{text.departmentList}</h3>
                             {hasPermission('master', 'create') && (
-                                <button onClick={handleCreateDept} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-indigo-700 transition-colors"><Plus size={16} /> {text.newDepartment}</button>
+                                <button onClick={handleCreateDept} className="px-4 py-2 gradient-bg text-white rounded-lg text-sm flex items-center gap-2 hover:opacity-95 transition-opacity"><Plus size={16} /> {text.newDepartment}</button>
                             )}
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -1599,7 +1599,7 @@ export default function MasterData({
                                 {hasPermission('master', 'edit') && (
                                     <button
                                         onClick={saveAiSettings} disabled={aiLoading}
-                                        className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                                        className="px-4 py-2 gradient-bg text-white rounded-lg text-sm flex items-center gap-2 hover:opacity-95 transition-opacity disabled:opacity-50"
                                     >
                                         {aiLoading ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />} {text.save}
                                     </button>
@@ -1632,7 +1632,7 @@ export default function MasterData({
                             </div>
 
                             {aiVerifyResults && (
-                                <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 p-3">
+                                <div className="rounded-xl border border-white/60 dark:border-white/10 bg-slate-50 dark:bg-slate-800/40 p-3">
                                     <div className="flex items-center justify-between mb-2">
                                         <p className="text-xs font-bold text-slate-600 dark:text-slate-300">
                                             <ShieldCheck size={13} className="inline mr-1 text-emerald-500" />
@@ -1650,7 +1650,7 @@ export default function MasterData({
                                                 {r.ok && (
                                                     <button
                                                         onClick={() => setAiForm(f => ({ ...f, model: r.model }))}
-                                                        className="px-1.5 py-0.5 rounded bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors"
+                                                        className="px-1.5 py-0.5 rounded bg-white/70 dark:bg-slate-700/60 backdrop-blur-xl border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors"
                                                     >
                                                         {text.useThis}
                                                     </button>
@@ -1678,43 +1678,43 @@ export default function MasterData({
                             <div className="flex gap-1 bg-gray-100 dark:bg-slate-800 p-1 rounded-lg">
                                 <button
                                     onClick={() => setTrainingTab('upload')}
-                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'upload' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
+                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'upload' ? 'gradient-bg text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
                                 >
                                     {text.uploadFile}
                                 </button>
                                 <button
                                     onClick={() => setTrainingTab('list')}
-                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'list' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
+                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'list' ? 'gradient-bg text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
                                 >
                                     {text.addLink}
                                 </button>
                                 <button
                                     onClick={() => { setTrainingTab('learning'); setTopicPage(1); setLogPage(1); fetchLearningData(); }}
-                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'learning' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
+                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'learning' ? 'gradient-bg text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
                                 >
                                     Self-Improvement
                                 </button>
                                 <button
                                     onClick={() => { setTrainingTab('corrections'); setCorrectionPage(1); fetchLearningData(); }}
-                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'corrections' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
+                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'corrections' ? 'gradient-bg text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
                                 >
                                     Corrections {correctionStats?.unapplied > 0 && <span className="ml-1 px-1 bg-red-500 text-white rounded-full text-[9px]">{correctionStats.unapplied}</span>}
                                 </button>
                                 <button
                                     onClick={() => { setTrainingTab('evolution'); setEvolutionPage(1); fetchLearningData(); }}
-                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'evolution' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
+                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'evolution' ? 'gradient-bg text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
                                 >
                                     Evolution
                                 </button>
                                 <button
                                     onClick={() => { setTrainingTab('graph'); fetchGraph(); }}
-                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'graph' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
+                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'graph' ? 'gradient-bg text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
                                 >
                                     🧠 Graph
                                 </button>
                                 <button
                                     onClick={() => { setTrainingTab('brain'); fetchBrainData(); }}
-                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'brain' ? 'bg-white dark:bg-slate-700 text-amber-600 dark:text-amber-300 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
+                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'brain' ? 'gradient-bg text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-slate-400'}`}
                                 >
                                     1MBrain
                                 </button>
@@ -1778,7 +1778,7 @@ export default function MasterData({
                                 <button
                                     type="submit"
                                     disabled={trainingUploading || !trainingFile}
-                                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                                    className="px-4 py-2 gradient-bg text-white rounded-lg text-sm flex items-center gap-2 hover:opacity-95 transition-opacity disabled:opacity-50"
                                 >
                                     {trainingUploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />} {text.upload}
                                 </button>
@@ -1837,7 +1837,7 @@ export default function MasterData({
                                 <button
                                     type="submit"
                                     disabled={trainingUploading || !trainingForm.url}
-                                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                                    className="px-4 py-2 gradient-bg text-white rounded-lg text-sm flex items-center gap-2 hover:opacity-95 transition-opacity disabled:opacity-50"
                                 >
                                     {trainingUploading ? <Loader2 size={16} className="animate-spin" /> : <Link size={16} />} {text.add}
                                 </button>
@@ -2243,7 +2243,7 @@ export default function MasterData({
                                 )}
 
                                 {/* Search */}
-                                <div className="bg-white dark:bg-slate-900 border dark:border-slate-700/50 rounded-lg p-3">
+                                <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border dark:border-slate-700/50 rounded-lg p-3">
                                     <h5 className="font-bold text-xs text-gray-600 dark:text-slate-300 mb-2 flex items-center gap-1.5"><Search size={13} /> Cari Memori</h5>
                                     <div className="flex gap-2">
                                         <input
@@ -2257,7 +2257,7 @@ export default function MasterData({
                                         <button
                                             onClick={handleBrainSearch}
                                             disabled={brainSearching || !brainSearchQuery.trim()}
-                                            className="px-3 py-2 bg-indigo-600 text-white rounded-lg text-xs flex items-center gap-1 hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                                            className="px-3 py-2 gradient-bg text-white rounded-lg text-xs flex items-center gap-1 hover:opacity-95 transition-opacity disabled:opacity-50"
                                         >
                                             {brainSearching ? <Loader2 size={13} className="animate-spin" /> : <Search size={13} />} Cari
                                         </button>
@@ -2278,7 +2278,7 @@ export default function MasterData({
                                 </div>
 
                                 {/* Consolidation */}
-                                <div className="bg-white dark:bg-slate-900 border dark:border-slate-700/50 rounded-lg p-3">
+                                <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border dark:border-slate-700/50 rounded-lg p-3">
                                     <h5 className="font-bold text-xs text-gray-600 dark:text-slate-300 mb-2 flex items-center gap-1.5"><Zap size={13} /> Konsolidasi Memori</h5>
                                     <p className="text-[11px] text-gray-500 mb-2">Menjalankan konsolidasi akan mengelompokkan memori serupa, mengekstrak knowledge baru, dan mengarsipkan memori usang.</p>
                                     <button
@@ -2297,13 +2297,13 @@ export default function MasterData({
                                 </div>
 
                                 {/* Sync Training Docs to 1MBrain */}
-                                <div className="bg-white dark:bg-slate-900 border dark:border-slate-700/50 rounded-lg p-3">
+                                <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border dark:border-slate-700/50 rounded-lg p-3">
                                     <h5 className="font-bold text-xs text-gray-600 dark:text-slate-300 mb-2 flex items-center gap-1.5"><RefreshCw size={13} /> Sinkronisasi Data Training ke 1MBrain</h5>
                                     <p className="text-[11px] text-gray-500 mb-2">Sinkronkan semua dokumen training yang aktif ke 1MBrain agar pencarian memori lebih terpusat.</p>
                                     <button
                                         onClick={handleBrainSyncTraining}
                                         disabled={brainSyncing}
-                                        className="px-3 py-2 bg-indigo-600 text-white rounded-lg text-xs flex items-center gap-1 hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                                        className="px-3 py-2 gradient-bg text-white rounded-lg text-xs flex items-center gap-1 hover:opacity-95 transition-opacity disabled:opacity-50"
                                     >
                                         {brainSyncing ? <Loader2 size={13} className="animate-spin" /> : <RefreshCw size={13} />} Sync Training ke 1MBrain
                                     </button>
@@ -2315,7 +2315,7 @@ export default function MasterData({
                                 </div>
 
                                 {/* Ingest Knowledge */}
-                                <div className="bg-white dark:bg-slate-900 border dark:border-slate-700/50 rounded-lg p-3">
+                                <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border dark:border-slate-700/50 rounded-lg p-3">
                                     <h5 className="font-bold text-xs text-gray-600 dark:text-slate-300 mb-2 flex items-center gap-1.5"><FileText size={13} /> Tambah Pengetahuan ke 1MBrain</h5>
                                     <form onSubmit={handleBrainIngest} className="space-y-2">
                                         <input
@@ -2345,7 +2345,7 @@ export default function MasterData({
                                 </div>
 
                                 {/* Recent Memories */}
-                                <div className="bg-white dark:bg-slate-900 border dark:border-slate-700/50 rounded-lg p-3">
+                                <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border dark:border-slate-700/50 rounded-lg p-3">
                                     <h5 className="font-bold text-xs text-gray-600 dark:text-slate-300 mb-2 flex items-center gap-1.5"><Clock size={13} /> Memori Terbaru ({brainMemories.length})</h5>
                                     {brainLoading ? (
                                         <div className="text-center py-6 text-gray-400"><Loader2 size={20} className="animate-spin inline-block" /></div>
@@ -2472,7 +2472,7 @@ export default function MasterData({
             {/* Training Preview Modal */}
             {trainingPreview && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setTrainingPreview(null)}>
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col border dark:border-slate-700/50" onClick={e => e.stopPropagation()}>
+                    <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col border dark:border-slate-700/50" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center justify-between p-5 border-b dark:border-slate-700/50">
                             <div>
                                 <h3 className="font-bold text-lg dark:text-white">{trainingPreview.title}</h3>
@@ -2503,7 +2503,7 @@ export default function MasterData({
             {/* Training Detail Modal */}
             {trainingDetail && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setTrainingDetail(null)}>
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col border dark:border-slate-700/50" onClick={e => e.stopPropagation()}>
+                    <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col border dark:border-slate-700/50" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center justify-between p-5 border-b dark:border-slate-700/50">
                             <div className="flex items-center gap-2">
                                 <Info size={20} className="text-blue-500" />
