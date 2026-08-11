@@ -90,7 +90,7 @@ import {
   RefreshCw,
   Activity,
   Rocket, Target, HelpCircle, Sparkles, Zap, Award, Globe, FileCheck, BookOpen, ScanLine,
-  Calculator
+  Calculator, FlaskConical, Wand2
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 const Login = lazy(() => import('./pages/Login'));
@@ -111,6 +111,9 @@ const EntertainmentExpenses = lazy(() => import('./pages/EntertainmentExpenses')
 const Invoices = lazy(() => import('./pages/Invoices'));
 const PdfTemplateDesigner = lazy(() => import('./pages/PdfTemplateDesigner'));
 const AnyDoc = lazy(() => import('./pages/AnyDoc'));
+const AiDocIntel = lazy(() => import('./pages/AiDocIntel'));
+const AiDocTrain = lazy(() => import('./pages/AiDocTrain'));
+const AiPdfTools = lazy(() => import('./pages/AiPdfTools'));
 const PdfViewer = lazy(() => import('./components/ui/PdfViewer'));
 import LoadingFallback from './components/common/LoadingFallback';
 import { useToast, ToastContainer } from './components/ui/Toast';
@@ -211,6 +214,9 @@ export default function App() {
           entertainment: { label: 'Entertainment Expenses', description: 'Expense reporting and management' },
           invoices: { label: 'Invoices', description: 'Proforma invoice management' },
           anydoc: { label: 'AnyDoc Converter', description: 'Convert documents to Markdown' },
+          'ai-doc-intel': { label: 'AI Document Intelligence', description: 'Extract data from PDF files' },
+          'ai-doc-train': { label: 'Document Training', description: 'Train AI document templates' },
+          'ai-pdf-tools': { label: 'AI PDF Tools', description: 'PDF convert, compress, merge, split, unlock, OCR' },
         },
         actions: {
           upload: { label: 'Upload Document', description: 'Open upload document modal' },
@@ -249,6 +255,9 @@ export default function App() {
         entertainment: { label: 'Entertainment Expenses', description: 'Pelaporan dan manajemen biaya entertainment' },
         invoices: { label: 'Invoices', description: 'Manajemen proforma invoice' },
         anydoc: { label: 'AnyDoc Converter', description: 'Konversi dokumen ke Markdown' },
+        'ai-doc-intel': { label: 'AI Document Intelligence', description: 'Ekstrak data dari file PDF' },
+        'ai-doc-train': { label: 'Training Dokumen', description: 'Latih template dokumen AI' },
+        'ai-pdf-tools': { label: 'AI PDF Tools', description: 'Konversi, kompres, gabung, pecah, buka proteksi & OCR PDF' },
       },
       actions: {
         upload: { label: 'Upload Dokumen', description: 'Buka modal upload dokumen' },
@@ -3538,6 +3547,9 @@ export default function App() {
       { id: 'inventory', tab: 'inventory', label: commandTextMap.items.inventory.label, description: commandTextMap.items.inventory.description, group: commandTextMap.groups.documents, icon: Grid3x3, keywords: 'rak box warehouse' },
       { id: 'documents', tab: 'documents', label: commandTextMap.items.documents.label, description: commandTextMap.items.documents.description, group: commandTextMap.groups.documents, icon: FileStack, keywords: 'files upload folder' },
       { id: 'anydoc', tab: 'anydoc', label: commandTextMap.items.anydoc.label, description: commandTextMap.items.anydoc.description, group: commandTextMap.groups.documents, icon: FileText, keywords: 'convert markdown word excel pdf doc konversi' },
+      { id: 'ai-doc-intel', tab: 'ai-doc-intel', label: commandTextMap.items['ai-doc-intel'].label, description: commandTextMap.items['ai-doc-intel'].description, group: commandTextMap.groups.documents, icon: FileSpreadsheet, keywords: 'ekstrak extract pdf data excel document intelligence' },
+      { id: 'ai-doc-train', tab: 'ai-doc-train', label: commandTextMap.items['ai-doc-train'].label, description: commandTextMap.items['ai-doc-train'].description, group: commandTextMap.groups.documents, icon: FlaskConical, keywords: 'training mapping template dokumen ai' },
+      { id: 'ai-pdf-tools', tab: 'ai-pdf-tools', label: commandTextMap.items['ai-pdf-tools'].label, description: commandTextMap.items['ai-pdf-tools'].description, group: commandTextMap.groups.documents, icon: Wand2, keywords: 'pdf word konversi kompres gabung pecah ocr unlock merge split' },
       { id: 'approvals', tab: 'entertainment', label: 'Entertainment', description: 'Entertainment expense reporting', group: commandTextMap.groups.documents, icon: ShieldCheck, keywords: 'approval entertainment expense klaim biaya' },
       { id: 'tax-monitoring', tab: 'tax-monitoring', label: commandTextMap.items['tax-monitoring'].label, description: commandTextMap.items['tax-monitoring'].description, group: commandTextMap.groups.tax, icon: Shield, keywords: 'audit pemeriksaan pajak' },
       { id: 'tax-calculation', tab: 'tax-calculation', label: commandTextMap.items['tax-calculation'].label, description: commandTextMap.items['tax-calculation'].description, group: commandTextMap.groups.tax, icon: Calculator, keywords: 'ppn pph hitung' },
@@ -3918,6 +3930,15 @@ export default function App() {
                   <AnyDoc
                     isDarkMode={isDarkMode}
                   />
+                )}
+                {activeTab === 'ai-doc-intel' && (
+                  <AiDocIntel isDarkMode={isDarkMode} />
+                )}
+                {activeTab === 'ai-doc-train' && (
+                  <AiDocTrain isDarkMode={isDarkMode} />
+                )}
+                {activeTab === 'ai-pdf-tools' && (
+                  <AiPdfTools isDarkMode={isDarkMode} />
                 )}
                 {activeTab === 'invoices' && (
                   <Invoices

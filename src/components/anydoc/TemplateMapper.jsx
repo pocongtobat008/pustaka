@@ -48,7 +48,7 @@ const cellsFromItems = (items, gap = 10) => {
     return cells;
 };
 
-export default function TemplateMapper({ isDarkMode }) {
+export default function TemplateMapper({ isDarkMode, defaultView = 'train', lockView = false }) {
     const [templates, setTemplates] = useState([]);
     const [activeId, setActiveId] = useState(null);
     const [view, setView] = useState('list'); // 'list' | 'train' | 'extract'
@@ -288,7 +288,7 @@ export default function TemplateMapper({ isDarkMode }) {
             await loadTemplates();
             setActiveId(j.id);
             setSamples(j.sample_files || []);
-            setView('train');
+            setView(defaultView);
         } catch (e) { showError(e); } finally { setBusy(null); }
     };
 
@@ -307,7 +307,7 @@ export default function TemplateMapper({ isDarkMode }) {
         setResults([]);
         setLinesData(null);
         setError(null);
-        setView('train');
+        setView(defaultView);
     };
 
     // ── Sampel ──
@@ -662,8 +662,8 @@ export default function TemplateMapper({ isDarkMode }) {
                 </div>
             </div>
 
-            {/* ── Sub view tabs ── */}
-            {activeId && (
+            {/* ── Sub view tabs (disembunyikan jika lockView) ── */}
+            {activeId && !lockView && (
                 <div className={`inline-flex p-1 rounded-xl border gap-1 mb-5 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`}>
                     <button onClick={() => setView('train')} className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${view === 'train' ? chipCls(true) : chipCls(false)}`}>
                         <FlaskConical size={14} /> Training Mapping

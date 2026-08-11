@@ -1,0 +1,348 @@
+import React, { useState, useRef, useEffect } from 'react';
+import {
+    FileText, FileArchive, Scissors, LockOpen, ScanText,
+    UploadCloud, Download, Loader2, X, AlertCircle, Layers,
+    FileDown, Wand2, Sparkles,
+} from 'lucide-react';
+
+const getApiUrl = () => (window.location.protocol === 'file:' ? 'http://localhost:5005/api' : '/api');
+const API_URL = getApiUrl();
+
+const formatFileSize = (b) => {
+    if (!b && b !== 0) return '-';
+    if (b < 1024) return b + ' B';
+    if (b < 1024 * 1024) return (b / 1024).toFixed(1) + ' KB';
+    return (b / 1024 / 1024).toFixed(2) + ' MB';
+};
+
+// ── Definisi 6 tool ──
+const TOOLS = [
+    {
+        id: 'convert', label: 'PDF → Word', icon: FileText, gradient: 'from-indigo-500 to-blue-600', shadow: 'shadow-indigo-500/25',
+        desc: 'Konversi PDF ke DOCX dengan tata letak asli (teks, tabel, gambar)',
+        multiple: false, fields: [],
+    },
+    {
+        id: 'compress', label: 'Kompres PDF', icon: FileArchive, gradient: 'from-emerald-500 to-green-600', shadow: 'shadow-emerald-500/25',
+        desc: 'Perkecil ukuran file PDF — 3 tingkat kualitas',
+        multiple: false, fields: [{ key: 'quality', label: 'Kualitas', type: 'select', options: ['low', 'medium', 'high'] }],
+    },
+    {
+        id: 'merge', label: 'Gabung PDF', icon: Layers, gradient: 'from-purple-500 to-violet-600', shadow: 'shadow-purple-500/25',
+        desc: 'Gabungkan banyak PDF menjadi satu dokumen',
+        multiple: true, fields: [],
+    },
+    {
+        id: 'split', label: 'Pecah PDF', icon: Scissors, gradient: 'from-amber-500 to-orange-600', shadow: 'shadow-amber-500/25',
+        desc: 'Pisahkan halaman per file atau rentang tertentu (hasil: ZIP)',
+        multiple: false, fields: [
+            { key: 'mode', label: 'Mode', type: 'select', options: ['all', 'pages'] },
+            { key: 'pages', label: 'Halaman (mode Pages, mis. 1-3,5)', type: 'text', showWhen: { key: 'mode', value: 'pages' } },
+        ],
+    },
+    {
+        id: 'unlock', label: 'Buka Proteksi', icon: LockOpen, gradient: 'from-rose-500 to-pink-600', shadow: 'shadow-rose-500/25',
+        desc: 'Hapus kata sandi / proteksi dari PDF terenkripsi',
+        multiple: false, fields: [{ key: 'password', label: 'Kata sandi (opsional)', type: 'password' }],
+    },
+    {
+        id: 'ocr', label: 'OCR Teks', icon: ScanText, gradient: 'from-cyan-500 to-teal-600', shadow: 'shadow-cyan-500/25',
+        desc: 'Ekstrak teks dari PDF hasil scan/gambar (20+ bahasa)',
+        multiple: false, fields: [{ key: 'language', label: 'Bahasa', type: 'select', options: ['eng', 'ind', 'deu', 'fra', 'spa', 'por'] }],
+    },
+];
+
+const ToolCard = ({ tool, active, onClick, isDarkMode }) => {
+    const Icon = tool.icon;
+    return (
+        <button
+            onClick={onClick}
+            className={`group flex items-center gap-3 px-4 py-3.5 rounded-2xl border text-left transition-all ${active
+                ? (isDarkMode ? 'bg-white/10 border-white/20' : 'bg-white border-slate-200 shadow-md')
+                : (isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white/50 border-slate-200/70 hover:bg-white hover:shadow-sm')}`}
+        >
+            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${tool.gradient} flex items-center justify-center flex-shrink-0 shadow-lg ${tool.shadow}`}>
+                <Icon size={18} className="text-white" />
+            </div>
+            <div className="min-w-0">
+                <p className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>{tool.label}</p>
+                <p className={`text-[9px] truncate mt-0.5 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>{tool.desc}</p>
+            </div>
+        </button>
+    );
+};
+
+export default function AiPdfTools({ isDarkMode }) {
+    const [activeTool, setActiveTool] = useState('convert');
+    const [files, setFiles] = useState([]);
+    const [form, setForm] = useState({ quality: 'medium', mode: 'all', pages: '', language: 'eng', password: '' });
+    const [busy, setBusy] = useState(false);
+    const [result, setResult] = useState(null); // { type: 'file'|'json', ... }
+    const [error, setError] = useState('');
+    const [dragOver, setDragOver] = useState(false);
+    const [serviceOk, setServiceOk] = useState(true);
+    const inputRef = useRef(null);
+
+    const tool = TOOLS.find(t => t.id === activeTool);
+
+    // Cek status service Flask saat halaman dibuka + polling tiap 30 detik
+    useEffect(() => {
+        let alive = true;
+        const check = () => {
+            fetch(`${API_URL}/pdf-tools/health`, { credentials: 'include' })
+                .then(r => r.json())
+                .then(j => { if (alive) setServiceOk(!!j.ok); })
+                .catch(() => { if (alive) setServiceOk(false); });
+        };
+        check();
+        const t = setInterval(check, 30000);
+        return () => { alive = false; clearInterval(t); };
+    }, []);
+
+    const reset = () => { setResult(null); setError(''); setFiles([]); };
+
+    const switchTool = (id) => { setActiveTool(id); reset(); };
+
+    const onFiles = (list) => {
+        const t = TOOLS.find(x => x.id === activeTool);
+        const pdfs = [...list].filter(f => /\.pdf$/i.test(f.name));
+        if (!pdfs.length) { setError('Pilih file PDF (ekstensi .pdf).'); return; }
+        setError('');
+        setResult(null);
+        setFiles(t.multiple ? [...files, ...pdfs] : pdfs.slice(0, 1));
+    };
+
+    const removeFile = (i) => setFiles(prev => prev.filter((_, x) => x !== i));
+
+    const downloadBlob = (blob, filename) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = filename;
+        document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(url);
+    };
+
+    const run = async () => {
+        if (!files.length) { setError('Unggah file PDF dulu.'); return; }
+        if (tool.id === 'merge' && files.length < 2) { setError('Gabung PDF butuh minimal 2 file.'); return; }
+        setBusy(true); setError(''); setResult(null);
+        try {
+            const fd = new FormData();
+            if (tool.multiple) files.forEach(f => fd.append('files', f));
+            else fd.append('file', files[0]);
+            Object.entries(form).forEach(([k, v]) => { if (v) fd.append(k, v); });
+
+            const res = await fetch(`${API_URL}/pdf-tools/${tool.id}`, { method: 'POST', credentials: 'include', body: fd });
+            const contentType = res.headers.get('content-type') || '';
+            const cd = res.headers.get('content-disposition') || '';
+            const filename = (cd.match(/filename="?([^"]+)"?/i) || [])[1] || `hasil_${tool.id}`;
+
+            if (!res.ok) {
+                let msg = `Gagal (${res.status}).`;
+                try { const j = await res.json(); if (j?.error) msg = j.error; } catch { /* ignore */ }
+                throw new Error(msg);
+            }
+
+            if (contentType.includes('application/json')) {
+                const j = await res.json();
+                setResult({ type: 'json', data: j, tool: tool.id });
+            } else {
+                const blob = await res.blob();
+                const origSize = res.headers.get('x-original-size');
+                const compSize = res.headers.get('x-compressed-size');
+                setResult({
+                    type: 'file', blob, filename,
+                    tool: tool.id,
+                    size: blob.size,
+                    origSize: origSize ? Number(origSize) : null,
+                    compSize: compSize ? Number(compSize) : null,
+                });
+            }
+        } catch (e) {
+            setError(e.message || 'Terjadi kesalahan.');
+        } finally {
+            setBusy(false);
+        }
+    };
+
+    const renderResult = () => {
+        if (!result) return null;
+        if (result.type === 'json') {
+            const d = result.data;
+            return (
+                <div className={`mt-5 rounded-2xl border overflow-hidden ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`}>
+                    <div className={`px-4 py-2.5 border-b flex items-center gap-2 ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
+                        <ScanText size={13} className="text-cyan-500" />
+                        <span className={`text-[11px] font-black uppercase tracking-wider ${isDarkMode ? 'text-white/60' : 'text-slate-500'}`}>Hasil OCR — {d.page_count || 0} halaman</span>
+                    </div>
+                    <div className="max-h-[320px] overflow-y-auto p-4 space-y-3">
+                        {(d.pages || []).map((p, i) => (
+                            <div key={i}>
+                                <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>Halaman {p.page}</p>
+                                <pre className={`text-xs whitespace-pre-wrap rounded-xl p-3 ${isDarkMode ? 'bg-black/30 text-white/80' : 'bg-slate-50 text-slate-600'}`}>{p.text || '(kosong)'}</pre>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+        // type 'file'
+        const saved = (result.origSize && result.compSize) ? ((1 - result.compSize / result.origSize) * 100) : null;
+        return (
+            <div className={`mt-5 rounded-2xl border p-5 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`}>
+                <div className="flex items-center gap-3">
+                    <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${tool.gradient} flex items-center justify-center shadow-lg ${tool.shadow}`}>
+                        <FileDown size={20} className="text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <p className={`text-sm font-bold truncate ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>{result.filename}</p>
+                        <p className={`text-[10px] mt-0.5 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                            {formatFileSize(result.size)}
+                            {saved !== null && saved > 0 && (
+                                <span className="ml-2 text-emerald-500 font-bold">−{saved.toFixed(0)}% lebih kecil</span>
+                            )}
+                        </p>
+                    </div>
+                    <button
+                        onClick={() => downloadBlob(result.blob, result.filename)}
+                        className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-600 to-purple-700 text-white shadow-lg shadow-indigo-500/25 hover:scale-[1.02] transition-all"
+                    >
+                        <Download size={14} /> Unduh
+                    </button>
+                </div>
+            </div>
+        );
+    };
+
+    const inputCls = `px-2.5 py-1.5 rounded-lg text-xs border outline-none transition-colors ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-indigo-500/60' : 'bg-white border-slate-200 text-slate-700 placeholder-slate-300 focus:border-indigo-400'}`;
+
+    return (
+        <div className="max-w-[1200px] mx-auto px-4 lg:px-6 py-6">
+            {/* Header */}
+            <div className="mb-6 flex items-start gap-3.5">
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-indigo-500/20 bg-gradient-to-br from-indigo-500 to-purple-600">
+                    <Wand2 size={20} className="text-white" />
+                </div>
+                <div className="flex-1">
+                    <h1 className={`text-lg font-black tracking-tight ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>
+                        AI PDF Tools
+                    </h1>
+                    <p className={`text-xs mt-0.5 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                        Konversi, kompres, gabung, pecah, buka proteksi & OCR — diproses lokal di server, file tidak dikirim ke pihak ketiga.
+                    </p>
+                </div>
+                <div className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-[10px] font-bold border ${serviceOk ? (isDarkMode ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300' : 'bg-emerald-50 border-emerald-200 text-emerald-600') : (isDarkMode ? 'bg-rose-500/10 border-rose-500/30 text-rose-300' : 'bg-rose-50 border-rose-200 text-rose-600')}`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${serviceOk ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`} />
+                    {serviceOk ? 'Service aktif' : 'Service mati'}
+                </div>
+            </div>
+
+            {!serviceOk && (
+                <div className={`mb-5 flex items-start gap-2.5 p-3.5 rounded-xl border text-sm ${isDarkMode ? 'bg-rose-500/10 border-rose-500/30 text-rose-300' : 'bg-rose-50 border-rose-200 text-rose-600'}`}>
+                    <AlertCircle size={16} className="mt-0.5 flex-shrink-0" />
+                    <div>
+                        <p className="font-bold text-xs">Service AI PDF Tools tidak aktif</p>
+                        <p className="text-[11px] mt-0.5 opacity-80">Hubungi administrator untuk menjalankan service (pm2 start pdftoword).</p>
+                    </div>
+                </div>
+            )}
+
+            {/* Grid: pilihan tool + panel kerja */}
+            <div className="grid lg:grid-cols-5 gap-5 items-start">
+                {/* Kiri: daftar tool */}
+                <div className="lg:col-span-2 space-y-2.5">
+                    <p className={`text-[10px] font-black uppercase tracking-widest mb-2 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Pilih Tool</p>
+                    {TOOLS.map(t => (
+                        <ToolCard key={t.id} tool={t} active={activeTool === t.id} onClick={() => switchTool(t.id)} isDarkMode={isDarkMode} />
+                    ))}
+                </div>
+
+                {/* Kanan: panel kerja */}
+                <div className="lg:col-span-3 space-y-4">
+                    <div className={`rounded-2xl border p-5 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`}>
+                        <div className="flex items-center gap-2 mb-1">
+                            <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${tool.gradient} flex items-center justify-center shadow ${tool.shadow}`}>
+                                <tool.icon size={15} className="text-white" />
+                            </div>
+                            <div>
+                                <p className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>{tool.label}</p>
+                                <p className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>{tool.desc}</p>
+                            </div>
+                        </div>
+
+                        {/* Dropzone */}
+                        <div
+                            onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+                            onDragLeave={() => setDragOver(false)}
+                            onDrop={e => { e.preventDefault(); setDragOver(false); onFiles(e.dataTransfer.files); }}
+                            onClick={() => inputRef.current?.click()}
+                            className={`mt-4 rounded-2xl border-2 border-dashed p-8 text-center cursor-pointer transition-all ${dragOver ? 'border-indigo-500 bg-indigo-500/5' : (isDarkMode ? 'border-white/15 bg-white/5 hover:border-indigo-500/50' : 'border-slate-300 bg-white hover:border-indigo-400')}`}
+                        >
+                            <input ref={inputRef} type="file" multiple accept=".pdf" className="hidden"
+                                onChange={e => { onFiles(e.target.files); e.target.value = ''; }} />
+                            <UploadCloud size={26} className={`mx-auto mb-2 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`} />
+                            <p className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>
+                                {tool.multiple ? 'Pilih / seret banyak PDF' : 'Pilih / seret file PDF'}
+                            </p>
+                            <p className={`text-[10px] mt-1 ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>Maks 50 MB per file</p>
+                        </div>
+
+                        {/* File terpilih */}
+                        {files.length > 0 && (
+                            <div className="mt-3 space-y-1.5">
+                                {files.map((f, i) => (
+                                    <div key={i} className={`flex items-center gap-2 px-3 py-2 rounded-xl ${isDarkMode ? 'bg-white/5' : 'bg-slate-50'}`}>
+                                        <FileText size={13} className={`flex-shrink-0 ${isDarkMode ? 'text-indigo-300' : 'text-indigo-500'}`} />
+                                        <span className={`flex-1 min-w-0 truncate text-xs font-semibold ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{f.name}</span>
+                                        <span className={`text-[10px] flex-shrink-0 ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>{formatFileSize(f.size)}</span>
+                                        <button onClick={() => removeFile(i)} className={`p-1 rounded-md ${isDarkMode ? 'hover:bg-white/10 text-white/40' : 'hover:bg-slate-200 text-slate-400'}`}><X size={12} /></button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Field opsional */}
+                        {tool.fields.length > 0 && (
+                            <div className="mt-4 grid grid-cols-2 gap-3">
+                                {tool.fields.map(f => {
+                                    const hidden = f.showWhen && form[f.showWhen.key] !== f.showWhen.value;
+                                    if (hidden) return null;
+                                    return (
+                                        <label key={f.key} className="block">
+                                            <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>{f.label}</span>
+                                            {f.type === 'select' ? (
+                                                <select value={form[f.key]} onChange={e => setForm({ ...form, [f.key]: e.target.value })} className={`${inputCls} w-full`}>
+                                                    {f.options.map(o => <option key={o} value={o}>{o}</option>)}
+                                                </select>
+                                            ) : (
+                                                <input type={f.type || 'text'} value={form[f.key]} onChange={e => setForm({ ...form, [f.key]: e.target.value })} className={`${inputCls} w-full`} />
+                                            )}
+                                        </label>
+                                    );
+                                })}
+                            </div>
+                        )}
+
+                        {/* Tombol proses */}
+                        <button
+                            onClick={run}
+                            disabled={busy || !files.length || !serviceOk}
+                            className={`mt-5 w-full py-3 rounded-xl text-sm font-extrabold flex items-center justify-center gap-2 transition-all bg-gradient-to-r ${tool.gradient} text-white shadow-lg ${tool.shadow} ${(busy || !files.length || !serviceOk) ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.01]'}`}
+                        >
+                            {busy ? <><Loader2 size={16} className="animate-spin" /> Memproses...</> : <><Sparkles size={16} /> Proses {tool.label}</>}
+                        </button>
+
+                        {error && (
+                            <div className={`mt-4 flex items-start gap-2 p-3 rounded-xl border text-xs ${isDarkMode ? 'bg-rose-500/10 border-rose-500/30 text-rose-300' : 'bg-rose-50 border-rose-200 text-rose-600'}`}>
+                                <AlertCircle size={14} className="mt-0.5 flex-shrink-0" />
+                                <span>{error}</span>
+                            </div>
+                        )}
+                    </div>
+
+                    {renderResult()}
+                </div>
+            </div>
+        </div>
+    );
+}

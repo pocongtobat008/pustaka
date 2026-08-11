@@ -24,6 +24,9 @@ import {
     ListOrdered,
     Lock,
     Unlock,
+    FileSpreadsheet,
+    FlaskConical,
+    Wand2,
 } from 'lucide-react';
 
 import './Sidebar.css';
@@ -49,6 +52,9 @@ const MENU_SECTIONS = [
             { id: 'inventory', icon: Grid3x3, labelKey: 'sidebar.item.filling' },
             { id: 'documents', icon: FileStack, labelKey: 'sidebar.item.documents' },
             { id: 'anydoc', icon: FileCode2, labelKey: 'sidebar.item.anydoc' },
+            { id: 'ai-doc-intel', icon: FileSpreadsheet, labelKey: 'sidebar.item.aiDocIntel' },
+            { id: 'ai-doc-train', icon: FlaskConical, labelKey: 'sidebar.item.aiDocTrain' },
+            { id: 'ai-pdf-tools', icon: Wand2, labelKey: 'sidebar.item.aiPdfTools' },
         ],
     },
     {

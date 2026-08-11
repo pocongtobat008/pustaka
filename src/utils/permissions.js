@@ -49,5 +49,8 @@ export const APP_MODULES = {
     'pdf-templates': { id: 'pdf-templates', label: 'Template PDF' },
     book: { id: 'book', label: 'Book (COA)' },
     'system-logs': { id: 'system-logs', label: 'Log Sistem' },
-    anydoc: { id: 'anydoc', label: 'AnyDoc Converter' }
+    anydoc: { id: 'anydoc', label: 'AnyDoc Converter' },
+    'ai-doc-intel': { id: 'ai-doc-intel', label: 'AI Document Intelligence' },
+    'ai-doc-train': { id: 'ai-doc-train', label: 'Training Dokumen' },
+    'ai-pdf-tools': { id: 'ai-pdf-tools', label: 'AI PDF Tools' },
 };

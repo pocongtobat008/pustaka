@@ -42,6 +42,7 @@ import entertainmentRoutes from './routes/entertainmentRoutes.js';
 import invoiceRoutes from './routes/invoiceRoutes.js';
 import anydocRoutes from './routes/anydocRoutes.js';
 import pdfTemplateRoutes from './routes/pdfTemplateRoutes.js';
+import pdfToolsRoutes from './routes/pdfToolsRoutes.js';
 import { getHealthStatus } from './services/healthCheck.js';
 
 import { checkAuth } from './middleware/auth.js';
@@ -900,6 +901,7 @@ app.use('/api/coa', coaRoutes);
 app.use('/api/entertainment', entertainmentRoutes);
 app.use('/api/invoices', invoiceRoutes);
 app.use('/api/pdf-templates', pdfTemplateRoutes);
+app.use('/api', pdfToolsRoutes); // /api/pdf-tools/* → Flask (AI PDF Tools)
 
 // --- SOP FLOWS (STANDARDIZATION) ROUTES ---
 app.get('/api/sop-flows', checkAuth, async (req, res) => {
