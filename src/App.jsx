@@ -3732,37 +3732,51 @@ export default function App() {
 
             {/* Kanan: aksi kontekstual (palette, info menu, notifikasi, tema, profil) */}
             <div className="flex items-center gap-2 shrink-0">
-              <CommandPalette
-                items={commandItems}
-                quickActions={commandQuickActions}
-                disabled={isPopupInteractionLocked}
-                onSelect={(item) => {
-                  if (item.action) {
-                    item.action();
-                    return;
-                  }
-                  if (item.tab) {
-                    setActiveTab(item.tab);
-                  }
-                }}
-              />
+              {/* Command Palette */}
+              <div className="relative group">
+                <CommandPalette
+                  items={commandItems}
+                  quickActions={commandQuickActions}
+                  disabled={isPopupInteractionLocked}
+                  onSelect={(item) => {
+                    if (item.action) {
+                      item.action();
+                      return;
+                    }
+                    if (item.tab) {
+                      setActiveTab(item.tab);
+                    }
+                  }}
+                />
+                <span className="saas-tooltip">{isEnglish ? 'Search (Ctrl K)' : 'Cari (Ctrl K)'}</span>
+              </div>
 
               {activeTab !== 'profile' && (
-                <button
-                  type="button"
-                  onClick={() => setShowMenuLandingPopup(true)}
-                  className="gradient-bg inline-flex items-center gap-2 px-4 h-10 rounded-xl text-white text-xs font-black uppercase tracking-[0.12em] shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-0.5 active:translate-y-0 transition-all"
-                >
-                  <Sparkles size={14} />
-                  {commandTextMap.labels.infoMenu}
-                </button>
+                <div className="relative group">
+                  <button
+                    type="button"
+                    onClick={() => setShowMenuLandingPopup(true)}
+                    className="gradient-bg inline-flex items-center gap-2 px-4 h-10 rounded-xl text-white text-xs font-black uppercase tracking-[0.12em] shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-0.5 active:translate-y-0 transition-all"
+                  >
+                    <Sparkles size={14} />
+                    {commandTextMap.labels.infoMenu}
+                  </button>
+                  <span className="saas-tooltip">{commandTextMap.labels.infoMenu}</span>
+                </div>
               )}
 
-              <NotificationBell variant="topbar" onOpenChannel={handleOpenNotificationChannel} />
-              <OcrLanes variant="topbar" />
+              <div className="relative group">
+                <NotificationBell variant="topbar" onOpenChannel={handleOpenNotificationChannel} />
+                <span className="saas-tooltip">{isEnglish ? 'Notifications' : 'Notifikasi'}</span>
+              </div>
+              <div className="relative group">
+                <OcrLanes variant="topbar" />
+                <span className="saas-tooltip">{isEnglish ? 'OCR Monitor' : 'Monitor OCR'}</span>
+              </div>
 
               {/* Profil dropdown — tema & bahasa ada di dalam (pola SaaS) */}
-              <div className="relative" ref={profileMenuRef}>
+              <div className="relative group" ref={profileMenuRef}>
+                <span className="saas-tooltip">{commandTextMap.items.profile.label}</span>
                 <button
                   type="button"
                   onClick={() => setProfileMenuOpen(o => !o)}

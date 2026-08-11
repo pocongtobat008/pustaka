@@ -1,5 +1,29 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
+
+// ── Motivasi kerja — berganti setiap jam, mengikuti bahasa aktif ──
+const MOTIVATION_QUOTES = {
+  en: [
+    'Small progress is still progress. Keep moving forward.',
+    'Focus on the task at hand — excellence is built one detail at a time.',
+    'Your future is created by what you do today, not tomorrow.',
+    "Don't count the hours; make the hours count.",
+    'Great work happens when discipline meets curiosity.',
+    'Every expert was once a beginner. Keep learning.',
+    'Done is better than perfect — ship it, then refine.',
+    'The best time to start was yesterday. The next best time is now.'
+  ],
+  id: [
+    'Progres kecil tetaplah progres. Teruslah melangkah.',
+    'Fokus pada tugas di depan — keunggulan terbangun dari setiap detail.',
+    'Masa depanmu dibentuk oleh apa yang kamu lakukan hari ini, bukan besok.',
+    'Jangan hitung jam kerjamu; buat setiap jam itu berarti.',
+    'Hasil hebat lahir saat disiplin bertemu rasa ingin tahu.',
+    'Setiap ahli dulunya pemula. Teruslah belajar.',
+    'Selesai lebih baik daripada sempurna — kerjakan, lalu sempurnakan.',
+    'Waktu terbaik untuk memulai adalah sekarang.'
+  ]
+};
 import { Grid3x3, ScanLine, History, PieChart, FileText, FileDigit, ChevronDown, ChevronUp, ArrowRight, ArrowUpRight, Package, Truck, FileBarChart, Download, X, CheckCircle2, FileSearch, FolderOpen, Users, Sparkles, Clock, Eye, Info, MessageSquare, BookOpen, FileCheck, ClipboardCheck, ChevronLeft, ChevronRight, User } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Card as ShadCard, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
@@ -193,6 +217,8 @@ export default function Dashboard({
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    // Tick per menit agar kutipan motivasi berganti otomatis tiap jam baru
+    const [hourTick, setHourTick] = useState(new Date());
     const resultsPerPage = 10;
 
     const handleSearch = async (e) => {
@@ -288,17 +314,17 @@ export default function Dashboard({
     };
 
     const getWorkSuggestion = () => {
-        const suggestions = [
-            text.workSuggestion1,
-            text.workSuggestion2,
-            text.workSuggestion3,
-            text.workSuggestion4,
-            text.workSuggestion5,
-            text.workSuggestion6
-        ];
-        const dayIndex = new Date().getDate() % suggestions.length;
-        return suggestions[dayIndex];
+        // Kutipan motivasi berganti setiap jam (dengan offset hari agar bervariasi antar hari)
+        const quotes = MOTIVATION_QUOTES[isEnglish ? 'en' : 'id'];
+        const idx = (hourTick.getHours() + hourTick.getDate()) % quotes.length;
+        return quotes[idx];
     };
+
+    // Perbarui setiap menit — kutipan otomatis berganti saat jam baru tiba
+    useEffect(() => {
+        const id = setInterval(() => setHourTick(new Date()), 60000);
+        return () => clearInterval(id);
+    }, []);
 
     const bentoStats = useMemo(() => {
         const waiting = ocrStats?.counts?.waiting || 0;
@@ -352,14 +378,23 @@ export default function Dashboard({
                         </p>
                     </div>
 
-                    <div className="bg-indigo-50/50 dark:bg-indigo-900/20 backdrop-blur-md border border-indigo-100 dark:border-indigo-800/50 p-6 rounded-[2rem] md:max-w-xs w-full transform hover:scale-[1.02] transition-all duration-300">
+                    <div className="glass-card p-6 rounded-[2rem] md:max-w-xs w-full hover:scale-[1.02] transition-all duration-300">
                         <div className="flex items-center gap-3 mb-3">
-                            <div className="p-2 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-500/30">
+                            <div className="p-2 gradient-bg rounded-xl text-white shadow-lg shadow-indigo-500/30">
                                 <Sparkles size={18} />
                             </div>
-                            <span className="font-black text-[10px] uppercase tracking-widest text-indigo-600 dark:text-indigo-400">{text.workLabel}</span>
+                            <div>
+                                <span className="block font-black text-[10px] uppercase tracking-widest text-indigo-600 dark:text-indigo-400">{text.workLabel}</span>
+                                <span className="block text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                                    {isEnglish ? 'Hourly Motivation' : 'Motivasi Per Jam'}
+                                </span>
+                            </div>
                         </div>
-                        <p className="text-sm font-bold text-slate-700 dark:text-slate-200 leading-snug italic">"{getWorkSuggestion()}"</p>
+                        <p className="text-sm font-bold text-slate-700 dark:text-slate-200 leading-snug italic">
+                            <span className="text-indigo-400 select-none">“</span>
+                            {getWorkSuggestion()}
+                            <span className="text-indigo-400 select-none">”</span>
+                        </p>
                     </div>
                 </div>
             </div>
