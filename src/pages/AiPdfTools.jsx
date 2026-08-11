@@ -52,8 +52,8 @@ const TOOLS = [
     },
     {
         id: 'ocr', label: 'OCR Teks', icon: ScanText, gradient: 'from-cyan-500 to-teal-600', shadow: 'shadow-cyan-500/25',
-        desc: 'Ekstrak teks dari PDF hasil scan/gambar (20+ bahasa)',
-        multiple: false, fields: [{ key: 'language', label: 'Bahasa', type: 'select', options: ['eng', 'ind', 'deu', 'fra', 'spa', 'por'] }],
+        desc: 'Ekstrak teks dari PDF hasil scan/gambar — 120+ bahasa didukung',
+        multiple: false, fields: [{ key: 'language', label: 'Bahasa', type: 'select', options: [] }], // options dinamis dari /pdf-tools/languages
     },
 ];
 
@@ -86,6 +86,8 @@ export default function AiPdfTools({ isDarkMode }) {
     const [error, setError] = useState('');
     const [dragOver, setDragOver] = useState(false);
     const [serviceOk, setServiceOk] = useState(true);
+    const [ocrLangs, setOcrLangs] = useState([]); // [{ code, name, installed }]
+    const [ocrLangsLoading, setOcrLangsLoading] = useState(false);
     const [history, setHistory] = useState([]);
     const [showHistory, setShowHistory] = useState(false);
     const [historyBusy, setHistoryBusy] = useState(false);
@@ -159,6 +161,25 @@ export default function AiPdfTools({ isDarkMode }) {
         return () => { alive = false; clearInterval(t); };
     }, []);
 
+    // Muat daftar bahasa OCR saat tool OCR dipilih
+    useEffect(() => {
+        if (activeTool !== 'ocr') return;
+        setOcrLangsLoading(true);
+        fetch(`${API_URL}/pdf-tools/languages`, { credentials: 'include' })
+            .then(r => r.json())
+            .then(j => {
+                const arr = Array.isArray(j?.all) ? j.all : [];
+                setOcrLangs(arr);
+                // Pastikan bahasa yang dipilih valid; default 'eng' jika ada
+                if (arr.length && !arr.some(l => l.code === form.language)) {
+                    const def = arr.find(l => l.code === 'eng') || arr[0];
+                    setForm(f => ({ ...f, language: def.code }));
+                }
+            })
+            .catch(() => { /* ignore */ })
+            .finally(() => setOcrLangsLoading(false));
+    }, [activeTool]); // eslint-disable-line react-hooks/exhaustive-deps
+
     const reset = () => { setResult(null); setError(''); setFiles([]); };
 
     const switchTool = (id) => { setActiveTool(id); reset(); };
@@ -185,6 +206,7 @@ export default function AiPdfTools({ isDarkMode }) {
     const run = async () => {
         if (!files.length) { setError('Unggah file PDF dulu.'); return; }
         if (tool.id === 'merge' && files.length < 2) { setError('Gabung PDF butuh minimal 2 file.'); return; }
+        if (tool.id === 'ocr' && !form.language) { setError('Bahasa OCR belum tersedia — muat ulang halaman atau hubungi admin.'); return; }
         setBusy(true); setError(''); setResult(null);
         try {
             const fd = new FormData();
@@ -372,7 +394,21 @@ export default function AiPdfTools({ isDarkMode }) {
                                     return (
                                         <label key={f.key} className="block">
                                             <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>{f.label}</span>
-                                            {f.type === 'select' ? (
+                                            {f.type === 'select' && f.key === 'language' ? (
+                                                <select
+                                                    value={form.language}
+                                                    onChange={e => setForm({ ...form, language: e.target.value })}
+                                                    className={`${inputCls} w-full`}
+                                                >
+                                                    {ocrLangsLoading && <option value="">Memuat daftar bahasa…</option>}
+                                                    {!ocrLangsLoading && ocrLangs.length === 0 && <option value="">Bahasa tidak tersedia</option>}
+                                                    {ocrLangs.map(l => (
+                                                        <option key={l.code} value={l.code} disabled={!l.installed}>
+                                                            {l.name}{!l.installed ? ' (pack belum terinstall)' : ''}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            ) : f.type === 'select' ? (
                                                 <select value={form[f.key]} onChange={e => setForm({ ...form, [f.key]: e.target.value })} className={`${inputCls} w-full`}>
                                                     {f.options.map(o => <option key={o} value={o}>{o}</option>)}
                                                 </select>

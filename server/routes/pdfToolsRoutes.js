@@ -2,6 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
+import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { knex } from '../db.js';
 
@@ -48,6 +49,69 @@ router.get('/pdf-tools/health', async (req, res) => {
         res.json({ ok: r.ok, status: r.status });
     } catch (e) {
         res.status(503).json({ ok: false, error: 'Service AI PDF Tools tidak aktif.', detail: e.message });
+    }
+});
+
+// ── Daftar bahasa OCR: SEMUA bahasa tesseract (nama lengkap) + status terinstall ──
+const OCR_LANGS = {
+    afr: 'Afrikaans', amh: 'Amharik', ara: 'Arab', asm: 'Assam', aze: 'Azeri', 'aze-cyrl': 'Azeri (Kiril)',
+    bel: 'Belarusia', ben: 'Bengali', bod: 'Tibet', bos: 'Bosnia', bre: 'Breton', bul: 'Bulgaria',
+    cat: 'Katalan', ceb: 'Cebuano', ces: 'Ceko', 'chi-sim': 'Cina Sederhana', 'chi-sim-vert': 'Cina Sederhana (Vertikal)',
+    'chi-tra': 'Cina Tradisional', 'chi-tra-vert': 'Cina Tradisional (Vertikal)', chr: 'Cherokee', cos: 'Korsika',
+    cym: 'Wales', dan: 'Denmark', deu: 'Jerman', div: 'Dhivehi', dzo: 'Dzongkha', ell: 'Yunani',
+    eng: 'Inggris', enm: 'Inggris Kuno', epo: 'Esperanto', est: 'Estonia', eus: 'Basque', fao: 'Faroese',
+    fas: 'Persia', fil: 'Filipino', fin: 'Finlandia', fra: 'Prancis', frk: 'Frankish', frm: 'Prancis Abad Pertengahan',
+    gle: 'Irlandia', glg: 'Galicia', grc: 'Yunani Kuno', guj: 'Gujarati', hat: 'Kreol Haiti', heb: 'Ibrani',
+    hin: 'Hindi', hrv: 'Kroasia', hun: 'Hungaria', hye: 'Armenia', iku: 'Inuktitut', ind: 'Indonesia',
+    isl: 'Islandia', ita: 'Italia', 'ita-old': 'Italia Kuno', jav: 'Jawa', jpn: 'Jepang', kan: 'Kannada',
+    kat: 'Georgia', 'kat-old': 'Georgia Kuno', kaz: 'Kazakh', khm: 'Khmer', kir: 'Kirgiz', kmr: 'Kurmanji',
+    kor: 'Korea', 'kor-vert': 'Korea (Vertikal)', lao: 'Lao', lat: 'Latin', lav: 'Latvia', lit: 'Lituania',
+    ltz: 'Luksemburg', mal: 'Malayalam', mar: 'Marathi', mkd: 'Makedonia', mlt: 'Malta', mon: 'Mongolia',
+    mri: 'Maori', msa: 'Melayu', mya: 'Myanmar', nep: 'Nepal', nld: 'Belanda', nor: 'Norwegia',
+    oci: 'Oksitan', ori: 'Oriya', pan: 'Punjabi', pol: 'Polandia', por: 'Portugis', pus: 'Pashto',
+    que: 'Quechua', ron: 'Rumania', rus: 'Rusia', san: 'Sanskerta', sin: 'Sinhala', slk: 'Slovakia',
+    slv: 'Slovenia', snd: 'Sindhi', spa: 'Spanyol', 'spa-old': 'Spanyol Kuno', sqi: 'Albania',
+    srp: 'Serbia', 'srp-latn': 'Serbia (Latin)', swa: 'Swahili', swe: 'Swedia', syr: 'Syriak',
+    tam: 'Tamil', tel: 'Telugu', tgk: 'Tajik', tgl: 'Tagalog', tha: 'Thailand', tir: 'Tigrinya',
+    tur: 'Turki', uig: 'Uyghur', ukr: 'Ukraina', urd: 'Urdu', uzb: 'Uzbek', 'uzb-cyrl': 'Uzbek (Kiril)',
+    vie: 'Vietnam', yid: 'Yiddish', zlm: 'Melayu (Latin)',
+};
+
+// Cache hasil `tesseract --list-langs` (60 detik) agar tidak spawn subproses tiap request
+let _langCache = { ts: 0, installed: [] };
+const getInstalledLangs = () => {
+    const now = Date.now();
+    if (_langCache.ts && now - _langCache.ts < 60000) return _langCache.installed;
+    let installed = [];
+    try {
+        const out = execSync('tesseract --list-langs 2>&1', { timeout: 10000 }).toString();
+        installed = out.split('\n')
+            .map(l => l.trim())
+            .filter(l => /^[a-z_]+$/.test(l)); // hanya kode bahasa (buang baris header jalur)
+    } catch { /* tesseract tidak tersedia */ }
+    _langCache = { ts: now, installed };
+    return installed;
+};
+
+router.get('/pdf-tools/languages', async (req, res) => {
+    try {
+        const installed = getInstalledLangs();
+        const installedSet = new Set(installed);
+
+        const all = Object.entries(OCR_LANGS).map(([code, name]) => ({
+            code,
+            name,
+            installed: installedSet.has(code),
+        }));
+        // Bahasa terinstall yang tidak ada di daftar (mis. osd) — masukkan tapi tetap
+        // bisa dipakai; osd memang bukan bahasa teks jadi ditandai apa adanya
+        installed.forEach(code => {
+            if (!OCR_LANGS[code] && code !== 'osd') all.push({ code, name: code, installed: true });
+        });
+
+        res.json({ installed: installed.filter(c => c !== 'osd'), all, total: all.length });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
     }
 });
 
