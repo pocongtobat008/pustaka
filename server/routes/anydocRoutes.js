@@ -201,6 +201,32 @@ if (!fs.existsSync(TEMPLATE_DIR)) fs.mkdirSync(TEMPLATE_DIR, { recursive: true }
 const ARCHIVE_DIR = path.join(__dirname, '../../uploads/anydoc-archive');
 if (!fs.existsSync(ARCHIVE_DIR)) fs.mkdirSync(ARCHIVE_DIR, { recursive: true });
 
+// Export Excel: file .xlsx hasil export disimpan permanen di sini agar bisa
+// diunduh ulang dari History Export tanpa perlu extract ulang.
+const EXPORT_DIR = path.join(__dirname, '../../uploads/anydoc-exports');
+if (!fs.existsSync(EXPORT_DIR)) fs.mkdirSync(EXPORT_DIR, { recursive: true });
+
+// ── Retensi otomatis: hapus history export lebih dari 30 hari (file + baris DB) ──
+const EXPORT_RETENTION_DAYS = 30;
+const cleanupExpiredExports = async () => {
+    try {
+        const cutoff = new Date(Date.now() - EXPORT_RETENTION_DAYS * 24 * 60 * 60 * 1000);
+        const rows = await knex('pdf_exports').where('created_at', '<', cutoff).select('id', 'file_path');
+        for (const r of rows) {
+            try { fs.unlinkSync(path.join(EXPORT_DIR, path.basename(r.file_path))); } catch { /* best-effort */ }
+        }
+        if (rows.length) {
+            await knex('pdf_exports').whereIn('id', rows.map(r => r.id)).del();
+            console.log(`[AnyDoc] Retensi export: ${rows.length} history > ${EXPORT_RETENTION_DAYS} hari dihapus.`);
+        }
+    } catch (e) {
+        console.error('[AnyDoc] Gagal retensi export:', e.message);
+    }
+};
+// Jalankan sekali saat start + ulangi tiap 6 jam
+setTimeout(cleanupExpiredExports, 15 * 1000);
+setInterval(cleanupExpiredExports, 6 * 60 * 60 * 1000);
+
 const parseFields = (raw) => {
     // Terima dua bentuk: string JSON (multipart) atau array (JSON body)
     let arr = Array.isArray(raw) ? raw : [];
@@ -538,6 +564,124 @@ router.delete('/templates/archive/:id', async (req, res) => {
         if (!row) return res.status(404).json({ error: 'File arsip tidak ditemukan.' });
         try { fs.unlinkSync(path.join(ARCHIVE_DIR, path.basename(row.file_path))); } catch { /* best-effort */ }
         await knex('pdf_extractions').where('id', row.id).del();
+        res.json({ ok: true });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// ── History Export Excel: simpan file xlsx hasil export agar bisa diunduh ulang ──
+// POST /api/anydoc/templates/exports — multipart: file (xlsx) + metadata
+router.post('/templates/exports', tplUploadAny, async (req, res) => {
+    try {
+        const file = (req.files || [])[0];
+        if (!file) return res.status(400).json({ error: 'File Excel wajib diupload.' });
+        const ext = path.extname(file.originalname || '').toLowerCase();
+        if (ext !== '.xlsx' && ext !== '.xls') {
+            return res.status(400).json({ error: 'Hanya file Excel (.xlsx/.xls) yang bisa disimpan.' });
+        }
+        // Cek magic bytes — xlsx (zip) diawali 'PK', xls (CFB) diawali D0 CF 11 E0
+        const head = file.buffer.subarray(0, 4);
+        const isXlsx = head[0] === 0x50 && head[1] === 0x4b; // 'PK'
+        const isXls = head[0] === 0xd0 && head[1] === 0xcf && head[2] === 0x11 && head[3] === 0xe0;
+        if (!isXlsx && !isXls) {
+            return res.status(400).json({ error: 'Berkas bukan file Excel asli (magic bytes tidak cocok).' });
+        }
+
+        const title = String(req.body.title || 'Export Excel').trim().slice(0, 255);
+        const templateIdRaw = Number(req.body.templateId);
+        const templateId = Number.isFinite(templateIdRaw) && templateIdRaw > 0 ? templateIdRaw : null;
+        const fileCount = Number(req.body.fileCount) || 0;
+        const docCount = Number(req.body.docCount) || 0;
+        const totalRows = Number(req.body.totalRows) || 0;
+
+        // Nama unik di disk (hindari bentrok), nama unduh = judul asli ber-extensi
+        const diskName = `export-${Date.now()}-${Math.random().toString(36).slice(2, 6)}${ext}`;
+        const downloadName = `${title.replace(/[^\w\-. ]/g, '_')}${ext}`;
+        const fp = path.join(EXPORT_DIR, diskName);
+
+        fs.writeFileSync(fp, file.buffer);
+        try {
+            const [id] = await knex('pdf_exports').insert({
+                template_id: templateId,
+                title,
+                file_path: diskName,
+                file_name: downloadName,
+                file_size: file.size,
+                doc_count: docCount,
+                total_rows: totalRows,
+                file_count: fileCount,
+                created_by: req.user?.username || req.user?.name || 'System',
+            }).returning('id');
+            const exportId = typeof id === 'object' ? id.id : id;
+            res.status(201).json({
+                id: exportId,
+                title,
+                file_name: downloadName,
+                file_size: file.size,
+                doc_count: docCount,
+                total_rows: totalRows,
+                file_count: fileCount,
+                template_id: templateId,
+                created_at: new Date().toISOString(),
+                downloadUrl: `/api/anydoc/templates/exports/file?id=${exportId}`,
+            });    } catch (e) {
+        // Insert gagal → hapus file yang barusan ditulis agar tidak jadi file yatim
+        try { fs.unlinkSync(fp); } catch { /* best-effort */ }
+        throw e;
+    }
+    } catch (e) {
+        console.error('[AnyDoc] Simpan export gagal:', e);
+        res.status(500).json({ error: e.message || 'Gagal menyimpan export.' });
+    }
+});
+
+// GET /api/anydoc/templates/exports — daftar history export (filter templateId opsional)
+router.get('/templates/exports', async (req, res) => {
+    try {
+        const tplId = Number(req.query.templateId);
+        const q = knex('pdf_exports').orderBy('created_at', 'desc').limit(100);
+        if (Number.isFinite(tplId) && tplId > 0) q.where('template_id', tplId);
+        const rows = await q;
+        const out = rows.map(r => ({
+            ...r,
+            downloadUrl: `/api/anydoc/templates/exports/file?id=${r.id}`,
+            fileExists: fs.existsSync(path.join(EXPORT_DIR, path.basename(r.file_path))),
+        }));
+        res.json(out);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// GET /api/anydoc/templates/exports/file?id=N — unduh ulang file xlsx tersimpan
+router.get('/templates/exports/file', async (req, res) => {
+    try {
+        const id = Number(req.query.id);
+        if (!Number.isFinite(id)) return res.status(400).json({ error: 'ID export wajib diisi.' });
+        const row = await knex('pdf_exports').where('id', id).first();
+        if (!row) return res.status(404).json({ error: 'Export tidak ditemukan.' });
+        const safe = path.basename(row.file_path);
+        const fp = path.join(EXPORT_DIR, safe);
+        if (!fs.existsSync(fp)) return res.status(404).json({ error: 'File export hilang dari disk.' });
+        const fileExt = path.extname(row.file_path || '').toLowerCase();
+        res.setHeader('Content-Type', fileExt === '.xls'
+            ? 'application/vnd.ms-excel'
+            : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', `attachment; filename="${String(row.file_name || safe).replace(/[\"\r\n]/g, '_')}"`);
+        res.sendFile(fp);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// DELETE /api/anydoc/templates/exports/:id — hapus satu history export (file + baris DB)
+router.delete('/templates/exports/:id', async (req, res) => {
+    try {
+        const row = await knex('pdf_exports').where('id', Number(req.params.id)).first();
+        if (!row) return res.status(404).json({ error: 'Export tidak ditemukan.' });
+        try { fs.unlinkSync(path.join(EXPORT_DIR, path.basename(row.file_path))); } catch { /* best-effort */ }
+        await knex('pdf_exports').where('id', row.id).del();
         res.json({ ok: true });
     } catch (e) {
         res.status(500).json({ error: e.message });

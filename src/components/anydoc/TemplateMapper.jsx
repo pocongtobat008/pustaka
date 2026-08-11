@@ -19,6 +19,21 @@ const formatFileSize = (b) => {
     return (b / 1024 / 1024).toFixed(2) + ' MB';
 };
 
+const formatRelativeTime = (dateStr) => {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '';
+    const diff = Date.now() - d.getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'baru saja';
+    if (mins < 60) return `${mins} mnt lalu`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours} jam lalu`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `${days} hari lalu`;
+    return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+};
+
 // Pecah item teks satu baris menjadi sel (berdasarkan celah x)
 const cellsFromItems = (items, gap = 10) => {
     const sorted = [...items].sort((a, b) => a.x - b.x);
@@ -70,6 +85,13 @@ export default function TemplateMapper({ isDarkMode }) {
     const [showArchive, setShowArchive] = useState(false);
     const [archiveBusy, setArchiveBusy] = useState(false);
     const [archiveSel, setArchiveSel] = useState(new Set()); // id terpilih utk ekstrak ulang massal
+    // ── History Export Excel (unduh ulang tanpa extract ulang) ──
+    const [exportHistory, setExportHistory] = useState([]);
+    const [showExportHistory, setShowExportHistory] = useState(false);
+    const [exportBusy, setExportBusy] = useState(false);
+    const [delExportTarget, setDelExportTarget] = useState(null); // baris yang dikonfirmasi hapus
+    const [delExportBusy, setDelExportBusy] = useState(false);
+    const savingExportRef = useRef(false); // cegah double-klik export membuat duplikat
     const extInputRef = useRef(null);
 
     const loadTemplates = useCallback(async () => {
@@ -103,9 +125,20 @@ export default function TemplateMapper({ isDarkMode }) {
         finally { setArchiveBusy(false); }
     }, []);
 
+    const loadExportHistory = useCallback(async (tplId) => {
+        setExportBusy(true);
+        try {
+            const qs = tplId ? `?templateId=${tplId}` : '';
+            const res = await fetch(`${API_URL}/anydoc/templates/exports${qs}`, { credentials: 'include' });
+            if (res.ok) setExportHistory(await res.json());
+        } catch { /* ignore */ }
+        finally { setExportBusy(false); }
+    }, []);
+
     useEffect(() => { loadTemplates(); }, [loadTemplates]);
     useEffect(() => { loadMonitoring(activeId); }, [loadMonitoring, activeId]);
     useEffect(() => { loadArchive(activeId); }, [loadArchive, activeId]);
+    useEffect(() => { loadExportHistory(activeId); }, [loadExportHistory, activeId]);
 
     // ── Arsip: unduh / ekstrak ulang / hapus ──
     const downloadArchived = async (row) => {
@@ -201,6 +234,39 @@ export default function TemplateMapper({ isDarkMode }) {
             loadMonitoring(activeId);
             showMsg('File dihapus dari arsip.');
         } catch (e) { showError(e); }
+    };
+
+    // Unduh ulang file Excel yang tersimpan di History Export
+    const downloadExportFile = async (x) => {
+        try {
+            const res = await fetch(x.downloadUrl, { credentials: 'include' });
+            if (!res.ok) throw new Error('Gagal mengunduh.');
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = x.file_name || `${x.title || 'export'}.xlsx`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        } catch (e) { showError(e); }
+    };
+
+    const deleteExport = async () => {
+        if (!delExportTarget) return;
+        setDelExportBusy(true);
+        try {
+            const res = await fetch(`${API_URL}/anydoc/templates/exports/${delExportTarget.id}`, {
+                method: 'DELETE', credentials: 'include',
+            });
+            const j = await res.json();
+            if (!res.ok) throw new Error(j.error || 'Gagal menghapus export.');
+            setExportHistory(prev => prev.filter(e => e.id !== delExportTarget.id));
+            setDelExportTarget(null);
+            showMsg('✅ History export dihapus.');
+        } catch (e) { showError(e); }
+        finally { setDelExportBusy(false); }
     };
 
     const showError = (e) => setError(e.message || String(e));
@@ -414,9 +480,12 @@ export default function TemplateMapper({ isDarkMode }) {
     // Update dari DocIntelligenceStudio (patch sebagian: data / items)
     const updateResult = (ri, patch) => setResults(prev => prev.map((r, i) => i === ri ? { ...r, ...patch } : r));
 
-    const downloadExcel = () => {
+    const downloadExcel = async () => {
+        // Guard double-klik: cegah SEMUA kerja ulang (unduhan lokal + POST) bila masih berjalan
+        if (savingExportRef.current) return;
+        savingExportRef.current = true;
         const okRows = results.filter(r => r.success);
-        if (!okRows.length) return;
+        if (!okRows.length) { savingExportRef.current = false; return; }
         // Map key → label field dari template yang dipakai (header Excel lebih terbaca)
         const usedTpl = templates.find(t => String(t.id) === String(results[0]?.template?.id));
         const labelOf = (key) => usedTpl?.fields?.find(f => f.field_key === key)?.field_label || key;
@@ -473,7 +542,49 @@ export default function TemplateMapper({ isDarkMode }) {
             ws2['!cols'] = [{ wch: 30 }, ...itemKeys.map(() => ({ wch: 16 }))];
             XLSX.utils.book_append_sheet(wb, ws2, 'Item Barang');
         }
-        XLSX.writeFile(wb, `ekstrak_${new Date().toISOString().slice(0, 10)}.xlsx`);
+
+        // ── Unduh lokal dulu (fungsi inti — selalu jalan) ──
+        const now = new Date();
+        const pad = n => String(n).padStart(2, '0');
+        const title = `ekstrak_${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+        const fileName = `${title}.xlsx`;
+        const buf = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
+        const blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const saveLocal = () => {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        };
+        saveLocal();
+
+        // ── Simpan ke History Export (server) — best-effort, tidak menghalangi unduhan ──
+        try {
+            const fd = new FormData();
+            fd.append('file', blob, fileName);
+            fd.append('title', title);
+            if (activeId) fd.append('templateId', activeId);
+            fd.append('fileCount', okRows.length);
+            fd.append('docCount', allDocs.length);
+            fd.append('totalRows', flatRows.length);
+            const res = await fetch(`${API_URL}/anydoc/templates/exports`, {
+                method: 'POST', credentials: 'include', body: fd,
+            });
+            const j = await res.json();
+            if (!res.ok) throw new Error(j.error || 'Gagal menyimpan export.');
+            loadExportHistory(activeId);
+            setShowExportHistory(true);
+            showMsg('✅ Excel terunduh & tersimpan di History Export.');
+        } catch (e) {
+            // Unduhan lokal sudah jalan — history gagal disimpan bukan masalah kritis
+            console.warn('[AnyDoc] Simpan history export gagal:', e);
+        } finally {
+            savingExportRef.current = false;
+        }
     };
 
     const inputCls = `flex-1 min-w-0 px-2.5 py-1.5 rounded-lg text-xs border outline-none transition-colors ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-indigo-500/60' : 'bg-white border-slate-200 text-slate-700 placeholder-slate-300 focus:border-indigo-400'}`;
@@ -1100,6 +1211,147 @@ export default function TemplateMapper({ isDarkMode }) {
                                 )}
                             </div>
                         )}
+                    </div>
+
+                    {/* ── History Export Excel: unduh ulang tanpa extract ulang ── */}
+                    <div className={cardCls + ' overflow-hidden'}>
+                        <button
+                            onClick={() => setShowExportHistory(s => !s)}
+                            className={`w-full flex items-center gap-2.5 px-4 py-3 text-left transition-colors ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-slate-50'}`}
+                        >
+                            <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isDarkMode ? 'bg-emerald-500/15 text-emerald-300' : 'bg-emerald-100 text-emerald-600'}`}>
+                                <Download size={15} />
+                            </div>
+                            <div className="flex-1">
+                                <p className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>History Export Excel</p>
+                                <p className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>File Excel yang pernah di-export — unduh ulang kapan saja tanpa extract ulang</p>
+                            </div>
+                            {exportHistory.length > 0 && (
+                                <span className={`px-2 py-0.5 rounded-full text-[9px] font-black ${isDarkMode ? 'bg-emerald-500/20 text-emerald-300' : 'bg-emerald-100 text-emerald-600'}`}>
+                                    {exportHistory.length}
+                                </span>
+                            )}
+                            <button
+                                onClick={e => { e.stopPropagation(); loadExportHistory(activeId); }}
+                                className={`p-1.5 rounded-lg ${isDarkMode ? 'hover:bg-white/10 text-white/50' : 'hover:bg-slate-200 text-slate-400'}`} title="Muat ulang"
+                            >
+                                <RefreshCw size={12} className={exportBusy ? 'animate-spin' : ''} />
+                            </button>
+                            <span className={`transition-transform ${showExportHistory ? 'rotate-180' : ''}`}>
+                                <ChevronDown size={15} className={isDarkMode ? 'text-white/40' : 'text-slate-400'} />
+                            </span>
+                        </button>
+
+                        {showExportHistory && (
+                            <div className={`border-t ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
+                                {exportHistory.length === 0 && (
+                                    <div className={`px-6 py-8 text-center ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                        <div className={`w-12 h-12 mx-auto mb-3 rounded-2xl flex items-center justify-center ${isDarkMode ? 'bg-white/5 text-white/30' : 'bg-slate-100 text-slate-300'}`}>
+                                            <History size={22} />
+                                        </div>
+                                        <p className={`text-xs font-bold ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>Belum ada export tersimpan</p>
+                                        <p className="text-[10px] mt-1 max-w-[260px] mx-auto leading-relaxed">
+                                            Lakukan ekstraksi lalu klik "Export Excel" — file otomatis tersimpan di sini untuk diunduh ulang kapan saja tanpa extract ulang.
+                                        </p>
+                                    </div>
+                                )}
+                                {exportHistory.length > 0 && (
+                                    <>
+                                        <div className={`grid grid-cols-3 gap-2 px-4 py-3 border-b ${isDarkMode ? 'border-white/5 bg-white/5' : 'border-slate-100 bg-slate-50/50'}`}>
+                                            {[
+                                                { label: 'Total Export', value: exportHistory.length, icon: Download },
+                                                { label: 'Dokumen', value: exportHistory.reduce((a, x) => a + (x.doc_count || 0), 0), icon: FileSpreadsheet },
+                                                { label: 'Baris Data', value: exportHistory.reduce((a, x) => a + (x.total_rows || 0), 0), icon: Table2 },
+                                            ].map(st => {
+                                                const Icon = st.icon;
+                                                return (
+                                                    <div key={st.label} className={`rounded-xl px-3 py-2 border ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'}`}>
+                                                        <div className={`flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>
+                                                            <Icon size={10} className={isDarkMode ? 'text-emerald-300' : 'text-emerald-600'} /> {st.label}
+                                                        </div>
+                                                        <p className={`mt-0.5 text-sm font-black tabular-nums ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>{st.value.toLocaleString('id-ID')}</p>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                        <div className="max-h-[300px] overflow-y-auto">
+                                        {exportHistory.map(x => {
+                                            const t = x.created_at ? new Date(x.created_at) : null;
+                                            const dateStr = t && !isNaN(t) ? t.toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : '';
+                                            return (
+                                                <div key={x.id} className={`group flex items-center gap-2.5 px-4 py-2.5 border-b last:border-b-0 ${isDarkMode ? 'border-white/5 hover:bg-white/5' : 'border-slate-50 hover:bg-slate-50'}`}>
+                                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${isDarkMode ? 'bg-emerald-500/10 text-emerald-300' : 'bg-emerald-50 text-emerald-600'}`}>
+                                                        <FileSpreadsheet size={14} />
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className={`text-[11px] font-bold truncate ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{x.title}</p>
+                                                        <p title={dateStr} className={`text-[9px] truncate ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>
+                                                            {formatRelativeTime(x.created_at)}{formatRelativeTime(x.created_at) ? ' • ' : ''}{x.file_count ?? 0} file • {x.doc_count ?? 0} dok • {x.total_rows ?? 0} baris • {formatFileSize(x.file_size)}
+                                                        </p>
+                                                    </div>
+                                                    {x.fileExists === false && (
+                                                        <span className={`text-[9px] font-bold ${isDarkMode ? 'text-rose-300' : 'text-rose-500'}`} title="File hilang dari disk">hilang</span>
+                                                    )}
+                                                    <button
+                                                        onClick={() => downloadExportFile(x)}
+                                                        disabled={x.fileExists === false}
+                                                        title="Unduh ulang Excel ini (tanpa extract ulang)"
+                                                        className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold transition-all ${x.fileExists === false ? 'opacity-40 cursor-not-allowed' : 'hover:scale-[1.02]'} ${isDarkMode ? 'bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'}`}
+                                                    >
+                                                        <Download size={11} /> Unduh
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setDelExportTarget(x)}
+                                                        title="Hapus history export ini"
+                                                        className={`p-1.5 rounded-lg transition-colors ${isDarkMode ? 'text-white/25 hover:text-rose-300 hover:bg-rose-500/15' : 'text-slate-300 hover:text-rose-500 hover:bg-rose-50'}`}
+                                                    >
+                                                        <Trash2 size={12} />
+                                                    </button>
+                                                </div>
+                                            );
+                                        })}
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* ── Modal konfirmasi hapus history export ── */}
+            {delExportTarget && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setDelExportTarget(null)}>
+                    <div
+                        onClick={e => e.stopPropagation()}
+                        className={`w-full max-w-sm rounded-2xl border p-5 shadow-2xl animate-[fadeInUp_.2s_ease] ${isDarkMode ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-200'}`}
+                    >
+                        <div className="flex items-start gap-3">
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${isDarkMode ? 'bg-rose-500/15 text-rose-300' : 'bg-rose-50 text-rose-500'}`}>
+                                <AlertTriangle size={18} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>Hapus history export?</p>
+                                <p className={`text-[11px] mt-1 leading-relaxed ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>
+                                    <b className={isDarkMode ? 'text-white/80' : 'text-slate-700'}>{delExportTarget.title}</b> akan dihapus permanen dari riwayat beserta file Excel-nya di server. Tindakan ini tidak dapat dibatalkan.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="mt-5 flex justify-end gap-2">
+                            <button
+                                onClick={() => setDelExportTarget(null)}
+                                className={`px-3.5 py-2 rounded-xl text-[11px] font-bold transition-colors ${isDarkMode ? 'bg-white/10 text-white/70 hover:bg-white/15' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                            >
+                                Batal
+                            </button>
+                            <button
+                                onClick={deleteExport}
+                                disabled={delExportBusy}
+                                className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[11px] font-bold transition-all ${delExportBusy ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02]'} ${isDarkMode ? 'bg-rose-500/20 text-rose-300 hover:bg-rose-500/30' : 'bg-rose-500 text-white hover:bg-rose-600'}`}
+                            >
+                                {delExportBusy ? <Loader2 size={12} className="animate-spin" /> : <Trash2 size={12} />} Hapus Permanen
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
