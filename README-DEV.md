@@ -9,7 +9,7 @@ Semua editing dilakukan di sini — **produksi di `/home/project/pustaka` tidak 
 |---|---|---|
 | Folder | `/home/project/pustaka-dev` | `/home/project/pustaka` |
 | Git branch | `dev` | `main` |
-| Frontend | `http://localhost:5173` | `http://<ip-server>:5174` |
+| Frontend | `http://localhost:5173` (vite dev + HMR) | `http://<ip-server>:5174` (**build statis** via `vite preview`) |
 | Backend | `127.0.0.1:5006` | `127.0.0.1:5005` |
 | Database | `pustaka_dev` (clone) | `pustaka` |
 | PM2 | `dev-backend`, `dev-frontend` (namespace `dev`) | `archive-*` (namespace `default`) |
@@ -25,7 +25,7 @@ cd /home/project/pustaka-dev
 #    buka http://localhost:5173  (login: admin / admin123 — khusus DB dev)
 
 # 3. Setelah stabil, deploy ke produksi:
-bash scripts/deploy-prod.sh
+bash scripts/deploy-prod.sh   # commit+push dev → pull prod → build → restart
 ```
 
 ## Perintah
@@ -49,6 +49,11 @@ pm2 logs dev-backend --lines 50      # lihat log backend dev
   - JANGAN jalankan `chown`/`chmod` pada isi `node_modules` di folder ini —
     akan ikut mengubah file produksi.
   - `npm install` aman (npm mengganti file, memutus hardlink sendiri).
+- **Produksi = build statis** (`vite build` + `vite preview` di :5174):
+  - Edit apa pun di folder produksi TIDAK lagi berpengaruh langsung (tidak ada HMR).
+  - `dist/` TIDAK di-track git — jangan pernah `git checkout dist/index.html`
+    (akan merusak build yang sedang disajikan preview).
+  - Setiap deploy harus build ulang → sudah otomatis ada di `deploy-prod.sh`.
 - **Branch `main` produksi hanya bergerak lewat `scripts/deploy-prod.sh`** —
   jangan commit langsung di `/home/project/pustaka` agar tidak bentrok saat `--ff-only`.
 - **Worker dev tidak dijalankan** — fitur yang butuh job asinkron (OCR batch, dsb.)
