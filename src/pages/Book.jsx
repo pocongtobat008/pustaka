@@ -447,7 +447,7 @@ export default function Book({ hasPermission }) {
                         return (
                             <React.Fragment key={p}>
                                 {showEllipsis && <span className="px-1 text-slate-300 dark:text-slate-600">...</span>}
-                                <button onClick={() => onChange(p)} className={`min-w-[36px] h-9 rounded-xl text-xs font-bold transition-all ${p === current ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'}`}>
+                                <button onClick={() => onChange(p)} className={`min-w-[36px] h-9 rounded-xl text-xs font-bold transition-all ${p === current ? 'gradient-bg text-white shadow-lg shadow-indigo-500/30' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'}`}>
                                     {p + 1}
                                 </button>
                             </React.Fragment>
@@ -549,7 +549,7 @@ export default function Book({ hasPermission }) {
                         <select
                             value={filterCoa}
                             onChange={(e) => { setFilterCoa(e.target.value); setPage(0); }}
-                            className="pl-9 pr-8 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 appearance-none cursor-pointer min-w-[180px]"
+                            className="pl-9 pr-8 py-2 gradient-bg-soft border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 appearance-none cursor-pointer min-w-[180px]"
                         >
                             <option value="all">{text.filterCoaAll}</option>
                             {data.map(acc => (
@@ -693,7 +693,7 @@ export default function Book({ hasPermission }) {
 
             {importing ? (
                 <div className="space-y-5">
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-6 shadow-sm">
+                    <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-slate-100 dark:border-slate-800 p-6 shadow-sm">
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
                                 {importProgress === 100 ? (
@@ -752,14 +752,14 @@ export default function Book({ hasPermission }) {
                             <button
                                 onClick={handleImport}
                                 disabled={importing}
-                                className="flex-1 flex items-center justify-center gap-2 py-3 bg-indigo-600 text-white text-xs font-black rounded-2xl hover:bg-indigo-500 shadow-xl shadow-indigo-500/30 transition-all uppercase tracking-widest disabled:opacity-50"
+                                className="flex-1 flex items-center justify-center gap-2 py-3 gradient-bg text-white text-xs font-black rounded-2xl hover:bg-indigo-500 shadow-xl shadow-indigo-500/30 transition-all uppercase tracking-widest disabled:opacity-50"
                             >
                                 <Upload size={14} /> {text.importBtn}
                             </button>
                         )}
                     </div>
 
-                    <div className="mt-8 bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4">
+                    <div className="mt-8 gradient-bg-soft rounded-2xl p-4">
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Format Kolom Excel</p>
                         <div className="overflow-x-auto">
                             <table className="w-full text-xs">
@@ -950,7 +950,7 @@ export default function Book({ hasPermission }) {
                                     placeholder={text.search}
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                    className="w-full sm:w-56 pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:text-white transition-all"
+                                    className="w-full sm:w-56 pl-9 pr-4 py-2 gradient-bg-soft border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:text-white transition-all"
                                 />
                             </div>
                             <div className="flex bg-gray-100 dark:bg-slate-800 p-1 rounded-xl">
@@ -960,7 +960,7 @@ export default function Book({ hasPermission }) {
                                         onClick={() => setFilterStatus(opt.id)}
                                         className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all whitespace-nowrap ${
                                             filterStatus === opt.id
-                                                ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm'
+                                                ? 'gradient-bg text-white shadow-sm'
                                                 : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
                                         }`}
                                     >
@@ -975,7 +975,7 @@ export default function Book({ hasPermission }) {
                                         onClick={() => { setPageSize(size); setPage(0); }}
                                         className={`px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all whitespace-nowrap ${
                                             pageSize === size
-                                                ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm'
+                                                ? 'gradient-bg text-white shadow-sm'
                                                 : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
                                         }`}
                                     >
@@ -987,7 +987,7 @@ export default function Book({ hasPermission }) {
                                 {hasPermission('book', 'edit') && activeTab !== 'overview' && (
                                     <button
                                         onClick={() => openAddForm(activeTab === 'accounts' ? 'account' : activeTab === 'subs' ? 'sub_account' : 'department')}
-                                        className="flex items-center gap-2 px-3 py-2 bg-indigo-600 text-white text-xs font-bold rounded-xl hover:bg-indigo-500 shadow-lg shadow-indigo-500/20 transition-all whitespace-nowrap"
+                                        className="flex items-center gap-2 px-3 py-2 gradient-bg text-white text-xs font-bold rounded-xl hover:bg-indigo-500 shadow-lg shadow-indigo-500/20 transition-all whitespace-nowrap"
                                     >
                                         <Plus size={14} /> {text.addNew}
                                     </button>
@@ -1016,7 +1016,7 @@ export default function Book({ hasPermission }) {
                                 {importFailed > 0 && <span className="text-red-600 dark:text-red-400 ml-2">{importFailed} ✗</span>}
                             </span>
                         </div>
-                        <div className="w-full bg-white dark:bg-slate-800 rounded-full h-1.5 overflow-hidden shadow-inner">
+                        <div className="w-full bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-full h-1.5 overflow-hidden shadow-inner">
                             <div
                                 className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 transition-all duration-300"
                                 style={{ width: `${importProgress}%` }}
@@ -1034,7 +1034,7 @@ export default function Book({ hasPermission }) {
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all whitespace-nowrap ${
                                     activeTab === tab.id
-                                        ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-md transform scale-105 z-10'
+                                        ? 'gradient-bg text-white shadow-md transform scale-105 z-10'
                                         : 'text-gray-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700'
                                 }`}
                             >
@@ -1075,7 +1075,7 @@ export default function Book({ hasPermission }) {
 
             {showForm && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowForm(false)}>
-                    <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-md mx-4 p-6 border border-slate-100 dark:border-slate-800" onClick={(e) => e.stopPropagation()}>
+                    <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-md mx-4 p-6 border border-slate-100 dark:border-slate-800" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-between mb-6">
                             <h3 className="text-lg font-extrabold text-slate-800 dark:text-white">
                                 {editingItem ? text.form[`edit${formLevel === 'account' ? 'Account' : formLevel === 'sub_account' ? 'Sub' : 'Dep'}`] : text.form[`add${formLevel === 'account' ? 'Account' : formLevel === 'sub_account' ? 'Sub' : 'Dep'}`]}
@@ -1092,7 +1092,7 @@ export default function Book({ hasPermission }) {
                                     <select
                                         value={form.parent_id}
                                         onChange={(e) => setForm({ ...form, parent_id: e.target.value })}
-                                        className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:text-white"
+                                        className="w-full px-4 py-3 gradient-bg-soft border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:text-white"
                                     >
                                         <option value="">{text.selectParent}</option>
                                         {parentOptions.map(opt => (
@@ -1108,7 +1108,7 @@ export default function Book({ hasPermission }) {
                                     type="text"
                                     value={form.code}
                                     onChange={(e) => setForm({ ...form, code: e.target.value })}
-                                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:text-white"
+                                    className="w-full px-4 py-3 gradient-bg-soft border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:text-white"
                                     placeholder="Contoh: 1, 1-1, 1-1-01"
                                 />
                             </div>
@@ -1119,7 +1119,7 @@ export default function Book({ hasPermission }) {
                                     type="text"
                                     value={form.name}
                                     onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:text-white"
+                                    className="w-full px-4 py-3 gradient-bg-soft border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:text-white"
                                     placeholder="Contoh: Aktiva, Kas, Kas Kecil"
                                 />
                             </div>
@@ -1130,7 +1130,7 @@ export default function Book({ hasPermission }) {
                                     value={form.description}
                                     onChange={(e) => setForm({ ...form, description: e.target.value })}
                                     rows={3}
-                                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:text-white resize-none"
+                                    className="w-full px-4 py-3 gradient-bg-soft border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:text-white resize-none"
                                     placeholder="Deskripsi singkat (opsional)"
                                 />
                             </div>
@@ -1138,7 +1138,7 @@ export default function Book({ hasPermission }) {
 
                         <div className="flex gap-3 mt-6">
                             <button onClick={() => setShowForm(false)} className="flex-1 py-3 bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white text-xs font-black rounded-2xl transition-all uppercase tracking-widest">{text.cancel}</button>
-                            <button onClick={handleSave} className="flex-1 py-3 bg-indigo-600 text-white text-xs font-black rounded-2xl hover:bg-indigo-500 shadow-xl shadow-indigo-500/30 transition-all uppercase tracking-widest">{text.save}</button>
+                            <button onClick={handleSave} className="flex-1 py-3 gradient-bg text-white text-xs font-black rounded-2xl hover:bg-indigo-500 shadow-xl shadow-indigo-500/30 transition-all uppercase tracking-widest">{text.save}</button>
                         </div>
                     </div>
                 </div>
@@ -1147,7 +1147,7 @@ export default function Book({ hasPermission }) {
             {/* Delete All Confirmation Modal */}
             {showDeleteAllModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md" onClick={() => { setShowDeleteAllModal(false); setDeleteConfirmText(''); }}>
-                    <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden border border-slate-100 dark:border-slate-800 animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
+                    <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden border border-slate-100 dark:border-slate-800 animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
                         {/* Header with animated warning */}
                         <div className="relative px-8 pt-8 pb-6 text-center bg-gradient-to-b from-red-50 to-white dark:from-red-950/30 dark:to-slate-900">
                             <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center animate-pulse">
@@ -1162,7 +1162,7 @@ export default function Book({ hasPermission }) {
                         {/* Content */}
                         <div className="px-8 pb-6">
                             {/* Stats being deleted */}
-                            <div className="flex items-center justify-center gap-6 py-4 mb-5 bg-slate-50 dark:bg-slate-800/50 rounded-2xl">
+                            <div className="flex items-center justify-center gap-6 py-4 mb-5 gradient-bg-soft rounded-2xl">
                                 <div className="text-center">
                                     <p className="text-2xl font-extrabold text-slate-800 dark:text-white">{stats.accounts}</p>
                                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{text.stats.accounts}</p>

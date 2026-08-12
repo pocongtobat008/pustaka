@@ -792,7 +792,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                     {selectedUser ? (
                         <button
                             onClick={() => setSelectedUser(null)}
-                            className="p-3 bg-white dark:bg-slate-800 rounded-2xl text-slate-600 dark:text-slate-300 hover:bg-indigo-600 hover:text-white transition-all shadow-md hover:shadow-indigo-500/20 group"
+                            className="p-3 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl text-slate-600 dark:text-slate-300 hover:bg-indigo-600 hover:text-white transition-all shadow-md hover:shadow-indigo-500/20 group"
                         >
                             <ArrowLeft size={24} className="group-hover:-translate-x-1 transition-transform" />
                         </button>
@@ -812,7 +812,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                 </div>
 
                 <div className="flex items-center gap-2 w-full md:w-auto">
-                    <div className="flex items-center gap-1 bg-white dark:bg-slate-800 rounded-2xl p-1 ring-1 ring-slate-200 dark:ring-white/10 shadow-sm">
+                    <div className="flex items-center gap-1 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl p-1 ring-1 ring-slate-200 dark:ring-white/10 shadow-sm">
                         <button
                             onClick={handlePrevMonth}
                             className="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-xl transition-all text-slate-500"
@@ -905,7 +905,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     </div>
 
                                     <div className="flex items-center gap-4 mb-6">
-                                        <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-indigo-500"><UserIcon size={28} /></div>
+                                        <div className="w-14 h-14 rounded-2xl gradient-bg-soft flex items-center justify-center text-indigo-500"><UserIcon size={28} /></div>
                                         <div>
                                             <h3 className="font-black text-slate-800 dark:text-white leading-tight">{user.name}</h3>
                                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{user.department}</p>
@@ -983,7 +983,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     {hasPermission('job-due-date', 'create') && (
                                         <button
                                             onClick={() => { setEditingJob(null); setActiveType('recurring'); setShowForm(true); }}
-                                            className="p-2 bg-indigo-600 text-white rounded-xl hover:scale-110 transition-transform shadow-lg shadow-indigo-500/20"
+                                            className="p-2 gradient-bg text-white rounded-xl hover:scale-110 transition-transform shadow-lg shadow-indigo-500/20"
                                         >
                                             <Plus size={18} />
                                         </button>
@@ -1054,7 +1054,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     </div>
                                 </div>
                                 <div className="flex gap-2">
-                                    <div className="px-4 py-2 bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-white/5 shadow-sm">
+                                    <div className="px-4 py-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-xl border border-slate-100 dark:border-white/5 shadow-sm">
                                         <span className="text-[10px] font-black text-rose-500 uppercase">{activeWorkspace?.allIssues.filter(i => i.status !== 'resolved').length} {isEnglish ? 'Active' : 'Active'}</span>
                                     </div>
                                     <div className="px-4 py-2 bg-emerald-500 text-white rounded-xl shadow-sm">
@@ -1250,7 +1250,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                 {showStatusModal && (
                     <div className="fixed inset-0 z-[400] flex items-start justify-center overflow-y-auto p-4 sm:items-center">
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowStatusModal(false)} className="fixed inset-0 bg-slate-900/60 backdrop-blur-md" />
-                        <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="relative my-6 w-full max-w-md max-h-[92vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl sm:my-0">
+                        <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="relative my-6 w-full max-w-md max-h-[92vh] overflow-y-auto bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-2xl sm:my-0">
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="p-3 bg-indigo-500 rounded-2xl text-white shadow-lg shadow-indigo-500/20">
                                     <MessageSquare size={24} />
@@ -1280,7 +1280,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                         handleUpdateIssueStatus(statusUpdateForm.taskId, statusUpdateForm.issueId, statusUpdateForm.nextStatus, statusUpdateForm.note);
                                         setShowStatusModal(false);
                                     }}
-                                    className="flex-[2] py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-600/20"
+                                    className="flex-[2] py-4 gradient-bg text-white font-bold rounded-2xl shadow-lg shadow-indigo-600/20"
                                 >
                                     {isEnglish ? 'Save & Update Status' : 'Simpan & Update Status'}
                                 </button>
@@ -1295,7 +1295,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                 {viewingHistory && (
                     <div className="fixed inset-0 z-[500] flex items-start justify-center overflow-y-auto p-4 sm:items-center">
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setViewingHistory(null)} className="fixed inset-0 bg-slate-900/60 backdrop-blur-md" />
-                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative my-6 w-full max-w-sm max-h-[92vh] overflow-y-auto bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-2xl border border-emerald-500/20 sm:my-0">
+                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative my-6 w-full max-w-sm max-h-[92vh] overflow-y-auto bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-emerald-500/20 sm:my-0">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="p-2 bg-emerald-500 rounded-xl text-white"><Check size={18} /></div>
                                 <h4 className="font-black dark:text-white uppercase text-sm tracking-widest">{isEnglish ? 'Stage Detail' : 'Detail Tahap'}: {viewingHistory.label}</h4>
@@ -1315,7 +1315,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                 {viewingIssueDetail && (
                     <div className="fixed inset-0 z-[500] flex items-start justify-center overflow-y-auto p-4 sm:items-center">
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setViewingIssueDetail(null)} className="fixed inset-0 bg-slate-900/60 backdrop-blur-md" />
-                        <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="relative my-6 w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl overflow-hidden flex flex-col max-h-[92vh] sm:my-0">
+                        <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="relative my-6 w-full max-w-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[3rem] shadow-2xl overflow-hidden flex flex-col max-h-[92vh] sm:my-0">
                             {/* Header */}
                             <div className="p-8 pb-6 border-b border-slate-100 dark:border-white/5 bg-gradient-to-br from-indigo-50/50 to-white dark:from-white/5 dark:to-slate-900">
                                 <div className="flex justify-between items-start mb-6">
@@ -1376,7 +1376,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                         <div className="flex flex-wrap gap-2">
                                             {parseAssignedTo(viewingIssueDetail.assignedTo).map((pic, pIdx) => (
                                                 <div key={pIdx} className="flex items-center gap-2 px-3 py-1 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl border border-indigo-100 dark:border-indigo-500/20">
-                                                    <div className="w-5 h-5 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-[8px] font-black uppercase">
+                                                    <div className="w-5 h-5 rounded-lg gradient-bg text-white flex items-center justify-center text-[8px] font-black uppercase">
                                                         {pic.substring(0, 2)}
                                                     </div>
                                                     <span className="text-[9px] font-bold text-indigo-700 dark:text-indigo-300">
@@ -1423,7 +1423,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                             </div>
 
                             <div className="p-8 bg-slate-50 dark:bg-white/5 border-t border-slate-100 dark:border-white/5 flex justify-end">
-                                <button onClick={() => setViewingIssueDetail(null)} className="px-10 py-4 bg-white dark:bg-slate-800 text-slate-500 font-black uppercase text-xs tracking-widest rounded-2xl shadow-sm hover:bg-slate-100 transition-all active:scale-95">{text.closeDetail}</button>
+                                <button onClick={() => setViewingIssueDetail(null)} className="px-10 py-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-slate-500 font-black uppercase text-xs tracking-widest rounded-2xl shadow-sm hover:bg-slate-100 transition-all active:scale-95">{text.closeDetail}</button>
                             </div>
                         </motion.div>
                     </div>
@@ -1435,7 +1435,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                 {showPicModal && (
                     <div className="fixed inset-0 z-[300] flex items-start justify-center overflow-y-auto p-4 sm:items-center">
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowPicModal(false)} className="fixed inset-0 bg-slate-900/60 backdrop-blur-md" />
-                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative my-6 w-full max-w-md max-h-[92vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl sm:my-0">
+                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative my-6 w-full max-w-md max-h-[92vh] overflow-y-auto bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-2xl sm:my-0">
                             <h3 className="text-xl font-black dark:text-white mb-6">{text.chooseMonitoringPic}</h3>
                             <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                                 {users.filter(u => !monitoredPICs.find(p => (typeof p === 'string' ? p : p.username) === u.username)).map(u => (
@@ -1444,7 +1444,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                         onClick={() => handleAddPIC(u.username)}
                                         className="w-full flex items-center gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-white/5 hover:bg-indigo-500 hover:text-white transition-all group"
                                     >
-                                        <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center text-indigo-500 group-hover:bg-white/20 group-hover:text-white">
+                                        <div className="w-10 h-10 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl flex items-center justify-center text-indigo-500 group-hover:bg-white/20 group-hover:text-white">
                                             <UserIcon size={20} />
                                         </div>
                                         <div className="text-left">
@@ -1468,7 +1468,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                 {editingPicPrivacy && (
                     <div className="fixed inset-0 z-[300] flex items-start justify-center overflow-y-auto p-4 sm:items-center">
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setEditingPicPrivacy(null)} className="fixed inset-0 bg-slate-900/60 backdrop-blur-md" />
-                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative my-6 w-full max-w-md max-h-[92vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl sm:my-0">
+                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative my-6 w-full max-w-md max-h-[92vh] overflow-y-auto bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-2xl sm:my-0">
                             <h3 className="text-xl font-black dark:text-white mb-2">{text.picBlockPrivacy}</h3>
                             <p className="text-xs text-slate-500 mb-6 font-bold uppercase tracking-widest">{text.picVisibilityHelp} {users.find(u => u.username === editingPicPrivacy.username)?.name}</p>
 
@@ -1540,7 +1540,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                             {users.filter(u => u.username !== editingPicPrivacy.username && (u.name.toLowerCase().includes(userSearch.toLowerCase()) || u.username.toLowerCase().includes(userSearch.toLowerCase()))).map(u => (
                                                 <label key={u.username} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-white/5 cursor-pointer hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors border border-transparent hover:border-indigo-200 dark:hover:border-indigo-500/30">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-8 h-8 rounded-lg bg-white dark:bg-slate-800 flex items-center justify-center text-indigo-500">
+                                                        <div className="w-8 h-8 rounded-lg bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl flex items-center justify-center text-indigo-500">
                                                             <UserIcon size={14} />
                                                         </div>
                                                         <div className="min-w-0">
@@ -1566,7 +1566,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     </div>
                                 )}
                             </div>
-                            <button onClick={handleSavePicPrivacy} className="w-full mt-8 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-600/20">{text.saveSettings}</button>
+                            <button onClick={handleSavePicPrivacy} className="w-full mt-8 py-4 gradient-bg text-white font-bold rounded-2xl shadow-lg shadow-indigo-600/20">{text.saveSettings}</button>
                         </motion.div>
                     </div>
                 )}
@@ -1577,7 +1577,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                 {showIssueModal && (
                     <div className="fixed inset-0 z-[300] flex items-start justify-center overflow-y-auto p-4 sm:items-center">
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowIssueModal(false)} className="fixed inset-0 bg-slate-900/60 backdrop-blur-md" />
-                        <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="relative my-6 w-full max-w-md max-h-[92vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl sm:my-0">
+                        <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="relative my-6 w-full max-w-md max-h-[92vh] overflow-y-auto bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-2xl sm:my-0">
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="p-3 bg-rose-500 rounded-2xl text-white shadow-lg shadow-rose-500/20">
                                     <AlertCircle size={24} />
@@ -1618,7 +1618,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                             {users.filter(u => u.name.toLowerCase().includes(userSearch.toLowerCase()) || u.username.toLowerCase().includes(userSearch.toLowerCase())).map(u => (
                                                 <label key={u.username} className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 cursor-pointer hover:bg-indigo-50 transition-colors">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-8 h-8 rounded-lg bg-white dark:bg-slate-800 flex items-center justify-center text-indigo-500">
+                                                        <div className="w-8 h-8 rounded-lg bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl flex items-center justify-center text-indigo-500">
                                                             <UserIcon size={14} />
                                                         </div>
                                                         <div className="min-w-0">
@@ -1680,7 +1680,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                             initial={{ scale: 0.9, opacity: 0, y: 20 }}
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                            className="relative my-6 w-full max-w-lg max-h-[92vh] bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl overflow-hidden sm:my-0"
+                            className="relative my-6 w-full max-w-lg max-h-[92vh] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[2.5rem] shadow-2xl overflow-hidden sm:my-0"
                         >
                             <div className="p-8">
                                 <h3 className="text-xl font-black dark:text-white mb-6">
@@ -1844,7 +1844,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
 
                                     <div className="flex gap-3 pt-6">
                                         <button type="button" onClick={() => setShowForm(false)} className="flex-1 py-4 bg-slate-100 dark:bg-white/5 text-slate-500 font-bold rounded-2xl">{text.cancel}</button>
-                                        <button type="submit" className="flex-[2] py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-600/20">{text.saveSchedule}</button>
+                                        <button type="submit" className="flex-[2] py-4 gradient-bg text-white font-bold rounded-2xl shadow-lg shadow-indigo-600/20">{text.saveSchedule}</button>
                                     </div>
                                 </form>
                             </div>
@@ -1994,7 +1994,7 @@ function TaskItem({ task, selectedMonth, onToggle, onEdit, onDelete, onUpdateIss
                 {hasPermission('job-due-date', 'edit') && (
                     <button
                         onClick={onEdit}
-                        className="p-1.5 bg-white dark:bg-slate-800 rounded-lg shadow-sm text-slate-400 hover:text-indigo-500"
+                        className="p-1.5 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-lg shadow-sm text-slate-400 hover:text-indigo-500"
                     >
                         <Edit3 size={12} />
                     </button>
@@ -2002,7 +2002,7 @@ function TaskItem({ task, selectedMonth, onToggle, onEdit, onDelete, onUpdateIss
                 {hasPermission('job-due-date', 'delete') && (
                     <button
                         onClick={onDelete}
-                        className="p-1.5 bg-white dark:bg-slate-800 rounded-lg shadow-sm text-slate-400 hover:text-red-500"
+                        className="p-1.5 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-lg shadow-sm text-slate-400 hover:text-red-500"
                     >
                         <Trash2 size={12} />
                     </button>

@@ -63,7 +63,7 @@ const ToolCard = ({ tool, active, onClick, isDarkMode }) => {
         <button
             onClick={onClick}
             className={`group flex items-center gap-3 px-4 py-3.5 rounded-2xl border text-left transition-all ${active
-                ? (isDarkMode ? 'bg-white/10 border-white/20' : 'bg-white border-slate-200 shadow-md')
+                ? (isDarkMode ? 'bg-white/10 border-white/20' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-md')
                 : (isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white/50 border-slate-200/70 hover:bg-white hover:shadow-sm')}`}
         >
             <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${tool.gradient} flex items-center justify-center flex-shrink-0 shadow-lg ${tool.shadow}`}>
@@ -275,7 +275,7 @@ export default function AiPdfTools({ isDarkMode }) {
         if (result.type === 'json') {
             const d = result.data;
             return (
-                <div className={`mt-5 rounded-2xl border overflow-hidden ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`}>
+                <div className={`mt-5 rounded-2xl border overflow-hidden ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-sm'}`}>
                     <div className={`px-4 py-2.5 border-b flex items-center gap-2 ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
                         <ScanText size={13} className="text-cyan-500" />
                         <span className={`text-[11px] font-black uppercase tracking-wider ${isDarkMode ? 'text-white/60' : 'text-slate-500'}`}>Hasil OCR — {d.page_count || 0} halaman</span>
@@ -316,7 +316,7 @@ export default function AiPdfTools({ isDarkMode }) {
         // type 'file'
         const saved = (result.origSize && result.compSize) ? ((1 - result.compSize / result.origSize) * 100) : null;
         return (
-            <div className={`mt-5 rounded-2xl border p-5 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`}>
+            <div className={`mt-5 rounded-2xl border p-5 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-sm'}`}>
                 <div className="flex items-center gap-3">
                     <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${tool.gradient} flex items-center justify-center shadow-lg ${tool.shadow}`}>
                         <FileDown size={20} className="text-white" />
@@ -341,7 +341,7 @@ export default function AiPdfTools({ isDarkMode }) {
         );
     };
 
-    const inputCls = `px-2.5 py-1.5 rounded-lg text-xs border outline-none transition-colors ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-indigo-500/60' : 'bg-white border-slate-200 text-slate-700 placeholder-slate-300 focus:border-indigo-400'}`;
+    const inputCls = `px-2.5 py-1.5 rounded-lg text-xs border outline-none transition-colors ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-indigo-500/60' : 'bg-white/70 backdrop-blur-xl border-slate-200 text-slate-700 placeholder-slate-300 focus:border-indigo-400'}`;
 
     return (
         <div className="max-w-[1200px] mx-auto px-4 lg:px-6 py-6">
@@ -386,7 +386,7 @@ export default function AiPdfTools({ isDarkMode }) {
 
                 {/* Kanan: panel kerja */}
                 <div className="lg:col-span-3 space-y-4">
-                    <div className={`rounded-2xl border p-5 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`}>
+                    <div className={`rounded-2xl border p-5 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-sm'}`}>
                         <div className="flex items-center gap-2 mb-1">
                             <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${tool.gradient} flex items-center justify-center shadow ${tool.shadow}`}>
                                 <tool.icon size={15} className="text-white" />
@@ -512,7 +512,7 @@ export default function AiPdfTools({ isDarkMode }) {
                     {renderResult()}
 
                     {/* ── Riwayat hasil AI PDF Tools ── */}
-                    <div className={`rounded-2xl border overflow-hidden ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`}>
+                    <div className={`rounded-2xl border overflow-hidden ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-sm'}`}>
                         <button
                             onClick={() => setShowHistory(s => !s)}
                             className={`w-full flex items-center gap-2.5 px-4 py-3 text-left transition-colors ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-slate-50'}`}
@@ -618,7 +618,7 @@ export default function AiPdfTools({ isDarkMode }) {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setViewTextTarget(null)}>
                     <div
                         onClick={e => e.stopPropagation()}
-                        className={`w-full max-w-2xl rounded-2xl border shadow-2xl animate-[fadeInUp_.2s_ease] overflow-hidden ${isDarkMode ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-200'}`}
+                        className={`w-full max-w-2xl rounded-2xl border shadow-2xl animate-[fadeInUp_.2s_ease] overflow-hidden ${isDarkMode ? 'bg-slate-900 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200'}`}
                     >
                         <div className={`flex items-center gap-2.5 px-4 py-3 border-b ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
                             <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${isDarkMode ? 'bg-cyan-500/15 text-cyan-300' : 'bg-cyan-50 text-cyan-600'}`}>
@@ -658,7 +658,7 @@ export default function AiPdfTools({ isDarkMode }) {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setDelHistTarget(null)}>
                     <div
                         onClick={e => e.stopPropagation()}
-                        className={`w-full max-w-sm rounded-2xl border p-5 shadow-2xl animate-[fadeInUp_.2s_ease] ${isDarkMode ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-200'}`}
+                        className={`w-full max-w-sm rounded-2xl border p-5 shadow-2xl animate-[fadeInUp_.2s_ease] ${isDarkMode ? 'bg-slate-900 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200'}`}
                     >
                         <div className="flex items-start gap-3">
                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${isDarkMode ? 'bg-rose-500/15 text-rose-300' : 'bg-rose-50 text-rose-500'}`}>

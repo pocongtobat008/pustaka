@@ -58,13 +58,13 @@ export default function SystemLogs({ isDarkMode }) {
                 <div className="flex bg-gray-100 dark:bg-slate-800 border dark:border-slate-700/50 p-1 rounded-xl shadow-inner">
                     <button
                         onClick={() => setLogType('error')}
-                        className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${logType === 'error' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-md' : 'text-gray-500 dark:text-slate-500 hover:text-gray-700 dark:hover:text-slate-300'}`}
+                        className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${logType === 'error' ? 'gradient-bg text-white shadow-md' : 'text-gray-500 dark:text-slate-500 hover:text-gray-700 dark:hover:text-slate-300'}`}
                     >
                         <AlertCircle size={16} /> {text.systemErrors}
                     </button>
                     <button
                         onClick={() => setLogType('ocr')}
-                        className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all ${logType === 'ocr' ? 'bg-white dark:bg-slate-700 text-amber-600 shadow-sm' : 'text-gray-500'}`}
+                        className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all ${logType === 'ocr' ? 'bg-white/70 dark:bg-slate-700/60 backdrop-blur-xl text-amber-600 shadow-sm' : 'text-gray-500'}`}
                     >
                         <FileWarning size={16} /> {text.ocrFailures}
                     </button>
@@ -78,10 +78,10 @@ export default function SystemLogs({ isDarkMode }) {
                             placeholder={text.searchPlaceholder}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="w-full pl-10 pr-4 py-2 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500"
                         />
                     </div>
-                    <button onClick={fetchLogs} className="p-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl hover:bg-gray-50">
+                    <button onClick={fetchLogs} className="p-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-xl hover:bg-gray-50">
                         <RefreshCw size={20} className={`text-gray-500 ${isLoading ? 'animate-spin' : ''}`} />
                     </button>
                 </div>

@@ -330,7 +330,7 @@ export default function Inventory({
 
             {/* AI SMART INSIGHT BANNER */}
             <div className={`mb-6 p-4 rounded-2xl border backdrop-blur-md flex items-center gap-4 animate-in slide-in-from-top-4 duration-700 ${insight.color}`}>
-                <div className="p-2.5 bg-white dark:bg-slate-900 rounded-xl shadow-sm shrink-0">
+                <div className="p-2.5 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-xl shadow-sm shrink-0">
                     {insight.icon}
                 </div>
                 <div className="flex-1">
@@ -350,20 +350,20 @@ export default function Inventory({
                         <div className="flex bg-gray-100 dark:bg-slate-800 border dark:border-slate-700/50 p-1.5 rounded-2xl backdrop-blur-sm shadow-inner">
                             <button
                                 onClick={() => setActiveInvTab('internal')}
-                                className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all duration-300 ${activeInvTab === 'internal' ? 'bg-white dark:bg-slate-700 shadow-lg text-indigo-600 dark:text-indigo-300 scale-105 ring-1 ring-black/5' : 'text-gray-500 dark:text-slate-500 hover:text-gray-700 dark:hover:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-800/50'}`}
+                                className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all duration-300 ${activeInvTab === 'internal' ? 'gradient-bg text-white shadow-lg scale-105 ring-1 ring-black/5' : 'text-gray-500 dark:text-slate-500 hover:text-gray-700 dark:hover:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-800/50'}`}
                             >
                                 <Grid3x3 size={18} /> {text.tabWarehouse}
                                 {inventorySearchQuery && internalMatchCount > 0 && (
-                                    <span className="bg-indigo-600 text-white text-[10px] px-1.5 py-0.5 rounded-full animate-bounce">{internalMatchCount}</span>
+                                    <span className="gradient-bg text-white text-[10px] px-1.5 py-0.5 rounded-full animate-bounce">{internalMatchCount}</span>
                                 )}
                             </button>
                             <button
                                 onClick={() => setActiveInvTab('external')}
-                                className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all duration-300 ${activeInvTab === 'external' ? 'bg-white dark:bg-slate-700 shadow-lg text-indigo-600 dark:text-indigo-300 scale-105 ring-1 ring-black/5' : 'text-gray-500 dark:text-slate-500 hover:text-gray-700 dark:hover:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-800/50'}`}
+                                className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all duration-300 ${activeInvTab === 'external' ? 'gradient-bg text-white shadow-lg scale-105 ring-1 ring-black/5' : 'text-gray-500 dark:text-slate-500 hover:text-gray-700 dark:hover:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-800/50'}`}
                             >
                                 <Truck size={18} /> {text.tabIndoarsip}
                                 {inventorySearchQuery && externalMatchCount > 0 && (
-                                    <span className="bg-indigo-600 text-white text-[10px] px-1.5 py-0.5 rounded-full animate-bounce">{externalMatchCount}</span>
+                                    <span className="gradient-bg text-white text-[10px] px-1.5 py-0.5 rounded-full animate-bounce">{externalMatchCount}</span>
                                 )}
                             </button>
                         </div>
@@ -445,7 +445,7 @@ export default function Inventory({
                                     <button
                                         onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                                         disabled={currentPage === 1}
-                                        className="p-2 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                        className="p-2 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-slate-700 dark:text-slate-200 shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                                         aria-label="Previous Page"
                                     >
                                         <ChevronLeft size={20} />
@@ -461,7 +461,7 @@ export default function Inventory({
                                     <button
                                         onClick={() => setCurrentPage(p => Math.min(Math.ceil(TOTAL_SLOTS / itemsPerPage), p + 1))}
                                         disabled={currentPage >= Math.ceil(TOTAL_SLOTS / itemsPerPage)}
-                                        className="p-2 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                        className="p-2 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-slate-700 dark:text-slate-200 shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                                         aria-label="Next Page"
                                     >
                                         <ChevronRight size={20} />
@@ -494,7 +494,7 @@ export default function Inventory({
             {/* MOVING/PROCESSING LOADING OVERLAY - Mencegah Data Corrupt saat Pindah Slot */}
             {isProcessing && (
                 <div className="fixed inset-0 z-[150] bg-black/60 backdrop-blur-md flex items-center justify-center">
-                    <div className="bg-white dark:bg-slate-900 p-10 rounded-[3rem] shadow-2xl flex flex-col items-center animate-in zoom-in-95 max-w-sm text-center border border-white/20">
+                    <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl p-10 rounded-[3rem] shadow-2xl flex flex-col items-center animate-in zoom-in-95 max-w-sm text-center border border-white/20">
                         <div className="relative mb-8">
                             <div className="w-24 h-24 border-4 border-indigo-100 dark:border-indigo-900/30 rounded-full"></div>
                             <div className="w-24 h-24 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>

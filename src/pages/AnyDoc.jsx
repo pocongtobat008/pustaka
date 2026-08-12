@@ -147,7 +147,7 @@ const ChipEditor = ({ items, onChange, placeholder, isDarkMode, accent = 'indigo
                     placeholder={placeholder}
                     className={`flex-1 min-w-0 px-2.5 py-1.5 rounded-lg text-xs border outline-none transition-colors ${isDarkMode
                         ? 'bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-indigo-500/60'
-                        : 'bg-white border-slate-200 text-slate-700 placeholder-slate-300 focus:border-indigo-400'}`}
+                        : 'bg-white/70 backdrop-blur-xl border-slate-200 text-slate-700 placeholder-slate-300 focus:border-indigo-400'}`}
                 />
                 <button type="button" onClick={add}
                     className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all ${isDarkMode
@@ -404,14 +404,14 @@ export default function AnyDoc({ isDarkMode }) {
                     onClick={() => { setShowHistory(!showHistory); if (!showHistory) loadHistory(); }}
                     className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all border ${isDarkMode
                         ? 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10'
-                        : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 shadow-sm'}`}
+                        : 'bg-white/70 backdrop-blur-xl border-slate-200 text-slate-600 hover:bg-slate-50 shadow-sm'}`}
                 >
                     <History size={15} /> Riwayat ({history.length})
                 </button>
             </div>
 
             {/* Mode toggle */}
-            <div className={`inline-flex p-1 rounded-xl border gap-1 mb-5 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`}>
+            <div className={`inline-flex p-1 rounded-xl border gap-1 mb-5 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-sm'}`}>
                 <button
                     onClick={() => setMode('convert')}
                     className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${mode === 'convert'
@@ -432,7 +432,7 @@ export default function AnyDoc({ isDarkMode }) {
 
             {/* History drawer */}
             {showHistory && (
-                <div className={`overflow-hidden mb-4 rounded-2xl border p-4 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`}>
+                <div className={`overflow-hidden mb-4 rounded-2xl border p-4 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-sm'}`}>
                     <div className="flex items-center justify-between mb-3">
                         <h3 className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>Hasil Konversi Terbaru</h3>
                         <button onClick={() => setShowHistory(false)} className={`p-1 rounded-lg ${isDarkMode ? 'hover:bg-white/10 text-white/50' : 'hover:bg-slate-100 text-slate-400'}`}><X size={15} /></button>
@@ -532,7 +532,7 @@ export default function AnyDoc({ isDarkMode }) {
                     </button>
 
                     {/* Supported formats */}
-                    <div className={`rounded-2xl border p-4 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`}>
+                    <div className={`rounded-2xl border p-4 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-sm'}`}>
                         <p className={`text-[10px] font-black uppercase tracking-widest mb-3 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Format Didukung</p>
                         <div className="grid grid-cols-2 gap-2">
                             {SUPPORTED_FORMATS.map((f, i) => (
@@ -561,7 +561,7 @@ export default function AnyDoc({ isDarkMode }) {
                     ) : (
                         <>
                             {/* Result meta */}
-                            <div className={`rounded-2xl border p-4 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`}>
+                            <div className={`rounded-2xl border p-4 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-sm'}`}>
                                 <div className="flex items-center gap-3 flex-wrap">
                                     <div className={`w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0`}>
                                         <FileText size={16} className="text-white" />
@@ -583,13 +583,13 @@ export default function AnyDoc({ isDarkMode }) {
                                     <button onClick={handleCopy}
                                         className={`flex items-center justify-center gap-1.5 py-2 rounded-xl text-[11px] font-bold transition-all border ${isDarkMode
                                             ? 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10'
-                                            : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
+                                            : 'bg-white/70 backdrop-blur-xl border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
                                         {copied ? <Check size={13} className="text-emerald-500" /> : <Copy size={13} />} {copied ? 'Tersalin' : 'Salin'}
                                     </button>
                                     <button onClick={handleDownloadMd}
                                         className={`flex items-center justify-center gap-1.5 py-2 rounded-xl text-[11px] font-bold transition-all border ${isDarkMode
                                             ? 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10'
-                                            : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
+                                            : 'bg-white/70 backdrop-blur-xl border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
                                         <Download size={13} /> Unduh .md
                                     </button>
                                     <button onClick={() => handleSave('archive')} disabled={!!saving}
@@ -608,7 +608,7 @@ export default function AnyDoc({ isDarkMode }) {
                             </div>
 
                             {/* Markdown preview */}
-                            <div className={`rounded-2xl border overflow-hidden ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`}>
+                            <div className={`rounded-2xl border overflow-hidden ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-sm'}`}>
                                 <div className={`flex items-center gap-2 px-4 py-2.5 border-b ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
                                     <div className="flex gap-1.5">
                                         <span className="w-2.5 h-2.5 rounded-full bg-rose-400" />
@@ -625,7 +625,7 @@ export default function AnyDoc({ isDarkMode }) {
                             </div>
 
                             {/* Raw toggle */}
-                            <details className={`rounded-2xl border ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'}`}>
+                            <details className={`rounded-2xl border ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200'}`}>
                                 <summary className={`px-4 py-2.5 text-[11px] font-bold cursor-pointer select-none flex items-center gap-1.5 ${isDarkMode ? 'text-white/50 hover:text-white/80' : 'text-slate-400 hover:text-slate-600'}`}>
                                     <FileCode2 size={13} /> Lihat kode Markdown mentah
                                 </summary>
@@ -692,7 +692,7 @@ export default function AnyDoc({ isDarkMode }) {
                             </div>
 
                             {extractFiles.length > 0 && (
-                                <div className={`rounded-2xl border p-3 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`}>
+                                <div className={`rounded-2xl border p-3 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-sm'}`}>
                                     <div className="space-y-1.5">
                                         {extractFiles.map((f, i) => (
                                             <div key={i} className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg ${isDarkMode ? 'bg-white/5' : 'bg-slate-50'}`}>
@@ -706,7 +706,7 @@ export default function AnyDoc({ isDarkMode }) {
                                 </div>
                             )}
 
-                            <div className={`rounded-2xl border p-4 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`}>
+                            <div className={`rounded-2xl border p-4 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-sm'}`}>
                                 <p className={`text-[10px] font-black uppercase tracking-widest mb-3 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Mapping Kolom</p>
                                 <p className={`text-[11px] font-bold mb-1.5 flex items-center gap-1 ${isDarkMode ? 'text-indigo-300' : 'text-indigo-600'}`}>
                                     <Table2 size={12} /> Kolom Data Nota (1 baris per PDF)
@@ -751,7 +751,7 @@ export default function AnyDoc({ isDarkMode }) {
                                         const ok = results.filter(r => r.success).length;
                                         const fail = results.length - ok;
                                         return (
-                                            <div className={`rounded-2xl border p-4 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`}>
+                                            <div className={`rounded-2xl border p-4 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-sm'}`}>
                                                 <div className="flex items-center gap-3 flex-wrap">
                                                     <div className={`w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center flex-shrink-0`}>
                                                         <FileSpreadsheet size={16} className="text-white" />
@@ -785,7 +785,7 @@ export default function AnyDoc({ isDarkMode }) {
                                         );
                                     })()}
 
-                                    <div className={`rounded-2xl border overflow-hidden ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`}>
+                                    <div className={`rounded-2xl border overflow-hidden ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-sm'}`}>
                                         <div className="overflow-x-auto">
                                             <table className="w-full text-left text-xs">
                                                 <thead>
@@ -810,7 +810,7 @@ export default function AnyDoc({ isDarkMode }) {
                                                                                 onChange={e => updateCell(ri, f, e.target.value)}
                                                                                 className={`w-full px-2 py-1 rounded-lg text-[11px] border outline-none transition-colors ${isDarkMode
                                                                                     ? 'bg-white/5 border-white/10 text-white focus:border-emerald-500/60'
-                                                                                    : 'bg-white border-slate-200 text-slate-700 focus:border-emerald-400'}`}
+                                                                                    : 'bg-white/70 backdrop-blur-xl border-slate-200 text-slate-700 focus:border-emerald-400'}`}
                                                                             />
                                                                         ) : (
                                                                             <span className={`text-[11px] ${isDarkMode ? 'text-white/20' : 'text-slate-300'}`}>—</span>
@@ -857,7 +857,7 @@ export default function AnyDoc({ isDarkMode }) {
                                                                                                             onChange={e => updateItemCell(ri, ii, f, e.target.value)}
                                                                                                             className={`w-full px-2 py-1 rounded-md text-[11px] border outline-none transition-colors ${isDarkMode
                                                                                                                 ? 'bg-white/5 border-white/10 text-white focus:border-emerald-500/60'
-                                                                                                                : 'bg-white border-slate-200 text-slate-700 focus:border-emerald-400'}`}
+                                                                                                                : 'bg-white/70 backdrop-blur-xl border-slate-200 text-slate-700 focus:border-emerald-400'}`}
                                                                                                         />
                                                                                                     </td>
                                                                                                 ))}

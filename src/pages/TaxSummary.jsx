@@ -203,7 +203,7 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy, isEnglish }) => {
 
     return (
         <div className="space-y-6 animate-in slide-in-from-bottom-2 duration-500">
-            <Card className="bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700 p-4">
+            <Card className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-gray-200 dark:border-slate-700 p-4">
                 <div className="space-y-4">
                     <div className="flex gap-2 border-b border-gray-100 dark:border-slate-700 pb-4 overflow-x-auto">
                         {[
@@ -890,7 +890,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                     </div>
 
                     {config.pphTypes.map(type => (
-                        <div key={type} className="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-indigo-100 dark:border-slate-700 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
+                        <div key={type} className="p-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-indigo-100 dark:border-slate-700 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
                             <div className="absolute right-0 top-0 w-16 h-16 bg-gradient-to-br from-indigo-500/10 to-transparent rounded-bl-3xl -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
                             <div className="flex justify-between items-start">
                                 <h4 className="text-xs text-gray-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-1">{type}</h4>
@@ -943,7 +943,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                                             setModalTab('tax-form-pph');
                                             setIsModalOpen(true);
                                         }}
-                                        className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/20"
+                                        className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold gradient-bg text-white rounded-lg hover:opacity-95 transition-opacity shadow-lg shadow-indigo-500/20"
                                     >
                                         <Plus size={14} /> {isEnglish ? 'Input PPh' : 'Input PPh'}
                                     </button>
@@ -1187,7 +1187,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                                             setModalTab('tax-form-ppn');
                                             setIsModalOpen(true);
                                         }}
-                                        className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/20"
+                                        className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold gradient-bg text-white rounded-lg hover:opacity-95 transition-opacity shadow-lg shadow-indigo-500/20"
                                     >
                                         <Plus size={14} /> Input PPN
                                     </button>
@@ -1381,19 +1381,19 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                 <div className="flex bg-gray-100 dark:bg-slate-800 border dark:border-slate-700/50 p-1 rounded-xl w-fit shadow-inner">
                     <button
                         onClick={() => setActiveTab('pph')}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'pph' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-600 dark:text-indigo-400' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'pph' ? 'gradient-bg shadow-sm text-white' : 'text-gray-500 hover:text-gray-700'}`}
                     >
                         PPh (Pajak Penghasilan)
                     </button>
                     <button
                         onClick={() => setActiveTab('ppn')}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'ppn' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-600 dark:text-indigo-400' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'ppn' ? 'gradient-bg shadow-sm text-white' : 'text-gray-500 hover:text-gray-700'}`}
                     >
                         PPN (Pajak Pertambahan Nilai)
                     </button>
                     <button
                         onClick={() => setActiveTab('comparison')}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'comparison' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-600 dark:text-indigo-400' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'comparison' ? 'gradient-bg shadow-sm text-white' : 'text-gray-500 hover:text-gray-700'}`}
                     >
                         <SlidersHorizontal size={14} className="inline mr-1" /> Perbandingan
                     </button>
@@ -1401,7 +1401,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
 
                 {/* Import/Export Actions */}
                 <div className="flex flex-wrap gap-2">
-                    <div className="flex gap-1 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg p-1">
+                    <div className="flex gap-1 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-lg p-1">
                         {(activeTab === 'pph' || activeTab === 'comparison') && (
                             <button
                                 onClick={() => downloadTemplate('pph')}
@@ -1430,7 +1430,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                             {(activeTab === 'pph' || activeTab === 'comparison') && (
                                 <button
                                     onClick={() => { setImportMode('pph'); setTimeout(() => fileInputRef.current?.click(), 0); }}
-                                    className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm flex items-center gap-2 transition-colors shadow-sm"
+                                    className="px-3 py-2 bg-indigo-600 hover:opacity-95 text-white rounded-lg text-sm flex items-center gap-2 transition-colors shadow-sm"
                                 >
                                     <FileSpreadsheet size={16} /> Import PPh
                                 </button>
@@ -1450,7 +1450,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
 
             {/* AI SMART INSIGHT BANNER */}
             <div className={`p-4 rounded-2xl border backdrop-blur-md flex items-center gap-4 animate-in slide-in-from-top-4 duration-700 ${insight.color}`}>
-                <div className="p-2.5 bg-white dark:bg-slate-900 rounded-xl shadow-sm shrink-0">
+                <div className="p-2.5 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-xl shadow-sm shrink-0">
                     {insight.icon}
                 </div>
                 <div className="flex-1">
