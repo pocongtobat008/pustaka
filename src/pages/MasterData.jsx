@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Plus, Edit3, Trash2, Building2, GitCommit, ShieldCheck, ChevronRight, ChevronLeft, Users, User, Shield, History, Search, Clock, ChevronDown, ChevronUp, AlertCircle, FileText, Activity, Bot, Save, Loader2, Zap, Upload, Download, Link, Eye, RefreshCw, X, Info, Brain, CheckCircle2, XCircle, Gauge } from 'lucide-react';
 import { Card } from '../components/ui/Card';
+import { Textarea } from '../components/ui/textarea';
 import KnowledgeGraph from '../components/KnowledgeGraph.jsx';
 import { apiClient, API_URL } from '../services/apiClient.js';
 import { APP_MODULES } from '../utils/permissions';
@@ -2326,10 +2327,9 @@ export default function MasterData({
                                             onChange={(e) => setBrainIngestForm({ ...brainIngestForm, title: e.target.value })}
                                             required
                                         />
-                                        <textarea
+                                        <Textarea
                                             placeholder="Konten Markdown..."
                                             rows={4}
-                                            className="w-full px-3 py-2 border rounded-lg dark:bg-slate-800 dark:border-slate-700 dark:text-white text-sm"
                                             value={brainIngestForm.markdown}
                                             onChange={(e) => setBrainIngestForm({ ...brainIngestForm, markdown: e.target.value })}
                                             required

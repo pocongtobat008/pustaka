@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react';
+import { Textarea } from '../components/ui/textarea';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -2646,7 +2647,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         </div>
                         <input className={inputCls} placeholder="NPWP (16 digit)" value={dealerForm.npwp} onChange={e => setDealerForm({ ...dealerForm, npwp: e.target.value.replace(/\D/g, '').slice(0, 16) })} />
                         <input className={inputCls} placeholder="Nama Dealer" value={dealerForm.nama} onChange={e => setDealerForm({ ...dealerForm, nama: e.target.value })} />
-                        <textarea className={inputCls} placeholder="Alamat" rows={2} value={dealerForm.alamat} onChange={e => setDealerForm({ ...dealerForm, alamat: e.target.value })} />
+                        <Textarea placeholder="Alamat" rows={2} value={dealerForm.alamat} onChange={e => setDealerForm({ ...dealerForm, alamat: e.target.value })} />
                         <div className="flex gap-2">
                             <button onClick={saveDealer} disabled={savingDealer} className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl gradient-bg hover:opacity-95 text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
                                 <Plus size={15} /> {savingDealer ? 'Menyimpan...' : (dealerEditId ? 'Update' : 'Simpan')}
@@ -3019,7 +3020,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">
                                     Penerima Email Tambahan (Custom)
                                 </label>
-                                <textarea
+                                <Textarea
                                     value={flowForm.custom_emails}
                                     onChange={e => setFlowForm({ ...flowForm, custom_emails: e.target.value })}
                                     rows={2}
@@ -3200,7 +3201,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                                 </div>
                                                                 <div className="text-sm space-y-1">
                                                                     <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Isi Email (HTML)</label>
-                                                                    <textarea
+                                                                    <Textarea
                                                                         value={emailTplEditing.body_html}
                                                                         onChange={e => setEmailTplEditing({ ...emailTplEditing, body_html: e.target.value })}
                                                                         rows={8}
@@ -3361,7 +3362,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             </div>
                             <div className="md:col-span-2">
                                 <label className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 block">Catatan</label>
-                                <textarea className={inputCls} rows={1} value={settleNotes} onChange={e => setSettleNotes(e.target.value)} />
+                                <Textarea rows={1} value={settleNotes} onChange={e => setSettleNotes(e.target.value)} />
                             </div>
                         </div>
 
@@ -3815,7 +3816,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         </div>
                         <div>
                             <label className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 block">Catatan (opsional)</label>
-                            <textarea className={inputCls} rows={2} value={taxRequestNotes} onChange={e => setTaxRequestNotes(e.target.value)} placeholder="Catatan untuk bagian tax..." />
+                            <Textarea rows={2} value={taxRequestNotes} onChange={e => setTaxRequestNotes(e.target.value)} placeholder="Catatan untuk bagian tax..." />
                         </div>
                         <div className="flex items-center justify-end gap-2">
                             <button onClick={() => setShowTaxRequest(false)} className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm font-semibold">Batal</button>
@@ -4025,7 +4026,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         {config.noteLabel && (
                                             <div className="mt-4">
                                                 <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">{config.noteLabel}</label>
-                                                <textarea
+                                                <Textarea
                                                     autoFocus
                                                     rows={3}
                                                     value={actionModal.notes || ''}

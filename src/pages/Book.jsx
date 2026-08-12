@@ -11,6 +11,7 @@ import { Card } from '../components/ui/Card';
 import { Modal } from '../components/ui/Modal';
 import { Input } from '../components/ui/input';
 import { Select } from '../components/ui/select';
+import { Textarea } from '../components/ui/textarea';
 import { db as api } from '../services/database';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useToast } from '../components/ui/Toast';
@@ -1127,11 +1128,11 @@ export default function Book({ hasPermission }) {
 
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{text.description}</label>
-                                <textarea
+                                <Textarea
                                     value={form.description}
                                     onChange={(e) => setForm({ ...form, description: e.target.value })}
                                     rows={3}
-                                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-4 py-3 text-sm text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 resize-none"
+                                    className="resize-none"
                                     placeholder="Deskripsi singkat (opsional)"
                                 />
                             </div>
