@@ -12,8 +12,9 @@ Semua editing dilakukan di sini — **produksi di `/home/project/pustaka` tidak 
 | Frontend | `http://localhost:5173` (vite dev + HMR) | `http://<ip-server>:5174` (**build statis** via `vite preview`) |
 | Backend | `127.0.0.1:5006` | `127.0.0.1:5005` |
 | Database | `pustaka_dev` (clone) | `pustaka` |
-| PM2 | `dev-backend`, `dev-frontend` (namespace `dev`) | `archive-*` (namespace `default`) |
-| Worker | ❌ tidak dijalankan | ✅ bullmq + polling |
+| Redis | ❌ dimatikan (isolasi penuh) | ✅ aktif (BullMQ + cache) |
+| PM2 | `dev-backend`, `dev-frontend`, `dev-worker` (ns `dev`) | `archive-*` (ns `default`) |
+| Worker | ✅ polling (DB `job_queue` dev) | ✅ bullmq + polling |
 
 ## Alur kerja harian
 
@@ -33,7 +34,7 @@ bash scripts/deploy-prod.sh   # commit+push dev → pull prod → build → rest
 ```bash
 pm2 start ecosystem.dev.config.cjs   # atau bash scripts/dev-up.sh
 pm2 stop  ecosystem.dev.config.cjs   # atau bash scripts/dev-stop.sh
-pm2 logs dev-backend --lines 50      # lihat log backend dev
+pm2 logs dev-worker --lines 50       # lihat log worker dev
 ```
 
 ## Catatan penting
@@ -42,6 +43,11 @@ pm2 logs dev-backend --lines 50      # lihat log backend dev
   Password admin dev di-reset ke `admin123` (produksi tidak berubah).
 - **Job queue berbasis DB** (tabel `job_queue`) — karena dev memakai DB sendiri,
   job dari dev otomatis terisolasi dari produksi. ✅
+- **Redis sengaja dimatikan di dev** (`REDIS_PORT=6399` di ecosystem) — seluruh
+  stack dev fallback ke polling DB, jadi **tidak pernah menyentuh Redis/antrian produksi**. ✅
+- **Dev worker aktif** (mode polling). Catatan: setiap kali worker dev start,
+  ia melakukan **semantic indexing ulang seluruh data dev** (embedding lewat model
+  lokal) — butuh beberapa menit & CPU. Hal ini wajar, hanya di data dev.
 - **Port & proxy** diatur lewat env: backend `PORT=5006`, vite `VITE_API_TARGET=http://127.0.0.1:5006`
   (default tetap 5005 jika env tidak ada). **Saat deploy**, `deploy-prod.sh` otomatis
   memaksa `.env` produksi ke `PORT=5005` agar API produksi tidak pindah port.
@@ -56,8 +62,6 @@ pm2 logs dev-backend --lines 50      # lihat log backend dev
   - Setiap deploy harus build ulang → sudah otomatis ada di `deploy-prod.sh`.
 - **Branch `main` produksi hanya bergerak lewat `scripts/deploy-prod.sh`** —
   jangan commit langsung di `/home/project/pustaka` agar tidak bentrok saat `--ff-only`.
-- **Worker dev tidak dijalankan** — fitur yang butuh job asinkron (OCR batch, dsb.)
-  belum aktif di dev. Backend & seluruh CRUD tetap berfungsi.
 - Sinkronisasi ulang DB dev dari produksi (opsional, saat butuh data terbaru):
   ```bash
   sudo -u postgres pg_dump pustaka | sudo -u postgres psql -q pustaka_dev
