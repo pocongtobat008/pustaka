@@ -43,5 +43,16 @@ export default defineConfig({
         secure: false,
       }
     }
+  },
+  // Mode preview (produksi statis: vite build + vite preview)
+  // Proxy sama seperti dev-server agar /api, /uploads, /socket.io tetap jalan
+  preview: {
+    host: true,
+    allowedHosts: ["pustaka.izal.my.id"],
+    proxy: {
+      '/api': { target: apiTarget, changeOrigin: true, secure: false },
+      '/uploads': { target: apiTarget, changeOrigin: true, secure: false },
+      '/socket.io': { target: apiTarget, ws: true, changeOrigin: true, secure: false }
+    }
   }
 })
