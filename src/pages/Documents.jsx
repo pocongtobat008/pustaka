@@ -20,6 +20,7 @@ import Modal from '../components/common/Modal';
 import PdfViewer from '../components/ui/PdfViewer';
 import { useDocStore } from '../store/useDocStore';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useModalScrollLock } from '../components/ui/useModalKeydown';
 
 export default function Documents({
     docList, folders, currentFolderId, setCurrentFolderId,
@@ -130,6 +131,9 @@ export default function Documents({
     const [isRestoring, setIsRestoring] = useState(false);
 
     const bulkInputRef = useRef(null);
+
+    // Kunci scroll body saat modal inline / preview terbuka (konsisten dengan Modal bersama)
+    useModalScrollLock(!!(showHistory || isFolderModalOpen || isMgmtModalOpen || isRevisionModalOpen || selectedDocPreview || previewFile));
 
     const dataBoxFolder = (folders || []).find(f => f.name === 'DataBox');
     const isViewingDataBox = currentFolderId && dataBoxFolder && String(currentFolderId) === String(dataBoxFolder.id);
