@@ -13,7 +13,7 @@ Semua editing dilakukan di sini — **produksi di `/home/project/pustaka` tidak 
 | Backend | `127.0.0.1:5006` | `127.0.0.1:5005` |
 | Database | `pustaka_dev` (clone) | `pustaka` |
 | PM2 | `dev-backend`, `dev-frontend` (namespace `dev`) | `archive-*` (namespace `default`) |
-| Worker | ❌ tidak dijalankan (hindari antrian Redis tercampur) | ✅ bullmq + polling |
+| Worker | ❌ tidak dijalankan | ✅ bullmq + polling |
 
 ## Alur kerja harian
 
@@ -40,8 +40,17 @@ pm2 logs dev-backend --lines 50      # lihat log backend dev
 
 - **DB dev terpisah** (`pustaka_dev`) — data uji-coba tidak pernah masuk produksi.
   Password admin dev di-reset ke `admin123` (produksi tidak berubah).
+- **Job queue berbasis DB** (tabel `job_queue`) — karena dev memakai DB sendiri,
+  job dari dev otomatis terisolasi dari produksi. ✅
 - **Port & proxy** diatur lewat env: backend `PORT=5006`, vite `VITE_API_TARGET=http://127.0.0.1:5006`
-  (default tetap 5005 jika env tidak ada — aman untuk produksi).
+  (default tetap 5005 jika env tidak ada). **Saat deploy**, `deploy-prod.sh` otomatis
+  memaksa `.env` produksi ke `PORT=5005` agar API produksi tidak pindah port.
+- **⚠️ node_modules adalah hardlink** (copy hemat disk dari produksi):
+  - JANGAN jalankan `chown`/`chmod` pada isi `node_modules` di folder ini —
+    akan ikut mengubah file produksi.
+  - `npm install` aman (npm mengganti file, memutus hardlink sendiri).
+- **Branch `main` produksi hanya bergerak lewat `scripts/deploy-prod.sh`** —
+  jangan commit langsung di `/home/project/pustaka` agar tidak bentrok saat `--ff-only`.
 - **Worker dev tidak dijalankan** — fitur yang butuh job asinkron (OCR batch, dsb.)
   belum aktif di dev. Backend & seluruh CRUD tetap berfungsi.
 - Sinkronisasi ulang DB dev dari produksi (opsional, saat butuh data terbaru):
