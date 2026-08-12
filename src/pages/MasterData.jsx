@@ -2,6 +2,8 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Plus, Edit3, Trash2, Building2, GitCommit, ShieldCheck, ChevronRight, ChevronLeft, Users, User, Shield, History, Search, Clock, ChevronDown, ChevronUp, AlertCircle, FileText, Activity, Bot, Save, Loader2, Zap, Upload, Download, Link, Eye, RefreshCw, X, Info, Brain, CheckCircle2, XCircle, Gauge } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Textarea } from '../components/ui/textarea';
+import { Input } from '../components/ui/input';
+import { Select } from '../components/ui/select';
 import KnowledgeGraph from '../components/KnowledgeGraph.jsx';
 import { apiClient, API_URL } from '../services/apiClient.js';
 import { APP_MODULES } from '../utils/permissions';
@@ -1044,8 +1046,8 @@ export default function MasterData({
                     <div className="flex justify-between items-center mb-6">
                         <h3 className="font-bold text-lg dark:text-white">{text.usersManagement}</h3>
                         <div className="flex gap-2">
-                            <input
-                                type="text" placeholder={text.searchUser} className="px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                            <Input
+                                type="text" placeholder={text.searchUser} className="w-72 rounded-xl"
                                 value={userSearchQuery} onChange={(e) => setUserSearchQuery(e.target.value)}
                             />
                             {hasPermission('master', 'create') && (
@@ -1065,7 +1067,7 @@ export default function MasterData({
                                     >
                                         {importLoading ? <Loader2 size={15} className="animate-spin" /> : <Upload size={15} />} Import
                                     </button>
-                                    <input
+                                    <Input
                                         ref={fileInputRef}
                                         type="file"
                                         accept=".xlsx,.xls,.csv"
@@ -1317,7 +1319,7 @@ export default function MasterData({
                         {logSource === 'database' && (
                             <div className="relative w-full md:w-72">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                                <input
+                                <Input
                                     type="text"
                                     placeholder={text.searchLogs}
                                     className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-white/60 dark:border-white/10 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white"
@@ -1510,17 +1512,17 @@ export default function MasterData({
                         <div className="space-y-4 max-w-2xl">
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{text.baseUrl}</label>
-                                <input
+                                <Input
                                     type="text" placeholder={text.baseUrlPh}
-                                    className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                    className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700"
                                     value={aiForm.base_url} onChange={(e) => setAiForm({ ...aiForm, base_url: e.target.value })}
                                 />
                             </div>
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{text.apiKey}</label>
-                                <input
+                                <Input
                                     type="password" placeholder={aiSettings.hasApiKey ? `${text.apiKeyPh} (${aiSettings.apiKeyMasked})` : text.apiKeyPh}
-                                    className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                    className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700"
                                     value={aiForm.api_key}
                                     onChange={(e) => {
                                         // Sanitize: remove non-ASCII characters (smart quotes, ellipsis, etc.)
@@ -1547,10 +1549,10 @@ export default function MasterData({
                                         </span>
                                     )}
                                 </div>
-                                <select
+                                <Select
                                     value={aiForm.model}
                                     onChange={(e) => setAiForm({ ...aiForm, model: e.target.value })}
-                                    className={`w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm ${!currentModelInList ? 'border-amber-400 dark:border-amber-600 ring-1 ring-amber-300/50' : ''}`}
+                                    className={`bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 ${!currentModelInList ? 'border-amber-400 dark:border-amber-600 ring-1 ring-amber-300/50' : ''}`}
                                 >
                                     {modelsLoading && <option value="">Memuat model...</option>}
                                     {!modelsLoading && aiModels.length === 0 && <option value="">Tidak ada model</option>}
@@ -1559,7 +1561,7 @@ export default function MasterData({
                                             {g.items.map(m => <option key={m} value={m}>{m}</option>)}
                                         </optgroup>
                                     ))}
-                                </select>
+                                </Select>
                                 {!currentModelInList && (
                                     <div className="mt-2 flex items-start gap-2 text-[11px] px-3 py-2 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700/40">
                                         <AlertCircle size={14} className="mt-0.5 shrink-0" />
@@ -1582,7 +1584,7 @@ export default function MasterData({
                                 )}
                             </div>
                             <label className="flex items-center gap-3 cursor-pointer select-none">
-                                <input
+                                <Input
                                     type="checkbox" checked={aiForm.enabled}
                                     onChange={(e) => setAiForm({ ...aiForm, enabled: e.target.checked })}
                                     className="w-4 h-4 rounded text-indigo-600"
@@ -1733,10 +1735,10 @@ export default function MasterData({
                             <form onSubmit={handleTrainingUpload} className="space-y-4 max-w-2xl mb-6">
                                 <div>
                                     <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{text.title}</label>
-                                    <input
+                                    <Input
                                         type="text"
                                         placeholder={text.titlePh}
-                                        className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                        className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700"
                                         value={trainingForm.title}
                                         onChange={(e) => setTrainingForm({ ...trainingForm, title: e.target.value })}
                                         required
@@ -1745,22 +1747,22 @@ export default function MasterData({
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{text.category}</label>
-                                        <select
-                                            className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                        <Select
+                                            className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700"
                                             value={trainingForm.category}
                                             onChange={(e) => setTrainingForm({ ...trainingForm, category: e.target.value })}
                                         >
                                             {Object.entries(text.categories).map(([k, v]) => (
                                                 <option key={k} value={k}>{v}</option>
                                             ))}
-                                        </select>
+                                        </Select>
                                     </div>
                                     <div>
                                         <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{text.tags}</label>
-                                        <input
+                                        <Input
                                             type="text"
                                             placeholder={text.tagsPh}
-                                            className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                            className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700"
                                             value={trainingForm.tags}
                                             onChange={(e) => setTrainingForm({ ...trainingForm, tags: e.target.value })}
                                         />
@@ -1768,10 +1770,10 @@ export default function MasterData({
                                 </div>
                                 <div>
                                     <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{text.chooseFile}</label>
-                                    <input
+                                    <Input
                                         type="file"
                                         accept=".pdf,.docx,.txt"
-                                        className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                        className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700"
                                         onChange={(e) => setTrainingFile(e.target.files[0])}
                                     />
                                     <p className="text-[10px] text-gray-400 mt-1">PDF, DOCX, TXT</p>
@@ -1791,10 +1793,10 @@ export default function MasterData({
                             <form onSubmit={handleTrainingUpload} className="space-y-4 max-w-2xl mb-6">
                                 <div>
                                     <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{text.title}</label>
-                                    <input
+                                    <Input
                                         type="text"
                                         placeholder={text.titlePh}
-                                        className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                        className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700"
                                         value={trainingForm.title}
                                         onChange={(e) => setTrainingForm({ ...trainingForm, title: e.target.value })}
                                         required
@@ -1802,10 +1804,10 @@ export default function MasterData({
                                 </div>
                                 <div>
                                     <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{text.orPasteUrl}</label>
-                                    <input
+                                    <Input
                                         type="url"
                                         placeholder={text.urlPh}
-                                        className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                        className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700"
                                         value={trainingForm.url}
                                         onChange={(e) => setTrainingForm({ ...trainingForm, url: e.target.value })}
                                         required
@@ -1814,22 +1816,22 @@ export default function MasterData({
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{text.category}</label>
-                                        <select
-                                            className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                        <Select
+                                            className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700"
                                             value={trainingForm.category}
                                             onChange={(e) => setTrainingForm({ ...trainingForm, category: e.target.value })}
                                         >
                                             {Object.entries(text.categories).map(([k, v]) => (
                                                 <option key={k} value={k}>{v}</option>
                                             ))}
-                                        </select>
+                                        </Select>
                                     </div>
                                     <div>
                                         <label className="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{text.tags}</label>
-                                        <input
+                                        <Input
                                             type="text"
                                             placeholder={text.tagsPh}
-                                            className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white text-sm"
+                                            className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700"
                                             value={trainingForm.tags}
                                             onChange={(e) => setTrainingForm({ ...trainingForm, tags: e.target.value })}
                                         />
@@ -2247,7 +2249,7 @@ export default function MasterData({
                                 <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border dark:border-slate-700/50 rounded-lg p-3">
                                     <h5 className="font-bold text-xs text-gray-600 dark:text-slate-300 mb-2 flex items-center gap-1.5"><Search size={13} /> Cari Memori</h5>
                                     <div className="flex gap-2">
-                                        <input
+                                        <Input
                                             type="text"
                                             placeholder="Kata kunci pencarian..."
                                             className="flex-1 px-3 py-2 border rounded-lg dark:bg-slate-800 dark:border-slate-700 dark:text-white text-sm"
@@ -2319,7 +2321,7 @@ export default function MasterData({
                                 <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border dark:border-slate-700/50 rounded-lg p-3">
                                     <h5 className="font-bold text-xs text-gray-600 dark:text-slate-300 mb-2 flex items-center gap-1.5"><FileText size={13} /> Tambah Pengetahuan ke 1MBrain</h5>
                                     <form onSubmit={handleBrainIngest} className="space-y-2">
-                                        <input
+                                        <Input
                                             type="text"
                                             placeholder="Judul..."
                                             className="w-full px-3 py-2 border rounded-lg dark:bg-slate-800 dark:border-slate-700 dark:text-white text-sm"
