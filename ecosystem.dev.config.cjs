@@ -1,9 +1,12 @@
 // PM2 ecosystem khusus LINGKUNGAN DEV
 // Jalankan:  pm2 start ecosystem.dev.config.cjs
 // Hentikan:  pm2 stop ecosystem.dev.config.cjs
-// Catatan: worker dev memakai mode POLLING saja (DB job_queue pustaka_dev).
-// BullMQ worker sengaja TIDAK dijalankan di dev agar antrian Redis
-// tidak tercampur dengan produksi.
+//
+// ISOLASI PENUH:
+// - REDIS_PORT sengaja diarahkan ke port yang tidak dipakai (6399) sehingga
+//   seluruh stack dev fallback ke polling berbasis DB (pustaka_dev) dan
+//   TIDAK pernah menyentuh Redis/antrian produksi.
+// - Worker dev memakai mode POLLING saja.
 module.exports = {
     apps: [
         {
@@ -14,6 +17,7 @@ module.exports = {
             env: {
                 NODE_ENV: 'development',
                 PORT: 5006,
+                REDIS_PORT: 6399,
             },
         },
         {
@@ -37,6 +41,7 @@ module.exports = {
                 NODE_ENV: 'development',
                 PORT: 5006,
                 BACKEND_URL: 'http://127.0.0.1:5006',
+                REDIS_PORT: 6399,
             },
         },
     ],
