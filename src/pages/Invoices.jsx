@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Textarea } from '../components/ui/textarea';
+import { useModalKeydown } from '../components/ui/useModalKeydown';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -1363,6 +1364,21 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
     // ── Audit Trail modal ──
     const [showAudit, setShowAudit] = useState(false);
     const [auditTarget, setAuditTarget] = useState(null);
+
+    // ESC menutup modal paling atas (konsisten dengan komponen Modal bersama)
+    useModalKeydown(() => {
+        if (deleteReplTarget) { setDeleteReplTarget(null); return; }
+        if (cancelTarget) { setCancelTarget(null); return; }
+        if (showAudit) { setShowAudit(false); return; }
+        if (showDetail) { setShowDetail(false); return; }
+        if (showTaxRequest) { setShowTaxRequest(false); return; }
+        if (showTax) { setShowTax(false); return; }
+        if (showSettle) { setShowSettle(false); return; }
+        if (showProforma) { setShowProforma(false); return; }
+        if (showNewInvoice) { setShowNewInvoice(false); return; }
+        if (recipOpen) { setRecipOpen(false); return; }
+        if (attachTarget) { setAttachTarget(null); return; }
+    });
 
     const openAudit = (target) => {
         setAuditTarget(target);

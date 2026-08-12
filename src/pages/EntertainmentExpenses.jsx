@@ -11,6 +11,7 @@ import { entertainmentService } from '../services/entertainmentService';
 import { API_URL } from '../services/apiClient';
 import { SummaryCard } from '../components/ui/Card';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useModalKeydown } from '../components/ui/useModalKeydown';
 
 const JENIS_OPTIONS = ['Breakfast', 'Lunch', 'Dinner', 'Event', 'Custom'];
 const JENIS_USAHA_OPTIONS = [
@@ -313,6 +314,15 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         }
         return val;
     };
+
+    // ESC menutup modal paling atas (konsisten dengan komponen Modal bersama)
+    useModalKeydown(() => {
+        if (deleteTarget) { setDeleteTarget(null); return; }
+        if (showSettleModal) { setShowSettleModal(false); return; }
+        if (showRuleForm) { setShowRuleForm(false); return; }
+        if (showPreview) { setShowPreview(false); return; }
+        if (showForm) { setShowForm(false); return; }
+    });
 
     const fetchData = useCallback(async (opts = {}) => {
         const silent = opts.silent === true;
