@@ -42,7 +42,9 @@ if (typeof pdf !== 'function' && pdf.default) {
 }
 
 // Connect to the main Node.js process to trigger UI refreshes
-const socket = ioClient(`http://localhost:5005`, { reconnection: true });
+// BACKEND_URL dapat di-override (dev: http://127.0.0.1:5006)
+const backendUrl = process.env.BACKEND_URL || 'http://localhost:5005';
+const socket = ioClient(backendUrl, { reconnection: true });
 
 socket.on('connect', () => {
     console.log('[Worker] Terhubung ke server utama (IPC).');
