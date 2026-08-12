@@ -37,6 +37,17 @@ pm2 stop  ecosystem.dev.config.cjs   # atau bash scripts/dev-stop.sh
 pm2 logs dev-worker --lines 50       # lihat log worker dev
 ```
 
+## Auto-start saat server restart ⚡
+
+Stack dev otomatis hidup kembali saat server reboot — **dua lapis**:
+
+1. **PM2 startup** (systemd) — `pm2 save` menyertakan `dev-backend`, `dev-frontend`,
+   `dev-worker` bersama seluruh stack produksi (`pm2 resurrect` saat boot).
+2. **Cron `@reboot`** — `/home/project/pustaka-dev/scripts/boot-dev.sh`:
+   - Menunggu PostgreSQL siap (±60 dtk) sebelum start (hindari race saat boot)
+   - **Idempotent**: hanya me-start app dev yang belum online (tidak me-restart yang lain)
+   - Log di `/var/log/pustaka-dev-boot.log`
+
 ## Catatan penting
 
 - **DB dev terpisah** (`pustaka_dev`) — data uji-coba tidak pernah masuk produksi.
