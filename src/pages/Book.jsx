@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Modal } from '../components/ui/Modal';
+import { Input } from '../components/ui/input';
+import { Select } from '../components/ui/select';
 import { db as api } from '../services/database';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useToast } from '../components/ui/Toast';
@@ -547,16 +549,16 @@ export default function Book({ hasPermission }) {
                 <div className="flex items-center gap-3">
                     <div className="relative">
                         <Filter size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                        <select
+                        <Select
                             value={filterCoa}
                             onChange={(e) => { setFilterCoa(e.target.value); setPage(0); }}
-                            className="pl-9 pr-8 py-2 gradient-bg-soft border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 appearance-none cursor-pointer min-w-[180px]"
+                            className="pl-9 pr-8 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 appearance-none cursor-pointer min-w-[180px]"
                         >
                             <option value="all">{text.filterCoaAll}</option>
                             {data.map(acc => (
                                 <option key={acc.id} value={acc.id}>{acc.code} - {acc.name}</option>
                             ))}
-                        </select>
+                        </Select>
                         <ChevronDown size={12} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                     </div>
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
@@ -946,12 +948,12 @@ export default function Book({ hasPermission }) {
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                             <div className="relative flex-1 sm:flex-none">
                                 <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                                <input
+                                <Input
                                     type="text"
                                     placeholder={text.search}
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                    className="w-full sm:w-56 pl-9 pr-4 py-2 gradient-bg-soft border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:text-white transition-all"
+                                    className="sm:w-56 pl-9 pr-4 py-2 text-sm transition-all"
                                 />
                             </div>
                             <div className="flex bg-gray-100 dark:bg-slate-800 p-1 rounded-xl">
@@ -1090,37 +1092,35 @@ export default function Book({ hasPermission }) {
                             {(formLevel === 'sub_account' || formLevel === 'department') && (
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{text.selectParent}</label>
-                                    <select
+                                    <Select
                                         value={form.parent_id}
                                         onChange={(e) => setForm({ ...form, parent_id: e.target.value })}
-                                        className="w-full px-4 py-3 gradient-bg-soft border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:text-white"
                                     >
                                         <option value="">{text.selectParent}</option>
                                         {parentOptions.map(opt => (
                                             <option key={opt.id} value={opt.id}>{opt.label}</option>
                                         ))}
-                                    </select>
+                                    </Select>
                                 </div>
                             )}
 
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{text.code}</label>
-                                <input
+                                <Input
                                     type="text"
                                     value={form.code}
                                     onChange={(e) => setForm({ ...form, code: e.target.value })}
-                                    className="w-full px-4 py-3 gradient-bg-soft border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:text-white"
+                                    className="font-mono"
                                     placeholder="Contoh: 1, 1-1, 1-1-01"
                                 />
                             </div>
 
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{text.name}</label>
-                                <input
+                                <Input
                                     type="text"
                                     value={form.name}
                                     onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                    className="w-full px-4 py-3 gradient-bg-soft border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:text-white"
                                     placeholder="Contoh: Aktiva, Kas, Kas Kecil"
                                 />
                             </div>
@@ -1131,7 +1131,7 @@ export default function Book({ hasPermission }) {
                                     value={form.description}
                                     onChange={(e) => setForm({ ...form, description: e.target.value })}
                                     rows={3}
-                                    className="w-full px-4 py-3 gradient-bg-soft border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:text-white resize-none"
+                                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-4 py-3 text-sm text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 resize-none"
                                     placeholder="Deskripsi singkat (opsional)"
                                 />
                             </div>
@@ -1140,9 +1140,7 @@ export default function Book({ hasPermission }) {
             </Modal>
 
             {/* Delete All Confirmation Modal */}
-            {showDeleteAllModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md" onClick={() => { setShowDeleteAllModal(false); setDeleteConfirmText(''); }}>
-                    <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden border border-slate-100 dark:border-slate-800 animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
+            <Modal isOpen={showDeleteAllModal} onClose={() => { setShowDeleteAllModal(false); setDeleteConfirmText(''); }} size="max-w-lg" hideHeader noPadding>
                         {/* Header with animated warning */}
                         <div className="relative px-8 pt-8 pb-6 text-center bg-gradient-to-b from-red-50 to-white dark:from-red-950/30 dark:to-slate-900">
                             <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center animate-pulse">
@@ -1220,9 +1218,7 @@ export default function Book({ hasPermission }) {
                                 </button>
                             </div>
                         </div>
-                    </div>
-                </div>
-            )}
+            </Modal>
         </div>
     );
 }
