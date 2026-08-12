@@ -913,11 +913,11 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-3">
-                                        <div className="p-4 bg-slate-50 dark:bg-white/5 rounded-3xl border border-transparent group-hover:border-indigo-500/20 transition-all">
+                                        <div className="p-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-3xl border border-transparent group-hover:border-indigo-500/20 transition-all">
                                             <p className="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-tighter">{isEnglish ? 'Recurring' : 'Rutin'}</p>
                                             <p className="text-2xl font-black dark:text-white">{recurring.length}</p>
                                         </div>
-                                        <div className="p-4 bg-slate-50 dark:bg-white/5 rounded-3xl border border-transparent group-hover:border-indigo-500/20 transition-all">
+                                        <div className="p-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-3xl border border-transparent group-hover:border-indigo-500/20 transition-all">
                                             <p className="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-tighter">{isEnglish ? 'Special' : 'Khusus'}</p>
                                             <p className="text-2xl font-black dark:text-white">{special.length}</p>
                                         </div>
@@ -1267,7 +1267,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     <textarea
                                         value={statusUpdateForm.note}
                                         onChange={e => setStatusUpdateForm({ ...statusUpdateForm, note: e.target.value })}
-                                        className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none focus:ring-2 ring-indigo-500 dark:text-white font-medium min-h-[120px]"
+                                        className="w-full px-5 py-3 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-2xl outline-none focus:ring-2 ring-indigo-500 dark:text-white font-medium min-h-[120px]"
                                         placeholder={isEnglish ? 'What has been done at this stage?' : 'Apa yang sudah dilakukan pada tahap ini?'}
                                     />
                                 </div>
@@ -1300,7 +1300,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                 <div className="p-2 bg-emerald-500 rounded-xl text-white"><Check size={18} /></div>
                                 <h4 className="font-black dark:text-white uppercase text-sm tracking-widest">{isEnglish ? 'Stage Detail' : 'Detail Tahap'}: {viewingHistory.label}</h4>
                             </div>
-                            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4 bg-slate-50 dark:bg-white/5 p-4 rounded-2xl italic">"{viewingHistory.note || (isEnglish ? 'No additional notes.' : 'Tidak ada catatan tambahan.')}"</p>
+                            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 p-4 rounded-2xl italic">"{viewingHistory.note || (isEnglish ? 'No additional notes.' : 'Tidak ada catatan tambahan.')}"</p>
                             <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                                 <Timer size={12} /> {isEnglish ? 'Completed at' : 'Selesai pada'}: {format(new Date(viewingHistory.date), 'PPp', { locale: dateLocale })}
                             </div>
@@ -1353,7 +1353,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                 {viewingIssueDetail.detail && (
                                     <div className="space-y-2">
                                         <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.issueDescription}</h4>
-                                        <div className="p-5 bg-slate-50 dark:bg-white/5 rounded-[2rem] border border-slate-100 dark:border-white/10 italic text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                        <div className="p-5 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-[2rem] border border-slate-100 dark:border-white/10 italic text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                                             "{viewingIssueDetail.detail}"
                                         </div>
                                     </div>
@@ -1414,7 +1414,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                 </div>
                                             ))
                                         ) : (
-                                            <div className="text-slate-400 text-[10px] font-bold uppercase tracking-widest py-10 text-center bg-slate-50 dark:bg-white/5 rounded-[2rem] border-2 border-dashed border-slate-100 dark:border-white/5">
+                                            <div className="text-slate-400 text-[10px] font-bold uppercase tracking-widest py-10 text-center bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-[2rem] border-2 border-dashed border-slate-100 dark:border-white/5">
                                                 {text.noHistoryYet}
                                             </div>
                                         )}
@@ -1422,7 +1422,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                 </div>
                             </div>
 
-                            <div className="p-8 bg-slate-50 dark:bg-white/5 border-t border-slate-100 dark:border-white/5 flex justify-end">
+                            <div className="p-8 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-t border-slate-100 dark:border-white/5 flex justify-end">
                                 <button onClick={() => setViewingIssueDetail(null)} className="px-10 py-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-slate-500 font-black uppercase text-xs tracking-widest rounded-2xl shadow-sm hover:bg-slate-100 transition-all active:scale-95">{text.closeDetail}</button>
                             </div>
                         </motion.div>
@@ -1442,7 +1442,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     <button
                                         key={u.username}
                                         onClick={() => handleAddPIC(u.username)}
-                                        className="w-full flex items-center gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-white/5 hover:bg-indigo-500 hover:text-white transition-all group"
+                                        className="w-full flex items-center gap-3 p-4 rounded-2xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 hover:bg-indigo-500 hover:text-white transition-all group"
                                     >
                                         <div className="w-10 h-10 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl flex items-center justify-center text-indigo-500 group-hover:bg-white/20 group-hover:text-white">
                                             <UserIcon size={20} />
@@ -1483,7 +1483,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                 setMonitoredPICs(prev => prev.map(p => p.username === editingPicPrivacy.username ? { ...p, privacy: newPrivacy } : p));
                                                 setEditingPicPrivacy({ ...editingPicPrivacy, privacy: newPrivacy });
                                             }}
-                                            className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none dark:text-white font-bold focus:ring-2 ring-indigo-500"
+                                            className="w-full px-5 py-3 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-2xl outline-none dark:text-white font-bold focus:ring-2 ring-indigo-500"
                                         >
                                             <option value="public">{text.publicAll}</option>
                                             <option value="private">{text.privateMine}</option>
@@ -1502,7 +1502,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                 placeholder={text.typeToFilter}
                                                 value={userSearch}
                                                 onChange={(e) => setUserSearch(e.target.value)}
-                                                className="w-full px-4 py-2.5 bg-slate-50 dark:bg-white/5 rounded-xl text-xs outline-none border border-transparent focus:border-indigo-500 dark:text-white font-medium"
+                                                className="w-full px-4 py-2.5 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-xl text-xs outline-none border border-transparent focus:border-indigo-500 dark:text-white font-medium"
                                             />
                                         </div>
                                     )}
@@ -1513,7 +1513,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.allowedDepartments}</label>
                                         <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                                             {departments.filter(d => d.name.toLowerCase().includes(userSearch.toLowerCase())).map(d => (
-                                                <label key={d.id} className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 cursor-pointer hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors border border-transparent hover:border-indigo-200 dark:hover:border-indigo-500/30">
+                                                <label key={d.id} className="flex items-center gap-2 p-2.5 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl cursor-pointer hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors border border-transparent hover:border-indigo-200 dark:hover:border-indigo-500/30">
                                                     <input
                                                         type="checkbox"
                                                         checked={editingPicPrivacy.allowedDepts?.includes(d.name)}
@@ -1538,7 +1538,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.allowedUsers}</label>
                                         <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                                             {users.filter(u => u.username !== editingPicPrivacy.username && (u.name.toLowerCase().includes(userSearch.toLowerCase()) || u.username.toLowerCase().includes(userSearch.toLowerCase()))).map(u => (
-                                                <label key={u.username} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-white/5 cursor-pointer hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors border border-transparent hover:border-indigo-200 dark:hover:border-indigo-500/30">
+                                                <label key={u.username} className="flex items-center justify-between p-3 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl cursor-pointer hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors border border-transparent hover:border-indigo-200 dark:hover:border-indigo-500/30">
                                                     <div className="flex items-center gap-3">
                                                         <div className="w-8 h-8 rounded-lg bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl flex items-center justify-center text-indigo-500">
                                                             <UserIcon size={14} />
@@ -1595,7 +1595,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                         <select
                                             value={issueForm.taskId || ''}
                                             onChange={e => setIssueForm({ ...issueForm, taskId: Number(e.target.value) })}
-                                            className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none focus:ring-2 ring-rose-500 dark:text-white font-bold"
+                                            className="w-full px-5 py-3 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-2xl outline-none focus:ring-2 ring-rose-500 dark:text-white font-bold"
                                         >
                                             <option value="">{text.noScheduleIndependent}</option>
                                             {[...(activeWorkspace?.recurring || []), ...(activeWorkspace?.special || [])].map(t => (
@@ -1612,11 +1612,11 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                             placeholder={text.searchPic}
                                             value={userSearch}
                                             onChange={e => setUserSearch(e.target.value)}
-                                            className="w-full px-4 py-2 bg-slate-50 dark:bg-white/5 rounded-xl text-xs outline-none border border-transparent focus:border-indigo-500 dark:text-white"
+                                            className="w-full px-4 py-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-xl text-xs outline-none border border-transparent focus:border-indigo-500 dark:text-white"
                                         />
                                         <div className="grid grid-cols-1 gap-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
                                             {users.filter(u => u.name.toLowerCase().includes(userSearch.toLowerCase()) || u.username.toLowerCase().includes(userSearch.toLowerCase())).map(u => (
-                                                <label key={u.username} className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 cursor-pointer hover:bg-indigo-50 transition-colors">
+                                                <label key={u.username} className="flex items-center justify-between p-2.5 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-indigo-50 transition-colors">
                                                     <div className="flex items-center gap-3">
                                                         <div className="w-8 h-8 rounded-lg bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl flex items-center justify-center text-indigo-500">
                                                             <UserIcon size={14} />
@@ -1646,15 +1646,15 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.issueSummary}</label>
-                                    <input value={issueForm.note} onChange={e => setIssueForm({ ...issueForm, note: e.target.value })} className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none focus:ring-2 ring-rose-500 dark:text-white font-bold" placeholder={text.issueExamplePlaceholder} />
+                                    <input value={issueForm.note} onChange={e => setIssueForm({ ...issueForm, note: e.target.value })} className="w-full px-5 py-3 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-2xl outline-none focus:ring-2 ring-rose-500 dark:text-white font-bold" placeholder={text.issueExamplePlaceholder} />
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.issueDate}</label>
-                                    <input type="date" value={issueForm.createdAt} onChange={e => setIssueForm({ ...issueForm, createdAt: e.target.value })} className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none dark:text-white font-bold" />
+                                    <input type="date" value={issueForm.createdAt} onChange={e => setIssueForm({ ...issueForm, createdAt: e.target.value })} className="w-full px-5 py-3 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-2xl outline-none dark:text-white font-bold" />
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.issueDetail}</label>
-                                    <textarea value={issueForm.detail} onChange={e => setIssueForm({ ...issueForm, detail: e.target.value })} className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none focus:ring-2 ring-rose-500 dark:text-white font-medium min-h-[100px]" placeholder={text.issueDetailPlaceholder} />
+                                    <textarea value={issueForm.detail} onChange={e => setIssueForm({ ...issueForm, detail: e.target.value })} className="w-full px-5 py-3 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-2xl outline-none focus:ring-2 ring-rose-500 dark:text-white font-medium min-h-[100px]" placeholder={text.issueDetailPlaceholder} />
                                 </div>
                             </div>
 
@@ -1727,7 +1727,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                 }}>
                                     <div className="space-y-1">
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.jobName}</label>
-                                        <input name="title" defaultValue={editingJob?.title} required className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none focus:ring-2 ring-indigo-500 dark:text-white font-bold" />
+                                        <input name="title" defaultValue={editingJob?.title} required className="w-full px-5 py-3 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-2xl outline-none focus:ring-2 ring-indigo-500 dark:text-white font-bold" />
                                     </div>
 
                                     <div className="p-4 bg-indigo-50 dark:bg-indigo-500/5 rounded-2xl border border-indigo-100 dark:border-white/5">
@@ -1743,12 +1743,12 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                         {activeType === 'recurring' ? (
                                             <div className="space-y-1">
                                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.dateDay}</label>
-                                                <input name="day" type="number" min="1" max="31" defaultValue={editingJob ? new Date(editingJob.dueDate).getDate() : 1} required className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none dark:text-white font-bold" />
+                                                <input name="day" type="number" min="1" max="31" defaultValue={editingJob ? new Date(editingJob.dueDate).getDate() : 1} required className="w-full px-5 py-3 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-2xl outline-none dark:text-white font-bold" />
                                             </div>
                                         ) : (
                                             <div className="space-y-1">
                                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.dueDate}</label>
-                                                <input name="dueDate" type="date" defaultValue={editingJob?.dueDate} required className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none dark:text-white font-bold" />
+                                                <input name="dueDate" type="date" defaultValue={editingJob?.dueDate} required className="w-full px-5 py-3 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-2xl outline-none dark:text-white font-bold" />
                                             </div>
                                         )}
                                         <div className="space-y-1">
@@ -1769,7 +1769,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                 <select
                                                     value={formPrivacy}
                                                     onChange={(e) => setFormPrivacy(e.target.value)}
-                                                    className="w-full px-5 py-3 bg-slate-50 dark:bg-white/5 rounded-2xl outline-none dark:text-white font-bold focus:ring-2 ring-indigo-500"
+                                                    className="w-full px-5 py-3 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-2xl outline-none dark:text-white font-bold focus:ring-2 ring-indigo-500"
                                                 >
                                                     <option value="public">{text.publicAll}</option>
                                                     <option value="private">{text.privateMine}</option>
@@ -1788,7 +1788,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                         placeholder={text.typeToFilter}
                                                         value={userSearch}
                                                         onChange={(e) => setUserSearch(e.target.value)}
-                                                        className="w-full px-4 py-2.5 bg-slate-50 dark:bg-white/5 rounded-xl text-xs outline-none border border-transparent focus:border-indigo-500 dark:text-white font-medium"
+                                                        className="w-full px-4 py-2.5 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-xl text-xs outline-none border border-transparent focus:border-indigo-500 dark:text-white font-medium"
                                                     />
                                                 </div>
                                             )}
@@ -1799,7 +1799,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.allowedDepartments}</label>
                                                 <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
                                                     {departments.filter(d => d.name.toLowerCase().includes(userSearch.toLowerCase())).map(d => (
-                                                        <label key={d.id} className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 cursor-pointer hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors border border-transparent hover:border-indigo-200 dark:hover:border-indigo-500/30">
+                                                        <label key={d.id} className="flex items-center gap-2 p-2.5 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl cursor-pointer hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors border border-transparent hover:border-indigo-200 dark:hover:border-indigo-500/30">
                                                             <input
                                                                 type="checkbox"
                                                                 checked={formAllowedDepts.includes(d.name)}
@@ -1821,7 +1821,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.allowedUsers}</label>
                                                 <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
                                                     {users.filter(u => u.username !== currentUser.username && (u.name.toLowerCase().includes(userSearch.toLowerCase()) || u.username.toLowerCase().includes(userSearch.toLowerCase()))).map(u => (
-                                                        <label key={u.username} className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 cursor-pointer hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors border border-transparent hover:border-indigo-200 dark:hover:border-indigo-500/30">
+                                                        <label key={u.username} className="flex items-center gap-2 p-2.5 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl cursor-pointer hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors border border-transparent hover:border-indigo-200 dark:hover:border-indigo-500/30">
                                                             <input
                                                                 type="checkbox"
                                                                 checked={formAllowedUsers.includes(u.username)}
@@ -1896,7 +1896,7 @@ function TaskItem({ task, selectedMonth, onToggle, onEdit, onDelete, onUpdateIss
     return (
         <div className={`group relative p-4 rounded-3xl border transition-all ${task.status === 'done'
             ? 'bg-emerald-50/50 dark:bg-emerald-500/5 border-emerald-100 dark:border-emerald-500/20'
-            : 'bg-slate-50 dark:bg-white/5 border-transparent hover:border-indigo-500/30'
+            : 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-transparent hover:border-indigo-500/30'
             }`}>
             <div className="flex items-start gap-3">
                 {/* Logic: Hide checklist if future month. Show if current or past. */}

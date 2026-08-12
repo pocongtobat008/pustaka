@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Modal as UIModal } from '../components/ui/Modal';
 import { ClipboardCheck, CheckCircle2, AlertCircle, Plus, ChevronRight, FileText, UploadCloud, User, Trash2, CheckSquare, Square, File, Search, Calendar, Clock, Paperclip, Edit, MoreVertical, Download, Folder, RotateCcw, Save, X, CloudUpload, Sparkles, TrendingUp, FileDigit, Image as ImageIcon, Edit3, Eye } from 'lucide-react';
 import { taxService } from '../services/taxService';
 import { documentService } from '../services/documentService';
@@ -1619,10 +1620,8 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
             />
 
             {/* UPLOAD LOADING OVERLAY */}
-            {
-                isUploadingFile && (
-                    <div className="fixed inset-0 z-[150] bg-black/50 backdrop-blur-sm flex items-center justify-center">
-                        <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl p-8 rounded-2xl shadow-2xl flex flex-col items-center animate-in zoom-in-95 max-w-sm text-center">
+            <UIModal isOpen={isUploadingFile} onClose={() => {}} size="max-w-sm" hideHeader center noPadding>
+                <div className="p-8 flex flex-col items-center text-center">
                             <div className="relative mb-6">
                                 <div className="w-20 h-20 border-4 border-indigo-100 dark:border-indigo-900/30 rounded-full"></div>
                                 <div className="w-20 h-20 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
@@ -1632,10 +1631,8 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                             <p className="text-sm text-gray-500 dark:text-slate-400">
                                 Sedang mengunggah, melakukan <b>OCR (Ekstraksi Teks)</b>, dan analisis vector. Mohon tunggu sebentar.
                             </p>
-                        </div>
-                    </div>
-                )
-            }
+                </div>
+            </UIModal>
             {/* TOAST NOTIFICATIONS */}
             <ToastContainer toasts={toasts} onRemove={removeToast} />
         </>

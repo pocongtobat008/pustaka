@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid3x3, Package, Clock, AlertCircle, Download, FileSpreadsheet, Search, FileText, Truck, Sparkles, TrendingUp, ShieldAlert, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { SummaryCard } from '../components/ui/Card';
+import { Modal } from '../components/ui/Modal';
 import InventoryGrid from '../components/inventory/InventoryGrid';
 import ExternalInventoryTable from '../components/inventory/ExternalInventoryTable';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -492,9 +493,9 @@ export default function Inventory({
             )}
 
             {/* MOVING/PROCESSING LOADING OVERLAY - Mencegah Data Corrupt saat Pindah Slot */}
-            {isProcessing && (
-                <div className="fixed inset-0 z-[150] bg-black/60 backdrop-blur-md flex items-center justify-center">
-                    <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl p-10 rounded-[3rem] shadow-2xl flex flex-col items-center animate-in zoom-in-95 max-w-sm text-center border border-white/20">
+            <Modal isOpen={isProcessing} onClose={() => {}} size="max-w-sm" hideHeader center noPadding>
+                <div className="p-10 flex flex-col items-center text-center">
+
                         <div className="relative mb-8">
                             <div className="w-24 h-24 border-4 border-indigo-100 dark:border-indigo-900/30 rounded-full"></div>
                             <div className="w-24 h-24 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
@@ -507,9 +508,9 @@ export default function Inventory({
                         <div className="mt-6 flex items-center gap-2 text-indigo-500 font-bold text-xs uppercase tracking-widest">
                             <RefreshCw size={14} className="animate-spin" /> {text.syncingDb}
                         </div>
-                    </div>
                 </div>
-            )}
+            </Modal>
+
         </div >
     );
 }

@@ -87,7 +87,7 @@ const OCRProcessingLanes = () => {
                     >
                         <div className="p-5 space-y-4 max-h-72 overflow-y-auto custom-scrollbar">
                             {ocrJobs.map((job) => (
-                                <div key={job.id} className="space-y-2 p-3 rounded-2xl bg-slate-50 dark:bg-white/5 border border-transparent hover:border-indigo-500/20 transition-all">
+                                <div key={job.id} className="space-y-2 p-3 rounded-2xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-transparent hover:border-indigo-500/20 transition-all">
                                     <div className="flex items-center justify-between gap-3">
                                         <div className="flex items-center gap-2 min-w-0">
                                             <FileText size={14} className="text-slate-400 shrink-0" />
