@@ -3597,7 +3597,7 @@ export default function App() {
       { id: 'entertainment', tab: 'entertainment', label: commandTextMap.items.entertainment.label, description: commandTextMap.items.entertainment.description, group: commandTextMap.groups.finance, icon: Receipt, keywords: 'entertainment expense klaim biaya laporan' },
       { id: 'invoices', tab: 'invoices', label: commandTextMap.items.invoices.label, description: commandTextMap.items.invoices.description, group: commandTextMap.groups.finance, icon: FileSignature, keywords: 'proforma faktur invoice tagihan' },
       { id: 'book', tab: 'book', label: commandTextMap.items.book.label, description: commandTextMap.items.book.description, group: commandTextMap.groups.finance, icon: ListOrdered, keywords: 'coa chart of accounts buku akun jurnal' },
-      { id: 'pdf-templates', tab: 'pdf-templates', label: commandTextMap.items['pdf-templates'].label, description: commandTextMap.items['pdf-templates'].description, group: commandTextMap.groups.finance, icon: FileCode2, keywords: 'template pdf surat dokumen' },
+      { id: 'pdf-templates', tab: 'pdf-templates', label: commandTextMap.items['pdf-templates'].label, description: commandTextMap.items['pdf-templates'].description, group: commandTextMap.groups.finance, icon: FileCode2, keywords: 'template pdf surat dokumen', adminOnly: true },
       { id: 'master', tab: 'master', label: commandTextMap.items.master.label, description: commandTextMap.items.master.description, group: commandTextMap.groups.system, icon: Settings, keywords: 'admin settings role' },
       { id: 'system-logs', tab: 'system-logs', label: commandTextMap.items['system-logs'].label, description: commandTextMap.items['system-logs'].description, group: commandTextMap.groups.system, icon: Server, keywords: 'log sistem aktivitas audit' },
       { id: 'profile', tab: 'profile', label: commandTextMap.items.profile.label, description: commandTextMap.items.profile.description, group: commandTextMap.groups.system, icon: User, keywords: 'akun user' }
@@ -3605,9 +3605,12 @@ export default function App() {
 
     return items.filter((item) => {
       if (item.id === 'profile') return true;
+      // Sama seperti sidebar: pdf-templates (Template PDF) admin-only
+      const isAdminUser = currentUser?.role === 'admin' || currentUser?.role === 'superadmin';
+      if (item.adminOnly && !isAdminUser) return false;
       return hasPermission(item.id, 'view');
     });
-  }, [hasPermission, commandTextMap]);
+  }, [hasPermission, commandTextMap, currentUser]);
 
   const commandQuickActions = useMemo(() => {
     const actions = [
