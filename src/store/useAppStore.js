@@ -17,7 +17,7 @@ export const useAppStore = create((set) => ({
     // Theme & Layout
     isDarkMode: (() => {
         const saved = localStorage.getItem('archive_theme');
-        return saved ? saved === 'dark' : true;
+        return saved ? saved === 'dark' : false;
     })(),
     showInitialLanding: (() => !localStorage.getItem('archive_landing_seen'))(),
     ...initialState,

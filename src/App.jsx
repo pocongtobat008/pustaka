@@ -90,7 +90,7 @@ import {
   RefreshCw,
   Activity,
   Rocket, Target, HelpCircle, Sparkles, Zap, Award, Globe, FileCheck, BookOpen, ScanLine,
-  Calculator, FlaskConical, Wand2, ChevronDown, Info
+  Calculator, FlaskConical, Wand2, ChevronDown, Info, Receipt, FileSignature, ListOrdered, Server, FileCode2
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 const Login = lazy(() => import('./pages/Login'));
@@ -207,6 +207,7 @@ export default function App() {
           general: 'General',
           documents: 'Documents',
           tax: 'Tax',
+          finance: 'Finance',
           system: 'System',
         },
         items: {
@@ -224,6 +225,9 @@ export default function App() {
           profile: { label: 'Profile', description: 'User profile' },
           entertainment: { label: 'Entertainment Expenses', description: 'Expense reporting and management' },
           invoices: { label: 'Invoices', description: 'Proforma invoice management' },
+          book: { label: 'Book (COA)', description: 'Chart of accounts and journal book' },
+          'pdf-templates': { label: 'PDF Templates', description: 'PDF template management' },
+          'system-logs': { label: 'System Logs', description: 'System activity and audit logs' },
           anydoc: { label: 'AnyDoc Converter', description: 'Convert documents to Markdown' },
           'ai-doc-intel': { label: 'AI Document Intelligence', description: 'Extract data from PDF files' },
           'ai-doc-train': { label: 'Document Training', description: 'Train AI document templates' },
@@ -249,6 +253,7 @@ export default function App() {
         general: 'General',
         documents: 'Documents',
         tax: 'Tax',
+        finance: 'Keuangan',
         system: 'System',
       },
       items: {
@@ -266,6 +271,9 @@ export default function App() {
         profile: { label: 'Profile', description: 'Profil pengguna' },
         entertainment: { label: 'Entertainment Expenses', description: 'Pelaporan dan manajemen biaya entertainment' },
         invoices: { label: 'Invoices', description: 'Manajemen proforma invoice' },
+        book: { label: 'Book (COA)', description: 'Bagan akun dan buku jurnal' },
+        'pdf-templates': { label: 'Template PDF', description: 'Manajemen template PDF' },
+        'system-logs': { label: 'Log Sistem', description: 'Log aktivitas dan audit sistem' },
         anydoc: { label: 'AnyDoc Converter', description: 'Konversi dokumen ke Markdown' },
         'ai-doc-intel': { label: 'AI Document Intelligence', description: 'Ekstrak data dari file PDF' },
         'ai-doc-train': { label: 'Training Dokumen', description: 'Latih template dokumen AI' },
@@ -3583,11 +3591,15 @@ export default function App() {
       { id: 'ai-doc-intel', tab: 'ai-doc-intel', label: commandTextMap.items['ai-doc-intel'].label, description: commandTextMap.items['ai-doc-intel'].description, group: commandTextMap.groups.documents, icon: FileSpreadsheet, keywords: 'ekstrak extract pdf data excel document intelligence' },
       { id: 'ai-doc-train', tab: 'ai-doc-train', label: commandTextMap.items['ai-doc-train'].label, description: commandTextMap.items['ai-doc-train'].description, group: commandTextMap.groups.documents, icon: FlaskConical, keywords: 'training mapping template dokumen ai' },
       { id: 'ai-pdf-tools', tab: 'ai-pdf-tools', label: commandTextMap.items['ai-pdf-tools'].label, description: commandTextMap.items['ai-pdf-tools'].description, group: commandTextMap.groups.documents, icon: Wand2, keywords: 'pdf word konversi kompres gabung pecah ocr unlock merge split' },
-      { id: 'approvals', tab: 'entertainment', label: 'Entertainment', description: 'Entertainment expense reporting', group: commandTextMap.groups.documents, icon: ShieldCheck, keywords: 'approval entertainment expense klaim biaya' },
       { id: 'tax-monitoring', tab: 'tax-monitoring', label: commandTextMap.items['tax-monitoring'].label, description: commandTextMap.items['tax-monitoring'].description, group: commandTextMap.groups.tax, icon: Shield, keywords: 'audit pemeriksaan pajak' },
       { id: 'tax-calculation', tab: 'tax-calculation', label: commandTextMap.items['tax-calculation'].label, description: commandTextMap.items['tax-calculation'].description, group: commandTextMap.groups.tax, icon: Calculator, keywords: 'ppn pph hitung' },
       { id: 'tax-summary', tab: 'tax-summary', label: commandTextMap.items['tax-summary'].label, description: commandTextMap.items['tax-summary'].description, group: commandTextMap.groups.tax, icon: PieChart, keywords: 'summary compliance reporting' },
+      { id: 'entertainment', tab: 'entertainment', label: commandTextMap.items.entertainment.label, description: commandTextMap.items.entertainment.description, group: commandTextMap.groups.finance, icon: Receipt, keywords: 'entertainment expense klaim biaya laporan' },
+      { id: 'invoices', tab: 'invoices', label: commandTextMap.items.invoices.label, description: commandTextMap.items.invoices.description, group: commandTextMap.groups.finance, icon: FileSignature, keywords: 'proforma faktur invoice tagihan' },
+      { id: 'book', tab: 'book', label: commandTextMap.items.book.label, description: commandTextMap.items.book.description, group: commandTextMap.groups.finance, icon: ListOrdered, keywords: 'coa chart of accounts buku akun jurnal' },
+      { id: 'pdf-templates', tab: 'pdf-templates', label: commandTextMap.items['pdf-templates'].label, description: commandTextMap.items['pdf-templates'].description, group: commandTextMap.groups.finance, icon: FileCode2, keywords: 'template pdf surat dokumen' },
       { id: 'master', tab: 'master', label: commandTextMap.items.master.label, description: commandTextMap.items.master.description, group: commandTextMap.groups.system, icon: Settings, keywords: 'admin settings role' },
+      { id: 'system-logs', tab: 'system-logs', label: commandTextMap.items['system-logs'].label, description: commandTextMap.items['system-logs'].description, group: commandTextMap.groups.system, icon: Server, keywords: 'log sistem aktivitas audit' },
       { id: 'profile', tab: 'profile', label: commandTextMap.items.profile.label, description: commandTextMap.items.profile.description, group: commandTextMap.groups.system, icon: User, keywords: 'akun user' }
     ];
 
@@ -3776,6 +3788,20 @@ export default function App() {
                 <span className="saas-tooltip">{isEnglish ? 'OCR Monitor' : 'Monitor OCR'}</span>
               </div>
 
+              {/* Bahasa — akses cepat ganti bahasa di samping notifikasi/OCR */}
+              <div className="relative group">
+                <button
+                  type="button"
+                  onClick={() => setLanguage(isEnglish ? 'id' : 'en')}
+                  className="neo-icon-btn relative w-10 h-10 group text-slate-500 dark:text-slate-300 hover:text-indigo-500 dark:hover:text-indigo-400"
+                  title={isEnglish ? 'Bahasa Indonesia' : 'English'}
+                >
+                  <Globe size={17} />
+                  <span className="absolute -bottom-0.5 right-0.5 text-[8px] font-black uppercase bg-indigo-500 text-white rounded px-0.5 leading-tight">{language}</span>
+                </button>
+                <span className="saas-tooltip">{isEnglish ? 'Language: Indonesia' : 'Bahasa: English'}</span>
+              </div>
+
               {/* Profil dropdown — tema & bahasa ada di dalam (pola SaaS) */}
               <div className="relative group" ref={profileMenuRef}>
                 {!profileMenuOpen && <span className="saas-tooltip">{commandTextMap.items.profile.label}</span>}
@@ -3815,13 +3841,6 @@ export default function App() {
                         className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-indigo-50/80 dark:hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors text-left"
                       >
                         <User size={15} className="text-slate-400" /> {commandTextMap.items.profile.label}
-                      </button>
-                      <button
-                        onClick={() => { setProfileMenuOpen(false); setLanguage(isEnglish ? 'id' : 'en'); }}
-                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-indigo-50/80 dark:hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors text-left"
-                      >
-                        <Globe size={15} className="text-slate-400" /> {isEnglish ? 'Bahasa Indonesia' : 'English'}
-                        <span className="ml-auto text-[10px] font-black uppercase text-indigo-500 bg-indigo-50 dark:bg-indigo-500/15 px-1.5 py-0.5 rounded">{language}</span>
                       </button>
                       <button
                         onClick={() => { setProfileMenuOpen(false); setIsDarkMode(!isDarkMode); }}
