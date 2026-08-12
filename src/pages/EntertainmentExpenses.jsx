@@ -29,7 +29,7 @@ const emptyForm = () => ({
 
 const silentToast = { success: () => {}, error: () => {}, info: () => {}, warning: () => {}, loading: () => {} };
 
-export default function EntertainmentExpenses({ currentUser, hasPermission, toast: toastProp }) {
+export default function EntertainmentExpenses({ currentUser, toast: toastProp }) {
     const toast = toastProp || silentToast;
     const { language } = useLanguage();
     const isEnglish = language === 'en';
@@ -63,7 +63,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         settleTitle: 'Settle Entertainment', lblSettleDate: 'Settle Date *',
         lblSettleAmount: 'Settle Amount', lblDraw: 'Draw (Same)',
         lblOver: 'Over', lblShortage: 'Shortage', lblSame: 'Same', lblAfShortage: 'AF Shortage',
-        filterAll: 'All', filterOver: 'Over', filterDraw: 'Draw', filterShortage: 'Shortage',
+        filterAllSettle: 'All', filterOver: 'Over', filterDraw: 'Draw', filterShortage: 'Shortage',
         lblRelasiPerusahaan: 'Relation & Company', btnTambahRelasi: 'Add Relation',
         lblCatatan: 'Notes', btnSettle: 'Settle', btnBatal: 'Cancel',
         // Preview
@@ -144,7 +144,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         // Form
         formTitle: 'Entertainment Expenses', formEdit: 'Edit Entry', formNew: 'Entry Baru',
         lblTanggal: 'Tanggal *', lblTempat: 'Tempat', lblJenis: 'Jenis *', lblCustomJenis: 'Custom jenis',
-        lblAlamat: 'Alamat Venue *', lblNilai: 'Nilai (IDR) *', lblNoGl: 'No AF *', lblGl: 'No GL *', lblGl: 'No GL *',
+        lblAlamat: 'Alamat Venue *', lblNilai: 'Nilai (IDR) *', lblNoGl: 'No AF *', lblGl: 'No GL *',
         lblJenisUsaha: 'Jenis Usaha *', lblCustomJenisUsaha: 'Custom jenis usaha',
         lblPlan: 'Plan *', lblMomResult: 'MOM/Result *', lblLampiran: 'Lampiran', lblDragDrop: 'Klik atau seret file ke sini',
         btnSave: 'Simpan', btnCancel: 'Batal', btnUpdate: 'Update',
@@ -152,7 +152,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         settleTitle: 'Settle Entertainment', lblSettleDate: 'Tanggal Settle *',
         lblSettleAmount: 'Settle Amount', lblDraw: 'Draw (Sama)',
         lblOver: 'Over', lblShortage: 'Shortage', lblSame: 'Same', lblAfShortage: 'AF Shortage',
-        filterAll: 'Semua', filterOver: 'Over', filterDraw: 'Draw', filterShortage: 'Shortage',
+        filterAllSettle: 'Semua', filterOver: 'Over', filterDraw: 'Draw', filterShortage: 'Shortage',
         lblRelasiPerusahaan: 'Relasi & Perusahaan', btnTambahRelasi: 'Tambah Relasi',
         lblCatatan: 'Catatan', btnSettle: 'Settle', btnBatal: 'Batal',
         // Preview
@@ -177,7 +177,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         // Validation
         errTanggal: 'Tanggal wajib diisi', errTempat: 'Tempat wajib diisi',
         errAlamat: 'Alamat wajib diisi', errJenis: 'Jenis wajib diisi',
-        errCustomJenis: 'Custom jenis wajib diisi', errNoGl: 'No AF wajib diisi', errNoGlFormat: 'No AF harus format PR diikuti 6 digit (contoh: PR000001)', errNoGlFormat: 'No AF harus format PR diikuti 6 digit (contoh: PR000001)',
+        errCustomJenis: 'Custom jenis wajib diisi', errNoGl: 'No AF wajib diisi', errNoGlFormat: 'No AF harus format PR diikuti 6 digit (contoh: PR000001)',
         errJenisUsaha: 'Jenis Usaha wajib diisi', errCustomJenisUsaha: 'Custom jenis usaha wajib diisi',
         errGroups: 'Minimal 1 grup relasi wajib diisi', errAttachments: 'Minimal 1 lampiran wajib diupload',
         errNilai: 'Nilai wajib diisi', errMomResult: 'MOM/Result wajib diisi',
@@ -1135,7 +1135,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                         <select value={searchParams.jenis}
                             onChange={e => setSearchParams(p => ({ ...p, jenis: e.target.value }))}
                             className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500">
-                            <option value="">{text.filterAll}</option>
+                            <option value="">{text.filterAllSettle}</option>
                             {JENIS_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
                         </select>
                     </div>
@@ -1144,7 +1144,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                         <select value={searchParams.entry_type}
                             onChange={e => setSearchParams(p => ({ ...p, entry_type: e.target.value }))}
                             className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500">
-                            <option value="">{text.filterAll}</option>
+                            <option value="">{text.filterAllSettle}</option>
                             <option value="reimburse">Reimburse</option>
                             <option value="plan">Plan</option>
                         </select>

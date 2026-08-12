@@ -4088,7 +4088,6 @@ export default function App() {
                 {activeTab === 'entertainment' && (
                   <EntertainmentExpenses
                     currentUser={currentUser}
-                    hasPermission={hasPermission}
                     toast={toast}
                   />
                 )}
