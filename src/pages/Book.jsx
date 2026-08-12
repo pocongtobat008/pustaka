@@ -8,6 +8,7 @@ import {
     AlertTriangle
 } from 'lucide-react';
 import { Card } from '../components/ui/Card';
+import { Modal } from '../components/ui/Modal';
 import { db as api } from '../services/database';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useToast } from '../components/ui/Toast';
@@ -1073,19 +1074,19 @@ export default function Book({ hasPermission }) {
                 </div>
             </Card>
 
-            {showForm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowForm(false)}>
-                    <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-md mx-4 p-6 border border-slate-100 dark:border-slate-800" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-lg font-extrabold text-slate-800 dark:text-white">
-                                {editingItem ? text.form[`edit${formLevel === 'account' ? 'Account' : formLevel === 'sub_account' ? 'Sub' : 'Dep'}`] : text.form[`add${formLevel === 'account' ? 'Account' : formLevel === 'sub_account' ? 'Sub' : 'Dep'}`]}
-                            </h3>
-                            <button onClick={() => setShowForm(false)} className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
-                                <X size={16} />
-                            </button>
-                        </div>
-
-                        <div className="space-y-4">
+            <Modal
+                isOpen={showForm}
+                onClose={() => setShowForm(false)}
+                title={editingItem ? text.form[`edit${formLevel === 'account' ? 'Account' : formLevel === 'sub_account' ? 'Sub' : 'Dep'}`] : text.form[`add${formLevel === 'account' ? 'Account' : formLevel === 'sub_account' ? 'Sub' : 'Dep'}`]}
+                size="max-w-md"
+                footer={
+                    <div className="flex gap-3">
+                        <button onClick={() => setShowForm(false)} className="flex-1 py-3 bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white text-xs font-black rounded-2xl transition-all uppercase tracking-widest">{text.cancel}</button>
+                        <button onClick={handleSave} className="flex-1 py-3 gradient-bg text-white text-xs font-black rounded-2xl hover:bg-indigo-500 shadow-xl shadow-indigo-500/30 transition-all uppercase tracking-widest">{text.save}</button>
+                    </div>
+                }
+            >
+                <div className="space-y-4">
                             {(formLevel === 'sub_account' || formLevel === 'department') && (
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{text.selectParent}</label>
@@ -1136,13 +1137,7 @@ export default function Book({ hasPermission }) {
                             </div>
                         </div>
 
-                        <div className="flex gap-3 mt-6">
-                            <button onClick={() => setShowForm(false)} className="flex-1 py-3 bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white text-xs font-black rounded-2xl transition-all uppercase tracking-widest">{text.cancel}</button>
-                            <button onClick={handleSave} className="flex-1 py-3 gradient-bg text-white text-xs font-black rounded-2xl hover:bg-indigo-500 shadow-xl shadow-indigo-500/30 transition-all uppercase tracking-widest">{text.save}</button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            </Modal>
 
             {/* Delete All Confirmation Modal */}
             {showDeleteAllModal && (
