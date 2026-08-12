@@ -113,26 +113,26 @@ export default function TaxObjectForm({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Jenis Identitas</label>
-                            <select name="idType" value={formData.idType} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white">
+                            <select name="idType" value={formData.idType} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white">
                                 <option value="NPWP">NPWP</option>
                                 <option value="KTP">KTP (NIK)</option>
                             </select>
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nomor Identitas</label>
-                            <input type="text" name="identityNumber" value={formData.identityNumber} onChange={handleInputChange} disabled={isReadOnly} maxLength={16} placeholder="16 digit angka" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white" />
+                            <input type="text" name="identityNumber" value={formData.identityNumber} onChange={handleInputChange} disabled={isReadOnly} maxLength={16} placeholder="16 digit angka" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white" />
                         </div>
                         <div className="md:col-span-2">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Wajib Pajak</label>
-                            <input type="text" name="name" value={formData.name} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white" placeholder="Nama Lengkap / Badan Usaha" />
+                            <input type="text" name="name" value={formData.name} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white" placeholder="Nama Lengkap / Badan Usaha" />
                         </div>
                         <div className="md:col-span-2">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Wajib Pajak</label>
-                            <input type="email" name="email" value={formData.email} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white" placeholder="contoh@email.com" />
+                            <input type="email" name="email" value={formData.email} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white" placeholder="contoh@email.com" />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Jenis Pajak</label>
-                            <select name="taxType" value={formData.taxType} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white">
+                            <select name="taxType" value={formData.taxType} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white">
                                 <option value="23" disabled={formData.idType === 'KTP'}>PPh 23 {formData.idType === 'KTP' ? '(Hanya NPWP)' : ''}</option>
                                 <option value="4(2)">PPh 4(2)</option>
                                 <option value="21">PPh 21</option>
@@ -145,7 +145,7 @@ export default function TaxObjectForm({
                         </div>
                         <div className="md:col-span-2 relative">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Objek Pajak (Cari & Pilih)</label>
-                            <input type="text" name="taxObjectName" value={formData.taxObjectName} onChange={(e) => { if (isReadOnly) return; handleInputChange(e); setShowObjectDropdown(true); }} onFocus={() => !isReadOnly && setShowObjectDropdown(true)} onBlur={() => setTimeout(() => setShowObjectDropdown(false), 200)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white" placeholder="Ketik untuk mencari..." autoComplete="off" />
+                            <input type="text" name="taxObjectName" value={formData.taxObjectName} onChange={(e) => { if (isReadOnly) return; handleInputChange(e); setShowObjectDropdown(true); }} onFocus={() => !isReadOnly && setShowObjectDropdown(true)} onBlur={() => setTimeout(() => setShowObjectDropdown(false), 200)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white" placeholder="Ketik untuk mencari..." autoComplete="off" />
                             {showObjectDropdown && (
                                 <div className="absolute z-50 w-full mt-1 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-xl shadow-xl max-h-60 overflow-y-auto">
                                     {masterData.filter(item => String(item.tax_type) === String(formData.taxType) && ((item.name || '').toLowerCase().includes((formData.taxObjectName || '').toLowerCase()) || (item.code || '').toLowerCase().includes((formData.taxObjectName || '').toLowerCase()))).map((item) => (

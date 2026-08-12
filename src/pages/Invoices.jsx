@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Textarea } from '../components/ui/textarea';
-import { useModalKeydown } from '../components/ui/useModalKeydown';
+import { useModalKeydown, useModalScrollLock } from '../components/ui/useModalKeydown';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -207,7 +207,7 @@ const Pagination = ({ page, totalPages, setPage }) => {
     }
     const btnCls = "min-w-8 h-8 px-2 flex items-center justify-center rounded-lg text-xs font-bold transition-all";
     return (
-        <div className="flex items-center justify-between px-4 py-3 border-t border-white/60 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl">
+        <div className="flex items-center justify-between px-4 py-3 border-t border-white/60 dark:border-white/10 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl">
             <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Page <span className="font-bold text-slate-800 dark:text-white">{page}</span> of {totalPages}</div>
             <div className="flex items-center gap-1">
                 <button disabled={page <= 1} onClick={() => setPage(page - 1)} className={`${btnCls} text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed`}>«</button>
@@ -1380,6 +1380,9 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
         if (attachTarget) { setAttachTarget(null); return; }
     });
 
+    // Kunci scroll body saat salah satu modal inline terbuka (konsisten dengan Modal bersama)
+    useModalScrollLock(!!(deleteReplTarget || cancelTarget || showAudit || showDetail || showTaxRequest || showTax || showSettle || showProforma || showNewInvoice || recipOpen || attachTarget));
+
     const openAudit = (target) => {
         setAuditTarget(target);
         setShowAudit(true);
@@ -2278,19 +2281,19 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             </table>
                         </div>
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/40">
-                            <div className="flex flex-col gap-0.5 rounded-xl bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-white/60 dark:border-white/10 px-3 py-2">
+                            <div className="flex flex-col gap-0.5 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/60 dark:border-white/10 px-3 py-2">
                                 <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Jumlah Data</span>
                                 <span className="text-sm font-bold text-slate-700 dark:text-slate-200 tabular-nums">{dashFiltered.length} invoice</span>
                             </div>
-                            <div className="flex flex-col gap-0.5 rounded-xl bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border-l-4 border-l-teal-500 border border-white/60 dark:border-white/10 px-3 py-2">
+                            <div className="flex flex-col gap-0.5 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-l-4 border-l-teal-500 border border-white/60 dark:border-white/10 px-3 py-2">
                                 <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Invoice</span>
                                 <span className="text-sm font-black text-teal-600 dark:text-teal-400 tabular-nums whitespace-nowrap">{formatCurrency(dashFiltered.filter(r => !(r.pp_type === 'pelunasan')).reduce((s, r) => s + (parseFloat(r.total_invoice) || 0), 0))}</span>
                             </div>
-                            <div className="flex flex-col gap-0.5 rounded-xl bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border-l-4 border-l-indigo-500 border border-white/60 dark:border-white/10 px-3 py-2">
+                            <div className="flex flex-col gap-0.5 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-l-4 border-l-indigo-500 border border-white/60 dark:border-white/10 px-3 py-2">
                                 <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Uang Masuk</span>
                                 <span className="text-sm font-black text-indigo-600 dark:text-indigo-400 tabular-nums whitespace-nowrap">{formatCurrency(dashFiltered.reduce((s, r) => s + (parseFloat(r.uang_masuk) || 0), 0))}</span>
                             </div>
-                            <div className="flex flex-col gap-0.5 rounded-xl bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border-l-4 border-l-amber-500 border border-white/60 dark:border-white/10 px-3 py-2">
+                            <div className="flex flex-col gap-0.5 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-l-4 border-l-amber-500 border border-white/60 dark:border-white/10 px-3 py-2">
                                 <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Sisa (Total − Uang Masuk)</span>
                                 <span className="text-sm font-black text-amber-600 dark:text-amber-400 tabular-nums whitespace-nowrap">{formatCurrency(dashFiltered.filter(r => !(r.pp_type === 'pelunasan')).reduce((s, r) => s + (parseFloat(r.total_invoice) || 0), 0) - dashFiltered.reduce((s, r) => s + (parseFloat(r.uang_masuk) || 0), 0))}</span>
                             </div>
@@ -3212,7 +3215,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                                         type="text"
                                                                         value={emailTplEditing.subject}
                                                                         onChange={e => setEmailTplEditing({ ...emailTplEditing, subject: e.target.value })}
-                                                                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+                                                                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
                                                                     />
                                                                 </div>
                                                                 <div className="text-sm space-y-1">
@@ -3221,7 +3224,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                                         value={emailTplEditing.body_html}
                                                                         onChange={e => setEmailTplEditing({ ...emailTplEditing, body_html: e.target.value })}
                                                                         rows={8}
-                                                                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl text-sm font-mono text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 resize-y"
+                                                                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-sm font-mono text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 resize-y"
                                                                     />
                                                                 </div>
                                                                 {emailTplPreview && (
@@ -4048,7 +4051,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                     value={actionModal.notes || ''}
                                                     onChange={e => setActionModal({ ...actionModal, notes: e.target.value })}
                                                     placeholder={config.notePlaceholder}
-                                                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/40 resize-none"
+                                                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/40 resize-none"
                                                 />
                                             </div>
                                         )}

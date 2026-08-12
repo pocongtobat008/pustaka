@@ -11,7 +11,7 @@ import { entertainmentService } from '../services/entertainmentService';
 import { API_URL } from '../services/apiClient';
 import { SummaryCard } from '../components/ui/Card';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useModalKeydown } from '../components/ui/useModalKeydown';
+import { useModalKeydown, useModalScrollLock } from '../components/ui/useModalKeydown';
 
 const JENIS_OPTIONS = ['Breakfast', 'Lunch', 'Dinner', 'Event', 'Custom'];
 const JENIS_USAHA_OPTIONS = [
@@ -323,6 +323,9 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
         if (showPreview) { setShowPreview(false); return; }
         if (showForm) { setShowForm(false); return; }
     });
+
+    // Kunci scroll body saat salah satu modal inline terbuka (konsisten dengan Modal bersama)
+    useModalScrollLock(!!(deleteTarget || showSettleModal || showRuleForm || showPreview || showForm));
 
     const fetchData = useCallback(async (opts = {}) => {
         const silent = opts.silent === true;

@@ -820,7 +820,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                     <div className="relative">
                         <button
                             onClick={() => setIsFilterOpen(!isFilterOpen)}
-                            className="w-full flex items-center justify-between px-5 py-4 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-[2rem] shadow-sm hover:border-indigo-500 transition-all group"
+                            className="w-full flex items-center justify-between px-5 py-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-[2rem] shadow-sm hover:border-indigo-500 transition-all group"
                         >
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl text-indigo-600">
@@ -1104,7 +1104,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                                         <div className="md:col-span-2 space-y-4">
                                                             <input
-                                                                className="w-full px-4 py-2 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-xl outline-none dark:text-white font-bold text-sm"
+                                                                className="w-full px-4 py-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-xl outline-none dark:text-white font-bold text-sm"
                                                                 placeholder={i18n.slideTitlePlaceholder}
                                                                 value={slide.title}
                                                                 onChange={e => {
@@ -1114,7 +1114,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                                                 }}
                                                             />
                                                             <textarea
-                                                                className="w-full px-4 py-2 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-xl outline-none dark:text-white text-xs min-h-[80px] resize-none"
+                                                                className="w-full px-4 py-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-xl outline-none dark:text-white text-xs min-h-[80px] resize-none"
                                                                 placeholder={i18n.slideContentPlaceholder}
                                                                 value={slide.content}
                                                                 onChange={e => {
@@ -1159,7 +1159,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                                                 />
                                                             </label>
                                                             <input
-                                                                className="w-full px-3 py-1.5 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-lg outline-none dark:text-white text-[10px]"
+                                                                className="w-full px-3 py-1.5 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-lg outline-none dark:text-white text-[10px]"
                                                                 placeholder="https://..."
                                                                 value={slide.image}
                                                                 onChange={e => {
