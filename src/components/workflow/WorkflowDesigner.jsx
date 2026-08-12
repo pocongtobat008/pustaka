@@ -59,7 +59,7 @@ const ApproverNode = ({ data }) => {
     const hasDocs = (data.documents || []).length > 0;
 
     return (
-        <div className="px-6 py-4 rounded-3xl bg-white dark:bg-slate-900 shadow-2xl border-2 border-indigo-100 dark:border-indigo-800 min-w-[200px] group relative hover:border-indigo-500 transition-all">
+        <div className="px-6 py-4 rounded-3xl bg-white dark:bg-slate-800 shadow-2xl border-2 border-indigo-100 dark:border-indigo-800 min-w-[200px] group relative hover:border-indigo-500 transition-all">
             {/* One handle per side — all source, connectionMode=loose handles direction */}
             <Handle id="top" type="source" position={Position.Top} className={`${handleStyle} bg-indigo-500`} />
             <Handle id="right" type="source" position={Position.Right} className={`${handleStyle} bg-indigo-500`} />
@@ -266,7 +266,7 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
     return (
         <div className="w-full h-full bg-slate-50 dark:bg-slate-950 relative overflow-hidden flex">
             {/* Toolbar */}
-            <div className="w-80 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 p-6 flex flex-col gap-4 z-10 shadow-2xl overflow-hidden">
+            <div className="w-80 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-800 p-6 flex flex-col gap-4 z-10 shadow-2xl overflow-hidden">
                 <div className="flex justify-between items-center mb-2">
                     <h2 className="text-lg font-black text-slate-800 dark:text-white flex items-center gap-2">
                         <Save className="text-indigo-500" size={20} /> Workflow
@@ -313,7 +313,7 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
                 {selectedNode && (
                     <div className="flex-1 min-h-0 overflow-y-auto space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-300 custom-scrollbar pr-1">
                         {/* Header */}
-                        <div className="flex justify-between items-center sticky top-0 bg-white dark:bg-slate-900 z-10 pb-2">
+                        <div className="flex justify-between items-center sticky top-0 bg-white dark:bg-slate-800 z-10 pb-2">
                             <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">Node Properties</p>
                             <button onClick={() => deleteNode(selectedNode.id)} className="text-red-500 hover:text-red-600 p-1">
                                 <Trash2 size={16} />
@@ -440,7 +440,7 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
                 >
                     <Background color="#94a3b8" gap={20} size={1} />
                     <Controls />
-                    <Panel position="top-right" className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md p-3 rounded-2xl border border-white/20 shadow-xl">
+                    <Panel position="top-right" className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md p-3 rounded-2xl border border-white/20 shadow-xl">
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Status Flow</p>
                         <p className="text-xs font-bold text-slate-800 dark:text-white">Drafting Master Flow</p>
                     </Panel>

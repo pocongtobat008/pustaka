@@ -331,7 +331,7 @@ export default function Inventory({
 
             {/* AI SMART INSIGHT BANNER */}
             <div className={`mb-6 p-4 rounded-2xl border backdrop-blur-md flex items-center gap-4 animate-in slide-in-from-top-4 duration-700 ${insight.color}`}>
-                <div className="p-2.5 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-xl shadow-sm shrink-0">
+                <div className="p-2.5 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-xl shadow-sm shrink-0">
                     {insight.icon}
                 </div>
                 <div className="flex-1">
@@ -345,7 +345,7 @@ export default function Inventory({
             </div>
 
             {/* CONTROL BAR */}
-            <div className="flex flex-col gap-6 mb-8 bg-white/40 dark:bg-slate-900/40 backdrop-blur-2xl p-6 rounded-[2rem] border border-white/50 dark:border-white/10 shadow-2xl shadow-indigo-500/10 group hover:shadow-indigo-500/20 transition-all duration-500">
+            <div className="flex flex-col gap-6 mb-8 bg-white/40 dark:bg-slate-800/40 backdrop-blur-2xl p-6 rounded-[2rem] border border-white/50 dark:border-white/10 shadow-2xl shadow-indigo-500/10 group hover:shadow-indigo-500/20 transition-all duration-500">
                 <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4 w-full md:w-auto">
                         <div className="flex bg-gray-100 dark:bg-slate-800 border dark:border-slate-700/50 p-1.5 rounded-2xl backdrop-blur-sm shadow-inner">

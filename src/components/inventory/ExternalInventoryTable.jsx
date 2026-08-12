@@ -10,7 +10,7 @@ export default function ExternalInventoryTable({
 }) {
     return (
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-            <div className="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 overflow-hidden">
+            <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-800 overflow-hidden">
                 <table className="w-full text-sm text-left border-collapse">
                     <thead className="bg-white/60 dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 backdrop-blur-xl border-b border-white/30 dark:border-white/5">
                         <tr>

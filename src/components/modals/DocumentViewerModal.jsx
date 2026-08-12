@@ -37,7 +37,7 @@ export default function DocumentViewerModal({
             {/* FILE PREVIEW SECTION */}
             <div className="border-t border-gray-200 dark:border-slate-700 pt-4">
                 <h4 className="font-bold mb-2 dark:text-white flex items-center gap-2"><Eye size={16} /> Preview Dokumen</h4>
-                <div className="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 overflow-hidden min-h-[300px] max-h-[600px] overflow-y-auto shadow-inner flex items-center justify-center relative">
+                <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 overflow-hidden min-h-[300px] max-h-[600px] overflow-y-auto shadow-inner flex items-center justify-center relative">
                     {isGeneratingPreview ? (
                         <div className="flex flex-col items-center gap-3">
                             <RefreshCw size={32} className="text-indigo-500 animate-spin" />

@@ -135,7 +135,7 @@ export function ToastContainer({ toasts, onRemove }) {
                             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
                             className={`
                 pointer-events-auto
-                bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl 
+                bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl 
                 border ${config.border} 
                 p-3.5 rounded-2xl shadow-2xl 
                 ring-8 ${config.ring}

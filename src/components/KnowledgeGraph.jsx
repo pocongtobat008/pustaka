@@ -189,7 +189,7 @@ export default function KnowledgeGraph({ data, height = 520 }) {
                 const n = simRef.current.byId?.[(selected || {}).id] || simRef.current.byId?.[hover];
                 if (!n) return null;
                 return (
-                    <div className="text-xs bg-white dark:bg-slate-900 border dark:border-slate-700/50 rounded-lg p-3">
+                    <div className="text-xs bg-white dark:bg-slate-800 border dark:border-slate-700/50 rounded-lg p-3">
                         <div className="flex items-center gap-2 mb-1">
                             <span className="w-3 h-3 rounded-full" style={{ background: n.color }} />
                             <span className="font-bold dark:text-white">{n.label}</span>

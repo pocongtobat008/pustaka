@@ -1110,7 +1110,7 @@ export default function MasterData({
                                 <div key={deptName} className="space-y-2">
                                     <button
                                         onClick={() => toggleDept(deptName)}
-                                        className="w-full flex items-center justify-between p-4 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-white/60 dark:border-white/10 rounded-2xl hover:shadow-md transition-all group"
+                                        className="w-full flex items-center justify-between p-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/60 dark:border-white/10 rounded-2xl hover:shadow-md transition-all group"
                                     >
                                         <div className="flex items-center gap-3">
                                             <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl text-indigo-600">
@@ -1135,7 +1135,7 @@ export default function MasterData({
                                                             <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-black text-lg shadow-lg">
                                                                 {u.name.charAt(0)}
                                                             </div>
-                                                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-white/70 dark:bg-slate-900/60 rounded-lg flex items-center justify-center border border-white/60 dark:border-white/10 shadow-sm">
+                                                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-white/70 dark:bg-slate-800/60 rounded-lg flex items-center justify-center border border-white/60 dark:border-white/10 shadow-sm">
                                                                 <Shield size={10} className="text-indigo-500" />
                                                             </div>
                                                         </div>
@@ -1214,9 +1214,9 @@ export default function MasterData({
                                                     title={hasRule ? actions.join(', ') : (hasPermission('master', 'edit') ? text.setNow : text.noPermissionSet)}
                                                     className={`px-2 py-1 rounded text-[10px] flex flex-col text-left border transition-all ${hasPermission('master', 'edit')
                                                         ? (hasRule
-                                                            ? 'bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border-gray-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600 cursor-pointer'
+                                                            ? 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-gray-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600 cursor-pointer'
                                                             : 'bg-amber-50 dark:bg-amber-500/10 border-dashed border-amber-300 dark:border-amber-500/40 hover:border-amber-400 cursor-pointer')
-                                                        : 'bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border-gray-200 dark:border-slate-700 cursor-default opacity-70'}`}
+                                                        : 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-gray-200 dark:border-slate-700 cursor-default opacity-70'}`}
                                                 >
                                                     <span className={`font-bold uppercase ${hasRule ? 'text-indigo-500' : 'text-amber-500 dark:text-amber-400'}`}>
                                                         {mod.label}
@@ -1231,7 +1231,7 @@ export default function MasterData({
                                         {Object.keys(perms)
                                             .filter(mod => !APP_MODULES[mod])
                                             .map(mod => (
-                                                <div key={mod} className="px-2 py-1 bg-white/70 dark:bg-slate-900/60 border border-gray-200 dark:border-slate-700 rounded text-[10px] flex flex-col">
+                                                <div key={mod} className="px-2 py-1 bg-white/70 dark:bg-slate-800/60 border border-gray-200 dark:border-slate-700 rounded text-[10px] flex flex-col">
                                                     <span className="font-bold text-indigo-500 uppercase">{mod}</span>
                                                     <span className="text-gray-400">{Array.isArray(perms[mod]) ? perms[mod].join(', ') : ''}</span>
                                                 </div>
@@ -1293,7 +1293,7 @@ export default function MasterData({
                                 <History size={20} className="text-indigo-500" />
                                 {logSource === 'database' ? text.auditTrailSystem : `${text.systemLogFile}: ${logSource.split('_')[0].toUpperCase()} File`}
                             </h3>
-                            <div className="flex bg-gray-100 dark:bg-slate-900 p-1 rounded-xl mt-3 w-fit border border-white/60 dark:border-white/10">
+                            <div className="flex bg-gray-100 dark:bg-slate-800 p-1 rounded-xl mt-3 w-fit border border-white/60 dark:border-white/10">
                                 <button
                                     onClick={() => setLogSource('database')}
                                     className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'database' ? 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
@@ -1326,7 +1326,7 @@ export default function MasterData({
                                 <Input
                                     type="text"
                                     placeholder={text.searchLogs}
-                                    className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-white/60 dark:border-white/10 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white"
+                                    className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border border-white/60 dark:border-white/10 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white"
                                     value={logSearchQuery}
                                     onChange={(e) => setLogSearchQuery(e.target.value)}
                                 />
@@ -1382,7 +1382,7 @@ export default function MasterData({
                                                     {expandedLogId === log.id && (
                                                         <tr>
                                                             <td colSpan="5" className="px-6 pb-4 pt-0">
-                                                                <div className="bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-4 border border-white/60 dark:border-white/10 grid grid-cols-1 md:grid-cols-2 gap-4 animate-in slide-in-from-top-2">
+                                                                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 border border-white/60 dark:border-white/10 grid grid-cols-1 md:grid-cols-2 gap-4 animate-in slide-in-from-top-2">
                                                                     {log.oldValue && <div className="space-y-1"><p className="text-[9px] font-black text-red-500 uppercase ml-1">{text.beforeOld}</p><pre className="text-[10px] font-mono p-3 bg-red-50/50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 rounded-xl text-red-700 dark:text-red-400 overflow-x-auto">{log.oldValue.startsWith('{') ? JSON.stringify(JSON.parse(log.oldValue), null, 2) : log.oldValue}</pre></div>}
                                                                     {log.newValue && <div className="space-y-1"><p className="text-[9px] font-black text-emerald-500 uppercase ml-1">{text.afterNew}</p><pre className="text-[10px] font-mono p-3 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/20 rounded-xl text-emerald-700 dark:text-emerald-400 overflow-x-auto">{log.newValue.startsWith('{') ? JSON.stringify(JSON.parse(log.newValue), null, 2) : log.newValue}</pre></div>}
                                                                 </div>
@@ -1398,7 +1398,7 @@ export default function MasterData({
 
                             {/* Pagination Controls */}
                             {totalLogPages > 1 && (
-                                <div className="px-6 py-4 flex items-center justify-between border-t border-slate-50 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-900/30 rounded-b-2xl">
+                                <div className="px-6 py-4 flex items-center justify-between border-t border-slate-50 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-800/30 rounded-b-2xl">
                                     <div className="text-xs text-slate-500 dark:text-slate-400">
                                         {text.showing} <span className="font-bold text-indigo-600">{(logCurrentPage - 1) * logsPerPage + 1}</span> {text.to} <span className="font-bold text-indigo-600">{Math.min(logCurrentPage * logsPerPage, filteredLogs.length)}</span> {text.of} <span className="font-bold text-indigo-600">{filteredLogs.length}</span> {text.logsWord}
                                     </div>
@@ -2250,7 +2250,7 @@ export default function MasterData({
                                 )}
 
                                 {/* Search */}
-                                <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border dark:border-slate-700/50 rounded-lg p-3">
+                                <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border dark:border-slate-700/50 rounded-lg p-3">
                                     <h5 className="font-bold text-xs text-gray-600 dark:text-slate-300 mb-2 flex items-center gap-1.5"><Search size={13} /> Cari Memori</h5>
                                     <div className="flex gap-2">
                                         <Input
@@ -2285,7 +2285,7 @@ export default function MasterData({
                                 </div>
 
                                 {/* Consolidation */}
-                                <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border dark:border-slate-700/50 rounded-lg p-3">
+                                <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border dark:border-slate-700/50 rounded-lg p-3">
                                     <h5 className="font-bold text-xs text-gray-600 dark:text-slate-300 mb-2 flex items-center gap-1.5"><Zap size={13} /> Konsolidasi Memori</h5>
                                     <p className="text-[11px] text-gray-500 mb-2">Menjalankan konsolidasi akan mengelompokkan memori serupa, mengekstrak knowledge baru, dan mengarsipkan memori usang.</p>
                                     <button
@@ -2304,7 +2304,7 @@ export default function MasterData({
                                 </div>
 
                                 {/* Sync Training Docs to 1MBrain */}
-                                <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border dark:border-slate-700/50 rounded-lg p-3">
+                                <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border dark:border-slate-700/50 rounded-lg p-3">
                                     <h5 className="font-bold text-xs text-gray-600 dark:text-slate-300 mb-2 flex items-center gap-1.5"><RefreshCw size={13} /> Sinkronisasi Data Training ke 1MBrain</h5>
                                     <p className="text-[11px] text-gray-500 mb-2">Sinkronkan semua dokumen training yang aktif ke 1MBrain agar pencarian memori lebih terpusat.</p>
                                     <button
@@ -2322,7 +2322,7 @@ export default function MasterData({
                                 </div>
 
                                 {/* Ingest Knowledge */}
-                                <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border dark:border-slate-700/50 rounded-lg p-3">
+                                <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border dark:border-slate-700/50 rounded-lg p-3">
                                     <h5 className="font-bold text-xs text-gray-600 dark:text-slate-300 mb-2 flex items-center gap-1.5"><FileText size={13} /> Tambah Pengetahuan ke 1MBrain</h5>
                                     <form onSubmit={handleBrainIngest} className="space-y-2">
                                         <Input
@@ -2351,7 +2351,7 @@ export default function MasterData({
                                 </div>
 
                                 {/* Recent Memories */}
-                                <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border dark:border-slate-700/50 rounded-lg p-3">
+                                <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border dark:border-slate-700/50 rounded-lg p-3">
                                     <h5 className="font-bold text-xs text-gray-600 dark:text-slate-300 mb-2 flex items-center gap-1.5"><Clock size={13} /> Memori Terbaru ({brainMemories.length})</h5>
                                     {brainLoading ? (
                                         <div className="text-center py-6 text-gray-400"><Loader2 size={20} className="animate-spin inline-block" /></div>
@@ -2478,7 +2478,7 @@ export default function MasterData({
             {/* Training Preview Modal */}
             {trainingPreview && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setTrainingPreview(null)}>
-                    <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col border dark:border-slate-700/50" onClick={e => e.stopPropagation()}>
+                    <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col border dark:border-slate-700/50" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center justify-between p-5 border-b dark:border-slate-700/50">
                             <div>
                                 <h3 className="font-bold text-lg dark:text-white">{trainingPreview.title}</h3>
@@ -2509,7 +2509,7 @@ export default function MasterData({
             {/* Training Detail Modal */}
             {trainingDetail && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setTrainingDetail(null)}>
-                    <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col border dark:border-slate-700/50" onClick={e => e.stopPropagation()}>
+                    <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col border dark:border-slate-700/50" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center justify-between p-5 border-b dark:border-slate-700/50">
                             <div className="flex items-center gap-2">
                                 <Info size={20} className="text-blue-500" />

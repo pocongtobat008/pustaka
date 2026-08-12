@@ -30,7 +30,7 @@ export default function OcrQueueModal({ ocrStats, API_BASE, toast }) {
         </h4>
         <div className="space-y-3">
           {(ocrStats?.activeJobs || []).length === 0 ? (
-            <div className="text-center py-8 bg-slate-50 dark:bg-slate-900/50 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
+            <div className="text-center py-8 bg-slate-50 dark:bg-slate-800/50 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
               <p className="text-slate-400 font-bold">Tidak ada pekerjaan yang sedang berjalan.</p>
             </div>
           ) : (
@@ -45,7 +45,7 @@ export default function OcrQueueModal({ ocrStats, API_BASE, toast }) {
                     <span className="text-lg font-black text-indigo-600 dark:text-indigo-400">{job.progress || 0}%</span>
                   </div>
                 </div>
-                <div className="w-full bg-slate-100 dark:bg-slate-900 rounded-full h-3 overflow-hidden">
+                <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-3 overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${job.progress || 0}%` }}

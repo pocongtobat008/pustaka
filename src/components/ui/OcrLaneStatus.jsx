@@ -26,7 +26,7 @@ export default function OcrLaneStatus({ API_BASE }) {
   if (!lanes || lanes.length === 0) return null;
 
   return (
-    <div className="fixed right-4 top-4 z-50 w-80 max-w-[90vw] p-2 bg-white/90 dark:bg-slate-900/80 rounded-xl shadow-lg border border-slate-100 dark:border-slate-800 backdrop-blur">
+    <div className="fixed right-4 top-4 z-50 w-80 max-w-[90vw] p-2 bg-white/90 dark:bg-slate-800/80 rounded-xl shadow-lg border border-slate-100 dark:border-slate-800 backdrop-blur">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-3">
           <div className="text-xs font-black uppercase">OCR Lanes</div>

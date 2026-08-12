@@ -195,7 +195,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                                         type="text"
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
-                                        className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-slate-900/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all dark:text-white font-semibold"
+                                        className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all dark:text-white font-semibold"
                                         placeholder={text.fullNamePlaceholder}
                                         required
                                     />
@@ -231,7 +231,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                                         type="password"
                                         value={currentPassword}
                                         onChange={(e) => setCurrentPassword(e.target.value)}
-                                        className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-slate-900/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all dark:text-white font-semibold"
+                                        className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all dark:text-white font-semibold"
                                         placeholder="••••••••"
                                         required={newPassword.length > 0}
                                     />
@@ -249,7 +249,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                                             type="password"
                                             value={newPassword}
                                             onChange={(e) => setNewPassword(e.target.value)}
-                                            className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-slate-900/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all dark:text-white font-semibold"
+                                            className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all dark:text-white font-semibold"
                                             placeholder="••••••••"
                                         />
                                     </div>
@@ -263,7 +263,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                                             type="password"
                                             value={confirmPassword}
                                             onChange={(e) => setConfirmPassword(e.target.value)}
-                                            className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-slate-900/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all dark:text-white font-semibold"
+                                            className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all dark:text-white font-semibold"
                                             placeholder="••••••••"
                                         />
                                     </div>

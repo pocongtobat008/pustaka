@@ -80,7 +80,7 @@ const CommandPalette = ({ items = [], onSelect, quickActions = [], disabled = fa
         size="sm"
         disabled={disabled}
         onClick={() => setOpen(true)}
-        className="h-10 rounded-2xl border-slate-200 bg-white/80 px-3 text-xs font-semibold text-slate-600 shadow-sm transition hover:bg-white dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-300"
+        className="h-10 rounded-2xl border-slate-200 bg-white/80 px-3 text-xs font-semibold text-slate-600 shadow-sm transition hover:bg-white dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-300"
       >
         <Search size={14} />
         <span>Search</span>

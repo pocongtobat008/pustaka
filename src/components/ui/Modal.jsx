@@ -44,7 +44,7 @@ export const Modal = ({ isOpen, onClose, title, children, size = 'max-w-4xl', hi
                 className={`my-6 glass-card w-full ${size} ${noPadding ? 'overflow-hidden' : 'max-h-[92vh] overflow-y-auto'} rounded-3xl shadow-2xl animate-in zoom-in-95 duration-200 sm:my-0`}
             >
                 {!hideHeader && (
-                    <div className="flex justify-between items-center p-6 border-b border-white/20 dark:border-white/10 sticky top-0 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl z-10">
+                    <div className="flex justify-between items-center p-6 border-b border-white/20 dark:border-white/10 sticky top-0 bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl z-10">
                         <h2 className="text-lg font-extrabold text-slate-800 dark:text-white tracking-tight">{title}</h2>
                         <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                             <X size={20} />

@@ -404,7 +404,7 @@ export default function DocumentApproval({ approvals = [], users = [], departmen
                 <SummaryCard title={text.rejected} value={visibleApprovals.filter(a => a?.status === 'Rejected').length} icon={XCircle} colorClass="bg-red-100 text-red-600" />
             </div>
 
-            <div className="flex justify-between items-center bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
+            <div className="flex justify-between items-center bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
                 <div className="relative flex-1 max-w-md">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                     <input
@@ -425,7 +425,7 @@ export default function DocumentApproval({ approvals = [], users = [], departmen
             {/* List View */}
             <div className="grid grid-cols-1 gap-4">
                 {filteredApprovals.length === 0 && (
-                    <div className="py-20 text-center bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-[2.5rem] border border-dashed border-slate-200 dark:border-slate-800">
+                    <div className="py-20 text-center bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-[2.5rem] border border-dashed border-slate-200 dark:border-slate-800">
                         <FileCheck size={48} className="mx-auto mb-4 text-slate-200 dark:text-slate-800" />
                         <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">{text.emptyRequest}</p>
                     </div>
@@ -435,7 +435,7 @@ export default function DocumentApproval({ approvals = [], users = [], departmen
                     <div
                         key={app.id}
                         onClick={() => handleApprovalClick(app)}
-                        className="group bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl p-5 rounded-3xl border border-slate-100 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-800 transition-all cursor-pointer shadow-sm hover:shadow-xl flex items-center gap-6"
+                        className="group bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl p-5 rounded-3xl border border-slate-100 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-800 transition-all cursor-pointer shadow-sm hover:shadow-xl flex items-center gap-6"
                     >
                         <div className="relative">
                             <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${app?.status === 'Approved' ? 'bg-emerald-50 text-emerald-600' :
@@ -515,7 +515,7 @@ export default function DocumentApproval({ approvals = [], users = [], departmen
                         <div className="space-y-2">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.selectMasterFlow}</label>
                             <select
-                                className="w-full px-5 py-3 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border-2 border-indigo-100 dark:border-indigo-800 rounded-2xl outline-none dark:text-white font-bold appearance-none"
+                                className="w-full px-5 py-3 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-2 border-indigo-100 dark:border-indigo-800 rounded-2xl outline-none dark:text-white font-bold appearance-none"
                                 value={selectedFlowId}
                                 onChange={(e) => handleFlowChange(e.target.value)}
                             >
@@ -556,7 +556,7 @@ export default function DocumentApproval({ approvals = [], users = [], departmen
                         {attachment && (
                             <div
                                 onClick={() => setPreviewFile({ url: URL.createObjectURL(attachment), name: attachment.name, isLocal: true })}
-                                className="mt-2 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden bg-slate-50 dark:bg-slate-900 h-40 flex items-center justify-center animate-in fade-in zoom-in-95 cursor-zoom-in group relative"
+                                className="mt-2 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden bg-slate-50 dark:bg-slate-800 h-40 flex items-center justify-center animate-in fade-in zoom-in-95 cursor-zoom-in group relative"
                             >
                                 {attachment.type.startsWith('image/') ? (
                                     <img src={URL.createObjectURL(attachment)} alt="Preview" className="max-w-full max-h-full object-contain" />
@@ -567,7 +567,7 @@ export default function DocumentApproval({ approvals = [], users = [], departmen
                                     </div>
                                 )}
                                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-all flex items-center justify-center">
-                                    <div className="p-2 bg-white/90 dark:bg-slate-900/90 rounded-xl shadow-lg scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all text-indigo-600">
+                                    <div className="p-2 bg-white/90 dark:bg-slate-800/90 rounded-xl shadow-lg scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all text-indigo-600">
                                         <Eye size={20} />
                                     </div>
                                 </div>
@@ -618,11 +618,11 @@ export default function DocumentApproval({ approvals = [], users = [], departmen
                             <h2 className="text-2xl font-black text-slate-800 dark:text-white mb-4 leading-tight">{selectedApproval?.title}</h2>
                             <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-6">{selectedApproval?.description}</p>
                             <div className="grid grid-cols-2 gap-4 mb-6">
-                                <div className="p-4 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl shadow-sm">
+                                <div className="p-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl shadow-sm">
                                     <p className="text-[9px] font-black text-slate-400 uppercase mb-1">{text.requester}</p>
                                     <p className="text-sm font-bold dark:text-white">{selectedApproval?.requester_name}</p>
                                 </div>
-                                <div className="p-4 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl shadow-sm">
+                                <div className="p-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl shadow-sm">
                                     <p className="text-[9px] font-black text-slate-400 uppercase mb-1">{text.date}</p>
                                     <p className="text-sm font-bold dark:text-white">{selectedApproval?.created_at ? new Date(selectedApproval.created_at).toLocaleDateString(dateLocale) : '-'}</p>
                                 </div>
@@ -643,7 +643,7 @@ export default function DocumentApproval({ approvals = [], users = [], departmen
                                             </a>
                                         </div>
                                     </div>
-                                    <div onClick={() => setPreviewFile({ url: selectedApproval.attachment_url, name: selectedApproval.attachment_name })} className="rounded-[2rem] border border-slate-200 dark:border-slate-700 overflow-hidden bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl h-64 shadow-inner cursor-zoom-in group relative">
+                                    <div onClick={() => setPreviewFile({ url: selectedApproval.attachment_url, name: selectedApproval.attachment_name })} className="rounded-[2rem] border border-slate-200 dark:border-slate-700 overflow-hidden bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl h-64 shadow-inner cursor-zoom-in group relative">
                                         {String(selectedApproval.attachment_url).toLowerCase().match(/\.(jpg|jpeg|png|webp)/) ? (
                                             <img src={getFullUrl(selectedApproval.attachment_url)} alt="Preview" className="w-full h-full object-contain" />
                                         ) : String(selectedApproval.attachment_url).toLowerCase().includes('.pdf') ? (
@@ -656,7 +656,7 @@ export default function DocumentApproval({ approvals = [], users = [], departmen
                                         )}
                                     </div>
                                     {selectedApproval.ocr_content && (
-                                        <div className="p-5 bg-slate-50 dark:bg-slate-900/50 rounded-[2rem] border border-slate-100 dark:border-slate-800">
+                                        <div className="p-5 bg-slate-50 dark:bg-slate-800/50 rounded-[2rem] border border-slate-100 dark:border-slate-800">
                                             <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 flex items-center gap-2">
                                                 <Sparkles size={12} className="text-indigo-500" /> {text.ocrResult}
                                             </h4>
@@ -670,7 +670,7 @@ export default function DocumentApproval({ approvals = [], users = [], departmen
                         </div>
 
                         {selectedApproval?.status === 'Pending' && (selectedApproval?.steps || [])[selectedApproval?.current_step_index]?.approver_username === currentUser?.username && (
-                            <div className="p-6 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-[2.5rem] border-2 border-indigo-500 shadow-2xl animate-in zoom-in-95">
+                            <div className="p-6 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-[2.5rem] border-2 border-indigo-500 shadow-2xl animate-in zoom-in-95">
                                 <h4 className="text-sm font-black text-slate-800 dark:text-white mb-4 flex items-center gap-2">
                                     <ShieldCheck className="text-indigo-600" /> {text.decisionNeeded}
                                 </h4>
@@ -685,7 +685,7 @@ export default function DocumentApproval({ approvals = [], users = [], departmen
                                     {actionAttachment && (
                                         <div
                                             onClick={() => setPreviewFile({ url: URL.createObjectURL(actionAttachment), name: actionAttachment.name, isLocal: true })}
-                                            className="mt-3 relative h-24 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 flex items-center justify-center cursor-zoom-in group"
+                                            className="mt-3 relative h-24 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 flex items-center justify-center cursor-zoom-in group"
                                         >
                                             {actionAttachment.type.startsWith('image/') ? (
                                                 <img src={URL.createObjectURL(actionAttachment)} alt="Preview" className="max-w-full max-h-full object-contain" />
@@ -693,7 +693,7 @@ export default function DocumentApproval({ approvals = [], users = [], departmen
                                                 <FileText size={24} className="text-slate-400" />
                                             )}
                                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 flex items-center justify-center transition-all opacity-0 group-hover:opacity-100">
-                                                <div className="p-1.5 bg-white/90 dark:bg-slate-900/90 rounded-lg shadow-sm text-indigo-600">
+                                                <div className="p-1.5 bg-white/90 dark:bg-slate-800/90 rounded-lg shadow-sm text-indigo-600">
                                                     <Eye size={14} />
                                                 </div>
                                             </div>
@@ -737,7 +737,7 @@ export default function DocumentApproval({ approvals = [], users = [], departmen
                                             const isDone = step?.status === 'Approved';
                                             const isRejected = step?.status === 'Rejected';
                                             return (
-                                                <div key={idx} className={`relative p-5 rounded-3xl border transition-all ${isActive ? 'bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border-amber-200 shadow-xl' : 'bg-slate-50/50 dark:bg-slate-800/30 border-transparent'}`}>
+                                                <div key={idx} className={`relative p-5 rounded-3xl border transition-all ${isActive ? 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-amber-200 shadow-xl' : 'bg-slate-50/50 dark:bg-slate-800/30 border-transparent'}`}>
                                                     <div className={`absolute -left-[3.25rem] top-5 w-10 h-10 rounded-xl flex items-center justify-center border-4 border-white dark:border-slate-900 hidden md:flex ${isDone ? 'bg-emerald-500 text-white' : isRejected ? 'bg-red-500 text-white' : isActive ? 'bg-amber-500 text-white animate-pulse' : 'bg-slate-200 dark:bg-slate-800 text-slate-400'}`}>{isDone ? <CheckCircle2 size={18} /> : isRejected ? <XCircle size={18} /> : <User size={18} />}</div>
                                                     <div className="flex justify-between items-start mb-2">
                                                         <div>
@@ -762,7 +762,7 @@ export default function DocumentApproval({ approvals = [], users = [], departmen
                                                     {step?.note && <p className="text-[11px] text-slate-500 dark:text-slate-400 italic mt-2 border-l-2 border-slate-200 dark:border-slate-700 pl-3">"{step.note}"</p>}
 
                                                     {step?.attachment_url && (
-                                                        <div className="mt-3 flex items-center justify-between gap-3 p-3 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm animate-in slide-in-from-top-2">
+                                                        <div className="mt-3 flex items-center justify-between gap-3 p-3 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm animate-in slide-in-from-top-2">
                                                             <div className="flex items-center gap-2 overflow-hidden">
                                                                 <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 rounded-lg">
                                                                     <Paperclip size={12} />
@@ -808,7 +808,7 @@ export default function DocumentApproval({ approvals = [], users = [], departmen
                                 <div className="w-full h-full rounded-3xl overflow-hidden border border-slate-100 dark:border-slate-800 relative">
                                     {(() => {
                                         const flow = flows.find(f => String(f.id) === String(selectedApproval?.flow_id));
-                                        if (!flow?.visual_config) return <div className="flex flex-col items-center justify-center h-full text-slate-400 bg-slate-50 dark:bg-slate-900/50"><Map size={48} className="mb-4 opacity-20" /><p className="text-[10px] font-black uppercase tracking-widest">{text.visualMapUnavailable}</p></div>;
+                                        if (!flow?.visual_config) return <div className="flex flex-col items-center justify-center h-full text-slate-400 bg-slate-50 dark:bg-slate-800/50"><Map size={48} className="mb-4 opacity-20" /><p className="text-[10px] font-black uppercase tracking-widest">{text.visualMapUnavailable}</p></div>;
                                         
                                         // Pastikan visual_config adalah objek, bukan string JSON
                                         const config = typeof flow.visual_config === 'string' ? JSON.parse(flow.visual_config) : flow.visual_config;

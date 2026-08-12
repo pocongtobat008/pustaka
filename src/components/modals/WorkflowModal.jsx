@@ -21,7 +21,7 @@ export default function WorkflowModal({
     >
       <div className="flex h-full min-h-0 flex-col">
         {/* Header Controls (Name & Description) */}
-        <div className="p-6 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-6">
+        <div className="p-6 bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-6">
           <div className="space-y-2">
             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nama Alur Persetujuan</label>
             <input

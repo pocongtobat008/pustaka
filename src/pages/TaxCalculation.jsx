@@ -646,7 +646,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
             {/* IMPORT LOADING OVERLAY */}
             {isImporting && (
                 <div className="fixed inset-0 z-[200] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center animate-in fade-in duration-300">
-                    <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl p-10 rounded-[3rem] shadow-2xl flex flex-col items-center max-w-sm text-center border border-indigo-100 dark:border-indigo-900/50">
+                    <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl p-10 rounded-[3rem] shadow-2xl flex flex-col items-center max-w-sm text-center border border-indigo-100 dark:border-indigo-900/50">
                         <div className="relative mb-8">
                             <div className="w-24 h-24 border-4 border-indigo-100 dark:border-indigo-900/30 rounded-full"></div>
                             <div className="w-24 h-24 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
@@ -692,7 +692,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
 
             {/* AI SMART INSIGHT BANNER */}
             <div className={`p-4 rounded-2xl border backdrop-blur-md flex items-center gap-4 animate-in slide-in-from-top-4 duration-700 ${insight.color}`}>
-                <div className="p-2.5 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-xl shadow-sm shrink-0">
+                <div className="p-2.5 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-xl shadow-sm shrink-0">
                     {insight.icon}
                 </div>
                 <div className="flex-1">
@@ -967,7 +967,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                                     >
                                                         <div className="font-medium text-gray-800 dark:text-gray-200">{item.name}</div>
                                                         <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
-                                                            <span className="bg-gray-100 dark:bg-slate-900 px-1.5 py-0.5 rounded text-gray-600 dark:text-gray-400 font-mono">
+                                                            <span className="bg-gray-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-gray-600 dark:text-gray-400 font-mono">
                                                                 {item.code || item.taxObjectCode}
                                                             </span>
                                                             <span className="text-indigo-500 font-medium">PPh {item.taxType}</span>
@@ -1038,7 +1038,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
 
                     {/* Summary / Info Sidebar */}
                     <div className="space-y-6">
-                        <Card className="bg-slate-50 dark:bg-slate-900 border-dashed border-2 border-slate-200 dark:border-slate-700 h-full flex flex-col justify-center items-center text-center p-8 text-gray-500">
+                        <Card className="bg-slate-50 dark:bg-slate-800 border-dashed border-2 border-slate-200 dark:border-slate-700 h-full flex flex-col justify-center items-center text-center p-8 text-gray-500">
                             <FileText size={48} className="mb-4 text-slate-300" />
                             <p className="font-medium">{text.summaryTitle}</p>
                             <p className="text-sm mt-2 mb-4">
@@ -1105,7 +1105,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Detail Penjumlah:</p>
                                             <div className="space-y-2.5">
                                                 {calcData.breakdown.map((item, i) => (
-                                                    <div key={i} className="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800 text-[11px] animate-in slide-in-from-left-2" style={{ animationDelay: `${i * 50}ms` }}>
+                                                    <div key={i} className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800 text-[11px] animate-in slide-in-from-left-2" style={{ animationDelay: `${i * 50}ms` }}>
                                                         <div className="flex justify-between font-black text-slate-700 dark:text-slate-200 mb-1.5">
                                                             <span className="opacity-60">Item {i + 1}: {item.label}</span>
                                                             <span>{formatCurrency(item.value)}</span>

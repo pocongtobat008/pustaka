@@ -991,7 +991,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
             <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
                 {/* AI SMART INSIGHT BANNER */}
                 <div className={`p-4 rounded-2xl border backdrop-blur-md flex items-center gap-4 animate-in slide-in-from-top-4 duration-700 ${insight.color}`}>
-                    <div className="p-2.5 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-xl shadow-sm shrink-0">
+                    <div className="p-2.5 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-xl shadow-sm shrink-0">
                         {insight.icon}
                     </div>
                     <div className="flex-1">
@@ -1009,7 +1009,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                             <input
-                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 transition-all dark:text-white"
+                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-slate-800 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 transition-all dark:text-white"
                                 placeholder={text.searchPlaceholder}
                                 value={searchQuery}
                                 onChange={e => setSearchQuery(e.target.value)}
@@ -1125,7 +1125,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                         <button onClick={() => setSelectedAudit(null)} className="flex items-center gap-2 text-gray-500 hover:text-indigo-600 mb-4 transition-colors">
                             &larr; Kembali ke Daftar
                         </button>
-                        <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl p-6 rounded-xl border border-gray-200 dark:border-slate-800 shadow-sm">
+                        <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl p-6 rounded-xl border border-gray-200 dark:border-slate-800 shadow-sm">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
                                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{selectedAudit.title}</h2>
@@ -1269,12 +1269,12 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
 
                                     <div className="grid grid-cols-1 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                                         {(selectedAudit.steps[activeStep - 1]?.notes || []).length === 0 && (
-                                            <div className="text-center py-8 bg-slate-50/50 dark:bg-slate-900/50 rounded-3xl border-2 border-dashed border-slate-100 dark:border-slate-800">
+                                            <div className="text-center py-8 bg-slate-50/50 dark:bg-slate-800/50 rounded-3xl border-2 border-dashed border-slate-100 dark:border-slate-800">
                                                 <p className="text-xs text-slate-400 font-medium">{text.noRequestYet}</p>
                                             </div>
                                         )}
                                         {(selectedAudit.steps[activeStep - 1]?.notes || []).map((note) => (
-                                            <div key={note.id} className={`group flex items-center gap-4 p-4 rounded-3xl border transition-all duration-300 ${note.isChecked ? 'bg-emerald-50/30 border-emerald-100 dark:bg-emerald-900/10 dark:border-emerald-800/50' : 'bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border-slate-100 dark:border-slate-800 hover:border-indigo-200 dark:hover:border-indigo-800 shadow-sm hover:shadow-md'}`}>
+                                            <div key={note.id} className={`group flex items-center gap-4 p-4 rounded-3xl border transition-all duration-300 ${note.isChecked ? 'bg-emerald-50/30 border-emerald-100 dark:bg-emerald-900/10 dark:border-emerald-800/50' : 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-slate-100 dark:border-slate-800 hover:border-indigo-200 dark:hover:border-indigo-800 shadow-sm hover:shadow-md'}`}>
                                                 <button
                                                     onClick={() => handleToggleCheck(note.id)}
                                                     className={`shrink-0 w-7 h-7 rounded-xl border-2 flex items-center justify-center transition-all ${note.isChecked ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'border-slate-200 dark:border-slate-700 hover:border-indigo-500 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl'}`}
@@ -1344,7 +1344,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                                             <div className="h-8 w-px bg-slate-200 dark:bg-slate-800 my-auto"></div>
                                             <input
                                                 id={`pic-input-${activeStep}`}
-                                                className="w-24 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-2xl px-4 text-[10px] font-black uppercase focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                                                className="w-24 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-2xl px-4 text-[10px] font-black uppercase focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
                                                 placeholder="PIC"
                                             />
                                             <button
@@ -1383,7 +1383,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
 
                                                 return (
                                                     <div key={note.id} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} w-full animate-in slide-in-from-bottom-2`}>
-                                                        <div className={`max-w-[85%] p-4 rounded-[2rem] shadow-sm ${isMe ? 'gradient-bg text-white rounded-tr-none shadow-indigo-500/10' : 'bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-100 dark:border-slate-800 rounded-tl-none shadow-slate-200/50'}`}>
+                                                        <div className={`max-w-[85%] p-4 rounded-[2rem] shadow-sm ${isMe ? 'gradient-bg text-white rounded-tr-none shadow-indigo-500/10' : 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-100 dark:border-slate-800 rounded-tl-none shadow-slate-200/50'}`}>
                                                             <div className="flex justify-between items-center gap-4 text-[9px] mb-1.5 opacity-80 font-black uppercase tracking-wider">
                                                                 {!isMe && <span className="text-indigo-600 dark:text-indigo-400">{note.user}</span>}
                                                                 <span className={isMe ? 'text-indigo-100 ml-auto' : 'text-slate-400'}>
@@ -1414,7 +1414,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                                     </div>
 
                                     {hasPermission('tax-monitoring', 'edit') && (
-                                        <div className="space-y-3 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl p-4 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-xl shadow-indigo-500/5">
+                                        <div className="space-y-3 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl p-4 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-xl shadow-indigo-500/5">
                                             <textarea
                                                 value={newNoteText} onChange={e => setNewNoteText(e.target.value)}
                                                 className="w-full p-4 text-sm bg-slate-50 dark:bg-slate-950 border-0 rounded-3xl focus:ring-2 focus:ring-indigo-500 outline-none dark:text-white resize-none shadow-inner"

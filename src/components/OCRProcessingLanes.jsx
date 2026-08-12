@@ -53,7 +53,7 @@ const OCRProcessingLanes = () => {
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            className="fixed bottom-8 right-8 z-[999] w-80 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-[2.5rem] border border-slate-200 dark:border-white/10 shadow-2xl shadow-indigo-500/10 overflow-hidden"
+            className="fixed bottom-8 right-8 z-[999] w-80 bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-[2.5rem] border border-slate-200 dark:border-white/10 shadow-2xl shadow-indigo-500/10 overflow-hidden"
         >
             {/* Header - Klik untuk Toggle */}
             <div 

@@ -20,7 +20,7 @@ export default function TaxUploadModal({
             <div className="space-y-6 pt-4 px-1">
                 {/* Preview Section */}
                 <div className="flex flex-col md:flex-row gap-6">
-                    <div className="w-full md:w-1/3 bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 flex items-center justify-center h-48 relative group">
+                    <div className="w-full md:w-1/3 bg-slate-100 dark:bg-slate-800 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 flex items-center justify-center h-48 relative group">
                         {uploadForm.fileType?.startsWith('image/') ? (
                             <img src={uploadForm.fileData} alt="Preview" className="max-w-full max-h-full object-contain" />
                         ) : (

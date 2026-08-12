@@ -23,7 +23,7 @@ function OrdnerInput({ editingItem, newOrdner, setNewOrdner, addOrdner }) {
                     value={local.noOrdner}
                     onChange={e => setLocal(prev => ({ ...prev, noOrdner: e.target.value }))}
                     onBlur={() => setNewOrdner(prev => ({ ...prev, noOrdner: local.noOrdner }))}
-                    className="w-full px-4 py-3 border-b-2 border-transparent bg-white/50 dark:bg-slate-900/50 rounded-xl focus:border-indigo-500 dark:text-white text-sm font-black transition-all outline-none"
+                    className="w-full px-4 py-3 border-b-2 border-transparent bg-white/50 dark:bg-slate-800/50 rounded-xl focus:border-indigo-500 dark:text-white text-sm font-black transition-all outline-none"
                     placeholder="ORD-001"
                 />
             </div>
@@ -33,7 +33,7 @@ function OrdnerInput({ editingItem, newOrdner, setNewOrdner, addOrdner }) {
                     value={local.period}
                     onChange={e => setLocal(prev => ({ ...prev, period: e.target.value }))}
                     onBlur={() => setNewOrdner(prev => ({ ...prev, period: local.period }))}
-                    className="w-full px-4 py-3 border-b-2 border-transparent bg-white/50 dark:bg-slate-900/50 rounded-xl focus:border-indigo-500 dark:text-white text-sm font-black transition-all outline-none"
+                    className="w-full px-4 py-3 border-b-2 border-transparent bg-white/50 dark:bg-slate-800/50 rounded-xl focus:border-indigo-500 dark:text-white text-sm font-black transition-all outline-none"
                     placeholder="2024"
                 />
             </div>
@@ -79,7 +79,7 @@ function InvoiceInput({ newInvoice, setNewInvoice, invoiceFileInputRef, handleIn
     }, [newInvoice, editingItem]);
 
     return (
-        <div className="flex flex-col gap-3 bg-white/50 dark:bg-slate-900/50 p-4 rounded-2xl border border-white/50 dark:border-white/5 w-full">
+        <div className="flex flex-col gap-3 bg-white/50 dark:bg-slate-800/50 p-4 rounded-2xl border border-white/50 dark:border-white/5 w-full">
             <div className="flex gap-3 items-center">
                 <input placeholder="NO INVOICE" value={local.invoiceNo} onChange={e => setLocal(prev => ({ ...prev, invoiceNo: e.target.value }))} className="flex-1 min-w-[100px] px-3 py-2 text-[10px] border-b border-slate-200 dark:border-slate-800 bg-transparent dark:text-white font-black uppercase tracking-wider focus:ring-0" title="Nomor Invoice" />
                 <input placeholder="VENDOR" value={local.vendor} onChange={e => setLocal(prev => ({ ...prev, vendor: e.target.value }))} className="flex-1 min-w-[100px] px-3 py-2 text-[10px] border-b border-slate-200 dark:border-slate-800 bg-transparent dark:text-white font-black uppercase tracking-wider focus:ring-0" title="Nama Vendor" />
@@ -126,7 +126,7 @@ export default function InventoryModals({
             <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl -z-10 animate-pulse"></div>
 
             {/* Header Box ID - Capsule Style */}
-            <div className="bg-white/40 dark:bg-slate-900/40 p-5 rounded-[2rem] border border-white/60 dark:border-white/5 shadow-sm mb-8 backdrop-blur-sm">
+            <div className="bg-white/40 dark:bg-slate-800/40 p-5 rounded-[2rem] border border-white/60 dark:border-white/5 shadow-sm mb-8 backdrop-blur-sm">
                 <div className="flex items-center gap-4">
                     <div className="p-3 bg-indigo-500/10 rounded-2xl text-indigo-600 shadow-inner">
                         <Package size={24} />
@@ -289,7 +289,7 @@ export default function InventoryModals({
                     </div >
 
                     {/* FOOTER ACTIONS - Capsule Style */}
-                    < div className="bg-white/40 dark:bg-slate-900/40 p-6 rounded-[2.5rem] border border-white/60 dark:border-white/5 shadow-sm mt-8 backdrop-blur-sm" >
+                    < div className="bg-white/40 dark:bg-slate-800/40 p-6 rounded-[2.5rem] border border-white/60 dark:border-white/5 shadow-sm mt-8 backdrop-blur-sm" >
                         <div className="flex flex-wrap items-center justify-between gap-6">
                             <div className="flex gap-4">
                                 {selectedSlotId && hasPermission('inventory', 'edit') && (
@@ -344,7 +344,7 @@ export default function InventoryModals({
                         {/* Row 3: Status & External Actions - Capsule Style */}
                         {
                             (selectedSlotId || selectedExternalItem) && (selectedSlotId ? (inventory.find(s => s.id == selectedSlotId) || inventory[selectedSlotId - 1])?.status !== 'EMPTY' : true) && (
-                                <div className="bg-white/40 dark:bg-slate-900/40 p-6 rounded-[2.5rem] border border-white/60 dark:border-white/5 shadow-sm mt-8 backdrop-blur-sm">
+                                <div className="bg-white/40 dark:bg-slate-800/40 p-6 rounded-[2.5rem] border border-white/60 dark:border-white/5 shadow-sm mt-8 backdrop-blur-sm">
                                     <div className={`grid ${selectedSlotId ? 'grid-cols-2' : 'grid-cols-1'} gap-4`}>
                                         {selectedSlotId && hasPermission('inventory', 'edit') && (
                                             <>
@@ -564,7 +564,7 @@ export default function InventoryModals({
 
                             {/* Invoice Preview */}
                             {selectedInvoice.file && (
-                                <div className="mt-4 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-inner">
+                                <div className="mt-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-inner">
                                     <div className="p-2 gradient-bg-soft border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
                                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Preview Lampiran</span>
                                     </div>
@@ -593,7 +593,7 @@ export default function InventoryModals({
                         </div>
 
                         {selectedInvoice.ocrContent && (
-                            <div className="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-3xl border border-slate-200 dark:border-slate-800">
+                            <div className="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-3xl border border-slate-200 dark:border-slate-800">
                                 <div className="flex items-center gap-2 mb-3"><FileText size={16} className="text-indigo-500" /><h4 className="text-xs font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest">Hasil Scan OCR</h4></div>
                                 <div className="p-4 bg-white dark:bg-slate-950 rounded-2xl border border-slate-100 dark:border-slate-800 text-xs font-mono text-slate-600 dark:text-slate-400 leading-relaxed max-h-60 overflow-y-auto custom-scrollbar whitespace-pre-wrap">{typeof selectedInvoice.ocrContent === 'object' ? JSON.stringify(selectedInvoice.ocrContent, null, 2) : selectedInvoice.ocrContent}</div>
                             </div>

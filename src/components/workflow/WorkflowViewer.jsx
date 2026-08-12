@@ -57,7 +57,7 @@ const ApproverNode = ({ data }) => {
     const hasDocs = (data.documents || []).length > 0;
 
     return (
-        <div className={`rounded-3xl bg-white dark:bg-slate-900 shadow-2xl border-2 min-w-[220px] max-w-[280px] transition-all cursor-pointer hover:shadow-indigo-500/10 hover:shadow-3xl relative ${isDone || isDefined ? 'border-indigo-500' :
+        <div className={`rounded-3xl bg-white dark:bg-slate-800 shadow-2xl border-2 min-w-[220px] max-w-[280px] transition-all cursor-pointer hover:shadow-indigo-500/10 hover:shadow-3xl relative ${isDone || isDefined ? 'border-indigo-500' :
             isRejected ? 'border-red-500' :
                 isActive ? 'border-amber-500 ring-4 ring-amber-500/20 scale-105 z-50' :
                     'border-slate-100 dark:border-slate-800'
@@ -159,7 +159,7 @@ function NodeDetailPopup({ node, onClose }) {
             <div className="fixed inset-0 z-[10020] bg-black/60 backdrop-blur-md animate-in fade-in duration-200" onClick={onClose} />
 
             {/* Popup */}
-            <div className="fixed left-1/2 top-1/2 z-[10030] w-[420px] max-w-[92vw] max-h-[92vh] -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+            <div className="fixed left-1/2 top-1/2 z-[10030] w-[420px] max-w-[92vw] max-h-[92vh] -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-slate-800 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in-95 duration-300">
                 {/* Header */}
                 <div className={`p-5 border-b border-slate-100 dark:border-slate-800 ${isDone ? 'bg-emerald-50 dark:bg-emerald-900/10' :
                     isRejected ? 'bg-red-50 dark:bg-red-900/10' :

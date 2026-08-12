@@ -86,7 +86,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: '100%', opacity: 0 }}
                         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                        className="fixed inset-y-0 right-0 z-[110] w-full max-w-xl md:max-w-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl shadow-2xl flex flex-col border-l border-white/20 dark:border-slate-700/50"
+                        className="fixed inset-y-0 right-0 z-[110] w-full max-w-xl md:max-w-2xl bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl shadow-2xl flex flex-col border-l border-white/20 dark:border-slate-700/50"
                     >
                         {/* Header */}
                         <div className="bg-gradient-to-r from-indigo-500 to-violet-500 px-6 py-5 shrink-0 shadow-sm relative z-10">
@@ -160,7 +160,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                                             onClick={() => onNavigate && onNavigate(c)}
                                                             className={`flex-1 text-left px-3 py-2 rounded-xl text-xs transition-all border ${isCurrent
                                                                 ? 'bg-indigo-600/10 dark:bg-indigo-500/15 border-indigo-300 dark:border-indigo-500/40 cursor-default'
-                                                                : 'bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border-slate-200 dark:border-slate-700 hover:border-indigo-400 hover:shadow-md hover:shadow-indigo-500/5 cursor-pointer'}`}
+                                                                : 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-slate-200 dark:border-slate-700 hover:border-indigo-400 hover:shadow-md hover:shadow-indigo-500/5 cursor-pointer'}`}
                                                         >
                                                             <div className="flex items-center justify-between gap-2">
                                                                 <span className={`font-black ${isCurrent ? 'text-indigo-600 dark:text-indigo-300' : 'text-slate-700 dark:text-slate-200'}`}>
@@ -511,7 +511,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                         </div>
 
                         {/* Footer */}
-                        <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60 flex items-center justify-start gap-3 shrink-0 backdrop-blur">
+                        <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/60 flex items-center justify-start gap-3 shrink-0 backdrop-blur">
                             <button onClick={onClose} className="px-5 py-2.5 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">Tutup</button>
                             {(detailTarget.proforma_no || prof?.proforma_no) && (
                                 <button onClick={() => handleExportPdf('invoice')} disabled={!!pdfBusy} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:opacity-95 text-white text-sm font-bold shadow-lg shadow-indigo-600/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">

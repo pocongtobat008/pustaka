@@ -140,7 +140,7 @@ export default function PdfViewer({ src, className = '' }) {
     return (
         <div ref={containerRef} className={`flex flex-col h-full ${className}`}>
             {/* Toolbar */}
-            <div className="flex items-center justify-between px-4 py-2 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-700 rounded-t-2xl shrink-0">
+            <div className="flex items-center justify-between px-4 py-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-700 rounded-t-2xl shrink-0">
                 <div className="flex items-center gap-1">
                     <button
                         onClick={() => setCurrentPage(p => Math.max(1, p - 1))}

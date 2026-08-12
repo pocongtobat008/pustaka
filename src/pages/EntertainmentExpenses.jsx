@@ -2216,7 +2216,7 @@ export default function EntertainmentExpenses({ currentUser, hasPermission, toas
                                 </p>
                             </div>
                             <div className="mt-4 px-8 space-y-2">
-                                <div className="rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-white/60 dark:border-white/10 p-4 text-sm">
+                                <div className="rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-white/60 dark:border-white/10 p-4 text-sm">
                                     <div className="flex justify-between py-1"><span className="text-slate-500 dark:text-slate-400">{isEnglish ? 'Date' : 'Tanggal'}</span><span className="font-semibold text-slate-700 dark:text-slate-200 tabular-nums">{form.tanggal || '-'}</span></div>
                                     <div className="flex justify-between py-1"><span className="text-slate-500 dark:text-slate-400">{isEnglish ? 'Place' : 'Tempat'}</span><span className="font-semibold text-slate-700 dark:text-slate-200 truncate max-w-[60%]">{form.tempat || '-'}</span></div>
                                     <div className="flex justify-between py-1"><span className="text-slate-500 dark:text-slate-400">{isEnglish ? 'Amount' : 'Nilai'}</span><span className="font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">Rp {formatCurrency(form.nilai)}</span></div>

@@ -146,7 +146,7 @@ const OcrLanes = ({ variant = 'floating' }) => {
   return (
     <div className="fixed top-[140px] right-4 z-[40] font-sans pointer-events-none">
       <div
-        className={`pointer-events-auto bg-white/80 dark:bg-slate-900/90 backdrop-blur-xl border border-emerald-200/40 dark:border-emerald-500/20 rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] overflow-hidden ${
+        className={`pointer-events-auto bg-white/80 dark:bg-slate-800/90 backdrop-blur-xl border border-emerald-200/40 dark:border-emerald-500/20 rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] overflow-hidden ${
           isExpanded ? 'w-72' : 'w-14 h-14'
         }`}
       >

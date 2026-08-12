@@ -842,7 +842,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
                                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        className="absolute top-full left-0 right-0 mt-2 bg-white/70 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 rounded-[2.5rem] shadow-2xl z-[120] overflow-hidden p-2 backdrop-blur-xl"
+                                        className="absolute top-full left-0 right-0 mt-2 bg-white/70 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 rounded-[2.5rem] shadow-2xl z-[120] overflow-hidden p-2 backdrop-blur-xl"
                                     >
                                         <button
                                             onClick={() => { setSelectedCategory('All'); setIsFilterOpen(false); }}
@@ -897,7 +897,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                             }}
                             className={`w-full p-5 rounded-[2rem] border-2 border-dashed transition-all flex items-center gap-4 group ${isCreating
                                 ? 'bg-indigo-600 border-indigo-600 text-white shadow-xl'
-                                : 'bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border-slate-200 dark:border-slate-700 text-slate-500 hover:border-indigo-400 hover:text-indigo-500'
+                                : 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-slate-200 dark:border-slate-700 text-slate-500 hover:border-indigo-400 hover:text-indigo-500'
                                 }`}
                         >
                             <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 ${isCreating ? 'gradient-bg text-white' : 'bg-slate-100 dark:bg-slate-800'
@@ -916,7 +916,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                             onClick={() => startGuide(guide)}
                             className={`p-5 rounded-[2rem] border cursor-pointer transition-all group ${selectedGuide?.id === guide.id
                                 ? 'bg-indigo-600 border-indigo-500 shadow-xl text-white'
-                                : 'bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-100 dark:border-slate-800 hover:border-indigo-300 text-slate-800 dark:text-white shadow-sm hover:shadow-md'
+                                : 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-100 dark:border-slate-800 hover:border-indigo-300 text-slate-800 dark:text-white shadow-sm hover:shadow-md'
                                 }`}
                         >
                             <div className="flex items-center gap-4">
@@ -960,7 +960,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                             <motion.div
                                 key="form"
                                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-                                className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-[3rem] shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col h-full"
+                                className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-[3rem] shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col h-full"
                             >
                                 <div className="p-8 border-b border-slate-50 dark:border-slate-800 flex justify-between items-center bg-indigo-50/30 dark:bg-indigo-900/10">
                                     <div className="flex items-center gap-4">
@@ -1023,7 +1023,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                                     onClick={() => setNewGuide({ ...newGuide, privacy: type.id })}
                                                     className={`p-3 rounded-xl border flex flex-col items-center gap-2 transition-all ${newGuide.privacy === type.id
                                                         ? 'bg-indigo-50 border-indigo-500 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400'
-                                                        : 'bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border-slate-200 dark:border-slate-700 text-slate-500 hover:border-indigo-300'
+                                                        : 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-slate-200 dark:border-slate-700 text-slate-500 hover:border-indigo-300'
                                                         }`}
                                                 >
                                                     <type.icon size={16} />
@@ -1125,7 +1125,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                                             />
                                                         </div>
                                                         <div className="space-y-2">
-                                                            <label className="w-full h-24 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl flex flex-col items-center justify-center text-slate-400 group cursor-pointer hover:border-indigo-400 transition-colors relative overflow-hidden">
+                                                            <label className="w-full h-24 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl flex flex-col items-center justify-center text-slate-400 group cursor-pointer hover:border-indigo-400 transition-colors relative overflow-hidden">
                                                                 {isUploading === idx ? (
                                                                     <RefreshCw size={24} className="animate-spin text-indigo-500" />
                                                                 ) : slide.image ? (
@@ -1197,7 +1197,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                             <motion.div
                                 key="empty"
                                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                                className="h-full flex flex-col items-center justify-center text-center p-12 bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-800"
+                                className="h-full flex flex-col items-center justify-center text-center p-12 bg-white/40 dark:bg-slate-800/40 backdrop-blur-xl rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-800"
                             >
                                 <div className="w-20 h-20 bg-indigo-50 dark:bg-indigo-900/20 rounded-full flex items-center justify-center mb-6">
                                     <Lightbulb size={40} className="text-indigo-500 animate-pulse" />

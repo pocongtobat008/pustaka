@@ -3702,7 +3702,7 @@ export default function App() {
       )}
 
       {/* MOBILE HEADER — glass contextual */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-white/30 dark:border-white/10 flex items-center justify-between px-4 z-20">
+      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl border-b border-white/30 dark:border-white/10 flex items-center justify-between px-4 z-20">
         <div className="flex items-center gap-2 min-w-0">
           <div className="cf-logo-orb w-9 h-9 rounded-xl flex items-center justify-center shadow-lg shrink-0">
             <BookOpen className="text-white" size={18} />
@@ -4145,7 +4145,7 @@ export default function App() {
         </AnimatePresence>
 
         {copyNotification && (
-          <div className="fixed bottom-10 right-10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-emerald-500/50 p-4 rounded-[2rem] shadow-2xl z-[200] animate-in slide-in-from-bottom-8 flex items-center gap-4 ring-8 ring-emerald-500/5">
+          <div className="fixed bottom-10 right-10 bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border border-emerald-500/50 p-4 rounded-[2rem] shadow-2xl z-[200] animate-in slide-in-from-bottom-8 flex items-center gap-4 ring-8 ring-emerald-500/5">
             <div className="p-3 bg-emerald-500 rounded-2xl text-white shadow-lg shadow-emerald-500/30 animate-bounce">
               <CheckCircle2 size={18} />
             </div>
@@ -4197,7 +4197,7 @@ export default function App() {
               </label>
               <div className="relative">
                 <select
-                  className="w-full appearance-none bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all cursor-pointer hover:bg-white/80 dark:hover:bg-slate-800/80"
+                  className="w-full appearance-none bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all cursor-pointer hover:bg-white/80 dark:hover:bg-slate-800/80"
                   value={restoreTargetSlot}
                   onChange={(e) => setRestoreTargetSlot(e.target.value)}
                 >
@@ -4364,7 +4364,7 @@ export default function App() {
               </label>
               <div className="relative">
                 <select
-                  className="w-full appearance-none bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all cursor-pointer hover:bg-white/80 dark:hover:bg-slate-800/80"
+                  className="w-full appearance-none bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all cursor-pointer hover:bg-white/80 dark:hover:bg-slate-800/80"
                   value={restoreTargetSlot}
                   onChange={(e) => setRestoreTargetSlot(e.target.value)}
                 >
@@ -4460,7 +4460,7 @@ export default function App() {
       >
         <div className="flex h-full min-h-[80vh] flex-col">
           {/* Header Controls (Name & Description) */}
-          <div className="p-6 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-6">
+          <div className="p-6 bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nama Alur Persetujuan</label>
               <input

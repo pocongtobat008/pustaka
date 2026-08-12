@@ -20,7 +20,7 @@ export default function TaxModals({
                         <select
                             value={taxForm.month}
                             onChange={e => setTaxForm({ ...taxForm, month: e.target.value })}
-                            className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-900/50 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner appearance-none font-bold"
+                            className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner appearance-none font-bold"
                         >
                             <option value="">- Pilih Bulan -</option>
                             {["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"].map(m => (
@@ -38,7 +38,7 @@ export default function TaxModals({
                         type="number"
                         value={taxForm.year}
                         onChange={e => setTaxForm({ ...taxForm, year: parseInt(e.target.value) })}
-                        className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-900/50 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner font-bold"
+                        className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner font-bold"
                     />
                 </div>
                 <div>
@@ -48,13 +48,13 @@ export default function TaxModals({
                         min="0"
                         value={taxForm.pembetulan || 0}
                         onChange={e => setTaxForm({ ...taxForm, pembetulan: parseInt(e.target.value) })}
-                        className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-900/50 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner font-bold"
+                        className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner font-bold"
                     />
                 </div>
             </div>
 
             {(modalTab === 'tax-form' || modalTab === 'tax-form-pph') && (
-                <div className="bg-white/20 dark:bg-slate-900/40 p-6 rounded-[2rem] border border-white/20 dark:border-white/5 shadow-inner">
+                <div className="bg-white/20 dark:bg-slate-800/40 p-6 rounded-[2rem] border border-white/20 dark:border-white/5 shadow-inner">
                     <div className="flex justify-between items-center mb-5">
                         <h4 className="font-black text-slate-800 dark:text-white flex items-center gap-3 text-lg">
                             <div className="p-2 bg-indigo-500/10 rounded-xl text-indigo-500"><Percent size={18} /></div>
@@ -84,7 +84,7 @@ export default function TaxModals({
                                             }
                                         })
                                     }}
-                                    className="w-full px-4 py-3.5 border-0 bg-white/60 dark:bg-slate-900/60 rounded-2xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-sm font-black text-right pr-6"
+                                    className="w-full px-4 py-3.5 border-0 bg-white/60 dark:bg-slate-800/60 rounded-2xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-sm font-black text-right pr-6"
                                     placeholder="0"
                                 />
                             </div>
@@ -125,7 +125,7 @@ export default function TaxModals({
                                                 }
                                             })
                                         }}
-                                        className="w-full px-4 py-3.5 border-0 bg-white/60 dark:bg-slate-900/60 rounded-2xl focus:ring-2 focus:ring-emerald-500 dark:text-white shadow-sm font-black text-right pr-6"
+                                        className="w-full px-4 py-3.5 border-0 bg-white/60 dark:bg-slate-800/60 rounded-2xl focus:ring-2 focus:ring-emerald-500 dark:text-white shadow-sm font-black text-right pr-6"
                                         placeholder="0"
                                     />
                                 </div>
@@ -163,7 +163,7 @@ export default function TaxModals({
                                                 }
                                             })
                                         }}
-                                        className="w-full px-4 py-3.5 border-0 bg-white/60 dark:bg-slate-900/60 rounded-2xl focus:ring-2 focus:ring-amber-500 dark:text-white shadow-sm font-black text-right pr-6"
+                                        className="w-full px-4 py-3.5 border-0 bg-white/60 dark:bg-slate-800/60 rounded-2xl focus:ring-2 focus:ring-amber-500 dark:text-white shadow-sm font-black text-right pr-6"
                                         placeholder="0"
                                     />
                                 </div>

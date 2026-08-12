@@ -423,7 +423,7 @@ export default function TaxCalculator({
                             onChange={handleDppChange}
                             onKeyDown={handleKeyDown}
                             disabled={isReadOnly}
-                            className={`w-full ${isCalcMode ? 'pl-4 font-mono text-indigo-600 dark:text-indigo-400' : 'pl-10'} pr-4 py-3 rounded-xl border ${isCalcMode ? 'border-indigo-300 dark:border-indigo-800 ring-2 ring-indigo-500/20' : 'border-slate-200 dark:border-slate-700'} bg-white dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed`}
+                            className={`w-full ${isCalcMode ? 'pl-4 font-mono text-indigo-600 dark:text-indigo-400' : 'pl-10'} pr-4 py-3 rounded-xl border ${isCalcMode ? 'border-indigo-300 dark:border-indigo-800 ring-2 ring-indigo-500/20' : 'border-slate-200 dark:border-slate-700'} bg-white dark:bg-slate-800 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed`}
                             placeholder={isCalcMode ? "Ketik rumus lalu ENTER" : "0"}
                         />
                         {isCalcMode && !isReadOnly && (
@@ -444,7 +444,7 @@ export default function TaxCalculator({
                         </div>
 
                         {/* Bracket Reference Table */}
-                        <div className="bg-white/50 dark:bg-slate-900/50 rounded-xl p-3 border border-amber-200/50 dark:border-amber-800/50">
+                        <div className="bg-white/50 dark:bg-slate-800/50 rounded-xl p-3 border border-amber-200/50 dark:border-amber-800/50">
                             <h5 className="text-[10px] font-bold text-amber-800 dark:text-amber-300 uppercase mb-2 flex items-center gap-1">
                                 <Book size={12} /> Tabel Tarif Progresif (Pasal 17)
                             </h5>
@@ -498,11 +498,11 @@ export default function TaxCalculator({
                             </p>
                             <div className="space-y-3 font-medium">
                                 <div className="space-y-1">
-                                    <p className="flex justify-between items-center bg-white/40 dark:bg-slate-900/40 px-2 py-1.5 rounded">
+                                    <p className="flex justify-between items-center bg-white/40 dark:bg-slate-800/40 px-2 py-1.5 rounded">
                                         <span>1. <span className="font-bold">Penghasilan Bruto</span></span>
                                         <span className="font-mono font-bold text-amber-900 dark:text-amber-100">{formatCurrency(displayGross)}</span>
                                     </p>
-                                    <p className="flex justify-between items-center bg-white/40 dark:bg-slate-900/40 px-2 py-1.5 rounded">
+                                    <p className="flex justify-between items-center bg-white/40 dark:bg-slate-800/40 px-2 py-1.5 rounded">
                                         <span>2. <span className="font-bold">DPP Pajak (50% Bruto)</span></span>
                                         <span className="font-mono font-bold text-amber-700 dark:text-amber-300">50% × {formatCurrency(displayGross)} = {formatCurrency(0.5 * displayGross)}</span>
                                     </p>
@@ -573,7 +573,7 @@ export default function TaxCalculator({
                                 onChange={(e) => setRate(e.target.value)}
                                 readOnly={isReadOnly}
                                 disabled={isReadOnly}
-                                className="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
+                                className="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
                                 placeholder="0"
                             />
                             <span className="absolute right-3 top-1/2 -translate-y-1/2 font-bold text-gray-500">%</span>
@@ -590,7 +590,7 @@ export default function TaxCalculator({
                             value={formatDisplayValue(discount)}
                             onChange={(e) => setDiscount(e.target.value.replace(/\./g, '').replace(/[^0-9]/g, ''))}
                             disabled={isReadOnly}
-                            className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
+                            className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
                             placeholder="0"
                         />
                     </div>
@@ -598,7 +598,7 @@ export default function TaxCalculator({
 
                 <div className="pt-4 border-t dark:border-gray-700 space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="p-4 bg-slate-50 dark:bg-slate-900/20 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <div className="p-4 bg-slate-50 dark:bg-slate-800/20 rounded-xl border border-slate-100 dark:border-slate-800">
                             <div className="flex justify-between items-center mb-1">
                                 <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">DPP Net</span>
                                 <button onClick={() => copyToClipboard(dppNet, 'dppNet')} className="text-slate-400 hover:text-slate-600 transition-colors">

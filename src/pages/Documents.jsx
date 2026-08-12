@@ -599,7 +599,7 @@ export default function Documents({
 
                 {/* AI SMART INSIGHT BANNER */}
                 <div className={`p-4 rounded-2xl border backdrop-blur-md flex items-center gap-4 animate-in slide-in-from-top-4 duration-700 ${insight.color}`}>
-                    <div className="p-2.5 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-xl shadow-sm shrink-0">
+                    <div className="p-2.5 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-xl shadow-sm shrink-0">
                         {insight.icon}
                     </div>
                     <div className="flex-1">
@@ -612,7 +612,7 @@ export default function Documents({
                     </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-4 rounded-2xl border border-white/40 dark:border-white/10 shadow-xl ring-1 ring-black/5">
+                <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl p-4 rounded-2xl border border-white/40 dark:border-white/10 shadow-xl ring-1 ring-black/5">
                     <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto">
                         <div className="flex gap-1 mr-2 bg-gray-100 dark:bg-slate-800 border dark:border-slate-700/50 rounded-lg p-1 shadow-inner">
                             <button onClick={navigateBack} disabled={historyIndex <= 0} className={`p-1 rounded hover:bg-white dark:hover:bg-slate-700 transition-colors ${historyIndex <= 0 ? 'text-gray-300 dark:text-slate-600' : 'text-gray-600 dark:text-slate-300'}`}>
@@ -645,7 +645,7 @@ export default function Documents({
                             />
                         </div>
                         {isViewingDataBox && (
-                            <div className="flex items-center gap-2 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-lg px-3 shadow-sm">
+                            <div className="flex items-center gap-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-lg px-3 shadow-sm">
                                 <AlertCircle size={14} className="text-indigo-500" />
                                 <select
                                     value={statusFilter}
@@ -751,7 +751,7 @@ export default function Documents({
 
                 {/* HISTORY PANEL */}
                 {showHistory && (
-                    <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-gray-200 dark:border-slate-800 rounded-xl p-4 animate-in slide-in-from-top-2">
+                    <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-200 dark:border-slate-800 rounded-xl p-4 animate-in slide-in-from-top-2">
                         <h3 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2"><History size={18} /> {isEnglish ? 'Document Activity History' : 'Riwayat Aktivitas Dokumen'}</h3>
                         <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
                             {docLogs.slice(0, 20).map(log => (
@@ -943,7 +943,7 @@ export default function Documents({
 
                                         {activeFolderMenuId === folder.id && (
                                             <div
-                                                className={`absolute right-0 top-full mt-2 w-48 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-700 z-[130] overflow-hidden animate-in zoom-in-95 slide-in-from-top-2 duration-200 origin-top-right`}
+                                                className={`absolute right-0 top-full mt-2 w-48 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-700 z-[130] overflow-hidden animate-in zoom-in-95 slide-in-from-top-2 duration-200 origin-top-right`}
                                             >
                                                 <div className="py-1">
                                                     {hasPermission('documents', 'edit') && (
@@ -1087,7 +1087,7 @@ export default function Documents({
                                             { /* Dropdown Menu */}
                                             {activeMenuId === doc.id && (
                                                 <div
-                                                    className={`absolute right-0 top-full mt-2 w-48 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-700 z-[130] overflow-hidden animate-in zoom-in-95 slide-in-from-top-2 duration-200 origin-top-right`}
+                                                    className={`absolute right-0 top-full mt-2 w-48 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-700 z-[130] overflow-hidden animate-in zoom-in-95 slide-in-from-top-2 duration-200 origin-top-right`}
                                                 >
                                                     <div className="py-1">
                                                         <button onClick={(e) => { e.stopPropagation(); handlePreview(doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
@@ -1203,7 +1203,7 @@ export default function Documents({
                         </div>
                     ) : (
                         // --- LIST VIEW ---
-                        <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-xl border border-gray-200 dark:border-slate-800 shadow-sm">
+                        <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-xl border border-gray-200 dark:border-slate-800 shadow-sm">
                             <div className="grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800 text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 <div className="col-span-6 md:col-span-5">{isEnglish ? 'Document Name' : 'Nama Dokumen'}</div>
                                 <div className="col-span-2 hidden md:block">{isEnglish ? 'Size' : 'Ukuran'}</div>
@@ -1332,7 +1332,7 @@ export default function Documents({
                                                                 <MoreVertical size={16} />
                                                             </button>
                                                             {activeMenuId === doc.id && (
-                                                                <div className={`absolute right-0 top-full mt-2 w-48 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-xl shadow-xl border border-gray-100 dark:border-slate-700 z-[130] overflow-hidden`} onClick={(e) => e.stopPropagation()}>
+                                                                <div className={`absolute right-0 top-full mt-2 w-48 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-xl shadow-xl border border-gray-100 dark:border-slate-700 z-[130] overflow-hidden`} onClick={(e) => e.stopPropagation()}>
                                                                     <div className="py-1">
                                                                         <button onClick={() => { handlePreview(doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
                                                                             <Eye size={14} className="text-blue-500" /> {isEnglish ? 'View Detail' : 'Lihat Detail'}
@@ -1558,7 +1558,7 @@ export default function Documents({
                                                     : folderForm.allowedDepts.filter(d => d !== dept.name);
                                                 setFolderForm({ ...folderForm, allowedDepts: newDepts });
                                             }}
-                                            className="w-5 h-5 rounded-lg text-indigo-600 focus:ring-indigo-500 border-indigo-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl"
+                                            className="w-5 h-5 rounded-lg text-indigo-600 focus:ring-indigo-500 border-indigo-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl"
                                         />
                                         <span className="text-sm font-black text-slate-700 dark:text-slate-200 uppercase tracking-tight">{dept.name}</span>
                                     </label>
@@ -1582,7 +1582,7 @@ export default function Documents({
                                                     : folderForm.allowedUsers.filter(u => u !== user.username);
                                                 setFolderForm({ ...folderForm, allowedUsers: newUsers });
                                             }}
-                                            className="w-5 h-5 rounded-lg text-purple-600 focus:ring-purple-500 border-purple-200 dark:border-slate-700 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl"
+                                            className="w-5 h-5 rounded-lg text-purple-600 focus:ring-purple-500 border-purple-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl"
                                         />
                                         <div className="text-left leading-tight">
                                             <span className="text-sm font-black text-slate-700 dark:text-slate-200 uppercase tracking-tight block">{user.name}</span>
@@ -1616,7 +1616,7 @@ export default function Documents({
             {/* FLOATING BULK ACTIONS BAR */}
             {
                 (selectedDocIds.size > 0 || selectedFolderIds.size > 0) && (
-                    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white/70 dark:bg-slate-900/80 backdrop-blur-3xl shadow-2xl rounded-full px-6 py-3 flex items-center gap-4 z-50 border border-white/40 dark:border-white/10 animate-in slide-in-from-bottom-4 duration-300 ring-1 ring-black/5">
+                    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white/70 dark:bg-slate-800/80 backdrop-blur-3xl shadow-2xl rounded-full px-6 py-3 flex items-center gap-4 z-50 border border-white/40 dark:border-white/10 animate-in slide-in-from-bottom-4 duration-300 ring-1 ring-black/5">
                         <span className="text-sm font-bold text-slate-700 dark:text-gray-200 pl-2 border-r border-slate-200 dark:border-slate-700 pr-5">
                             {selectedDocIds.size + selectedFolderIds.size} {isEnglish ? 'items selected' : 'item dipilih'}
                         </span>
@@ -1763,7 +1763,7 @@ export default function Documents({
                                 </div>
                             )
                         ) : previewHtml ? (
-                            <div className="w-full h-full p-8 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl overflow-auto prose dark:prose-invert max-w-none shadow-inner" dangerouslySetInnerHTML={{ __html: previewHtml }} />
+                            <div className="w-full h-full p-8 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl overflow-auto prose dark:prose-invert max-w-none shadow-inner" dangerouslySetInnerHTML={{ __html: previewHtml }} />
                         ) : (
                             <div className="text-center p-10 text-slate-400">
                                 <FileText size={64} className="mx-auto mb-4 opacity-20" />
@@ -1793,7 +1793,7 @@ export default function Documents({
                             <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 flex items-center gap-2 shrink-0">
                                 <MoreVertical size={12} className="text-indigo-500" /> {isEnglish ? 'Coordination History' : 'Riwayat Koordinasi'}
                             </h4>
-                            <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-1 bg-slate-50/30 dark:bg-slate-900/30 rounded-2xl p-2">
+                            <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-1 bg-slate-50/30 dark:bg-slate-800/30 rounded-2xl p-2">
                                 <div className="space-y-4 flex flex-col">
                                     {Array.isArray(comments) && comments.map(c => {
                                         const isMe = c.user === currentUser?.name || c.user === currentUser?.username;
@@ -1802,7 +1802,7 @@ export default function Documents({
 
                                         return (
                                             <div key={c.id} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} w-full animate-in slide-in-from-bottom-2`}>
-                                                <div className={`max-w-[85%] p-3 rounded-2xl shadow-sm ${isMe ? 'gradient-bg text-white rounded-tr-none' : 'bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-gray-100 dark:border-slate-800 rounded-tl-none'}`}>
+                                                <div className={`max-w-[85%] p-3 rounded-2xl shadow-sm ${isMe ? 'gradient-bg text-white rounded-tr-none' : 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-100 dark:border-slate-800 rounded-tl-none'}`}>
                                                     <div className="flex justify-between items-center gap-4 text-[9px] mb-1 opacity-80 font-black uppercase tracking-wider">
                                                         {!isMe && <span className="text-indigo-600 dark:text-indigo-400">{c.user}</span>}
                                                         <span className={isMe ? 'text-indigo-100 ml-auto' : 'text-slate-400'}>

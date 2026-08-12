@@ -1121,7 +1121,7 @@ export default function MenuLandingSection({
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 16, scale: 0.98 }}
         transition={{ duration: 0.3 }}
-        className="relative overflow-hidden rounded-[2.2rem] border border-white/30 dark:border-white/10 bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl p-6 md:p-8 max-w-6xl mx-auto shadow-2xl shadow-slate-900/20"
+        className="relative overflow-hidden rounded-[2.2rem] border border-white/30 dark:border-white/10 bg-white/85 dark:bg-slate-800/85 backdrop-blur-xl p-6 md:p-8 max-w-6xl mx-auto shadow-2xl shadow-slate-900/20"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full blur-3xl bg-gradient-to-br from-white/20 to-transparent pointer-events-none" />
@@ -1241,7 +1241,7 @@ export default function MenuLandingSection({
             </h3>
             <ul className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {displayAdvantages.map((item) => (
-                <li key={item} className="rounded-xl bg-white/80 dark:bg-slate-900/60 border border-emerald-200/70 dark:border-emerald-500/30 p-3 text-sm text-slate-700 dark:text-slate-200 leading-relaxed flex gap-2">
+                <li key={item} className="rounded-xl bg-white/80 dark:bg-slate-800/60 border border-emerald-200/70 dark:border-emerald-500/30 p-3 text-sm text-slate-700 dark:text-slate-200 leading-relaxed flex gap-2">
                   <Zap size={16} className="mt-0.5 text-emerald-500 shrink-0" />
                   <span>{item}</span>
                 </li>

@@ -376,7 +376,7 @@ export default function Dashboard({
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             {/* STARTUP STYLE GREETING SECTION */}
-            <div className="relative overflow-hidden bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-white/40 dark:border-white/5 shadow-2xl shadow-indigo-500/10 group">
+            <div className="relative overflow-hidden bg-white dark:bg-slate-800 rounded-[2.5rem] p-8 border border-white/40 dark:border-white/5 shadow-2xl shadow-indigo-500/10 group">
                 <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl group-hover:bg-indigo-500/20 transition-all duration-700 pointer-events-none"></div>
                 <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl group-hover:bg-purple-500/20 transition-all duration-700 pointer-events-none"></div>
 
@@ -432,7 +432,7 @@ export default function Dashboard({
             </div>
 
             {/* 🔍 SEMANTIC SEARCH BAR */}
-            <div className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl p-6 rounded-3xl border border-white/20 shadow-xl shadow-indigo-500/5 relative overflow-hidden group">
+            <div className="bg-white/50 dark:bg-slate-800/50 backdrop-blur-xl p-6 rounded-3xl border border-white/20 shadow-xl shadow-indigo-500/5 relative overflow-hidden group">
                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
 
                 <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 mb-4 flex items-center gap-2">
@@ -525,7 +525,7 @@ export default function Dashboard({
 
                                     {/* OCR Snippet Result */}
                                     {(doc.ocrContent || doc.content || doc.text) && (
-                                        <div className="relative z-10 mb-3 text-[10px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/50 p-2 rounded border border-slate-100 dark:border-slate-800 line-clamp-2 italic leading-relaxed">
+                                        <div className="relative z-10 mb-3 text-[10px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 p-2 rounded border border-slate-100 dark:border-slate-800 line-clamp-2 italic leading-relaxed">
                                             "{(doc.ocrContent || doc.content || doc.text).substring(0, 120).replace(/\n/g, ' ')}..."
                                         </div>
                                     )}
@@ -595,7 +595,7 @@ export default function Dashboard({
                                                                 doc.matchType === 'approval' ? 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 hover:bg-rose-100' :
                                                                     doc.matchType === 'pustaka' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 hover:bg-blue-100' :
                                                                         doc.matchType === 'tax_object' ? 'bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400' :
-                                                                            doc.matchType === 'inventory' ? 'bg-slate-50 dark:bg-slate-900/30 hover:bg-slate-100 dark:hover:bg-slate-900/50 text-slate-600 dark:text-slate-400' :
+                                                                            doc.matchType === 'inventory' ? 'bg-slate-50 dark:bg-slate-800/30 hover:bg-slate-100 dark:hover:bg-slate-900/50 text-slate-600 dark:text-slate-400' :
                                                                                 'bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400'}`}
                                         >
                                             {doc.matchType === 'invoice' ? `📦 ${doc.folderName}` :
@@ -666,7 +666,7 @@ export default function Dashboard({
 
                 {/* 1. Main Storage Command Center - Jumbo Bento Card */}
                 <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }} viewport={{ once: true }} className="md:col-span-4 lg:col-span-4 lg:row-span-2 group">
-                    <ShadCard className="h-full relative overflow-hidden border-slate-200/50 bg-white/60 dark:bg-slate-900/40 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-500 flex flex-col justify-between">
+                    <ShadCard className="h-full relative overflow-hidden border-slate-200/50 bg-white/60 dark:bg-slate-800/40 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-500 flex flex-col justify-between">
                         <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-indigo-500/10 blur-[80px] group-hover:bg-indigo-500/20 transition-all duration-700" />
                         <CardHeader className="pb-2">
                             <div className="flex items-start justify-between gap-3">
@@ -693,12 +693,12 @@ export default function Dashboard({
                                     <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-1">{text.usedSlots}</p>
                                     <p className="text-3xl font-black text-slate-900 dark:text-white">{bentoStats.usedSlots}</p>
                                 </div>
-                                <div className="rounded-2xl border border-slate-200/60 bg-white/80 p-4 dark:border-slate-700/50 dark:bg-slate-900/80 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+                                <div className="rounded-2xl border border-slate-200/60 bg-white/80 p-4 dark:border-slate-700/50 dark:bg-slate-800/80 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
                                     <div className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-emerald-500/10 to-transparent"></div>
                                     <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-1">{text.externalBox}</p>
                                     <p className="text-3xl font-black text-slate-900 dark:text-white">{externalItems?.length || 0}</p>
                                 </div>
-                                <div className="rounded-2xl border border-slate-200/60 bg-white/80 p-4 dark:border-slate-700/50 dark:bg-slate-900/80 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+                                <div className="rounded-2xl border border-slate-200/60 bg-white/80 p-4 dark:border-slate-700/50 dark:bg-slate-800/80 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
                                     <div className="absolute bottom-0 w-full h-1 bg-slate-100 dark:bg-slate-800 left-0"></div>
                                     <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-1">{text.available}</p>
                                     <p className="text-3xl font-black text-slate-900 dark:text-white">{stats?.empty || 0}</p>
@@ -754,7 +754,7 @@ export default function Dashboard({
 
                 {/* 3. Tax Control - Wide Bento Card */}
                 <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }} viewport={{ once: true }} className="md:col-span-2 lg:col-span-3">
-                    <ShadCard className="h-full border-slate-200/60 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:shadow-lg transition-shadow">
+                    <ShadCard className="h-full border-slate-200/60 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md hover:shadow-lg transition-shadow">
                         <CardHeader className="pb-4">
                             <CardTitle className="flex items-center gap-2 text-base font-bold"><FileSearch className="text-amber-500" size={18} /> {text.taxControl}</CardTitle>
                         </CardHeader>
@@ -781,7 +781,7 @@ export default function Dashboard({
 
                 {/* 4. Recent Docs - Compact List */}
                 <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} viewport={{ once: true }} className="md:col-span-2 lg:col-span-3">
-                    <ShadCard className="h-full border-slate-200/60 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:shadow-lg transition-shadow">
+                    <ShadCard className="h-full border-slate-200/60 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md hover:shadow-lg transition-shadow">
                         <CardHeader className="pb-3 flex flex-row items-center justify-between">
                             <CardTitle className="flex items-center gap-2 text-base font-bold"><FileText className="text-indigo-500" size={18} /> {text.recentDocs}</CardTitle>
                             <button onClick={() => setActiveTab('documents')} className="text-xs font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 transition-colors">Lihat Semua</button>
@@ -855,7 +855,7 @@ export default function Dashboard({
             </div>
 
             <Card className="max-h-[400px] overflow-y-auto relative p-0 sm:p-0">
-                <div className="sticky top-0 bg-white dark:bg-slate-900 z-10 p-6 pb-2 border-b border-slate-100 dark:border-slate-800">
+                <div className="sticky top-0 bg-white dark:bg-slate-800 z-10 p-6 pb-2 border-b border-slate-100 dark:border-slate-800">
                     <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <History size={20} className="text-purple-500" /> {text.auditLog}
                     </h3>
@@ -883,7 +883,7 @@ export default function Dashboard({
                             </div>
 
                             {expandedLogId === log.id && (log.oldValue || log.newValue) && (
-                                <div className="mt-2 text-xs bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-200 dark:border-slate-700 font-mono animate-in slide-in-from-top-1">
+                                <div className="mt-2 text-xs bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg border border-slate-200 dark:border-slate-700 font-mono animate-in slide-in-from-top-1">
                                     <div className="grid grid-cols-1 gap-2">
                                         {log.oldValue && (
                                             <div className="bg-red-50 dark:bg-red-900/10 p-2 rounded border border-red-100 dark:border-red-900/20 text-red-700 dark:text-red-400 overflow-x-auto">

@@ -98,7 +98,7 @@ export default function MasterDataModals({
                             <input
                                 value={deptForm.name}
                                 onChange={e => setDeptForm({ ...deptForm, name: e.target.value })}
-                                className="w-full pl-12 pr-4 py-4 border-0 bg-white/50 dark:bg-slate-900/50 rounded-2xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner font-black text-lg"
+                                className="w-full pl-12 pr-4 py-4 border-0 bg-white/50 dark:bg-slate-800/50 rounded-2xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner font-black text-lg"
                                 placeholder="Contoh: IT Support"
                             />
                         </div>
@@ -123,13 +123,13 @@ export default function MasterDataModals({
                             <input
                                 value={roleForm.name}
                                 onChange={e => setRoleForm({ ...roleForm, name: e.target.value })}
-                                className="w-full pl-12 pr-4 py-4 border-0 bg-white/50 dark:bg-slate-900/50 rounded-2xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner font-black text-lg"
+                                className="w-full pl-12 pr-4 py-4 border-0 bg-white/50 dark:bg-slate-800/50 rounded-2xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner font-black text-lg"
                                 placeholder="Contoh: Manager"
                             />
                         </div>
                     </div>
 
-                    <div className="border border-white/20 dark:border-white/5 rounded-[2rem] overflow-hidden shadow-xl bg-white/20 dark:bg-slate-900/20 backdrop-blur-md">
+                    <div className="border border-white/20 dark:border-white/5 rounded-[2rem] overflow-hidden shadow-xl bg-white/20 dark:bg-slate-800/20 backdrop-blur-md">
                         <table className="w-full text-sm">
                             <thead>
                                 <tr className="bg-slate-100/50 dark:bg-slate-800/50">

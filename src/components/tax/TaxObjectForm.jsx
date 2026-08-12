@@ -157,7 +157,7 @@ export default function TaxObjectForm({
                                         }}>
                                             <div className="font-medium text-gray-800 dark:text-gray-200">{item.name}</div>
                                             <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
-                                                <span className="bg-gray-100 dark:bg-slate-900 px-1.5 py-0.5 rounded font-mono">{item.code}</span>
+                                                <span className="bg-gray-100 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono">{item.code}</span>
                                                 <span className="text-indigo-500 font-medium">PPh {item.tax_type}</span>
                                                 {item.rate !== undefined && <span className="bg-indigo-100 dark:bg-indigo-900/40 px-1.5 py-0.5 rounded text-indigo-700 dark:text-indigo-300 font-bold ml-auto">{item.rate}%</span>}
                                             </div>
@@ -191,7 +191,7 @@ export default function TaxObjectForm({
             </div>
 
             <div className="space-y-6">
-                <Card className="bg-slate-50 dark:bg-slate-900 border-dashed border-2 border-slate-200 dark:border-slate-700 h-full flex flex-col justify-center items-center text-center p-8 text-gray-500">
+                <Card className="bg-slate-50 dark:bg-slate-800 border-dashed border-2 border-slate-200 dark:border-slate-700 h-full flex flex-col justify-center items-center text-center p-8 text-gray-500">
                     <FileText size={48} className="mb-4 text-slate-300" />
                     <p className="font-medium">Summary Data</p>
                     {(calcData.dpp > 0 || formData.name) && (
@@ -218,7 +218,7 @@ export default function TaxObjectForm({
                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Detail Penjumlah:</p>
                                     <div className="space-y-2">
                                         {calcData.breakdown.map((item, i) => (
-                                            <div key={i} className="bg-slate-50 dark:bg-slate-900/50 p-2 rounded-lg text-[11px]">
+                                            <div key={i} className="bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg text-[11px]">
                                                 <div className="flex justify-between font-bold">
                                                     <span>Item {i + 1}</span>
                                                     <span>{formatCurrency(item.value)}</span>

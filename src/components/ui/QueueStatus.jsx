@@ -37,7 +37,7 @@ export default function QueueStatus() {
 
     if (loading && !queue.total) {
         return (
-            <div className="flex items-center justify-center p-8 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/20 shadow-xl">
+            <div className="flex items-center justify-center p-8 bg-white/50 dark:bg-slate-800/50 backdrop-blur-md rounded-3xl border border-white/20 shadow-xl">
                 <Loader2 className="w-6 h-6 animate-spin text-indigo-500 mr-3" />
                 <span className="text-sm font-bold text-slate-500">Memuat Antrian OCR...</span>
             </div>
@@ -45,7 +45,7 @@ export default function QueueStatus() {
     }
 
     return (
-        <div className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl p-6 rounded-[2rem] border border-white/20 shadow-xl shadow-indigo-500/5 relative overflow-hidden group h-full">
+        <div className="bg-white/50 dark:bg-slate-800/50 backdrop-blur-xl p-6 rounded-[2rem] border border-white/20 shadow-xl shadow-indigo-500/5 relative overflow-hidden group h-full">
             <div className="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl group-hover:bg-indigo-500/10 transition-all duration-700 pointer-events-none"></div>
 
             <div className="flex items-center justify-between mb-6 relative z-10">

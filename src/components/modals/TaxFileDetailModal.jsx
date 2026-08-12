@@ -20,7 +20,7 @@ export default function TaxFileDetailModal({
         >
             <div className="flex h-full min-h-0 flex-col gap-6 pt-4 md:flex-row">
                 {/* LEFT: PREVIEW */}
-                <div className="flex-1 bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden flex items-center justify-center border border-slate-200 dark:border-slate-700 relative">
+                <div className="flex-1 bg-slate-100 dark:bg-slate-800 rounded-xl overflow-hidden flex items-center justify-center border border-slate-200 dark:border-slate-700 relative">
                     {String(selectedFileDetail?.type || '').toLowerCase().startsWith('image/') ? (
                         <img src={selectedFileDetail?.fileData || getFullUrl(selectedFileDetail?.url)} alt="Preview" className="max-w-full max-h-full object-contain" onError={(e) => { e.target.style.display = 'none'; }} />
                     ) : String(selectedFileDetail?.type || '').toLowerCase().includes('pdf') ? (

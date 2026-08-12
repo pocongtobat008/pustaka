@@ -114,7 +114,7 @@ const NotificationBell = ({ onOpenChannel, variant = 'floating' }) => {
                     className={
                         isTopbar
                             ? 'neo-icon-btn relative w-10 h-10 group text-slate-500 dark:text-slate-300 hover:text-indigo-500 dark:hover:text-indigo-400'
-                            : 'relative p-3 bg-white/80 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-2xl shadow-lg hover:scale-110 transition-all group active:scale-95'
+                            : 'relative p-3 bg-white/80 dark:bg-slate-800/90 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-2xl shadow-lg hover:scale-110 transition-all group active:scale-95'
                     }
                 >
                     <Bell size={isTopbar ? 18 : 24} className={`${unreadCount > 0 ? 'text-indigo-600 dark:text-indigo-400 animate-pulse' : 'text-slate-500 dark:text-slate-400'} group-hover:text-indigo-500 transition-colors`} />
@@ -137,7 +137,7 @@ const NotificationBell = ({ onOpenChannel, variant = 'floating' }) => {
                             initial={{ opacity: 0, y: 10, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                            className="absolute right-0 mt-4 w-80 bg-white/90 dark:bg-slate-900/95 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-slate-100 dark:border-white/5 overflow-hidden z-50"
+                            className="absolute right-0 mt-4 w-80 bg-white/90 dark:bg-slate-800/95 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-slate-100 dark:border-white/5 overflow-hidden z-50"
                         >
                             <div className="p-6 border-b border-slate-50 dark:border-white/5 flex justify-between items-center">
                                 <h3 className="font-black text-slate-800 dark:text-white uppercase tracking-tight text-sm">Pusat Notifikasi</h3>

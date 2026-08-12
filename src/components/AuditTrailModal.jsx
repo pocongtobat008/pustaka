@@ -241,7 +241,7 @@ export const AuditTrailModal = ({ open, onClose, target, proformas, formatCurren
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: '100%', opacity: 0 }}
                         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                        className="fixed inset-y-0 right-0 z-[110] w-full max-w-xl md:max-w-2xl bg-white dark:bg-slate-900 shadow-2xl flex flex-col border-l border-white/20 dark:border-slate-700/50"
+                        className="fixed inset-y-0 right-0 z-[110] w-full max-w-xl md:max-w-2xl bg-white dark:bg-slate-800 shadow-2xl flex flex-col border-l border-white/20 dark:border-slate-700/50"
                     >
                         {/* Header */}
                         <div className="bg-gradient-to-r from-teal-500 to-emerald-600 px-6 py-5 shrink-0 shadow-sm relative z-10">
@@ -310,7 +310,7 @@ export const AuditTrailModal = ({ open, onClose, target, proformas, formatCurren
                         </div>
 
                         {/* Footer */}
-                        <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60 flex items-center justify-start shrink-0 backdrop-blur">
+                        <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/60 flex items-center justify-start shrink-0 backdrop-blur">
                             <button onClick={onClose} className="px-5 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">Tutup</button>
                         </div>
                     </motion.div>
