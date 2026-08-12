@@ -151,8 +151,8 @@ io.emit = (event, payload) => {
     return rawIoEmit(event, payload);
 };
 
-// Port
-const PORT = 5005;
+// Port - dapat di-override via env (produksi: 5005, dev: 5006)
+const PORT = Number(process.env.PORT) || 5005;
 
 // Middleware
 app.use(cookieParser());

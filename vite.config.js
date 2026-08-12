@@ -1,6 +1,9 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'node:path'
+
+// Target API backend - bisa di-override via env VITE_API_TARGET (dev: http://127.0.0.1:5006)
+const apiTarget = process.env.VITE_API_TARGET || 'http://127.0.0.1:5005';
 import { fileURLToPath } from 'node:url'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -24,17 +27,17 @@ export default defineConfig({
     ],
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:5005',
+        target: apiTarget,
         changeOrigin: true,
         secure: false,
       },
       '/uploads': {
-        target: 'http://127.0.0.1:5005',
+        target: apiTarget,
         changeOrigin: true,
         secure: false,
       },
       '/socket.io': {
-        target: 'http://127.0.0.1:5005',
+        target: apiTarget,
         ws: true,
         changeOrigin: true,
         secure: false,
