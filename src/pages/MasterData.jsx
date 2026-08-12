@@ -8,6 +8,7 @@ import KnowledgeGraph from '../components/KnowledgeGraph.jsx';
 import { apiClient, API_URL } from '../services/apiClient.js';
 import { APP_MODULES } from '../utils/permissions';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useModalScrollLock } from '../components/ui/useModalKeydown';
 
 export default function MasterData({
     users, roles, departments, flows = [], logs = [],
@@ -324,6 +325,9 @@ export default function MasterData({
     const [trainingFile, setTrainingFile] = useState(null);
     const [trainingPreview, setTrainingPreview] = useState(null);
     const [trainingDetail, setTrainingDetail] = useState(null);
+
+    // Kunci scroll body saat modal training terbuka
+    useModalScrollLock(!!(trainingPreview || trainingDetail));
     const [trainingMsg, setTrainingMsg] = useState(null);
 
     // --- Self-Improvement / Learning ---

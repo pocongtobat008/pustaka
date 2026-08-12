@@ -12,6 +12,7 @@ import { id, enUS } from 'date-fns/locale';
 import { getSocket } from '../services/socketService';
 import OCRProcessingLanes from '../components/OCRProcessingLanes';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useModalScrollLock } from '../components/ui/useModalKeydown';
 
 const parseCompletedMonths = (val) => {
     if (Array.isArray(val)) return val;
@@ -217,6 +218,9 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
         socket.on('data:changed', handleDataChange);
         return () => socket.off('data:changed', handleDataChange);
     }, [currentUser]);
+
+    // Kunci scroll body saat salah satu modal inline terbuka (konsisten dengan Modal bersama)
+    useModalScrollLock(!!(showForm || showPicModal || showIssueModal || showStatusModal || viewingHistory || viewingIssueDetail || editingPicPrivacy || editingJob));
 
     const fetchData = async () => {
         try {
