@@ -244,17 +244,37 @@ router.post('/pdf-tools/:tool', uploadAny, async (req, res) => {
 // ── Riwayat hasil AI PDF Tools: simpan agar bisa diunduh ulang tanpa proses ulang ──
 
 // Privasi: dokumen hanya terlihat oleh pembuatnya, kecuali admin/superadmin.
+// Berbagi lintas departemen: pembuat (atau admin) dapat membagikan ke departemen tertentu.
 const isAdmin = (req) => {
     const role = String(req.user?.role || '').toLowerCase();
     return role === 'admin' || role === 'superadmin';
 };
 const isOwnerOrAdmin = (req, owner) => isAdmin(req) || (owner && (req.user?.username === owner || req.user?.name === owner));
 
-// Scope riwayat: non-admin hanya melihat baris yang ia buat (username atau name)
+const parseShared = (row) => {
+    if (!row?.shared_departments) return [];
+    if (Array.isArray(row.shared_departments)) return row.shared_departments;
+    try { const arr = JSON.parse(row.shared_departments); return Array.isArray(arr) ? arr : []; } catch { return []; }
+};
+
+// Boleh MELIHAT/UNDUH: admin, pembuat, atau departemen user ada di shared_departments
+const canView = (req, row) => {
+    if (isAdmin(req)) return true;
+    const me = req.user?.username || req.user?.name;
+    if (row.created_by && (row.created_by === me)) return true;
+    const dept = String(req.user?.department || '').trim();
+    if (dept && parseShared(row).map(d => String(d).trim()).includes(dept)) return true;
+    return false;
+};
+
+// Scope riwayat: non-admin melihat miliknya + yang dibagikan ke departemennya
 const historyScope = (q, req) => {
     if (isAdmin(req)) return q;
+    const me = req.user?.username || req.user?.name;
+    const dept = String(req.user?.department || '').trim();
     return q.where(w => {
-        w.where('created_by', req.user?.username).orWhere('created_by', req.user?.name);
+        w.where('created_by', me);
+        if (dept) w.orWhereRaw('COALESCE(shared_departments, ?) LIKE ?', ['[]', `%"${dept.replace(/["\\]/g, '')}"%`]);
     });
 };
 
@@ -281,7 +301,7 @@ router.get('/pdf-tools/history/file', async (req, res) => {
         if (!Number.isFinite(id)) return res.status(400).json({ error: 'ID wajib diisi.' });
         const row = await knex('pdf_tool_history').where('id', id).first();
         if (!row) return res.status(404).json({ error: 'Riwayat tidak ditemukan.' });
-        if (!isOwnerOrAdmin(req, row.created_by)) return res.status(403).json({ error: 'Anda tidak berhak mengakses dokumen ini.' });
+        if (!canView(req, row)) return res.status(403).json({ error: 'Anda tidak berhak mengakses dokumen ini.' });
 
         // Baris OCR → kirim teks sebagai file .txt (di-generate on-the-fly)
         if (row.tool === 'ocr') {
@@ -316,6 +336,22 @@ router.delete('/pdf-tools/history/:id', async (req, res) => {
         try { fs.unlinkSync(path.join(TOOL_HISTORY_DIR, path.basename(row.file_path))); } catch { /* best-effort */ }
         await knex('pdf_tool_history').where('id', row.id).del();
         res.json({ ok: true });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// POST /api/pdf-tools/history/:id/share — bagikan hasil ke departemen tertentu
+// body: { departments: ["Tax", "Accounting"] } — hanya pembuat (atau admin)
+router.post('/pdf-tools/history/:id/share', async (req, res) => {
+    try {
+        const row = await knex('pdf_tool_history').where('id', Number(req.params.id)).first();
+        if (!row) return res.status(404).json({ error: 'Riwayat tidak ditemukan.' });
+        if (!isOwnerOrAdmin(req, row.created_by)) return res.status(403).json({ error: 'Hanya pembuat (atau admin) yang dapat mengatur berbagi.' });
+        let depts = Array.isArray(req.body?.departments) ? req.body.departments : [];
+        depts = depts.map(d => String(d).trim()).filter(Boolean);
+        await knex('pdf_tool_history').where('id', row.id).update({ shared_departments: depts.length ? JSON.stringify([...new Set(depts)]) : null });
+        res.json({ ok: true, shared_departments: [...new Set(depts)] });
     } catch (e) {
         res.status(500).json({ error: e.message });
     }

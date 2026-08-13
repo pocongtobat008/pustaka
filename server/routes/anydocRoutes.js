@@ -17,17 +17,38 @@ router.use(checkAuth);
 console.log('[AnyDoc] Routes module loaded');
 
 // ── Privasi: dokumen hanya terlihat oleh pembuatnya, kecuali admin/superadmin ──
+// Berbagi lintas departemen: pembuat (atau admin) dapat menambahkan departemen ke
+// shared_departments agar anggota departemen tsb bisa MELIHAT / MENGUNDUH (bukan edit/hapus).
 const isAdmin = (req) => {
     const role = String(req.user?.role || '').toLowerCase();
     return role === 'admin' || role === 'superadmin';
 };
 const isOwnerOrAdmin = (req, owner) => isAdmin(req) || (owner && (req.user?.username === owner || req.user?.name === owner));
 
-// Scope kueri: non-admin hanya melihat baris yang ia buat (username atau name)
+const parseShared = (row) => {
+    if (!row?.shared_departments) return [];
+    if (Array.isArray(row.shared_departments)) return row.shared_departments;
+    try { const arr = JSON.parse(row.shared_departments); return Array.isArray(arr) ? arr : []; } catch { return []; }
+};
+
+// Boleh MELIHAT/UNDUH: admin, pembuat, atau departemen user ada di shared_departments
+const canView = (req, row) => {
+    if (isAdmin(req)) return true;
+    const me = req.user?.username || req.user?.name;
+    if (row.created_by && (row.created_by === me)) return true;
+    const dept = String(req.user?.department || '').trim();
+    if (dept && parseShared(row).map(d => String(d).trim()).includes(dept)) return true;
+    return false;
+};
+
+// Scope kueri: non-admin melihat miliknya + yang dibagikan ke departemennya
 const scopeByCreator = (q, req) => {
     if (isAdmin(req)) return q;
+    const me = req.user?.username || req.user?.name;
+    const dept = String(req.user?.department || '').trim();
     return q.where(w => {
-        w.where('created_by', req.user?.username).orWhere('created_by', req.user?.name);
+        w.where('created_by', me);
+        if (dept) w.orWhereRaw('COALESCE(shared_departments, ?) LIKE ?', ['[]', `%"${dept.replace(/["\\]/g, '')}"%`]);
     });
 };
 
@@ -535,7 +556,7 @@ router.get('/templates/archive/file', async (req, res) => {
         if (!Number.isFinite(id)) return res.status(400).json({ error: 'ID arsip wajib diisi.' });
         const row = await knex('pdf_extractions').where('id', id).whereNotNull('file_path').first();
         if (!row) return res.status(404).json({ error: 'File arsip tidak ditemukan.' });
-        if (!isOwnerOrAdmin(req, row.created_by)) return res.status(403).json({ error: 'Anda tidak berhak mengakses dokumen ini.' });
+        if (!canView(req, row)) return res.status(403).json({ error: 'Anda tidak berhak mengakses dokumen ini.' });
         const safe = path.basename(row.file_path);
         const fp = path.join(ARCHIVE_DIR, safe);
         if (!fs.existsSync(fp)) return res.status(404).json({ error: 'File arsip hilang dari disk.' });
@@ -558,9 +579,9 @@ router.post('/templates/archive/re-extract', async (req, res) => {
 
         const rows = await knex('pdf_extractions').whereIn('id', ids).whereNotNull('file_path');
         if (!rows.length) return res.status(404).json({ error: 'File arsip tidak ditemukan.' });
-        // Privasi: hanya pembuat arsip (atau admin) yang boleh ekstrak ulang
+        // Privasi: hanya pembuat / departemen yang dibagikan (atau admin) yang boleh ekstrak ulang
         for (const r of rows) {
-            if (!isOwnerOrAdmin(req, r.created_by)) {
+            if (!canView(req, r)) {
                 return res.status(403).json({ error: `Anda tidak berhak mengakses "${r.filename}".` });
             }
         }
@@ -604,6 +625,22 @@ router.delete('/templates/archive/:id', async (req, res) => {
         try { fs.unlinkSync(path.join(ARCHIVE_DIR, path.basename(row.file_path))); } catch { /* best-effort */ }
         await knex('pdf_extractions').where('id', row.id).del();
         res.json({ ok: true });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// POST /api/anydoc/templates/archive/:id/share — bagikan arsip ke departemen tertentu
+// body: { departments: ["Tax", "Accounting"] } — hanya pembuat (atau admin)
+router.post('/templates/archive/:id/share', async (req, res) => {
+    try {
+        const row = await knex('pdf_extractions').where('id', req.params.id).whereNotNull('file_path').first();
+        if (!row) return res.status(404).json({ error: 'File arsip tidak ditemukan.' });
+        if (!isOwnerOrAdmin(req, row.created_by)) return res.status(403).json({ error: 'Hanya pembuat arsip (atau admin) yang dapat mengatur berbagi.' });
+        let depts = Array.isArray(req.body?.departments) ? req.body.departments : [];
+        depts = depts.map(d => String(d).trim()).filter(Boolean);
+        await knex('pdf_extractions').where('id', row.id).update({ shared_departments: depts.length ? JSON.stringify([...new Set(depts)]) : null });
+        res.json({ ok: true, shared_departments: [...new Set(depts)] });
     } catch (e) {
         res.status(500).json({ error: e.message });
     }
@@ -701,7 +738,7 @@ router.get('/templates/exports/file', async (req, res) => {
         if (!Number.isFinite(id)) return res.status(400).json({ error: 'ID export wajib diisi.' });
         const row = await knex('pdf_exports').where('id', id).first();
         if (!row) return res.status(404).json({ error: 'Export tidak ditemukan.' });
-        if (!isOwnerOrAdmin(req, row.created_by)) return res.status(403).json({ error: 'Anda tidak berhak mengakses dokumen ini.' });
+        if (!canView(req, row)) return res.status(403).json({ error: 'Anda tidak berhak mengakses dokumen ini.' });
         const safe = path.basename(row.file_path);
         const fp = path.join(EXPORT_DIR, safe);
         if (!fs.existsSync(fp)) return res.status(404).json({ error: 'File export hilang dari disk.' });
@@ -725,6 +762,22 @@ router.delete('/templates/exports/:id', async (req, res) => {
         try { fs.unlinkSync(path.join(EXPORT_DIR, path.basename(row.file_path))); } catch { /* best-effort */ }
         await knex('pdf_exports').where('id', row.id).del();
         res.json({ ok: true });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// POST /api/anydoc/templates/exports/:id/share — bagikan export ke departemen tertentu
+// body: { departments: ["Tax", "Accounting"] } — hanya pembuat (atau admin)
+router.post('/templates/exports/:id/share', async (req, res) => {
+    try {
+        const row = await knex('pdf_exports').where('id', Number(req.params.id)).first();
+        if (!row) return res.status(404).json({ error: 'Export tidak ditemukan.' });
+        if (!isOwnerOrAdmin(req, row.created_by)) return res.status(403).json({ error: 'Hanya pembuat export (atau admin) yang dapat mengatur berbagi.' });
+        let depts = Array.isArray(req.body?.departments) ? req.body.departments : [];
+        depts = depts.map(d => String(d).trim()).filter(Boolean);
+        await knex('pdf_exports').where('id', row.id).update({ shared_departments: depts.length ? JSON.stringify([...new Set(depts)]) : null });
+        res.json({ ok: true, shared_departments: [...new Set(depts)] });
     } catch (e) {
         res.status(500).json({ error: e.message });
     }

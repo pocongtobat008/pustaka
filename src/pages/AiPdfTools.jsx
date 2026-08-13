@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
     FileText, FileArchive, Scissors, LockOpen, ScanText, RotateCw, Eye,
     UploadCloud, Download, Loader2, X, AlertCircle, Layers,
-    FileDown, Wand2, Sparkles, History, Trash2, RefreshCw, ChevronDown,
+    FileDown, Wand2, Sparkles, History, Trash2, RefreshCw, ChevronDown, Lock, Share2,
 } from 'lucide-react';
 
 const getApiUrl = () => (window.location.protocol === 'file:' ? 'http://localhost:5005/api' : '/api');
@@ -95,6 +95,11 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
     const [delHistBusy, setDelHistBusy] = useState(false);
     const [viewTextTarget, setViewTextTarget] = useState(null); // baris riwayat OCR yang teksnya dilihat
     const inputRef = useRef(null);
+    // ── Berbagi lintas departemen ──
+    const [departments, setDepartments] = useState([]);
+    const [shareTarget, setShareTarget] = useState(null); // baris riwayat yang dibagikan
+    const [shareDepts, setShareDepts] = useState([]);
+    const [shareBusy, setShareBusy] = useState(false);
 
     const loadHistory = useCallback(async () => {
         setHistoryBusy(true);
@@ -104,6 +109,49 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
         } catch { /* ignore */ }
         finally { setHistoryBusy(false); }
     }, []);
+
+    // Muat daftar departemen (untuk berbagi lintas departemen)
+    useEffect(() => {
+        fetch(`${API_URL}/departments`, { credentials: 'include' })
+            .then(r => r.json())
+            .then(d => setDepartments(Array.isArray(d) ? d : (d?.departments || [])))
+            .catch(() => { /* ignore */ });
+    }, []);
+
+    // Helper privasi/berbagi
+    const isAdminUser = !!currentUser && (currentUser.role === 'admin' || currentUser.role === 'superadmin');
+    const sharedDeptsOf = (row) => {
+        const v = row?.shared_departments;
+        if (Array.isArray(v)) return v;
+        if (!v) return [];
+        try { const a = JSON.parse(v); return Array.isArray(a) ? a : []; } catch { return []; }
+    };
+    const canManageHist = (row) => isAdminUser || (row?.created_by && (row.created_by === currentUser?.username || row.created_by === currentUser?.name));
+
+    const openShare = (row) => {
+        setShareTarget(row);
+        setShareDepts(sharedDeptsOf(row));
+    };
+
+    const saveShare = async () => {
+        if (!shareTarget) return;
+        setShareBusy(true);
+        try {
+            const res = await fetch(`${API_URL}/pdf-tools/history/${shareTarget.id}/share`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ departments: shareDepts }),
+            });
+            const j = await res.json();
+            if (!res.ok) throw new Error(j.error || 'Gagal menyimpan berbagi.');
+            setHistory(prev => prev.map(x => Number(x.id) === Number(shareTarget.id)
+                ? { ...x, shared_departments: j.shared_departments?.length ? JSON.stringify(j.shared_departments) : null }
+                : x));
+            setShareTarget(null);
+        } catch (e) { setError(e.message || 'Gagal menyimpan berbagi.'); }
+        finally { setShareBusy(false); }
+    };
 
     useEffect(() => { loadHistory(); }, [loadHistory]);
 
@@ -576,6 +624,17 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                             {x.created_by ? ` • oleh ${x.created_by}` : ''}
                                                         </p>
                                                     </div>
+                                                    {sharedDeptsOf(x).length > 0 ? (
+                                                        <span title={`Dibagikan ke: ${sharedDeptsOf(x).join(', ')}`}
+                                                            className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-bold border ${isDarkMode ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-300' : 'bg-emerald-50 border-emerald-200 text-emerald-600'}`}>
+                                                            <Share2 size={9} /> {sharedDeptsOf(x).length} dept
+                                                        </span>
+                                                    ) : (
+                                                        <span title="Hanya pembuat (atau admin) yang bisa melihat"
+                                                            className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-bold border ${isDarkMode ? 'bg-amber-500/10 border-amber-500/25 text-amber-300/80' : 'bg-amber-50 border-amber-200 text-amber-600'}`}>
+                                                            <Lock size={9} /> Pribadi
+                                                        </span>
+                                                    )}
                                                     {x.fileExists === false && (
                                                         <span className={`text-[9px] font-bold ${isDarkMode ? 'text-rose-300' : 'text-rose-500'}`} title="File hilang dari disk">hilang</span>
                                                     )}
@@ -596,13 +655,24 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                     >
                                                         <Download size={11} /> {x.tool === 'ocr' ? '.txt' : 'Unduh'}
                                                     </button>
-                                                    <button
-                                                        onClick={() => setDelHistTarget(x)}
-                                                        title="Hapus riwayat ini"
-                                                        className={`p-1.5 rounded-lg transition-colors ${isDarkMode ? 'text-white/25 hover:text-rose-300 hover:bg-rose-500/15' : 'text-slate-300 hover:text-rose-500 hover:bg-rose-50'}`}
-                                                    >
-                                                        <Trash2 size={12} />
-                                                    </button>
+                                                    {canManageHist(x) && (
+                                                        <button
+                                                            onClick={() => openShare(x)}
+                                                            title="Bagikan ke departemen lain"
+                                                            className={`p-1.5 rounded-lg transition-colors ${isDarkMode ? 'hover:bg-sky-500/20 text-sky-300' : 'hover:bg-sky-50 text-sky-500'}`}
+                                                        >
+                                                            <Share2 size={12} />
+                                                        </button>
+                                                    )}
+                                                    {canManageHist(x) && (
+                                                        <button
+                                                            onClick={() => setDelHistTarget(x)}
+                                                            title="Hapus riwayat ini"
+                                                            className={`p-1.5 rounded-lg transition-colors ${isDarkMode ? 'text-white/25 hover:text-rose-300 hover:bg-rose-500/15' : 'text-slate-300 hover:text-rose-500 hover:bg-rose-50'}`}
+                                                        >
+                                                            <Trash2 size={12} />
+                                                        </button>
+                                                    )}
                                                 </div>
                                             );
                                         })}
@@ -685,6 +755,76 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                 className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[11px] font-bold transition-all ${delHistBusy ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02]'} ${isDarkMode ? 'bg-rose-500/20 text-rose-300 hover:bg-rose-500/30' : 'bg-rose-500 text-white hover:bg-rose-600'}`}
                             >
                                 {delHistBusy ? <Loader2 size={12} className="animate-spin" /> : <Trash2 size={12} />} Hapus Permanen
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* ── Modal Bagikan ke Departemen ── */}
+            {shareTarget && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShareTarget(null)}>
+                    <div
+                        onClick={e => e.stopPropagation()}
+                        className={`w-full max-w-md rounded-2xl border p-5 shadow-2xl animate-[fadeInUp_.2s_ease] ${isDarkMode ? 'bg-slate-900 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200'}`}
+                    >
+                        <div className="flex items-start gap-3">
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${isDarkMode ? 'bg-sky-500/15 text-sky-300' : 'bg-sky-50 text-sky-500'}`}>
+                                <Share2 size={18} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>Bagikan ke Departemen</p>
+                                <p className={`text-[11px] mt-1 leading-relaxed ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>
+                                    <b className={isDarkMode ? 'text-white/80' : 'text-slate-700'}>{shareTarget.title}</b>
+                                    <br />
+                                    Anggota departemen terpilih bisa <b>melihat &amp; mengunduh</b> hasil ini (tidak bisa edit/hapus). Kosongkan semua untuk kembali pribadi.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className={`mt-4 rounded-xl border p-3 max-h-[240px] overflow-y-auto ${isDarkMode ? 'border-white/10' : 'border-slate-200'}`}>
+                            {departments.length === 0 ? (
+                                <p className={`text-[11px] italic ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>Belum ada departemen terdaftar.</p>
+                            ) : (
+                                <div className="space-y-1.5">
+                                    {departments.map(d => {
+                                        const name = String(d.name || d).trim();
+                                        const checked = shareDepts.some(x => String(x).trim() === name);
+                                        return (
+                                            <label key={name} className={`flex items-center gap-2.5 px-3 py-2 rounded-xl border cursor-pointer transition-colors ${checked
+                                                ? (isDarkMode ? 'bg-sky-500/10 border-sky-500/40' : 'bg-sky-50 border-sky-300')
+                                                : (isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white border-slate-200 hover:bg-slate-50')}`}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={checked}
+                                                    onChange={e => {
+                                                        setShareDepts(prev => e.target.checked
+                                                            ? [...prev.filter(x => String(x).trim() !== name), name]
+                                                            : prev.filter(x => String(x).trim() !== name));
+                                                    }}
+                                                    className="accent-sky-500"
+                                                />
+                                                <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{name}</span>
+                                            </label>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="mt-5 flex justify-end gap-2">
+                            <button
+                                onClick={() => setShareTarget(null)}
+                                className={`px-3.5 py-2 rounded-xl text-[11px] font-bold transition-colors ${isDarkMode ? 'bg-white/10 text-white/70 hover:bg-white/15' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                            >
+                                Batal
+                            </button>
+                            <button
+                                onClick={saveShare}
+                                disabled={shareBusy}
+                                className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[11px] font-bold transition-all ${shareBusy ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02]'} ${isDarkMode ? 'bg-sky-500/20 text-sky-300 hover:bg-sky-500/30' : 'bg-sky-500 text-white hover:bg-sky-600'}`}
+                            >
+                                {shareBusy ? <Loader2 size={12} className="animate-spin" /> : <Share2 size={12} />} Simpan
                             </button>
                         </div>
                     </div>
