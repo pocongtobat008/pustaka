@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Plus, Edit3, Trash2, Building2, GitCommit, ShieldCheck, ChevronRight, ChevronLeft, Users, User, Shield, History, Search, Clock, ChevronDown, ChevronUp, AlertCircle, FileText, Activity, Bot, Save, Loader2, Zap, Upload, Download, Link, Eye, RefreshCw, X, Info, Brain, CheckCircle2, XCircle, Gauge } from 'lucide-react';
-import { Card } from '../components/ui/Card';
+import { Card, SummaryCard } from '../components/ui/Card';
 import { Textarea } from '../components/ui/textarea';
 import { Input } from '../components/ui/input';
 import { Select } from '../components/ui/select';
@@ -1863,22 +1863,10 @@ export default function MasterData({
                                 {/* Stats Cards */}
                                 {learningStats && (
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                        <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-3 text-center">
-                                            <div className="text-2xl font-black text-indigo-600 dark:text-indigo-300">{learningStats.totalKnowledgePoints}</div>
-                                            <div className="text-xs text-indigo-500 dark:text-indigo-400 mt-1">Knowledge Points</div>
-                                        </div>
-                                        <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-3 text-center">
-                                            <div className="text-2xl font-black text-emerald-600 dark:text-emerald-300">{learningStats.trainingEfficiency}</div>
-                                            <div className="text-xs text-emerald-500 dark:text-emerald-400 mt-1">Training Efficiency</div>
-                                        </div>
-                                        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3 text-center">
-                                            <div className="text-2xl font-black text-amber-600 dark:text-amber-300">{learningStats.untrainedPoints}</div>
-                                            <div className="text-xs text-amber-500 dark:text-amber-400 mt-1">Untrained Points</div>
-                                        </div>
-                                        <div className="bg-violet-50 dark:bg-violet-900/20 rounded-lg p-3 text-center">
-                                            <div className="text-2xl font-black text-violet-600 dark:text-violet-300">{learningStats.docsGenerated}</div>
-                                            <div className="text-xs text-violet-500 dark:text-violet-400 mt-1">Docs Generated</div>
-                                        </div>
+                                        <SummaryCard title="Knowledge Points" value={learningStats.totalKnowledgePoints} icon={Brain} gradient="from-indigo-500 to-purple-600" valueClass="text-xl" />
+                                        <SummaryCard title="Training Efficiency" value={learningStats.trainingEfficiency} icon={Gauge} gradient="from-emerald-500 to-teal-600" valueClass="text-xl" />
+                                        <SummaryCard title="Untrained Points" value={learningStats.untrainedPoints} icon={Zap} gradient="from-amber-500 to-orange-600" valueClass="text-xl" />
+                                        <SummaryCard title="Docs Generated" value={learningStats.docsGenerated} icon={FileText} gradient="from-violet-500 to-purple-600" valueClass="text-xl" />
                                     </div>
                                 )}
 

@@ -960,21 +960,21 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                     title={text.totalEntries}
                     value={totalEntries}
                     icon={ClipboardList}
-                    colorClass="bg-indigo-100 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300"
+                    gradient="from-indigo-500 to-purple-600"
                     subtext={text.totalEntriesSub}
                 />
                 <SummaryCard
                     title={text.totalNilai}
                     value={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(totalNilai)}
                     icon={DollarSign}
-                    colorClass="bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300"
+                    gradient="from-emerald-500 to-teal-600"
                     subtext={text.totalNilaiSub}
                 />
                 <SummaryCard
                     title={text.totalLampiran}
                     value={totalLampiran}
                     icon={FileText}
-                    colorClass="bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-300"
+                    gradient="from-amber-500 to-orange-600"
                     subtext={text.totalLampiranSub}
                 />
             </div>

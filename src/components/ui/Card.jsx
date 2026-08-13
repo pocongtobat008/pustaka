@@ -9,17 +9,26 @@ export const Card = ({ children, className = '', onClick }) => (
     </div>
 );
 
-export const SummaryCard = ({ title, value, subtext, icon: Icon, colorClass }) => (
-    <Card className="flex items-center gap-4 relative overflow-hidden">
-        <div className={`p-3 rounded-xl ${colorClass}`}>
-            <Icon size={24} />
+// StatCard / SummaryCard — satu desain konsisten (glass + gradient) untuk SEMUA menu.
+// Props: title, value, subtext, icon, colorClass (ikon bg, backward-compatible),
+//        gradient (gradient ikon), valueClass (ukuran angka).
+export const SummaryCard = ({ title, value, subtext, icon: Icon, colorClass, gradient, valueClass = 'text-xl', className = '' }) => (
+    <div
+        className={`group relative overflow-hidden glass-card rounded-2xl p-4 flex items-center gap-4 transition-all duration-300 hover:-translate-y-0.5 ${className}`}
+    >
+        {/* Hiasan sudut gradient (soft, seragam di semua kartu) */}
+        <div className={`absolute right-0 top-0 w-20 h-20 rounded-bl-[2rem] -mr-5 -mt-5 bg-gradient-to-br opacity-60 transition-all duration-300 group-hover:scale-110 group-hover:opacity-80 ${gradient ? gradient : 'from-indigo-500/15 to-purple-500/10'}`} />
+
+        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-indigo-500/20 ${colorClass ? colorClass : `bg-gradient-to-br ${gradient || 'from-indigo-500 to-purple-600'} text-white`}`}>
+            {Icon && <Icon size={22} />}
         </div>
-        <div>
-            <div className="text-sm text-gray-500 dark:text-slate-400 font-medium">{title}</div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">{value}</div>
-            {subtext && <div className="text-xs text-gray-400 mt-0.5">{subtext}</div>}
+
+        <div className="min-w-0">
+            <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-0.5 truncate">{title}</div>
+            <div className={`${valueClass} font-black leading-tight text-slate-800 dark:text-white tabular-nums truncate`}>{value}</div>
+            {subtext && <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5 truncate">{subtext}</div>}
         </div>
-    </Card>
+    </div>
 );
 
 export const CardHeader = React.forwardRef(({ className = '', ...props }, ref) => (

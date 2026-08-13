@@ -250,25 +250,25 @@ export default function Inventory({
                     title={text.totalSlot}
                     value={TOTAL_SLOTS}
                     icon={Grid3x3}
-                    colorClass="bg-slate-500/10 text-slate-600 dark:text-slate-300 backdrop-blur-md ring-1 ring-slate-500/20"
+                    gradient="from-slate-500 to-slate-700"
                 />
                 <SummaryCard
                     title={text.emptySlot}
                     value={stats.empty}
                     icon={Package}
-                    colorClass="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 backdrop-blur-md ring-1 ring-emerald-500/30"
+                    gradient="from-emerald-500 to-teal-600"
                 />
                 <SummaryCard
                     title={text.borrowed}
                     value={stats.borrowed}
                     icon={Clock}
-                    colorClass="bg-amber-500/10 text-amber-600 dark:text-amber-400 backdrop-blur-md ring-1 ring-amber-500/30"
+                    gradient="from-amber-500 to-orange-600"
                 />
                 <SummaryCard
                     title={text.audit}
                     value={stats.audit}
                     icon={AlertCircle}
-                    colorClass="bg-purple-500/10 text-purple-600 dark:text-purple-400 backdrop-blur-md ring-1 ring-purple-500/30"
+                    gradient="from-purple-500 to-violet-600"
                 />
             </div>
 

@@ -1015,7 +1015,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                                 onChange={e => setSearchQuery(e.target.value)}
                             />
                         </div>
-                        <SummaryCard title={text.totalAudit} value={taxAudits?.length || 0} icon={ClipboardCheck} colorClass="bg-indigo-100 text-indigo-600" />
+                        <SummaryCard title={text.totalAudit} value={taxAudits?.length || 0} icon={ClipboardCheck} gradient="from-indigo-500 to-purple-600" />
                         <Card>
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="font-bold text-lg dark:text-white">{text.auditList}</h3>

@@ -7,7 +7,7 @@ import {
     Layers, ArrowRight, Eye, SlidersHorizontal, BarChart3, Trash, ChevronUp,
     AlertTriangle
 } from 'lucide-react';
-import { Card } from '../components/ui/Card';
+import { Card, SummaryCard } from '../components/ui/Card';
 import { Modal } from '../components/ui/Modal';
 import { Input } from '../components/ui/input';
 import { Select } from '../components/ui/select';
@@ -923,23 +923,9 @@ export default function Book({ hasPermission }) {
     return (
         <div className="space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {[
-                    { key: 'accounts', icon: BookOpen, color: 'from-indigo-500 to-purple-600' },
-                    { key: 'subs', icon: FolderOpen, color: 'from-cyan-500 to-blue-600' },
-                    { key: 'departments', icon: Building2, color: 'from-amber-500 to-orange-600' },
-                ].map(({ key, icon: Icon, color }) => (
-                    <Card key={key} className="p-4">
-                        <div className="flex items-center gap-3">
-                            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg`}>
-                                <Icon size={18} className="text-white" />
-                            </div>
-                            <div>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{text.stats[key === 'accounts' ? 'accounts' : key === 'subs' ? 'subs' : 'deps']}</p>
-                                <p className="text-xl font-extrabold text-slate-800 dark:text-white">{stats[key === 'accounts' ? 'accounts' : key === 'subs' ? 'sub_accounts' : 'departments']}</p>
-                            </div>
-                        </div>
-                    </Card>
-                ))}
+                <SummaryCard title={text.stats.accounts} value={stats.accounts} icon={BookOpen} gradient="from-indigo-500 to-purple-600" />
+                <SummaryCard title={text.stats.subs} value={stats.sub_accounts} icon={FolderOpen} gradient="from-cyan-500 to-blue-600" />
+                <SummaryCard title={text.stats.deps} value={stats.departments} icon={Building2} gradient="from-amber-500 to-orange-600" />
             </div>
 
             <Card noPadding>

@@ -788,25 +788,25 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                     title={i18n.totalGuides}
                     value={stats.total}
                     icon={BookOpen}
-                    colorClass="bg-indigo-100 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400"
+                    gradient="from-indigo-500 to-purple-600"
                 />
                 <SummaryCard
                     title={i18n.categories}
                     value={stats.categories}
                     icon={Layout}
-                    colorClass="bg-purple-100 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400"
+                    gradient="from-purple-500 to-violet-600"
                 />
                 <SummaryCard
                     title={i18n.myGuides}
                     value={stats.myGuides}
                     icon={User}
-                    colorClass="bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+                    gradient="from-blue-500 to-cyan-600"
                 />
                 <SummaryCard
                     title={i18n.publicAccess}
                     value={stats.public}
                     icon={Globe}
-                    colorClass="bg-emerald-100 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400"
+                    gradient="from-emerald-500 to-teal-600"
                 />
             </div>
 

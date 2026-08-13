@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { GitBranch, Plus, Trash2, Edit3, Search, Info, Globe, Lock, Users, Shield, AlertCircle, X } from 'lucide-react';
-import { Card } from '../components/ui/Card';
+import { Card, SummaryCard } from '../components/ui/Card';
 import { sopService } from '../services/sopService';
 import { parseApiError } from '../utils/errorHandler';
 import Modal from '../components/common/Modal';
@@ -364,22 +364,10 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
 
             {/* SUMMARY CARDS */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-in slide-in-from-bottom-4 duration-700">
-                {[
-                    { label: text.cards.total, value: stats.total, icon: GitBranch, bg: 'bg-indigo-50', darkBg: 'dark:bg-indigo-900/30', text: 'text-indigo-600', border: 'border-indigo-100' },
-                    { label: text.cards.public, value: stats.public, icon: Globe, bg: 'bg-emerald-50', darkBg: 'dark:bg-emerald-900/30', text: 'text-emerald-600', border: 'border-emerald-100' },
-                    { label: text.cards.private, value: stats.private, icon: Lock, bg: 'bg-orange-50', darkBg: 'dark:bg-orange-900/30', text: 'text-orange-600', border: 'border-orange-100' },
-                    { label: text.cards.restricted, value: stats.restricted, icon: Shield, bg: 'bg-blue-50', darkBg: 'dark:bg-blue-900/30', text: 'text-blue-600', border: 'border-blue-100' }
-                ].map((stat, idx) => (
-                    <div key={idx} className={`bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl p-4 rounded-[2rem] border ${stat.border} dark:border-slate-800/50 shadow-sm flex items-center gap-4 transition-all hover:shadow-xl hover:shadow-indigo-500/5 hover:-translate-y-1 group`}>
-                        <div className={`w-12 h-12 rounded-2xl ${stat.bg} ${stat.darkBg} flex items-center justify-center ${stat.text} transform transition-transform group-hover:rotate-12`}>
-                            <stat.icon size={22} />
-                        </div>
-                        <div>
-                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-0.5">{stat.label}</p>
-                            <h4 className="text-xl font-black text-slate-800 dark:text-white leading-tight">{stat.value}</h4>
-                        </div>
-                    </div>
-                ))}
+                <SummaryCard title={text.cards.total} value={stats.total} icon={GitBranch} gradient="from-indigo-500 to-purple-600" />
+                <SummaryCard title={text.cards.public} value={stats.public} icon={Globe} gradient="from-emerald-500 to-teal-600" />
+                <SummaryCard title={text.cards.private} value={stats.private} icon={Lock} gradient="from-orange-500 to-amber-600" />
+                <SummaryCard title={text.cards.restricted} value={stats.restricted} icon={Shield} gradient="from-blue-500 to-cyan-600" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

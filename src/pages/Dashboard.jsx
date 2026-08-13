@@ -36,8 +36,8 @@ const MOTIVATION_QUOTES = {
     'Disiplin adalah memilih antara apa yang kamu inginkan sekarang dan yang paling kamu inginkan.'
   ]
 };
-import { Grid3x3, ScanLine, History, PieChart, FileText, FileDigit, ChevronDown, ChevronUp, ArrowRight, ArrowUpRight, Package, Truck, FileBarChart, Download, X, CheckCircle2, FileSearch, FolderOpen, Users, Sparkles, Clock, Eye, Info, MessageSquare, BookOpen, FileCheck, ClipboardCheck, ChevronLeft, ChevronRight, User, RefreshCw } from 'lucide-react';
-import { Card } from '../components/ui/Card';
+import { Grid3x3, ScanLine, History, PieChart, FileText, FileDigit, ChevronDown, ChevronUp, ArrowRight, ArrowUpRight, Package, Truck, Boxes, FileBarChart, Download, X, CheckCircle2, FileSearch, FolderOpen, Users, Sparkles, Clock, Eye, Info, MessageSquare, BookOpen, FileCheck, ClipboardCheck, ChevronLeft, ChevronRight, User, RefreshCw } from 'lucide-react';
+import { Card, SummaryCard } from '../components/ui/Card';
 import { Card as ShadCard, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
 import { Badge } from '../components/ui/badge';
 import QueueStatus from '../components/ui/QueueStatus';
@@ -684,25 +684,35 @@ export default function Dashboard({
                             </div>
                         </CardHeader>
                         <CardContent className="space-y-6 pt-4">
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                                <div className="glass-card rounded-2xl p-4">
-                                    <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-1">{text.occupancy}</p>
-                                    <p className="text-3xl font-black text-slate-900 dark:text-white">{bentoStats.occupancyPercent}%</p>
-                                </div>
-                                <div className="glass-card rounded-2xl p-4">
-                                    <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-1">{text.usedSlots}</p>
-                                    <p className="text-3xl font-black text-slate-900 dark:text-white">{bentoStats.usedSlots}</p>
-                                </div>
-                                <div className="rounded-2xl border border-slate-200/60 bg-white/80 p-4 dark:border-slate-700/50 dark:bg-slate-800/80 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
-                                    <div className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-emerald-500/10 to-transparent"></div>
-                                    <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-1">{text.externalBox}</p>
-                                    <p className="text-3xl font-black text-slate-900 dark:text-white">{externalItems?.length || 0}</p>
-                                </div>
-                                <div className="rounded-2xl border border-slate-200/60 bg-white/80 p-4 dark:border-slate-700/50 dark:bg-slate-800/80 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
-                                    <div className="absolute bottom-0 w-full h-1 bg-slate-100 dark:bg-slate-800 left-0"></div>
-                                    <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-1">{text.available}</p>
-                                    <p className="text-3xl font-black text-slate-900 dark:text-white">{stats?.empty || 0}</p>
-                                </div>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <SummaryCard
+                                    title={text.occupancy}
+                                    value={`${bentoStats.occupancyPercent}%`}
+                                    icon={Grid3x3}
+                                    gradient="from-indigo-500 to-purple-600"
+                                    valueClass="text-2xl"
+                                />
+                                <SummaryCard
+                                    title={text.usedSlots}
+                                    value={bentoStats.usedSlots}
+                                    icon={Package}
+                                    gradient="from-emerald-500 to-teal-600"
+                                    valueClass="text-2xl"
+                                />
+                                <SummaryCard
+                                    title={text.externalBox}
+                                    value={externalItems?.length || 0}
+                                    icon={Truck}
+                                    gradient="from-amber-500 to-orange-600"
+                                    valueClass="text-2xl"
+                                />
+                                <SummaryCard
+                                    title={text.available}
+                                    value={stats?.empty || 0}
+                                    icon={Boxes}
+                                    gradient="from-sky-500 to-cyan-600"
+                                    valueClass="text-2xl"
+                                />
                             </div>
                             <div className="flex flex-wrap gap-3">
                                 <button onClick={() => setActiveTab('inventory')} className="flex items-center gap-2 rounded-xl gradient-bg px-4 py-2.5 text-xs font-bold text-white transition-all hover:shadow-lg hover:shadow-indigo-500/40 active:scale-95">

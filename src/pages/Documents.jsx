@@ -581,19 +581,19 @@ export default function Documents({
                         title={isEnglish ? 'Total Documents' : 'Total Dokumen'}
                         value={(docList || []).length}
                         icon={FileText}
-                        colorClass="bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+                        gradient="from-blue-500 to-cyan-600"
                     />
                     <SummaryCard
                         title={isEnglish ? 'Total Folders' : 'Total Folder'}
                         value={(folders || []).length}
                         icon={FolderOpen}
-                        colorClass="bg-amber-100 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400"
+                        gradient="from-amber-500 to-orange-600"
                     />
                     <SummaryCard
                         title={isEnglish ? 'Total Revisions' : 'Total Revisi'}
                         value={docStats?.totalRevisions || 0}
                         icon={History}
-                        colorClass="bg-indigo-100 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400"
+                        gradient="from-indigo-500 to-purple-600"
                     />
                 </div>
 

@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import {
     Percent, FileBarChart, Trash2, Plus, ArrowUpRight, ArrowDownRight,
     TrendingUp, TrendingDown, LayoutGrid, List, SlidersHorizontal, Settings,
-    ChevronDown, ArrowRight, Download, Calendar, Edit3, X, FileSpreadsheet, UploadCloud, Sparkles, AlertCircle, Search, Copy
+    ChevronDown, ArrowRight, Download, Calendar, Edit3, X, FileSpreadsheet, UploadCloud, Sparkles, AlertCircle, Search, Copy, Landmark
 } from 'lucide-react';
 import {
     LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -872,38 +872,45 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                 {/* 1. Summary Cards */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {/* GRAND TOTAL CARD WITH COPY FUNCTION */}
-                    <div className="p-4 bg-indigo-600 rounded-2xl border border-indigo-500 shadow-lg relative overflow-hidden group">
-                        <div className="absolute right-0 top-0 w-16 h-16 bg-white/10 rounded-bl-3xl -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
-                        <h4 className="text-[10px] text-indigo-100 font-black uppercase tracking-[0.2em] mb-1">Estimasi PPh Terutang</h4>
-                        <div className="flex items-center justify-between relative z-10">
-                            <p className="text-lg font-black text-white">
-                                Rp {grandTotalPPh.toLocaleString('id-ID')}
-                            </p>
-                            <button
-                                onClick={(e) => { e.stopPropagation(); onCopy(grandTotalPPh, "Estimasi PPh Terutang"); }}
-                                className="p-2 bg-white/20 hover:bg-white/30 rounded-xl text-white transition-all active:scale-90"
-                                title="Salin Total"
-                            >
-                                <Copy size={16} />
-                            </button>
+                    <div className="group relative overflow-hidden glass-card rounded-2xl p-4 flex items-center gap-4 transition-all duration-300 hover:-translate-y-0.5">
+                        <div className="absolute right-0 top-0 w-20 h-20 rounded-bl-[2rem] -mr-5 -mt-5 bg-gradient-to-br from-indigo-600 to-purple-700 opacity-20 transition-all duration-300 group-hover:scale-110" />
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center flex-shrink-0 shadow-lg shadow-indigo-500/25">
+                            <Landmark size={22} className="text-white" />
                         </div>
+                        <div className="flex-1 min-w-0">
+                            <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 truncate">Estimasi PPh Terutang</div>
+                            <div className="text-lg font-black leading-tight text-slate-800 dark:text-white tabular-nums truncate">
+                                Rp {grandTotalPPh.toLocaleString('id-ID')}
+                            </div>
+                        </div>
+                        <button
+                            onClick={(e) => { e.stopPropagation(); onCopy(grandTotalPPh, "Estimasi PPh Terutang"); }}
+                            className="p-2 rounded-xl text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-white/10 transition-all active:scale-90 flex-shrink-0"
+                            title="Salin Total"
+                        >
+                            <Copy size={16} />
+                        </button>
                     </div>
 
                     {config.pphTypes.map(type => (
-                        <div key={type} className="p-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-indigo-100 dark:border-slate-700 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
-                            <div className="absolute right-0 top-0 w-16 h-16 bg-gradient-to-br from-indigo-500/10 to-transparent rounded-bl-3xl -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
-                            <div className="flex justify-between items-start">
-                                <h4 className="text-xs text-gray-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-1">{type}</h4>
-                                <button
-                                    onClick={(e) => { e.stopPropagation(); onCopy(totalPerType[type], type); }}
-                                    className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-indigo-600 transition-all"
-                                >
-                                    <Copy size={12} />
-                                </button>
+                        <div key={type} className="group relative overflow-hidden glass-card rounded-2xl p-4 flex items-center gap-4 transition-all duration-300 hover:-translate-y-0.5">
+                            <div className="absolute right-0 top-0 w-20 h-20 rounded-bl-[2rem] -mr-5 -mt-5 bg-gradient-to-br from-emerald-500 to-teal-600 opacity-15 transition-all duration-300 group-hover:scale-110" />
+                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-emerald-500/20">
+                                <Percent size={22} className="text-white" />
                             </div>
-                            <p className="text-lg font-bold text-gray-900 dark:text-white">
-                                Rp {(totalPerType[type] / 1000000).toLocaleString('id-ID', { maximumFractionDigits: 1 })} Jt
-                            </p>
+                            <div className="flex-1 min-w-0">
+                                <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 truncate">{type}</div>
+                                <div className="text-lg font-black leading-tight text-slate-800 dark:text-white tabular-nums truncate">
+                                    Rp {(totalPerType[type] / 1000000).toLocaleString('id-ID', { maximumFractionDigits: 1 })} Jt
+                                </div>
+                            </div>
+                            <button
+                                onClick={(e) => { e.stopPropagation(); onCopy(totalPerType[type], type); }}
+                                className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-white/10 transition-all flex-shrink-0"
+                                title="Salin"
+                            >
+                                <Copy size={12} />
+                            </button>
                         </div>
                     ))}
                     {hasPermission('tax-summary', 'edit') && (

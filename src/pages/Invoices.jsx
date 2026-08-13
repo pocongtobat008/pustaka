@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Textarea } from '../components/ui/textarea';
+import { SummaryCard } from '../components/ui/Card';
 import { useModalKeydown, useModalScrollLock } from '../components/ui/useModalKeydown';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -1997,45 +1998,41 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
             {/* ── Dashboard Cards (di atas tab) ── */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {/* Total Invoice */}
-                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white p-4 shadow-lg shadow-blue-600/20">
-                    <div className="absolute -right-4 -top-4 opacity-15"><Receipt size={84} /></div>
-                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-blue-100/90">
-                        <Receipt size={14} /> Total Invoice
-                    </div>
-                    <div className="text-3xl font-black mt-2 leading-none">{summary.totalInvoice.toLocaleString('id-ID')}</div>
-                    <div className="text-[11px] font-semibold text-blue-100 mt-2">{formatCurrency(summary.nominalInvoice)}</div>
-                    <div className="text-[10px] text-blue-200/80 mt-1">• {summary.sentBackProforma} proforma sent back</div>
-                </div>
+                <SummaryCard
+                    title="Total Invoice"
+                    value={summary.totalInvoice.toLocaleString('id-ID')}
+                    icon={Receipt}
+                    gradient="from-blue-600 to-indigo-700"
+                    subtext={`${formatCurrency(summary.nominalInvoice)} • ${summary.sentBackProforma} sent back`}
+                    valueClass="text-2xl"
+                />
                 {/* Proforma */}
-                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 text-white p-4 shadow-lg shadow-orange-600/20">
-                    <div className="absolute -right-4 -top-4 opacity-15"><FileSignature size={84} /></div>
-                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-amber-100/90">
-                        <FileSignature size={14} /> Proforma
-                    </div>
-                    <div className="text-3xl font-black mt-2 leading-none">{summary.totalProforma.toLocaleString('id-ID')}</div>
-                    <div className="text-[11px] font-semibold text-amber-100 mt-2">{summary.totalApproved} approved • {summary.pendingProforma} pending</div>
-                    <div className="text-[10px] text-amber-200/80 mt-1">Nominal {formatCurrency(summary.totalNominal)}</div>
-                </div>
+                <SummaryCard
+                    title="Proforma"
+                    value={summary.totalProforma.toLocaleString('id-ID')}
+                    icon={FileSignature}
+                    gradient="from-amber-500 to-orange-600"
+                    subtext={`${summary.totalApproved} approved • ${summary.pendingProforma} pending • ${formatCurrency(summary.totalNominal)}`}
+                    valueClass="text-2xl"
+                />
                 {/* Menunggu Tax */}
-                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-violet-600 to-purple-700 text-white p-4 shadow-lg shadow-violet-600/20">
-                    <div className="absolute -right-4 -top-4 opacity-15"><FileText size={84} /></div>
-                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-violet-100/90">
-                        <FileText size={14} /> Menunggu Tax
-                    </div>
-                    <div className="text-3xl font-black mt-2 leading-none">{summary.pendingTax.toLocaleString('id-ID')}</div>
-                    <div className="text-[11px] font-semibold text-violet-100 mt-2">proforma perlu faktur pajak</div>
-                    <div className="text-[10px] text-violet-200/80 mt-1">Segera lampirkan faktur</div>
-                </div>
+                <SummaryCard
+                    title="Menunggu Tax"
+                    value={summary.pendingTax.toLocaleString('id-ID')}
+                    icon={FileText}
+                    gradient="from-violet-600 to-purple-700"
+                    subtext="Proforma perlu faktur pajak — segera lampirkan"
+                    valueClass="text-2xl"
+                />
                 {/* Settled */}
-                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-700 text-white p-4 shadow-lg shadow-emerald-600/20">
-                    <div className="absolute -right-4 -top-4 opacity-15"><HandCoins size={84} /></div>
-                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-teal-100/90">
-                        <HandCoins size={14} /> Settled
-                    </div>
-                    <div className="text-3xl font-black mt-2 leading-none">{summary.totalSettled.toLocaleString('id-ID')}</div>
-                    <div className="text-[11px] font-semibold text-teal-100 mt-2">{formatCurrency(summary.nominalSettled)}</div>
-                    <div className="text-[10px] text-teal-200/80 mt-1">Selesai di-settle</div>
-                </div>
+                <SummaryCard
+                    title="Settled"
+                    value={summary.totalSettled.toLocaleString('id-ID')}
+                    icon={HandCoins}
+                    gradient="from-teal-500 to-emerald-700"
+                    subtext={`${formatCurrency(summary.nominalSettled)} • selesai di-settle`}
+                    valueClass="text-2xl"
+                />
             </div>
 
             {/* Notifikasi penting (1 baris ringkasan yang perlu tindakan) */}
