@@ -90,7 +90,7 @@ import {
   RefreshCw,
   Activity,
   Rocket, Target, HelpCircle, Sparkles, Zap, Award, Globe, FileCheck, BookOpen, ScanLine,
-  Calculator, FlaskConical, Wand2, ChevronDown, Info, Receipt, FileSignature, ListOrdered, Server, FileCode2
+  Calculator, FlaskConical, Wand2, ChevronDown, Info, Receipt, FileSignature, ListOrdered, Server, FileCode2, Palette
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 const Login = lazy(() => import('./pages/Login'));
@@ -110,6 +110,7 @@ const Book = lazy(() => import('./pages/Book'));
 const EntertainmentExpenses = lazy(() => import('./pages/EntertainmentExpenses'));
 const Invoices = lazy(() => import('./pages/Invoices'));
 const PdfTemplateDesigner = lazy(() => import('./pages/PdfTemplateDesigner'));
+const ComponentShowcase = lazy(() => import('./pages/ComponentShowcase'));
 const AnyDoc = lazy(() => import('./pages/AnyDoc'));
 const AiDocIntel = lazy(() => import('./pages/AiDocIntel'));
 const AiDocTrain = lazy(() => import('./pages/AiDocTrain'));
@@ -171,6 +172,7 @@ export default function App() {
         'ai-doc-intel': { title: 'AI Document Intelligence', subtitle: 'Smart Document Understanding' },
         'ai-doc-train': { title: 'AI Document Training', subtitle: 'Field Mapping & AI Training' },
         'ai-pdf-tools': { title: 'AI PDF Tools', subtitle: 'PDF Toolbox & OCR Suite' },
+        'component-showcase': { title: 'Component Gallery', subtitle: 'UI Component Showcase' },
         profile: { title: 'My Profile', subtitle: 'Account & Personal Settings' },
       };
     }
@@ -196,6 +198,7 @@ export default function App() {
       'ai-doc-intel': { title: 'AI Document Intelligence', subtitle: 'Pemahaman Dokumen Cerdas' },
       'ai-doc-train': { title: 'AI Document Training', subtitle: 'Pemetaan Field & Training AI' },
       'ai-pdf-tools': { title: 'AI PDF Tools', subtitle: 'Toolbox PDF & Suite OCR' },
+      'component-showcase': { title: 'Galeri Komponen', subtitle: 'Showcase Komponen UI' },
       profile: { title: 'Profil Saya', subtitle: 'Akun & Pengaturan Pribadi' },
     };
   }, [language]);
@@ -232,6 +235,7 @@ export default function App() {
           'ai-doc-intel': { label: 'AI Document Intelligence', description: 'Extract data from PDF files' },
           'ai-doc-train': { label: 'Document Training', description: 'Train AI document templates' },
           'ai-pdf-tools': { label: 'AI PDF Tools', description: 'PDF convert, compress, merge, split, unlock, OCR' },
+          'component-showcase': { label: 'Component Gallery', description: 'UI component showcase' },
         },
         actions: {
           upload: { label: 'Upload Document', description: 'Open upload document modal' },
@@ -278,6 +282,7 @@ export default function App() {
         'ai-doc-intel': { label: 'AI Document Intelligence', description: 'Ekstrak data dari file PDF' },
         'ai-doc-train': { label: 'Training Dokumen', description: 'Latih template dokumen AI' },
         'ai-pdf-tools': { label: 'AI PDF Tools', description: 'Konversi, kompres, gabung, pecah, buka proteksi & OCR PDF' },
+        'component-showcase': { label: 'Galeri Komponen', description: 'Showcase komponen UI' },
       },
       actions: {
         upload: { label: 'Upload Dokumen', description: 'Buka modal upload dokumen' },
@@ -3600,6 +3605,7 @@ export default function App() {
       { id: 'pdf-templates', tab: 'pdf-templates', label: commandTextMap.items['pdf-templates'].label, description: commandTextMap.items['pdf-templates'].description, group: commandTextMap.groups.finance, icon: FileCode2, keywords: 'template pdf surat dokumen', adminOnly: true },
       { id: 'master', tab: 'master', label: commandTextMap.items.master.label, description: commandTextMap.items.master.description, group: commandTextMap.groups.system, icon: Settings, keywords: 'admin settings role' },
       { id: 'system-logs', tab: 'system-logs', label: commandTextMap.items['system-logs'].label, description: commandTextMap.items['system-logs'].description, group: commandTextMap.groups.system, icon: Server, keywords: 'log sistem aktivitas audit' },
+      { id: 'component-showcase', tab: 'component-showcase', label: commandTextMap.items['component-showcase'].label, description: commandTextMap.items['component-showcase'].description, group: commandTextMap.groups.system, icon: Palette, keywords: 'component gallery showcase ui design summary card' },
       { id: 'profile', tab: 'profile', label: commandTextMap.items.profile.label, description: commandTextMap.items.profile.description, group: commandTextMap.groups.system, icon: User, keywords: 'akun user' }
     ];
 
@@ -4058,6 +4064,11 @@ export default function App() {
                 )}
                 {activeTab === 'system-logs' && (
                   <SystemLogs
+                    isDarkMode={isDarkMode}
+                  />
+                )}
+                {activeTab === 'component-showcase' && (
+                  <ComponentShowcase
                     isDarkMode={isDarkMode}
                   />
                 )}

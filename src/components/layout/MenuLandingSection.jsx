@@ -24,6 +24,7 @@ import {
   Users,
   X,
   Zap,
+  Palette,
 } from 'lucide-react';
 
 const menuLandingConfig = {
@@ -487,6 +488,29 @@ const menuLandingConfig = {
       { label: 'Ke Dashboard', tab: 'dashboard', icon: Rocket },
     ],
   },
+  'component-showcase': {
+    kicker: 'UI Component Gallery',
+    title: 'Galeri Komponen UI',
+    subtitle:
+      'Referensi desain sistem: lihat live preview SummaryCard & SummaryRow untuk semua menu, lengkap dengan kode yang bisa disalin.',
+    icon: Palette,
+    accent: 'from-indigo-500 to-purple-600',
+    features: [
+      'Live preview SummaryCard & SummaryRow (2, 3, dan 4 kolom).',
+      'Kode JSX siap salin untuk mempercepat pengembangan.',
+      'Mencakup valuePrefix, valueClass, subtext, dan prop action.',
+    ],
+    functions: [
+      'Menjaga konsistensi UI di seluruh menu.',
+      'Mempercepat implementasi kartu ringkasan baru.',
+      'Menjadi referensi tim developer dan designer.',
+    ],
+    useCases: ['Cek variasi gradient', 'Salin kode kartu', 'Referensi desain sistem'],
+    quickActions: [
+      { label: 'Master Data', tab: 'master', icon: Users },
+      { label: 'Ke Dashboard', tab: 'dashboard', icon: Rocket },
+    ],
+  },
 };
 
 const manualAdvantageMap = {
@@ -589,6 +613,11 @@ const manualAdvantageMap = {
     'Dokumen keluaran memiliki tampilan profesional yang konsisten.',
     'Desain dapat dipakai ulang, tidak dibuat ulang per dokumen.',
     'Output siap cetak mengurangi pekerjaan format manual.',
+  ],
+  'component-showcase': [
+    'Konsistensi UI meningkat karena semua menu memakai komponen yang sama.',
+    'Developer lebih cepat mengimplementasikan kartu ringkasan baru.',
+    'Tim design dan developer memiliki satu referensi yang sama.',
   ],
 };
 
@@ -763,6 +792,10 @@ export default function MenuLandingSection({
       title: 'PDF Template Designer',
       subtitle: 'Design custom PDF templates for documents such as proforma invoices with a professional and consistent look.',
     },
+    'component-showcase': {
+      title: 'UI Component Gallery',
+      subtitle: 'Live preview and copyable code for SummaryCard & SummaryRow used across every menu.',
+    },
   };
 
   const englishFeaturesMap = {
@@ -865,6 +898,11 @@ export default function MenuLandingSection({
       'Visual editor for PDF template layout.',
       'Dynamic variables for system data.',
       'Real-time print preview.',
+    ],
+    'component-showcase': [
+      'Live preview of SummaryCard & SummaryRow (2, 3, and 4 columns).',
+      'Copy-ready JSX code for faster development.',
+      'Covers valuePrefix, valueClass, subtext, and the action prop.',
     ],
   };
 
@@ -969,6 +1007,11 @@ export default function MenuLandingSection({
       'Produce professional documents without manual design.',
       'Speed up the creation of template variations.',
     ],
+    'component-showcase': [
+      'Keep UI consistent across all menus.',
+      'Accelerate implementation of new summary cards.',
+      'Serve as a shared reference for developers and designers.',
+    ],
   };
 
   const englishUseCasesMap = {
@@ -992,6 +1035,7 @@ export default function MenuLandingSection({
     'ai-pdf-tools': ['Scanned document OCR', 'Merge PDF files', 'Compress for email'],
     'system-logs': ['Check application errors', 'User activity audit', 'System troubleshooting'],
     'pdf-templates': ['Create proforma template', 'Edit PDF layout', 'Standardize print format'],
+    'component-showcase': ['Check gradient variants', 'Copy card code', 'Design system reference'],
   };
 
   const englishAdvantagesMap = {
@@ -1094,6 +1138,11 @@ export default function MenuLandingSection({
       'Output documents have a consistent professional look.',
       'Design is reusable instead of recreated per document.',
       'Print-ready output reduces manual formatting work.',
+    ],
+    'component-showcase': [
+      'UI consistency improves because all menus share the same components.',
+      'Developers ship new summary cards faster.',
+      'Design and development teams share one reference.',
     ],
   };
 
