@@ -17,7 +17,7 @@ const getApiUrl = () => (window.location.protocol === 'file:' ? 'http://localhos
 const API_URL = getApiUrl();
 
 // ── Thumbnail halaman PDF dengan kotak posisi tanda tangan (untuk pratinjau) ──
-function SigPreviewThumb({ file, page, sigRect, isDarkMode }) {
+function SigPreviewThumb({ file, page, sigRect, isDarkMode, width = 400 }) {
     const canvasRef = useRef(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -33,7 +33,7 @@ function SigPreviewThumb({ file, page, sigRect, isDarkMode }) {
                 pdfDoc = doc;
                 const p = await doc.getPage(page);
                 const base = p.getViewport({ scale: 1 });
-                const targetW = 400;
+                const targetW = width;
                 const scale = targetW / base.width;
                 const vp = p.getViewport({ scale });
                 const canvas = canvasRef.current;
@@ -68,7 +68,7 @@ function SigPreviewThumb({ file, page, sigRect, isDarkMode }) {
             }
         })();
         return () => { cancelled = true; if (pdfDoc) pdfDoc.destroy(); };
-    }, [file, page, sigRect]);
+    }, [file, page, sigRect, width]);
 
     return (
         <div className={`relative rounded-xl border overflow-hidden ${isDarkMode ? 'border-white/10 bg-slate-900' : 'border-slate-200 bg-white'}`}>
@@ -79,6 +79,33 @@ function SigPreviewThumb({ file, page, sigRect, isDarkMode }) {
             )}
             {error && <div className="p-6 text-xs text-rose-500">Gagal merender halaman {page}.</div>}
             <canvas ref={canvasRef} className="w-full h-auto" />
+        </div>
+    );
+}
+
+// ── Thumbnail lazy (galeri): render hanya saat mendekati viewport ──
+function GalleryThumb({ file, page, sigRect, isDarkMode, width }) {
+    const ref = useRef(null);
+    const [visible, setVisible] = useState(false);
+
+    useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+        const obs = new IntersectionObserver((entries) => {
+            if (entries.some(e => e.isIntersecting)) {
+                setVisible(true);
+                obs.disconnect();
+            }
+        }, { rootMargin: '300px' });
+        obs.observe(el);
+        return () => obs.disconnect();
+    }, []);
+
+    return (
+        <div ref={ref}>
+            {visible
+                ? <SigPreviewThumb file={file} page={page} sigRect={sigRect} isDarkMode={isDarkMode} width={width} />
+                : <div className={`w-full ${isDarkMode ? 'bg-white/5' : 'bg-slate-50'}`} style={{ height: 230 }} />}
         </div>
     );
 }
@@ -276,7 +303,6 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
     // ── Pratinjau deteksi blok (sebelum memproses) ──
     const [preview, setPreview] = useState(null); // { busy, data }
     const [showPreview, setShowPreview] = useState(false);
-    const [previewPage, setPreviewPage] = useState(1);
     const [tmplBusy, setTmplBusy] = useState(false); // tombol template bawaan
 
     const runPreview = async () => {
@@ -303,7 +329,6 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
             const j = await res.json().catch(() => ({}));
             if (!res.ok) throw new Error(j.error || `Pratinjau gagal (${res.status}).`);
             setPreview({ busy: false, data: j });
-            setPreviewPage(j.pages?.[0]?.page || 1);
             setShowPreview(true);
         } catch (e) {
             setError(e.message || 'Gagal pratinjau.');
@@ -1328,61 +1353,46 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                     ))}
                                 </div>
 
-                                {/* Body: daftar halaman + thumbnail */}
-                                <div className="flex-1 min-h-0 grid md:grid-cols-[230px,1fr] overflow-hidden">
-                                    {/* Daftar halaman */}
-                                    <div className={`overflow-y-auto border-r max-h-72 md:max-h-none ${isDarkMode ? 'border-white/10' : 'border-slate-200'}`}>
-                                        {(preview.data.pages || []).length === 0 ? (
-                                            <p className={`p-4 text-[11px] italic ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
-                                                Tidak ada blok yang cocok dengan pola "{activeTmpl?.namePattern}"{activeTmpl?.titlePattern ? ` + "${activeTmpl.titlePattern}"` : ''}.
+                                {/* Body: galeri SEMUA halaman ber-blok sekaligus */}
+                                <div className="flex-1 min-h-0 overflow-y-auto p-4">
+                                    {(preview.data.pages || []).length === 0 ? (
+                                        <p className={`text-[11px] italic ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                            Tidak ada blok yang cocok dengan pola "{activeTmpl?.namePattern}"{activeTmpl?.titlePattern ? ` + "${activeTmpl.titlePattern}"` : ''}.
+                                        </p>
+                                    ) : (
+                                        <>
+                                            <p className={`text-[10px] mb-3 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                                {preview.data.pages.length} halaman akan ditandatangani — kotak merah = area ttd. Gulir untuk melihat semua.
                                             </p>
-                                        ) : (
-                                            (preview.data.pages || []).map((b, i) => (
-                                                <button
-                                                    key={`${b.page}-${i}`}
-                                                    onClick={() => setPreviewPage(b.page)}
-                                                    className={`w-full text-left px-3.5 py-2.5 flex items-center gap-2 border-b transition-colors ${previewPage === b.page
-                                                        ? (isDarkMode ? 'bg-sky-500/15 text-sky-300' : 'bg-sky-50 text-sky-700')
-                                                        : (isDarkMode ? 'hover:bg-white/5 text-white/70' : 'hover:bg-slate-50 text-slate-600')}`}
-                                                >
-                                                    <span className={`w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-black flex-shrink-0 ${isDarkMode ? 'bg-white/10 text-white/70' : 'bg-slate-100 text-slate-500'}`}>
-                                                        {b.page}
-                                                    </span>
-                                                    <span className="min-w-0 flex-1">
-                                                        <span className="block text-[11px] font-bold truncate">{b.name}</span>
-                                                        <span className={`block text-[10px] truncate ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
-                                                            {b.title || '—'}{b.doc_number ? ` • Nota ${b.doc_number}` : ''}
-                                                        </span>
-                                                    </span>
-                                                    {b.group_last && (
-                                                        <span className={`flex-shrink-0 px-1.5 py-0.5 rounded text-[9px] font-black ${isDarkMode ? 'bg-emerald-500/20 text-emerald-300' : 'bg-emerald-100 text-emerald-700'}`}>
-                                                            TERAKHIR
-                                                        </span>
-                                                    )}
-                                                </button>
-                                            ))
-                                        )}
-                                    </div>
-
-                                    {/* Thumbnail halaman terpilih */}
-                                    <div className="overflow-y-auto p-4">
-                                        {previewPage ? (() => {
-                                            const b = (preview.data.pages || []).find(x => x.page === previewPage);
-                                            return b ? (
-                                                <div className="space-y-2">
-                                                    <SigPreviewThumb
-                                                        file={files[0]}
-                                                        page={previewPage}
-                                                        sigRect={b.sig_rect}
-                                                        isDarkMode={isDarkMode}
-                                                    />
-                                                    <p className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
-                                                        Halaman {previewPage} — blok <b>{b.name}</b>{b.title ? ` (${b.title})` : ''}. Kotak merah = area tanda tangan akan diletakkan.
-                                                    </p>
-                                                </div>
-                                            ) : null;
-                                        })() : null}
-                                    </div>
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                                                {(preview.data.pages || []).map((b, i) => (
+                                                    <div key={`${b.page}-${i}`} className={`rounded-xl border p-2 transition-shadow hover:shadow-md ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'}`}>
+                                                        <div className="relative">
+                                                            <GalleryThumb
+                                                                file={files[0]}
+                                                                page={b.page}
+                                                                sigRect={b.sig_rect}
+                                                                isDarkMode={isDarkMode}
+                                                                width={200}
+                                                            />
+                                                            <span className={`absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded text-[9px] font-black ${isDarkMode ? 'bg-slate-900/80 text-white' : 'bg-white/90 text-slate-700'}`}>
+                                                                Hal {b.page}
+                                                            </span>
+                                                            {b.group_last && (
+                                                                <span className={`absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded text-[9px] font-black ${isDarkMode ? 'bg-emerald-500/90 text-white' : 'bg-emerald-500 text-white'}`}>
+                                                                    TERAKHIR
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        <p className={`text-[10px] font-bold truncate mt-1.5 ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{b.name}</p>
+                                                        <p className={`text-[9px] truncate ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>
+                                                            {b.title || '—'}{b.doc_number ? ` • ${b.doc_number}` : ''}
+                                                        </p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </div>,
