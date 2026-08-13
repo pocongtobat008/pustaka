@@ -10,14 +10,15 @@ import {
     FileText, FileArchive, Scissors, LockOpen, ScanText, RotateCw, Eye,
     UploadCloud, Download, Loader2, X, AlertCircle, Layers,
     FileDown, Wand2, Sparkles, History, Trash2, RefreshCw, ChevronDown, Lock, Share2,
-    PenTool, Check, Plus,
+    PenTool, Check, Plus, Users,
 } from 'lucide-react';
 
 const getApiUrl = () => (window.location.protocol === 'file:' ? 'http://localhost:5005/api' : '/api');
 const API_URL = getApiUrl();
 
 // ── Thumbnail halaman PDF dengan kotak posisi tanda tangan (untuk pratinjau) ──
-function SigPreviewThumb({ file, page, sigRect, isDarkMode, width = 400 }) {
+// sigRects: array {x0,y0,x1,y1,label,color} — dukung multi-ttd (template DM dst.)
+function SigPreviewThumb({ file, page, sigRects, isDarkMode, width = 400 }) {
     const canvasRef = useRef(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -43,32 +44,34 @@ function SigPreviewThumb({ file, page, sigRect, isDarkMode, width = 400 }) {
                 canvas.height = Math.floor(vp.height);
                 await p.render({ canvasContext: ctx, viewport: vp }).promise;
                 if (cancelled) return;
-                if (sigRect && sigRect.x0 !== undefined) {
-                    const sx = sigRect.x0 * scale;
-                    const sy = sigRect.y0 * scale;
-                    const sw = (sigRect.x1 - sigRect.x0) * scale;
-                    const sh = (sigRect.y1 - sigRect.y0) * scale;
-                    ctx.strokeStyle = '#ef4444';
+                (sigRects || []).forEach(rect => {
+                    if (!rect || rect.x0 === undefined) return;
+                    const sx = rect.x0 * scale;
+                    const sy = rect.y0 * scale;
+                    const sw = (rect.x1 - rect.x0) * scale;
+                    const sh = (rect.y1 - rect.y0) * scale;
+                    const color = rect.color || '#ef4444';
+                    ctx.strokeStyle = color;
                     ctx.lineWidth = 2.5;
                     ctx.setLineDash([6, 4]);
                     ctx.strokeRect(sx, sy, sw, sh);
                     ctx.setLineDash([]);
-                    ctx.fillStyle = 'rgba(239,68,68,0.92)';
-                    const label = 'TTD';
+                    ctx.fillStyle = color;
+                    const label = rect.label || 'TTD';
                     ctx.font = 'bold 11px sans-serif';
                     const tw = ctx.measureText(label).width + 10;
                     const ly = sy - 20 < 0 ? sy + sh + 2 : sy - 20;
                     ctx.fillRect(sx, ly, tw, 18);
                     ctx.fillStyle = '#fff';
                     ctx.fillText(label, sx + 5, ly + 13);
-                }
+                });
                 setLoading(false);
             } catch {
                 if (!cancelled) { setError(true); setLoading(false); }
             }
         })();
         return () => { cancelled = true; if (pdfDoc) pdfDoc.destroy(); };
-    }, [file, page, sigRect, width]);
+    }, [file, page, sigRects, width]);
 
     return (
         <div className={`relative rounded-xl border overflow-hidden ${isDarkMode ? 'border-white/10 bg-slate-900' : 'border-slate-200 bg-white'}`}>
@@ -84,7 +87,7 @@ function SigPreviewThumb({ file, page, sigRect, isDarkMode, width = 400 }) {
 }
 
 // ── Thumbnail lazy (galeri): render hanya saat mendekati viewport ──
-function GalleryThumb({ file, page, sigRect, isDarkMode, width }) {
+function GalleryThumb({ file, page, sigRects, isDarkMode, width }) {
     const ref = useRef(null);
     const [visible, setVisible] = useState(false);
 
@@ -104,7 +107,7 @@ function GalleryThumb({ file, page, sigRect, isDarkMode, width }) {
     return (
         <div ref={ref}>
             {visible
-                ? <SigPreviewThumb file={file} page={page} sigRect={sigRect} isDarkMode={isDarkMode} width={width} />
+                ? <SigPreviewThumb file={file} page={page} sigRects={sigRects} isDarkMode={isDarkMode} width={width} />
                 : <div className={`w-full ${isDarkMode ? 'bg-white/5' : 'bg-slate-50'}`} style={{ height: 230 }} />}
         </div>
     );
@@ -264,6 +267,9 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
         setSigMode(v);
         try { localStorage.setItem('pustaka_pdf_sign_mode', v); } catch { /* ignore */ }
     };
+    // Template kini bisa berisi SATU aturan (field tunggal lama) atau BANYAK
+    // aturan (field 'rules'): tiap rule = pola nama/jabatan + gambar ttd sendiri.
+    // Template DM = 2 rule: ttd.png menimpa Kaoru Nomura + agnes.png di atas Agnestachia.
     const [templates, setTemplates] = useState(() => {
         try {
             const raw = localStorage.getItem(SIG_TMPL_KEY);
@@ -271,6 +277,21 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
             return Array.isArray(arr) ? arr : [];
         } catch { return []; }
     });
+    // ── Normalisasi template → daftar aturan (rules) ──
+    // Template lama (single-rule) otomatis diterjemahkan jadi 1 aturan.
+    const getTemplateRules = useCallback((t) => {
+        if (Array.isArray(t?.rules) && t.rules.length) return t.rules;
+        return [{
+            namePattern: t?.namePattern || 'Kaoru Nomura',
+            titlePattern: t?.titlePattern || '',
+            sig: t?.sig || null,
+            anchor: t?.anchor || 'left',
+            offsetY: t?.offsetY ?? 10,
+            scale: t?.scale ?? 18,
+            showDate: t?.showDate ?? false,
+            placement: t?.placement === 'cover' ? 'cover' : 'above',
+        }];
+    }, []);
     const [activeTmplId, setActiveTmplId] = useState(null);
     const [tmplForm, setTmplForm] = useState({
         name: '', namePattern: 'Kaoru Nomura', titlePattern: 'General Manager',
@@ -328,19 +349,44 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
         try {
             const fd = new FormData();
             fd.append('file', files[0]);
-            const sig = activeTmpl.sig;
-            const sigBlob = await (await fetch(sig.dataUrl)).blob();
-            fd.append('signature', sigBlob, `signature_${sig.name.replace(/[^a-z0-9]+/gi, '_').slice(0, 40) || 'sign'}.png`);                    fd.append('name_pattern', activeTmpl.namePattern);
-                    fd.append('title_pattern', activeTmpl.titlePattern || '');
-                    fd.append('anchor', activeTmpl.anchor);
-                    fd.append('offset_pt', String(activeTmpl.offsetY));
-                    fd.append('scale', String(activeTmpl.scale));
-                    fd.append('show_date', activeTmpl.showDate ? 'true' : 'false');
-                    fd.append('date_text', new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }));
-                    fd.append('placement', activeTmpl.placement === 'cover' ? 'cover' : 'above');
-                    fd.append('group_by_number', activeTmpl.groupByNumber ? 'true' : 'false');
-                    fd.append('number_pattern', activeTmpl.groupByNumber && activeTmpl.numberPattern ? activeTmpl.numberPattern : '');
-                    const res = await fetch(`${API_URL}/pdf-tools/sign-preview`, { method: 'POST', credentials: 'include', body: fd });
+            const rules = getTemplateRules(activeTmpl);
+            if (rules.length > 1 || activeTmpl.rules) {
+                // Multi-rule (atau template baru): kirim rules JSON + file sig_<i>
+                const dateText = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+                fd.append('rules', JSON.stringify(rules.map((r, i) => ({
+                    sig_field: `sig_${i}`,
+                    name_pattern: r.namePattern,
+                    title_pattern: r.titlePattern || '',
+                    anchor: r.anchor,
+                    offset_pt: String(r.offsetY),
+                    scale: String(r.scale),
+                    show_date: r.showDate ? 'true' : 'false',
+                    date_text: r.showDate ? dateText : '',
+                    placement: r.placement === 'cover' ? 'cover' : 'above',
+                    label: r.label || (i === 0 ? 'TTD' : `TTD ${i + 1}`),
+                }))));
+                for (let i = 0; i < rules.length; i++) {
+                    const r = rules[i];
+                    const sigBlob = await (await fetch(r.sig.dataUrl)).blob();
+                    const sigName = `signature_${(r.sig.name || `sig${i}`).replace(/[^a-z0-9]+/gi, '_').slice(0, 40) || 'sign'}.png`;
+                    fd.append(`sig_${i}`, sigBlob, sigName);
+                }
+            } else {
+                const sig = activeTmpl.sig;
+                const sigBlob = await (await fetch(sig.dataUrl)).blob();
+                fd.append('signature', sigBlob, `signature_${sig.name.replace(/[^a-z0-9]+/gi, '_').slice(0, 40) || 'sign'}.png`);
+                fd.append('name_pattern', activeTmpl.namePattern);
+                fd.append('title_pattern', activeTmpl.titlePattern || '');
+                fd.append('anchor', activeTmpl.anchor);
+                fd.append('offset_pt', String(activeTmpl.offsetY));
+                fd.append('scale', String(activeTmpl.scale));
+                fd.append('show_date', activeTmpl.showDate ? 'true' : 'false');
+                fd.append('date_text', new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }));
+                fd.append('placement', activeTmpl.placement === 'cover' ? 'cover' : 'above');
+            }
+            fd.append('group_by_number', activeTmpl.groupByNumber ? 'true' : 'false');
+            fd.append('number_pattern', activeTmpl.groupByNumber && activeTmpl.numberPattern ? activeTmpl.numberPattern : '');
+            const res = await fetch(`${API_URL}/pdf-tools/sign-preview`, { method: 'POST', credentials: 'include', body: fd });
             const j = await res.json().catch(() => ({}));
             if (!res.ok) throw new Error(j.error || `Pratinjau gagal (${res.status}).`);
             setPreview({ busy: false, data: j });
@@ -378,6 +424,14 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                 groupByNumber: true,
                 numberPattern: '', // deteksi otomatis dari dokumen
                 numberPatternAuto: true,
+                // Representasi multi-rule (1 aturan): dipakai engine multi-rule
+                rules: [{
+                    namePattern: res.headers.get('x-name-pattern') || 'Kaoru Nomura',
+                    titlePattern: res.headers.get('x-title-pattern') || 'General Manager',
+                    sig: { name: 'ttd.png', dataUrl },
+                    anchor: 'left', offsetY: 10, scale: 18, showDate: false,
+                    placement: 'cover', label: 'TTD',
+                }],
             };
             // Idempoten: buang template bawaan lama (nama lama / NR lama) lalu daftarkan yang baru
             const list = templates.filter(x => x.name !== 'NR' && x.name !== 'TTD Kaoru Nomura');
@@ -391,24 +445,80 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
         }
     };
 
-    // ── Auto-siapkan template NR saat halaman dibuka: tinggal upload & proses ──
-    // Kalau belum ada template NR di browser, unduh otomatis dari server dan aktifkan;
-    // buang template bawaan lama 'TTD Kaoru Nomura' (setting lama yang salah);
-    // lalu paksa mode otomatis agar ttd menimpa nama secara otomatis.
+    // ── Template DM (2 tanda tangan): ttd.png menimpa Kaoru Nomura, agnes.png di atas Agnestachia ──
+    const loadDMTemplate = async () => {
+        setTmplBusy(true); setError('');
+        try {
+            const [ttdRes, agnesRes] = await Promise.all([
+                fetch(`${API_URL}/pdf-tools/signatures/default`, { credentials: 'include' }),
+                fetch(`${API_URL}/pdf-tools/signatures/agnes`, { credentials: 'include' }),
+            ]);
+            if (!ttdRes.ok || !agnesRes.ok) throw new Error('Template bawaan DM tidak tersedia di server.');
+            const toDataUrl = async (blob) => new Promise((resolve, reject) => {
+                const r = new FileReader();
+                r.onload = () => resolve(r.result);
+                r.onerror = reject;
+                r.readAsDataURL(blob);
+            });
+            const ttdUrl = await toDataUrl(await ttdRes.blob());
+            const agnesUrl = await toDataUrl(await agnesRes.blob());
+            const t = {
+                id: `tmpl-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+                name: 'DM',
+                namePattern: 'Kaoru Nomura',
+                titlePattern: 'General Manager',
+                sig: { name: 'ttd.png', dataUrl: ttdUrl },
+                anchor: 'left', offsetY: 10, scale: 18, showDate: false,
+                placement: 'cover',
+                groupByNumber: true,
+                numberPattern: '',
+                numberPatternAuto: true,
+                rules: [
+                    {
+                        namePattern: 'Kaoru Nomura',
+                        titlePattern: 'General Manager',
+                        sig: { name: 'ttd.png', dataUrl: ttdUrl },
+                        anchor: 'left', offsetY: 10, scale: 18, showDate: false,
+                        placement: 'cover', label: 'TTD',
+                    },
+                    {
+                        namePattern: 'Agnestachia',
+                        titlePattern: 'Ast. Manager',
+                        sig: { name: 'agnes.png', dataUrl: agnesUrl },
+                        anchor: 'left', offsetY: 10, scale: 18, showDate: false,
+                        placement: 'above', label: 'AGNES',
+                    },
+                ],
+            };
+            // Idempoten: buang template DM lama lalu daftarkan yang baru
+            const list = templates.filter(x => x.name !== 'DM');
+            list.push(t);
+            setTemplates(list); persistTemplates(list);
+            setActiveTmplId(t.id);
+        } catch (e) {
+            setError(e.message || 'Gagal memuat template DM.');
+        } finally {
+            setTmplBusy(false);
+        }
+    };
+
+    // ── Auto-siapkan template bawaan saat halaman dibuka: tinggal upload & proses ──
+    // NR (1 ttd: ttd.png menimpa Kaoru Nomura) + DM (2 ttd: + agnes.png di atas
+    // Agnestachia). Unduh otomatis dari server bila belum ada, aktifkan NR,
+    // buang template bawaan lama 'TTD Kaoru Nomura', lalu paksa mode otomatis.
     useEffect(() => {
-        const ensureNRTemplate = async () => {
+        const ensureBuiltinTemplates = async () => {
             try {
                 const hasNR = templates.some(t => t.name === 'NR');
-                if (hasNR) {
-                    const nr = templates.find(t => t.name === 'NR');
-                    setActiveTmplId(nr.id);
-                } else {
-                    await loadDefaultTemplate();
-                }
+                const hasDM = templates.some(t => t.name === 'DM');
+                if (!hasNR) await loadDefaultTemplate();
+                if (!hasDM) await loadDMTemplate();
+                const nr = templates.find(t => t.name === 'NR');
+                if (nr) setActiveTmplId(nr.id);
                 switchSigMode('auto');
             } catch { /* abaikan — tombol manual tetap tersedia */ }
         };
-        ensureNRTemplate();
+        ensureBuiltinTemplates();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     // ── Deteksi otomatis pola nomor dokumen ──
@@ -623,18 +733,42 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
             if (tool.id === 'sign') {
                 if (sigMode === 'auto') {
                     // Template: deteksi otomatis blok nama+jabatan di seluruh halaman
-                    const sig = activeTmpl.sig;
-                    const sigBlob = await (await fetch(sig.dataUrl)).blob();
-                    const sigName = `signature_${sig.name.replace(/[^a-z0-9]+/gi, '_').slice(0, 40) || 'sign'}.png`;
-                    fd.append('signature', sigBlob, sigName);
-                    fd.append('name_pattern', activeTmpl.namePattern);
-                    fd.append('title_pattern', activeTmpl.titlePattern || '');
-                    fd.append('anchor', activeTmpl.anchor);
-                    fd.append('offset_pt', String(activeTmpl.offsetY));
-                    fd.append('scale', String(activeTmpl.scale));
-                    fd.append('show_date', activeTmpl.showDate ? 'true' : 'false');
-                    fd.append('date_text', new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }));
-                    fd.append('placement', activeTmpl.placement === 'cover' ? 'cover' : 'above');
+                    const rules = getTemplateRules(activeTmpl);
+                    if (rules.length > 1 || activeTmpl.rules) {
+                        // Multi-rule (template DM dst.): kirim rules JSON + file sig_<i>
+                        const dateText = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+                        fd.append('rules', JSON.stringify(rules.map((r, i) => ({
+                            sig_field: `sig_${i}`,
+                            name_pattern: r.namePattern,
+                            title_pattern: r.titlePattern || '',
+                            anchor: r.anchor,
+                            offset_pt: String(r.offsetY),
+                            scale: String(r.scale),
+                            show_date: r.showDate ? 'true' : 'false',
+                            date_text: r.showDate ? dateText : '',
+                            placement: r.placement === 'cover' ? 'cover' : 'above',
+                            label: r.label || (i === 0 ? 'TTD' : `TTD ${i + 1}`),
+                        }))));
+                        for (let i = 0; i < rules.length; i++) {
+                            const r = rules[i];
+                            const sigBlob = await (await fetch(r.sig.dataUrl)).blob();
+                            const sigName = `signature_${(r.sig.name || `sig${i}`).replace(/[^a-z0-9]+/gi, '_').slice(0, 40) || 'sign'}.png`;
+                            fd.append(`sig_${i}`, sigBlob, sigName);
+                        }
+                    } else {
+                        const sig = activeTmpl.sig;
+                        const sigBlob = await (await fetch(sig.dataUrl)).blob();
+                        const sigName = `signature_${sig.name.replace(/[^a-z0-9]+/gi, '_').slice(0, 40) || 'sign'}.png`;
+                        fd.append('signature', sigBlob, sigName);
+                        fd.append('name_pattern', activeTmpl.namePattern);
+                        fd.append('title_pattern', activeTmpl.titlePattern || '');
+                        fd.append('anchor', activeTmpl.anchor);
+                        fd.append('offset_pt', String(activeTmpl.offsetY));
+                        fd.append('scale', String(activeTmpl.scale));
+                        fd.append('show_date', activeTmpl.showDate ? 'true' : 'false');
+                        fd.append('date_text', new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }));
+                        fd.append('placement', activeTmpl.placement === 'cover' ? 'cover' : 'above');
+                    }
                     fd.append('group_by_number', activeTmpl.groupByNumber ? 'true' : 'false');
                     fd.append('number_pattern', activeTmpl.groupByNumber && activeTmpl.numberPattern ? activeTmpl.numberPattern : '');
                 } else {
@@ -1102,12 +1236,12 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                             Template Tanda Tangan ({templates.length})
                                         </p>
                                         <p className={`text-[11px] mb-2 ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>
-                                            Template <b>NR</b> sudah otomatis siap pakai: unggah PDF → ttd otomatis menimpa "Kaoru Nomura" + "General Manager" di halaman terakhir tiap nomor dokumen.
+                                            Template <b>NR</b> (1 ttd: ttd.png menimpa "Kaoru Nomura") dan <b>DM</b> (2 ttd: + agnes.png di atas "Agnestachia") sudah otomatis siap pakai — tinggal unggah PDF & proses.
                                         </p>
-                                        {activeTmpl?.name === 'NR' && (
+                                        {(activeTmpl?.name === 'NR' || activeTmpl?.name === 'DM') && (
                                             <div className={`flex items-start gap-2 p-3 rounded-xl border text-[11px] mb-2 ${isDarkMode ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-200' : 'bg-emerald-50 border-emerald-200 text-emerald-700'}`}>
                                                 <Sparkles size={13} className="mt-0.5 flex-shrink-0" />
-                                                <span><b>Template NR siap.</b> Cukup: 1) unggah file PDF di atas → 2) klik <b>Pratinjau Deteksi Blok</b> (opsional, lihat posisi ttd) → 3) klik <b>Proses Tanda Tangan PDF</b>. Tidak perlu atur apa pun lagi.</span>
+                                                <span><b>Template {activeTmpl.name} siap.</b> Cukup: 1) unggah file PDF di atas → 2) klik <b>Pratinjau Deteksi Blok</b> (opsional) → 3) klik <b>Proses Tanda Tangan PDF</b>. Tidak perlu atur apa pun lagi.</span>
                                             </div>
                                         )}
                                         {templates.length === 0 ? (
@@ -1115,14 +1249,24 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                 <p className={`text-[11px] italic rounded-xl border border-dashed p-3 ${isDarkMode ? 'text-white/40 border-white/15' : 'text-slate-400 border-slate-300'}`}>
                                                     Belum ada template. Gunakan template bawaan (ttd.png — Kaoru Nomura / General Manager) atau buat sendiri di bawah.
                                                 </p>
-                                                <button
-                                                    onClick={loadDefaultTemplate}
-                                                    disabled={tmplBusy}
-                                                    className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[11px] font-bold bg-gradient-to-r from-sky-500 to-cyan-600 text-white shadow-md shadow-sky-500/25 transition-all ${tmplBusy ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02]'}`}
-                                                >
-                                                    {tmplBusy ? <Loader2 size={13} className="animate-spin" /> : <PenTool size={13} />}
-                                                    {tmplBusy ? 'Memuat...' : 'Pakai Template Bawaan (ttd.png)'}
-                                                </button>
+                                                <div className="flex flex-wrap gap-2">
+                                                    <button
+                                                        onClick={loadDefaultTemplate}
+                                                        disabled={tmplBusy}
+                                                        className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[11px] font-bold bg-gradient-to-r from-sky-500 to-cyan-600 text-white shadow-md shadow-sky-500/25 transition-all ${tmplBusy ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02]'}`}
+                                                    >
+                                                        {tmplBusy ? <Loader2 size={13} className="animate-spin" /> : <PenTool size={13} />}
+                                                        {tmplBusy ? 'Memuat...' : 'Pakai Template NR (ttd.png)'}
+                                                    </button>
+                                                    <button
+                                                        onClick={loadDMTemplate}
+                                                        disabled={tmplBusy}
+                                                        className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[11px] font-bold border transition-all ${tmplBusy ? 'opacity-50 cursor-not-allowed' : (isDarkMode ? 'border-white/15 text-white/70 hover:bg-white/10' : 'border-slate-300 text-slate-500 hover:bg-slate-100')}`}
+                                                    >
+                                                        {tmplBusy ? <Loader2 size={13} className="animate-spin" /> : <Users size={13} />}
+                                                        {tmplBusy ? 'Memuat...' : 'Pakai Template DM (2 ttd)'}
+                                                    </button>
+                                                </div>
                                             </div>
                                         ) : (
                                             <div className="space-y-2">
@@ -1137,12 +1281,14 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                         <img src={t.sig.dataUrl} alt={t.name} className="w-16 h-9 object-contain rounded border bg-white/60 dark:bg-white/10 flex-shrink-0" />
                                                         <div className="min-w-0 flex-1">
                                                             <p className={`text-[12px] font-extrabold truncate ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{t.name}
-                                                                {t.name === 'NR' && (
-                                                                    <span className={`ml-1.5 align-middle inline-block px-1.5 py-0.5 rounded-md text-[9px] font-black tracking-wide ${isDarkMode ? 'bg-emerald-500/20 text-emerald-300' : 'bg-emerald-100 text-emerald-700'}`}>SIAP PAKAI</span>
+                                                                {(t.name === 'NR' || t.name === 'DM') && (
+                                                                    <span className={`ml-1.5 align-middle inline-block px-1.5 py-0.5 rounded-md text-[9px] font-black tracking-wide ${isDarkMode ? 'bg-emerald-500/20 text-emerald-300' : 'bg-emerald-100 text-emerald-700'}`}>{t.name === 'DM' ? '2 TTD' : 'SIAP PAKAI'}</span>
                                                                 )}
                                                             </p>
                                                             <p className={`text-[10px] truncate ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
-                                                                Nama: {t.namePattern}{t.titlePattern ? ` • Jabatan: ${t.titlePattern}` : ''} • {t.placement === 'cover' ? 'Menimpa nama' : 'Di atas nama'} • {t.anchor === 'center' ? 'Tengah' : t.anchor === 'right' ? 'Kanan' : 'Kiri'} • {t.scale}%{t.groupByNumber ? ' • Grup per nomor' : ''}
+                                                                {t.rules?.length > 1
+                                                                    ? t.rules.map(r => `${r.namePattern}${r.placement === 'cover' ? ' (tutup)' : ' (atas)'}`).join(' + ')
+                                                                    : `Nama: ${t.namePattern}${t.titlePattern ? ` • Jabatan: ${t.titlePattern}` : ''} • ${t.placement === 'cover' ? 'Menimpa nama' : 'Di atas nama'} • ${t.anchor === 'center' ? 'Tengah' : t.anchor === 'right' ? 'Kanan' : 'Kiri'} • ${t.scale}%`}{t.groupByNumber ? ' • Grup per nomor' : ''}
                                                             </p>
                                                         </div>
                                                         {activeTmplId === t.id && (
@@ -1325,14 +1471,26 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                     : (isDarkMode ? 'border-white/15 text-white/70 hover:bg-white/10' : 'border-slate-300 text-slate-500 hover:bg-slate-100')}`}
                                             >
                                                 {tmplBusy ? <Loader2 size={12} className="animate-spin" /> : <PenTool size={12} />}
-                                                {tmplBusy ? 'Memuat...' : 'Pakai ttd.png bawaan'}
+                                                {tmplBusy ? 'Memuat...' : 'Pakai ttd.png (NR)'}
+                                            </button>
+                                            <button
+                                                onClick={loadDMTemplate}
+                                                disabled={tmplBusy}
+                                                className={`inline-flex items-center gap-1 px-3 py-2 rounded-lg text-[11px] font-bold border transition-all ${tmplBusy
+                                                    ? 'opacity-50 cursor-not-allowed'
+                                                    : (isDarkMode ? 'border-white/15 text-white/70 hover:bg-white/10' : 'border-slate-300 text-slate-500 hover:bg-slate-100')}`}
+                                            >
+                                                {tmplBusy ? <Loader2 size={12} className="animate-spin" /> : <Users size={12} />}
+                                                {tmplBusy ? 'Memuat...' : 'Pakai Template DM (2 ttd)'}
                                             </button>
                                         </div>
                                     </div>
 
                                     {activeTmpl && (
                                         <p className={`text-[11px] rounded-xl border p-3 ${isDarkMode ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300' : 'bg-emerald-50 border-emerald-200 text-emerald-700'}`}>
-                                            Template aktif: <b>{activeTmpl.name}</b> — semua blok "{activeTmpl.namePattern}"{activeTmpl.titlePattern ? ` + "${activeTmpl.titlePattern}"` : ''} akan ditandatangani otomatis, {activeTmpl.placement === 'cover' ? 'ttd menimpa nama & jabatan' : 'ttd di atas nama'}{activeTmpl.groupByNumber ? `, hanya di halaman terakhir tiap nomor dokumen (${activeTmpl.numberPatternAuto ? 'pola dideteksi otomatis' : `pola: ${activeTmpl.numberPattern}`})` : ''}.
+                                            Template aktif: <b>{activeTmpl.name}</b> — {activeTmpl.rules?.length > 1
+                                                ? activeTmpl.rules.map(r => `"${r.namePattern}" ${r.placement === 'cover' ? 'ditutup ttd' : 'ttd di atas'}`).join(' + ')
+                                                : `semua blok "${activeTmpl.namePattern}"${activeTmpl.titlePattern ? ` + "${activeTmpl.titlePattern}"` : ''} ${activeTmpl.placement === 'cover' ? 'ditutup ttd (menimpa nama & jabatan)' : 'ttd di atas nama'}`}{activeTmpl.groupByNumber ? `, hanya di halaman terakhir tiap nomor dokumen (${activeTmpl.numberPatternAuto ? 'pola dideteksi otomatis' : `pola: ${activeTmpl.numberPattern}`})` : ''}.
                                         </p>
                                     )}
                                     <button
@@ -1423,29 +1581,46 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                 {preview.data.pages.length} halaman akan ditandatangani — kotak merah = area ttd. Gulir untuk melihat semua.
                                             </p>
                                             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                                                {(preview.data.pages || []).map((b, i) => (
-                                                    <div key={`${b.page}-${i}`} className={`rounded-xl border p-2 transition-shadow hover:shadow-md ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'}`}>
+                                                {Object.entries(
+                                                    (preview.data.pages || []).reduce((acc, b) => {
+                                                        if (!acc[b.page]) acc[b.page] = [];
+                                                        acc[b.page].push(b);
+                                                        return acc;
+                                                    }, {})
+                                                ).map(([pg, blocks]) => (
+                                                    <div key={pg} className={`rounded-xl border p-2 transition-shadow hover:shadow-md ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'}`}>
                                                         <div className="relative">
                                                             <GalleryThumb
                                                                 file={files[0]}
-                                                                page={b.page}
-                                                                sigRect={b.sig_rect}
+                                                                page={Number(pg)}
+                                                                sigRects={(blocks || []).map(b => ({
+                                                                    x0: b.sig_rect?.x0,
+                                                                    y0: b.sig_rect?.y0,
+                                                                    x1: b.sig_rect?.x1,
+                                                                    y1: b.sig_rect?.y1,
+                                                                    label: b.rule_label || (b.placement === 'cover' ? 'TTD' : 'TTD 2'),
+                                                                    color: b.placement === 'cover' ? '#ef4444' : '#3b82f6',
+                                                                }))}
                                                                 isDarkMode={isDarkMode}
                                                                 width={200}
                                                             />
                                                             <span className={`absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded text-[9px] font-black ${isDarkMode ? 'bg-slate-900/80 text-white' : 'bg-white/90 text-slate-700'}`}>
-                                                                Hal {b.page}
+                                                                Hal {pg}
                                                             </span>
-                                                            {b.group_last && (
+                                                            {(blocks || []).some(b => b.group_last) && (
                                                                 <span className={`absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded text-[9px] font-black ${isDarkMode ? 'bg-emerald-500/90 text-white' : 'bg-emerald-500 text-white'}`}>
                                                                     TERAKHIR
                                                                 </span>
                                                             )}
                                                         </div>
-                                                        <p className={`text-[10px] font-bold truncate mt-1.5 ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{b.name}</p>
-                                                        <p className={`text-[9px] truncate ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>
-                                                            {b.title || '—'}{b.doc_number ? ` • ${b.doc_number}` : ''}
-                                                        </p>
+                                                        <div className="mt-1.5 space-y-0.5">
+                                                            {(blocks || []).map((b, i) => (
+                                                                <p key={i} className={`text-[10px] font-bold truncate ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>
+                                                                    <span className="inline-block w-2 h-2 rounded-full mr-1" style={{ background: b.placement === 'cover' ? '#ef4444' : '#3b82f6' }} />
+                                                                    {b.name}{b.doc_number ? ` • ${b.doc_number}` : ''}
+                                                                </p>
+                                                            ))}
+                                                        </div>
                                                     </div>
                                                 ))}
                                             </div>

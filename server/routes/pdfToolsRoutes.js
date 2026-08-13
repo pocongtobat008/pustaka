@@ -144,6 +144,28 @@ router.get('/pdf-tools/signatures/default', async (req, res) => {
     }
 });
 
+// GET /api/pdf-tools/signatures/agnes — tanda tangan kedua (agnes.png) utk template DM
+router.get('/pdf-tools/signatures/agnes', async (req, res) => {
+    try {
+        const upstream = await fetch(`${PDF_TOOLS_BASE}/api/signatures/agnes`, { signal: AbortSignal.timeout(10000) });
+        if (!upstream.ok) {
+            let msg = 'Tanda tangan agnes.png tidak tersedia.';
+            try { const j = await upstream.json(); if (j?.error) msg = j.error; } catch { /* ignore */ }
+            const status = (upstream.status >= 400 && upstream.status < 500) ? upstream.status : 502;
+            return res.status(status).json({ error: msg });
+        }
+        const buf = Buffer.from(await upstream.arrayBuffer());
+        res.setHeader('Content-Type', upstream.headers.get('content-type') || 'image/png');
+        ['X-Template-Name', 'X-Name-Pattern', 'X-Title-Pattern'].forEach(h => {
+            const v = upstream.headers.get(h);
+            if (v) res.setHeader(h, v);
+        });
+        res.send(buf);
+    } catch (e) {
+        res.status(502).json({ error: `Gagal mengambil agnes.png: ${e.message}` });
+    }
+});
+
 // POST /api/pdf-tools/history — simpan hasil (file + metadata) ke riwayat
 // NOTE: diletakkan SEBELUM POST /pdf-tools/:tool agar 'history' tidak tertangkap sebagai nama tool.
 router.post('/pdf-tools/history', uploadAny, async (req, res) => {
@@ -234,11 +256,12 @@ router.post('/pdf-tools/:tool', uploadAny, async (req, res) => {
             if (!f) return res.status(400).json({ error: 'File wajib diunggah.' });
             fd.append('file', new Blob([f.buffer], { type: f.mimetype || 'application/pdf' }), f.originalname);
         }
-        // sign / sign-auto / sign-preview: PDF + gambar tanda tangan (dua file berbeda)
+        // sign / sign-auto / sign-preview: PDF + gambar tanda tangan (file 'signature'
+        // untuk single-rule, atau sig_0..sig_N untuk multi-rule)
         if (tool === 'sign' || tool === 'sign-auto' || tool === 'sign-preview') {
-            const sig = files.find(x => x.fieldname === 'signature');
-            if (!sig) return res.status(400).json({ error: 'Gambar tanda tangan wajib diunggah.' });
-            fd.append('signature', new Blob([sig.buffer], { type: sig.mimetype || 'image/png' }), sig.originalname);
+            const sigFiles = files.filter(x => x.fieldname === 'signature' || /^sig_\d+$/.test(x.fieldname));
+            if (!sigFiles.length) return res.status(400).json({ error: 'Gambar tanda tangan wajib diunggah.' });
+            sigFiles.forEach(s => fd.append(s.fieldname, new Blob([s.buffer], { type: s.mimetype || 'image/png' }), s.originalname));
         }
         // Form fields (quality, language, password, mode, pages)
         Object.entries(req.body || {}).forEach(([k, v]) => { if (v !== undefined && v !== null) fd.append(k, String(v)); });
