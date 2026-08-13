@@ -248,7 +248,22 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
     // Saat PDF diunggah, tanda tangan otomatis dibubuhkan di atas setiap blok
     // yang cocok di seluruh halaman — tanpa pilih halaman/posisi manual.
     const SIG_TMPL_KEY = 'pustaka_pdf_sign_templates';
-    const [sigMode, setSigMode] = useState('manual'); // 'manual' | 'auto'
+    // Mode tanda tangan: 'manual' (posisi tetap) | 'auto' (template, deteksi nama).
+    // Default AUTO bila sudah ada template tersimpan — agar ttd otomatis ditempatkan
+    // di posisi nama, bukan dicap seragam di posisi tetap.
+    const [sigMode, setSigMode] = useState(() => {
+        try {
+            const saved = localStorage.getItem('pustaka_pdf_sign_mode');
+            if (saved === 'manual' || saved === 'auto') return saved;
+            const raw = localStorage.getItem(SIG_TMPL_KEY);
+            const arr = raw ? JSON.parse(raw) : [];
+            return Array.isArray(arr) && arr.length ? 'auto' : 'manual';
+        } catch { return 'manual'; }
+    });
+    const switchSigMode = (v) => {
+        setSigMode(v);
+        try { localStorage.setItem('pustaka_pdf_sign_mode', v); } catch { /* ignore */ }
+    };
     const [templates, setTemplates] = useState(() => {
         try {
             const raw = localStorage.getItem(SIG_TMPL_KEY);
@@ -896,7 +911,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                     {[{ v: 'manual', l: 'Manual' }, { v: 'auto', l: 'Template Otomatis' }].map(o => (
                                         <button
                                             key={o.v}
-                                            onClick={() => setSigMode(o.v)}
+                                            onClick={() => switchSigMode(o.v)}
                                             className={`px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-colors ${sigMode === o.v
                                                 ? (isDarkMode ? 'bg-sky-500/20 border-sky-500/50 text-sky-300' : 'bg-sky-50 border-sky-300 text-sky-700')
                                                 : (isDarkMode ? 'border-white/10 text-white/60 hover:bg-white/10' : 'border-slate-200 text-slate-500 hover:bg-slate-50')}`}
@@ -908,6 +923,14 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
 
                                 {sigMode === 'manual' && (
                                 <>
+                                {templates.length > 0 && (
+                                    <div className={`flex items-start gap-2 p-3 rounded-xl border text-[11px] ${isDarkMode ? 'bg-amber-500/10 border-amber-500/30 text-amber-200' : 'bg-amber-50 border-amber-200 text-amber-700'}`}>
+                                        <AlertCircle size={13} className="mt-0.5 flex-shrink-0" />
+                                        <span>
+                                            Ada <b>{templates.length} template</b> (mis. {templates[0].name}). Mode ini menempatkan ttd di <b>posisi tetap</b> untuk semua halaman terpilih — gunakan <b>Template Otomatis</b> agar ttd ditempatkan otomatis di posisi nama & hanya di halaman yang ada namanya.
+                                        </span>
+                                    </div>
+                                )}
                                 {/* ── Daftar tanda tangan (list sign) ── */}
                                 <div>
                                     <p className={`text-[10px] font-black uppercase tracking-widest mb-2 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
