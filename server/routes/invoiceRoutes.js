@@ -1250,17 +1250,47 @@ router.put('/:id', async (req, res) => {
     }
 });
 
+// ─── Hapus Proforma + seluruh invoice di dalamnya (KHUSUS admin/superadmin) ─────
+router.delete('/proforma/:id', async (req, res) => {
+    try {
+        if (!isSuper(req.authUser)) {
+            return res.status(403).json({ error: 'Hanya admin yang dapat menghapus proforma' });
+        }
+        const { id } = req.params;
+        const proforma = await knex('proforma_requests').where('id', id).first();
+        if (!proforma) return res.status(404).json({ error: 'Proforma tidak ditemukan' });
+
+        const invIds = Array.isArray(proforma.invoice_ids) ? proforma.invoice_ids : [];
+        // Hapus item + invoice + lepas relasi pengganti
+        for (const invId of invIds) {
+            const inv = await knex('proforma_invoices').where('id', invId).first();
+            if (inv?.rejected_from_id) {
+                await knex('proforma_invoices').where('id', inv.rejected_from_id).update({ replacement_id: null });
+            }
+            await knex('proforma_invoice_items').where('invoice_id', invId).del();
+            await knex('proforma_invoices').where('id', invId).del();
+        }
+        await knex('proforma_requests').where('id', id).del();
+
+        console.log(`[invoice] Proforma #${id} + ${invIds.length} invoice dihapus oleh ${getUsername(req)}`);
+        res.json({ ok: true, deletedInvoices: invIds.length });
+    } catch (err) {
+        res.status(500).json({ error: 'Gagal hapus proforma', details: [err.message] });
+    }
+});
+
 router.delete('/:id', async (req, res) => {
     try {
-        const perms = await getUserInvoicePerms(req.authUser);
-        if (!perms.can_delete) return res.status(403).json({ error: 'Anda tidak memiliki akses hapus invoice', details: [] });
+        // Hapus permanen invoice KHUSUS admin/superadmin
+        if (!isSuper(req.authUser)) {
+            return res.status(403).json({ error: 'Hanya admin yang dapat menghapus invoice' });
+        }
         const { id } = req.params;
         const inv = await knex('proforma_invoices').where('id', id).first();
         if (!inv) return res.status(404).json({ error: 'Invoice tidak ditemukan' });
-        if (inv.status !== 'submitted') return res.status(400).json({ error: 'Hanya invoice status submitted yang bisa dihapus', details: [] });
         const used = await knex('proforma_requests')
             .where('status', 'pending')
-            .whereRaw(`invoice_ids::text LIKE '%"${id}"%'`)
+            .whereRaw('invoice_ids::text LIKE ?', [`%"${id}"%`])
             .first();
         if (used) return res.status(400).json({ error: 'Invoice sedang menunggu approval proforma', details: [] });
         // Jika yang dihapus adalah invoice pengganti hasil reject, catat invoice asalnya untuk reset relasi + notifikasi
@@ -1270,6 +1300,22 @@ router.delete('/:id', async (req, res) => {
         }
         await knex('proforma_invoice_items').where('invoice_id', id).del();
         await knex('proforma_invoices').where('id', id).del();
+        // Bersihkan referensi invoice ini dari proforma (invoice_ids JSON) — hindari data menggantung
+        try {
+            const linkedReqs = await knex('proforma_requests')
+                .whereRaw('invoice_ids::text LIKE ?', [`%"${id}"%`]);
+            for (const r of linkedReqs) {
+                const ids = (Array.isArray(r.invoice_ids) ? r.invoice_ids : [])
+                    .filter(i => Number(i) !== Number(id));
+                if (ids.length === 0) {
+                    await knex('proforma_requests').where('id', r.id).del();
+                } else {
+                    await knex('proforma_requests').where('id', r.id).update({ invoice_ids: JSON.stringify(ids) });
+                }
+            }
+        } catch (cleanupErr) {
+            console.error('[invoice] Gagal bersihkan referensi proforma:', cleanupErr.message);
+        }
         // Reset relasi di invoice asal + kirim notifikasi/email ke pembuatnya
         if (original) {
             await knex('proforma_invoices').where('id', original.id).update({ replacement_id: null, updated_at: new Date() });

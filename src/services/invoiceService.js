@@ -40,6 +40,11 @@ export const invoiceService = {
         return apiClient.fetchJson(`${API_URL}/invoices/${id}`, { method: 'DELETE' });
     },
 
+    // Hapus proforma beserta seluruh invoice di dalamnya (hanya admin)
+    async deleteProforma(id) {
+        return apiClient.fetchJson(`${API_URL}/invoices/proforma/${id}`, { method: 'DELETE' });
+    },
+
     async cancel(id) {
         const response = await fetch(`${API_URL}/invoices/${id}/cancel`, {
             method: 'POST',

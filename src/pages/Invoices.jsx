@@ -380,6 +380,9 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
     const [barang, setBarang] = useState([]);
     const [rules, setRules] = useState([]);
     const [perms, setPerms] = useState(DEFAULT_PERMS());
+    const isAdmin = ['admin', 'superadmin'].includes(String(currentUser?.role || '').toLowerCase());
+    const [deleteTarget, setDeleteTarget] = useState(null); // { type: 'invoice'|'proforma', item }
+    const [deleting, setDeleting] = useState(false);
     const [masterUsers, setMasterUsers] = useState([]);
     const [masterRoles, setMasterRoles] = useState([]);
     const [masterDivisions, setMasterDivisions] = useState([]);
@@ -750,6 +753,30 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
 
     const handleDeleteReplacement = (inv) => {
         setDeleteReplTarget(inv);
+    };
+
+    // ── Hapus data (khusus admin) — invoice & proforma ──
+    const openDeleteInvoice = (inv) => setDeleteTarget({ type: 'invoice', item: inv });
+    const openDeleteProforma = (p) => setDeleteTarget({ type: 'proforma', item: p });
+
+    const confirmDelete = async () => {
+        if (!deleteTarget || deleting) return;
+        setDeleting(true);
+        try {
+            if (deleteTarget.type === 'invoice') {
+                await invoiceService.delete(deleteTarget.item.id);
+                toast?.success?.('Invoice dihapus');
+            } else {
+                await invoiceService.deleteProforma(deleteTarget.item.id);
+                toast?.success?.('Proforma beserta invoice-nya dihapus');
+            }
+            setDeleteTarget(null);
+            loadAll();
+        } catch (e) {
+            toast?.error?.(e.message);
+        } finally {
+            setDeleting(false);
+        }
     };
 
     const confirmDeleteReplacement = async () => {
@@ -1368,6 +1395,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
 
     // ESC menutup modal paling atas (konsisten dengan komponen Modal bersama)
     useModalKeydown(() => {
+        if (deleteTarget) { setDeleteTarget(null); return; }
         if (deleteReplTarget) { setDeleteReplTarget(null); return; }
         if (cancelTarget) { setCancelTarget(null); return; }
         if (showAudit) { setShowAudit(false); return; }
@@ -1382,7 +1410,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
     });
 
     // Kunci scroll body saat salah satu modal inline terbuka (konsisten dengan Modal bersama)
-    useModalScrollLock(!!(deleteReplTarget || cancelTarget || showAudit || showDetail || showTaxRequest || showTax || showSettle || showProforma || showNewInvoice || recipOpen || attachTarget));
+    useModalScrollLock(!!(deleteTarget || deleteReplTarget || cancelTarget || showAudit || showDetail || showTaxRequest || showTax || showSettle || showProforma || showNewInvoice || recipOpen || attachTarget));
 
     const openAudit = (target) => {
         setAuditTarget(target);
@@ -2387,6 +2415,11 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     <button onClick={() => openAudit(p.invoices?.[0] || { id: p.id })} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-500/20 font-semibold transition-colors" title="Lihat Audit Trail">
                                         <History size={15} /> Audit
                                     </button>
+                                    {isAdmin && (
+                                        <button onClick={() => openDeleteProforma(p)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20 font-semibold transition-colors" title="Hapus Proforma beserta invoice-nya (hanya admin)">
+                                            <Trash2 size={15} /> Hapus
+                                        </button>
+                                    )}
                                     {/* Total amount — terpisah, tidak wrap */}
                                     <div className="text-right pl-3 sm:pl-4 border-l-2 border-white/60 dark:border-white/10 max-w-full">
                                         <div className="text-[10px] text-slate-400 uppercase tracking-wider whitespace-nowrap">Total Proforma</div>
@@ -2521,6 +2554,11 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     <button onClick={() => openAudit(p.invoices?.[0] || { id: p.id })} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-500/20 font-semibold transition-colors" title="Lihat Audit Trail">
                                         <History size={15} /> Audit
                                     </button>
+                                    {isAdmin && (
+                                        <button onClick={() => openDeleteProforma(p)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20 font-semibold transition-colors" title="Hapus Proforma beserta invoice-nya (hanya admin)">
+                                            <Trash2 size={15} /> Hapus
+                                        </button>
+                                    )}
                                     {/* Total amount — terpisah, tidak wrap */}
                                     <div className="text-right pl-3 sm:pl-4 border-l-2 border-white/60 dark:border-white/10 max-w-full">
                                         <div className="text-[10px] text-slate-400 uppercase tracking-wider whitespace-nowrap">Total Proforma</div>
@@ -3814,6 +3852,77 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
             )}
 
             {/* ── Cancel Confirmation Modal ── */}
+            {deleteTarget && createPortal(
+                <AnimatePresence>
+                    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4" onClick={() => setDeleteTarget(null)}>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+                        />
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 10 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 10 }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                            className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-md p-6 relative z-10 space-y-4 border border-white/60 dark:border-white/10"
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="w-12 h-12 rounded-2xl bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 flex items-center justify-center shrink-0 ring-4 ring-red-50 dark:ring-red-500/5">
+                                    <Trash2 size={24} />
+                                </div>
+                                <div>
+                                    <h3 className="text-base font-black text-slate-800 dark:text-white leading-tight">
+                                        {deleteTarget.type === 'proforma' ? 'Hapus Proforma?' : 'Hapus Invoice?'}
+                                    </h3>
+                                    <p className="text-xs text-slate-400 mt-0.5">
+                                        {deleteTarget.type === 'proforma'
+                                            ? `Proforma ${deleteTarget.item.proforma_no || '#' + deleteTarget.item.id} • ${(deleteTarget.item.invoices || []).length} invoice`
+                                            : `Invoice #${deleteTarget.item.id} • ${deleteTarget.item.dealer_name || '-'}`}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 text-xs text-red-600 dark:text-red-300 space-y-2">
+                                <p className="font-bold">Tindakan ini TIDAK dapat dibatalkan!</p>
+                                <ul className="list-disc list-inside text-[11px] text-red-500 dark:text-red-400 space-y-1 font-medium">
+                                    {deleteTarget.type === 'proforma' ? (
+                                        <>
+                                            <li>Seluruh invoice di dalam proforma ini ikut terhapus permanen.</li>
+                                            <li>Data item, lampiran, dan relasi pengganti ikut dihapus.</li>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <li>Invoice beserta seluruh item-nya dihapus permanen dari database.</li>
+                                            <li>Referensi di proforma (jika ada) otomatis dibersihkan.</li>
+                                        </>
+                                    )}
+                                </ul>
+                            </div>
+
+                            <div className="flex items-center justify-end gap-2.5 pt-1">
+                                <button
+                                    onClick={() => setDeleteTarget(null)}
+                                    className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                                >
+                                    Batal
+                                </button>
+                                <button
+                                    onClick={confirmDelete}
+                                    disabled={deleting}
+                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white text-xs font-bold shadow-lg shadow-red-600/25 transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
+                                >
+                                    <Trash2 size={14} /> {deleting ? 'Menghapus...' : (deleteTarget.type === 'proforma' ? 'Ya, Hapus Proforma' : 'Ya, Hapus Invoice')}
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                </AnimatePresence>,
+                document.body
+            )}
+
             {cancelTarget && createPortal(
                 <AnimatePresence>
                     <div className="fixed inset-0 z-[120] flex items-center justify-center p-4" onClick={() => setCancelTarget(null)}>
@@ -4176,6 +4285,13 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         <>
                                             <div className="my-1.5 border-t border-white/60 dark:border-white/10" />
                                             <DangerBtn disabled={rowBusy} loading={false} icon={<XCircle size={15} />} label="Batalkan Invoice" onClick={() => { setActionMenu(null); handleCancelInvoice(inv); }} />
+                                        </>
+                                    )}
+
+                                    {isAdmin && actionMenu.source !== 'dashboard' && (
+                                        <>
+                                            <div className="my-1.5 border-t border-white/60 dark:border-white/10" />
+                                            <DangerBtn disabled={rowBusy} loading={false} icon={<Trash2 size={15} />} label="Hapus Invoice" onClick={() => { setActionMenu(null); openDeleteInvoice(inv); }} />
                                         </>
                                     )}
                                 </div>
