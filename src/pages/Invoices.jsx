@@ -387,6 +387,8 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
     const [trashLoading, setTrashLoading] = useState(false);
     const [permTarget, setPermTarget] = useState(null); // { type, item } konfirmasi hapus permanen
     const [permDeleting, setPermDeleting] = useState(false);
+    const [trashFilter, setTrashFilter] = useState('all'); // 'all' | 'invoice' | 'proforma'
+    const [trashSearch, setTrashSearch] = useState('');
     const [masterUsers, setMasterUsers] = useState([]);
     const [masterRoles, setMasterRoles] = useState([]);
     const [masterDivisions, setMasterDivisions] = useState([]);
@@ -2726,33 +2728,71 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 <div className="text-[11px] text-slate-400">Data yang dihapus bisa dipulihkan. Penghapusan permanen tidak bisa dibatalkan.</div>
                             </div>
                         </div>
-                        <button onClick={loadTrash} className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-indigo-600 text-sm font-semibold" title="Muat ulang Sampah">
-                            <RefreshCw size={15} className={trashLoading ? 'animate-spin' : ''} /> Muat Ulang
-                        </button>
+                        <div className="flex flex-wrap items-center gap-2">
+                            <div className="relative">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={15} />
+                                <input
+                                    type="text"
+                                    value={trashSearch}
+                                    onChange={e => setTrashSearch(e.target.value)}
+                                    placeholder="Cari no invoice / PO / dealer..."
+                                    className="w-56 pl-9 pr-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                />
+                            </div>
+                            <select value={trashFilter} onChange={e => setTrashFilter(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="all">Semua</option>
+                                <option value="invoice">Invoice</option>
+                                <option value="proforma">Proforma</option>
+                            </select>
+                            <button onClick={loadTrash} className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-indigo-600 text-sm font-semibold" title="Muat ulang Sampah">
+                                <RefreshCw size={15} className={trashLoading ? 'animate-spin' : ''} /> Muat Ulang
+                            </button>
+                        </div>
                     </div>
 
-                    {trashLoading && (
-                        <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl p-10 text-center text-slate-400 border border-white/60 dark:border-white/10">
-                            Memuat Sampah...
-                        </div>
-                    )}
+                    {(() => {
+                        // Filter Sampah berdasarkan tipe + pencarian
+                        const q = trashSearch.trim().toLowerCase();
+                        const fInv = (trashData?.invoices || []).filter(inv =>
+                            !q || String(inv.id).includes(q) ||
+                            String(inv.no_invoice || inv.no_po || '').toLowerCase().includes(q) ||
+                            String(inv.dealer_name || '').toLowerCase().includes(q));
+                        const fProf = (trashData?.proformas || []).filter(p =>
+                            !q || String(p.id).includes(q) ||
+                            String(p.proforma_no || '').toLowerCase().includes(q));
+                        const showInv = trashFilter !== 'proforma';
+                        const showProf = trashFilter !== 'invoice';
+                        const filteredCount = (showInv ? fInv.length : 0) + (showProf ? fProf.length : 0);
 
-                    {!trashLoading && (!trashData || (trashData.invoices?.length === 0 && trashData.proformas?.length === 0)) && (
-                        <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl p-10 text-center text-slate-400 border border-white/60 dark:border-white/10">
-                            <Trash2 size={32} className="mx-auto mb-2 opacity-40" />
-                            Sampah kosong
-                        </div>
-                    )}
+                        if (trashLoading) return (
+                            <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl p-10 text-center text-slate-400 border border-white/60 dark:border-white/10">
+                                Memuat Sampah...
+                            </div>
+                        );
+                        if (!trashData || (trashData.invoices?.length === 0 && trashData.proformas?.length === 0)) return (
+                            <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl p-10 text-center text-slate-400 border border-white/60 dark:border-white/10">
+                                <Trash2 size={32} className="mx-auto mb-2 opacity-40" />
+                                Sampah kosong
+                            </div>
+                        );
+                        if (filteredCount === 0) return (
+                            <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl p-10 text-center text-slate-400 border border-white/60 dark:border-white/10">
+                                <Search size={28} className="mx-auto mb-2 opacity-40" />
+                                Tidak ada hasil untuk "{trashSearch}"
+                            </div>
+                        );
 
+                        return (
+                            <>
                     {/* Invoice terhapus */}
-                    {trashData?.invoices?.length > 0 && (
+                    {showInv && fInv.length > 0 && (
                         <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl shadow-sm border border-white/60 dark:border-white/10 overflow-hidden">
                             <div className="p-4 border-b border-white/60 dark:border-white/10 flex items-center gap-2">
                                 <Receipt size={16} className="text-slate-400" />
-                                <span className="font-bold text-slate-800 dark:text-white">Invoice Terhapus ({trashData.invoices.length})</span>
+                                <span className="font-bold text-slate-800 dark:text-white">Invoice Terhapus ({fInv.length})</span>
                             </div>
                             <div className="divide-y divide-white/60 dark:divide-white/10">
-                                {trashData.invoices.map(inv => (
+                                {fInv.map(inv => (
                                     <div key={inv.id} className="flex flex-wrap items-center gap-3 p-4">
                                         <div className="min-w-0 flex-1">
                                             <div className="font-bold text-slate-800 dark:text-white truncate">#{inv.id} • {inv.dealer_name || '-'}</div>
@@ -2774,14 +2814,14 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     )}
 
                     {/* Proforma terhapus */}
-                    {trashData?.proformas?.length > 0 && (
+                    {showProf && fProf.length > 0 && (
                         <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl shadow-sm border border-white/60 dark:border-white/10 overflow-hidden">
                             <div className="p-4 border-b border-white/60 dark:border-white/10 flex items-center gap-2">
                                 <FileSignature size={16} className="text-slate-400" />
-                                <span className="font-bold text-slate-800 dark:text-white">Proforma Terhapus ({trashData.proformas.length})</span>
+                                <span className="font-bold text-slate-800 dark:text-white">Proforma Terhapus ({fProf.length})</span>
                             </div>
                             <div className="divide-y divide-white/60 dark:divide-white/10">
-                                {trashData.proformas.map(p => (
+                                {fProf.map(p => (
                                     <div key={p.id} className="flex flex-wrap items-center gap-3 p-4">
                                         <div className="min-w-0 flex-1">
                                             <div className="font-bold text-slate-800 dark:text-white truncate">Proforma #{p.id} • {p.proforma_no || 'Tanpa No'}</div>
@@ -2799,6 +2839,9 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             </div>
                         </div>
                     )}
+                            </>
+                        );
+                    })()}
                 </div>
             )}
 
