@@ -235,7 +235,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
         sigId: '', anchor: 'left', offsetY: 10, scale: 18, showDate: false,
         placement: 'above', // 'above' = di atas nama | 'cover' = menimpa nama & jabatan
         groupByNumber: true, // 1 nomor dokumen (bisa multi-halaman) = 1 ttd di halaman terakhir
-        numberPattern: '\\d{2,4}/[A-Z0-9-]+/NR/[A-Z]{2,4}/\\d{4}',
+        numberPattern: '', // kosong = deteksi otomatis dari isi dokumen
     });
 
     const persistTemplates = (list) => {
@@ -260,6 +260,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
             placement: tmplForm.placement === 'cover' ? 'cover' : 'above',
             groupByNumber: !!tmplForm.groupByNumber,
             numberPattern: (tmplForm.groupByNumber ? tmplForm.numberPattern : '').trim(),
+            numberPatternAuto: !tmplForm.groupByNumber || !(tmplForm.numberPattern || '').trim(),
         };
         const list = [...templates, t];
         setTemplates(list); persistTemplates(list);
@@ -332,9 +333,11 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                 namePattern: res.headers.get('x-name-pattern') || 'Kaoru Nomura',
                 titlePattern: res.headers.get('x-title-pattern') || 'General Manager',
                 sig: { name: 'ttd.png', dataUrl },
-                anchor: 'left', offsetY: 10, scale: 18, showDate: false, placement: 'above',
+                anchor: 'left', offsetY: 10, scale: 18, showDate: false,
+                placement: 'cover', // template NR: ttd menimpa nama & jabatan
                 groupByNumber: true,
-                numberPattern: '\\d{2,4}/[A-Z0-9-]+/NR/[A-Z]{2,4}/\\d{4}',
+                numberPattern: '', // deteksi otomatis dari dokumen
+                numberPatternAuto: true,
             };
             const list = [...templates, t];
             setTemplates(list); persistTemplates(list);
@@ -343,6 +346,26 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
             setError(e.message || 'Gagal memuat template bawaan.');
         } finally {
             setTmplBusy(false);
+        }
+    };
+    // ── Deteksi otomatis pola nomor dokumen ──
+    const [detectBusy, setDetectBusy] = useState(false);
+    const [detectInfo, setDetectInfo] = useState('');
+    const detectPattern = async () => {
+        if (!files.length) { setError('Unggah file PDF dulu untuk deteksi pola.'); return; }
+        setDetectBusy(true); setError(''); setDetectInfo('');
+        try {
+            const fd = new FormData();
+            fd.append('file', files[0]);
+            const res = await fetch(`${API_URL}/pdf-tools/sign-detect-pattern`, { method: 'POST', credentials: 'include', body: fd });
+            const j = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(j.error || 'Pola nomor dokumen tidak terdeteksi.');
+            setTmplForm(f => ({ ...f, numberPattern: j.pattern }));
+            setDetectInfo(`Pola terdeteksi: ${j.pattern} (contoh: ${j.sample}) — ${j.stats?.groups ?? '?'} nota, ${j.stats?.groups_multi ?? 0} multi-halaman`);
+        } catch (e) {
+            setError(e.message || 'Gagal mendeteksi pola.');
+        } finally {
+            setDetectBusy(false);
         }
     };
     // ── Berbagi lintas departemen ──
@@ -1160,20 +1183,37 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                 </span>
                                             </label>
                                             {tmplForm.groupByNumber && (
-                                                <label className="block">
-                                                    <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
-                                                        Pola nomor dokumen (regex)
+                                                <div className="space-y-1.5">
+                                                    <span className={`text-[10px] font-bold uppercase tracking-wider block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                                        Pola nomor dokumen (regex) — opsional
                                                     </span>
-                                                    <input
-                                                        value={tmplForm.numberPattern}
-                                                        onChange={e => setTmplForm(f => ({ ...f, numberPattern: e.target.value }))}
-                                                        placeholder={'\\d{2,4}/[A-Z0-9-]+/NR/[A-Z]{2,4}/\\d{4}'}
-                                                        className={`${inputCls} w-full font-mono`}
-                                                    />
+                                                    <div className="flex gap-2">
+                                                        <input
+                                                            value={tmplForm.numberPattern}
+                                                            onChange={e => setTmplForm(f => ({ ...f, numberPattern: e.target.value }))}
+                                                            placeholder="Kosongkan = deteksi otomatis dari dokumen"
+                                                            className={`${inputCls} flex-1 min-w-0 font-mono`}
+                                                        />
+                                                        <button
+                                                            onClick={detectPattern}
+                                                            disabled={detectBusy || !files.length}
+                                                            className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all flex-shrink-0 ${detectBusy || !files.length
+                                                                ? 'opacity-50 cursor-not-allowed'
+                                                                : (isDarkMode ? 'border-white/15 text-white/70 hover:bg-white/10' : 'border-slate-300 text-slate-600 hover:bg-slate-100')}`}
+                                                        >
+                                                            {detectBusy ? <Loader2 size={11} className="animate-spin" /> : <Sparkles size={11} />}
+                                                            {detectBusy ? 'Mendeteksi...' : 'Deteksi Otomatis'}
+                                                        </button>
+                                                    </div>
+                                                    {detectInfo && (
+                                                        <p className={`text-[10px] ${isDarkMode ? 'text-emerald-300/90' : 'text-emerald-600'}`}>
+                                                            {detectInfo}
+                                                        </p>
+                                                    )}
                                                     <span className={`text-[10px] ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>
-                                                        Contoh: {'\\d{2,4}/[A-Z0-9-]+/NR/[A-Z]{2,4}/\\d{4}'} untuk "0338/YDI/NR/JUN/2026" — biarkan kosong jika pola nomor berbeda.
+                                                        Contoh: {'\\d{2,4}/[A-Z0-9-]+/NR/[A-Z]{2,4}/\\d{4}'} untuk "0338/YDI/NR/JUN/2026". Kosongkan agar pola dideteksi otomatis saat memproses.
                                                     </span>
-                                                </label>
+                                                </div>
                                             )}
                                         </div>
                                         <label className="flex items-center gap-2 cursor-pointer select-none">
@@ -1209,7 +1249,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
 
                                     {activeTmpl && (
                                         <p className={`text-[11px] rounded-xl border p-3 ${isDarkMode ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300' : 'bg-emerald-50 border-emerald-200 text-emerald-700'}`}>
-                                            Template aktif: <b>{activeTmpl.name}</b> — semua blok "{activeTmpl.namePattern}"{activeTmpl.titlePattern ? ` + "${activeTmpl.titlePattern}"` : ''} akan ditandatangani otomatis, {activeTmpl.placement === 'cover' ? 'ttd menimpa nama & jabatan' : 'ttd di atas nama'}{activeTmpl.groupByNumber ? ', hanya di halaman terakhir tiap nomor dokumen' : ''}.
+                                            Template aktif: <b>{activeTmpl.name}</b> — semua blok "{activeTmpl.namePattern}"{activeTmpl.titlePattern ? ` + "${activeTmpl.titlePattern}"` : ''} akan ditandatangani otomatis, {activeTmpl.placement === 'cover' ? 'ttd menimpa nama & jabatan' : 'ttd di atas nama'}{activeTmpl.groupByNumber ? `, hanya di halaman terakhir tiap nomor dokumen (${activeTmpl.numberPatternAuto ? 'pola dideteksi otomatis' : `pola: ${activeTmpl.numberPattern}`})` : ''}.
                                         </p>
                                     )}
                                     <button
@@ -1260,6 +1300,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                         <p className={`text-sm font-extrabold ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>Pratinjau Deteksi Blok Tanda Tangan</p>
                                         <p className={`text-[11px] ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>
                                             Template: <b>{activeTmpl?.name}</b>
+                                            {preview.data.number_pattern_used ? ` • Pola nomor: ${preview.data.number_pattern_used}` : ''}
                                         </p>
                                     </div>
                                     <button

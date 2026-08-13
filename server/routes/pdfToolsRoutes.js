@@ -45,6 +45,7 @@ const TOOL_MAP = {
     sign: 'sign',
     'sign-auto': 'sign-auto',
     'sign-preview': 'sign-preview',
+    'sign-detect-pattern': 'sign-detect-pattern',
 };
 
 // Health check — cek service Flask hidup atau tidak
@@ -252,8 +253,8 @@ router.post('/pdf-tools/:tool', uploadAny, async (req, res) => {
             return res.status(status).json({ error: msg });
         }
 
-        // OCR & sign-preview → JSON; sisanya → file biner
-        if (tool === 'ocr' || tool === 'sign-preview') {
+        // OCR & sign-preview & sign-detect-pattern → JSON; sisanya → file biner
+        if (tool === 'ocr' || tool === 'sign-preview' || tool === 'sign-detect-pattern') {
             const j = await upstream.json();
             return res.json(j);
         }
