@@ -172,15 +172,15 @@ const ToolCard = ({ tool, active, onClick, isDarkMode }) => {
     return (
         <button
             onClick={onClick}
-            className={`group flex items-center gap-3 px-4 py-3.5 rounded-2xl border text-left transition-all ${active
+            className={`group flex items-center gap-3 px-4 h-[68px] rounded-2xl border text-left transition-all w-full ${active
                 ? (isDarkMode ? 'bg-white/10 border-white/20' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-md')
                 : (isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white/50 border-slate-200/70 hover:bg-white hover:shadow-sm')}`}
         >
             <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${tool.gradient} flex items-center justify-center flex-shrink-0 shadow-lg ${tool.shadow}`}>
                 <Icon size={18} className="text-white" />
             </div>
-            <div className="min-w-0">
-                <p className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>{tool.label}</p>
+            <div className="min-w-0 flex-1">
+                <p className={`text-xs font-bold truncate ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>{tool.label}</p>
                 <p className={`text-[9px] truncate mt-0.5 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>{tool.desc}</p>
             </div>
         </button>
