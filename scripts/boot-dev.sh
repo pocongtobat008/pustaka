@@ -22,6 +22,15 @@ done
 # 2) Tunggu PM2 daemon siap
 pm2 ping >/dev/null 2>&1 || { echo "Menunggu PM2 daemon..."; sleep 5; pm2 ping >/dev/null 2>&1 || echo "PERINGATAN: PM2 daemon belum merespons"; }
 
+# 2b) Pastikan Redis terisolasi dev (port 6399) hidup — dipakai ecosystem.dev.config.cjs
+if redis-cli -p 6399 ping 2>/dev/null | grep -q PONG; then
+    echo "Redis dev :6399 sudah hidup — skip"
+else
+    echo "Redis dev :6399 mati — menyalakan..."
+    redis-server --port 6399 --daemonize yes --pidfile /var/run/redis-6399.pid --logfile /var/log/redis-6399.log
+    sleep 2
+fi
+
 # 3) Start per-app hanya yang belum online (idempotent)
 cd /home/project/pustaka-dev
 for app in dev-backend dev-frontend dev-worker; do
