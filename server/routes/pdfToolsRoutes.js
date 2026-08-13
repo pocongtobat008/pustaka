@@ -43,6 +43,7 @@ const TOOL_MAP = {
     merge: 'merge',
     split: 'split',
     sign: 'sign',
+    'sign-auto': 'sign-auto',
 };
 
 // Health check — cek service Flask hidup atau tidak
@@ -208,8 +209,8 @@ router.post('/pdf-tools/:tool', uploadAny, async (req, res) => {
             if (!f) return res.status(400).json({ error: 'File wajib diunggah.' });
             fd.append('file', new Blob([f.buffer], { type: f.mimetype || 'application/pdf' }), f.originalname);
         }
-        // sign: PDF + gambar tanda tangan (dua file berbeda)
-        if (tool === 'sign') {
+        // sign / sign-auto: PDF + gambar tanda tangan (dua file berbeda)
+        if (tool === 'sign' || tool === 'sign-auto') {
             const sig = files.find(x => x.fieldname === 'signature');
             if (!sig) return res.status(400).json({ error: 'Gambar tanda tangan wajib diunggah.' });
             fd.append('signature', new Blob([sig.buffer], { type: sig.mimetype || 'image/png' }), sig.originalname);
@@ -240,6 +241,11 @@ router.post('/pdf-tools/:tool', uploadAny, async (req, res) => {
         if (cd) res.setHeader('Content-Disposition', cd);
         // Header info kompresi (ukuran asli vs hasil)
         ['X-Original-Size', 'X-Compressed-Size'].forEach(h => {
+            const v = upstream.headers.get(h);
+            if (v) res.setHeader(h, v);
+        });
+        // Header info tanda tangan otomatis (jumlah blok & halaman)
+        ['X-Blocks-Found', 'X-Pages-Signed', 'X-Total-Pages'].forEach(h => {
             const v = upstream.headers.get(h);
             if (v) res.setHeader(h, v);
         });

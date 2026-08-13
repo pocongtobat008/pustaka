@@ -143,6 +143,56 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
         reader.readAsDataURL(file);
     };
     const activeSig = signatures.find(s => s.id === activeSigId) || null;
+
+    // ── Template tanda tangan otomatis (localStorage per browser) ──
+    // Template = pola nama (+jabatan) + gambar tanda tangan + pengaturan posisi.
+    // Saat PDF diunggah, tanda tangan otomatis dibubuhkan di atas setiap blok
+    // yang cocok di seluruh halaman — tanpa pilih halaman/posisi manual.
+    const SIG_TMPL_KEY = 'pustaka_pdf_sign_templates';
+    const [sigMode, setSigMode] = useState('manual'); // 'manual' | 'auto'
+    const [templates, setTemplates] = useState(() => {
+        try {
+            const raw = localStorage.getItem(SIG_TMPL_KEY);
+            const arr = raw ? JSON.parse(raw) : [];
+            return Array.isArray(arr) ? arr : [];
+        } catch { return []; }
+    });
+    const [activeTmplId, setActiveTmplId] = useState(null);
+    const [tmplForm, setTmplForm] = useState({
+        name: '', namePattern: 'Kaoru Nomura', titlePattern: 'General Manager',
+        sigId: '', anchor: 'left', offsetY: 10, scale: 18, showDate: false,
+    });
+
+    const persistTemplates = (list) => {
+        try { localStorage.setItem(SIG_TMPL_KEY, JSON.stringify(list)); } catch { /* ignore */ }
+    };
+    const activeTmpl = templates.find(t => t.id === activeTmplId) || null;
+
+    const saveTemplate = () => {
+        const sig = signatures.find(s => s.id === tmplForm.sigId);
+        if (!tmplForm.name.trim()) { setError('Nama template wajib diisi.'); return; }
+        if (!sig) { setError('Pilih tanda tangan untuk template (dari daftar di mode Manual).'); return; }
+        const t = {
+            id: `tmpl-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+            name: tmplForm.name.trim(),
+            namePattern: tmplForm.namePattern.trim() || 'Kaoru Nomura',
+            titlePattern: tmplForm.titlePattern.trim(),
+            sig: { name: sig.name, dataUrl: sig.dataUrl },
+            anchor: tmplForm.anchor,
+            offsetY: Number(tmplForm.offsetY) || 10,
+            scale: Number(tmplForm.scale) || 18,
+            showDate: tmplForm.showDate,
+        };
+        const list = [...templates, t];
+        setTemplates(list); persistTemplates(list);
+        setActiveTmplId(t.id);
+        setTmplForm(f => ({ ...f, name: '' }));
+    };
+    const removeTemplate = (id) => {
+        const list = templates.filter(t => t.id !== id);
+        setTemplates(list); persistTemplates(list);
+        if (activeTmplId === id) setActiveTmplId(list[0]?.id || null);
+    };
     // ── Berbagi lintas departemen ──
     const [departments, setDepartments] = useState([]);
     const [shareTarget, setShareTarget] = useState(null); // baris riwayat yang dibagikan
@@ -320,8 +370,12 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
         if (tool.id === 'merge' && files.length < 2) { setError('Gabung PDF butuh minimal 2 file.'); return; }
         if (tool.id === 'ocr' && !form.language) { setError('Bahasa OCR belum tersedia — muat ulang halaman atau hubungi admin.'); return; }
         if (tool.id === 'sign') {
-            if (!activeSig) { setError('Pilih atau buat tanda tangan dulu.'); return; }
-            if (sigForm.pagesMode !== 'all' && !sigForm.pages.trim()) { setError('Isi nomor atau rentang halaman dulu.'); return; }
+            if (sigMode === 'auto') {
+                if (!activeTmpl) { setError('Pilih atau buat template tanda tangan dulu.'); return; }
+            } else {
+                if (!activeSig) { setError('Pilih atau buat tanda tangan dulu.'); return; }
+                if (sigForm.pagesMode !== 'all' && !sigForm.pages.trim()) { setError('Isi nomor atau rentang halaman dulu.'); return; }
+            }
         }
         setBusy(true); setError(''); setResult(null);
         try {
@@ -329,17 +383,32 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
             if (tool.multiple) files.forEach(f => fd.append('files', f));
             else fd.append('file', files[0]);
             if (tool.id === 'sign') {
-                // PDF (file) + gambar tanda tangan (signature) + pengaturan
-                const sigBlob = await (await fetch(activeSig.dataUrl)).blob();
-                const sigName = `signature_${activeSig.name.replace(/[^a-z0-9]+/gi, '_').slice(0, 40) || 'sign'}.png`;
-                fd.append('signature', sigBlob, sigName);
-                fd.append('pages', sigForm.pagesMode === 'single'
-                    ? String(Math.max(1, Number(sigForm.pages) || 1))
-                    : (sigForm.pagesMode === 'range' ? sigForm.pages.trim() : 'all'));
-                fd.append('position', sigForm.position);
-                fd.append('scale', String(sigForm.scale));
-                fd.append('show_date', sigForm.showDate ? 'true' : 'false');
-                fd.append('date_text', new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }));
+                if (sigMode === 'auto') {
+                    // Template: deteksi otomatis blok nama+jabatan di seluruh halaman
+                    const sig = activeTmpl.sig;
+                    const sigBlob = await (await fetch(sig.dataUrl)).blob();
+                    const sigName = `signature_${sig.name.replace(/[^a-z0-9]+/gi, '_').slice(0, 40) || 'sign'}.png`;
+                    fd.append('signature', sigBlob, sigName);
+                    fd.append('name_pattern', activeTmpl.namePattern);
+                    fd.append('title_pattern', activeTmpl.titlePattern || '');
+                    fd.append('anchor', activeTmpl.anchor);
+                    fd.append('offset_pt', String(activeTmpl.offsetY));
+                    fd.append('scale', String(activeTmpl.scale));
+                    fd.append('show_date', activeTmpl.showDate ? 'true' : 'false');
+                    fd.append('date_text', new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }));
+                } else {
+                    // Manual: PDF (file) + gambar tanda tangan (signature) + pengaturan
+                    const sigBlob = await (await fetch(activeSig.dataUrl)).blob();
+                    const sigName = `signature_${activeSig.name.replace(/[^a-z0-9]+/gi, '_').slice(0, 40) || 'sign'}.png`;
+                    fd.append('signature', sigBlob, sigName);
+                    fd.append('pages', sigForm.pagesMode === 'single'
+                        ? String(Math.max(1, Number(sigForm.pages) || 1))
+                        : (sigForm.pagesMode === 'range' ? sigForm.pages.trim() : 'all'));
+                    fd.append('position', sigForm.position);
+                    fd.append('scale', String(sigForm.scale));
+                    fd.append('show_date', sigForm.showDate ? 'true' : 'false');
+                    fd.append('date_text', new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }));
+                }
             } else {
                 Object.entries(form).forEach(([k, v]) => { if (v && k !== 'autoRotate' && k !== 'perPage') fd.append(k, v); });
                 if (tool.id === 'ocr') {
@@ -616,9 +685,26 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                             </div>
                         )}
 
-                        {/* Opsi Tanda Tangan PDF: daftar tanda tangan, halaman, posisi, ukuran, tanggal */}
+                        {/* Opsi Tanda Tangan PDF: manual / template otomatis */}
                         {tool.id === 'sign' && (
                             <div className="mt-4 space-y-4">
+                                {/* ── Mode tanda tangan ── */}
+                                <div className="flex gap-1.5">
+                                    {[{ v: 'manual', l: 'Manual' }, { v: 'auto', l: 'Template Otomatis' }].map(o => (
+                                        <button
+                                            key={o.v}
+                                            onClick={() => setSigMode(o.v)}
+                                            className={`px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-colors ${sigMode === o.v
+                                                ? (isDarkMode ? 'bg-sky-500/20 border-sky-500/50 text-sky-300' : 'bg-sky-50 border-sky-300 text-sky-700')
+                                                : (isDarkMode ? 'border-white/10 text-white/60 hover:bg-white/10' : 'border-slate-200 text-slate-500 hover:bg-slate-50')}`}
+                                        >
+                                            {o.l}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                {sigMode === 'manual' && (
+                                <>
                                 {/* ── Daftar tanda tangan (list sign) ── */}
                                 <div>
                                     <p className={`text-[10px] font-black uppercase tracking-widest mb-2 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
@@ -754,14 +840,171 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                         Tambahkan tanggal hari ini di bawah tanda tangan
                                     </span>
                                 </label>
+                                </>
+                                )}
+
+                                {sigMode === 'auto' && (
+                                <div className="space-y-4">
+                                    {/* ── Daftar template ── */}
+                                    <div>
+                                        <p className={`text-[10px] font-black uppercase tracking-widest mb-1.5 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                            Template Tanda Tangan ({templates.length})
+                                        </p>
+                                        <p className={`text-[11px] mb-2 ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>
+                                            Saat PDF diunggah, tanda tangan otomatis ditempatkan di atas setiap blok yang cocok (nama + jabatan) di seluruh halaman — tanpa pilih halaman/posisi manual.
+                                        </p>
+                                        {templates.length === 0 ? (
+                                            <p className={`text-[11px] italic rounded-xl border border-dashed p-3 ${isDarkMode ? 'text-white/40 border-white/15' : 'text-slate-400 border-slate-300'}`}>
+                                                Belum ada template. Buat di bawah — contoh: pola nama "Kaoru Nomura" dengan jabatan "General Manager" (seperti di nr3.pdf).
+                                            </p>
+                                        ) : (
+                                            <div className="space-y-2">
+                                                {templates.map(t => (
+                                                    <div
+                                                        key={t.id}
+                                                        onClick={() => setActiveTmplId(t.id)}
+                                                        className={`relative flex items-center gap-3 rounded-xl border p-2.5 cursor-pointer transition-all ${activeTmplId === t.id
+                                                            ? 'ring-2 ring-sky-500 bg-sky-50/60 dark:bg-sky-500/10 border-sky-300 dark:border-sky-500/40'
+                                                            : (isDarkMode ? 'border-white/10 bg-white/5 hover:border-sky-500/40' : 'border-slate-200 bg-white hover:border-sky-300')}`}
+                                                    >
+                                                        <img src={t.sig.dataUrl} alt={t.name} className="w-16 h-9 object-contain rounded border bg-white/60 dark:bg-white/10 flex-shrink-0" />
+                                                        <div className="min-w-0 flex-1">
+                                                            <p className={`text-[12px] font-extrabold truncate ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{t.name}</p>
+                                                            <p className={`text-[10px] truncate ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                                                Nama: {t.namePattern}{t.titlePattern ? ` • Jabatan: ${t.titlePattern}` : ''} • {t.anchor === 'center' ? 'Tengah' : t.anchor === 'right' ? 'Kanan' : 'Kiri'} • {t.scale}%
+                                                            </p>
+                                                        </div>
+                                                        {activeTmplId === t.id && (
+                                                            <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow">
+                                                                <Check size={10} />
+                                                            </span>
+                                                        )}
+                                                        <button
+                                                            onClick={(e) => { e.stopPropagation(); removeTemplate(t.id); }}
+                                                            title="Hapus template"
+                                                            className={`p-1 rounded-md flex-shrink-0 ${isDarkMode ? 'text-rose-300 hover:bg-rose-500/20' : 'text-rose-500 hover:bg-rose-50'}`}
+                                                        >
+                                                            <Trash2 size={12} />
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* ── Form buat template ── */}
+                                    <div className={`rounded-xl border p-3 space-y-3 ${isDarkMode ? 'border-white/10 bg-white/5' : 'border-slate-200 bg-white/60'}`}>
+                                        <p className={`text-[10px] font-black uppercase tracking-widest ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Buat Template</p>
+                                        <input
+                                            value={tmplForm.name}
+                                            onChange={e => setTmplForm(f => ({ ...f, name: e.target.value }))}
+                                            placeholder="Nama template (mis. TTD Kaoru Nomura)"
+                                            className={`${inputCls} w-full`}
+                                        />
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <label className="block">
+                                                <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Pola Nama (regex)</span>
+                                                <input
+                                                    value={tmplForm.namePattern}
+                                                    onChange={e => setTmplForm(f => ({ ...f, namePattern: e.target.value }))}
+                                                    placeholder="Kaoru Nomura"
+                                                    className={`${inputCls} w-full`}
+                                                />
+                                            </label>
+                                            <label className="block">
+                                                <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Pola Jabatan (opsional)</span>
+                                                <input
+                                                    value={tmplForm.titlePattern}
+                                                    onChange={e => setTmplForm(f => ({ ...f, titlePattern: e.target.value }))}
+                                                    placeholder="General Manager"
+                                                    className={`${inputCls} w-full`}
+                                                />
+                                            </label>
+                                        </div>
+                                        <label className="block">
+                                            <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Tanda Tangan</span>
+                                            <select
+                                                value={tmplForm.sigId}
+                                                onChange={e => setTmplForm(f => ({ ...f, sigId: e.target.value }))}
+                                                className={`${inputCls} w-full`}
+                                            >
+                                                <option value="">— pilih tanda tangan —</option>
+                                                {signatures.map(s => (
+                                                    <option key={s.id} value={s.id}>{s.name}</option>
+                                                ))}
+                                            </select>
+                                            {signatures.length === 0 && (
+                                                <span className={`text-[10px] ${isDarkMode ? 'text-amber-300/80' : 'text-amber-600'}`}>
+                                                    Belum ada tanda tangan — tambahkan dulu di mode Manual.
+                                                </span>
+                                            )}
+                                        </label>
+                                        <div className="grid grid-cols-3 gap-2">
+                                            <label className="block">
+                                                <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Sejajar nama</span>
+                                                <select
+                                                    value={tmplForm.anchor}
+                                                    onChange={e => setTmplForm(f => ({ ...f, anchor: e.target.value }))}
+                                                    className={`${inputCls} w-full`}
+                                                >
+                                                    <option value="left">Kiri</option>
+                                                    <option value="center">Tengah</option>
+                                                    <option value="right">Kanan</option>
+                                                </select>
+                                            </label>
+                                            <label className="block">
+                                                <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Jarak (pt)</span>
+                                                <input
+                                                    type="number" min="0" max="60"
+                                                    value={tmplForm.offsetY}
+                                                    onChange={e => setTmplForm(f => ({ ...f, offsetY: Number(e.target.value) }))}
+                                                    className={`${inputCls} w-full`}
+                                                />
+                                            </label>
+                                            <label className="block">
+                                                <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Ukuran {tmplForm.scale}%</span>
+                                                <input
+                                                    type="number" min="8" max="60"
+                                                    value={tmplForm.scale}
+                                                    onChange={e => setTmplForm(f => ({ ...f, scale: Number(e.target.value) }))}
+                                                    className={`${inputCls} w-full`}
+                                                />
+                                            </label>
+                                        </div>
+                                        <label className="flex items-center gap-2 cursor-pointer select-none">
+                                            <input
+                                                type="checkbox"
+                                                checked={tmplForm.showDate}
+                                                onChange={e => setTmplForm(f => ({ ...f, showDate: e.target.checked }))}
+                                                className="accent-sky-500 w-3.5 h-3.5"
+                                            />
+                                            <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>
+                                                Tampilkan tanggal hari ini di bawah tanda tangan
+                                            </span>
+                                        </label>
+                                        <button
+                                            onClick={saveTemplate}
+                                            className="inline-flex items-center gap-1 px-3 py-2 rounded-lg text-[11px] font-bold bg-gradient-to-r from-sky-500 to-cyan-600 text-white shadow-md shadow-sky-500/25 hover:scale-[1.02] transition-all"
+                                        >
+                                            <Plus size={12} /> Simpan Template
+                                        </button>
+                                    </div>
+
+                                    {activeTmpl && (
+                                        <p className={`text-[11px] rounded-xl border p-3 ${isDarkMode ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300' : 'bg-emerald-50 border-emerald-200 text-emerald-700'}`}>
+                                            Template aktif: <b>{activeTmpl.name}</b> — semua blok "{activeTmpl.namePattern}"{activeTmpl.titlePattern ? ` + "${activeTmpl.titlePattern}"` : ''} di setiap halaman akan ditandatangani otomatis.
+                                        </p>
+                                    )}
+                                </div>
+                                )}
                             </div>
                         )}
 
                         {/* Tombol proses */}
                         <button
                             onClick={run}
-                            disabled={busy || !files.length || !serviceOk || (tool.id === 'sign' && !activeSig)}
-                            className={`mt-5 w-full py-3 rounded-xl text-sm font-extrabold flex items-center justify-center gap-2 transition-all bg-gradient-to-r ${tool.gradient} text-white shadow-lg ${tool.shadow} ${(busy || !files.length || !serviceOk || (tool.id === 'sign' && !activeSig)) ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.01]'}`}
+                            disabled={busy || !files.length || !serviceOk || (tool.id === 'sign' && (sigMode === 'auto' ? !activeTmpl : !activeSig))}
+                            className={`mt-5 w-full py-3 rounded-xl text-sm font-extrabold flex items-center justify-center gap-2 transition-all bg-gradient-to-r ${tool.gradient} text-white shadow-lg ${tool.shadow} ${(busy || !files.length || !serviceOk || (tool.id === 'sign' && (sigMode === 'auto' ? !activeTmpl : !activeSig))) ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.01]'}`}
                         >
                             {busy ? <><Loader2 size={16} className="animate-spin" /> Memproses...</> : <><Sparkles size={16} /> Proses {tool.label}</>}
                         </button>
