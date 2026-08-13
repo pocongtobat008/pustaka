@@ -42,6 +42,7 @@ const TOOL_MAP = {
     unlock: 'unlock',
     merge: 'merge',
     split: 'split',
+    sign: 'sign',
 };
 
 // Health check — cek service Flask hidup atau tidak
@@ -203,9 +204,15 @@ router.post('/pdf-tools/:tool', uploadAny, async (req, res) => {
             // merge: banyak file dengan field 'files'
             files.forEach(f => fd.append('files', new Blob([f.buffer], { type: f.mimetype || 'application/pdf' }), f.originalname));
         } else {
-            const f = files[0];
+            const f = files.find(x => x.fieldname === 'file') || files[0];
             if (!f) return res.status(400).json({ error: 'File wajib diunggah.' });
             fd.append('file', new Blob([f.buffer], { type: f.mimetype || 'application/pdf' }), f.originalname);
+        }
+        // sign: PDF + gambar tanda tangan (dua file berbeda)
+        if (tool === 'sign') {
+            const sig = files.find(x => x.fieldname === 'signature');
+            if (!sig) return res.status(400).json({ error: 'Gambar tanda tangan wajib diunggah.' });
+            fd.append('signature', new Blob([sig.buffer], { type: sig.mimetype || 'image/png' }), sig.originalname);
         }
         // Form fields (quality, language, password, mode, pages)
         Object.entries(req.body || {}).forEach(([k, v]) => { if (v !== undefined && v !== null) fd.append(k, String(v)); });
@@ -215,7 +222,9 @@ router.post('/pdf-tools/:tool', uploadAny, async (req, res) => {
         if (!upstream.ok) {
             let msg = `Service gagal (${upstream.status}).`;
             try { const j = await upstream.json(); if (j?.error) msg = j.error; } catch { /* ignore */ }
-            return res.status(upstream.status === 413 ? 413 : 502).json({ error: msg });
+            // Teruskan status 4xx (validasi user) apa adanya; 5xx → 502
+            const status = (upstream.status >= 400 && upstream.status < 500) ? upstream.status : 502;
+            return res.status(status).json({ error: msg });
         }
 
         // OCR → JSON; sisanya → file biner

@@ -5,6 +5,7 @@ import {
     FileText, FileArchive, Scissors, LockOpen, ScanText, RotateCw, Eye,
     UploadCloud, Download, Loader2, X, AlertCircle, Layers,
     FileDown, Wand2, Sparkles, History, Trash2, RefreshCw, ChevronDown, Lock, Share2,
+    PenTool, Check, Plus,
 } from 'lucide-react';
 
 const getApiUrl = () => (window.location.protocol === 'file:' ? 'http://localhost:5005/api' : '/api');
@@ -57,6 +58,11 @@ const TOOLS = [
         desc: 'Ekstrak teks dari PDF hasil scan/gambar — 120+ bahasa didukung',
         multiple: false, fields: [{ key: 'language', label: 'Bahasa', type: 'select', options: [] }], // options dinamis dari /pdf-tools/languages
     },
+    {
+        id: 'sign', label: 'Tanda Tangan PDF', icon: PenTool, gradient: 'from-sky-500 to-cyan-600', shadow: 'shadow-sky-500/25',
+        desc: 'Bubuhkan tanda tangan (gambar) ke 1 halaman atau banyak halaman',
+        multiple: false, fields: [],
+    },
 ];
 
 const ToolCard = ({ tool, active, onClick, isDarkMode }) => {
@@ -97,6 +103,46 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
     const [delHistBusy, setDelHistBusy] = useState(false);
     const [viewTextTarget, setViewTextTarget] = useState(null); // baris riwayat OCR yang teksnya dilihat
     const inputRef = useRef(null);
+
+    // ── Tanda Tangan PDF: daftar tanda tangan pribadi (localStorage per browser) ──
+    const SIG_STORAGE_KEY = 'pustaka_pdf_signatures';
+    const [signatures, setSignatures] = useState(() => {
+        try {
+            const raw = localStorage.getItem(SIG_STORAGE_KEY);
+            const arr = raw ? JSON.parse(raw) : [];
+            return Array.isArray(arr) ? arr : [];
+        } catch { return []; }
+    });
+    const [activeSigId, setActiveSigId] = useState(null);
+    const [sigForm, setSigForm] = useState({ pagesMode: 'all', pages: '', position: 'bottom-right', scale: 25, showDate: false });
+    const [newSigName, setNewSigName] = useState('');
+    const sigFileRef = useRef(null);
+
+    const persistSignatures = (list) => {
+        try { localStorage.setItem(SIG_STORAGE_KEY, JSON.stringify(list)); } catch { /* ignore */ }
+    };
+    const addSignature = (name, dataUrl) => {
+        const id = `sig-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+        const list = [...signatures, { id, name, dataUrl }];
+        setSignatures(list); persistSignatures(list);
+        setActiveSigId(id);
+    };
+    const removeSignature = (id) => {
+        const list = signatures.filter(s => s.id !== id);
+        setSignatures(list); persistSignatures(list);
+        if (activeSigId === id) setActiveSigId(list[0]?.id || null);
+    };
+    const onSignatureFile = (file) => {
+        if (!file) return;
+        if (!/\.(png|jpe?g|webp)$/i.test(file.name)) { setError('Tanda tangan harus berupa gambar PNG/JPG/WebP.'); return; }
+        const reader = new FileReader();
+        reader.onload = () => {
+            addSignature(newSigName.trim() || file.name.replace(/\.[^.]+$/, ''), reader.result);
+            setNewSigName('');
+        };
+        reader.readAsDataURL(file);
+    };
+    const activeSig = signatures.find(s => s.id === activeSigId) || null;
     // ── Berbagi lintas departemen ──
     const [departments, setDepartments] = useState([]);
     const [shareTarget, setShareTarget] = useState(null); // baris riwayat yang dibagikan
@@ -183,7 +229,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
         finally { setDelHistBusy(false); }
     };
 
-    const TOOL_LABEL = { convert: 'PDF → Word', compress: 'Kompres', merge: 'Gabung', split: 'Pecah', unlock: 'Buka Proteksi', ocr: 'OCR Teks' };
+    const TOOL_LABEL = { convert: 'PDF → Word', compress: 'Kompres', merge: 'Gabung', split: 'Pecah', unlock: 'Buka Proteksi', ocr: 'OCR Teks', sign: 'Tanda Tangan PDF' };
     const saveToHistory = async (blob, filename, origSize) => {
         try {
             const fd = new FormData();
@@ -273,15 +319,33 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
         if (!files.length) { setError('Unggah file PDF dulu.'); return; }
         if (tool.id === 'merge' && files.length < 2) { setError('Gabung PDF butuh minimal 2 file.'); return; }
         if (tool.id === 'ocr' && !form.language) { setError('Bahasa OCR belum tersedia — muat ulang halaman atau hubungi admin.'); return; }
+        if (tool.id === 'sign') {
+            if (!activeSig) { setError('Pilih atau buat tanda tangan dulu.'); return; }
+            if (sigForm.pagesMode !== 'all' && !sigForm.pages.trim()) { setError('Isi nomor atau rentang halaman dulu.'); return; }
+        }
         setBusy(true); setError(''); setResult(null);
         try {
             const fd = new FormData();
             if (tool.multiple) files.forEach(f => fd.append('files', f));
             else fd.append('file', files[0]);
-            Object.entries(form).forEach(([k, v]) => { if (v && k !== 'autoRotate' && k !== 'perPage') fd.append(k, v); });
-            if (tool.id === 'ocr') {
-                fd.append('auto_rotate', form.autoRotate ? 'true' : 'false');
-                fd.append('per_page', form.perPage ? 'true' : 'false');
+            if (tool.id === 'sign') {
+                // PDF (file) + gambar tanda tangan (signature) + pengaturan
+                const sigBlob = await (await fetch(activeSig.dataUrl)).blob();
+                const sigName = `signature_${activeSig.name.replace(/[^a-z0-9]+/gi, '_').slice(0, 40) || 'sign'}.png`;
+                fd.append('signature', sigBlob, sigName);
+                fd.append('pages', sigForm.pagesMode === 'single'
+                    ? String(Math.max(1, Number(sigForm.pages) || 1))
+                    : (sigForm.pagesMode === 'range' ? sigForm.pages.trim() : 'all'));
+                fd.append('position', sigForm.position);
+                fd.append('scale', String(sigForm.scale));
+                fd.append('show_date', sigForm.showDate ? 'true' : 'false');
+                fd.append('date_text', new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }));
+            } else {
+                Object.entries(form).forEach(([k, v]) => { if (v && k !== 'autoRotate' && k !== 'perPage') fd.append(k, v); });
+                if (tool.id === 'ocr') {
+                    fd.append('auto_rotate', form.autoRotate ? 'true' : 'false');
+                    fd.append('per_page', form.perPage ? 'true' : 'false');
+                }
             }
 
             const res = await fetch(`${API_URL}/pdf-tools/${tool.id}`, { method: 'POST', credentials: 'include', body: fd });
@@ -429,7 +493,9 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                 { title: 'Total Tools', value: TOOLS.length, icon: Wand2, gradient: 'from-indigo-500 to-purple-600' },
                 { title: 'Riwayat Tersimpan', value: history.length, icon: History, gradient: 'from-emerald-500 to-teal-600' },
                 { title: 'Tool Aktif', value: tool.label, icon: Sparkles, gradient: 'from-amber-500 to-orange-600', valueClass: 'text-base' },
-                { title: 'Hasil OCR', value: history.filter(h => h.tool === 'ocr').length, icon: ScanText, gradient: 'from-cyan-500 to-teal-600' },
+                { title: tool.id === 'sign' ? 'Tanda Tangan' : 'Hasil OCR',
+                  value: tool.id === 'sign' ? signatures.length : history.filter(h => h.tool === 'ocr').length,
+                  icon: tool.id === 'sign' ? PenTool : ScanText, gradient: 'from-cyan-500 to-teal-600' },
             ]} />
 
             {/* Grid: pilihan tool + panel kerja */}
@@ -550,11 +616,152 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                             </div>
                         )}
 
+                        {/* Opsi Tanda Tangan PDF: daftar tanda tangan, halaman, posisi, ukuran, tanggal */}
+                        {tool.id === 'sign' && (
+                            <div className="mt-4 space-y-4">
+                                {/* ── Daftar tanda tangan (list sign) ── */}
+                                <div>
+                                    <p className={`text-[10px] font-black uppercase tracking-widest mb-2 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                        Daftar Tanda Tangan ({signatures.length})
+                                    </p>
+                                    {signatures.length === 0 ? (
+                                        <p className={`text-[11px] italic rounded-xl border border-dashed p-3 ${isDarkMode ? 'text-white/40 border-white/15' : 'text-slate-400 border-slate-300'}`}>
+                                            Belum ada tanda tangan. Tambahkan gambar tanda tangan di bawah (PNG transparan paling baik; JPG berlatar putih otomatis dibuat transparan).
+                                        </p>
+                                    ) : (
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                            {signatures.map(s => (
+                                                <div
+                                                    key={s.id}
+                                                    onClick={() => setActiveSigId(s.id)}
+                                                    className={`relative rounded-xl border p-2 cursor-pointer transition-all ${activeSigId === s.id
+                                                        ? 'ring-2 ring-sky-500 bg-sky-50/60 dark:bg-sky-500/10 border-sky-300 dark:border-sky-500/40'
+                                                        : (isDarkMode ? 'border-white/10 bg-white/5 hover:border-sky-500/40' : 'border-slate-200 bg-white hover:border-sky-300')}`}
+                                                >
+                                                    <img src={s.dataUrl} alt={s.name} className="w-full h-12 object-contain" />
+                                                    <p className={`text-[10px] font-bold truncate mt-1 ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>{s.name}</p>
+                                                    {activeSigId === s.id && (
+                                                        <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow">
+                                                            <Check size={10} />
+                                                        </span>
+                                                    )}
+                                                    <button
+                                                        onClick={(e) => { e.stopPropagation(); removeSignature(s.id); }}
+                                                        title="Hapus tanda tangan"
+                                                        className={`absolute top-1 right-1 p-1 rounded-md opacity-0 group-hover:opacity-100 hover:opacity-100 ${isDarkMode ? 'text-rose-300 hover:bg-rose-500/20' : 'text-rose-500 hover:bg-rose-50'}`}
+                                                    >
+                                                        <Trash2 size={11} />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                    {/* Tambah tanda tangan baru */}
+                                    <div className="mt-2 flex gap-2">
+                                        <input
+                                            value={newSigName}
+                                            onChange={e => setNewSigName(e.target.value)}
+                                            placeholder="Nama tanda tangan (mis. Nama & Jabatan)"
+                                            className={`${inputCls} flex-1 min-w-0`}
+                                        />
+                                        <input
+                                            ref={sigFileRef}
+                                            type="file"
+                                            accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
+                                            className="hidden"
+                                            onChange={e => { onSignatureFile(e.target.files?.[0]); e.target.value = ''; }}
+                                        />
+                                        <button
+                                            onClick={() => sigFileRef.current?.click()}
+                                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-bold bg-gradient-to-r from-sky-500 to-cyan-600 text-white shadow-md shadow-sky-500/25 hover:scale-[1.02] transition-all flex-shrink-0"
+                                        >
+                                            <Plus size={12} /> Tambah
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* ── Halaman yang ditandatangani ── */}
+                                <div>
+                                    <p className={`text-[10px] font-black uppercase tracking-widest mb-1.5 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Halaman</p>
+                                    <div className="flex flex-wrap gap-1.5">
+                                        {[
+                                            { v: 'all', l: 'Semua halaman' },
+                                            { v: 'single', l: 'Satu halaman' },
+                                            { v: 'range', l: 'Rentang' },
+                                        ].map(o => (
+                                            <button
+                                                key={o.v}
+                                                onClick={() => setSigForm(f => ({ ...f, pagesMode: o.v }))}
+                                                className={`px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-colors ${sigForm.pagesMode === o.v
+                                                    ? (isDarkMode ? 'bg-sky-500/20 border-sky-500/50 text-sky-300' : 'bg-sky-50 border-sky-300 text-sky-700')
+                                                    : (isDarkMode ? 'border-white/10 text-white/60 hover:bg-white/10' : 'border-slate-200 text-slate-500 hover:bg-slate-50')}`}
+                                            >
+                                                {o.l}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    {sigForm.pagesMode !== 'all' && (
+                                        <input
+                                            value={sigForm.pages}
+                                            onChange={e => setSigForm(f => ({ ...f, pages: e.target.value }))}
+                                            placeholder={sigForm.pagesMode === 'single' ? 'Nomor halaman, mis. 3' : 'Rentang, mis. 1-3,5'}
+                                            className={`${inputCls} w-full mt-2`}
+                                        />
+                                    )}
+                                </div>
+
+                                {/* ── Posisi & ukuran ── */}
+                                <div className="grid grid-cols-2 gap-3">
+                                    <label className="block">
+                                        <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Posisi</span>
+                                        <select
+                                            value={sigForm.position}
+                                            onChange={e => setSigForm(f => ({ ...f, position: e.target.value }))}
+                                            className={`${inputCls} w-full`}
+                                        >
+                                            <option value="bottom-left">Kiri bawah</option>
+                                            <option value="bottom-center">Tengah bawah</option>
+                                            <option value="bottom-right">Kanan bawah</option>
+                                            <option value="top-left">Kiri atas</option>
+                                            <option value="top-center">Tengah atas</option>
+                                            <option value="top-right">Kanan atas</option>
+                                        </select>
+                                    </label>
+                                    <label className="block">
+                                        <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Ukuran — {sigForm.scale}%</span>
+                                        <input
+                                            type="range"
+                                            min="10"
+                                            max="60"
+                                            step="5"
+                                            value={sigForm.scale}
+                                            onChange={e => setSigForm(f => ({ ...f, scale: Number(e.target.value) }))}
+                                            className="w-full accent-sky-500 mt-1"
+                                        />
+                                        <span className={`text-[9px] ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>Lebar tanda tangan relatif terhadap halaman</span>
+                                    </label>
+                                </div>
+
+                                {/* ── Tanggal di bawah tanda tangan ── */}
+                                <label className="flex items-center gap-2 cursor-pointer select-none">
+                                    <input
+                                        type="checkbox"
+                                        checked={sigForm.showDate}
+                                        onChange={e => setSigForm(f => ({ ...f, showDate: e.target.checked }))}
+                                        className="accent-sky-500 w-3.5 h-3.5"
+                                    />
+                                    <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>
+                                        Tambahkan tanggal hari ini di bawah tanda tangan
+                                    </span>
+                                </label>
+                            </div>
+                        )}
+
                         {/* Tombol proses */}
                         <button
                             onClick={run}
-                            disabled={busy || !files.length || !serviceOk}
-                            className={`mt-5 w-full py-3 rounded-xl text-sm font-extrabold flex items-center justify-center gap-2 transition-all bg-gradient-to-r ${tool.gradient} text-white shadow-lg ${tool.shadow} ${(busy || !files.length || !serviceOk) ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.01]'}`}
+                            disabled={busy || !files.length || !serviceOk || (tool.id === 'sign' && !activeSig)}
+                            className={`mt-5 w-full py-3 rounded-xl text-sm font-extrabold flex items-center justify-center gap-2 transition-all bg-gradient-to-r ${tool.gradient} text-white shadow-lg ${tool.shadow} ${(busy || !files.length || !serviceOk || (tool.id === 'sign' && !activeSig)) ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.01]'}`}
                         >
                             {busy ? <><Loader2 size={16} className="animate-spin" /> Memproses...</> : <><Sparkles size={16} /> Proses {tool.label}</>}
                         </button>
