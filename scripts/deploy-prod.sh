@@ -23,11 +23,15 @@ echo "== 3. Normalisasi .env produksi (PORT wajib 5005) =="
 sed -i 's/^PORT=.*/PORT=5005/' /home/project/pustaka/.env
 grep '^PORT=' /home/project/pustaka/.env
 
-echo "== 4. Build produksi (dist) =="
+echo "== 4. Install dependensi produksi (jika ada dependency baru) =="
+cd /home/project/pustaka
+npm install --omit=dev 2>&1 | tail -2 || npm install 2>&1 | tail -2
+
+echo "== 5. Build produksi (dist) =="
 cd /home/project/pustaka
 npx vite build
 
-echo "== 5. Restart layanan produksi =="
+echo "== 6. Restart layanan produksi =="
 pm2 restart archive-backend archive-frontend
 pm2 save
 
