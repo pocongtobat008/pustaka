@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { GitBranch, Plus, Trash2, Edit3, Search, Info, Globe, Lock, Users, Shield, AlertCircle, X } from 'lucide-react';
-import { Card, SummaryCard } from '../components/ui/Card';
+import { Card, SummaryRow } from '../components/ui/Card';
 import { sopService } from '../services/sopService';
 import { parseApiError } from '../utils/errorHandler';
 import Modal from '../components/common/Modal';
@@ -363,12 +363,12 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
             </div>
 
             {/* SUMMARY CARDS */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-in slide-in-from-bottom-4 duration-700">
-                <SummaryCard title={text.cards.total} value={stats.total} icon={GitBranch} gradient="from-indigo-500 to-purple-600" />
-                <SummaryCard title={text.cards.public} value={stats.public} icon={Globe} gradient="from-emerald-500 to-teal-600" />
-                <SummaryCard title={text.cards.private} value={stats.private} icon={Lock} gradient="from-orange-500 to-amber-600" />
-                <SummaryCard title={text.cards.restricted} value={stats.restricted} icon={Shield} gradient="from-blue-500 to-cyan-600" />
-            </div>
+            <SummaryRow className="animate-in slide-in-from-bottom-4 duration-700" cards={[
+                { title: text.cards.total, value: stats.total, icon: GitBranch, gradient: 'from-indigo-500 to-purple-600' },
+                { title: text.cards.public, value: stats.public, icon: Globe, gradient: 'from-emerald-500 to-teal-600' },
+                { title: text.cards.private, value: stats.private, icon: Lock, gradient: 'from-orange-500 to-amber-600' },
+                { title: text.cards.restricted, value: stats.restricted, icon: Shield, gradient: 'from-blue-500 to-cyan-600' },
+            ]} />
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredFlows.map(flow => (

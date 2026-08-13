@@ -12,7 +12,7 @@ import {
 import { List as VirtualList, Grid as VirtualGrid } from 'react-window';
 import { AutoSizer } from 'react-virtualized-auto-sizer';
 
-import { SummaryCard } from '../components/ui/Card';
+import { SummaryRow } from '../components/ui/Card';
 import { db as api, API_URL } from '../services/database';
 import { parseApiError } from '../utils/errorHandler';
 import { getFullUrl } from '../utils/urlHelper';
@@ -576,26 +576,11 @@ export default function Documents({
         <>
             <div className="animate-in fade-in zoom-in-95 duration-300 space-y-6 relative">
                 {/* SUMMARY CARDS FOR DOCUMENTS */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
-                    <SummaryCard
-                        title={isEnglish ? 'Total Documents' : 'Total Dokumen'}
-                        value={(docList || []).length}
-                        icon={FileText}
-                        gradient="from-blue-500 to-cyan-600"
-                    />
-                    <SummaryCard
-                        title={isEnglish ? 'Total Folders' : 'Total Folder'}
-                        value={(folders || []).length}
-                        icon={FolderOpen}
-                        gradient="from-amber-500 to-orange-600"
-                    />
-                    <SummaryCard
-                        title={isEnglish ? 'Total Revisions' : 'Total Revisi'}
-                        value={docStats?.totalRevisions || 0}
-                        icon={History}
-                        gradient="from-indigo-500 to-purple-600"
-                    />
-                </div>
+                <SummaryRow cols={3} className="mb-2" cards={[
+                    { title: isEnglish ? 'Total Documents' : 'Total Dokumen', value: (docList || []).length, icon: FileText, gradient: 'from-blue-500 to-cyan-600' },
+                    { title: isEnglish ? 'Total Folders' : 'Total Folder', value: (folders || []).length, icon: FolderOpen, gradient: 'from-amber-500 to-orange-600' },
+                    { title: isEnglish ? 'Total Revisions' : 'Total Revisi', value: docStats?.totalRevisions || 0, icon: History, gradient: 'from-indigo-500 to-purple-600' },
+                ]} />
 
                 {/* AI SMART INSIGHT BANNER */}
                 <div className={`p-4 rounded-2xl border backdrop-blur-md flex items-center gap-4 animate-in slide-in-from-top-4 duration-700 ${insight.color}`}>

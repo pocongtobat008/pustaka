@@ -11,7 +11,7 @@ import {
 import * as XLSX from 'xlsx';
 import { api } from '../api';
 import { parseApiError } from '../utils/errorHandler';
-import { Card, SummaryCard } from '../components/ui/Card';
+import { Card, SummaryRow } from '../components/ui/Card';
 import { useLanguage } from '../contexts/LanguageContext';
 
 // --- HELPERS ---
@@ -870,40 +870,33 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
         return (
             <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
                 {/* 1. Summary Cards */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {/* GRAND TOTAL CARD WITH COPY FUNCTION */}
-                    <div className="group relative overflow-hidden glass-card rounded-2xl p-4 flex items-center gap-4 transition-all duration-300 hover:-translate-y-0.5">
-                        <div className="absolute right-0 top-0 w-20 h-20 rounded-bl-[2rem] -mr-5 -mt-5 bg-gradient-to-br from-indigo-600 to-purple-700 opacity-20 transition-all duration-300 group-hover:scale-110" />
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center flex-shrink-0 shadow-lg shadow-indigo-500/25">
-                            <Landmark size={22} className="text-white" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 truncate">Estimasi PPh Terutang</div>
-                            <div className="text-lg font-black leading-tight text-slate-800 dark:text-white tabular-nums truncate">
-                                Rp {grandTotalPPh.toLocaleString('id-ID')}
-                            </div>
-                        </div>
-                        <button
-                            onClick={(e) => { e.stopPropagation(); onCopy(grandTotalPPh, "Estimasi PPh Terutang"); }}
-                            className="p-2 rounded-xl text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-white/10 transition-all active:scale-90 flex-shrink-0"
-                            title="Salin Total"
-                        >
-                            <Copy size={16} />
-                        </button>
-                    </div>
-
-                    {config.pphTypes.map(type => (
-                        <div key={type} className="group relative overflow-hidden glass-card rounded-2xl p-4 flex items-center gap-4 transition-all duration-300 hover:-translate-y-0.5">
-                            <div className="absolute right-0 top-0 w-20 h-20 rounded-bl-[2rem] -mr-5 -mt-5 bg-gradient-to-br from-emerald-500 to-teal-600 opacity-15 transition-all duration-300 group-hover:scale-110" />
-                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-emerald-500/20">
-                                <Percent size={22} className="text-white" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 truncate">{type}</div>
-                                <div className="text-lg font-black leading-tight text-slate-800 dark:text-white tabular-nums truncate">
-                                    Rp {(totalPerType[type] / 1000000).toLocaleString('id-ID', { maximumFractionDigits: 1 })} Jt
-                                </div>
-                            </div>
+                <SummaryRow cards={[
+                    {
+                        title: 'Estimasi PPh Terutang',
+                        value: grandTotalPPh.toLocaleString('id-ID'),
+                        valuePrefix: 'Rp ',
+                        valueClass: 'text-lg',
+                        icon: Landmark,
+                        gradient: 'from-indigo-600 to-purple-700',
+                        action: (
+                            <button
+                                onClick={(e) => { e.stopPropagation(); onCopy(grandTotalPPh, "Estimasi PPh Terutang"); }}
+                                className="p-2 rounded-xl text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-white/10 transition-all active:scale-90 flex-shrink-0"
+                                title="Salin Total"
+                            >
+                                <Copy size={16} />
+                            </button>
+                        ),
+                    },
+                    ...config.pphTypes.map(type => ({
+                        key: type,
+                        title: type,
+                        value: (totalPerType[type] / 1000000).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' Jt',
+                        valuePrefix: 'Rp ',
+                        valueClass: 'text-lg',
+                        icon: Percent,
+                        gradient: 'from-emerald-500 to-teal-600',
+                        action: (
                             <button
                                 onClick={(e) => { e.stopPropagation(); onCopy(totalPerType[type], type); }}
                                 className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-white/10 transition-all flex-shrink-0"
@@ -911,15 +904,16 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                             >
                                 <Copy size={12} />
                             </button>
-                        </div>
-                    ))}
+                        ),
+                    })),
+                ]}>
                     {hasPermission('tax-summary', 'edit') && (
                         <button onClick={() => handleAddType('pphTypes')} className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-2xl text-gray-400 hover:border-indigo-400 hover:text-indigo-500 transition-colors">
                             <Plus size={20} />
                             <span className="text-xs font-medium mt-1">{isEnglish ? 'Add Tax Type' : 'Tambah Tipe Pajak'}</span>
                         </button>
                     )}
-                </div>
+                </SummaryRow>
 
                 {/* 2. Main Chart */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

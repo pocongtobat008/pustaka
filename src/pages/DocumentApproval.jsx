@@ -6,7 +6,7 @@ import {
     FileDigit, FileText, Sparkles, Map, List
 } from 'lucide-react';
 import WorkflowViewer from '../components/workflow/WorkflowViewer';
-import { Card, SummaryCard } from '../components/ui/Card';
+import { Card, SummaryRow } from '../components/ui/Card';
 import Modal from '../components/common/Modal';
 import { parseApiError } from '../utils/errorHandler';
 import { getFullUrl } from '../utils/urlHelper';
@@ -398,11 +398,11 @@ export default function DocumentApproval({ approvals = [], users = [], departmen
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             {/* Header Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <SummaryCard title={text.pendingApproval} value={visibleApprovals.filter(a => a?.status === 'Pending').length} icon={Clock} gradient="from-amber-500 to-orange-600" />
-                <SummaryCard title={text.approved} value={visibleApprovals.filter(a => a?.status === 'Approved').length} icon={CheckCircle2} gradient="from-emerald-500 to-teal-600" />
-                <SummaryCard title={text.rejected} value={visibleApprovals.filter(a => a?.status === 'Rejected').length} icon={XCircle} gradient="from-rose-500 to-red-600" />
-            </div>
+            <SummaryRow cols={3} cards={[
+                { title: text.pendingApproval, value: visibleApprovals.filter(a => a?.status === 'Pending').length, icon: Clock, gradient: 'from-amber-500 to-orange-600' },
+                { title: text.approved, value: visibleApprovals.filter(a => a?.status === 'Approved').length, icon: CheckCircle2, gradient: 'from-emerald-500 to-teal-600' },
+                { title: text.rejected, value: visibleApprovals.filter(a => a?.status === 'Rejected').length, icon: XCircle, gradient: 'from-rose-500 to-red-600' },
+            ]} />
 
             <div className="flex justify-between items-center bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
                 <div className="relative flex-1 max-w-md">

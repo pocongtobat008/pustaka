@@ -7,7 +7,7 @@ import {
     FolderOpen, Sparkles, Layers, History, BarChart3, AlertTriangle, RefreshCw, ChevronDown, Lock, Share2,
     Archive, Files, FileText,
 } from 'lucide-react';
-import { SummaryCard } from '../ui/Card';
+import { SummaryRow } from '../ui/Card';
 
 const getApiUrl = () => (window.location.protocol === 'file:' ? 'http://localhost:5005/api' : '/api');
 const API_URL = getApiUrl();
@@ -683,36 +683,36 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
             )}
 
             {/* ── Ringkasan — konsisten dengan SummaryCard di semua menu ── */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
-                <SummaryCard
-                    title="Template"
-                    value={templates.length}
-                    subtext="Jenis dokumen (dibagikan)"
-                    icon={FolderOpen}
-                    gradient="from-indigo-500 to-purple-600"
-                />
-                <SummaryCard
-                    title="Ekstraksi"
-                    value={extractions.length}
-                    subtext={activeId ? 'Riwayat monitoring' : 'Pilih template'}
-                    icon={Files}
-                    gradient="from-emerald-500 to-teal-600"
-                />
-                <SummaryCard
-                    title="Arsip Dokumen"
-                    value={archiveFiles.length}
-                    subtext={activeId ? 'PDF asli tersimpan' : 'Pilih template'}
-                    icon={Archive}
-                    gradient="from-amber-500 to-orange-600"
-                />
-                <SummaryCard
-                    title="Export Excel"
-                    value={exportHistory.length}
-                    subtext={activeId ? 'Bisa diunduh ulang' : 'Pilih template'}
-                    icon={FileText}
-                    gradient="from-violet-500 to-fuchsia-600"
-                />
-            </div>
+            <SummaryRow className="mb-5" cards={[
+                {
+                    title: 'Template',
+                    value: templates.length,
+                    subtext: 'Jenis dokumen (dibagikan)',
+                    icon: FolderOpen,
+                    gradient: 'from-indigo-500 to-purple-600',
+                },
+                {
+                    title: 'Ekstraksi',
+                    value: extractions.length,
+                    subtext: activeId ? 'Riwayat monitoring' : 'Pilih template',
+                    icon: Files,
+                    gradient: 'from-emerald-500 to-teal-600',
+                },
+                {
+                    title: 'Arsip Dokumen',
+                    value: archiveFiles.length,
+                    subtext: activeId ? 'PDF asli tersimpan' : 'Pilih template',
+                    icon: Archive,
+                    gradient: 'from-amber-500 to-orange-600',
+                },
+                {
+                    title: 'Export Excel',
+                    value: exportHistory.length,
+                    subtext: activeId ? 'Bisa diunduh ulang' : 'Pilih template',
+                    icon: FileText,
+                    gradient: 'from-violet-500 to-fuchsia-600',
+                },
+            ]} />
 
             {/* ── Pilih template / daftar ── */}
             <div className={`${cardCls} p-4 mb-5`}>

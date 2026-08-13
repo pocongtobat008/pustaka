@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { SummaryCard } from '../components/ui/Card';
+import { SummaryRow } from '../components/ui/Card';
 import {
     FileText, FileArchive, Scissors, LockOpen, ScanText, RotateCw, Eye,
     UploadCloud, Download, Loader2, X, AlertCircle, Layers,
@@ -424,12 +424,12 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
             )}
 
             {/* ── Ringkasan ── */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
-                <SummaryCard title="Total Tools" value={TOOLS.length} icon={Wand2} gradient="from-indigo-500 to-purple-600" />
-                <SummaryCard title="Riwayat Tersimpan" value={history.length} icon={History} gradient="from-emerald-500 to-teal-600" />
-                <SummaryCard title="Tool Aktif" value={tool.label} icon={Sparkles} gradient="from-amber-500 to-orange-600" valueClass="text-base" />
-                <SummaryCard title="Hasil OCR" value={history.filter(h => h.tool === 'ocr').length} icon={ScanText} gradient="from-cyan-500 to-teal-600" />
-            </div>
+            <SummaryRow className="mb-5" cards={[
+                { title: 'Total Tools', value: TOOLS.length, icon: Wand2, gradient: 'from-indigo-500 to-purple-600' },
+                { title: 'Riwayat Tersimpan', value: history.length, icon: History, gradient: 'from-emerald-500 to-teal-600' },
+                { title: 'Tool Aktif', value: tool.label, icon: Sparkles, gradient: 'from-amber-500 to-orange-600', valueClass: 'text-base' },
+                { title: 'Hasil OCR', value: history.filter(h => h.tool === 'ocr').length, icon: ScanText, gradient: 'from-cyan-500 to-teal-600' },
+            ]} />
 
             {/* Grid: pilihan tool + panel kerja */}
             <div className="grid lg:grid-cols-5 gap-5 items-start">

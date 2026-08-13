@@ -7,7 +7,7 @@ import {
     Sparkles, Info, CheckCircle2, ArrowRight, Plus, Trash2, Save, Image as ImageIcon, Layout, Upload, RefreshCw, Edit3, Copy, Search, ZoomIn, Lock, Users, Building, User
     , FileText, ShieldCheck, Zap, Globe, Award, AlertCircle
 } from 'lucide-react';
-import { SummaryCard } from '../components/ui/Card';
+import { SummaryRow } from '../components/ui/Card';
 import { pustakaService } from '../services/pustakaService';
 import { parseApiError } from '../utils/errorHandler';
 import { getFullUrl } from '../utils/urlHelper';
@@ -783,32 +783,12 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
     return (
         <div className="relative min-h-[80vh] pb-20">
             {/* Header Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <SummaryCard
-                    title={i18n.totalGuides}
-                    value={stats.total}
-                    icon={BookOpen}
-                    gradient="from-indigo-500 to-purple-600"
-                />
-                <SummaryCard
-                    title={i18n.categories}
-                    value={stats.categories}
-                    icon={Layout}
-                    gradient="from-purple-500 to-violet-600"
-                />
-                <SummaryCard
-                    title={i18n.myGuides}
-                    value={stats.myGuides}
-                    icon={User}
-                    gradient="from-blue-500 to-cyan-600"
-                />
-                <SummaryCard
-                    title={i18n.publicAccess}
-                    value={stats.public}
-                    icon={Globe}
-                    gradient="from-emerald-500 to-teal-600"
-                />
-            </div>
+            <SummaryRow className="mb-8" cards={[
+                { title: i18n.totalGuides, value: stats.total, icon: BookOpen, gradient: 'from-indigo-500 to-purple-600' },
+                { title: i18n.categories, value: stats.categories, icon: Layout, gradient: 'from-purple-500 to-violet-600' },
+                { title: i18n.myGuides, value: stats.myGuides, icon: User, gradient: 'from-blue-500 to-cyan-600' },
+                { title: i18n.publicAccess, value: stats.public, icon: Globe, gradient: 'from-emerald-500 to-teal-600' },
+            ]} />
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Sidebar List Panduan */}

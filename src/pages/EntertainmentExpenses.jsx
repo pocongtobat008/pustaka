@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { entertainmentService } from '../services/entertainmentService';
 import { API_URL } from '../services/apiClient';
-import { SummaryCard } from '../components/ui/Card';
+import { SummaryRow } from '../components/ui/Card';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useModalKeydown, useModalScrollLock } from '../components/ui/useModalKeydown';
 
@@ -955,29 +955,11 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
             )}
 
             {/* Summary Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <SummaryCard
-                    title={text.totalEntries}
-                    value={totalEntries}
-                    icon={ClipboardList}
-                    gradient="from-indigo-500 to-purple-600"
-                    subtext={text.totalEntriesSub}
-                />
-                <SummaryCard
-                    title={text.totalNilai}
-                    value={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(totalNilai)}
-                    icon={DollarSign}
-                    gradient="from-emerald-500 to-teal-600"
-                    subtext={text.totalNilaiSub}
-                />
-                <SummaryCard
-                    title={text.totalLampiran}
-                    value={totalLampiran}
-                    icon={FileText}
-                    gradient="from-amber-500 to-orange-600"
-                    subtext={text.totalLampiranSub}
-                />
-            </div>
+            <SummaryRow cols={3} cards={[
+                { title: text.totalEntries, value: totalEntries, icon: ClipboardList, gradient: 'from-indigo-500 to-purple-600', subtext: text.totalEntriesSub },
+                { title: text.totalNilai, value: new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(totalNilai), icon: DollarSign, gradient: 'from-emerald-500 to-teal-600', subtext: text.totalNilaiSub },
+                { title: text.totalLampiran, value: totalLampiran, icon: FileText, gradient: 'from-amber-500 to-orange-600', subtext: text.totalLampiranSub },
+            ]} />
 
             {/* Unsettled Block Warning (non-admin users) */}
             {!isAdmin && unsettledCount > 0 && tab !== 'rules' && (

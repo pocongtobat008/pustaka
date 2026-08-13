@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Plus, Edit3, Trash2, Building2, GitCommit, ShieldCheck, ChevronRight, ChevronLeft, Users, User, Shield, History, Search, Clock, ChevronDown, ChevronUp, AlertCircle, FileText, Activity, Bot, Save, Loader2, Zap, Upload, Download, Link, Eye, RefreshCw, X, Info, Brain, CheckCircle2, XCircle, Gauge } from 'lucide-react';
-import { Card, SummaryCard } from '../components/ui/Card';
+import { Card, SummaryRow } from '../components/ui/Card';
 import { Textarea } from '../components/ui/textarea';
 import { Input } from '../components/ui/input';
 import { Select } from '../components/ui/select';
@@ -1862,12 +1862,12 @@ export default function MasterData({
 
                                 {/* Stats Cards */}
                                 {learningStats && (
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                        <SummaryCard title="Knowledge Points" value={learningStats.totalKnowledgePoints} icon={Brain} gradient="from-indigo-500 to-purple-600" valueClass="text-xl" />
-                                        <SummaryCard title="Training Efficiency" value={learningStats.trainingEfficiency} icon={Gauge} gradient="from-emerald-500 to-teal-600" valueClass="text-xl" />
-                                        <SummaryCard title="Untrained Points" value={learningStats.untrainedPoints} icon={Zap} gradient="from-amber-500 to-orange-600" valueClass="text-xl" />
-                                        <SummaryCard title="Docs Generated" value={learningStats.docsGenerated} icon={FileText} gradient="from-violet-500 to-purple-600" valueClass="text-xl" />
-                                    </div>
+                                    <SummaryRow cards={[
+                                        { title: 'Knowledge Points', value: learningStats.totalKnowledgePoints, icon: Brain, gradient: 'from-indigo-500 to-purple-600', valueClass: 'text-xl' },
+                                        { title: 'Training Efficiency', value: learningStats.trainingEfficiency, icon: Gauge, gradient: 'from-emerald-500 to-teal-600', valueClass: 'text-xl' },
+                                        { title: 'Untrained Points', value: learningStats.untrainedPoints, icon: Zap, gradient: 'from-amber-500 to-orange-600', valueClass: 'text-xl' },
+                                        { title: 'Docs Generated', value: learningStats.docsGenerated, icon: FileText, gradient: 'from-violet-500 to-purple-600', valueClass: 'text-xl' },
+                                    ]} />
                                 )}
 
                                 {/* Action Buttons */}

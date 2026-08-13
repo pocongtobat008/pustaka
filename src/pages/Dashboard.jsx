@@ -37,7 +37,7 @@ const MOTIVATION_QUOTES = {
   ]
 };
 import { Grid3x3, ScanLine, History, PieChart, FileText, FileDigit, ChevronDown, ChevronUp, ArrowRight, ArrowUpRight, Package, Truck, Boxes, FileBarChart, Download, X, CheckCircle2, FileSearch, FolderOpen, Users, Sparkles, Clock, Eye, Info, MessageSquare, BookOpen, FileCheck, ClipboardCheck, ChevronLeft, ChevronRight, User, RefreshCw } from 'lucide-react';
-import { Card, SummaryCard } from '../components/ui/Card';
+import { Card, SummaryRow } from '../components/ui/Card';
 import { Card as ShadCard, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
 import { Badge } from '../components/ui/badge';
 import QueueStatus from '../components/ui/QueueStatus';
@@ -684,36 +684,12 @@ export default function Dashboard({
                             </div>
                         </CardHeader>
                         <CardContent className="space-y-6 pt-4">
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <SummaryCard
-                                    title={text.occupancy}
-                                    value={`${bentoStats.occupancyPercent}%`}
-                                    icon={Grid3x3}
-                                    gradient="from-indigo-500 to-purple-600"
-                                    valueClass="text-2xl"
-                                />
-                                <SummaryCard
-                                    title={text.usedSlots}
-                                    value={bentoStats.usedSlots}
-                                    icon={Package}
-                                    gradient="from-emerald-500 to-teal-600"
-                                    valueClass="text-2xl"
-                                />
-                                <SummaryCard
-                                    title={text.externalBox}
-                                    value={externalItems?.length || 0}
-                                    icon={Truck}
-                                    gradient="from-amber-500 to-orange-600"
-                                    valueClass="text-2xl"
-                                />
-                                <SummaryCard
-                                    title={text.available}
-                                    value={stats?.empty || 0}
-                                    icon={Boxes}
-                                    gradient="from-sky-500 to-cyan-600"
-                                    valueClass="text-2xl"
-                                />
-                            </div>
+                            <SummaryRow cards={[
+                                { title: text.occupancy, value: `${bentoStats.occupancyPercent}%`, icon: Grid3x3, gradient: 'from-indigo-500 to-purple-600', valueClass: 'text-2xl' },
+                                { title: text.usedSlots, value: bentoStats.usedSlots, icon: Package, gradient: 'from-emerald-500 to-teal-600', valueClass: 'text-2xl' },
+                                { title: text.externalBox, value: externalItems?.length || 0, icon: Truck, gradient: 'from-amber-500 to-orange-600', valueClass: 'text-2xl' },
+                                { title: text.available, value: stats?.empty || 0, icon: Boxes, gradient: 'from-sky-500 to-cyan-600', valueClass: 'text-2xl' },
+                            ]} />
                             <div className="flex flex-wrap gap-3">
                                 <button onClick={() => setActiveTab('inventory')} className="flex items-center gap-2 rounded-xl gradient-bg px-4 py-2.5 text-xs font-bold text-white transition-all hover:shadow-lg hover:shadow-indigo-500/40 active:scale-95">
                                     {text.openInventory} <ArrowRight size={14} />

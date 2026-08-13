@@ -7,7 +7,7 @@ import {
     Layers, ArrowRight, Eye, SlidersHorizontal, BarChart3, Trash, ChevronUp,
     AlertTriangle
 } from 'lucide-react';
-import { Card, SummaryCard } from '../components/ui/Card';
+import { Card, SummaryRow } from '../components/ui/Card';
 import { Modal } from '../components/ui/Modal';
 import { Input } from '../components/ui/input';
 import { Select } from '../components/ui/select';
@@ -922,11 +922,11 @@ export default function Book({ hasPermission }) {
 
     return (
         <div className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <SummaryCard title={text.stats.accounts} value={stats.accounts} icon={BookOpen} gradient="from-indigo-500 to-purple-600" />
-                <SummaryCard title={text.stats.subs} value={stats.sub_accounts} icon={FolderOpen} gradient="from-cyan-500 to-blue-600" />
-                <SummaryCard title={text.stats.deps} value={stats.departments} icon={Building2} gradient="from-amber-500 to-orange-600" />
-            </div>
+            <SummaryRow cols={3} cards={[
+                { title: text.stats.accounts, value: stats.accounts, icon: BookOpen, gradient: 'from-indigo-500 to-purple-600' },
+                { title: text.stats.subs, value: stats.sub_accounts, icon: FolderOpen, gradient: 'from-cyan-500 to-blue-600' },
+                { title: text.stats.deps, value: stats.departments, icon: Building2, gradient: 'from-amber-500 to-orange-600' },
+            ]} />
 
             <Card noPadding>
                 {/* Toolbar: Search + Filter + Actions */}

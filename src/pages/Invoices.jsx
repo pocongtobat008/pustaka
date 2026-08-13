@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Textarea } from '../components/ui/textarea';
-import { SummaryCard } from '../components/ui/Card';
+import { SummaryRow } from '../components/ui/Card';
 import { useModalKeydown, useModalScrollLock } from '../components/ui/useModalKeydown';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -1996,44 +1996,12 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
         <div className="p-4 md:p-6 space-y-4">
 
             {/* ── Dashboard Cards (di atas tab) ── */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {/* Total Invoice */}
-                <SummaryCard
-                    title="Total Invoice"
-                    value={summary.totalInvoice.toLocaleString('id-ID')}
-                    icon={Receipt}
-                    gradient="from-blue-600 to-indigo-700"
-                    subtext={`${formatCurrency(summary.nominalInvoice)} • ${summary.sentBackProforma} sent back`}
-                    valueClass="text-2xl"
-                />
-                {/* Proforma */}
-                <SummaryCard
-                    title="Proforma"
-                    value={summary.totalProforma.toLocaleString('id-ID')}
-                    icon={FileSignature}
-                    gradient="from-amber-500 to-orange-600"
-                    subtext={`${summary.totalApproved} approved • ${summary.pendingProforma} pending • ${formatCurrency(summary.totalNominal)}`}
-                    valueClass="text-2xl"
-                />
-                {/* Menunggu Tax */}
-                <SummaryCard
-                    title="Menunggu Tax"
-                    value={summary.pendingTax.toLocaleString('id-ID')}
-                    icon={FileText}
-                    gradient="from-violet-600 to-purple-700"
-                    subtext="Proforma perlu faktur pajak — segera lampirkan"
-                    valueClass="text-2xl"
-                />
-                {/* Settled */}
-                <SummaryCard
-                    title="Settled"
-                    value={summary.totalSettled.toLocaleString('id-ID')}
-                    icon={HandCoins}
-                    gradient="from-teal-500 to-emerald-700"
-                    subtext={`${formatCurrency(summary.nominalSettled)} • selesai di-settle`}
-                    valueClass="text-2xl"
-                />
-            </div>
+            <SummaryRow cards={[
+                { title: 'Total Invoice', value: summary.totalInvoice.toLocaleString('id-ID'), icon: Receipt, gradient: 'from-blue-600 to-indigo-700', subtext: `${formatCurrency(summary.nominalInvoice)} • ${summary.sentBackProforma} sent back`, valueClass: 'text-2xl' },
+                { title: 'Proforma', value: summary.totalProforma.toLocaleString('id-ID'), icon: FileSignature, gradient: 'from-amber-500 to-orange-600', subtext: `${summary.totalApproved} approved • ${summary.pendingProforma} pending • ${formatCurrency(summary.totalNominal)}`, valueClass: 'text-2xl' },
+                { title: 'Menunggu Tax', value: summary.pendingTax.toLocaleString('id-ID'), icon: FileText, gradient: 'from-violet-600 to-purple-700', subtext: 'Proforma perlu faktur pajak — segera lampirkan', valueClass: 'text-2xl' },
+                { title: 'Settled', value: summary.totalSettled.toLocaleString('id-ID'), icon: HandCoins, gradient: 'from-teal-500 to-emerald-700', subtext: `${formatCurrency(summary.nominalSettled)} • selesai di-settle`, valueClass: 'text-2xl' },
+            ]} />
 
             {/* Notifikasi penting (1 baris ringkasan yang perlu tindakan) */}
             {actionSummary.length > 0 && (

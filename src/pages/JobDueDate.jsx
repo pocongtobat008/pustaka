@@ -7,7 +7,7 @@ import {
     User as UserIcon, Trash2, Edit3, ArrowLeft, CalendarDays, Repeat, UserPlus, LayoutGrid, X, Hash, ChevronLeft, Settings, Activity, Timer, Check, Info, Eye
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SummaryCard } from '../components/ui/Card';
+import { SummaryRow } from '../components/ui/Card';
 import { format, addMonths, subMonths, isBefore, startOfDay, intervalToDuration } from 'date-fns';
 import { id, enUS } from 'date-fns/locale';
 import { getSocket } from '../services/socketService';
@@ -863,12 +863,12 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                         className="space-y-8"
                     >
                         {/* Global Summary Row */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <SummaryCard title={isEnglish ? 'Total PIC' : 'Total PIC'} value={userBlocks.length} icon={Users} gradient="from-indigo-500 to-purple-600" />
-                            <SummaryCard title={isEnglish ? 'Total Tasks' : 'Total Tugas'} value={userBlocks.reduce((acc, b) => acc + b.recurring.length + b.special.length, 0)} icon={CheckCircle2} gradient="from-emerald-500 to-teal-600" />
-                            <SummaryCard title={isEnglish ? 'Overdue' : 'Terlambat'} value={userBlocks.reduce((acc, b) => acc + [...b.recurring, ...b.special].filter(j => checkIsOverdue(j, selectedMonth)).length, 0)} icon={AlertCircle} gradient="from-rose-500 to-red-600" />
-                            <SummaryCard title={isEnglish ? 'Active Issues' : 'Issue Aktif'} value={userBlocks.reduce((acc, b) => acc + b.allIssues.filter(i => i.status !== 'resolved').length, 0)} icon={Activity} gradient="from-amber-500 to-orange-600" />
-                        </div>
+                        <SummaryRow cards={[
+                            { title: isEnglish ? 'Total PIC' : 'Total PIC', value: userBlocks.length, icon: Users, gradient: 'from-indigo-500 to-purple-600' },
+                            { title: isEnglish ? 'Total Tasks' : 'Total Tugas', value: userBlocks.reduce((acc, b) => acc + b.recurring.length + b.special.length, 0), icon: CheckCircle2, gradient: 'from-emerald-500 to-teal-600' },
+                            { title: isEnglish ? 'Overdue' : 'Terlambat', value: userBlocks.reduce((acc, b) => acc + [...b.recurring, ...b.special].filter(j => checkIsOverdue(j, selectedMonth)).length, 0), icon: AlertCircle, gradient: 'from-rose-500 to-red-600' },
+                            { title: isEnglish ? 'Active Issues' : 'Issue Aktif', value: userBlocks.reduce((acc, b) => acc + b.allIssues.filter(i => i.status !== 'resolved').length, 0), icon: Activity, gradient: 'from-amber-500 to-orange-600' },
+                        ]} />
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             {userBlocks.map(({ user, recurring, special, pendingCount, config }) => (

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid3x3, Package, Clock, AlertCircle, Download, FileSpreadsheet, Search, FileText, Truck, Sparkles, TrendingUp, ShieldAlert, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
-import { SummaryCard } from '../components/ui/Card';
+import { SummaryRow } from '../components/ui/Card';
 import { Modal } from '../components/ui/Modal';
 import InventoryGrid from '../components/inventory/InventoryGrid';
 import ExternalInventoryTable from '../components/inventory/ExternalInventoryTable';
@@ -245,32 +245,12 @@ export default function Inventory({
     return (
         <div className="animate-in fade-in zoom-in-95 duration-300">
             {/* SUMMARY CARDS FOR INVENTORY */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <SummaryCard
-                    title={text.totalSlot}
-                    value={TOTAL_SLOTS}
-                    icon={Grid3x3}
-                    gradient="from-slate-500 to-slate-700"
-                />
-                <SummaryCard
-                    title={text.emptySlot}
-                    value={stats.empty}
-                    icon={Package}
-                    gradient="from-emerald-500 to-teal-600"
-                />
-                <SummaryCard
-                    title={text.borrowed}
-                    value={stats.borrowed}
-                    icon={Clock}
-                    gradient="from-amber-500 to-orange-600"
-                />
-                <SummaryCard
-                    title={text.audit}
-                    value={stats.audit}
-                    icon={AlertCircle}
-                    gradient="from-purple-500 to-violet-600"
-                />
-            </div>
+            <SummaryRow className="mb-6" cards={[
+                { title: text.totalSlot, value: TOTAL_SLOTS, icon: Grid3x3, gradient: 'from-slate-500 to-slate-700' },
+                { title: text.emptySlot, value: stats.empty, icon: Package, gradient: 'from-emerald-500 to-teal-600' },
+                { title: text.borrowed, value: stats.borrowed, icon: Clock, gradient: 'from-amber-500 to-orange-600' },
+                { title: text.audit, value: stats.audit, icon: AlertCircle, gradient: 'from-purple-500 to-violet-600' },
+            ]} />
 
             {/* INCONSISTENCY WARNING (STUCK BOXES) */}
             {inventoryIssues.length > 0 && (

@@ -11,8 +11,9 @@ export const Card = ({ children, className = '', onClick }) => (
 
 // StatCard / SummaryCard — satu desain konsisten (glass + gradient) untuk SEMUA menu.
 // Props: title, value, subtext, icon, colorClass (ikon bg, backward-compatible),
-//        gradient (gradient ikon), valueClass (ukuran angka).
-export const SummaryCard = ({ title, value, subtext, icon: Icon, colorClass, gradient, valueClass = 'text-xl', className = '' }) => (
+//        gradient (gradient ikon), valueClass (ukuran angka), valuePrefix (mis. "Rp "),
+//        action (node tambahan di kanan, mis. tombol salin).
+export const SummaryCard = ({ title, value, subtext, icon: Icon, colorClass, gradient, valueClass = 'text-xl', valuePrefix = '', className = '', action }) => (
     <div
         className={`group relative overflow-hidden glass-card rounded-2xl p-4 flex items-center gap-4 transition-all duration-300 hover:-translate-y-0.5 ${className}`}
     >
@@ -23,13 +24,34 @@ export const SummaryCard = ({ title, value, subtext, icon: Icon, colorClass, gra
             {Icon && <Icon size={22} />}
         </div>
 
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
             <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-0.5 truncate">{title}</div>
-            <div className={`${valueClass} font-black leading-tight text-slate-800 dark:text-white tabular-nums truncate`}>{value}</div>
+            <div className={`${valueClass} font-black leading-tight text-slate-800 dark:text-white tabular-nums truncate`}>{valuePrefix}{value}</div>
             {subtext && <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5 truncate">{subtext}</div>}
         </div>
+
+        {action && <div className="flex-shrink-0">{action}</div>}
     </div>
 );
+
+// SummaryRow — satu sumber kebenaran untuk baris kartu ringkasan (menghilangkan duplikasi markup grid).
+// Props: cards (array objek yang sama dengan props SummaryCard + key), cols (2|3|4),
+//        className (tambahan, mis. mb-5 / animate-in), children (node ekstra, mis. tombol tambah).
+export const SummaryRow = ({ cards = [], cols = 4, className = '', children }) => {
+    const colCls = {
+        2: 'sm:grid-cols-2',
+        3: 'sm:grid-cols-3',
+        4: 'grid-cols-2 md:grid-cols-4',
+    }[cols] || 'grid-cols-2 md:grid-cols-4';
+    return (
+        <div className={`grid ${colCls} gap-4 ${className}`}>
+            {cards.map((c, i) => (
+                <SummaryCard key={c.key ?? i} {...c} />
+            ))}
+            {children}
+        </div>
+    );
+};
 
 export const CardHeader = React.forwardRef(({ className = '', ...props }, ref) => (
     <div ref={ref} className={`flex flex-col space-y-1.5 ${className}`} {...props} />
