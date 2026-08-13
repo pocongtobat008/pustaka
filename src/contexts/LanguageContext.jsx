@@ -33,7 +33,6 @@ const translations = {
     'sidebar.item.masterData': 'Master Data',
     'sidebar.item.book': 'Book (COA)',
     'sidebar.item.systemLogs': 'Log Sistem',
-    'sidebar.item.componentShowcase': 'Galeri Komponen',
 
     'sidebar.ocr.ready': 'OCR Siap',
     'sidebar.ocr.queueEmpty': 'Antrian kosong',
@@ -82,7 +81,6 @@ const translations = {
     'sidebar.item.masterData': 'Master Data',
     'sidebar.item.book': 'Book (COA)',
     'sidebar.item.systemLogs': 'System Logs',
-    'sidebar.item.componentShowcase': 'Component Gallery',
 
     'sidebar.ocr.ready': 'OCR Ready',
     'sidebar.ocr.queueEmpty': 'Queue is empty',

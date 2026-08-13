@@ -25,7 +25,6 @@ import {
     FileSpreadsheet,
     FlaskConical,
     Wand2,
-    Palette,
 } from 'lucide-react';
 
 import './Sidebar.css';
@@ -81,7 +80,6 @@ const MENU_SECTIONS = [
         items: [
             { id: 'master', icon: Settings, labelKey: 'sidebar.item.masterData' },
             { id: 'system-logs', icon: Server, labelKey: 'sidebar.item.systemLogs' },
-            { id: 'component-showcase', icon: Palette, labelKey: 'sidebar.item.componentShowcase' },
         ],
     },
 ];
