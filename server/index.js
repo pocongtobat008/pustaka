@@ -16,6 +16,8 @@ import fs from 'fs';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import { knex, initDb } from './db.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -72,6 +74,45 @@ if (!fs.existsSync(logsDir)) {
 }
 
 const app = express();
+
+// ── Keamanan: percayai proxy terdekat (Vite dev/preview) yang meneruskan IP asli via X-Forwarded-For ──
+app.set('trust proxy', 1);
+
+// ── Keamanan: security headers (helmet) — CSP dinonaktifkan karena aplikasi memakai banyak style inline ──
+app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+}));
+
+// ── Keamanan: rate limiting global (anti-DDoS) ──
+// Berlaku untuk SEMUA request /api. IP diambil dari X-Forwarded-For yang diisi Vite proxy.
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 menit
+    limit: 600,               // maks 600 request per IP per jendela
+    standardHeaders: true,    // X-RateLimit-* headers
+    legacyHeaders: false,
+    skip: (req) => req.path === '/api/health',
+    message: { error: 'Terlalu banyak permintaan. Coba lagi nanti.' },
+});
+
+// Limiter ketat untuk endpoint login (anti-bruteforce)
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 10,                // maks 10 percobaan login per IP per 15 menit
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Terlalu banyak percobaan login. Tunggu 15 menit.' },
+});
+
+// Limiter untuk AI agent (endpoint mahal — batasi pemakaian)
+const aiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 120,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Terlalu banyak permintaan AI. Coba lagi nanti.' },
+});
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: { origin: "*", methods: ["GET", "POST"] }
@@ -156,33 +197,34 @@ const PORT = Number(process.env.PORT) || 5005;
 
 // Middleware
 app.use(cookieParser());
+// ── Keamanan: CORS ketat — hanya origin yang diizinkan (via env CORS_ORIGINS, koma) ──
+const configuredOrigins = (process.env.CORS_ORIGINS || '').split(',').map(s => s.trim()).filter(Boolean);
+const defaultOrigins = [
+    'http://localhost:5173', 'http://127.0.0.1:5173',
+    'http://localhost:5174', 'http://127.0.0.1:5174',
+    'http://localhost:3000',
+    'https://pustaka.izal.my.id', 'http://pustaka.izal.my.id',
+];
+const allowedOrigins = [...new Set([...defaultOrigins, ...configuredOrigins])];
+
 app.use(cors({
     origin: (origin, callback) => {
-        // Allow requests with no origin (like mobile apps or curl)
+        // Request tanpa Origin (curl, mobile, health-check) — izinkan
         if (!origin) return callback(null, true);
-
-        const allowedOrigins = [
-            'http://localhost:5173',
-            'http://127.0.0.1:5173',
-            'http://localhost:3000',
-            // Add other local IPs if needed, or use a regex
-        ];
-
-        // Match localhost or any IP on the local network (simplified for dev)
-        const isLocal = allowedOrigins.includes(origin) ||
-            /^http:\/\/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:5173$/.test(origin);
-
-        if (isLocal) {
-            callback(null, true);
-        } else {
-            // For production, you might want to be more restrictive
-            callback(null, true);
-        }
+        // Izinkan bila ada di daftar, atau IP lokal di network (dev)
+        const isAllowed = allowedOrigins.includes(origin) ||
+            /^http:\/\/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:(5173|5174)$/.test(origin);
+        callback(null, isAllowed);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
+
+// ── Keamanan: rate limiting per rute ──
+app.use('/api', apiLimiter); // semua /api dibatasi (anti-DDoS)
+app.use('/api/login', loginLimiter); // login dibatasi ketat (anti-bruteforce)
+app.use('/api/ai', aiLimiter); // endpoint AI dibatasi (mencegah penyalahgunaan LLM)
 
 // Gunakan Morgan untuk log HTTP request ke konsol
 const skipLogPaths = ['/uploads', '/api/ocr/status', '/api/ocr/queue', '/api/pustaka/guides', '/api/pustaka/categories', '/api/logs'];
@@ -191,8 +233,8 @@ app.use(morgan('dev', {
     stream: { write: message => logger.info(message.trim()) }
 }));
 
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyParser.json({ limit: '25mb' }));
+app.use(bodyParser.urlencoded({ limit: '25mb', extended: true }));
 
 // ── Public health-check endpoint (no auth — for monitoring/uptime tools) ──
 // Registered BEFORE all other /api routers so it is never shadowed.
@@ -1049,6 +1091,13 @@ app.get('/uploads/:filename', (req, res, next) => {
         }
     }
 
+    // Keamanan: cegah sniffing tipe file & netralkan SVG (potensi XSS) dengan unduhan paksa
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    if (filename.toLowerCase().endsWith('.svg')) {
+        res.setHeader('Content-Type', 'image/svg+xml');
+        res.setHeader('Content-Disposition', `attachment; filename="${path.basename(filename)}"`);
+    }
+
     res.sendFile(filePath, (err) => {
         if (err) {
             if (err.code === 'ENOENT') {
@@ -1105,10 +1154,19 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => logger.info(`Client disconnected: ${socket.id}`));
 });
 
-// Global Error Handler
+// Global Error Handler — di produksi jangan bocorkan detail internal
 app.use((err, req, res, next) => {
+    const isProd = process.env.NODE_ENV === 'production';
     logger.error(`Unhandled Error: ${err.message}`, { stack: err.stack, path: req.path });
-    res.status(500).json({ error: err.message });
+
+    // Multer: file terlalu besar → 413; error validasi upload → 400
+    let status = err.status || 500;
+    if (err.name === 'MulterError' && err.code === 'LIMIT_FILE_SIZE') status = 413;
+    if (err.name === 'MulterError' && err.code !== 'LIMIT_FILE_SIZE') status = 400;
+    if (status === 500) {
+        return res.status(500).json({ error: isProd ? 'Internal Server Error' : err.message });
+    }
+    return res.status(status).json({ error: err.message });
 });
 
 // Handle Server Errors (e.g. EADDRINUSE)

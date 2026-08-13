@@ -10,6 +10,15 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 // https://vite.dev/config/
+
+// ── Keamanan: teruskan IP asli klien ke backend agar rate limiting (anti-DDoS/bruteforce) akurat ──
+const forwardClientIP = (proxy) => {
+  proxy.on('proxyReq', (proxyReq, req) => {
+    const ip = req.socket?.remoteAddress || '';
+    if (ip) proxyReq.setHeader('X-Forwarded-For', ip);
+  });
+};
+
 export default defineConfig({
   plugins: [react()],
   resolve: {
@@ -30,11 +39,13 @@ export default defineConfig({
         target: apiTarget,
         changeOrigin: true,
         secure: false,
+        configure: forwardClientIP,
       },
       '/uploads': {
         target: apiTarget,
         changeOrigin: true,
         secure: false,
+        configure: forwardClientIP,
       },
       '/socket.io': {
         target: apiTarget,
@@ -50,8 +61,8 @@ export default defineConfig({
     host: true,
     allowedHosts: ["pustaka.izal.my.id"],
     proxy: {
-      '/api': { target: apiTarget, changeOrigin: true, secure: false },
-      '/uploads': { target: apiTarget, changeOrigin: true, secure: false },
+      '/api': { target: apiTarget, changeOrigin: true, secure: false, configure: forwardClientIP },
+      '/uploads': { target: apiTarget, changeOrigin: true, secure: false, configure: forwardClientIP },
       '/socket.io': { target: apiTarget, ws: true, changeOrigin: true, secure: false }
     }
   }
