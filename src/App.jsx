@@ -4094,16 +4094,17 @@ export default function App() {
                 {activeTab === 'anydoc' && (
                   <AnyDoc
                     isDarkMode={isDarkMode}
+                    currentUser={currentUser}
                   />
                 )}
                 {activeTab === 'ai-doc-intel' && (
-                  <AiDocIntel isDarkMode={isDarkMode} />
+                  <AiDocIntel isDarkMode={isDarkMode} currentUser={currentUser} />
                 )}
                 {activeTab === 'ai-doc-train' && (
-                  <AiDocTrain isDarkMode={isDarkMode} />
+                  <AiDocTrain isDarkMode={isDarkMode} currentUser={currentUser} />
                 )}
                 {activeTab === 'ai-pdf-tools' && (
-                  <AiPdfTools isDarkMode={isDarkMode} />
+                  <AiPdfTools isDarkMode={isDarkMode} currentUser={currentUser} />
                 )}
                 {activeTab === 'invoices' && (
                   <Invoices

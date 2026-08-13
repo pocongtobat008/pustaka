@@ -77,7 +77,7 @@ const ToolCard = ({ tool, active, onClick, isDarkMode }) => {
     );
 };
 
-export default function AiPdfTools({ isDarkMode }) {
+export default function AiPdfTools({ isDarkMode, currentUser }) {
     const [activeTool, setActiveTool] = useState('convert');
     const [files, setFiles] = useState([]);
     const [form, setForm] = useState({ quality: 'medium', mode: 'all', pages: '', language: 'eng', password: '', autoRotate: true, perPage: false });
@@ -573,6 +573,7 @@ export default function AiPdfTools({ isDarkMode }) {
                                                             {dateStr}{dateStr ? ' • ' : ''}{formatFileSize(x.file_size)}
                                                             {compressPct(x) !== null && <span className="text-emerald-500 font-bold"> • −{compressPct(x).toFixed(0)}%</span>}
                                                             {x.tool === 'ocr' && x.orientation && <span className="text-amber-500 font-bold"> • rotasi {x.orientation}</span>}
+                                                            {x.created_by ? ` • oleh ${x.created_by}` : ''}
                                                         </p>
                                                     </div>
                                                     {x.fileExists === false && (

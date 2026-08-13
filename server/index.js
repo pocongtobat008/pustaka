@@ -1034,6 +1034,21 @@ app.get('/uploads/:filename', (req, res, next) => {
     if (!resolvedPath.startsWith(resolvedUploadsDir)) {
         return res.status(403).json({ error: "Access Denied" });
     }
+
+    // Privasi dokumen AnyDoc: file anydoc-*.md hanya boleh diunduh oleh pembuatnya,
+    // kecuali admin/superadmin. Nama file membawa owner: anydoc-<owner>-<ts>-<rand>.md
+    if (filename.startsWith('anydoc-') && filename.endsWith('.md')) {
+        const role = String(req.user?.role || '').toLowerCase();
+        const isAdminUser = role === 'admin' || role === 'superadmin';
+        const m = filename.match(/^anydoc-([a-zA-Z0-9_-]{1,40})-\d+-[a-z0-9]+\.md$/);
+        const owner = m ? m[1] : null;
+        const me = req.user?.username || req.user?.name;
+        // File lama (tanpa owner di nama) maupun file milik user lain → hanya admin
+        if (!isAdminUser && owner !== me) {
+            return res.status(403).json({ error: "Access Denied" });
+        }
+    }
+
     res.sendFile(filePath, (err) => {
         if (err) {
             if (err.code === 'ENOENT') {

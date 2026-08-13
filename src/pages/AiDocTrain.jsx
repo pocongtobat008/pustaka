@@ -5,7 +5,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 
 // ── Training Dokumen — mapping field & melatih AI per jenis dokumen ──
 // Menu terpisah dari AI Document Intelligence agar pengguna fokus menyiapkan template dulu.
-export default function AiDocTrain({ isDarkMode }) {
+export default function AiDocTrain({ isDarkMode, currentUser }) {
     const { isEnglish } = useLanguage();
     const title = isEnglish ? 'Document Training' : 'Training Dokumen';
     const desc = isEnglish
@@ -29,7 +29,7 @@ export default function AiDocTrain({ isDarkMode }) {
             </div>
 
             {/* TemplateMapper dalam mode training (lockView: tanpa tab ekstraksi) */}
-            <TemplateMapper isDarkMode={isDarkMode} defaultView="train" lockView />
+            <TemplateMapper isDarkMode={isDarkMode} currentUser={currentUser} defaultView="train" lockView />
         </div>
     );
 }

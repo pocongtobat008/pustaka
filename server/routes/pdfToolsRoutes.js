@@ -5,8 +5,10 @@ import path from 'path';
 import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { knex } from '../db.js';
+import { checkAuth } from '../middleware/auth.js';
 
 const router = express.Router();
+router.use(checkAuth); // semua /api/pdf-tools/* wajib login (req.user tersedia)
 
 // Service Flask PDFtoword (romizone/PDFtoword) — berjalan via pm2 di port 5000
 const PDF_TOOLS_BASE = process.env.PDF_TOOLS_BASE || 'http://127.0.0.1:5000';
@@ -241,10 +243,25 @@ router.post('/pdf-tools/:tool', uploadAny, async (req, res) => {
 
 // ── Riwayat hasil AI PDF Tools: simpan agar bisa diunduh ulang tanpa proses ulang ──
 
+// Privasi: dokumen hanya terlihat oleh pembuatnya, kecuali admin/superadmin.
+const isAdmin = (req) => {
+    const role = String(req.user?.role || '').toLowerCase();
+    return role === 'admin' || role === 'superadmin';
+};
+const isOwnerOrAdmin = (req, owner) => isAdmin(req) || (owner && (req.user?.username === owner || req.user?.name === owner));
+
+// Scope riwayat: non-admin hanya melihat baris yang ia buat (username atau name)
+const historyScope = (q, req) => {
+    if (isAdmin(req)) return q;
+    return q.where(w => {
+        w.where('created_by', req.user?.username).orWhere('created_by', req.user?.name);
+    });
+};
+
 // GET /api/pdf-tools/history — daftar riwayat (desc)
 router.get('/pdf-tools/history', async (req, res) => {
     try {
-        const rows = await knex('pdf_tool_history').orderBy('created_at', 'desc').limit(100);
+        const rows = await historyScope(knex('pdf_tool_history'), req).orderBy('created_at', 'desc').limit(100);
         const out = rows.map(r => ({
             ...r,
             downloadUrl: `/api/pdf-tools/history/file?id=${r.id}`,
@@ -264,6 +281,7 @@ router.get('/pdf-tools/history/file', async (req, res) => {
         if (!Number.isFinite(id)) return res.status(400).json({ error: 'ID wajib diisi.' });
         const row = await knex('pdf_tool_history').where('id', id).first();
         if (!row) return res.status(404).json({ error: 'Riwayat tidak ditemukan.' });
+        if (!isOwnerOrAdmin(req, row.created_by)) return res.status(403).json({ error: 'Anda tidak berhak mengakses dokumen ini.' });
 
         // Baris OCR → kirim teks sebagai file .txt (di-generate on-the-fly)
         if (row.tool === 'ocr') {
@@ -294,6 +312,7 @@ router.delete('/pdf-tools/history/:id', async (req, res) => {
     try {
         const row = await knex('pdf_tool_history').where('id', Number(req.params.id)).first();
         if (!row) return res.status(404).json({ error: 'Riwayat tidak ditemukan.' });
+        if (!isOwnerOrAdmin(req, row.created_by)) return res.status(403).json({ error: 'Anda tidak berhak menghapus dokumen ini.' });
         try { fs.unlinkSync(path.join(TOOL_HISTORY_DIR, path.basename(row.file_path))); } catch { /* best-effort */ }
         await knex('pdf_tool_history').where('id', row.id).del();
         res.json({ ok: true });

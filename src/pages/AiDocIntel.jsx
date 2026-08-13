@@ -5,7 +5,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 
 // ── AI Document Intelligence — fokus ekstraksi data dari PDF asli ──
 // Menu terpisah dari Training Dokumen agar alur upload → ekstrak → Excel tidak ribet.
-export default function AiDocIntel({ isDarkMode }) {
+export default function AiDocIntel({ isDarkMode, currentUser }) {
     const { isEnglish } = useLanguage();
     const title = isEnglish ? 'AI Document Intelligence' : 'AI Document Intelligence';
     const desc = isEnglish
@@ -29,7 +29,7 @@ export default function AiDocIntel({ isDarkMode }) {
             </div>
 
             {/* TemplateMapper dalam mode ekstraksi (lockView: tanpa tab training) */}
-            <TemplateMapper isDarkMode={isDarkMode} defaultView="extract" lockView />
+            <TemplateMapper isDarkMode={isDarkMode} currentUser={currentUser} defaultView="extract" lockView />
         </div>
     );
 }

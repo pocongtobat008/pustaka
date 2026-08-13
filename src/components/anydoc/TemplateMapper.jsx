@@ -4,7 +4,7 @@ import DocIntelligenceStudio from './DocIntelligenceStudio.jsx';
 import {
     FileSpreadsheet, Loader2, Plus, Trash2, UploadCloud, CheckCircle2, AlertCircle,
     X, Save, FlaskConical, Table2, ListChecks, Download,
-    FolderOpen, Sparkles, Layers, History, BarChart3, AlertTriangle, RefreshCw, ChevronDown,
+    FolderOpen, Sparkles, Layers, History, BarChart3, AlertTriangle, RefreshCw, ChevronDown, Lock,
 } from 'lucide-react';
 
 const getApiUrl = () => (window.location.protocol === 'file:' ? 'http://localhost:5005/api' : '/api');
@@ -48,7 +48,7 @@ const cellsFromItems = (items, gap = 10) => {
     return cells;
 };
 
-export default function TemplateMapper({ isDarkMode, defaultView = 'train', lockView = false }) {
+export default function TemplateMapper({ isDarkMode, defaultView = 'train', lockView = false, currentUser = null }) {
     const [templates, setTemplates] = useState([]);
     const [activeId, setActiveId] = useState(null);
     const [view, setView] = useState('list'); // 'list' | 'train' | 'extract'
@@ -630,6 +630,10 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
             {/* ── Pilih template / daftar ── */}
             <div className={`${cardCls} p-4 mb-5`}>
                 <p className={labelCls}>Template (Jenis Dokumen)</p>
+                <p className={`text-[10px] -mt-2 mb-3 flex items-center gap-1.5 ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>
+                    <Lock size={11} />
+                    Template dipakai bersama, tetapi hasil ekstraksi, arsip &amp; export hanya terlihat oleh pembuatnya (admin melihat semua).
+                </p>
                 {templates.length === 0 && (
                     <p className={`text-xs mb-3 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
                         Belum ada template. Buat template baru, upload sampel (1 atau banyak), lalu mapping data satu per satu.
@@ -646,6 +650,11 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                         >
                             <FolderOpen size={12} /> {t.name}
                             {t.doc_type && <span className={`opacity-50 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>• {t.doc_type}</span>}
+                            {t.created_by && (
+                                <span className={`text-[9px] font-semibold ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>
+                                    • oleh {t.created_by}
+                                </span>
+                            )}
                         </button>
                     ))}
                 </div>
@@ -1137,6 +1146,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                             <div className="flex-1">
                                 <p className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>Arsip Dokumen (Penyimpanan)</p>
                                 <p className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>PDF asli tersimpan otomatis setelah ekstraksi — unduh atau ekstrak ulang tanpa upload</p>
+                                <p className={`text-[9px] mt-0.5 flex items-center gap-1 ${isDarkMode ? 'text-amber-300/60' : 'text-amber-600/70'}`}><Lock size={9} /> Pribadi: hanya pembuat arsip (atau admin) yang bisa melihat</p>
                             </div>
                             <button
                                 onClick={e => { e.stopPropagation(); loadArchive(activeId); }}
@@ -1179,7 +1189,12 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                                                     onChange={() => toggleArchiveSel(Number(x.id))}
                                                                     className="accent-amber-500" />
                                                             </td>
-                                                            <td className={`px-3 py-2 font-semibold min-w-[160px] truncate max-w-[220px] ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{x.filename}</td>
+                                                            <td className={`px-3 py-2 min-w-[160px] truncate max-w-[220px] ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>
+                                                                <span className="font-semibold">{x.filename}</span>
+                                                                {x.created_by && (
+                                                                    <span className={`block text-[9px] font-normal ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>oleh {x.created_by}</span>
+                                                                )}
+                                                            </td>
                                                             <td className={`px-3 py-2 ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>{x.period}</td>
                                                             <td className={`px-3 py-2 ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>{x.doc_count}</td>
                                                             <td className={`px-3 py-2 ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>{x.total_rows}</td>
@@ -1250,6 +1265,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                             <div className="flex-1">
                                 <p className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>History Export Excel</p>
                                 <p className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>File Excel yang pernah di-export — unduh ulang kapan saja tanpa extract ulang</p>
+                                <p className={`text-[9px] mt-0.5 flex items-center gap-1 ${isDarkMode ? 'text-emerald-300/60' : 'text-emerald-600/70'}`}><Lock size={9} /> Pribadi: hanya pembuat export (atau admin) yang bisa melihat</p>
                             </div>
                             {exportHistory.length > 0 && (
                                 <span className={`px-2 py-0.5 rounded-full text-[9px] font-black ${isDarkMode ? 'bg-emerald-500/20 text-emerald-300' : 'bg-emerald-100 text-emerald-600'}`}>
@@ -1312,6 +1328,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                                         <p className={`text-[11px] font-bold truncate ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{x.title}</p>
                                                         <p title={dateStr} className={`text-[9px] truncate ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>
                                                             {formatRelativeTime(x.created_at)}{formatRelativeTime(x.created_at) ? ' • ' : ''}{x.file_count ?? 0} file • {x.doc_count ?? 0} dok • {x.total_rows ?? 0} baris • {formatFileSize(x.file_size)}
+                                                            {x.created_by ? ` • oleh ${x.created_by}` : ''}
                                                         </p>
                                                     </div>
                                                     {x.fileExists === false && (

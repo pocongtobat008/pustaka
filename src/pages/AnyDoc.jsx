@@ -160,7 +160,7 @@ const ChipEditor = ({ items, onChange, placeholder, isDarkMode, accent = 'indigo
     );
 };
 
-export default function AnyDoc({ isDarkMode }) {
+export default function AnyDoc({ isDarkMode, currentUser }) {
     const [file, setFile] = useState(null);
     const [dragOver, setDragOver] = useState(false);
     const [converting, setConverting] = useState(false);
@@ -451,6 +451,7 @@ export default function AnyDoc({ isDarkMode }) {
                                         <p className={`text-xs font-semibold truncate ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>{h.name}</p>
                                         <p className={`text-[10px] flex items-center gap-1 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
                                             <Clock size={9} /> {formatRelativeTime(h.modifiedAt)} • {formatFileSize(h.size)}
+                                            {h.created_by ? ` • oleh ${h.created_by}` : ''}
                                         </p>
                                     </div>
                                     <Download size={14} className={`flex-shrink-0 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`} />

@@ -16,6 +16,21 @@ const router = express.Router();
 router.use(checkAuth);
 console.log('[AnyDoc] Routes module loaded');
 
+// ── Privasi: dokumen hanya terlihat oleh pembuatnya, kecuali admin/superadmin ──
+const isAdmin = (req) => {
+    const role = String(req.user?.role || '').toLowerCase();
+    return role === 'admin' || role === 'superadmin';
+};
+const isOwnerOrAdmin = (req, owner) => isAdmin(req) || (owner && (req.user?.username === owner || req.user?.name === owner));
+
+// Scope kueri: non-admin hanya melihat baris yang ia buat (username atau name)
+const scopeByCreator = (q, req) => {
+    if (isAdmin(req)) return q;
+    return q.where(w => {
+        w.where('created_by', req.user?.username).orWhere('created_by', req.user?.name);
+    });
+};
+
 // Dedicated upload dir for anydoc (kept separate from general uploads)
 const ANYDOC_DIR = path.join(__dirname, '../../uploads/anydoc');
 if (!fs.existsSync(ANYDOC_DIR)) fs.mkdirSync(ANYDOC_DIR, { recursive: true });
@@ -83,8 +98,10 @@ router.post('/convert', upload.single('file'), async (req, res) => {
         }
 
         // Keep a copy of the markdown output as a downloadable file (root uploads dir,
-        // prefix anydoc- so the existing /uploads/:filename route with auth handles it)
-        const mdName = `anydoc-${Date.now()}-${Math.random().toString(36).slice(2, 6)}.md`;
+        // prefix anydoc- + owner so the existing /uploads/:filename route can enforce
+        // privacy: hanya pembuat (atau admin) yang boleh mengunduh).
+        const ownerTag = String(req.user?.username || req.user?.name || 'user').replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 40);
+        const mdName = `anydoc-${ownerTag}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}.md`;
         fs.writeFileSync(path.join(UPLOADS_DIR, mdName), markdown, 'utf8');
 
         res.json({
@@ -124,7 +141,8 @@ router.post('/convert/archive', async (req, res) => {
 
         // Save the markdown as a file so it can be streamed/downloaded like other documents
         const rand = Math.random().toString(36).slice(2, 6);
-        const mdName = `anydoc-${Date.now()}-${rand}.md`;
+        const ownerTag = String(req.user?.username || req.user?.name || 'user').replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 40);
+        const mdName = `anydoc-${ownerTag}-${Date.now()}-${rand}.md`;
         fs.writeFileSync(path.join(UPLOADS_DIR, mdName), markdown, 'utf8');
         const newDocId = `doc-anydoc-${Date.now()}-${rand}`;
 
@@ -424,15 +442,26 @@ router.get('/templates', async (req, res) => {
 });
 
 // GET /api/anydoc/templates/samples/file?name=xxx — ambil file sampel tersimpan (untuk reload mapping/validasi)
+// Privasi: file sampel adalah dokumen — hanya pembuat template yang mereferensikannya
+// (atau admin) yang boleh mengunduh.
 const TEMPLATE_MIME = {
     '.pdf': 'application/pdf', '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     '.doc': 'application/msword', '.txt': 'text/plain', '.md': 'text/plain',
 };
-router.get('/templates/samples/file', (req, res) => {
+router.get('/templates/samples/file', async (req, res) => {
     const name = String(req.query.name || '');
     const safe = path.basename(name);
     if (!name || safe !== name || !fs.existsSync(path.join(TEMPLATE_DIR, safe))) {
         return res.status(404).json({ error: 'Sampel tidak ditemukan.' });
+    }
+    // Cari template yang mereferensikan file sampel ini (created_by = owner sampel)
+    const templates = await knex('pdf_mapping_templates').select('id', 'created_by', 'sample_files');
+    const referencing = templates.find(t => normalizeSampleFiles(t.sample_files).some(s => s.path === safe));
+    if (!referencing) {
+        return res.status(403).json({ error: 'Sampel tidak terhubung ke template mana pun.' });
+    }
+    if (!isOwnerOrAdmin(req, referencing.created_by)) {
+        return res.status(403).json({ error: 'Anda tidak berhak mengakses sampel template ini.' });
     }
     res.setHeader('Content-Type', TEMPLATE_MIME[path.extname(safe).toLowerCase()] || 'application/octet-stream');
     res.setHeader('Content-Disposition', `attachment; filename="${safe}"`);
@@ -440,10 +469,11 @@ router.get('/templates/samples/file', (req, res) => {
 });
 
 // GET /api/anydoc/templates/extractions — riwayat ekstraksi (monitoring hasil bulanan)
+// Privasi: hanya hasil ekstraksi milik user, kecuali admin melihat semua.
 router.get('/templates/extractions', async (req, res) => {
     try {
         const tplId = Number(req.query.templateId);
-        const q = knex('pdf_extractions').orderBy('created_at', 'desc').limit(100);
+        const q = scopeByCreator(knex('pdf_extractions'), req).orderBy('created_at', 'desc').limit(100);
         if (Number.isFinite(tplId) && tplId > 0) q.where('template_id', tplId);
         const rows = await q;
         res.json(rows);
@@ -456,7 +486,7 @@ router.get('/templates/extractions', async (req, res) => {
 router.get('/templates/extractions/summary', async (req, res) => {
     try {
         const tplId = Number(req.query.templateId);
-        const q = knex('pdf_extractions')
+        const q = scopeByCreator(knex('pdf_extractions'), req)
             .select('period')
             .count('* as file_count')
             .sum('doc_count as doc_count')
@@ -476,10 +506,11 @@ router.get('/templates/extractions/summary', async (req, res) => {
 
 // ── Arsip Dokumen: penyimpanan PDF asli hasil ekstraksi ─────────────────────────
 // GET /api/anydoc/templates/archive — daftar file tersimpan (arsip dokumen)
+// Privasi: hanya arsip milik user, kecuali admin melihat semua.
 router.get('/templates/archive', async (req, res) => {
     try {
         const tplId = Number(req.query.templateId);
-        const q = knex('pdf_extractions')
+        const q = scopeByCreator(knex('pdf_extractions'), req)
             .whereNotNull('file_path')
             .orderBy('created_at', 'desc')
             .limit(200);
@@ -504,6 +535,7 @@ router.get('/templates/archive/file', async (req, res) => {
         if (!Number.isFinite(id)) return res.status(400).json({ error: 'ID arsip wajib diisi.' });
         const row = await knex('pdf_extractions').where('id', id).whereNotNull('file_path').first();
         if (!row) return res.status(404).json({ error: 'File arsip tidak ditemukan.' });
+        if (!isOwnerOrAdmin(req, row.created_by)) return res.status(403).json({ error: 'Anda tidak berhak mengakses dokumen ini.' });
         const safe = path.basename(row.file_path);
         const fp = path.join(ARCHIVE_DIR, safe);
         if (!fs.existsSync(fp)) return res.status(404).json({ error: 'File arsip hilang dari disk.' });
@@ -526,6 +558,12 @@ router.post('/templates/archive/re-extract', async (req, res) => {
 
         const rows = await knex('pdf_extractions').whereIn('id', ids).whereNotNull('file_path');
         if (!rows.length) return res.status(404).json({ error: 'File arsip tidak ditemukan.' });
+        // Privasi: hanya pembuat arsip (atau admin) yang boleh ekstrak ulang
+        for (const r of rows) {
+            if (!isOwnerOrAdmin(req, r.created_by)) {
+                return res.status(403).json({ error: `Anda tidak berhak mengakses "${r.filename}".` });
+            }
+        }
         // Urutkan sesuai urutan ids yang diminta (knex whereIn tidak menjamin urutan) —
         // supaya hasil sejajar dengan daftar file yang disiapkan frontend.
         const idOrder = new Map(ids.map((id, i) => [id, i]));
@@ -562,6 +600,7 @@ router.delete('/templates/archive/:id', async (req, res) => {
     try {
         const row = await knex('pdf_extractions').where('id', req.params.id).whereNotNull('file_path').first();
         if (!row) return res.status(404).json({ error: 'File arsip tidak ditemukan.' });
+        if (!isOwnerOrAdmin(req, row.created_by)) return res.status(403).json({ error: 'Anda tidak berhak menghapus dokumen ini.' });
         try { fs.unlinkSync(path.join(ARCHIVE_DIR, path.basename(row.file_path))); } catch { /* best-effort */ }
         await knex('pdf_extractions').where('id', row.id).del();
         res.json({ ok: true });
@@ -637,10 +676,11 @@ router.post('/templates/exports', tplUploadAny, async (req, res) => {
 });
 
 // GET /api/anydoc/templates/exports — daftar history export (filter templateId opsional)
+// Privasi: hanya export milik user, kecuali admin melihat semua.
 router.get('/templates/exports', async (req, res) => {
     try {
         const tplId = Number(req.query.templateId);
-        const q = knex('pdf_exports').orderBy('created_at', 'desc').limit(100);
+        const q = scopeByCreator(knex('pdf_exports'), req).orderBy('created_at', 'desc').limit(100);
         if (Number.isFinite(tplId) && tplId > 0) q.where('template_id', tplId);
         const rows = await q;
         const out = rows.map(r => ({
@@ -661,6 +701,7 @@ router.get('/templates/exports/file', async (req, res) => {
         if (!Number.isFinite(id)) return res.status(400).json({ error: 'ID export wajib diisi.' });
         const row = await knex('pdf_exports').where('id', id).first();
         if (!row) return res.status(404).json({ error: 'Export tidak ditemukan.' });
+        if (!isOwnerOrAdmin(req, row.created_by)) return res.status(403).json({ error: 'Anda tidak berhak mengakses dokumen ini.' });
         const safe = path.basename(row.file_path);
         const fp = path.join(EXPORT_DIR, safe);
         if (!fs.existsSync(fp)) return res.status(404).json({ error: 'File export hilang dari disk.' });
@@ -680,6 +721,7 @@ router.delete('/templates/exports/:id', async (req, res) => {
     try {
         const row = await knex('pdf_exports').where('id', Number(req.params.id)).first();
         if (!row) return res.status(404).json({ error: 'Export tidak ditemukan.' });
+        if (!isOwnerOrAdmin(req, row.created_by)) return res.status(403).json({ error: 'Anda tidak berhak menghapus dokumen ini.' });
         try { fs.unlinkSync(path.join(EXPORT_DIR, path.basename(row.file_path))); } catch { /* best-effort */ }
         await knex('pdf_exports').where('id', row.id).del();
         res.json({ ok: true });
@@ -705,6 +747,7 @@ router.put('/templates/:id', async (req, res) => {
         const { id } = req.params;
         const t = await knex('pdf_mapping_templates').where('id', id).first();
         if (!t) return res.status(404).json({ error: 'Template tidak ditemukan.' });
+        if (!isOwnerOrAdmin(req, t.created_by)) return res.status(403).json({ error: 'Hanya pembuat template (atau admin) yang dapat mengubah template ini.' });
         const b = req.body || {};
         const upd = { updated_at: knex.fn.now() };
         if (b.name !== undefined) upd.name = String(b.name).trim() || t.name;
@@ -735,6 +778,7 @@ router.delete('/templates/:id', async (req, res) => {
     try {
         const t = await knex('pdf_mapping_templates').where('id', req.params.id).first();
         if (!t) return res.status(404).json({ error: 'Template tidak ditemukan.' });
+        if (!isOwnerOrAdmin(req, t.created_by)) return res.status(403).json({ error: 'Hanya pembuat template (atau admin) yang dapat menghapus template ini.' });
         for (const s of normalizeSampleFiles(t.sample_files)) {
             try { fs.unlinkSync(path.join(TEMPLATE_DIR, s.path)); } catch { /* best-effort */ }
         }
@@ -801,10 +845,16 @@ async function processOneFile({ buffer, originalname, chosen, enriched, fieldsBy
                 .where({ template_id: tpl.id, filename: originalname, period })
                 .first();
             if (existing) {
+                const canTouch = isOwnerOrAdmin({ user: user }, existing.created_by);
                 // Hapus file arsip lama bila digantikan oleh konten berbeda (hindari file yatim)
-                if (filePath && existing.file_path && existing.file_path !== filePath) {
+                if (canTouch && filePath && existing.file_path && existing.file_path !== filePath) {
                     try { fs.unlinkSync(path.join(ARCHIVE_DIR, path.basename(existing.file_path))); } catch { /* best-effort */ }
                 }
+                // JANGAN timpa created_by: baris yang sudah ada tetap milik pembuat aslinya
+                // (mis. file dengan nama sama diekstrak ulang oleh user lain).
+                delete payload.created_by;
+                // Jika bukan pemilik asli, jangan ganti file arsip miliknya
+                if (!canTouch) delete payload.file_path;
                 await knex('pdf_extractions').where('id', existing.id).update(payload);
             } else {
                 await knex('pdf_extractions').insert({ template_id: tpl.id, filename: originalname, period, ...payload });
@@ -922,11 +972,18 @@ router.post('/extract', extractUpload.array('files', 20), async (req, res) => {
 });
 
 // GET /api/anydoc/history — recent conversion results (metadata only)
+// Privasi: hanya file milik user yang tampil, kecuali admin melihat semua.
 router.get('/history', async (req, res) => {
     try {
         const files = fs.readdirSync(UPLOADS_DIR).filter(f => f.startsWith('anydoc-') && f.endsWith('.md'));
+        const isAdminUser = isAdmin(req);
+        const me = req.user?.username || req.user?.name;
         const items = files
             .map(f => {
+                // format: anydoc-<owner>-<ts>-<rand>.md (file lama tanpa owner → hanya admin)
+                const m = f.match(/^anydoc-([a-zA-Z0-9_-]{1,40})-(\d+)-([a-z0-9]+)\.md$/);
+                const owner = m ? m[1] : null;
+                if (!isAdminUser && owner !== me) return null;
                 const st = fs.statSync(path.join(UPLOADS_DIR, f));
                 return {
                     name: f.replace(/^anydoc-/, '').replace(/\.md$/, ''),
@@ -934,8 +991,10 @@ router.get('/history', async (req, res) => {
                     size: st.size,
                     modifiedAt: st.mtime.toISOString(),
                     url: `/uploads/${f}`,
+                    created_by: owner,
                 };
             })
+            .filter(Boolean)
             .sort((a, b) => b.modifiedAt.localeCompare(a.modifiedAt))
             .slice(0, 20);
         res.json(items);
