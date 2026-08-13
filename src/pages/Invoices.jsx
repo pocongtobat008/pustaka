@@ -395,7 +395,8 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
     useEffect(() => {
         const order = ['dashboard', 'invoice', 'proforma', 'tax', 'dealer', 'barang', 'rule', 'flow'];
         const visible = order.filter(t => perms['can_view_' + t]);
-        if (!perms['can_view_' + tab] && visible.length) {
+        // Tab 'trash' (Sampah) dikelola oleh isAdmin, bukan permission per-tab — jangan tendang keluar
+        if (tab !== 'trash' && !perms['can_view_' + tab] && visible.length) {
             setTab(visible[0]);
         }
     }, [perms, tab]);
