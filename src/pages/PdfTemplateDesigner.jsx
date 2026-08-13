@@ -3,7 +3,9 @@ import Handlebars from 'handlebars';
 import {
     Plus, Save, Trash2, Copy, CheckCircle2, Eye, FileCode2,
     RefreshCw, Download, AlertTriangle, ImagePlus, PenLine,
+    FileText, FolderOpen, Receipt,
 } from 'lucide-react';
+import { SummaryCard } from '../components/ui/Card';
 import { pdfTemplateService } from '../services/pdfTemplateService';
 import { useLanguage } from '../contexts/LanguageContext';
 import { SIGNATURE_PLACEHOLDER_PNG } from '../../server/services/signaturePlaceholder.js';
@@ -565,6 +567,38 @@ export default function PdfTemplateDesigner({ currentUser, hasPermission, toast 
                     Hanya admin yang dapat mengelola template PDF.
                 </div>
             )}
+
+            {/* Ringkasan — konsisten dengan SummaryCard di semua menu */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <SummaryCard
+                    title={isEnglish ? 'Templates' : 'Template'}
+                    value={templates.length}
+                    subtext={isEnglish ? 'Total PDF templates' : 'Total template PDF'}
+                    icon={FileCode2}
+                    gradient="from-indigo-500 to-purple-600"
+                />
+                <SummaryCard
+                    title={isEnglish ? 'Active' : 'Aktif'}
+                    value={templates.filter(t => t.is_active).length}
+                    subtext={isEnglish ? 'Currently in use' : 'Sedang dipakai'}
+                    icon={CheckCircle2}
+                    gradient="from-emerald-500 to-teal-600"
+                />
+                <SummaryCard
+                    title={isEnglish ? 'Doc Types' : 'Jenis Dokumen'}
+                    value={new Set(templates.map(t => t.doc_type).filter(Boolean)).size}
+                    subtext={isEnglish ? 'Unique document types' : 'Jenis dokumen unik'}
+                    icon={FolderOpen}
+                    gradient="from-amber-500 to-orange-600"
+                />
+                <SummaryCard
+                    title={isEnglish ? 'Recent Invoices' : 'Invoice Terbaru'}
+                    value={recentInvoices.length}
+                    subtext={isEnglish ? 'For preview testing' : 'Untuk uji preview'}
+                    icon={Receipt}
+                    gradient="from-violet-500 to-fuchsia-600"
+                />
+            </div>
 
             <div className="grid lg:grid-cols-[280px_1fr] gap-4">
                 {/* ── Daftar template ── */}

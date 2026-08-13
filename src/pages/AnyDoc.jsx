@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { SummaryCard } from '../components/ui/Card';
 import * as XLSX from 'xlsx';
 import {
     UploadCloud, FileText, FileSpreadsheet, File as FileIcon, Copy, Check, Download,
@@ -408,6 +409,14 @@ export default function AnyDoc({ isDarkMode, currentUser }) {
                 >
                     <History size={15} /> Riwayat ({history.length})
                 </button>
+            </div>
+
+            {/* ── Ringkasan ── */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
+                <SummaryCard title="Format Didukung" value={SUPPORTED_FORMATS.length} icon={FileText} gradient="from-indigo-500 to-purple-600" />
+                <SummaryCard title="Riwayat Konversi" value={history.length} icon={History} gradient="from-emerald-500 to-teal-600" />
+                <SummaryCard title="Mode Aktif" value={mode === 'convert' ? 'Konversi' : 'Ekstrak'} icon={mode === 'convert' ? FileCode2 : FileSpreadsheet} gradient={mode === 'convert' ? 'from-amber-500 to-orange-600' : 'from-teal-500 to-emerald-600'} valueClass="text-base" />
+                <SummaryCard title="File Siap Ekstrak" value={extractFiles.length} icon={ListChecks} gradient="from-cyan-500 to-blue-600" />
             </div>
 
             {/* Mode toggle */}

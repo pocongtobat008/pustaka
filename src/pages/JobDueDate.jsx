@@ -7,6 +7,7 @@ import {
     User as UserIcon, Trash2, Edit3, ArrowLeft, CalendarDays, Repeat, UserPlus, LayoutGrid, X, Hash, ChevronLeft, Settings, Activity, Timer, Check, Info, Eye
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { SummaryCard } from '../components/ui/Card';
 import { format, addMonths, subMonths, isBefore, startOfDay, intervalToDuration } from 'date-fns';
 import { id, enUS } from 'date-fns/locale';
 import { getSocket } from '../services/socketService';
@@ -863,22 +864,10 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                     >
                         {/* Global Summary Row */}
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl p-5 rounded-[2rem] border border-white/20 dark:border-white/5 shadow-sm">
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{isEnglish ? 'Total PIC' : 'Total PIC'}</p>
-                                <h4 className="text-2xl font-black dark:text-white">{userBlocks.length}</h4>
-                            </div>
-                            <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl p-5 rounded-[2rem] border border-white/20 dark:border-white/5 shadow-sm">
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{isEnglish ? 'Total Tasks' : 'Total Tugas'}</p>
-                                <h4 className="text-2xl font-black dark:text-white">{userBlocks.reduce((acc, b) => acc + b.recurring.length + b.special.length, 0)}</h4>
-                            </div>
-                            <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl p-5 rounded-[2rem] border border-white/20 dark:border-white/5 shadow-sm">
-                                <p className="text-[10px] font-black text-rose-500 uppercase tracking-widest mb-1">{isEnglish ? 'Overdue' : 'Terlambat'}</p>
-                                <h4 className="text-2xl font-black text-rose-600">{userBlocks.reduce((acc, b) => acc + [...b.recurring, ...b.special].filter(j => checkIsOverdue(j, selectedMonth)).length, 0)}</h4>
-                            </div>
-                            <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl p-5 rounded-[2rem] border border-white/20 dark:border-white/5 shadow-sm">
-                                <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1">{isEnglish ? 'Active Issues' : 'Issue Aktif'}</p>
-                                <h4 className="text-2xl font-black text-amber-600">{userBlocks.reduce((acc, b) => acc + b.allIssues.filter(i => i.status !== 'resolved').length, 0)}</h4>
-                            </div>
+                            <SummaryCard title={isEnglish ? 'Total PIC' : 'Total PIC'} value={userBlocks.length} icon={Users} gradient="from-indigo-500 to-purple-600" />
+                            <SummaryCard title={isEnglish ? 'Total Tasks' : 'Total Tugas'} value={userBlocks.reduce((acc, b) => acc + b.recurring.length + b.special.length, 0)} icon={CheckCircle2} gradient="from-emerald-500 to-teal-600" />
+                            <SummaryCard title={isEnglish ? 'Overdue' : 'Terlambat'} value={userBlocks.reduce((acc, b) => acc + [...b.recurring, ...b.special].filter(j => checkIsOverdue(j, selectedMonth)).length, 0)} icon={AlertCircle} gradient="from-rose-500 to-red-600" />
+                            <SummaryCard title={isEnglish ? 'Active Issues' : 'Issue Aktif'} value={userBlocks.reduce((acc, b) => acc + b.allIssues.filter(i => i.status !== 'resolved').length, 0)} icon={Activity} gradient="from-amber-500 to-orange-600" />
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

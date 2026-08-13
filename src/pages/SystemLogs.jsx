@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Terminal, RefreshCw, AlertCircle, FileWarning, Search, Download, Trash2 } from 'lucide-react';
-import { Card } from '../components/ui/Card';
+import { Terminal, RefreshCw, AlertCircle, AlertTriangle, FileWarning, Search, Download, Trash2 } from 'lucide-react';
+import { Card, SummaryCard } from '../components/ui/Card';
 import { systemService } from '../services/systemService';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -52,6 +52,11 @@ export default function SystemLogs({ isDarkMode }) {
         .filter(line => line.toLowerCase().includes(searchTerm.toLowerCase()))
         .reverse(); // Terbaru di atas
 
+    // Statistik ringkasan (sebelum filter pencarian, agar akurat)
+    const allLines = rawContent.split('\n').filter(l => l.trim() !== '');
+    const errorCount = allLines.filter(l => l.includes('"level":"error"') || l.toLowerCase().includes('error')).length;
+    const warnCount = allLines.filter(l => l.includes('"level":"warn"') || l.toLowerCase().includes('warn')).length;
+
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -85,6 +90,38 @@ export default function SystemLogs({ isDarkMode }) {
                         <RefreshCw size={20} className={`text-gray-500 ${isLoading ? 'animate-spin' : ''}`} />
                     </button>
                 </div>
+            </div>
+
+            {/* Ringkasan log — konsisten dengan SummaryCard di semua menu */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <SummaryCard
+                    title={isEnglish ? 'Total Entries' : 'Total Entri'}
+                    value={allLines.length.toLocaleString('id-ID')}
+                    subtext={isEnglish ? 'Log lines loaded' : 'Baris log dimuat'}
+                    icon={Terminal}
+                    gradient="from-indigo-500 to-purple-600"
+                />
+                <SummaryCard
+                    title={isEnglish ? 'Errors' : 'Error'}
+                    value={errorCount.toLocaleString('id-ID')}
+                    subtext={logType === 'error' ? 'error.log' : 'Semua level'}
+                    icon={AlertCircle}
+                    gradient="from-rose-500 to-red-600"
+                />
+                <SummaryCard
+                    title={isEnglish ? 'Warnings' : 'Warning'}
+                    value={warnCount.toLocaleString('id-ID')}
+                    subtext={isEnglish ? 'warn level' : 'level warn'}
+                    icon={AlertTriangle}
+                    gradient="from-amber-500 to-orange-600"
+                />
+                <SummaryCard
+                    title={isEnglish ? 'Active Log' : 'Log Aktif'}
+                    value={logType === 'error' ? 'error.log' : 'ocr-failures.log'}
+                    subtext={isEnglish ? 'Currently viewed' : 'Sedang dilihat'}
+                    icon={FileWarning}
+                    gradient="from-violet-500 to-fuchsia-600"
+                />
             </div>
 
             <Card className="p-0 sm:p-0 overflow-hidden border-0 shadow-2xl">
