@@ -379,7 +379,9 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                 numberPattern: '', // deteksi otomatis dari dokumen
                 numberPatternAuto: true,
             };
-            const list = [...templates, t];
+            // Idempoten: buang template bawaan lama (nama lama / NR lama) lalu daftarkan yang baru
+            const list = templates.filter(x => x.name !== 'NR' && x.name !== 'TTD Kaoru Nomura');
+            list.push(t);
             setTemplates(list); persistTemplates(list);
             setActiveTmplId(t.id);
         } catch (e) {
@@ -388,6 +390,27 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
             setTmplBusy(false);
         }
     };
+
+    // ── Auto-siapkan template NR saat halaman dibuka: tinggal upload & proses ──
+    // Kalau belum ada template NR di browser, unduh otomatis dari server dan aktifkan;
+    // buang template bawaan lama 'TTD Kaoru Nomura' (setting lama yang salah);
+    // lalu paksa mode otomatis agar ttd menimpa nama secara otomatis.
+    useEffect(() => {
+        const ensureNRTemplate = async () => {
+            try {
+                const hasNR = templates.some(t => t.name === 'NR');
+                if (hasNR) {
+                    const nr = templates.find(t => t.name === 'NR');
+                    setActiveTmplId(nr.id);
+                } else {
+                    await loadDefaultTemplate();
+                }
+                switchSigMode('auto');
+            } catch { /* abaikan — tombol manual tetap tersedia */ }
+        };
+        ensureNRTemplate();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     // ── Deteksi otomatis pola nomor dokumen ──
     const [detectBusy, setDetectBusy] = useState(false);
     const [detectInfo, setDetectInfo] = useState('');
@@ -635,7 +658,9 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                 }
             }
 
-            const res = await fetch(`${API_URL}/pdf-tools/${tool.id}`, { method: 'POST', credentials: 'include', body: fd });
+            // Auto (template) → sign-auto (deteksi blok nama+jabatan); Manual → sign (posisi tetap)
+            const apiTool = (tool.id === 'sign' && sigMode === 'auto') ? 'sign-auto' : tool.id;
+            const res = await fetch(`${API_URL}/pdf-tools/${apiTool}`, { method: 'POST', credentials: 'include', body: fd });
             const contentType = res.headers.get('content-type') || '';
             const cd = res.headers.get('content-disposition') || '';
             const filename = (cd.match(/filename="?([^"]+)"?/i) || [])[1] || `hasil_${tool.id}`;
@@ -1077,8 +1102,14 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                             Template Tanda Tangan ({templates.length})
                                         </p>
                                         <p className={`text-[11px] mb-2 ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>
-                                            Saat PDF diunggah, tanda tangan otomatis ditempatkan di atas setiap blok yang cocok (nama + jabatan) di seluruh halaman — tanpa pilih halaman/posisi manual.
+                                            Template <b>NR</b> sudah otomatis siap pakai: unggah PDF → ttd otomatis menimpa "Kaoru Nomura" + "General Manager" di halaman terakhir tiap nomor dokumen.
                                         </p>
+                                        {activeTmpl?.name === 'NR' && (
+                                            <div className={`flex items-start gap-2 p-3 rounded-xl border text-[11px] mb-2 ${isDarkMode ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-200' : 'bg-emerald-50 border-emerald-200 text-emerald-700'}`}>
+                                                <Sparkles size={13} className="mt-0.5 flex-shrink-0" />
+                                                <span><b>Template NR siap.</b> Cukup: 1) unggah file PDF di atas → 2) klik <b>Pratinjau Deteksi Blok</b> (opsional, lihat posisi ttd) → 3) klik <b>Proses Tanda Tangan PDF</b>. Tidak perlu atur apa pun lagi.</span>
+                                            </div>
+                                        )}
                                         {templates.length === 0 ? (
                                             <div className="space-y-2">
                                                 <p className={`text-[11px] italic rounded-xl border border-dashed p-3 ${isDarkMode ? 'text-white/40 border-white/15' : 'text-slate-400 border-slate-300'}`}>
@@ -1105,7 +1136,11 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                     >
                                                         <img src={t.sig.dataUrl} alt={t.name} className="w-16 h-9 object-contain rounded border bg-white/60 dark:bg-white/10 flex-shrink-0" />
                                                         <div className="min-w-0 flex-1">
-                                                            <p className={`text-[12px] font-extrabold truncate ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{t.name}</p>
+                                                            <p className={`text-[12px] font-extrabold truncate ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{t.name}
+                                                                {t.name === 'NR' && (
+                                                                    <span className={`ml-1.5 align-middle inline-block px-1.5 py-0.5 rounded-md text-[9px] font-black tracking-wide ${isDarkMode ? 'bg-emerald-500/20 text-emerald-300' : 'bg-emerald-100 text-emerald-700'}`}>SIAP PAKAI</span>
+                                                                )}
+                                                            </p>
                                                             <p className={`text-[10px] truncate ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
                                                                 Nama: {t.namePattern}{t.titlePattern ? ` • Jabatan: ${t.titlePattern}` : ''} • {t.placement === 'cover' ? 'Menimpa nama' : 'Di atas nama'} • {t.anchor === 'center' ? 'Tengah' : t.anchor === 'right' ? 'Kanan' : 'Kiri'} • {t.scale}%{t.groupByNumber ? ' • Grup per nomor' : ''}
                                                             </p>
