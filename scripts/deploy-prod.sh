@@ -25,7 +25,7 @@ grep '^PORT=' /home/project/pustaka/.env
 
 echo "== 4. Install dependensi produksi (jika ada dependency baru) =="
 cd /home/project/pustaka
-npm install --omit=dev 2>&1 | tail -2 || npm install 2>&1 | tail -2
+npm install 2>&1 | tail -2
 
 echo "== 5. Build produksi (dist) =="
 cd /home/project/pustaka
