@@ -234,6 +234,8 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
         name: '', namePattern: 'Kaoru Nomura', titlePattern: 'General Manager',
         sigId: '', anchor: 'left', offsetY: 10, scale: 18, showDate: false,
         placement: 'above', // 'above' = di atas nama | 'cover' = menimpa nama & jabatan
+        groupByNumber: true, // 1 nomor dokumen (bisa multi-halaman) = 1 ttd di halaman terakhir
+        numberPattern: '\\d{2,4}/[A-Z0-9-]+/NR/[A-Z]{2,4}/\\d{4}',
     });
 
     const persistTemplates = (list) => {
@@ -256,6 +258,8 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
             scale: Number(tmplForm.scale) || 18,
             showDate: tmplForm.showDate,
             placement: tmplForm.placement === 'cover' ? 'cover' : 'above',
+            groupByNumber: !!tmplForm.groupByNumber,
+            numberPattern: (tmplForm.groupByNumber ? tmplForm.numberPattern : '').trim(),
         };
         const list = [...templates, t];
         setTemplates(list); persistTemplates(list);
@@ -292,6 +296,8 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                     fd.append('show_date', activeTmpl.showDate ? 'true' : 'false');
                     fd.append('date_text', new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }));
                     fd.append('placement', activeTmpl.placement === 'cover' ? 'cover' : 'above');
+                    fd.append('group_by_number', activeTmpl.groupByNumber ? 'true' : 'false');
+                    fd.append('number_pattern', activeTmpl.groupByNumber && activeTmpl.numberPattern ? activeTmpl.numberPattern : '');
                     const res = await fetch(`${API_URL}/pdf-tools/sign-preview`, { method: 'POST', credentials: 'include', body: fd });
             const j = await res.json().catch(() => ({}));
             if (!res.ok) throw new Error(j.error || `Pratinjau gagal (${res.status}).`);
@@ -327,6 +333,8 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                 titlePattern: res.headers.get('x-title-pattern') || 'General Manager',
                 sig: { name: 'ttd.png', dataUrl },
                 anchor: 'left', offsetY: 10, scale: 18, showDate: false, placement: 'above',
+                groupByNumber: true,
+                numberPattern: '\\d{2,4}/[A-Z0-9-]+/NR/[A-Z]{2,4}/\\d{4}',
             };
             const list = [...templates, t];
             setTemplates(list); persistTemplates(list);
@@ -541,6 +549,8 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                     fd.append('show_date', activeTmpl.showDate ? 'true' : 'false');
                     fd.append('date_text', new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }));
                     fd.append('placement', activeTmpl.placement === 'cover' ? 'cover' : 'above');
+                    fd.append('group_by_number', activeTmpl.groupByNumber ? 'true' : 'false');
+                    fd.append('number_pattern', activeTmpl.groupByNumber && activeTmpl.numberPattern ? activeTmpl.numberPattern : '');
                 } else {
                     // Manual: PDF (file) + gambar tanda tangan (signature) + pengaturan
                     const sigBlob = await (await fetch(activeSig.dataUrl)).blob();
@@ -1026,7 +1036,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                         <div className="min-w-0 flex-1">
                                                             <p className={`text-[12px] font-extrabold truncate ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{t.name}</p>
                                                             <p className={`text-[10px] truncate ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
-                                                                Nama: {t.namePattern}{t.titlePattern ? ` • Jabatan: ${t.titlePattern}` : ''} • {t.placement === 'cover' ? 'Menimpa nama' : 'Di atas nama'} • {t.anchor === 'center' ? 'Tengah' : t.anchor === 'right' ? 'Kanan' : 'Kiri'} • {t.scale}%
+                                                                Nama: {t.namePattern}{t.titlePattern ? ` • Jabatan: ${t.titlePattern}` : ''} • {t.placement === 'cover' ? 'Menimpa nama' : 'Di atas nama'} • {t.anchor === 'center' ? 'Tengah' : t.anchor === 'right' ? 'Kanan' : 'Kiri'} • {t.scale}%{t.groupByNumber ? ' • Grup per nomor' : ''}
                                                             </p>
                                                         </div>
                                                         {activeTmplId === t.id && (
@@ -1137,6 +1147,35 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                 />
                                             </label>
                                         </div>
+                                        <div className={`rounded-xl border border-dashed p-3 space-y-2 ${isDarkMode ? 'border-white/15' : 'border-slate-300'}`}>
+                                            <label className="flex items-center gap-2 cursor-pointer select-none">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={tmplForm.groupByNumber}
+                                                    onChange={e => setTmplForm(f => ({ ...f, groupByNumber: e.target.checked }))}
+                                                    className="accent-sky-500 w-3.5 h-3.5"
+                                                />
+                                                <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>
+                                                    Grup per nomor dokumen — ttd hanya di halaman terakhir tiap nota (1 nota multi-halaman = 1 ttd)
+                                                </span>
+                                            </label>
+                                            {tmplForm.groupByNumber && (
+                                                <label className="block">
+                                                    <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                                        Pola nomor dokumen (regex)
+                                                    </span>
+                                                    <input
+                                                        value={tmplForm.numberPattern}
+                                                        onChange={e => setTmplForm(f => ({ ...f, numberPattern: e.target.value }))}
+                                                        placeholder={'\\d{2,4}/[A-Z0-9-]+/NR/[A-Z]{2,4}/\\d{4}'}
+                                                        className={`${inputCls} w-full font-mono`}
+                                                    />
+                                                    <span className={`text-[10px] ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>
+                                                        Contoh: {'\\d{2,4}/[A-Z0-9-]+/NR/[A-Z]{2,4}/\\d{4}'} untuk "0338/YDI/NR/JUN/2026" — biarkan kosong jika pola nomor berbeda.
+                                                    </span>
+                                                </label>
+                                            )}
+                                        </div>
                                         <label className="flex items-center gap-2 cursor-pointer select-none">
                                             <input
                                                 type="checkbox"
@@ -1170,7 +1209,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
 
                                     {activeTmpl && (
                                         <p className={`text-[11px] rounded-xl border p-3 ${isDarkMode ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300' : 'bg-emerald-50 border-emerald-200 text-emerald-700'}`}>
-                                            Template aktif: <b>{activeTmpl.name}</b> — semua blok "{activeTmpl.namePattern}"{activeTmpl.titlePattern ? ` + "${activeTmpl.titlePattern}"` : ''} di setiap halaman akan ditandatangani otomatis, {activeTmpl.placement === 'cover' ? 'ttd menimpa nama & jabatan' : 'ttd di atas nama'}.
+                                            Template aktif: <b>{activeTmpl.name}</b> — semua blok "{activeTmpl.namePattern}"{activeTmpl.titlePattern ? ` + "${activeTmpl.titlePattern}"` : ''} akan ditandatangani otomatis, {activeTmpl.placement === 'cover' ? 'ttd menimpa nama & jabatan' : 'ttd di atas nama'}{activeTmpl.groupByNumber ? ', hanya di halaman terakhir tiap nomor dokumen' : ''}.
                                         </p>
                                     )}
                                     <button
@@ -1237,6 +1276,9 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                         { l: 'Blok terdeteksi', v: preview.data.blocks_found ?? 0, c: 'text-sky-600 dark:text-sky-300' },
                                         { l: 'Halaman akan ditandatangani', v: preview.data.pages_signed ?? 0, c: 'text-emerald-600 dark:text-emerald-300' },
                                         { l: 'Total halaman dokumen', v: preview.data.total_pages ?? 0, c: 'text-slate-600 dark:text-slate-300' },
+                                        ...(preview.data.grouped
+                                            ? [{ l: 'Nota (grup)', v: `${preview.data.groups ?? 0}${preview.data.groups_multi ? ` (${preview.data.groups_multi} multi)` : ''}`, c: 'text-violet-600 dark:text-violet-300' }]
+                                            : []),
                                     ].map(s => (
                                         <div key={s.l} className={`rounded-xl border px-3 py-2 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'}`}>
                                             <p className={`text-lg font-black ${s.c}`}>{s.v}</p>
@@ -1268,9 +1310,14 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                     <span className="min-w-0 flex-1">
                                                         <span className="block text-[11px] font-bold truncate">{b.name}</span>
                                                         <span className={`block text-[10px] truncate ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
-                                                            {b.title || '—'} • TTD ({Math.round(b.sig_rect?.x0)}, {Math.round(b.sig_rect?.y0)})
+                                                            {b.title || '—'}{b.doc_number ? ` • Nota ${b.doc_number}` : ''}
                                                         </span>
                                                     </span>
+                                                    {b.group_last && (
+                                                        <span className={`flex-shrink-0 px-1.5 py-0.5 rounded text-[9px] font-black ${isDarkMode ? 'bg-emerald-500/20 text-emerald-300' : 'bg-emerald-100 text-emerald-700'}`}>
+                                                            TERAKHIR
+                                                        </span>
+                                                    )}
                                                 </button>
                                             ))
                                         )}
