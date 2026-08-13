@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import * as XLSX from 'xlsx';
 import DocIntelligenceStudio from './DocIntelligenceStudio.jsx';
 import {
@@ -1532,8 +1533,8 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                 </div>
             )}
 
-            {/* ── Modal Bagikan ke Departemen ── */}
-            {shareTarget && (
+            {/* ── Modal Bagikan ke Departemen (portal ke body agar backdrop full-layar) ── */}
+            {shareTarget && createPortal(
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShareTarget(null)}>
                     <div
                         onClick={e => e.stopPropagation()}
@@ -1600,7 +1601,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                         </div>
                     </div>
                 </div>
-            )}
+            , document.body)}
         </div>
     );
 }
