@@ -1,6 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { SummaryRow } from '../components/ui/Card';
+
+// PDF.js worker setup (pola sama seperti PdfViewer.jsx) — untuk pratinjau deteksi blok
+import * as pdfjsLib from 'pdfjs-dist';
+import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url';
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 import {
     FileText, FileArchive, Scissors, LockOpen, ScanText, RotateCw, Eye,
     UploadCloud, Download, Loader2, X, AlertCircle, Layers,
@@ -10,6 +15,73 @@ import {
 
 const getApiUrl = () => (window.location.protocol === 'file:' ? 'http://localhost:5005/api' : '/api');
 const API_URL = getApiUrl();
+
+// ── Thumbnail halaman PDF dengan kotak posisi tanda tangan (untuk pratinjau) ──
+function SigPreviewThumb({ file, page, sigRect, isDarkMode }) {
+    const canvasRef = useRef(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
+
+    useEffect(() => {
+        let cancelled = false;
+        let pdfDoc = null;
+        (async () => {
+            try {
+                const data = await file.arrayBuffer();
+                const doc = await pdfjsLib.getDocument({ data }).promise;
+                if (cancelled) { doc.destroy(); return; }
+                pdfDoc = doc;
+                const p = await doc.getPage(page);
+                const base = p.getViewport({ scale: 1 });
+                const targetW = 400;
+                const scale = targetW / base.width;
+                const vp = p.getViewport({ scale });
+                const canvas = canvasRef.current;
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                canvas.width = Math.floor(vp.width);
+                canvas.height = Math.floor(vp.height);
+                await p.render({ canvasContext: ctx, viewport: vp }).promise;
+                if (cancelled) return;
+                if (sigRect && sigRect.x0 !== undefined) {
+                    const sx = sigRect.x0 * scale;
+                    const sy = sigRect.y0 * scale;
+                    const sw = (sigRect.x1 - sigRect.x0) * scale;
+                    const sh = (sigRect.y1 - sigRect.y0) * scale;
+                    ctx.strokeStyle = '#ef4444';
+                    ctx.lineWidth = 2.5;
+                    ctx.setLineDash([6, 4]);
+                    ctx.strokeRect(sx, sy, sw, sh);
+                    ctx.setLineDash([]);
+                    ctx.fillStyle = 'rgba(239,68,68,0.92)';
+                    const label = 'TTD';
+                    ctx.font = 'bold 11px sans-serif';
+                    const tw = ctx.measureText(label).width + 10;
+                    const ly = sy - 20 < 0 ? sy + sh + 2 : sy - 20;
+                    ctx.fillRect(sx, ly, tw, 18);
+                    ctx.fillStyle = '#fff';
+                    ctx.fillText(label, sx + 5, ly + 13);
+                }
+                setLoading(false);
+            } catch {
+                if (!cancelled) { setError(true); setLoading(false); }
+            }
+        })();
+        return () => { cancelled = true; if (pdfDoc) pdfDoc.destroy(); };
+    }, [file, page, sigRect]);
+
+    return (
+        <div className={`relative rounded-xl border overflow-hidden ${isDarkMode ? 'border-white/10 bg-slate-900' : 'border-slate-200 bg-white'}`}>
+            {loading && !error && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                    <Loader2 size={20} className="animate-spin text-sky-500" />
+                </div>
+            )}
+            {error && <div className="p-6 text-xs text-rose-500">Gagal merender halaman {page}.</div>}
+            <canvas ref={canvasRef} className="w-full h-auto" />
+        </div>
+    );
+}
 
 const formatFileSize = (b) => {
     if (!b && b !== 0) return '-';
@@ -192,6 +264,76 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
         const list = templates.filter(t => t.id !== id);
         setTemplates(list); persistTemplates(list);
         if (activeTmplId === id) setActiveTmplId(list[0]?.id || null);
+    };
+
+    // ── Pratinjau deteksi blok (sebelum memproses) ──
+    const [preview, setPreview] = useState(null); // { busy, data }
+    const [showPreview, setShowPreview] = useState(false);
+    const [previewPage, setPreviewPage] = useState(1);
+    const [tmplBusy, setTmplBusy] = useState(false); // tombol template bawaan
+
+    const runPreview = async () => {
+        if (!files.length) { setError('Unggah file PDF dulu.'); return; }
+        if (!activeTmpl) { setError('Pilih atau buat template dulu.'); return; }
+        setPreview({ busy: true, data: null });
+        setError('');
+        try {
+            const fd = new FormData();
+            fd.append('file', files[0]);
+            const sig = activeTmpl.sig;
+            const sigBlob = await (await fetch(sig.dataUrl)).blob();
+            fd.append('signature', sigBlob, `signature_${sig.name.replace(/[^a-z0-9]+/gi, '_').slice(0, 40) || 'sign'}.png`);
+            fd.append('name_pattern', activeTmpl.namePattern);
+            fd.append('title_pattern', activeTmpl.titlePattern || '');
+            fd.append('anchor', activeTmpl.anchor);
+            fd.append('offset_pt', String(activeTmpl.offsetY));
+            fd.append('scale', String(activeTmpl.scale));
+            fd.append('show_date', activeTmpl.showDate ? 'true' : 'false');
+            fd.append('date_text', new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }));
+            const res = await fetch(`${API_URL}/pdf-tools/sign-preview`, { method: 'POST', credentials: 'include', body: fd });
+            const j = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(j.error || `Pratinjau gagal (${res.status}).`);
+            setPreview({ busy: false, data: j });
+            setPreviewPage(j.pages?.[0]?.page || 1);
+            setShowPreview(true);
+        } catch (e) {
+            setError(e.message || 'Gagal pratinjau.');
+            setPreview({ busy: false, data: null });
+        }
+    };
+
+    // ── Template tanda tangan bawaan (ttd.png dari server) ──
+    const loadDefaultTemplate = async () => {
+        setTmplBusy(true); setError('');
+        try {
+            const res = await fetch(`${API_URL}/pdf-tools/signatures/default`, { credentials: 'include' });
+            if (!res.ok) {
+                const j = await res.json().catch(() => ({}));
+                throw new Error(j.error || 'Template tanda tangan bawaan tidak tersedia di server.');
+            }
+            const blob = await res.blob();
+            const dataUrl = await new Promise((resolve, reject) => {
+                const r = new FileReader();
+                r.onload = () => resolve(r.result);
+                r.onerror = reject;
+                r.readAsDataURL(blob);
+            });
+            const t = {
+                id: `tmpl-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+                name: res.headers.get('x-template-name') || 'TTD Kaoru Nomura',
+                namePattern: res.headers.get('x-name-pattern') || 'Kaoru Nomura',
+                titlePattern: res.headers.get('x-title-pattern') || 'General Manager',
+                sig: { name: 'ttd.png', dataUrl },
+                anchor: 'left', offsetY: 10, scale: 18, showDate: false,
+            };
+            const list = [...templates, t];
+            setTemplates(list); persistTemplates(list);
+            setActiveTmplId(t.id);
+        } catch (e) {
+            setError(e.message || 'Gagal memuat template bawaan.');
+        } finally {
+            setTmplBusy(false);
+        }
     };
     // ── Berbagi lintas departemen ──
     const [departments, setDepartments] = useState([]);
@@ -854,9 +996,19 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                             Saat PDF diunggah, tanda tangan otomatis ditempatkan di atas setiap blok yang cocok (nama + jabatan) di seluruh halaman — tanpa pilih halaman/posisi manual.
                                         </p>
                                         {templates.length === 0 ? (
-                                            <p className={`text-[11px] italic rounded-xl border border-dashed p-3 ${isDarkMode ? 'text-white/40 border-white/15' : 'text-slate-400 border-slate-300'}`}>
-                                                Belum ada template. Buat di bawah — contoh: pola nama "Kaoru Nomura" dengan jabatan "General Manager" (seperti di nr3.pdf).
-                                            </p>
+                                            <div className="space-y-2">
+                                                <p className={`text-[11px] italic rounded-xl border border-dashed p-3 ${isDarkMode ? 'text-white/40 border-white/15' : 'text-slate-400 border-slate-300'}`}>
+                                                    Belum ada template. Gunakan template bawaan (ttd.png — Kaoru Nomura / General Manager) atau buat sendiri di bawah.
+                                                </p>
+                                                <button
+                                                    onClick={loadDefaultTemplate}
+                                                    disabled={tmplBusy}
+                                                    className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[11px] font-bold bg-gradient-to-r from-sky-500 to-cyan-600 text-white shadow-md shadow-sky-500/25 transition-all ${tmplBusy ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02]'}`}
+                                                >
+                                                    {tmplBusy ? <Loader2 size={13} className="animate-spin" /> : <PenTool size={13} />}
+                                                    {tmplBusy ? 'Memuat...' : 'Pakai Template Bawaan (ttd.png)'}
+                                                </button>
+                                            </div>
                                         ) : (
                                             <div className="space-y-2">
                                                 {templates.map(t => (
@@ -982,12 +1134,24 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                 Tampilkan tanggal hari ini di bawah tanda tangan
                                             </span>
                                         </label>
-                                        <button
-                                            onClick={saveTemplate}
-                                            className="inline-flex items-center gap-1 px-3 py-2 rounded-lg text-[11px] font-bold bg-gradient-to-r from-sky-500 to-cyan-600 text-white shadow-md shadow-sky-500/25 hover:scale-[1.02] transition-all"
-                                        >
-                                            <Plus size={12} /> Simpan Template
-                                        </button>
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <button
+                                                onClick={saveTemplate}
+                                                className="inline-flex items-center gap-1 px-3 py-2 rounded-lg text-[11px] font-bold bg-gradient-to-r from-sky-500 to-cyan-600 text-white shadow-md shadow-sky-500/25 hover:scale-[1.02] transition-all"
+                                            >
+                                                <Plus size={12} /> Simpan Template
+                                            </button>
+                                            <button
+                                                onClick={loadDefaultTemplate}
+                                                disabled={tmplBusy}
+                                                className={`inline-flex items-center gap-1 px-3 py-2 rounded-lg text-[11px] font-bold border transition-all ${tmplBusy
+                                                    ? 'opacity-50 cursor-not-allowed'
+                                                    : (isDarkMode ? 'border-white/15 text-white/70 hover:bg-white/10' : 'border-slate-300 text-slate-500 hover:bg-slate-100')}`}
+                                            >
+                                                {tmplBusy ? <Loader2 size={12} className="animate-spin" /> : <PenTool size={12} />}
+                                                {tmplBusy ? 'Memuat...' : 'Pakai ttd.png bawaan'}
+                                            </button>
+                                        </div>
                                     </div>
 
                                     {activeTmpl && (
@@ -995,6 +1159,16 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                             Template aktif: <b>{activeTmpl.name}</b> — semua blok "{activeTmpl.namePattern}"{activeTmpl.titlePattern ? ` + "${activeTmpl.titlePattern}"` : ''} di setiap halaman akan ditandatangani otomatis.
                                         </p>
                                     )}
+                                    <button
+                                        onClick={runPreview}
+                                        disabled={busy || !files.length || preview?.busy}
+                                        className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[11px] font-bold border transition-all ${(busy || !files.length || preview?.busy)
+                                            ? 'opacity-50 cursor-not-allowed'
+                                            : (isDarkMode ? 'border-white/15 text-white/80 hover:bg-white/10' : 'border-slate-300 text-slate-600 hover:bg-slate-100')}`}
+                                    >
+                                        {preview?.busy ? <Loader2 size={13} className="animate-spin" /> : <Eye size={13} />}
+                                        {preview?.busy ? 'Menganalisis...' : 'Pratinjau Deteksi Blok'}
+                                    </button>
                                 </div>
                                 )}
                             </div>
@@ -1018,6 +1192,100 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                     </div>
 
                     {renderResult()}
+
+                    {/* ── Modal pratinjau deteksi blok ── */}
+                    {showPreview && preview?.data && createPortal(
+                        <div className="fixed inset-0 z-[130] flex items-center justify-center p-4">
+                            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowPreview(false)} />
+                            <div className={`relative w-full max-w-4xl max-h-[88vh] flex flex-col rounded-2xl border shadow-2xl overflow-hidden ${isDarkMode ? 'bg-slate-900/95 border-white/10' : 'bg-white/95 border-slate-200'} backdrop-blur-xl`}>
+                                {/* Header */}
+                                <div className={`flex items-center gap-3 px-5 py-3.5 border-b ${isDarkMode ? 'border-white/10' : 'border-slate-200'}`}>
+                                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${isDarkMode ? 'bg-sky-500/15 text-sky-300' : 'bg-sky-100 text-sky-600'}`}>
+                                        <Eye size={16} />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className={`text-sm font-extrabold ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>Pratinjau Deteksi Blok Tanda Tangan</p>
+                                        <p className={`text-[11px] ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>
+                                            Template: <b>{activeTmpl?.name}</b>
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={() => setShowPreview(false)}
+                                        className={`p-2 rounded-lg ${isDarkMode ? 'hover:bg-white/10 text-white/70' : 'hover:bg-slate-100 text-slate-500'}`}
+                                    >
+                                        <X size={18} />
+                                    </button>
+                                </div>
+
+                                {/* Ringkasan */}
+                                <div className={`flex flex-wrap gap-2 px-5 py-3 border-b ${isDarkMode ? 'border-white/10' : 'border-slate-200'}`}>
+                                    {[
+                                        { l: 'Blok terdeteksi', v: preview.data.blocks_found ?? 0, c: 'text-sky-600 dark:text-sky-300' },
+                                        { l: 'Halaman akan ditandatangani', v: preview.data.pages_signed ?? 0, c: 'text-emerald-600 dark:text-emerald-300' },
+                                        { l: 'Total halaman dokumen', v: preview.data.total_pages ?? 0, c: 'text-slate-600 dark:text-slate-300' },
+                                    ].map(s => (
+                                        <div key={s.l} className={`rounded-xl border px-3 py-2 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'}`}>
+                                            <p className={`text-lg font-black ${s.c}`}>{s.v}</p>
+                                            <p className={`text-[10px] font-bold uppercase tracking-wider ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>{s.l}</p>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Body: daftar halaman + thumbnail */}
+                                <div className="flex-1 min-h-0 grid md:grid-cols-[230px,1fr] overflow-hidden">
+                                    {/* Daftar halaman */}
+                                    <div className={`overflow-y-auto border-r max-h-72 md:max-h-none ${isDarkMode ? 'border-white/10' : 'border-slate-200'}`}>
+                                        {(preview.data.pages || []).length === 0 ? (
+                                            <p className={`p-4 text-[11px] italic ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                                Tidak ada blok yang cocok dengan pola "{activeTmpl?.namePattern}"{activeTmpl?.titlePattern ? ` + "${activeTmpl.titlePattern}"` : ''}.
+                                            </p>
+                                        ) : (
+                                            (preview.data.pages || []).map((b, i) => (
+                                                <button
+                                                    key={`${b.page}-${i}`}
+                                                    onClick={() => setPreviewPage(b.page)}
+                                                    className={`w-full text-left px-3.5 py-2.5 flex items-center gap-2 border-b transition-colors ${previewPage === b.page
+                                                        ? (isDarkMode ? 'bg-sky-500/15 text-sky-300' : 'bg-sky-50 text-sky-700')
+                                                        : (isDarkMode ? 'hover:bg-white/5 text-white/70' : 'hover:bg-slate-50 text-slate-600')}`}
+                                                >
+                                                    <span className={`w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-black flex-shrink-0 ${isDarkMode ? 'bg-white/10 text-white/70' : 'bg-slate-100 text-slate-500'}`}>
+                                                        {b.page}
+                                                    </span>
+                                                    <span className="min-w-0 flex-1">
+                                                        <span className="block text-[11px] font-bold truncate">{b.name}</span>
+                                                        <span className={`block text-[10px] truncate ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                                            {b.title || '—'} • TTD ({Math.round(b.sig_rect?.x0)}, {Math.round(b.sig_rect?.y0)})
+                                                        </span>
+                                                    </span>
+                                                </button>
+                                            ))
+                                        )}
+                                    </div>
+
+                                    {/* Thumbnail halaman terpilih */}
+                                    <div className="overflow-y-auto p-4">
+                                        {previewPage ? (() => {
+                                            const b = (preview.data.pages || []).find(x => x.page === previewPage);
+                                            return b ? (
+                                                <div className="space-y-2">
+                                                    <SigPreviewThumb
+                                                        file={files[0]}
+                                                        page={previewPage}
+                                                        sigRect={b.sig_rect}
+                                                        isDarkMode={isDarkMode}
+                                                    />
+                                                    <p className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                                        Halaman {previewPage} — blok <b>{b.name}</b>{b.title ? ` (${b.title})` : ''}. Kotak merah = area tanda tangan akan diletakkan.
+                                                    </p>
+                                                </div>
+                                            ) : null;
+                                        })() : null}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>,
+                        document.body
+                    )}
 
                     {/* ── Riwayat hasil AI PDF Tools ── */}
                     <div className={`rounded-2xl border overflow-hidden ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-sm'}`}>

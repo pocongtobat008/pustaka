@@ -44,6 +44,7 @@ const TOOL_MAP = {
     split: 'split',
     sign: 'sign',
     'sign-auto': 'sign-auto',
+    'sign-preview': 'sign-preview',
 };
 
 // Health check — cek service Flask hidup atau tidak
@@ -116,6 +117,29 @@ router.get('/pdf-tools/languages', async (req, res) => {
         res.json({ installed: installed.filter(c => c !== 'osd'), all, total: all.length });
     } catch (e) {
         res.status(500).json({ error: e.message });
+    }
+});
+
+// GET /api/pdf-tools/signatures/default — template tanda tangan bawaan (ttd.png)
+// dari service Flask: gambar + pola nama/jabatan default lewat header.
+router.get('/pdf-tools/signatures/default', async (req, res) => {
+    try {
+        const upstream = await fetch(`${PDF_TOOLS_BASE}/api/signatures/default`, { signal: AbortSignal.timeout(10000) });
+        if (!upstream.ok) {
+            let msg = 'Template tanda tangan bawaan tidak tersedia.';
+            try { const j = await upstream.json(); if (j?.error) msg = j.error; } catch { /* ignore */ }
+            const status = (upstream.status >= 400 && upstream.status < 500) ? upstream.status : 502;
+            return res.status(status).json({ error: msg });
+        }
+        const buf = Buffer.from(await upstream.arrayBuffer());
+        res.setHeader('Content-Type', upstream.headers.get('content-type') || 'image/png');
+        ['X-Template-Name', 'X-Name-Pattern', 'X-Title-Pattern'].forEach(h => {
+            const v = upstream.headers.get(h);
+            if (v) res.setHeader(h, v);
+        });
+        res.send(buf);
+    } catch (e) {
+        res.status(502).json({ error: `Gagal mengambil template bawaan: ${e.message}` });
     }
 });
 
@@ -209,8 +233,8 @@ router.post('/pdf-tools/:tool', uploadAny, async (req, res) => {
             if (!f) return res.status(400).json({ error: 'File wajib diunggah.' });
             fd.append('file', new Blob([f.buffer], { type: f.mimetype || 'application/pdf' }), f.originalname);
         }
-        // sign / sign-auto: PDF + gambar tanda tangan (dua file berbeda)
-        if (tool === 'sign' || tool === 'sign-auto') {
+        // sign / sign-auto / sign-preview: PDF + gambar tanda tangan (dua file berbeda)
+        if (tool === 'sign' || tool === 'sign-auto' || tool === 'sign-preview') {
             const sig = files.find(x => x.fieldname === 'signature');
             if (!sig) return res.status(400).json({ error: 'Gambar tanda tangan wajib diunggah.' });
             fd.append('signature', new Blob([sig.buffer], { type: sig.mimetype || 'image/png' }), sig.originalname);
@@ -228,8 +252,8 @@ router.post('/pdf-tools/:tool', uploadAny, async (req, res) => {
             return res.status(status).json({ error: msg });
         }
 
-        // OCR → JSON; sisanya → file biner
-        if (tool === 'ocr') {
+        // OCR & sign-preview → JSON; sisanya → file biner
+        if (tool === 'ocr' || tool === 'sign-preview') {
             const j = await upstream.json();
             return res.json(j);
         }
