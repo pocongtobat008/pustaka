@@ -233,6 +233,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
     const [tmplForm, setTmplForm] = useState({
         name: '', namePattern: 'Kaoru Nomura', titlePattern: 'General Manager',
         sigId: '', anchor: 'left', offsetY: 10, scale: 18, showDate: false,
+        placement: 'above', // 'above' = di atas nama | 'cover' = menimpa nama & jabatan
     });
 
     const persistTemplates = (list) => {
@@ -254,6 +255,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
             offsetY: Number(tmplForm.offsetY) || 10,
             scale: Number(tmplForm.scale) || 18,
             showDate: tmplForm.showDate,
+            placement: tmplForm.placement === 'cover' ? 'cover' : 'above',
         };
         const list = [...templates, t];
         setTemplates(list); persistTemplates(list);
@@ -282,15 +284,15 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
             fd.append('file', files[0]);
             const sig = activeTmpl.sig;
             const sigBlob = await (await fetch(sig.dataUrl)).blob();
-            fd.append('signature', sigBlob, `signature_${sig.name.replace(/[^a-z0-9]+/gi, '_').slice(0, 40) || 'sign'}.png`);
-            fd.append('name_pattern', activeTmpl.namePattern);
-            fd.append('title_pattern', activeTmpl.titlePattern || '');
-            fd.append('anchor', activeTmpl.anchor);
-            fd.append('offset_pt', String(activeTmpl.offsetY));
-            fd.append('scale', String(activeTmpl.scale));
-            fd.append('show_date', activeTmpl.showDate ? 'true' : 'false');
-            fd.append('date_text', new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }));
-            const res = await fetch(`${API_URL}/pdf-tools/sign-preview`, { method: 'POST', credentials: 'include', body: fd });
+            fd.append('signature', sigBlob, `signature_${sig.name.replace(/[^a-z0-9]+/gi, '_').slice(0, 40) || 'sign'}.png`);                    fd.append('name_pattern', activeTmpl.namePattern);
+                    fd.append('title_pattern', activeTmpl.titlePattern || '');
+                    fd.append('anchor', activeTmpl.anchor);
+                    fd.append('offset_pt', String(activeTmpl.offsetY));
+                    fd.append('scale', String(activeTmpl.scale));
+                    fd.append('show_date', activeTmpl.showDate ? 'true' : 'false');
+                    fd.append('date_text', new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }));
+                    fd.append('placement', activeTmpl.placement === 'cover' ? 'cover' : 'above');
+                    const res = await fetch(`${API_URL}/pdf-tools/sign-preview`, { method: 'POST', credentials: 'include', body: fd });
             const j = await res.json().catch(() => ({}));
             if (!res.ok) throw new Error(j.error || `Pratinjau gagal (${res.status}).`);
             setPreview({ busy: false, data: j });
@@ -324,7 +326,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                 namePattern: res.headers.get('x-name-pattern') || 'Kaoru Nomura',
                 titlePattern: res.headers.get('x-title-pattern') || 'General Manager',
                 sig: { name: 'ttd.png', dataUrl },
-                anchor: 'left', offsetY: 10, scale: 18, showDate: false,
+                anchor: 'left', offsetY: 10, scale: 18, showDate: false, placement: 'above',
             };
             const list = [...templates, t];
             setTemplates(list); persistTemplates(list);
@@ -538,6 +540,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                     fd.append('scale', String(activeTmpl.scale));
                     fd.append('show_date', activeTmpl.showDate ? 'true' : 'false');
                     fd.append('date_text', new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }));
+                    fd.append('placement', activeTmpl.placement === 'cover' ? 'cover' : 'above');
                 } else {
                     // Manual: PDF (file) + gambar tanda tangan (signature) + pengaturan
                     const sigBlob = await (await fetch(activeSig.dataUrl)).blob();
@@ -1023,7 +1026,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                         <div className="min-w-0 flex-1">
                                                             <p className={`text-[12px] font-extrabold truncate ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{t.name}</p>
                                                             <p className={`text-[10px] truncate ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
-                                                                Nama: {t.namePattern}{t.titlePattern ? ` • Jabatan: ${t.titlePattern}` : ''} • {t.anchor === 'center' ? 'Tengah' : t.anchor === 'right' ? 'Kanan' : 'Kiri'} • {t.scale}%
+                                                                Nama: {t.namePattern}{t.titlePattern ? ` • Jabatan: ${t.titlePattern}` : ''} • {t.placement === 'cover' ? 'Menimpa nama' : 'Di atas nama'} • {t.anchor === 'center' ? 'Tengah' : t.anchor === 'right' ? 'Kanan' : 'Kiri'} • {t.scale}%
                                                             </p>
                                                         </div>
                                                         {activeTmplId === t.id && (
@@ -1091,7 +1094,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                 </span>
                                             )}
                                         </label>
-                                        <div className="grid grid-cols-3 gap-2">
+                                        <div className="grid grid-cols-2 gap-2">
                                             <label className="block">
                                                 <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Sejajar nama</span>
                                                 <select
@@ -1105,7 +1108,18 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                 </select>
                                             </label>
                                             <label className="block">
-                                                <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Jarak (pt)</span>
+                                                <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Posisi ttd</span>
+                                                <select
+                                                    value={tmplForm.placement}
+                                                    onChange={e => setTmplForm(f => ({ ...f, placement: e.target.value }))}
+                                                    className={`${inputCls} w-full`}
+                                                >
+                                                    <option value="above">Di atas nama</option>
+                                                    <option value="cover">Menimpa nama & jabatan</option>
+                                                </select>
+                                            </label>
+                                            <label className="block">
+                                                <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Jarak (pt) — mode di atas</span>
                                                 <input
                                                     type="number" min="0" max="60"
                                                     value={tmplForm.offsetY}
@@ -1156,7 +1170,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
 
                                     {activeTmpl && (
                                         <p className={`text-[11px] rounded-xl border p-3 ${isDarkMode ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300' : 'bg-emerald-50 border-emerald-200 text-emerald-700'}`}>
-                                            Template aktif: <b>{activeTmpl.name}</b> — semua blok "{activeTmpl.namePattern}"{activeTmpl.titlePattern ? ` + "${activeTmpl.titlePattern}"` : ''} di setiap halaman akan ditandatangani otomatis.
+                                            Template aktif: <b>{activeTmpl.name}</b> — semua blok "{activeTmpl.namePattern}"{activeTmpl.titlePattern ? ` + "${activeTmpl.titlePattern}"` : ''} di setiap halaman akan ditandatangani otomatis, {activeTmpl.placement === 'cover' ? 'ttd menimpa nama & jabatan' : 'ttd di atas nama'}.
                                         </p>
                                     )}
                                     <button
