@@ -8,6 +8,7 @@ import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import * as XLSX from 'xlsx';
 import { sendMail, isMailConfigured, getMailInfo } from '../services/mailer.js';
 import { notifyFlowEvent, FLOW_EVENTS, EMAIL_TOKENS, getEmailTemplate, renderTemplate, buildEmailVars, buildDefaultBody, DEFAULT_EMAIL_SUBJECTS, resolveAssignees, resolveRecipients, parseCustomEmails } from '../services/flowService.js';
+import { systemLog } from '../utils/logger.js';
 
 const escapeHtml = (v) => String(v ?? '').replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
 
@@ -569,6 +570,7 @@ router.get('/', async (req, res) => {
                 'proforma_invoices.*',
                 knex.raw('(SELECT COUNT(*) FROM proforma_invoice_items it WHERE it.invoice_id = proforma_invoices.id) as item_count')
             )
+            .whereNull('deleted_at')
             .orderBy('proforma_invoices.created_at', 'desc');
         res.json(rows);
     } catch (err) {
@@ -966,6 +968,26 @@ router.delete('/flow/email-templates/:event', async (req, res) => {
     }
 });
 
+// ─── Sampah: daftar invoice & proforma yang di-soft-delete (khusus admin) ─────
+router.get('/trash', async (req, res) => {
+    try {
+        if (!isSuper(req.authUser)) return res.status(403).json({ error: 'Hanya admin yang dapat melihat Sampah' });
+        const [invRows, profRows] = await Promise.all([
+            knex('proforma_invoices').whereNotNull('deleted_at').orderBy('deleted_at', 'desc'),
+            knex('proforma_requests').whereNotNull('deleted_at').orderBy('deleted_at', 'desc'),
+        ]);
+        const proformas = [];
+        for (const p of profRows) {
+            const ids = parseJsonArraySafeStr(p.invoice_ids);
+            const invs = ids.length ? await knex('proforma_invoices').whereIn('id', ids) : [];
+            proformas.push({ ...p, invoices: invs });
+        }
+        res.json({ invoices: invRows, proformas });
+    } catch (err) {
+        res.status(500).json({ error: 'Gagal mengambil Sampah', details: [err.message] });
+    }
+});
+
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -1250,7 +1272,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// ─── Hapus Proforma + seluruh invoice di dalamnya (KHUSUS admin/superadmin) ─────
+// ─── Soft delete Proforma + invoice-nya (dipindah ke Sampah, bisa di-restore) ──
 router.delete('/proforma/:id', async (req, res) => {
     try {
         if (!isSuper(req.authUser)) {
@@ -1259,9 +1281,57 @@ router.delete('/proforma/:id', async (req, res) => {
         const { id } = req.params;
         const proforma = await knex('proforma_requests').where('id', id).first();
         if (!proforma) return res.status(404).json({ error: 'Proforma tidak ditemukan' });
+        if (proforma.deleted_at) return res.status(400).json({ error: 'Proforma sudah ada di Sampah' });
+
+        const who = getUsername(req);
+        const now = new Date();
+        const invIds = Array.isArray(proforma.invoice_ids) ? proforma.invoice_ids : [];
+        await knex('proforma_invoices')
+            .whereIn('id', invIds)
+            .whereNull('deleted_at')
+            .update({ deleted_at: now, deleted_by: who });
+        await knex('proforma_requests').where('id', id).update({ deleted_at: now, deleted_by: who });
+
+        await systemLog(who, 'Hapus Proforma (Sampah)', `Proforma #${id} (${proforma.proforma_no || '-'}) + ${invIds.length} invoice dipindah ke Sampah`,
+            { status: proforma.status, total: proforma.total_nominal }, null);
+        res.json({ ok: true, deletedInvoices: invIds.length });
+    } catch (err) {
+        res.status(500).json({ error: 'Gagal hapus proforma', details: [err.message] });
+    }
+});
+
+// ─── Restore Proforma + invoice-nya (khusus admin) ─────────────────────────────
+router.post('/proforma/:id/restore', async (req, res) => {
+    try {
+        if (!isSuper(req.authUser)) return res.status(403).json({ error: 'Hanya admin yang dapat mengembalikan proforma' });
+        const { id } = req.params;
+        const proforma = await knex('proforma_requests').where('id', id).first();
+        if (!proforma) return res.status(404).json({ error: 'Proforma tidak ditemukan' });
+        if (!proforma.deleted_at) return res.status(400).json({ error: 'Proforma tidak berada di Sampah' });
 
         const invIds = Array.isArray(proforma.invoice_ids) ? proforma.invoice_ids : [];
-        // Hapus item + invoice + lepas relasi pengganti
+        await knex('proforma_invoices')
+            .whereIn('id', invIds)
+            .update({ deleted_at: null, deleted_by: null });
+        await knex('proforma_requests').where('id', id).update({ deleted_at: null, deleted_by: null });
+
+        await systemLog(getUsername(req), 'Restore Proforma', `Proforma #${id} (${proforma.proforma_no || '-'}) + ${invIds.length} invoice dikembalikan dari Sampah`, null, null);
+        res.json({ ok: true, restoredInvoices: invIds.length });
+    } catch (err) {
+        res.status(500).json({ error: 'Gagal restore proforma', details: [err.message] });
+    }
+});
+
+// ─── Hapus PERMANEN Proforma + seluruh invoice (khusus admin, dari Sampah) ────
+router.delete('/proforma/:id/permanent', async (req, res) => {
+    try {
+        if (!isSuper(req.authUser)) return res.status(403).json({ error: 'Hanya admin yang dapat menghapus permanen proforma' });
+        const { id } = req.params;
+        const proforma = await knex('proforma_requests').where('id', id).first();
+        if (!proforma) return res.status(404).json({ error: 'Proforma tidak ditemukan' });
+        if (!proforma.deleted_at) return res.status(400).json({ error: 'Proforma harus di Sampah dulu sebelum dihapus permanen' });
+
+        const invIds = Array.isArray(proforma.invoice_ids) ? proforma.invoice_ids : [];
         for (const invId of invIds) {
             const inv = await knex('proforma_invoices').where('id', invId).first();
             if (inv?.rejected_from_id) {
@@ -1272,35 +1342,61 @@ router.delete('/proforma/:id', async (req, res) => {
         }
         await knex('proforma_requests').where('id', id).del();
 
-        console.log(`[invoice] Proforma #${id} + ${invIds.length} invoice dihapus oleh ${getUsername(req)}`);
+        await systemLog(getUsername(req), 'Hapus Permanen Proforma', `Proforma #${id} (${proforma.proforma_no || '-'}) + ${invIds.length} invoice dihapus permanen`, null, null);
         res.json({ ok: true, deletedInvoices: invIds.length });
     } catch (err) {
-        res.status(500).json({ error: 'Gagal hapus proforma', details: [err.message] });
+        res.status(500).json({ error: 'Gagal hapus permanen proforma', details: [err.message] });
     }
 });
 
+// ─── Soft delete Invoice (dipindah ke Sampah, bisa di-restore) — khusus admin ──
 router.delete('/:id', async (req, res) => {
     try {
-        // Hapus permanen invoice KHUSUS admin/superadmin
         if (!isSuper(req.authUser)) {
             return res.status(403).json({ error: 'Hanya admin yang dapat menghapus invoice' });
         }
         const { id } = req.params;
         const inv = await knex('proforma_invoices').where('id', id).first();
         if (!inv) return res.status(404).json({ error: 'Invoice tidak ditemukan' });
-        const used = await knex('proforma_requests')
-            .where('status', 'pending')
-            .whereRaw('invoice_ids::text LIKE ?', [`%"${id}"%`])
-            .first();
-        if (used) return res.status(400).json({ error: 'Invoice sedang menunggu approval proforma', details: [] });
-        // Jika yang dihapus adalah invoice pengganti hasil reject, catat invoice asalnya untuk reset relasi + notifikasi
-        let original = null;
-        if (inv.rejected_from_id) {
-            original = await knex('proforma_invoices').where('id', inv.rejected_from_id).first();
-        }
-        await knex('proforma_invoice_items').where('invoice_id', id).del();
-        await knex('proforma_invoices').where('id', id).del();
-        // Bersihkan referensi invoice ini dari proforma (invoice_ids JSON) — hindari data menggantung
+        if (inv.deleted_at) return res.status(400).json({ error: 'Invoice sudah ada di Sampah' });
+
+        const who = getUsername(req);
+        await knex('proforma_invoices').where('id', id).update({ deleted_at: new Date(), deleted_by: who });
+        await systemLog(who, 'Hapus Invoice (Sampah)', `Invoice #${id}${inv.no_invoice ? ' (' + inv.no_invoice + ')' : ''} dipindah ke Sampah`,
+            { status: inv.status, no_po: inv.no_po, total: inv.total_invoice }, null);
+        res.json({ ok: true });
+    } catch (err) {
+        res.status(500).json({ error: 'Gagal hapus invoice', details: [err.message] });
+    }
+});
+
+// ─── Restore Invoice dari Sampah (khusus admin) ────────────────────────────────
+router.post('/:id/restore', async (req, res) => {
+    try {
+        if (!isSuper(req.authUser)) return res.status(403).json({ error: 'Hanya admin yang dapat mengembalikan invoice' });
+        const { id } = req.params;
+        const inv = await knex('proforma_invoices').where('id', id).first();
+        if (!inv) return res.status(404).json({ error: 'Invoice tidak ditemukan' });
+        if (!inv.deleted_at) return res.status(400).json({ error: 'Invoice tidak berada di Sampah' });
+
+        await knex('proforma_invoices').where('id', id).update({ deleted_at: null, deleted_by: null });
+        await systemLog(getUsername(req), 'Restore Invoice', `Invoice #${id}${inv.no_invoice ? ' (' + inv.no_invoice + ')' : ''} dikembalikan dari Sampah`, null, null);
+        res.json({ ok: true });
+    } catch (err) {
+        res.status(500).json({ error: 'Gagal restore invoice', details: [err.message] });
+    }
+});
+
+// ─── Hapus PERMANEN Invoice (khusus admin, dari Sampah) ─────────────────────────
+router.delete('/:id/permanent', async (req, res) => {
+    try {
+        if (!isSuper(req.authUser)) return res.status(403).json({ error: 'Hanya admin yang dapat menghapus permanen invoice' });
+        const { id } = req.params;
+        const inv = await knex('proforma_invoices').where('id', id).first();
+        if (!inv) return res.status(404).json({ error: 'Invoice tidak ditemukan' });
+        if (!inv.deleted_at) return res.status(400).json({ error: 'Invoice harus di Sampah dulu sebelum dihapus permanen' });
+
+        // Bersihkan referensi invoice ini dari proforma (invoice_ids JSON)
         try {
             const linkedReqs = await knex('proforma_requests')
                 .whereRaw('invoice_ids::text LIKE ?', [`%"${id}"%`]);
@@ -1316,46 +1412,17 @@ router.delete('/:id', async (req, res) => {
         } catch (cleanupErr) {
             console.error('[invoice] Gagal bersihkan referensi proforma:', cleanupErr.message);
         }
-        // Reset relasi di invoice asal + kirim notifikasi/email ke pembuatnya
-        if (original) {
-            await knex('proforma_invoices').where('id', original.id).update({ replacement_id: null, updated_at: new Date() });
-            try {
-                const creator = original.created_by ? await knex('users').where('username', original.created_by).first() : null;
-                const notifTitle = 'Invoice pengganti dihapus';
-                const notifMsg = `Invoice pengganti #${id}${inv.no_invoice ? ' (' + inv.no_invoice + ')' : ''} telah dihapus. Invoice asal #${original.id} kembali ke status rejected dan bisa di-input ulang.`;
-                if (original.created_by) {
-                    await knex('notifications').insert({
-                        title: notifTitle,
-                        message: notifMsg,
-                        type: 'warning',
-                        channel: 'system',
-                        target_type: 'user',
-                        target_value: original.created_by,
-                        created_by: getUsername(req),
-                        created_at: knex.fn.now(),
-                    }).onConflict().ignore();
-                }
-                if (creator?.email) {
-                    const email = String(creator.email).trim();
-                    if (email) {
-                        const html = `<div style="font-family:Segoe UI,Arial,sans-serif;max-width:520px;margin:auto;padding:24px;border:1px solid #e5e7eb;border-radius:16px">
-                            <h2 style="color:#e11d48;margin:0 0 8px">${notifTitle}</h2>
-                            <p>Halo <b>${escapeHtml(original.created_by || '-')}</b>,</p>
-                            <p>Invoice pengganti <b>#${id}${inv.no_invoice ? ' (' + escapeHtml(inv.no_invoice) + ')' : ''}</b> telah dihapus oleh <b>${escapeHtml(getUsername(req))}</b>.</p>
-                            <p>Invoice asal <b>#${original.id}</b> kini kembali berstatus <b style="color:#e11d48">rejected</b> tanpa pengganti. Anda dapat membuat invoice baru lewat menu <b>Input Data Baru</b>.</p>
-                            <p style="color:#9ca3af;font-size:12px">Dihapus pada ${new Date().toLocaleString('id-ID')}</p>
-                        </div>`.replace(/\n\s*/g, ' ');
-                        await sendMail({ to: email, subject: notifTitle, html });
-                        console.log('[invoice] Email notifikasi hapus pengganti terkirim ke', email);
-                    }
-                }
-            } catch (err) {
-                console.error('[invoice] Gagal kirim notifikasi hapus pengganti:', err.message);
-            }
+        // Reset relasi pengganti di invoice asal
+        if (inv.rejected_from_id) {
+            await knex('proforma_invoices').where('id', inv.rejected_from_id).update({ replacement_id: null });
         }
+        await knex('proforma_invoice_items').where('invoice_id', id).del();
+        await knex('proforma_invoices').where('id', id).del();
+
+        await systemLog(getUsername(req), 'Hapus Permanen Invoice', `Invoice #${id}${inv.no_invoice ? ' (' + inv.no_invoice + ')' : ''} dihapus permanen dari Sampah`, null, null);
         res.json({ ok: true });
     } catch (err) {
-        res.status(500).json({ error: 'Gagal hapus invoice', details: [err.message] });
+        res.status(500).json({ error: 'Gagal hapus permanen invoice', details: [err.message] });
     }
 });
 
@@ -1445,11 +1512,11 @@ router.post('/proforma', upload.array('attachments', 10), async (req, res) => {
 
 router.get('/proforma/list', async (req, res) => {
     try {
-        const rows = await knex('proforma_requests').orderBy('id', 'desc');
+        const rows = await knex('proforma_requests').whereNull('deleted_at').orderBy('id', 'desc');
         const items = [];
         for (const p of rows) {
             const ids = parseJsonArraySafeStr(p.invoice_ids);
-            const invs = ids.length ? await knex('proforma_invoices').whereIn('id', ids) : [];
+            const invs = ids.length ? await knex('proforma_invoices').whereIn('id', ids).whereNull('deleted_at') : [];
             items.push({ ...p, invoices: invs });
         }
         res.json(items);

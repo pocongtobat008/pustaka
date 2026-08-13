@@ -10,7 +10,7 @@ import {
     Landmark, Package, ShieldCheck, HandCoins, X, Save, LayoutDashboard,
     ArrowUpDown, ArrowUp, ArrowDown, Download, History, Filter, Ban, Megaphone,
     FileSpreadsheet, Mail, Workflow, ArrowRight, Power, ChevronUp, ChevronDown, ChevronRight, Sparkles,
-    Eye, Users, AtSign, MoreVertical, FileDown, Settings2, Trophy, TrendingUp
+    Eye, Users, AtSign, MoreVertical, FileDown, Settings2, Trophy, TrendingUp, RotateCcw
 } from 'lucide-react';
 import {
     ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip,
@@ -383,6 +383,10 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
     const isAdmin = ['admin', 'superadmin'].includes(String(currentUser?.role || '').toLowerCase());
     const [deleteTarget, setDeleteTarget] = useState(null); // { type: 'invoice'|'proforma', item }
     const [deleting, setDeleting] = useState(false);
+    const [trashData, setTrashData] = useState(null); // { invoices: [], proformas: [] }
+    const [trashLoading, setTrashLoading] = useState(false);
+    const [permTarget, setPermTarget] = useState(null); // { type, item } konfirmasi hapus permanen
+    const [permDeleting, setPermDeleting] = useState(false);
     const [masterUsers, setMasterUsers] = useState([]);
     const [masterRoles, setMasterRoles] = useState([]);
     const [masterDivisions, setMasterDivisions] = useState([]);
@@ -765,17 +769,75 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
         try {
             if (deleteTarget.type === 'invoice') {
                 await invoiceService.delete(deleteTarget.item.id);
-                toast?.success?.('Invoice dihapus');
+                toast?.success?.('Invoice dipindah ke Sampah');
             } else {
                 await invoiceService.deleteProforma(deleteTarget.item.id);
-                toast?.success?.('Proforma beserta invoice-nya dihapus');
+                toast?.success?.('Proforma beserta invoice-nya dipindah ke Sampah');
             }
             setDeleteTarget(null);
             loadAll();
+            loadTrash();
         } catch (e) {
             toast?.error?.(e.message);
         } finally {
             setDeleting(false);
+        }
+    };
+
+    // ── Sampah (soft delete): load, restore, hapus permanen ──
+    const loadTrash = useCallback(async () => {
+        if (!isAdmin) return;
+        setTrashLoading(true);
+        try {
+            const data = await invoiceService.getTrash();
+            setTrashData(data);
+        } catch (e) {
+            toast?.error?.(e.message);
+        } finally {
+            setTrashLoading(false);
+        }
+    }, [isAdmin]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    useEffect(() => {
+        if (tab === 'trash') loadTrash();
+    }, [tab]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    const doRestore = async (type, item) => {
+        try {
+            if (type === 'invoice') {
+                await invoiceService.restoreInvoice(item.id);
+                toast?.success?.('Invoice dikembalikan');
+            } else {
+                await invoiceService.restoreProforma(item.id);
+                toast?.success?.('Proforma dikembalikan');
+            }
+            loadTrash();
+            loadAll();
+        } catch (e) {
+            toast?.error?.(e.message);
+        }
+    };
+
+    const openPermanentDelete = (type, item) => setPermTarget({ type, item });
+
+    const confirmPermanentDelete = async () => {
+        if (!permTarget || permDeleting) return;
+        setPermDeleting(true);
+        try {
+            if (permTarget.type === 'invoice') {
+                await invoiceService.deletePermanentInvoice(permTarget.item.id);
+                toast?.success?.('Invoice dihapus permanen');
+            } else {
+                await invoiceService.deletePermanentProforma(permTarget.item.id);
+                toast?.success?.('Proforma dihapus permanen');
+            }
+            setPermTarget(null);
+            loadTrash();
+            loadAll();
+        } catch (e) {
+            toast?.error?.(e.message);
+        } finally {
+            setPermDeleting(false);
         }
     };
 
@@ -1395,6 +1457,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
 
     // ESC menutup modal paling atas (konsisten dengan komponen Modal bersama)
     useModalKeydown(() => {
+        if (permTarget) { setPermTarget(null); return; }
         if (deleteTarget) { setDeleteTarget(null); return; }
         if (deleteReplTarget) { setDeleteReplTarget(null); return; }
         if (cancelTarget) { setCancelTarget(null); return; }
@@ -1410,7 +1473,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
     });
 
     // Kunci scroll body saat salah satu modal inline terbuka (konsisten dengan Modal bersama)
-    useModalScrollLock(!!(deleteTarget || deleteReplTarget || cancelTarget || showAudit || showDetail || showTaxRequest || showTax || showSettle || showProforma || showNewInvoice || recipOpen || attachTarget));
+    useModalScrollLock(!!(permTarget || deleteTarget || deleteReplTarget || cancelTarget || showAudit || showDetail || showTaxRequest || showTax || showSettle || showProforma || showNewInvoice || recipOpen || attachTarget));
 
     const openAudit = (target) => {
         setAuditTarget(target);
@@ -2064,6 +2127,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     {perms.can_view_barang && renderTabBtn('barang', <Package size={16} />, 'Master Barang')}
                     {perms.can_view_rule && renderTabBtn('rule', <ShieldCheck size={16} />, 'Rule')}
                     {perms.can_view_flow && renderTabBtn('flow', <Workflow size={16} />, 'Flow')}
+                    {isAdmin && renderTabBtn('trash', <Trash2 size={16} />, 'Sampah')}
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">
                     {tab !== 'dashboard' && (
@@ -2647,6 +2711,93 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         </div>
                     ))}
                     <Pagination page={pagedTax.page} totalPages={pagedTax.totalPages} setPage={pagedTax.setPage} />
+                </div>
+            )}
+
+            {/* ── Sampah Tab (soft delete — khusus admin) ── */}
+            {tab === 'trash' && isAdmin && (
+                <div className="space-y-4">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div className="flex items-center gap-2">
+                            <div className="p-2 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-600"><Trash2 size={16} /></div>
+                            <div>
+                                <h3 className="font-bold text-slate-800 dark:text-white">Sampah</h3>
+                                <div className="text-[11px] text-slate-400">Data yang dihapus bisa dipulihkan. Penghapusan permanen tidak bisa dibatalkan.</div>
+                            </div>
+                        </div>
+                        <button onClick={loadTrash} className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-indigo-600 text-sm font-semibold" title="Muat ulang Sampah">
+                            <RefreshCw size={15} className={trashLoading ? 'animate-spin' : ''} /> Muat Ulang
+                        </button>
+                    </div>
+
+                    {trashLoading && (
+                        <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl p-10 text-center text-slate-400 border border-white/60 dark:border-white/10">
+                            Memuat Sampah...
+                        </div>
+                    )}
+
+                    {!trashLoading && (!trashData || (trashData.invoices?.length === 0 && trashData.proformas?.length === 0)) && (
+                        <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl p-10 text-center text-slate-400 border border-white/60 dark:border-white/10">
+                            <Trash2 size={32} className="mx-auto mb-2 opacity-40" />
+                            Sampah kosong
+                        </div>
+                    )}
+
+                    {/* Invoice terhapus */}
+                    {trashData?.invoices?.length > 0 && (
+                        <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl shadow-sm border border-white/60 dark:border-white/10 overflow-hidden">
+                            <div className="p-4 border-b border-white/60 dark:border-white/10 flex items-center gap-2">
+                                <Receipt size={16} className="text-slate-400" />
+                                <span className="font-bold text-slate-800 dark:text-white">Invoice Terhapus ({trashData.invoices.length})</span>
+                            </div>
+                            <div className="divide-y divide-white/60 dark:divide-white/10">
+                                {trashData.invoices.map(inv => (
+                                    <div key={inv.id} className="flex flex-wrap items-center gap-3 p-4">
+                                        <div className="min-w-0 flex-1">
+                                            <div className="font-bold text-slate-800 dark:text-white truncate">#{inv.id} • {inv.dealer_name || '-'}</div>
+                                            <div className="text-[11px] text-slate-400 truncate">
+                                                {inv.no_invoice || inv.no_po || '-'} • {inv.status || '-'} • {formatCurrency(inv.total_invoice)}
+                                            </div>
+                                            <div className="text-[10px] text-red-400 mt-0.5">Dihapus oleh: {inv.deleted_by || '-'} • {inv.deleted_at ? new Date(inv.deleted_at).toLocaleString('id-ID') : '-'}</div>
+                                        </div>
+                                        <button onClick={() => doRestore('invoice', inv)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 font-semibold text-xs transition-colors" title="Kembalikan invoice">
+                                            <RotateCcw size={14} /> Restore
+                                        </button>
+                                        <button onClick={() => openPermanentDelete('invoice', inv)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20 font-semibold text-xs transition-colors" title="Hapus permanen (tidak bisa dibatalkan)">
+                                            <Trash2 size={14} /> Hapus Permanen
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Proforma terhapus */}
+                    {trashData?.proformas?.length > 0 && (
+                        <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl shadow-sm border border-white/60 dark:border-white/10 overflow-hidden">
+                            <div className="p-4 border-b border-white/60 dark:border-white/10 flex items-center gap-2">
+                                <FileSignature size={16} className="text-slate-400" />
+                                <span className="font-bold text-slate-800 dark:text-white">Proforma Terhapus ({trashData.proformas.length})</span>
+                            </div>
+                            <div className="divide-y divide-white/60 dark:divide-white/10">
+                                {trashData.proformas.map(p => (
+                                    <div key={p.id} className="flex flex-wrap items-center gap-3 p-4">
+                                        <div className="min-w-0 flex-1">
+                                            <div className="font-bold text-slate-800 dark:text-white truncate">Proforma #{p.id} • {p.proforma_no || 'Tanpa No'}</div>
+                                            <div className="text-[11px] text-slate-400 truncate">{(p.invoices || []).length} invoice • {formatCurrency(p.total_nominal)}</div>
+                                            <div className="text-[10px] text-red-400 mt-0.5">Dihapus oleh: {p.deleted_by || '-'} • {p.deleted_at ? new Date(p.deleted_at).toLocaleString('id-ID') : '-'}</div>
+                                        </div>
+                                        <button onClick={() => doRestore('proforma', p)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 font-semibold text-xs transition-colors" title="Kembalikan proforma beserta invoice-nya">
+                                            <RotateCcw size={14} /> Restore
+                                        </button>
+                                        <button onClick={() => openPermanentDelete('proforma', p)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20 font-semibold text-xs transition-colors" title="Hapus permanen (tidak bisa dibatalkan)">
+                                            <Trash2 size={14} /> Hapus Permanen
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
 
@@ -3885,18 +4036,18 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 </div>
                             </div>
 
-                            <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 text-xs text-red-600 dark:text-red-300 space-y-2">
-                                <p className="font-bold">Tindakan ini TIDAK dapat dibatalkan!</p>
-                                <ul className="list-disc list-inside text-[11px] text-red-500 dark:text-red-400 space-y-1 font-medium">
+                            <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30 text-xs text-amber-700 dark:text-amber-300 space-y-2">
+                                <p className="font-bold">Data akan dipindahkan ke Sampah.</p>
+                                <ul className="list-disc list-inside text-[11px] text-amber-600 dark:text-amber-400 space-y-1 font-medium">
                                     {deleteTarget.type === 'proforma' ? (
                                         <>
-                                            <li>Seluruh invoice di dalam proforma ini ikut terhapus permanen.</li>
-                                            <li>Data item, lampiran, dan relasi pengganti ikut dihapus.</li>
+                                            <li>Seluruh invoice di dalam proforma ini ikut dipindahkan ke Sampah.</li>
+                                            <li>Masih bisa dipulihkan (Restore) dari tab Sampah kapan pun.</li>
                                         </>
                                     ) : (
                                         <>
-                                            <li>Invoice beserta seluruh item-nya dihapus permanen dari database.</li>
-                                            <li>Referensi di proforma (jika ada) otomatis dibersihkan.</li>
+                                            <li>Invoice dipindahkan ke Sampah, bukan dihapus permanen.</li>
+                                            <li>Masih bisa dipulihkan (Restore) dari tab Sampah kapan pun.</li>
                                         </>
                                     )}
                                 </ul>
@@ -3915,6 +4066,68 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white text-xs font-bold shadow-lg shadow-red-600/25 transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
                                 >
                                     <Trash2 size={14} /> {deleting ? 'Menghapus...' : (deleteTarget.type === 'proforma' ? 'Ya, Hapus Proforma' : 'Ya, Hapus Invoice')}
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                </AnimatePresence>,
+                document.body
+            )}
+
+            {permTarget && createPortal(
+                <AnimatePresence>
+                    <div className="fixed inset-0 z-[125] flex items-center justify-center p-4" onClick={() => setPermTarget(null)}>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+                        />
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 10 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 10 }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                            className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-md p-6 relative z-10 space-y-4 border border-white/60 dark:border-white/10"
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="w-12 h-12 rounded-2xl bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 flex items-center justify-center shrink-0 ring-4 ring-red-50 dark:ring-red-500/5">
+                                    <Trash2 size={24} />
+                                </div>
+                                <div>
+                                    <h3 className="text-base font-black text-slate-800 dark:text-white leading-tight">
+                                        {permTarget.type === 'proforma' ? 'Hapus Permanen Proforma?' : 'Hapus Permanen Invoice?'}
+                                    </h3>
+                                    <p className="text-xs text-slate-400 mt-0.5">
+                                        {permTarget.type === 'proforma'
+                                            ? `Proforma ${permTarget.item.proforma_no || '#' + permTarget.item.id} • ${(permTarget.item.invoices || []).length} invoice`
+                                            : `Invoice #${permTarget.item.id} • ${permTarget.item.dealer_name || '-'}`}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 text-xs text-red-600 dark:text-red-300 space-y-2">
+                                <p className="font-bold">Tindakan ini TIDAK dapat dibatalkan!</p>
+                                <ul className="list-disc list-inside text-[11px] text-red-500 dark:text-red-400 space-y-1 font-medium">
+                                    <li>Data dihapus permanen dari database (termasuk item & lampiran).</li>
+                                    <li>Data tidak dapat dipulihkan lagi setelah ini.</li>
+                                </ul>
+                            </div>
+
+                            <div className="flex items-center justify-end gap-2.5 pt-1">
+                                <button
+                                    onClick={() => setPermTarget(null)}
+                                    className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                                >
+                                    Batal
+                                </button>
+                                <button
+                                    onClick={confirmPermanentDelete}
+                                    disabled={permDeleting}
+                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white text-xs font-bold shadow-lg shadow-red-600/25 transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
+                                >
+                                    <Trash2 size={14} /> {permDeleting ? 'Menghapus...' : 'Ya, Hapus Permanen'}
                                 </button>
                             </div>
                         </motion.div>

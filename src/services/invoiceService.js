@@ -40,9 +40,30 @@ export const invoiceService = {
         return apiClient.fetchJson(`${API_URL}/invoices/${id}`, { method: 'DELETE' });
     },
 
-    // Hapus proforma beserta seluruh invoice di dalamnya (hanya admin)
+    // Hapus proforma (soft delete → Sampah, hanya admin)
     async deleteProforma(id) {
         return apiClient.fetchJson(`${API_URL}/invoices/proforma/${id}`, { method: 'DELETE' });
+    },
+
+    // ── Sampah (soft delete / restore / hapus permanen) — hanya admin ──
+    async getTrash() {
+        return apiClient.fetchJson(`${API_URL}/invoices/trash`);
+    },
+
+    async restoreInvoice(id) {
+        return apiClient.fetchJson(`${API_URL}/invoices/${id}/restore`, { method: 'POST' });
+    },
+
+    async restoreProforma(id) {
+        return apiClient.fetchJson(`${API_URL}/invoices/proforma/${id}/restore`, { method: 'POST' });
+    },
+
+    async deletePermanentInvoice(id) {
+        return apiClient.fetchJson(`${API_URL}/invoices/${id}/permanent`, { method: 'DELETE' });
+    },
+
+    async deletePermanentProforma(id) {
+        return apiClient.fetchJson(`${API_URL}/invoices/proforma/${id}/permanent`, { method: 'DELETE' });
     },
 
     async cancel(id) {
