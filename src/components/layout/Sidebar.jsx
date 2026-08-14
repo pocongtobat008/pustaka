@@ -71,7 +71,7 @@ const MENU_SECTIONS = [
         items: [
             { id: 'entertainment', icon: Receipt, labelKey: 'sidebar.item.entertainment' },
             { id: 'invoices', icon: FileSignature, labelKey: 'sidebar.item.invoices' },
-            { id: 'forwarder', icon: Ship, labelKey: 'sidebar.item.forwarder' },
+            { id: 'forwarder', icon: Ship, labelKey: 'sidebar.item.forwarder', hidden: true }, // sementara disembunyikan — hapus hidden untuk memunculkan kembali
             { id: 'book', icon: ListOrdered, labelKey: 'sidebar.item.book' },
             { id: 'pdf-templates', icon: FileCode2, labelKey: 'sidebar.item.pdfTemplates', adminOnly: true },
         ],
@@ -138,7 +138,7 @@ const Sidebar = ({
         () =>
             MENU_SECTIONS.map(sec => ({
                 ...sec,
-                items: sec.items.filter(item => hasPermission(item.id, 'view') && (!item.adminOnly || isAdmin())),
+                items: sec.items.filter(item => !item.hidden && hasPermission(item.id, 'view') && (!item.adminOnly || isAdmin())),
             })).filter(sec => sec.items.length > 0),
         [hasPermission]
     );
