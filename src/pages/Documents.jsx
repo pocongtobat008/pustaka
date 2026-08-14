@@ -599,7 +599,7 @@ export default function Documents({
 
                 <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl p-4 rounded-2xl border border-white/40 dark:border-white/10 shadow-xl ring-1 ring-black/5">
                     <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto">
-                        <div className="flex gap-1 mr-2 bg-gray-100 dark:bg-slate-800 border dark:border-slate-700/50 rounded-lg p-1 shadow-inner">
+                        <div className="flex gap-1 mr-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-lg p-1 shadow-sm">
                             <button onClick={navigateBack} disabled={historyIndex <= 0} className={`p-1 rounded hover:bg-white dark:hover:bg-slate-700 transition-colors ${historyIndex <= 0 ? 'text-gray-300 dark:text-slate-600' : 'text-gray-600 dark:text-slate-300'}`}>
                                 <ChevronLeft size={18} />
                             </button>
@@ -1670,7 +1670,7 @@ export default function Documents({
                             }
 
                             return history.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).map((rev, idx) => (
-                                <div key={idx} className="group flex items-center gap-4 p-4 bg-white dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 rounded-2xl hover:border-indigo-200 dark:hover:border-indigo-800 transition-all">
+                                <div key={idx} className="group flex items-center gap-4 p-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-2xl hover:border-indigo-300 dark:hover:border-indigo-700 transition-all">
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 mb-1">
                                             <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] font-bold rounded uppercase">{isEnglish ? 'Revision' : 'Revisi'}</span>

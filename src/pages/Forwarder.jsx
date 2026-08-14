@@ -369,7 +369,7 @@ export default function Forwarder({ isDarkMode, currentUser }) {
             <div className={`${gridTheme} relative rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm`} style={{ height: 'calc(100vh - 360px)', minHeight: 380 }}>
                 {loading && (
                     <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm">
-                        <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 shadow-lg border border-slate-200 dark:border-slate-600 text-sm text-slate-600 dark:text-slate-300 font-semibold">
+                        <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl shadow-lg border border-white/40 dark:border-white/10 text-sm text-slate-600 dark:text-slate-300 font-semibold">
                             <Loader2 size={18} className="animate-spin text-sky-500" />
                             {isEnglish ? 'Loading…' : 'Memuat…'}
                         </div>

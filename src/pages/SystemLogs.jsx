@@ -60,7 +60,7 @@ export default function SystemLogs({ isDarkMode }) {
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div className="flex bg-gray-100 dark:bg-slate-800 border dark:border-slate-700/50 p-1 rounded-xl shadow-inner">
+                <div className="flex bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 p-1 rounded-xl shadow-sm">
                     <button
                         onClick={() => setLogType('error')}
                         className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${logType === 'error' ? 'gradient-bg text-white shadow-md' : 'text-gray-500 dark:text-slate-500 hover:text-gray-700 dark:hover:text-slate-300'}`}

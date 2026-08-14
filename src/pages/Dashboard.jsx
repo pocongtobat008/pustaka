@@ -376,7 +376,7 @@ export default function Dashboard({
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             {/* STARTUP STYLE GREETING SECTION */}
-            <div className="relative overflow-hidden bg-white dark:bg-slate-800 rounded-[2.5rem] p-8 border border-white/40 dark:border-white/5 shadow-2xl shadow-indigo-500/10 group">
+            <div className="relative overflow-hidden bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white/40 dark:border-white/10 shadow-2xl shadow-indigo-500/10 group">
                 <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl group-hover:bg-indigo-500/20 transition-all duration-700 pointer-events-none"></div>
                 <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl group-hover:bg-purple-500/20 transition-all duration-700 pointer-events-none"></div>
 
@@ -621,7 +621,7 @@ export default function Dashboard({
                                     type="button"
                                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                                     disabled={currentPage === 1}
-                                    className="p-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 disabled:opacity-30 transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20"
+                                    className="p-2 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 text-slate-500 disabled:opacity-30 transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20"
                                 >
                                     <ChevronLeft size={20} />
                                 </button>
@@ -639,7 +639,7 @@ export default function Dashboard({
                                                 type="button"
                                                 key={page}
                                                 onClick={() => setCurrentPage(page)}
-                                                className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${currentPage === page ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'bg-white dark:bg-slate-800 text-slate-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20'}`}
+                                                className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${currentPage === page ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'bg-white/70 dark:bg-slate-800/60 text-slate-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20'}`}
                                             >
                                                 {page}
                                             </button>
@@ -651,7 +651,7 @@ export default function Dashboard({
                                     type="button"
                                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(searchResults.length / resultsPerPage)))}
                                     disabled={currentPage === Math.ceil(searchResults.length / resultsPerPage)}
-                                    className="p-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 disabled:opacity-30 transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20"
+                                    className="p-2 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 text-slate-500 disabled:opacity-30 transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20"
                                 >
                                     <ChevronRight size={20} />
                                 </button>
@@ -678,7 +678,7 @@ export default function Dashboard({
                                     <CardTitle className="text-2xl font-black tracking-tight">{text.storageCenter}</CardTitle>
                                     <CardDescription className="text-sm font-medium">{text.storageDesc}</CardDescription>
                                 </div>
-                                <div className="p-3 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                                <div className="p-3 bg-white/70 dark:bg-slate-800/60 rounded-2xl border border-white/40 dark:border-white/10">
                                     <Grid3x3 size={24} className="text-indigo-500" />
                                 </div>
                             </div>
@@ -841,7 +841,7 @@ export default function Dashboard({
             </div>
 
             <Card className="max-h-[400px] overflow-y-auto relative p-0 sm:p-0">
-                <div className="sticky top-0 bg-white dark:bg-slate-800 z-10 p-6 pb-2 border-b border-slate-100 dark:border-slate-800">
+                <div className="sticky top-0 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl z-10 p-6 pb-2 border-b border-white/20 dark:border-white/10">
                     <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <History size={20} className="text-purple-500" /> {text.auditLog}
                     </h3>

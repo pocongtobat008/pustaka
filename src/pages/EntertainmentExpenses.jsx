@@ -1042,7 +1042,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
             )}
 
             {/* Tab Navigation */}
-            <div className="flex gap-1 bg-white dark:bg-slate-800/50 rounded-2xl p-1 border border-slate-200 dark:border-slate-700">
+            <div className="flex gap-1 bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl p-1 border border-white/40 dark:border-white/10">
                 <button
                     onClick={() => { setTab('pending'); setPage(1); setSettleFilter('all'); }}
                     className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all ${
@@ -1079,7 +1079,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
 
             {/* Settle Status Filter — only on settled tab */}
             {tab === 'settled' && (
-                <div className="flex gap-1 bg-white dark:bg-slate-800/50 rounded-2xl p-1 border border-slate-200 dark:border-slate-700">
+                <div className="flex gap-1 bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl p-1 border border-white/40 dark:border-white/10">
                     {[
                         { key: 'all', label: text.filterAll },
                         { key: 'over', label: text.filterOver, color: 'green' },
@@ -1104,7 +1104,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
             )}
 
             {/* Search / Filter */}
-            <div className="bg-white dark:bg-slate-800/50 rounded-2xl p-4 border border-slate-200 dark:border-slate-700">
+            <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl p-4 border border-white/40 dark:border-white/10">
             <div className="flex flex-wrap items-end gap-3">
                 <div className="flex-1 min-w-[130px]">
                     <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{text.filterTanggalFrom}</label>
@@ -1169,7 +1169,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
 
             {/* Rules Tab Content */}
             {tab === 'rules' && isAdmin && (
-                <div className="bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+                <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-white/40 dark:border-white/10 overflow-hidden">
                     <div className="px-6 py-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
                         <h3 className="font-bold text-slate-700 dark:text-slate-200">
                             <ClipboardList size={18} className="inline-block mr-2" />
@@ -1665,7 +1665,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
             </AnimatePresence>
             , document.body)}
             {/* Table */}
-            <div className="bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-white/40 dark:border-white/10 overflow-hidden">
                 <div className="px-6 py-4 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 border-b border-slate-200 dark:border-slate-700">
                     <h3 className="font-bold text-slate-700 dark:text-slate-200">
                         <ClipboardList size={18} className="inline-block mr-2" />
@@ -1762,7 +1762,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
             </div>
             {/* Pagination */}
             {totalPages > 1 && (
-                <div className="flex items-center justify-between px-6 py-3 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+                <div className="flex items-center justify-between px-6 py-3 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-white/40 dark:border-white/10">
                     <div className="text-sm text-slate-500 dark:text-slate-400">
                         {text.pagination.replace('{page}', page).replace('{totalPages}', totalPages).replace('{totalEntries}', totalEntries)}
                     </div>

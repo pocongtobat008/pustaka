@@ -1379,7 +1379,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
         <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
             {/* Header & Tabs */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex bg-gray-100 dark:bg-slate-800 border dark:border-slate-700/50 p-1 rounded-xl w-fit shadow-inner">
+                <div className="flex bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 p-1 rounded-xl w-fit shadow-sm">
                     <button
                         onClick={() => setActiveTab('pph')}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'pph' ? 'gradient-bg shadow-sm text-white' : 'text-gray-500 hover:text-gray-700'}`}

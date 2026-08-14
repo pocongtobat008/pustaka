@@ -1033,7 +1033,7 @@ export default function MasterData({
 
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
-            <div className="flex bg-gray-100 dark:bg-slate-800 border dark:border-slate-700/50 p-1 rounded-xl w-fit mb-4 shadow-inner">
+            <div className="flex bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 p-1 rounded-xl w-fit mb-4 shadow-sm">
                 {['users', 'roles', 'departments', 'flows', 'logs', 'ai', 'training'].map(tab => (
                     <button
                         key={tab}

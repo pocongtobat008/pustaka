@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Calculator, Sparkles, TrendingUp, AlertCircle, FileText, Search, Database, User, Download, Upload, Save, Loader2, Book } from 'lucide-react';
 import * as XLSX from 'xlsx';
-import { Card } from '../components/ui/Card';
+import { Card, SummaryRow } from '../components/ui/Card';
 import TaxCalculator from '../components/tax/TaxCalculator';
 import { db as taxService } from '../services/database';
 import TaxObjectForm from '../components/tax/TaxObjectForm';
@@ -669,7 +669,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
 
                 {/* Tabs */}
                 {/* Tabs */}
-                <div className="flex bg-gray-100 dark:bg-slate-800 border dark:border-slate-700/50 p-1 rounded-xl overflow-x-auto shadow-inner">
+                <div className="flex bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 p-1 rounded-xl overflow-x-auto shadow-sm">
                     <div className="flex gap-1">
                         {[
                             { id: 'simulation', label: text.tabs.simulation, icon: Calculator },
@@ -689,6 +689,14 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                     </div>
                 </div>
             </div>
+
+            {/* ── Ringkasan — konsisten dengan SummaryCard di semua menu ── */}
+            <SummaryRow cards={[
+                { title: isEnglish ? 'WP Database' : 'Database WP', value: savedData.length, icon: Database, gradient: 'from-sky-500 to-blue-600', subtext: isEnglish ? 'Total taxpayer records' : 'Total data wajib pajak', valueClass: 'text-2xl' },
+                { title: isEnglish ? 'Master Object' : 'Objek Pajak Master', value: masterData.length, icon: Book, gradient: 'from-violet-500 to-purple-600', subtext: isEnglish ? 'Tax object codes' : 'Kode objek pajak', valueClass: 'text-2xl' },
+                { title: isEnglish ? 'PPh (Current)' : 'PPh (Simulasi)', value: formatCurrency(calcData.pph || 0), icon: TrendingUp, gradient: 'from-indigo-500 to-blue-600', subtext: isEnglish ? 'Latest simulation result' : 'Hasil simulasi terakhir', valueClass: 'text-2xl' },
+                { title: isEnglish ? 'Total Payable' : 'Total Bayar', value: formatCurrency(calcData.totalPayable || 0), icon: Calculator, gradient: 'from-emerald-500 to-teal-600', subtext: isEnglish ? 'Incl. PPN' : 'Termasuk PPN', valueClass: 'text-2xl' },
+            ]} />
 
             {/* AI SMART INSIGHT BANNER */}
             <div className={`p-4 rounded-2xl border backdrop-blur-md flex items-center gap-4 animate-in slide-in-from-top-4 duration-700 ${insight.color}`}>

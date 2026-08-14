@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { User, Lock, Save, AlertCircle, CheckCircle2, ChevronRight } from 'lucide-react';
-import { Card } from '../components/ui/Card';
+import { User, Lock, Save, AlertCircle, CheckCircle2, ChevronRight, ShieldCheck, Building2, AtSign, BadgeCheck } from 'lucide-react';
+import { Card, SummaryRow } from '../components/ui/Card';
 import { API_URL } from '../services/database';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -113,7 +113,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2 border-b border-indigo-100 dark:border-indigo-900/30">
                 <div>
-                    <h2 className="text-3xl font-extrabold text-[#2B3674] dark:text-white flex items-center gap-3">
+                    <h2 className="text-2xl font-black text-slate-800 dark:text-white flex items-center gap-3">
                         <User className="text-indigo-500" size={32} />
                         {text.pageTitle}
                     </h2>
@@ -126,6 +126,14 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                     {text.accountStatus}: <span className="text-green-500 ml-1">{text.active}</span>
                 </div>
             </div>
+
+            {/* ── Ringkasan — konsisten dengan SummaryCard di semua menu ── */}
+            <SummaryRow cards={[
+                { title: isEnglish ? 'Role' : 'Peran', value: currentUser?.role || '-', icon: ShieldCheck, gradient: 'from-indigo-500 to-purple-600', valueClass: 'text-lg' },
+                { title: isEnglish ? 'Department' : 'Departemen', value: currentUser?.department || '-', icon: Building2, gradient: 'from-sky-500 to-blue-600', valueClass: 'text-lg' },
+                { title: isEnglish ? 'Username' : 'Username', value: currentUser?.username || '-', icon: AtSign, gradient: 'from-violet-500 to-fuchsia-600', valueClass: 'text-lg' },
+                { title: isEnglish ? 'Account Status' : 'Status Akun', value: isEnglish ? 'Active' : 'Aktif', icon: BadgeCheck, gradient: 'from-emerald-500 to-teal-600', valueClass: 'text-lg' },
+            ]} />
 
             {message.text && (
                 <div className={`p-4 rounded-2xl flex items-center gap-3 animate-in zoom-in duration-300 ${message.type === 'success'

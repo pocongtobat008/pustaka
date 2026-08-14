@@ -876,7 +876,7 @@ export default function JobDueDate({ currentUser, users, departments, hasPermiss
                                     key={user.username}
                                     whileHover={{ y: -5 }}
                                     onClick={() => setSelectedUser(user.username)}
-                                    className="bg-white dark:bg-slate-800/40 rounded-[2.5rem] p-7 border border-slate-100 dark:border-white/5 shadow-sm cursor-pointer group relative"
+                                    className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-[2.5rem] p-7 border border-white/40 dark:border-white/10 shadow-xl shadow-indigo-500/5 cursor-pointer group relative"
                                 >
                                     <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
                                         {hasPermission('job-due-date', 'edit') && (

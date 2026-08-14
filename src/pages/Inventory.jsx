@@ -328,7 +328,7 @@ export default function Inventory({
             <div className="flex flex-col gap-6 mb-8 bg-white/40 dark:bg-slate-800/40 backdrop-blur-2xl p-6 rounded-[2rem] border border-white/50 dark:border-white/10 shadow-2xl shadow-indigo-500/10 group hover:shadow-indigo-500/20 transition-all duration-500">
                 <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4 w-full md:w-auto">
-                        <div className="flex bg-gray-100 dark:bg-slate-800 border dark:border-slate-700/50 p-1.5 rounded-2xl backdrop-blur-sm shadow-inner">
+                        <div className="flex bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 p-1.5 rounded-2xl shadow-sm">
                             <button
                                 onClick={() => setActiveInvTab('internal')}
                                 className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all duration-300 ${activeInvTab === 'internal' ? 'gradient-bg text-white shadow-lg scale-105 ring-1 ring-black/5' : 'text-gray-500 dark:text-slate-500 hover:text-gray-700 dark:hover:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-800/50'}`}
