@@ -56,7 +56,7 @@ export default function Login({ onLogin }) {
     };
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center overflow-hidden relative p-4">
+        <main role="main" className="min-h-screen w-full flex items-center justify-center overflow-hidden relative p-4">
             {/* Animated Background Elements — gradient mesh */}
             <div className="absolute top-[-15%] left-[-10%] w-[45%] h-[45%] bg-indigo-500/25 dark:bg-indigo-500/30 rounded-full blur-[120px] animate-pulse"></div>
             <div className="absolute bottom-[-15%] right-[-10%] w-[45%] h-[45%] bg-purple-500/25 dark:bg-purple-500/30 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
@@ -136,7 +136,7 @@ export default function Login({ onLogin }) {
                         <div className="absolute -top-2 xl:-top-4 right-0 flex items-center gap-2">
                             <button
                                 onClick={() => setLanguage(isEnglish ? 'id' : 'en')}
-                                className="neo-btn flex items-center gap-1.5 px-2.5 py-1.5 xl:px-3 xl:py-2 text-slate-500 dark:text-slate-300 hover:text-indigo-500 dark:hover:text-indigo-400 group"
+                                className="neo-btn flex items-center gap-1.5 px-2.5 py-1.5 xl:px-3 xl:py-2 text-slate-600 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 group"
                                 title={isEnglish ? 'Change to Indonesian' : 'Ganti ke Bahasa Inggris'}
                             >
                                 <Globe size={14} className="group-hover:text-indigo-500 w-3 h-3 xl:w-3.5 xl:h-3.5" />
@@ -222,9 +222,9 @@ export default function Login({ onLogin }) {
                             {text.guest}
                         </button>
                     </form>
-                    <p className="text-center text-[10px] xl:text-xs text-gray-400 mt-6 xl:mt-10 font-bold uppercase tracking-widest">{text.version}</p>
+                    <p className="text-center text-[10px] xl:text-xs text-slate-500 dark:text-slate-400 mt-6 xl:mt-10 font-bold uppercase tracking-widest">{text.version}</p>
                 </div>
             </div>
-        </div>
+        </main>
     );
 }

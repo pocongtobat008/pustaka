@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+# Sitemap: https://pustaka.izal.my.id/sitemap.xml
