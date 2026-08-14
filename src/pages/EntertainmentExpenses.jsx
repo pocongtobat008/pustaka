@@ -47,7 +47,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
         filterTanggalFrom: 'Date From', filterTanggalTo: 'Date To', filterJenis: 'Filter Type', filterSearch: 'Search',
         filterAll: 'All', filterBtn: 'Filter', filterReset: 'Reset',
         // Table
-        thAksi: 'Actions', thTanggal: 'Date', thNoRef: 'Ref No', thNamaRelasi: 'Relation',
+        thAksi: 'Actions', thTanggal: 'Date', thNoAf: 'AF Number', thNoRef: 'Ref No', thNamaRelasi: 'Relation',
         thJabatan: 'Position', thNilai: 'Amount', thJenis: 'Type', thPengaju: 'Requester',
         loading: 'Loading data...', empty: 'No data yet',
         // Actions
@@ -136,7 +136,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
         filterTanggalFrom: 'Tgl Dari', filterTanggalTo: 'Tgl Sampai', filterJenis: 'Filter Jenis', filterSearch: 'Pencarian',
         filterAll: 'Semua', filterBtn: 'Filter', filterReset: 'Reset',
         // Table
-        thAksi: 'Aksi', thTanggal: 'Tanggal', thNoRef: 'No Ref', thNamaRelasi: 'Nama Relasi',
+        thAksi: 'Aksi', thTanggal: 'Tanggal', thNoAf: 'No AF', thNoRef: 'No Ref', thNamaRelasi: 'Nama Relasi',
         thJabatan: 'Jabatan', thNilai: 'Nilai', thJenis: 'Jenis', thPengaju: 'Pengaju',
         loading: 'Memuat data...', empty: 'Belum ada data',
         // Actions
@@ -1666,6 +1666,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                             <tr className="bg-slate-50 dark:bg-slate-700/50 text-xs font-semibold text-slate-500 dark:text-slate-300 uppercase tracking-wider">
                                 <th className="px-4 py-3 text-center w-32">{text.thAksi}</th>
                                 <th className="px-4 py-3 text-left">{text.thTanggal}</th>
+                                <th className="px-4 py-3 text-left">{text.thNoAf}</th>
                                 <th className="px-4 py-3 text-left">{text.thNoRef}</th>
                                 <th className="px-4 py-3 text-left">{text.thNamaRelasi}</th>
                                 <th className="px-4 py-3 text-left">{text.thJabatan}</th>
@@ -1676,9 +1677,9 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                             {loading ? (
-                                <tr><td colSpan={8} className="px-4 py-8 text-center text-slate-400">{text.loading}</td></tr>
+                                <tr><td colSpan={9} className="px-4 py-8 text-center text-slate-400">{text.loading}</td></tr>
                             ) : data.length === 0 ? (
-                                <tr><td colSpan={8} className="px-4 py-8 text-center text-slate-400">{text.empty}</td></tr>
+                                <tr><td colSpan={9} className="px-4 py-8 text-center text-slate-400">{text.empty}</td></tr>
                             ) : data.map(item => (
                                 <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
                                     <td className="px-4 py-3 text-center">
@@ -1694,6 +1695,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                         </button>
                                     </td>
                                     <td className="px-4 py-3 whitespace-nowrap">{formatDateId(item.tanggal)}</td>
+                                    <td className="px-4 py-3 font-mono text-xs">{item.no_gl || '-'}</td>
                                     <td className="px-4 py-3 font-mono text-xs">
                                         <div className="flex items-center gap-1.5">
                                             <span>{item.no_ref || `ENT-${String(item.id).padStart(5, '0')}`}</span>
