@@ -382,12 +382,12 @@ export default function Forwarder({ isDarkMode, currentUser }) {
                     }}
                     defaultColDef={{
                         resizable: true,
-                        cellStyle: { display: 'flex', alignItems: 'center' },
+                        minWidth: 90,
                     }}
                     animateRows
-                    enableCellTextSelection
-                    ensureDomOrder
+                    singleClickEdit
                     stopEditingWhenCellsLoseFocus
+                    ensureDomOrder
                     suppressMovableColumns={false}
                     getRowId={p => String(p.data.id)}
                     overlayLoadingTemplate={isEnglish ? '<span class="ag-overlay-loading-center">Loading…</span>' : '<span class="ag-overlay-loading-center">Memuat…</span>'}
