@@ -1356,6 +1356,48 @@ router.post('/', upload.array('attachments', 10), async (req, res) => {
 });
 
 // PUT /api/entertainment/:id - Update entry
+// PATCH /api/entertainment/:id/gl-number - Update GL number even after settled
+router.patch('/:id/gl-number', async (req, res) => {
+    try {
+        const existing = await knex('entertainment_expenses').where('id', req.params.id).first();
+        if (!existing) return res.status(404).json({ error: 'Data not found' });
+
+        const user = req.authUser;
+        const perms = await getUserEntertainmentPerms(user);
+        const isOwner = existing.requester_username === user.username || existing.owner === user.username;
+        if (!perms.can_edit && user.role !== 'admin' && user.role !== 'superadmin' && !isOwner) {
+            return res.status(403).json({ error: 'Anda tidak memiliki izin untuk mengubah GL number' });
+        }
+
+        const { gl_number } = req.body;
+        if (gl_number === undefined || String(gl_number).trim() === '') {
+            return res.status(400).json({ error: 'GL number wajib diisi' });
+        }
+
+        const updated = await knex('entertainment_expenses')
+            .where('id', req.params.id)
+            .update({ gl_number: String(gl_number).trim(), updated_at: new Date() })
+            .returning('*');
+
+        // Log aktivitas
+        try {
+            await knex('activity_logs').insert({
+                user_id: user.id,
+                username: user.username,
+                action: 'UPDATE_GL_NUMBER',
+                module: 'entertainment',
+                target_id: String(req.params.id),
+                detail: `GL number ${existing.gl_number || '-'} -> ${String(gl_number).trim()} (ref: ${existing.no_ref || existing.id})`
+            });
+        } catch (e) { /* log non-blocking */ }
+
+        res.json(updated[0] || { ...existing, gl_number: String(gl_number).trim() });
+    } catch (error) {
+        console.error('[Entertainment] PATCH gl-number error:', error);
+        res.status(500).json({ error: 'Failed to update GL number' });
+    }
+});
+
 router.put('/:id', upload.array('attachments', 10), async (req, res) => {
     try {
         const existing = await knex('entertainment_expenses').where('id', req.params.id).first();

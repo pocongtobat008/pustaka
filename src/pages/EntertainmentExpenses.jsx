@@ -5,7 +5,7 @@ import {
     Plus, Trash2, Eye, FileSpreadsheet, FileText, Upload,
     X, Search, Filter, Edit3,
     Receipt, Save, ClipboardList,
-    DollarSign, Loader2, CheckCircle2, MoreVertical, Info
+    DollarSign, Loader2, CheckCircle2, MoreVertical, Info, Hash
 } from 'lucide-react';
 import { entertainmentService } from '../services/entertainmentService';
 import { API_URL } from '../services/apiClient';
@@ -51,7 +51,8 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
         thJabatan: 'Position', thNilai: 'Amount', thJenis: 'Type', thPengaju: 'Requester',
         loading: 'Loading data...', empty: 'No data yet',
         // Actions
-        preview: 'Preview', edit: 'Edit', settle: 'Settle', exportPdfBtn: 'Export PDF', delete: 'Delete',
+        preview: 'Preview', edit: 'Edit', settle: 'Settle', exportPdfBtn: 'Export PDF', delete: 'Delete', glAction: 'GL Number',
+        glTitle: 'Update GL Number', glCurrent: 'Current GL Number', glNew: 'New GL Number', glSave: 'Save GL Number', glSaved: 'GL number updated successfully', glEmpty: 'GL number is required',
         // Form
         formTitle: 'Entertainment Expenses', formEdit: 'Edit Entry', formNew: 'New Entry',
         lblTanggal: 'Date *', lblTempat: 'Venue', lblJenis: 'Type *', lblCustomJenis: 'Custom type',
@@ -140,7 +141,8 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
         thJabatan: 'Jabatan', thNilai: 'Nilai', thJenis: 'Jenis', thPengaju: 'Pengaju',
         loading: 'Memuat data...', empty: 'Belum ada data',
         // Actions
-        preview: 'Preview', edit: 'Edit', settle: 'Settle', exportPdfBtn: 'Export PDF', delete: 'Hapus',
+        preview: 'Preview', edit: 'Edit', settle: 'Settle', exportPdfBtn: 'Export PDF', delete: 'Hapus', glAction: 'GL Number',
+        glTitle: 'Update GL Number', glCurrent: 'GL Number Saat Ini', glNew: 'GL Number Baru', glSave: 'Simpan GL Number', glSaved: 'GL number berhasil diperbarui', glEmpty: 'GL number wajib diisi',
         // Form
         formTitle: 'Entertainment Expenses', formEdit: 'Edit Entry', formNew: 'Entry Baru',
         lblTanggal: 'Tanggal *', lblTempat: 'Tempat', lblJenis: 'Jenis *', lblCustomJenis: 'Custom jenis',
@@ -251,6 +253,9 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
     const [ruleForm, setRuleForm] = useState({ rule_name: '', target_type: 'user', target_value: '', view_all: false, can_create: true, can_edit: true, can_delete: true, can_settle: true, can_export: true, export_all: false });
     const [ruleSubmitting, setRuleSubmitting] = useState(false);
     const [deletingId, setDeletingId] = useState(null);
+    const [glTarget, setGlTarget] = useState(null);
+    const [glValue, setGlValue] = useState('');
+    const [glSaving, setGlSaving] = useState(false);
     const [deletingRuleId, setDeletingRuleId] = useState(null);
     const [exportingPdfId, setExportingPdfId] = useState(null);
     const [previewExporting, setPreviewExporting] = useState(null);
@@ -2114,26 +2119,106 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                     <X size={20} />
                                 </button>
                             </div>
-                            <div className="p-6 space-y-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <DetailField label={text.detailTanggal} value={previewData.tanggal} />
-                                    <DetailField label={text.detailTempat} value={previewData.tempat} />
-                                    <DetailField label={text.detailAlamat} value={previewData.alamat} />
-                                    <DetailField label={text.detailJenis} value={previewData.jenis === 'Custom' ? previewData.custom_jenis : previewData.jenis} />
-                                    <DetailField label={text.detailNilai} value={
-                                        previewData.status === 'settled' && previewData.settle_amount
-                                            ? `${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(previewData.settle_amount)}${parseFloat(previewData.settle_amount) !== parseFloat(previewData.nilai) ? ` (${parseFloat(previewData.settle_amount) > parseFloat(previewData.nilai) ? 'Over' : 'Short'})` : ''}`
-                                            : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(previewData.nilai)
-                                    } />
-                                    <DetailField label={text.detailNoGl} value={previewData.no_gl} />
-                                    <DetailField label={text.detailGl} value={previewData.gl_number} />
-                                    <DetailField label={text.thNamaRelasi} value={(previewData.relasi || []).join(', ')} />
-                                    <DetailField label={text.thJabatan} value={(previewData.jabatan || []).join(', ')} />
-                                    <DetailField label={text.detailJumlahRelasi} value={`${previewData.jumlah_relasi || (previewData.relasi || []).length || 0} ${isEnglish ? 'person(s)' : 'orang'}`} />
-                                    <DetailField label={text.detailPerusahaan} value={(previewData.nama_perusahaan || []).join(', ')} />
-                                    <DetailField label={text.detailJenisUsaha} value={previewData.jenis_usaha} />
-                                    <DetailField label={text.detailPlan} value={previewData.catatan_kode} />
-                                    <DetailField label={text.thPengaju} value={previewData.requester_name || previewData.requester_username} />
+                            <div className="p-6 space-y-5">
+                                {/* Info header: ref + status + tipe entry */}
+                                <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-50 dark:bg-slate-700/40 rounded-xl px-4 py-3 border border-slate-200 dark:border-slate-600">
+                                    <div className="min-w-0">
+                                        <p className="font-mono text-sm font-bold text-slate-800 dark:text-slate-100 truncate">
+                                            {previewData.no_ref || `ENT-${String(previewData.id).padStart(5, '0')}`}
+                                        </p>
+                                        <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                                            {previewData.requester_name || previewData.requester_username}
+                                        </p>
+                                    </div>
+                                    <div className="flex items-center gap-2 shrink-0">
+                                        <span className={`px-2.5 py-1 rounded-lg text-[11px] font-bold ${
+                                            previewData.entry_type === 'reimburse'
+                                                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300'
+                                                : 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300'
+                                        }`}>
+                                            {previewData.entry_type === 'reimburse' ? 'Reimburse' : 'Plan'}
+                                        </span>
+                                        <span className={`px-2.5 py-1 rounded-lg text-[11px] font-bold ${
+                                            previewData.status === 'settled'
+                                                ? 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-300'
+                                                : previewData.status === 'draft'
+                                                ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300'
+                                                : 'bg-slate-100 text-slate-600 dark:bg-slate-600 dark:text-slate-200'
+                                        }`}>
+                                            {previewData.status === 'settled' ? (isEnglish ? 'Settled' : 'Settled')
+                                                : previewData.status === 'draft' ? 'Draft'
+                                                : (isEnglish ? 'Active' : 'Aktif')}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* Informasi Umum */}
+                                <div>
+                                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2.5">
+                                        {isEnglish ? 'General Information' : 'Informasi Umum'}
+                                    </h4>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <DetailField label={text.detailTanggal} value={previewData.tanggal} />
+                                        <DetailField label={text.detailTempat} value={previewData.tempat} />
+                                        <DetailField label={text.detailJenis} value={previewData.jenis === 'Custom' ? previewData.custom_jenis : previewData.jenis} />
+                                        <DetailField label={text.detailPlan} value={previewData.catatan_kode} />
+                                    </div>
+                                    <div className="mt-3">
+                                        <DetailField label={text.detailAlamat} value={previewData.alamat} />
+                                    </div>
+                                </div>
+
+                                {/* Keuangan */}
+                                <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+                                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2.5">
+                                        {isEnglish ? 'Financial' : 'Keuangan'}
+                                    </h4>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <DetailField label={text.detailNilai} value={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(previewData.nilai)} />
+                                        {previewData.status === 'settled' && previewData.settle_amount && (
+                                            <>
+                                                <div>
+                                                    <label className="block text-xs font-semibold text-slate-400 dark:text-slate-500 mb-0.5">
+                                                        {isEnglish ? 'Settle Amount' : 'Jumlah Settle'}
+                                                    </label>
+                                                    <div className="flex items-center gap-2">
+                                                        <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                                                            {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(previewData.settle_amount)}
+                                                        </p>
+                                                        {parseFloat(previewData.settle_amount) !== parseFloat(previewData.nilai) && (
+                                                            <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                                                                parseFloat(previewData.settle_amount) > parseFloat(previewData.nilai)
+                                                                    ? 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-300'
+                                                                    : 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-300'
+                                                            }`}>
+                                                                {parseFloat(previewData.settle_amount) > parseFloat(previewData.nilai) ? 'Over' : 'Short'} {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(Math.abs(parseFloat(previewData.settle_amount) - parseFloat(previewData.nilai)))}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <DetailField label={isEnglish ? 'Settle Date' : 'Tanggal Settle'} value={previewData.settle_date} />
+                                            </>
+                                        )}
+                                        <DetailField label={text.detailNoGl} value={previewData.no_gl} />
+                                        <DetailField label={text.detailGl} value={previewData.gl_number} />
+                                        {previewData.no_gl_shortage && (
+                                            <DetailField label={text.lblAfShortage} value={previewData.no_gl_shortage} />
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Relasi / Perusahaan */}
+                                <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+                                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2.5">
+                                        {isEnglish ? 'Relations / Company' : 'Relasi / Perusahaan'}
+                                    </h4>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <DetailField label={text.thNamaRelasi} value={(previewData.relasi || []).join(', ')} />
+                                        <DetailField label={text.thJabatan} value={(previewData.jabatan || []).join(', ')} />
+                                        <DetailField label={text.detailPerusahaan} value={(previewData.nama_perusahaan || []).join(', ')} />
+                                        <DetailField label={text.detailJumlahRelasi} value={`${previewData.jumlah_relasi || (previewData.relasi || []).length || 0} ${isEnglish ? 'person(s)' : 'orang'}`} />
+                                        <DetailField label={text.detailJenisUsaha} value={previewData.jenis_usaha} />
+                                    </div>
                                 </div>
                                 <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
                                     <h4 className="text-sm font-semibold text-slate-600 dark:text-slate-300 mb-3">{text.detailLampiran}:</h4>
@@ -2321,6 +2406,13 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                         </button>
                                     )}
 
+                                    {userPerms.can_edit && (
+                                        <button type="button" onClick={() => { setActionMenu(null); setGlTarget(item); setGlValue(item.gl_number || ''); }}
+                                            className={`${itemCls} text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-500/10`}>
+                                            <Hash size={15} /> {text.glAction}
+                                        </button>
+                                    )}
+
                                     {userPerms.can_export && (
                                         <button type="button"
                                             disabled={exportingPdfId === item.id}
@@ -2348,6 +2440,93 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                 </>,
                 document.body
             )}
+
+            {/* GL Number Modal — update GL number even after settled */}
+            {createPortal(
+                <AnimatePresence>
+                    {glTarget && (
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                            className="fixed inset-0 z-[75] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                            onClick={() => setGlTarget(null)}>
+                            <motion.div initial={{ scale: 0.9, y: 24, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: 0.9, y: 24, opacity: 0 }}
+                                transition={{ type: 'spring', damping: 22, stiffness: 300 }}
+                                className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-md overflow-hidden"
+                                onClick={e => e.stopPropagation()}>
+                                <div className="bg-gradient-to-r from-sky-600 to-indigo-600 px-6 py-4 flex items-center justify-between">
+                                    <h3 className="text-white font-bold text-lg flex items-center gap-2">
+                                        <Hash size={20} /> {text.glTitle}
+                                    </h3>
+                                    <button onClick={() => setGlTarget(null)}
+                                        className="p-1.5 text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition-colors">
+                                        <X size={20} />
+                                    </button>
+                                </div>
+                                <div className="p-6 space-y-4">
+                                    <div className="flex items-center justify-between gap-3 bg-slate-50 dark:bg-slate-700/40 rounded-xl px-4 py-3 border border-slate-200 dark:border-slate-600">
+                                        <div className="min-w-0">
+                                            <p className="font-mono text-sm font-bold text-slate-800 dark:text-slate-100 truncate">
+                                                {glTarget.no_ref || `ENT-${String(glTarget.id).padStart(5, '0')}`}
+                                            </p>
+                                            <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{glTarget.tempat || '-'}</p>
+                                        </div>
+                                        <span className={`px-2.5 py-1 rounded-lg text-[11px] font-bold shrink-0 ${
+                                            glTarget.status === 'settled'
+                                                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300'
+                                                : glTarget.status === 'draft'
+                                                ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300'
+                                                : 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300'
+                                        }`}>
+                                            {glTarget.status === 'settled' ? (isEnglish ? 'Settled' : 'Settled')
+                                                : glTarget.status === 'draft' ? 'Draft'
+                                                : isEnglish ? 'Active' : 'Aktif'}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{text.glCurrent}</label>
+                                        <p className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-700/60 font-mono text-sm text-slate-700 dark:text-slate-200">
+                                            {glTarget.gl_number || '-'}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.glNew} *</label>
+                                        <input type="text" value={glValue}
+                                            autoFocus
+                                            onChange={e => setGlValue(e.target.value)}
+                                            onKeyDown={e => { if (e.key === 'Enter') document.getElementById('gl-save-btn')?.click(); }}
+                                            placeholder={isEnglish ? 'Enter GL number' : 'Isi GL number'}
+                                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm font-mono focus:ring-2 focus:ring-sky-500" />
+                                    </div>
+                                    <div className="flex items-center justify-end gap-3 pt-1">
+                                        <button type="button" onClick={() => setGlTarget(null)}
+                                            className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-sm font-semibold">
+                                            Cancel
+                                        </button>
+                                        <button id="gl-save-btn" type="button" disabled={glSaving}
+                                            onClick={async () => {
+                                                if (glSaving) return;
+                                                if (!glValue.trim()) { toast.error(text.glEmpty); return; }
+                                                setGlSaving(true);
+                                                try {
+                                                    await entertainmentService.updateGlNumber(glTarget.id, glValue.trim());
+                                                    toast.success(text.glSaved);
+                                                    setGlTarget(null);
+                                                    fetchData({ silent: true });
+                                                } catch (e) {
+                                                    toast.error(e.message || text.glEmpty);
+                                                } finally {
+                                                    setGlSaving(false);
+                                                }
+                                            }}
+                                            className="inline-flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-sky-600 to-indigo-600 text-white rounded-xl hover:opacity-90 transition-opacity text-sm font-bold disabled:opacity-40 disabled:cursor-not-allowed">
+                                            {glSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />} {text.glSave}
+                                        </button>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+                , document.body)}
             </div>
     );
 }

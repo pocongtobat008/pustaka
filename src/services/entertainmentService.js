@@ -97,6 +97,14 @@ export const entertainmentService = {
         return response.json();
     },
 
+    async updateGlNumber(id, gl_number) {
+        return apiClient.fetchJson(`${API_URL}/entertainment/${id}/gl-number`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ gl_number })
+        });
+    },
+
     async getRules() {
         return apiClient.fetchJson(`${API_URL}/entertainment/rules`);
     },
