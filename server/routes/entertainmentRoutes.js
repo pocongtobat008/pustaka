@@ -300,7 +300,7 @@ router.delete('/rules/:id', async (req, res) => {
 // GET /api/entertainment - List all (with pagination & row-level security)
 router.get('/', async (req, res) => {
     try {
-        const { tanggal_from, tanggal_to, jenis, search, status, settle_status, page = 1, perPage = 15, entry_type } = req.query;
+        const { tanggal_from, tanggal_to, jenis, search, status, settle_status, page = 1, perPage = 15, entry_type, no_gl } = req.query;
         const pageNum = Math.max(1, parseInt(page) || 1);
         const limit = Math.max(1, Math.min(100, parseInt(perPage) || 15));
         const offset = (pageNum - 1) * limit;
@@ -336,6 +336,11 @@ router.get('/', async (req, res) => {
         if (entry_type === 'reimburse' || entry_type === 'plan') {
             query = query.where('entry_type', entry_type);
             countQuery = countQuery.where('entry_type', entry_type);
+        }
+        if (no_gl) {
+            const ngl = String(no_gl).trim().toUpperCase();
+            query = query.whereRaw('UPPER(no_gl) ILIKE ?', [`%${ngl}%`]);
+            countQuery = countQuery.whereRaw('UPPER(no_gl) ILIKE ?', [`%${ngl}%`]);
         }
         if (search) {
             const searchFn = function() {

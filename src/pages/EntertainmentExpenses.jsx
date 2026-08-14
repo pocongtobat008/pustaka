@@ -45,7 +45,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
         searchPlaceholder: 'Search venue, type, AF, requester, ref...',
         // Filter
         filterTanggalFrom: 'Date From', filterTanggalTo: 'Date To', filterJenis: 'Filter Type', filterSearch: 'Search',
-        filterAll: 'All', filterBtn: 'Filter', filterReset: 'Reset',
+        filterAll: 'All', filterBtn: 'Filter', filterReset: 'Reset', filterNoAf: 'AF Number',
         // Table
         thAksi: 'Actions', thTanggal: 'Date', thNoAf: 'AF Number', thNoRef: 'Ref No', thNamaRelasi: 'Relation',
         thJabatan: 'Position', thNilai: 'Amount', thJenis: 'Type', thPengaju: 'Requester',
@@ -134,7 +134,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
         searchPlaceholder: 'Cari tempat, jenis, AF, pengaju, ref...',
         // Filter
         filterTanggalFrom: 'Tgl Dari', filterTanggalTo: 'Tgl Sampai', filterJenis: 'Filter Jenis', filterSearch: 'Pencarian',
-        filterAll: 'Semua', filterBtn: 'Filter', filterReset: 'Reset',
+        filterAll: 'Semua', filterBtn: 'Filter', filterReset: 'Reset', filterNoAf: 'No AF',
         // Table
         thAksi: 'Aksi', thTanggal: 'Tanggal', thNoAf: 'No AF', thNoRef: 'No Ref', thNamaRelasi: 'Nama Relasi',
         thJabatan: 'Jabatan', thNilai: 'Nilai', thJenis: 'Jenis', thPengaju: 'Pengaju',
@@ -220,7 +220,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
     const [editingId, setEditingId] = useState(null);
     const [showPreview, setShowPreview] = useState(false);
     const [previewData, setPreviewData] = useState(null);
-    const [searchParams, setSearchParams] = useState({ tanggal_from: '', tanggal_to: '', jenis: '', search: '', entry_type: '' });
+    const [searchParams, setSearchParams] = useState({ tanggal_from: '', tanggal_to: '', jenis: '', search: '', entry_type: '', no_gl: '' });
     const [exportingPdf, setExportingPdf] = useState(false);
     const [exportingExcel, setExportingExcel] = useState(false);
     
@@ -338,6 +338,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
             if (searchParams.jenis) params.jenis = searchParams.jenis;
             if (searchParams.search) params.search = searchParams.search;
             if (searchParams.entry_type) params.entry_type = searchParams.entry_type;
+            if (searchParams.no_gl) params.no_gl = searchParams.no_gl;
             const result = await entertainmentService.getAll(params);
             const list = Array.isArray(result) ? result : (result?.data || []);
             const parsed = list.map(item => ({
@@ -1131,6 +1132,13 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                             <option value="plan">Plan</option>
                         </select>
                     </div>
+                    <div className="flex-1 min-w-[150px]">
+                        <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{text.filterNoAf}</label>
+                        <input type="text" placeholder={text.filterNoAf + ' (Enter)'} value={searchParams.no_gl}
+                            onChange={e => setSearchParams(p => ({ ...p, no_gl: e.target.value }))}
+                            onKeyDown={handleSearchKeyDown}
+                            className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm font-mono focus:ring-2 focus:ring-indigo-500" />
+                    </div>
                     <div className="flex-[2] min-w-[200px]">
                         <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{text.filterSearch}</label>
                         <div className="relative">
@@ -1146,7 +1154,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                         <Filter size={16} className="inline-block mr-1" />
                         {text.filterBtn}
                     </button>
-                    <button onClick={() => { setSearchParams({ tanggal_from: '', tanggal_to: '', jenis: '', search: '', entry_type: '' }); setPage(1); }}
+                    <button onClick={() => { setSearchParams({ tanggal_from: '', tanggal_to: '', jenis: '', search: '', entry_type: '', no_gl: '' }); setPage(1); }}
                         className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-sm font-semibold">
                         <X size={16} className="inline-block mr-1" />
                         {text.filterReset}
