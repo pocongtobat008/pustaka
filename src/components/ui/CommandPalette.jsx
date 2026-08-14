@@ -84,7 +84,7 @@ const CommandPalette = ({ items = [], onSelect, quickActions = [], disabled = fa
       >
         <Search size={14} />
         <span>Search</span>
-        <kbd className="rounded border border-slate-200 bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
+        <kbd className="rounded border border-slate-200 bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
           {shortcutHint}
         </kbd>
       </Button>

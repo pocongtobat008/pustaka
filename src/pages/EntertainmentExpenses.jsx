@@ -1108,19 +1108,19 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
             <div className="flex flex-wrap items-end gap-3">
                 <div className="flex-1 min-w-[130px]">
                     <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{text.filterTanggalFrom}</label>
-                    <input type="date" value={searchParams.tanggal_from}
+                    <input type="date" aria-label={text.filterTanggalFrom} value={searchParams.tanggal_from}
                         onChange={e => setSearchParams(p => ({ ...p, tanggal_from: e.target.value }))}
                         className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500" />
                 </div>
                 <div className="flex-1 min-w-[130px]">
                     <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{text.filterTanggalTo}</label>
-                    <input type="date" value={searchParams.tanggal_to}
+                    <input type="date" aria-label={text.filterTanggalTo} value={searchParams.tanggal_to}
                         onChange={e => setSearchParams(p => ({ ...p, tanggal_to: e.target.value }))}
                         className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500" />
                 </div>
                     <div className="flex-1 min-w-[150px]">
                         <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{text.filterJenis}</label>
-                        <select value={searchParams.jenis}
+                        <select aria-label={text.filterJenis} value={searchParams.jenis}
                             onChange={e => setSearchParams(p => ({ ...p, jenis: e.target.value }))}
                             className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500">
                             <option value="">{text.filterAllSettle}</option>
@@ -1129,7 +1129,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                     </div>
                     <div className="flex-1 min-w-[150px]">
                         <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{isEnglish ? 'Entry Type' : 'Tipe Entry'}</label>
-                        <select value={searchParams.entry_type}
+                        <select aria-label={isEnglish ? 'Entry Type' : 'Tipe Entry'} value={searchParams.entry_type}
                             onChange={e => setSearchParams(p => ({ ...p, entry_type: e.target.value }))}
                             className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500">
                             <option value="">{text.filterAllSettle}</option>
@@ -1171,10 +1171,10 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
             {tab === 'rules' && isAdmin && (
                 <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-white/40 dark:border-white/10 overflow-hidden">
                     <div className="px-6 py-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
-                        <h3 className="font-bold text-slate-700 dark:text-slate-200">
+                        <h2 className="font-bold text-slate-700 dark:text-slate-200">
                             <ClipboardList size={18} className="inline-block mr-2" />
                             {text.rulesTitle}
-                        </h3>
+                        </h2>
                         <button onClick={() => { setShowRuleForm(!showRuleForm); setEditingRule(null); setRuleForm({ rule_name: '', target_type: 'user', target_value: '', view_all: false, can_create: true, can_edit: true, can_delete: true, can_settle: true, can_export: true, export_all: false }); }}
                             className="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-xl hover:bg-amber-700 transition-colors text-sm font-semibold">
                             <Plus size={16} /> {showRuleForm ? (isEnglish ? 'Close' : 'Tutup') : text.addRule}
@@ -1667,11 +1667,11 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
             {/* Table */}
             <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-white/40 dark:border-white/10 overflow-hidden">
                 <div className="px-6 py-4 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 border-b border-slate-200 dark:border-slate-700">
-                    <h3 className="font-bold text-slate-700 dark:text-slate-200">
+                    <h2 className="font-bold text-slate-700 dark:text-slate-200">
                         <ClipboardList size={18} className="inline-block mr-2" />
                         {isEnglish ? 'Entertainment Expenses List' : 'Daftar Entertainment Expenses'}
                         <span className="ml-2 text-sm font-normal text-slate-400">({totalEntries} {isEnglish ? 'entries' : 'data'})</span>
-                    </h3>
+                    </h2>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">

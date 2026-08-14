@@ -648,7 +648,7 @@ export default function Documents({
                                 </select>
                             </div>
                         )}
-                        <button onClick={onRefresh} className="group px-3 py-2 rounded-lg border bg-white text-gray-600 border-gray-200 hover:bg-gray-50 flex items-center gap-2" title={isEnglish ? 'Refresh Data' : 'Refresh Data'}>
+                        <button onClick={onRefresh} aria-label={isEnglish ? 'Refresh Data' : 'Refresh Data'} className="group px-3 py-2 rounded-lg border bg-white text-gray-600 border-gray-200 hover:bg-gray-50 flex items-center gap-2" title={isEnglish ? 'Refresh Data' : 'Refresh Data'}>
                             <RefreshCw size={18} className="group-hover:rotate-180 transition-transform duration-500" />
                         </button>
                         <div className="flex bg-white rounded-lg border border-gray-200 p-1">
@@ -687,7 +687,7 @@ export default function Documents({
                                 <List size={18} className="group-hover:scale-110 transition-transform" />
                             </button>
                         </div>
-                        <button onClick={() => setShowHistory(!showHistory)} className={`px-3 py-2 rounded-lg border flex items-center gap-2 ${showHistory ? 'bg-indigo-100 text-indigo-600 border-indigo-200' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'}`}>
+                        <button onClick={() => setShowHistory(!showHistory)} aria-label={isEnglish ? 'History' : 'Riwayat'} className={`px-3 py-2 rounded-lg border flex items-center gap-2 ${showHistory ? 'bg-indigo-100 text-indigo-600 border-indigo-200' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'}`}>
                             <History size={18} />
                         </button>
                         {hasPermission('documents', 'create') && (
@@ -770,7 +770,7 @@ export default function Documents({
                         return String(f.parentId) === String(currentFolderId);
                     }) && (
                             <div className="flex items-center justify-between mb-3">
-                                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">{isEnglish ? 'Folders' : 'Folders'}</h3>
+                                <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">{isEnglish ? 'Folders' : 'Folders'}</h2>
                                 <span className="text-xs text-red-500 font-mono">
 
                                 </span>
@@ -871,7 +871,8 @@ export default function Documents({
                                             <input
                                                 type="checkbox"
                                                 checked={selectedFolderIds.has(folder.id)}
-                                                onChange={(e) => { e.stopPropagation(); toggleFolderSelection(folder.id, folder.name); }}
+                                                aria-label={isEnglish ? `Select folder ${folder.name}` : `Pilih folder ${folder.name}`}
+                                                        onChange={(e) => { e.stopPropagation(); toggleFolderSelection(folder.id, folder.name); }}
                                                 className="w-5 h-5 rounded-md border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer shadow-sm"
                                             />
                                         </div>
@@ -921,6 +922,7 @@ export default function Documents({
                                                 e.stopPropagation();
                                                 setActiveFolderMenuId(activeFolderMenuId === folder.id ? null : folder.id);
                                             }}
+                                            aria-label={isEnglish ? 'Folder options' : 'Opsi folder'}
                                             className="p-1.5 bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700 text-gray-500 hover:text-indigo-600 rounded-full transition-all opacity-0 group-hover:opacity-100"
                                         >
                                             <MoreVertical size={16} />
@@ -1051,6 +1053,7 @@ export default function Documents({
                                                 <input
                                                     type="checkbox"
                                                     checked={selectedDocIds.has(doc.id)}
+                                                    aria-label={isEnglish ? `Select ${doc.title}` : `Pilih ${doc.title}`}
                                                     onChange={(e) => { e.stopPropagation(); toggleDocSelection(doc.id); }}
                                                     className="w-5 h-5 rounded-md border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer shadow-sm"
                                                 />
@@ -1064,6 +1067,7 @@ export default function Documents({
                                                     e.stopPropagation();
                                                     setActiveMenuId(activeMenuId === doc.id ? null : doc.id);
                                                 }}
+                                                aria-label={isEnglish ? 'Document options' : 'Opsi dokumen'}
                                                 className="p-1.5 text-gray-400 hover:text-gray-600 dark:text-slate-500 dark:hover:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors"
                                             >
                                                 <MoreVertical size={16} />
@@ -1152,8 +1156,8 @@ export default function Documents({
                                                 {doc.title}
                                             </h3>
 
-                                            <div className="flex items-center justify-between text-[10px] text-gray-400 dark:text-slate-500 mt-auto">
-                                                <span className="font-mono bg-gray-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">{doc.size}</span>
+                                            <div className="flex items-center justify-between text-[10px] text-gray-500 dark:text-slate-400 mt-auto">
+                                                <span className="font-mono bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-300 px-1.5 py-0.5 rounded">{doc.size}</span>
                                                 {(doc.status === 'processing' || doc.status === 'waiting') && !(doc.ocrContent && doc.ocrContent.trim().length > 50) ? (
                                                     <span className="text-amber-500 font-bold animate-pulse">{isEnglish ? 'OCR PROCESSING...' : 'PROSES OCR...'}</span>
                                                 ) : doc.status === 'failed' ? (
@@ -1228,6 +1232,7 @@ export default function Documents({
                                                                     <input
                                                                         type="checkbox"
                                                                         checked={selectedFolderIds.has(folder.id)}
+                                                                        aria-label={isEnglish ? `Select folder ${folder.name}` : `Pilih folder ${folder.name}`}
                                                                         onChange={() => toggleFolderSelection(folder.id, folder.name)}
                                                                         className="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
                                                                     />
@@ -1263,6 +1268,7 @@ export default function Documents({
                                                                 <input
                                                                     type="checkbox"
                                                                     checked={selectedDocIds.has(doc.id)}
+                                                                    aria-label={isEnglish ? `Select ${doc.title}` : `Pilih ${doc.title}`}
                                                                     onChange={() => toggleDocSelection(doc.id)}
                                                                     className="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
                                                                 />

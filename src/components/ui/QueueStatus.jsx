@@ -120,7 +120,7 @@ export default function QueueStatus() {
                         <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-full mb-4 text-slate-300">
                             <CheckCircle2 size={40} />
                         </div>
-                        <h4 className="text-sm font-bold text-slate-600 dark:text-slate-400">Semua Beres!</h4>
+                        <p className="text-sm font-bold text-slate-600 dark:text-slate-400">Semua Beres!</p>
                         <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-widest font-medium">Tidak ada antrian OCR aktif</p>
                     </div>
                 )}

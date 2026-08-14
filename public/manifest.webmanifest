@@ -1,0 +1,33 @@
+{
+  "name": "Pustaka — Smart Compliance & Archive",
+  "short_name": "Pustaka",
+  "description": "Sistem Manajemen & Arsip Digital Terpadu: invoice, pajak, dokumen, AI document intelligence, dan entertainment expenses dalam satu platform.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0B1437",
+  "theme_color": "#0B1437",
+  "lang": "id",
+  "categories": ["business", "productivity", "finance"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

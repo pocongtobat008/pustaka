@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1437"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="book" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#A855F7"/>
+    </linearGradient>
+    <linearGradient id="spine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <rect x="104" y="128" width="304" height="264" rx="28" fill="url(#book)"/>
+  <rect x="104" y="128" width="56" height="264" rx="20" fill="url(#spine)"/>
+  <rect x="148" y="128" width="16" height="264" fill="rgba(255,255,255,0.18)"/>
+  <line x1="196" y1="196" x2="356" y2="196" stroke="rgba(255,255,255,0.85)" stroke-width="14" stroke-linecap="round"/>
+  <line x1="196" y1="252" x2="356" y2="252" stroke="rgba(255,255,255,0.55)" stroke-width="14" stroke-linecap="round"/>
+  <line x1="196" y1="308" x2="356" y2="308" stroke="rgba(255,255,255,0.35)" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="388" cy="392" r="56" fill="url(#book)" opacity="0.9"/>
+  <path d="M364 392l16 16 32-36" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

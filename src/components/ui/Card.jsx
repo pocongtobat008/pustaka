@@ -1,8 +1,9 @@
 import React from 'react';
 
-export const Card = ({ children, className = '', onClick }) => (
+export const Card = ({ children, className = '', onClick, ...rest }) => (
     <div
         onClick={onClick}
+        {...rest}
         className={`bg-white/40 dark:bg-slate-800/40 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-3xl p-6 shadow-2xl ring-1 ring-black/5 dark:ring-white/5 transition-all duration-300 ${onClick ? 'cursor-pointer hover:shadow-3xl hover:bg-white/50 dark:hover:bg-slate-700/50 transform hover:-translate-y-1' : ''} ${className}`}
     >
         {children}

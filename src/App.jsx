@@ -3806,7 +3806,7 @@ export default function App() {
                   title={isEnglish ? 'Bahasa Indonesia' : 'English'}
                 >
                   <Globe size={17} />
-                  <span className="absolute -bottom-0.5 right-0.5 text-[8px] font-black uppercase bg-indigo-500 text-white rounded px-0.5 leading-tight">{language}</span>
+                  <span className="absolute -bottom-0.5 right-0.5 text-[8px] font-black uppercase bg-indigo-600 text-white rounded px-0.5 leading-tight">{language}</span>
                 </button>
                 <span className="saas-tooltip">{isEnglish ? 'Language: Indonesia' : 'Bahasa: English'}</span>
               </div>

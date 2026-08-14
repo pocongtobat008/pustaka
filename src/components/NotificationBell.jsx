@@ -120,7 +120,7 @@ const NotificationBell = ({ onOpenChannel, variant = 'floating' }) => {
                     <Bell size={isTopbar ? 18 : 24} className={`${unreadCount > 0 ? 'text-indigo-600 dark:text-indigo-400 animate-pulse' : 'text-slate-500 dark:text-slate-400'} group-hover:text-indigo-500 transition-colors`} />
                     {unreadCount > 0 && (
                         <span className={
-                            'absolute flex items-center justify-center rounded-full bg-rose-500 font-black text-white shadow-lg border-2 border-white dark:border-slate-900 ' +
+                            'absolute flex items-center justify-center rounded-full bg-rose-600 font-black text-white shadow-lg border-2 border-white dark:border-slate-900 ' +
                             (isTopbar
                                 ? '-top-0.5 -right-0.5 h-4 w-4 text-[9px]'
                                 : '-top-1 -right-1 h-5 w-5 text-[10px]')

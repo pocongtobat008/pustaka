@@ -1881,7 +1881,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
 
     const InvoiceTableHeader = ({ sortKey, sortDir, onSort, withActions = true }) => (
         <tr>
-            <th className="w-8 px-1 py-3"></th>
+            <th className="w-8 px-1 py-3"><span className="sr-only">Select</span></th>
             <th className={`${TH_CLS} text-left`}>No</th>
             {withActions && <th className={`${TH_CLS} text-left`}>Aksi</th>}
             {ROW_COLS.map(col => (
@@ -2176,10 +2176,10 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         {/* Status distribution */}
                         <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 p-5 shadow-sm">
                             <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                                <h2 className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
                                     <span className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"><PieChart size={14} /></span>
                                     Distribusi Status
-                                </h3>
+                                </h2>
                                 <span className="text-[11px] font-semibold text-slate-400 tabular-nums">{dashStatusDist.reduce((s, e) => s + e.value, 0)} invoice</span>
                             </div>
                             {dashStatusDist.length === 0 ? (
@@ -2212,10 +2212,10 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         {/* Monthly trend */}
                         <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 p-5 lg:col-span-2 shadow-sm">
                             <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                                <h2 className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
                                     <span className="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"><TrendingUp size={14} /></span>
                                     Tren Nominal (6 Bulan Terakhir)
-                                </h3>
+                                </h2>
                                 <span className="text-[11px] font-semibold text-slate-400">Total {formatCurrency(dashMonthly.reduce((s, d) => s + (d.invoice || 0), 0))}</span>
                             </div>
                             {dashMonthly.length === 0 ? (
@@ -2241,10 +2241,10 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                         <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 p-5 shadow-sm">
                             <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                                <h2 className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
                                     <span className="p-1.5 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400"><Trophy size={14} /></span>
                                     Top Dealer
-                                </h3>
+                                </h2>
                                 <span className="text-[11px] font-semibold text-slate-400">by nominal invoice</span>
                             </div>
                             {dashDealerTop.length === 0 ? (
@@ -2305,11 +2305,11 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                                     <input value={dashSearch} onChange={e => setDashSearch(e.target.value)} placeholder="Cari data..." className="pl-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                                 </div>
-                                <select value={dashDealer} onChange={e => setDashDealer(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 max-w-[160px]">
+                                <select aria-label="Dealer" value={dashDealer} onChange={e => setDashDealer(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 max-w-[160px]">
                                     <option value="">Semua Dealer</option>
                                     {dashDealerOptions.map(d => <option key={d} value={d}>{d}</option>)}
                                 </select>
-                                <select value={dashStatus} onChange={e => setDashStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <select aria-label="Status" value={dashStatus} onChange={e => setDashStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                     <option value="">Semua Status</option>
                                     {dashStatusOptions.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                                 </select>
@@ -2382,7 +2382,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             </div>
                         </div>
                         <div className="flex items-center gap-2 flex-wrap">
-                            <select value={invStatus} onChange={e => setInvStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <select aria-label="Status Invoice" value={invStatus} onChange={e => setInvStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <option value="">Semua Status</option>
                                 {dashStatusOptions.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                             </select>
@@ -2427,7 +2427,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <h3 className="font-bold text-slate-800 dark:text-white">Daftar Pengajuan Proforma</h3>
                         <div className="flex items-center gap-2">
-                            <select value={profStatus} onChange={e => setProfStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <select aria-label="Status Proforma" value={profStatus} onChange={e => setProfStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 {PROFORMA_STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                             </select>
                             {profStatus && <button onClick={() => setProfStatus('')} className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-red-600 text-sm font-semibold" title="Reset filter">Reset</button>}
@@ -2576,7 +2576,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <h3 className="font-bold text-slate-800 dark:text-white">Daftar Faktur Pajak</h3>
                         <div className="flex items-center gap-2">
-                            <select value={taxStatus} onChange={e => setTaxStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <select aria-label="Status Pajak" value={taxStatus} onChange={e => setTaxStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 {TAX_STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                             </select>
                             {taxStatus && <button onClick={() => setTaxStatus('')} className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-red-600 text-sm font-semibold" title="Reset filter">Reset</button>}
@@ -2739,7 +2739,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     className="w-56 pl-9 pr-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 />
                             </div>
-                            <select value={trashFilter} onChange={e => setTrashFilter(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <select aria-label="Filter Sampah" value={trashFilter} onChange={e => setTrashFilter(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <option value="all">Semua</option>
                                 <option value="invoice">Invoice</option>
                                 <option value="proforma">Proforma</option>

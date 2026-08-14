@@ -1050,7 +1050,7 @@ export default function MasterData({
             {masterTab === 'users' && (
                 <Card>
                     <div className="flex justify-between items-center mb-6">
-                        <h3 className="font-bold text-lg dark:text-white">{text.usersManagement}</h3>
+                        <h2 className="font-bold text-lg dark:text-white">{text.usersManagement}</h2>
                         <div className="flex gap-2">
                             <Input
                                 type="text" placeholder={text.searchUser} className="w-72 rounded-xl"
@@ -1060,7 +1060,7 @@ export default function MasterData({
                                 <>
                                     <button
                                         onClick={handleDownloadTemplate}
-                                        className="px-3 py-2 bg-emerald-600 text-white rounded-lg text-sm flex items-center gap-1.5 hover:bg-emerald-700 transition-colors"
+                                        className="px-3 py-2 bg-emerald-700 text-white rounded-lg text-sm flex items-center gap-1.5 hover:bg-emerald-800 transition-colors"
                                         title="Download template Excel untuk import users"
                                     >
                                         <Download size={15} /> Template
@@ -1068,7 +1068,7 @@ export default function MasterData({
                                     <button
                                         onClick={() => fileInputRef.current?.click()}
                                         disabled={importLoading}
-                                        className="px-3 py-2 bg-amber-600 text-white rounded-lg text-sm flex items-center gap-1.5 hover:bg-amber-700 transition-colors disabled:opacity-50"
+                                        className="px-3 py-2 bg-amber-700 text-white rounded-lg text-sm flex items-center gap-1.5 hover:bg-amber-800 transition-colors disabled:opacity-50"
                                         title="Import users dari file Excel"
                                     >
                                         {importLoading ? <Loader2 size={15} className="animate-spin" /> : <Upload size={15} />} Import
@@ -1119,7 +1119,7 @@ export default function MasterData({
                                                 <Building2 size={18} />
                                             </div>
                                             <div className="text-left">
-                                                <h4 className="font-black text-slate-800 dark:text-white text-sm uppercase tracking-wider">{deptName}</h4>
+                                                <h3 className="font-black text-slate-800 dark:text-white text-sm uppercase tracking-wider">{deptName}</h3>
                                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{deptUsers.length} {text.registeredMembers}</p>
                                             </div>
                                         </div>

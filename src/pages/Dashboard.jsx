@@ -460,6 +460,8 @@ export default function Dashboard({
                         )}
                         <button
                             type="submit"
+                            aria-label={text.searchPlaceholder}
+                            title={text.searchPlaceholder}
                             disabled={isSearching}
                             className="absolute right-2 top-2 bottom-2 aspect-square gradient-bg hover:opacity-95 text-white rounded-xl flex items-center justify-center transition-all disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-indigo-500/20 active:scale-95"
                         >
@@ -842,7 +844,7 @@ export default function Dashboard({
                 </Card>
             </div>
 
-            <Card className="max-h-[400px] overflow-y-auto relative p-0 sm:p-0">
+            <Card className="max-h-[400px] overflow-y-auto relative p-0 sm:p-0" tabIndex={0} aria-label={text.auditLog}>
                 <div className="sticky top-0 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl z-10 p-6 pb-2 border-b border-white/20 dark:border-white/10">
                     <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <History size={20} className="text-purple-500" /> {text.auditLog}
