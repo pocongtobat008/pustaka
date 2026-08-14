@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { AgGridReact } from 'ag-grid-react';
+import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
+
+// Daftarkan semua modul community AG Grid (editing, filter, sorting, autosize, row API, dll)
+ModuleRegistry.registerModules([AllCommunityModule]);
 import {
     Ship, Plus, Trash2, Download, RefreshCw, Search, Loader2, Save, Info, Users, FileSpreadsheet
 } from 'lucide-react';
@@ -73,6 +77,8 @@ export default function Forwarder({ isDarkMode, currentUser }) {
     const dirtyMap = useRef(new Map()); // rowId -> { fields: {key: value} }
     const flushTimer = useRef(null);
     const savingRef = useRef(false);
+    const justStoppedRef = useRef(false);
+    const stopResetTimer = useRef(null);
 
     const isAdmin = ['admin', 'superadmin'].includes(String(currentUser?.role || '').toLowerCase());
     const myDivision = currentUser?.department || currentUser?.division || 'General';
@@ -136,7 +142,10 @@ export default function Forwarder({ isDarkMode, currentUser }) {
         flushTimer.current = setTimeout(() => { flushDirty(); }, 500);
     }, [flushDirty]);
 
-    useEffect(() => () => { if (flushTimer.current) clearTimeout(flushTimer.current); }, []);
+    useEffect(() => () => {
+        if (flushTimer.current) clearTimeout(flushTimer.current);
+        if (stopResetTimer.current) clearTimeout(stopResetTimer.current);
+    }, []);
 
     const onCellValueChanged = useCallback((params) => {
         const row = params.data;
@@ -239,6 +248,7 @@ export default function Forwarder({ isDarkMode, currentUser }) {
 
     const onGridReady = useCallback((params) => {
         params.api.sizeColumnsToFit();
+        window.__fwdApi = params.api;
     }, []);
 
     const gridTheme = isDarkMode ? 'ag-theme-quartz-dark' : 'ag-theme-quartz';
@@ -369,15 +379,22 @@ export default function Forwarder({ isDarkMode, currentUser }) {
                     ref={gridRef}
                     rowData={rows}
                     columnDefs={columnDefs}
+                    theme="legacy"
                     onGridReady={onGridReady}
                     onCellValueChanged={onCellValueChanged}
+                    onCellEditingStopped={() => {
+                        // Edit baru saja di-commit — Enter/Tab berikutnya di baris terakhir = tambah baris
+                        justStoppedRef.current = true;
+                        if (stopResetTimer.current) clearTimeout(stopResetTimer.current);
+                        stopResetTimer.current = setTimeout(() => { justStoppedRef.current = false; }, 1200);
+                    }}
                     onCellKeyDown={(e) => {
-                        // Enter yang MENG-KOMIT edit (bukan Enter pertama untuk mulai edit)
-                        const isCommitting = e.api.getEditingCells().length > 0;
-                        const isLastRow = e.node && e.api.getDisplayedRowCount() > 0
-                            && e.api.getDisplayedRowAtIndex(e.api.getDisplayedRowCount() - 1) === e.node;
-                        if (e.event.key === 'Enter' && isCommitting && isLastRow) {
-                            setTimeout(() => addRow(), 60);
+                        // Enter yang meng-komit edit di baris TERAKHIR → tambah baris baru (layaknya Excel)
+                        if (e.event.key === 'Enter' && justStoppedRef.current) {
+                            justStoppedRef.current = false;
+                            const isLastRow = e.node && e.api.getDisplayedRowCount() > 0
+                                && e.api.getDisplayedRowAtIndex(e.api.getDisplayedRowCount() - 1) === e.node;
+                            if (isLastRow) setTimeout(() => addRow(), 60);
                         }
                     }}
                     defaultColDef={{
