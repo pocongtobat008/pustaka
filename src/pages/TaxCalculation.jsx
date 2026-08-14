@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Calculator, Sparkles, TrendingUp, AlertCircle, FileText, Search, Database, User, Download, Upload, Save, Loader2, Book } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { Card, SummaryRow } from '../components/ui/Card';
+import { PageHeader } from '../components/ui/PageHeader';
 import TaxCalculator from '../components/tax/TaxCalculator';
 import { db as taxService } from '../services/database';
 import TaxObjectForm from '../components/tax/TaxObjectForm';
@@ -662,10 +663,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
             )}
 
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <Calculator className="text-indigo-600" />
-                    {text.title}
-                </h2>
+                <PageHeader className="mb-0" icon={Calculator} iconClass="from-indigo-500 to-purple-600" title={text.title} />
 
                 {/* Tabs */}
                 {/* Tabs */}

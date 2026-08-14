@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { SummaryRow } from '../components/ui/Card';
+import { PageHeader } from '../components/ui/PageHeader';
 import * as XLSX from 'xlsx';
 import {
     UploadCloud, FileText, FileSpreadsheet, File as FileIcon, Copy, Check, Download,
@@ -380,36 +381,31 @@ export default function AnyDoc({ isDarkMode, currentUser }) {
 
     return (
         <div className="p-6 max-w-6xl mx-auto">
-            {/* Header */}
-            <div className="flex items-start justify-between mb-6 flex-wrap gap-3">
-                <div>
-                    <div className="flex items-center gap-2.5 mb-1">
-                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                            <FileCode2 size={20} className="text-white" />
-                        </div>
-                        <div>
-                            <h1 className={`text-xl font-extrabold ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>AnyDoc Converter</h1>
-                            <p className={`text-xs ${isDarkMode ? 'text-white/50' : 'text-slate-400'}`}>
-                                Konversi dokumen apa pun menjadi Markdown bersih — didukung mesin Rust Firecrawl
-                            </p>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-2 mt-1">
+            {/* Header halaman — PageHeader terpusat (konsisten semua menu) */}
+            <PageHeader
+                icon={FileCode2}
+                iconClass="from-indigo-600 to-purple-700"
+                title="AnyDoc Converter"
+                subtitle="Konversi dokumen apa pun menjadi Markdown bersih — didukung mesin Rust Firecrawl"
+                meta={(
+                    <div className="flex items-center gap-2 flex-wrap">
                         <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${isDarkMode ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/25' : 'bg-emerald-50 text-emerald-600 border border-emerald-200'}`}>
                             <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" /> Mesin aktif
                         </span>
                         <span className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>≈ 5 ms rata-rata per dokumen</span>
                     </div>
-                </div>
-                <button
-                    onClick={() => { setShowHistory(!showHistory); if (!showHistory) loadHistory(); }}
-                    className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all border ${isDarkMode
-                        ? 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10'
-                        : 'bg-white/70 backdrop-blur-xl border-slate-200 text-slate-600 hover:bg-slate-50 shadow-sm'}`}
-                >
-                    <History size={15} /> Riwayat ({history.length})
-                </button>
-            </div>
+                )}
+                actions={(
+                    <button
+                        onClick={() => { setShowHistory(!showHistory); if (!showHistory) loadHistory(); }}
+                        className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all border ${isDarkMode
+                            ? 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10'
+                            : 'bg-white/70 backdrop-blur-xl border-slate-200 text-slate-600 hover:bg-slate-50 shadow-sm'}`}
+                    >
+                        <History size={15} /> Riwayat ({history.length})
+                    </button>
+                )}
+            />
 
             {/* ── Ringkasan ── */}
             <SummaryRow className="mb-5" cards={[

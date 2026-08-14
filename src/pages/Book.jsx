@@ -8,6 +8,7 @@ import {
     AlertTriangle
 } from 'lucide-react';
 import { Card, SummaryRow } from '../components/ui/Card';
+import { PageHeader } from '../components/ui/PageHeader';
 import { Modal } from '../components/ui/Modal';
 import { Input } from '../components/ui/input';
 import { Select } from '../components/ui/select';
@@ -528,23 +529,25 @@ export default function Book({ hasPermission }) {
 
         return (
             <div className="p-6 space-y-4">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h2 className="text-xl font-extrabold text-slate-800 dark:text-white">{text.overviewTitle}</h2>
-                        <p className="text-xs text-slate-400 mt-1">{text.overviewSubtitle}</p>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs text-slate-400">
-                        <Layers size={14} />
-                        <span className="font-mono font-bold">{overviewData.length}</span>
-                        <span>{text.tabs.accounts}</span>
-                        <ArrowRight size={12} />
-                        <span className="font-mono font-bold">{totalSubs}</span>
-                        <span>{text.subCount}</span>
-                        <ArrowRight size={12} />
-                        <span className="font-mono font-bold">{totalDeps}</span>
-                        <span>{text.depCount}</span>
-                    </div>
-                </div>
+                <PageHeader
+                    icon={Layers}
+                    iconClass="from-indigo-500 to-purple-600"
+                    title={text.overviewTitle}
+                    subtitle={text.overviewSubtitle}
+                    actions={(
+                        <div className="flex items-center gap-2 text-xs text-slate-400">
+                            <Layers size={14} />
+                            <span className="font-mono font-bold">{overviewData.length}</span>
+                            <span>{text.tabs.accounts}</span>
+                            <ArrowRight size={12} />
+                            <span className="font-mono font-bold">{totalSubs}</span>
+                            <span>{text.subCount}</span>
+                            <ArrowRight size={12} />
+                            <span className="font-mono font-bold">{totalDeps}</span>
+                            <span>{text.depCount}</span>
+                        </div>
+                    )}
+                />
 
                 {/* COA Filter Dropdown */}
                 <div className="flex items-center gap-3">
