@@ -1027,7 +1027,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                             </div>
                             <div className="overflow-x-auto">
                                 <table className="w-full text-sm text-left">
-                                    <thead className="bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-slate-300">
+                                    <thead className="bg-slate-50/80 dark:bg-slate-800/50 text-gray-700 dark:text-slate-300 backdrop-blur">
                                         <tr>
                                             <th className="px-6 py-3">{text.dateAndLetter}</th>
                                             <th className="px-6 py-3">{text.title}</th>

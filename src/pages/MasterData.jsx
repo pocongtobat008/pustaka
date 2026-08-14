@@ -987,7 +987,7 @@ export default function MasterData({
         const start = (page - 1) * perPage + 1;
         const end = Math.min(page * perPage, total);
         return (
-            <div className="flex items-center justify-between px-4 py-2 border-t dark:border-slate-700/50 bg-gray-50 dark:bg-slate-800/30">
+            <div className="flex items-center justify-between px-4 py-2 border-t dark:border-white/10 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl">
                 <p className="text-xs text-gray-500">
                     Menampilkan <span className="font-bold">{start}</span>–<span className="font-bold">{end}</span> dari <span className="font-bold">{total}</span>
                 </p>
@@ -1186,7 +1186,7 @@ export default function MasterData({
                                 try { perms = JSON.parse(perms); } catch { perms = {}; }
                             }
                             return (
-                                <div key={r.id} className="p-4 bg-gray-50 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700">
+                                <div key={r.id} className="p-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-xl">
                                     <div className="flex justify-between items-start mb-4">
                                         <div>
                                             <div className="font-bold text-lg dark:text-white">{r.label || r.name}</div>
@@ -1256,7 +1256,7 @@ export default function MasterData({
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {flows.map(f => (
-                            <div key={f.id} className="p-4 bg-gray-50 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 hover:border-indigo-300 transition-all">
+                            <div key={f.id} className="p-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-xl hover:border-indigo-300 transition-all">
                                 <div className="flex justify-between items-start mb-4">
                                     <div>
                                         <div className="font-bold text-lg dark:text-white">{f.name}</div>
@@ -1477,7 +1477,7 @@ export default function MasterData({
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             {departments.map(d => (
-                                <div key={d.id} className="p-4 bg-gray-50 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 flex flex-col items-center justify-center text-center group relative">
+                                <div key={d.id} className="p-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-xl flex flex-col items-center justify-center text-center group relative">
                                     <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                         {hasPermission('master', 'edit') && (
                                             <button onClick={() => handleEditDept(d)} className="p-1 text-gray-400 hover:text-blue-500"><Edit3 size={14} /></button>
@@ -1913,7 +1913,7 @@ export default function MasterData({
                                         <div className="border dark:border-slate-700/50 rounded-lg overflow-hidden">
                                             <table className="w-full text-sm">
                                                 <thead>
-                                                    <tr className="bg-gray-50 dark:bg-slate-800/50">
+                                                    <tr className="bg-slate-50/80 dark:bg-slate-800/50">
                                                         <th className="text-left px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Topik</th>
                                                         <th className="text-left px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Kategori</th>
                                                         <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Jumlah Tanya</th>
@@ -2033,7 +2033,7 @@ export default function MasterData({
                                     <div className="border dark:border-slate-700/50 rounded-lg overflow-hidden">
                                         <table className="w-full text-sm">
                                             <thead>
-                                                <tr className="bg-gray-50 dark:bg-slate-800/50">
+                                                <tr className="bg-slate-50/80 dark:bg-slate-800/50">
                                                     <th className="text-left px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Topic</th>
                                                     <th className="text-left px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Type</th>
                                                     <th className="text-left px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Correct Answer</th>
@@ -2146,7 +2146,7 @@ export default function MasterData({
                                         <div className="border dark:border-slate-700/50 rounded-lg overflow-hidden">
                                             <table className="w-full text-sm">
                                                 <thead>
-                                                    <tr className="bg-gray-50 dark:bg-slate-800/50">
+                                                    <tr className="bg-slate-50/80 dark:bg-slate-800/50">
                                                         <th className="text-left px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Status</th>
                                                         <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Docs Scanned</th>
                                                         <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-slate-400 text-xs">Docs Updated</th>
@@ -2402,7 +2402,7 @@ export default function MasterData({
                         <div className="border dark:border-slate-700/50 rounded-lg overflow-hidden">
                             <table className="w-full text-sm">
                                 <thead>
-                                    <tr className="bg-gray-50 dark:bg-slate-800/50">
+                                    <tr className="bg-slate-50/80 dark:bg-slate-800/50">
                                         <th className="text-left px-4 py-3 font-bold text-gray-500 dark:text-slate-400 text-xs uppercase tracking-wider">{text.title}</th>
                                         <th className="text-left px-4 py-3 font-bold text-gray-500 dark:text-slate-400 text-xs uppercase tracking-wider">{text.fileType}</th>
                                         <th className="text-left px-4 py-3 font-bold text-gray-500 dark:text-slate-400 text-xs uppercase tracking-wider">{text.category}</th>

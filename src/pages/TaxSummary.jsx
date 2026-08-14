@@ -793,9 +793,9 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
         const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
         return (
-            <div className="flex flex-wrap gap-2 items-center bg-gray-50 dark:bg-slate-800 p-2 rounded-lg">
+            <div className="flex flex-wrap gap-2 items-center bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 p-2 rounded-xl">
                 <select
-                    className="p-1.5 text-xs rounded border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
+                    className="p-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-600 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl dark:text-white text-slate-700"
                     value={filters.month}
                     onChange={e => setFilters(prev => ({ ...prev, month: e.target.value }))}
                 >
@@ -804,7 +804,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                 </select>
 
                 <select
-                    className="p-1.5 text-xs rounded border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
+                    className="p-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-600 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl dark:text-white text-slate-700"
                     value={filters.year}
                     onChange={e => setFilters(prev => ({ ...prev, year: e.target.value }))}
                 >
@@ -813,7 +813,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                 </select>
 
                 <select
-                    className="p-1.5 text-xs rounded border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
+                    className="p-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-600 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl dark:text-white text-slate-700"
                     value={filters.pembetulan}
                     onChange={e => setFilters(prev => ({ ...prev, pembetulan: e.target.value }))}
                 >
@@ -823,7 +823,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
 
                 {type === 'ppn' && (
                     <select
-                        className="p-1.5 text-xs rounded border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
+                        className="p-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-600 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl dark:text-white text-slate-700"
                         value={filters.status}
                         onChange={e => setFilters(prev => ({ ...prev, status: e.target.value }))}
                     >

@@ -872,7 +872,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         name="taxObjectCode"
                                         value={formData.taxObjectCode}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-gray-300 cursor-not-allowed"
+                                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-gray-300 cursor-not-allowed"
                                         placeholder={text.objectCodePlaceholder}
                                         readOnly
                                     />
@@ -1026,7 +1026,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         });
                                         setCalcData({ dpp: 0, rate: 0, pph: 0, ppn: 0, totalPayable: 0, discount: 0, dppNet: 0, markupMode: 'none', isPph21BukanPegawai: false, usePpn: true });
                                     }}
-                                    className="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-xl transition-all"
+                                    className="px-6 py-3 gradient-bg text-white font-bold rounded-xl shadow-lg shadow-indigo-500/25 transition-all hover:opacity-90"
                                 >
                                     {text.cancelEdit}
                                 </button>
