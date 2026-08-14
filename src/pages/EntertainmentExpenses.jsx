@@ -2110,7 +2110,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                         className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
                         onClick={() => setShowPreview(false)}>
                         <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }}
-                            className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+                            className="bg-white/95 dark:bg-slate-800/80 backdrop-blur-xl rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-white/70 dark:border-white/10"
                             onClick={e => e.stopPropagation()}>
                             <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
                                 <h3 className="text-white font-bold text-lg">{text.previewTitle}</h3>
@@ -2119,11 +2119,11 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                     <X size={20} />
                                 </button>
                             </div>
-                            <div className="p-6 space-y-5">
+                            <div className="p-5 md:p-6 space-y-4">
                                 {/* Info header: ref + status + tipe entry */}
-                                <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-50 dark:bg-slate-700/40 rounded-xl px-4 py-3 border border-slate-200 dark:border-slate-600">
+                                <div className="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-700/40 rounded-2xl px-4 py-3.5 border border-slate-200 dark:border-slate-600 shadow-sm">
                                     <div className="min-w-0">
-                                        <p className="font-mono text-sm font-bold text-slate-800 dark:text-slate-100 truncate">
+                                        <p className="font-mono text-sm font-bold text-slate-800 dark:text-white truncate">
                                             {previewData.no_ref || `ENT-${String(previewData.id).padStart(5, '0')}`}
                                         </p>
                                         <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
@@ -2153,8 +2153,8 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                 </div>
 
                                 {/* Informasi Umum */}
-                                <div>
-                                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2.5">
+                                <div className="bg-white dark:bg-slate-700/40 rounded-2xl p-4 border border-slate-200 dark:border-slate-600 shadow-sm">
+                                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-300 mb-3">
                                         {isEnglish ? 'General Information' : 'Informasi Umum'}
                                     </h4>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -2163,14 +2163,14 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                         <DetailField label={text.detailJenis} value={previewData.jenis === 'Custom' ? previewData.custom_jenis : previewData.jenis} />
                                         <DetailField label={text.detailPlan} value={previewData.catatan_kode} />
                                     </div>
-                                    <div className="mt-3">
+                                    <div className="mt-4">
                                         <DetailField label={text.detailAlamat} value={previewData.alamat} />
                                     </div>
                                 </div>
 
                                 {/* Keuangan */}
-                                <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
-                                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2.5">
+                                <div className="bg-white dark:bg-slate-700/40 rounded-2xl p-4 border border-slate-200 dark:border-slate-600 shadow-sm">
+                                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-300 mb-3">
                                         {isEnglish ? 'Financial' : 'Keuangan'}
                                     </h4>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -2178,11 +2178,11 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                         {previewData.status === 'settled' && previewData.settle_amount && (
                                             <>
                                                 <div>
-                                                    <label className="block text-xs font-semibold text-slate-400 dark:text-slate-500 mb-0.5">
+                                                    <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">
                                                         {isEnglish ? 'Settle Amount' : 'Jumlah Settle'}
                                                     </label>
                                                     <div className="flex items-center gap-2">
-                                                        <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                                                        <p className="text-sm font-semibold text-slate-800 dark:text-white">
                                                             {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(previewData.settle_amount)}
                                                         </p>
                                                         {parseFloat(previewData.settle_amount) !== parseFloat(previewData.nilai) && (
@@ -2208,8 +2208,8 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                 </div>
 
                                 {/* Relasi / Perusahaan */}
-                                <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
-                                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2.5">
+                                <div className="bg-white dark:bg-slate-700/40 rounded-2xl p-4 border border-slate-200 dark:border-slate-600 shadow-sm">
+                                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-300 mb-3">
                                         {isEnglish ? 'Relations / Company' : 'Relasi / Perusahaan'}
                                     </h4>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -2220,25 +2220,29 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                         <DetailField label={text.detailJenisUsaha} value={previewData.jenis_usaha} />
                                     </div>
                                 </div>
-                                <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
-                                    <h4 className="text-sm font-semibold text-slate-600 dark:text-slate-300 mb-3">{text.detailLampiran}:</h4>
+
+                                {/* Lampiran */}
+                                <div className="bg-white dark:bg-slate-700/40 rounded-2xl p-4 border border-slate-200 dark:border-slate-600 shadow-sm">
+                                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-300 mb-3">{text.detailLampiran}</h4>
                                     <div className="flex flex-wrap gap-3">
                                         {(previewData.attachments || []).length === 0 ? (
-                                            <p className="text-sm text-slate-400">{text.noAttachment}</p>
+                                            <p className="text-sm text-slate-500 dark:text-slate-400">{text.noAttachment}</p>
                                         ) : previewData.attachments.map((att, idx) => (
                                             <a key={idx} href={att.url} target="_blank" rel="noopener noreferrer"
-                                                className="flex items-center gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
+                                                className="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800/60 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                                                 {att.mimetype?.startsWith('image/') ? (
                                                     <img src={att.url} alt={att.name} className="w-8 h-8 object-cover rounded" />
                                                 ) : (
-                                                    <FileText size={20} className="text-slate-500" />
+                                                    <FileText size={20} className="text-slate-500 dark:text-slate-400" />
                                                 )}
-                                                <span className="text-xs text-slate-600 dark:text-slate-300 truncate max-w-[150px]">{att.name}</span>
+                                                <span className="text-xs text-slate-700 dark:text-slate-200 truncate max-w-[150px]">{att.name}</span>
                                             </a>
                                         ))}
                                     </div>
                                 </div>
-                                <div className="border-t border-slate-200 dark:border-slate-700 pt-4 flex items-center gap-3">
+
+                                {/* Export buttons */}
+                                <div className="flex items-center gap-3 pt-1">
                                     <button type="button" onClick={async () => {
                                             if (previewExporting) return;
                                             setPreviewExporting('pdf');
@@ -2261,8 +2265,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                         className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed">
                                         {previewExporting === 'excel' ? <Loader2 size={16} className="animate-spin" /> : <FileSpreadsheet size={16} />} {text.exportExcelBtn}
                                     </button>
-                                </div>
-                            </div>
+                                </div>                                </div>
                         </motion.div>
                     </motion.div>
                 )}
@@ -2534,8 +2537,8 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
 function DetailField({ label, value }) {
     return (
         <div>
-            <label className="block text-xs font-semibold text-slate-400 dark:text-slate-500 mb-0.5">{label}</label>
-            <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{value || '-'}</p>
+            <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{label}</label>
+            <p className="px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-600/60 text-sm font-medium text-slate-800 dark:text-white min-h-[38px] break-words">{value || '-'}</p>
         </div>
     );
 }
