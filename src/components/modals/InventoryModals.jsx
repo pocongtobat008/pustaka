@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import {
     Package, History, Edit3, Trash2, ChevronRight, ChevronLeft,
     FolderOpen, Paperclip, Plus, Save, RefreshCw,
     Eye, X, ArrowLeftRight, CheckCircle2, Clock,
     AlertCircle, Truck, LogOut, FileText, Download, User, Shield
 } from 'lucide-react';
-import PdfViewer from '../ui/PdfViewer';
+// Lazy-load PdfViewer (pdfjs-dist ~besar) — hanya dimuat saat PDF dibuka
+const PdfViewer = lazy(() => import('../ui/PdfViewer'));
 import { useState, useEffect } from 'react';
 
 function OrdnerInput({ editingItem, newOrdner, setNewOrdner, addOrdner }) {
@@ -577,7 +578,9 @@ export default function InventoryModals({
                                         ) : (typeof selectedInvoice.file === 'string' && (selectedInvoice.file.match(/.(jpg|jpeg|png|webp)$/i) || selectedInvoice.file.startsWith('data:image'))) ? (
                                             <img src={getFullUrl(selectedInvoice.file)} alt="Invoice Preview" className="max-w-full mx-auto" />
                                         ) : (pdfBlobUrl) ? (
-                                            <PdfViewer src={pdfBlobUrl} className="w-full h-full" />
+                                            <Suspense fallback={<div className="flex items-center justify-center h-full py-12"><RefreshCw size={28} className="text-indigo-500 animate-spin" /></div>}>
+                                                <PdfViewer src={pdfBlobUrl} className="w-full h-full" />
+                                            </Suspense>
                                         ) : (previewHtml) ? (
                                             <div className="w-full h-full p-6 prose dark:prose-invert max-w-none overflow-auto custom-scrollbar" dangerouslySetInnerHTML={{ __html: previewHtml }} />
                                         ) : (

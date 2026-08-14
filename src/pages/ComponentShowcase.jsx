@@ -120,9 +120,31 @@ export default function ComponentShowcase({ isDarkMode }) {
                 </Card>
             </section>
 
-            {/* ── 6. Modal ── */}
+            {/* ── 6. Dark Mode Preview (forced-dark) ── */}
             <section>
-                <div className={sectionTitle}>{t('6. Modal (ui/Modal)', '6. Modal (ui/Modal)')}</div>
+                <div className={sectionTitle}>{t('6. Dark Mode Preview (forced-dark)', '6. Pratinjau Mode Gelap (paksa dark)')}</div>
+                <div className="dark bg-[#0b1437] rounded-3xl p-6 border border-white/10 space-y-5">
+                    <SummaryRow cards={[
+                        { title: t('Total Invoice', 'Total Invoice'), value: '27', icon: FileText, gradient: 'from-blue-600 to-indigo-700', subtext: t('Rp 1.240.000.000', 'Rp 1.240.000.000'), valueClass: 'text-2xl' },
+                        { title: t('Proforma', 'Proforma'), value: '18', icon: CheckCircle2, gradient: 'from-amber-500 to-orange-600', subtext: t('5 approved', '5 disetujui'), valueClass: 'text-2xl' },
+                        { title: t('Occupancy', 'Okupansi'), value: '72%', icon: LayoutDashboard, gradient: 'from-emerald-500 to-teal-600', subtext: t('Warehouse capacity', 'Kapasitas gudang'), valueClass: 'text-2xl' },
+                        { title: t('Notifications', 'Notifikasi'), value: '3', icon: Bell, gradient: 'from-violet-500 to-purple-600', subtext: t('Need action', 'Perlu tindakan'), valueClass: 'text-2xl' },
+                    ]} />
+                    <div className="flex flex-wrap gap-3 items-center">
+                        <button className="inline-flex items-center gap-2 px-4 py-2.5 gradient-bg text-white rounded-xl text-sm font-bold shadow-lg shadow-indigo-500/25"><Plus size={15} /> {t('Primary', 'Primer')}</button>
+                        <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-600 text-slate-300 hover:bg-slate-700 transition-colors text-sm font-semibold"><Save size={15} /> {t('Outline', 'Garis')}</button>
+                        <button className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-500/25"><CheckCircle2 size={15} /> {t('Success', 'Sukses')}</button>
+                        <Badge className="bg-emerald-500/15 text-emerald-300">{t('Approved', 'Disetujui')}</Badge>
+                        <Badge className="bg-amber-500/15 text-amber-300">{t('Pending', 'Tertunda')}</Badge>
+                    </div>
+                    <Input placeholder={t('Dark input…', 'Input gelap…')} />
+                    <p className="text-xs text-slate-400">{t('This section forces .dark to preview contrast — same components, dark: variants.', 'Seksi ini memaksa .dark untuk memeriksa kontras — komponen sama, varian dark: yang aktif.')}</p>
+                </div>
+            </section>
+
+            {/* ── 7. Modal ── */}
+            <section>
+                <div className={sectionTitle}>{t('7. Modal (ui/Modal)', '7. Modal (ui/Modal)')}</div>
                 <Card className="flex items-center gap-3">
                     <button className={btnPrimary} onClick={() => setShowModal(true)}>
                         <Info size={15} /> {t('Open Modal', 'Buka Modal')}

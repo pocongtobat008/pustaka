@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import {
     FileDigit, ImageIcon, User, Clock, FileJson,
     Download, Eye, RefreshCw, FileText, History
 } from 'lucide-react';
-import PdfViewer from '../ui/PdfViewer';
+// Lazy-load PdfViewer (pdfjs-dist ~besar) — hanya dimuat saat PDF benar-benar dibuka
+const PdfViewer = lazy(() => import('../ui/PdfViewer'));
 
 export default function DocumentViewerModal({
     modalTab,
@@ -46,7 +47,9 @@ export default function DocumentViewerModal({
                     ) : String(viewDocData?.type || '').toLowerCase().includes('image') ? (
                         <img src={viewDocData?.fileData || viewDocData?.file_data || viewDocData?.filedata || getFullUrl(viewDocData?.url) || undefined} alt="Preview" className="max-w-full mx-auto" onError={(e) => { e.target.style.display = 'none'; }} />
                     ) : pdfBlobUrl ? (
-                        <PdfViewer src={pdfBlobUrl} className="w-full h-[600px]" />
+                        <Suspense fallback={<div className="flex items-center justify-center h-[300px]"><RefreshCw size={28} className="text-indigo-500 animate-spin" /></div>}>
+                            <PdfViewer src={pdfBlobUrl} className="w-full h-[600px]" />
+                        </Suspense>
                     ) : previewHtml ? (
                         <div className="p-6 prose dark:prose-invert max-w-none overflow-x-auto preview-content w-full" dangerouslySetInnerHTML={{ __html: previewHtml }} />
                     ) : (
