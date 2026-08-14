@@ -109,6 +109,7 @@ const JobDueDate = lazy(() => import('./pages/JobDueDate'));
 const Book = lazy(() => import('./pages/Book'));
 const EntertainmentExpenses = lazy(() => import('./pages/EntertainmentExpenses'));
 const Invoices = lazy(() => import('./pages/Invoices'));
+const Forwarder = lazy(() => import('./pages/Forwarder'));
 const PdfTemplateDesigner = lazy(() => import('./pages/PdfTemplateDesigner'));
 const AnyDoc = lazy(() => import('./pages/AnyDoc'));
 const AiDocIntel = lazy(() => import('./pages/AiDocIntel'));
@@ -166,6 +167,7 @@ export default function App() {
         book: { title: 'Book / Daftar COA', subtitle: 'Chart of Accounts' },
         entertainment: { title: 'Entertainment Expenses', subtitle: 'Expense Reporting & Management' },
         invoices: { title: 'Invoices', subtitle: 'Proforma Invoice Management' },
+      forwarder: { title: 'Forwarder', subtitle: 'Unified Forwarder & Shipping Report' },
         'pdf-templates': { title: 'Template PDF', subtitle: 'Custom PDF Template Designer' },
         anydoc: { title: 'AnyDoc Converter', subtitle: 'Document Conversion & AI Extraction' },
         'ai-doc-intel': { title: 'AI Document Intelligence', subtitle: 'Smart Document Understanding' },
@@ -191,6 +193,7 @@ export default function App() {
       book: { title: 'Book / Daftar COA', subtitle: 'Daftar Akun Pembukuan (Chart of Accounts)' },
       entertainment: { title: 'Entertainment Expenses', subtitle: 'Pelaporan & Manajemen Biaya Entertainment' },
       invoices: { title: 'Invoices', subtitle: 'Manajemen Proforma Invoice' },
+      forwarder: { title: 'Forwarder', subtitle: 'Laporan Gabungan Forwarder & Shipping' },
       'pdf-templates': { title: 'Template PDF', subtitle: 'Desainer Template PDF Custom' },
       anydoc: { title: 'AnyDoc Converter', subtitle: 'Konversi Dokumen & Ekstraksi AI' },
       'ai-doc-intel': { title: 'AI Document Intelligence', subtitle: 'Pemahaman Dokumen Cerdas' },
@@ -225,6 +228,7 @@ export default function App() {
           profile: { label: 'Profile', description: 'User profile' },
           entertainment: { label: 'Entertainment Expenses', description: 'Expense reporting and management' },
           invoices: { label: 'Invoices', description: 'Proforma invoice management' },
+          forwarder: { label: 'Forwarder', description: 'Unified forwarder report from all divisions' },
           book: { label: 'Book (COA)', description: 'Chart of accounts and journal book' },
           'pdf-templates': { label: 'PDF Templates', description: 'PDF template management' },
           'system-logs': { label: 'System Logs', description: 'System activity and audit logs' },
@@ -271,6 +275,7 @@ export default function App() {
         profile: { label: 'Profile', description: 'Profil pengguna' },
         entertainment: { label: 'Entertainment Expenses', description: 'Pelaporan dan manajemen biaya entertainment' },
         invoices: { label: 'Invoices', description: 'Manajemen proforma invoice' },
+        forwarder: { label: 'Forwarder', description: 'Laporan gabungan forwarder dari semua divisi' },
         book: { label: 'Book (COA)', description: 'Bagan akun dan buku jurnal' },
         'pdf-templates': { label: 'Template PDF', description: 'Manajemen template PDF' },
         'system-logs': { label: 'Log Sistem', description: 'Log aktivitas dan audit sistem' },
@@ -4111,6 +4116,13 @@ export default function App() {
                     currentUser={currentUser}
                     hasPermission={hasPermission}
                     toast={toast}
+                  />
+                )}
+                {activeTab === 'forwarder' && (
+                  <Forwarder
+                    isDarkMode={isDarkMode}
+                    currentUser={currentUser}
+                    hasPermission={hasPermission}
                   />
                 )}
                 {activeTab === 'pdf-templates' && (

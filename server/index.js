@@ -41,6 +41,7 @@ import aiRoutes from './routes/aiRoutes.js';
 import { startBrainAutoSyncScheduler } from './controllers/brainController.js';
 import coaRoutes from './routes/coaRoutes.js';
 import entertainmentRoutes from './routes/entertainmentRoutes.js';
+import forwarderRoutes from './routes/forwarderRoutes.js';
 import invoiceRoutes from './routes/invoiceRoutes.js';
 import anydocRoutes from './routes/anydocRoutes.js';
 import pdfTemplateRoutes from './routes/pdfTemplateRoutes.js';
@@ -941,6 +942,7 @@ app.use('/api/ocr', ocrRoutes);
 app.use('/api/pustaka', pustakaRoutes);
 app.use('/api/coa', coaRoutes);
 app.use('/api/entertainment', entertainmentRoutes);
+app.use('/api/forwarder', forwarderRoutes);
 app.use('/api/invoices', invoiceRoutes);
 app.use('/api/pdf-templates', pdfTemplateRoutes);
 app.use('/api', pdfToolsRoutes); // /api/pdf-tools/* → Flask (AI PDF Tools)

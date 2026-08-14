@@ -25,6 +25,7 @@ import {
     FileSpreadsheet,
     FlaskConical,
     Wand2,
+    Ship,
 } from 'lucide-react';
 
 import './Sidebar.css';
@@ -70,6 +71,7 @@ const MENU_SECTIONS = [
         items: [
             { id: 'entertainment', icon: Receipt, labelKey: 'sidebar.item.entertainment' },
             { id: 'invoices', icon: FileSignature, labelKey: 'sidebar.item.invoices' },
+            { id: 'forwarder', icon: Ship, labelKey: 'sidebar.item.forwarder' },
             { id: 'book', icon: ListOrdered, labelKey: 'sidebar.item.book' },
             { id: 'pdf-templates', icon: FileCode2, labelKey: 'sidebar.item.pdfTemplates', adminOnly: true },
         ],

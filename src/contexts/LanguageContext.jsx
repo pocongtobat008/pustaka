@@ -26,6 +26,8 @@ const translations = {
     'sidebar.item.approvals': 'Laporan Entertainment',
     'sidebar.item.entertainment': 'Entertainment',
     'sidebar.item.invoices': 'Invoices',
+    'sidebar.item.forwarder': 'Forwarder',
+    'sidebar.item.forwarder': 'Forwarder',
     'sidebar.item.pdfTemplates': 'Template PDF',
     'sidebar.item.compliance': 'Kepatuhan',
     'sidebar.item.taxCalc': 'Kalkulasi Pajak',
