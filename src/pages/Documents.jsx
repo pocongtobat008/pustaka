@@ -600,14 +600,14 @@ export default function Documents({
                 <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl p-4 rounded-2xl border border-white/40 dark:border-white/10 shadow-xl ring-1 ring-black/5">
                     <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto">
                         <div className="flex gap-1 mr-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-lg p-1 shadow-sm">
-                            <button onClick={navigateBack} disabled={historyIndex <= 0} className={`p-1 rounded hover:bg-white dark:hover:bg-slate-700 transition-colors ${historyIndex <= 0 ? 'text-gray-300 dark:text-slate-600' : 'text-gray-600 dark:text-slate-300'}`}>
+                            <button onClick={navigateBack} disabled={historyIndex <= 0} aria-label="Back" title="Back" className={`p-1 rounded hover:bg-white dark:hover:bg-slate-700 transition-colors ${historyIndex <= 0 ? 'text-gray-300 dark:text-slate-600' : 'text-gray-600 dark:text-slate-300'}`}>
                                 <ChevronLeft size={18} />
                             </button>
-                            <button onClick={navigateForward} disabled={!folderHistory || historyIndex >= folderHistory.length - 1} className={`p-1 rounded hover:bg-white dark:hover:bg-slate-700 transition-colors ${!folderHistory || historyIndex >= folderHistory.length - 1 ? 'text-gray-300 dark:text-slate-600' : 'text-gray-600 dark:text-slate-300'}`}>
+                            <button onClick={navigateForward} disabled={!folderHistory || historyIndex >= folderHistory.length - 1} aria-label="Forward" title="Forward" className={`p-1 rounded hover:bg-white dark:hover:bg-slate-700 transition-colors ${!folderHistory || historyIndex >= folderHistory.length - 1 ? 'text-gray-300 dark:text-slate-600' : 'text-gray-600 dark:text-slate-300'}`}>
                                 <ChevronRight size={18} />
                             </button>
                         </div>
-                        <button onClick={() => navigateFolder(null)} className={`p-2 rounded-lg transition-all ${currentFolderId === null ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-600 dark:text-white shadow-sm' : 'hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-500 dark:text-slate-400'}`}>
+                        <button onClick={() => navigateFolder(null)} aria-label="All folders (root)" title="All folders" className={`p-2 rounded-lg transition-all ${currentFolderId === null ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-600 dark:text-white shadow-sm' : 'hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-500 dark:text-slate-400'}`}>
                             <HardDrive size={20} />
                         </button>
                         {currentFolderId && (

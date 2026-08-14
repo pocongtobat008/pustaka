@@ -211,13 +211,13 @@ const Pagination = ({ page, totalPages, setPage }) => {
         <div className="flex items-center justify-between px-4 py-3 border-t border-white/60 dark:border-white/10 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl">
             <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Page <span className="font-bold text-slate-800 dark:text-white">{page}</span> of {totalPages}</div>
             <div className="flex items-center gap-1">
-                <button disabled={page <= 1} onClick={() => setPage(page - 1)} className={`${btnCls} text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed`}>«</button>
+                <button disabled={page <= 1} onClick={() => setPage(page - 1)} aria-label="Previous page" title="Previous" className={`${btnCls} text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed`}>«</button>
                 {pages.map((p, i) => p === '...' ? (
                     <span key={`e${i}`} className="px-1 text-xs text-slate-400">…</span>
                 ) : (
                     <button key={p} onClick={() => setPage(p)} className={`${btnCls} ${p === page ? 'gradient-bg text-white shadow-lg shadow-indigo-500/25' : 'text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'}`}>{p}</button>
                 ))}
-                <button disabled={page >= totalPages} onClick={() => setPage(page + 1)} className={`${btnCls} text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed`}>»</button>
+                <button disabled={page >= totalPages} onClick={() => setPage(page + 1)} aria-label="Next page" title="Next" className={`${btnCls} text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed`}>»</button>
             </div>
         </div>
     );

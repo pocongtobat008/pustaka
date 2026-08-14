@@ -1,11 +1,8 @@
 ﻿import React, { useState, useEffect, useMemo, useRef, useCallback, Suspense, lazy } from 'react';
-import * as XLSX from 'xlsx';
 import { motion, AnimatePresence } from 'framer-motion';
-import mammoth from 'mammoth';
 import { db as api, API_URL } from './services/database';
 import { TOTAL_SLOTS, getStatusStyle } from './utils/constants'; // Import constants
 import { checkPermission, APP_MODULES } from './utils/permissions';
-import { performAdvancedOCR } from './utils/ocr';
 import { parseApiError } from './utils/errorHandler';
 import { documentService } from './services/documentService';
 import { inventoryService } from './services/inventoryService';
@@ -92,7 +89,6 @@ import {
   Rocket, Target, HelpCircle, Sparkles, Zap, Award, Globe, FileCheck, BookOpen, ScanLine,
   Calculator, FlaskConical, Wand2, ChevronDown, Info, Receipt, FileSignature, ListOrdered, Server, FileCode2
 } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 const Login = lazy(() => import('./pages/Login'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Inventory = lazy(() => import('./pages/Inventory'));
@@ -115,6 +111,7 @@ const AnyDoc = lazy(() => import('./pages/AnyDoc'));
 const AiDocIntel = lazy(() => import('./pages/AiDocIntel'));
 const AiDocTrain = lazy(() => import('./pages/AiDocTrain'));
 const AiPdfTools = lazy(() => import('./pages/AiPdfTools'));
+const ComponentShowcase = lazy(() => import('./pages/ComponentShowcase'));
 const PdfViewer = lazy(() => import('./components/ui/PdfViewer'));
 import LoadingFallback from './components/common/LoadingFallback';
 import { useToast, ToastContainer } from './components/ui/Toast';
@@ -2097,6 +2094,7 @@ export default function App() {
 
 
   const handleExcelImport = async (e) => {
+    const XLSX = await import('xlsx'); // lazy — hindari xlsx (~400kB) di bundle awal
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
 
@@ -2235,6 +2233,8 @@ export default function App() {
   };
 
   const handleInvoiceFileSelect = async (e) => {
+    const XLSX = await import('xlsx'); // lazy
+    const mammoth = await import('mammoth'); // lazy
     const file = e.target.files[0];
     if (!file) return;
 
@@ -2346,7 +2346,8 @@ export default function App() {
     } catch (e) { alert("Gagal download: " + e.message); }
   };
 
-  const handleExportInventory = () => {
+  const handleExportInventory = async () => {
+    const XLSX = await import('xlsx'); // lazy
     // Flatten data logic
     const exportData = [];
     inventory.forEach(slot => {
@@ -2955,6 +2956,7 @@ export default function App() {
 
   // --- FIXED: HANDLE VIEW DOC ---
   const handleViewDoc = async (doc) => {
+    const mammoth = await import('mammoth'); // lazy
     // 0. Handle Special Search Result Types
     if (doc.matchType === 'invoice') {
       handleViewInvoice({ ...(doc.data || doc), boxId: doc.boxId, folderName: doc.folderName, location: doc.folderName });
@@ -3603,11 +3605,12 @@ export default function App() {
       { id: 'pdf-templates', tab: 'pdf-templates', label: commandTextMap.items['pdf-templates'].label, description: commandTextMap.items['pdf-templates'].description, group: commandTextMap.groups.finance, icon: FileCode2, keywords: 'template pdf surat dokumen', adminOnly: true },
       { id: 'master', tab: 'master', label: commandTextMap.items.master.label, description: commandTextMap.items.master.description, group: commandTextMap.groups.system, icon: Settings, keywords: 'admin settings role' },
       { id: 'system-logs', tab: 'system-logs', label: commandTextMap.items['system-logs'].label, description: commandTextMap.items['system-logs'].description, group: commandTextMap.groups.system, icon: Server, keywords: 'log sistem aktivitas audit' },
-      { id: 'profile', tab: 'profile', label: commandTextMap.items.profile.label, description: commandTextMap.items.profile.description, group: commandTextMap.groups.system, icon: User, keywords: 'akun user' }
+      { id: 'profile', tab: 'profile', label: commandTextMap.items.profile.label, description: commandTextMap.items.profile.description, group: commandTextMap.groups.system, icon: User, keywords: 'akun user' },
+      { id: 'component-showcase', tab: 'component-showcase', label: 'Component Showcase', description: 'UI kit — components guide (developer)', group: 'Developer', icon: Sparkles, keywords: 'developer showcase komponen ui kit panduan' }
     ];
 
     return items.filter((item) => {
-      if (item.id === 'profile') return true;
+      if (item.id === 'profile' || item.id === 'component-showcase') return true;
       // Sama seperti sidebar: pdf-templates (Template PDF) admin-only
       const isAdminUser = currentUser?.role === 'admin' || currentUser?.role === 'superadmin';
       if (item.adminOnly && !isAdminUser) return false;
@@ -4123,6 +4126,7 @@ export default function App() {
                     hasPermission={hasPermission}
                   />
                 )}
+                {activeTab === 'component-showcase' && <ComponentShowcase isDarkMode={isDarkMode} />}
                 {activeTab === 'pdf-templates' && (
                   <PdfTemplateDesigner
                     currentUser={currentUser}

@@ -621,6 +621,7 @@ export default function Dashboard({
                                     type="button"
                                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                                     disabled={currentPage === 1}
+                                    aria-label="Previous page" title="Previous"
                                     className="p-2 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 text-slate-500 disabled:opacity-30 transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20"
                                 >
                                     <ChevronLeft size={20} />
@@ -651,6 +652,7 @@ export default function Dashboard({
                                     type="button"
                                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(searchResults.length / resultsPerPage)))}
                                     disabled={currentPage === Math.ceil(searchResults.length / resultsPerPage)}
+                                    aria-label="Next page" title="Next"
                                     className="p-2 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 text-slate-500 disabled:opacity-30 transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20"
                                 >
                                     <ChevronRight size={20} />

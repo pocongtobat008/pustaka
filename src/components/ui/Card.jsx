@@ -25,9 +25,9 @@ export const SummaryCard = ({ title, value, subtext, icon: Icon, colorClass, gra
         </div>
 
         <div className="min-w-0 flex-1">
-            <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-0.5 truncate">{title}</div>
+            <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-0.5 truncate">{title}</div>
             <div className={`${valueClass} font-black leading-tight text-slate-800 dark:text-white tabular-nums truncate`}>{valuePrefix}{value}</div>
-            {subtext && <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5 truncate">{subtext}</div>}
+            {subtext && <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">{subtext}</div>}
         </div>
 
         {action && <div className="flex-shrink-0">{action}</div>}

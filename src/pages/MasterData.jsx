@@ -995,6 +995,7 @@ export default function MasterData({
                     <button
                         onClick={() => setPage(p => Math.max(p - 1, 1))}
                         disabled={page === 1}
+                        aria-label="Previous page" title="Previous"
                         className="p-1 rounded text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-700 disabled:opacity-30"
                     >
                         <ChevronLeft size={16} />
@@ -1022,6 +1023,7 @@ export default function MasterData({
                     <button
                         onClick={() => setPage(p => Math.min(p + 1, totalPages))}
                         disabled={page === totalPages}
+                        aria-label="Next page" title="Next"
                         className="p-1 rounded text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-700 disabled:opacity-30"
                     >
                         <ChevronRight size={16} />
