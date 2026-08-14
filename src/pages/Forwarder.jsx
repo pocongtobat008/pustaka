@@ -26,7 +26,9 @@ const ALL_FIELDS = [
 // ── Kolom per divisi (setiap divisi mengisi kolom yang relevan) ──
 const DIVISION_PRESETS = {
     all: ALL_FIELDS.map(f => f.key),
-    Marketing: ['delivery_month', 'imp_exp', 'forwarder_name', 'bl_awb', 'from_to'],
+    // Konsep: tiap divisi mengisi kolom tertentu → digabung jadi 1 laporan penuh
+    EXIM: ['delivery_month', 'imp_exp', 'forwarder_name', 'bl_awb', 'inv_no_i', 'inv_no_ii', 'yadin_inv_sj'],
+    Marketing: ['imp_exp', 'forwarder_name', 'bl_awb', 'from_to', 'notes'],
     Accounting: ['delivery_month', 'forwarder_name', 'inv_no_i', 'inv_no_ii', 'yadin_inv_sj', 'from_to'],
     Tax: ALL_FIELDS.map(f => f.key),
     Warehouse: ['delivery_month', 'forwarder_name', 'bl_awb', 'from_to'],
@@ -34,7 +36,14 @@ const DIVISION_PRESETS = {
     General: ALL_FIELDS.map(f => f.key),
 };
 
+const FIELD_SHORT = {
+    delivery_month: 'MONTH', imp_exp: 'IMP/EXP', forwarder_name: 'FORWARDER',
+    bl_awb: 'BL/AWB', inv_no_i: 'INV I', inv_no_ii: 'INV II',
+    yadin_inv_sj: 'YADIN/SJ', from_to: 'FROM/TO', notes: 'NOTES',
+};
+
 const DIVISION_COLORS = {
+    EXIM: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-500/20 dark:text-cyan-300',
     Marketing: 'bg-pink-100 text-pink-700 dark:bg-pink-500/20 dark:text-pink-300',
     Accounting: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300',
     Tax: 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300',
@@ -228,7 +237,7 @@ export default function Forwarder({ isDarkMode, currentUser }) {
             return cols.filter(c => c.field === 'division' || c.field === 'notes' || c.field === 'id' || preset.includes(c.field));
         }
         return cols;
-    }, [divisionFilter]);
+    }, [divisionFilter, isEnglish]);
 
     const onGridReady = useCallback((params) => {
         params.api.sizeColumnsToFit();
@@ -290,11 +299,6 @@ export default function Forwarder({ isDarkMode, currentUser }) {
                             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
                             <Download size={14} /> CSV
                         </button>
-                        <button onClick={addRow} disabled={adding}
-                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl gradient-bg text-white text-xs font-bold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-md">
-                            {adding ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
-                            {isEnglish ? 'Add Row' : 'Tambah Baris'}
-                        </button>
                     </div>
                 </div>
 
@@ -323,6 +327,34 @@ export default function Forwarder({ isDarkMode, currentUser }) {
                             : 'Edit sel mana pun — tersimpan otomatis layaknya Excel'}
                     </div>
                 </div>
+
+                {/* Legend: kolom yang diisi tiap divisi (digabung jadi 1 laporan) */}
+                <div className="px-5 pb-4 flex flex-wrap items-center gap-2 border-b border-slate-200 dark:border-slate-700">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                        {isEnglish ? 'Division columns:' : 'Kolom per divisi:'}
+                    </span>
+                    {Object.entries(DIVISION_PRESETS).filter(([d]) => d !== 'all').map(([d, cols]) => (
+                        <span key={d} className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10.5px] font-semibold ${divColor(d)}`} title={cols.join(', ')}>
+                            {d}
+                            <span className="opacity-70 font-medium">{cols.map(c => FIELD_SHORT[c]).join(' · ')}</span>
+                        </span>
+                    ))}
+                </div>
+            </div>
+
+            {/* Add bar — dekat tabel, layaknya Excel */}
+            <div className="flex items-center justify-between gap-3 px-4 py-2.5 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 shadow-sm">
+                <button onClick={addRow} disabled={adding}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl gradient-bg text-white text-xs font-bold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-md">
+                    {adding ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
+                    {isEnglish ? 'Add Row' : 'Tambah Baris'}
+                </button>
+                <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                    <Info size={13} />
+                    {isEnglish
+                        ? 'Press Enter on the last row to add a new row'
+                        : 'Tekan Enter di baris terakhir untuk menambah baris baru'}
+                </div>
             </div>
 
             {/* AG Grid */}
@@ -341,6 +373,11 @@ export default function Forwarder({ isDarkMode, currentUser }) {
                     columnDefs={columnDefs}
                     onGridReady={onGridReady}
                     onCellValueChanged={onCellValueChanged}
+                    onCellKeyDown={(e) => {
+                        if (e.event.key === 'Enter' && e.node && e.api.getDisplayedRowCount() > 0 && e.node.rowIndex === e.api.getDisplayedRowCount() - 1) {
+                            setTimeout(() => addRow(), 80);
+                        }
+                    }}
                     defaultColDef={{
                         resizable: true,
                         cellStyle: { display: 'flex', alignItems: 'center' },
@@ -354,6 +391,30 @@ export default function Forwarder({ isDarkMode, currentUser }) {
                     overlayLoadingTemplate={isEnglish ? '<span class="ag-overlay-loading-center">Loading…</span>' : '<span class="ag-overlay-loading-center">Memuat…</span>'}
                     overlayNoRowsTemplate={isEnglish ? '<span class="ag-overlay-no-rows-center">No data yet — click "Add Row"</span>' : '<span class="ag-overlay-no-rows-center">Belum ada data — klik "Tambah Baris"</span>'}
                 />
+            </div>
+
+            {/* Footer: ringkasan + status simpan */}
+            <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 shadow-sm text-xs">
+                <div className="flex items-center gap-4 text-slate-600 dark:text-slate-300">
+                    <span className="font-semibold">
+                        {totalRows} {isEnglish ? 'rows' : 'baris'}
+                    </span>
+                    <span className="text-slate-400">•</span>
+                    <span className="font-semibold">
+                        {filledRows} {isEnglish ? 'filled' : 'terisi'}
+                    </span>
+                    <span className="text-slate-400">•</span>
+                    <span className="font-semibold">
+                        {divisionsWithData} {isEnglish ? 'divisions' : 'divisi'}
+                    </span>
+                </div>
+                <div className={`flex items-center gap-1.5 font-semibold ${saveState === 'saving' ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
+                    {saveState === 'saving'
+                        ? (<><Loader2 size={13} className="animate-spin" /> {isEnglish ? 'Saving…' : 'Menyimpan…'}</>)
+                        : (<><Save size={13} /> {saveState?.savedAt
+                            ? (isEnglish ? `Saved ${new Date(saveState.savedAt).toLocaleTimeString('id-ID')}` : `Tersimpan ${new Date(saveState.savedAt).toLocaleTimeString('id-ID')}`)
+                            : (isEnglish ? 'Auto-save ready' : 'Auto-simpan siap')}</>)}
+                </div>
             </div>
 
             {/* Delete confirmation */}
@@ -394,31 +455,52 @@ export default function Forwarder({ isDarkMode, currentUser }) {
                     --ag-font-family: inherit;
                     --ag-border-color: transparent;
                     --ag-row-border-color: #e2e8f0;
-                    --ag-header-background-color: #f1f5f9;
-                    --ag-header-foreground-color: #64748b;
+                    --ag-header-background-color: #f8fafc;
+                    --ag-header-foreground-color: #475569;
                     --ag-foreground-color: #1e293b;
                     --ag-background-color: #ffffff;
                     --ag-odd-row-background-color: #f8fafc;
-                    --ag-selected-row-background-color: rgba(14,165,233,0.12);
-                    --ag-header-height: 40px;
-                    --ag-row-height: 42px;
+                    --ag-row-hover-color: rgba(14,165,233,0.07);
+                    --ag-selected-row-background-color: rgba(14,165,233,0.14);
+                    --ag-header-height: 42px;
+                    --ag-row-height: 44px;
                     --ag-font-size: 13px;
+                    --ag-cell-horizontal-padding: 10px;
                     --ag-wrapper-border-radius: 0;
+                    --ag-range-selection-border-color: #0ea5e9;
                 }
                 .ag-theme-quartz-dark {
                     --ag-row-border-color: #334155;
                     --ag-header-background-color: #1e293b;
-                    --ag-header-foreground-color: #94a3b8;
+                    --ag-header-foreground-color: #93c5fd;
                     --ag-foreground-color: #e2e8f0;
                     --ag-background-color: #0f172a;
-                    --ag-odd-row-background-color: #111c2e;
-                    --ag-selected-row-background-color: rgba(14,165,233,0.2);
+                    --ag-odd-row-background-color: #16223a;
+                    --ag-row-hover-color: rgba(14,165,233,0.14);
+                    --ag-selected-row-background-color: rgba(14,165,233,0.22);
+                }
+                .ag-theme-quartz .ag-header, .ag-theme-quartz-dark .ag-header {
+                    background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+                    border-bottom: 1px solid #e2e8f0;
+                }
+                .ag-theme-quartz-dark .ag-header {
+                    background: linear-gradient(180deg, #1e293b 0%, #172554 100%);
+                    border-bottom: 1px solid #334155;
                 }
                 .ag-theme-quartz .ag-header-cell, .ag-theme-quartz-dark .ag-header-cell {
                     font-weight: 700;
-                    letter-spacing: 0.03em;
+                    letter-spacing: 0.04em;
                     text-transform: uppercase;
                     font-size: 10.5px;
+                }
+                .ag-theme-quartz .ag-header-cell::after, .ag-theme-quartz-dark .ag-header-cell::after {
+                    border-right: 1px dashed #cbd5e1;
+                }
+                .ag-theme-quartz-dark .ag-header-cell::after {
+                    border-right: 1px dashed #475569;
+                }
+                .ag-theme-quartz .ag-row, .ag-theme-quartz-dark .ag-row {
+                    transition: background-color 0.15s ease;
                 }
                 .ag-theme-quartz .ag-cell, .ag-theme-quartz-dark .ag-cell {
                     line-height: 1.3;
@@ -427,15 +509,13 @@ export default function Forwarder({ isDarkMode, currentUser }) {
                     font-family: inherit;
                 }
                 .ag-theme-quartz .ag-cell-inline-editing, .ag-theme-quartz-dark .ag-cell-inline-editing {
-                    box-shadow: 0 0 0 2px rgba(14,165,233,0.5);
+                    box-shadow: 0 0 0 2px rgba(14,165,233,0.55);
                     background: #fff;
                     z-index: 2;
+                    border-radius: 4px;
                 }
                 .ag-theme-quartz-dark .ag-cell-inline-editing {
                     background: #1e293b;
-                }
-                .ag-theme-quartz .ag-row-hover, .ag-theme-quartz-dark .ag-row-hover {
-                    background-color: rgba(14,165,233,0.06);
                 }
             `}</style>
         </div>
