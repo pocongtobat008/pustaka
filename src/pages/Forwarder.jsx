@@ -215,12 +215,10 @@ export default function Forwarder({ isDarkMode, currentUser }) {
                 wrapText: true,
                 autoHeight: true,
                 cellClass: 'forwarder-cell',
-                valueGetter: (p) => p.data?.[f.key] || '',
             });
         });
         cols.push({
             field: 'notes', headerName: 'NOTES', width: 140, sortable: true, filter: true, editable: true,
-            valueGetter: (p) => p.data?.notes || '',
         });
         cols.push({
             field: 'id', headerName: '', width: 52, pinned: 'right', sortable: false, filter: false,
@@ -374,8 +372,12 @@ export default function Forwarder({ isDarkMode, currentUser }) {
                     onGridReady={onGridReady}
                     onCellValueChanged={onCellValueChanged}
                     onCellKeyDown={(e) => {
-                        if (e.event.key === 'Enter' && e.node && e.api.getDisplayedRowCount() > 0 && e.node.rowIndex === e.api.getDisplayedRowCount() - 1) {
-                            setTimeout(() => addRow(), 80);
+                        // Enter yang MENG-KOMIT edit (bukan Enter pertama untuk mulai edit)
+                        const isCommitting = e.api.getEditingCells().length > 0;
+                        const isLastRow = e.node && e.api.getDisplayedRowCount() > 0
+                            && e.api.getDisplayedRowAtIndex(e.api.getDisplayedRowCount() - 1) === e.node;
+                        if (e.event.key === 'Enter' && isCommitting && isLastRow) {
+                            setTimeout(() => addRow(), 60);
                         }
                     }}
                     defaultColDef={{
