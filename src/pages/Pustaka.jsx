@@ -321,7 +321,7 @@ const SlideViewer = ({ guide, slides, currentIdx, onNext, onPrev, onClose, setZo
 };
 
 export default function Pustaka({ currentUser, hasPermission, users = [], departments = [], syncPustakaFolder }) {
-    const { language } = useLanguage();
+    const { t, language } = useLanguage();
     const isEnglish = language === 'en';
     const i18n = isEnglish
         ? {
@@ -1116,7 +1116,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                                                                 type="button"
                                                                                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); setZoomedImage(getFullUrl(slide.image)); }}
                                                                                 className="p-3 bg-white/20 hover:bg-white/40 text-white rounded-xl backdrop-blur-md transition-all hover:scale-110"
-                                                                                title="Zoom"
+                                                                                title={t("tooltip.zoomDetail")}
                                                                             >
                                                                                 <ZoomIn size={20} />
                                                                             </button>

@@ -882,7 +882,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                             <button
                                 onClick={(e) => { e.stopPropagation(); onCopy(grandTotalPPh, "Estimasi PPh Terutang"); }}
                                 className="p-2 rounded-xl text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-white/10 transition-all active:scale-90 flex-shrink-0"
-                                title="Salin Total"
+                                title={t("taxsum.copyTotal")}
                             >
                                 <Copy size={16} />
                             </button>
@@ -900,7 +900,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                             <button
                                 onClick={(e) => { e.stopPropagation(); onCopy(totalPerType[type], type); }}
                                 className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-white/10 transition-all flex-shrink-0"
-                                title="Salin"
+                                title={t("taxsum.copy")}
                             >
                                 <Copy size={12} />
                             </button>
@@ -1032,14 +1032,14 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                                                         <button
                                                             onClick={(e) => { e.stopPropagation(); handleRenameTaxType('pphTypes', t); }}
                                                             className="p-1 text-blue-400 hover:text-blue-600 hover:bg-blue-50 rounded"
-                                                            title="Ubah Nama"
+                                                            title={t("taxsum.renameColumn")}
                                                         >
                                                             <Edit3 size={12} />
                                                         </button>
                                                         <button
                                                             onClick={(e) => { e.stopPropagation(); handleDeleteType('pphTypes', t); }}
                                                             className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded"
-                                                            title="Hapus Kolom"
+                                                            title={t("taxsum.deleteColumn")}
                                                         >
                                                             <Trash2 size={12} />
                                                         </button>
@@ -1407,7 +1407,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                             <button
                                 onClick={() => downloadTemplate('pph')}
                                 className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded flex items-center gap-2"
-                                title="Download Template PPh"
+                                title={t("taxsum.downloadTemplatePPh")}
                             >
                                 <Download size={14} /> Template PPh
                             </button>
@@ -1417,7 +1417,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                             <button
                                 onClick={() => downloadTemplate('ppn')}
                                 className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded flex items-center gap-2"
-                                title="Download Template PPN"
+                                title={t("taxsum.downloadTemplatePPN")}
                             >
                                 <Download size={14} /> Template PPN
                             </button>

@@ -456,7 +456,7 @@ const Sidebar = ({
                         <button
                             onClick={handleLogout}
                             className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors md:hidden"
-                            title="Logout"
+                            title={t("tooltip.logout")}
                         >
                             <LogOut size={13} />
                         </button>
@@ -494,7 +494,7 @@ const Sidebar = ({
                             <button
                                 onClick={handleLogout}
                                 className="neo-btn flex items-center justify-center gap-1.5 h-9 text-slate-500 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 text-xs font-semibold"
-                                title="Logout"
+                                title={t("tooltip.logout")}
                             >
                                 <LogOut size={13} />
                                 <span className="hidden">{/* label kosong agar seimbang */}</span>

@@ -4,6 +4,7 @@ import * as XLSX from 'xlsx';
 import { Card } from '../ui/Card';
 import TaxCalculator from './TaxCalculator';
 import { API_URL } from '../../services/database';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 export default function TaxObjectForm({
     formData, setFormData,
@@ -13,6 +14,7 @@ export default function TaxObjectForm({
     handleSave, onCopy,
     hasPermission, isLoading, setIsLoading
 }) {
+    const { t, isEnglish } = useLanguage();
     const [showObjectDropdown, setShowObjectDropdown] = useState(false);
     const masterFileInputRef = useRef(null);
 
@@ -170,7 +172,7 @@ export default function TaxObjectForm({
                 </Card>
 
                 <TaxCalculator
-                    title="Perhitungan Pajak"
+                    title={t("taxcalc.calcTitle")}
                     onCalculate={setCalcData}
                     initialDpp={calcData.dpp || ''}
                     initialRate={calcData.rate || ''}

@@ -367,7 +367,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
             }
         } catch (e) {
             console.error('Fetch error:', e);
-            if (!silent) toast.error(e.message || 'Gagal memuat data');
+            if (!silent) toast.error(e.message || t('entertain.gagalLoad'));
         } finally {
             if (!silent) setLoading(false);
         }
@@ -435,7 +435,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
         if (e && e.preventDefault) e.preventDefault();
         if (submitting) return; // anti double-submit
         if (!validate()) {
-            toast.error('Harap isi semua field yang wajib');
+            toast.error(t('entertain.fieldRequired'));
             return;
         }
         setSubmitting(true);
@@ -478,7 +478,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
             let result;
             if (editingId) {
                 result = await entertainmentService.update(editingId, fd);
-                toast.success('Data berhasil diupdate');
+                toast.success(t('entertain.dataUpdated'));
             } else {
                 result = await entertainmentService.create(fd);
                 if (entryStatus === 'settled') {
@@ -486,7 +486,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                 } else if (entryStatus === 'draft') {
                     toast.success(isEnglish ? 'Saved to draft' : 'Disimpan ke draft');
                 } else {
-                    toast.success('Data berhasil disimpan');
+                    toast.success(isEnglish ? 'Data saved successfully' : 'Data berhasil disimpan');
                 }
             }
 
@@ -607,7 +607,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
             e.preventDefault();
             e.stopPropagation();
             addFiles(files);
-            toast.success(`${files.length} file ditempel ke lampiran`);
+            toast.success(`${files.length} ${t('entertain.fileAttached')}`);
         }
     }, [addFiles, toast]);
 
@@ -646,7 +646,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
             e.preventDefault();
             e.stopPropagation();
             setSettleAttachments(prev => [...prev, ...files]);
-            toast.success(`${files.length} file ditempel ke lampiran`);
+            toast.success(`${files.length} ${t('entertain.fileAttached')}`);
         }
     }, [toast]);
 
@@ -753,20 +753,20 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
             return;
         }
         if (!settleForm.tanggal) { toast.error(text.errTanggal); return; }
-        if (!settleForm.tempat) { toast.error('Tempat wajib diisi'); return; }
-        if (!settleForm.alamat) { toast.error('Alamat wajib diisi'); return; }
-        if (!settleForm.jenis) { toast.error('Jenis wajib diisi'); return; }
-        if (settleForm.jenis === 'Custom' && !settleForm.custom_jenis?.trim()) { toast.error('Custom jenis wajib diisi'); return; }
+        if (!settleForm.tempat) { toast.error(t('entertain.placeRequired')); return; }
+        if (!settleForm.alamat) { toast.error(t('entertain.addressRequired')); return; }
+        if (!settleForm.jenis) { toast.error(t('entertain.jenisRequired')); return; }
+        if (settleForm.jenis === 'Custom' && !settleForm.custom_jenis?.trim()) { toast.error(t('entertain.customJenisRequired')); return; }
         if (!settleForm.nilai) { toast.error(text.errNilai); return; }
-        if (!settleForm.is_draw && !settleForm.settle_amount) { toast.error(isEnglish ? 'Settle amount is required' : 'Settle amount wajib diisi'); return; }
-        if (!settleForm.no_gl) { toast.error('No AF wajib diisi'); return; }
-        if (!/^PR\d{6}$/.test(String(settleForm.no_gl).toUpperCase())) { toast.error(isEnglish ? 'AF Number must be PR followed by 6 digits (e.g. PR000001)' : 'No AF harus format PR diikuti 6 digit (contoh: PR000001)'); return; }
-        if (!settleForm.gl_number) { toast.error(isEnglish ? 'No GL is required' : 'No GL wajib diisi'); return; }
-        if (!settleForm.groups || !settleForm.groups[0]?.relasi?.trim()) { toast.error('Minimal 1 relasi wajib diisi'); return; }
-        if (!settleForm.jenis_usaha) { toast.error('Jenis Usaha wajib diisi'); return; }
-        if (settleForm.jenis_usaha === 'Custom' && !settleForm.custom_jenis_usaha?.trim()) { toast.error('Custom jenis usaha wajib diisi'); return; }
+        if (!settleForm.is_draw && !settleForm.settle_amount) { toast.error(t('entertain.settleAmountRequired')); return; }
+        if (!settleForm.no_gl) { toast.error(t('entertain.noAFRequired')); return; }
+        if (!/^PR\d{6}$/.test(String(settleForm.no_gl).toUpperCase())) { toast.error(t('entertain.noAFFormat')); return; }
+        if (!settleForm.gl_number) { toast.error(t('entertain.noGLRequired')); return; }
+        if (!settleForm.groups || !settleForm.groups[0]?.relasi?.trim()) { toast.error(t('entertain.relasiRequired')); return; }
+        if (!settleForm.jenis_usaha) { toast.error(t('entertain.jenisUsahaRequired')); return; }
+        if (settleForm.jenis_usaha === 'Custom' && !settleForm.custom_jenis_usaha?.trim()) { toast.error(t('entertain.customJenisUsahaRequired')); return; }
         if (!settleForm.catatan_kode) { toast.error(text.errMomResult); return; }
-        if (settleExistingAttachments.length === 0 && settleAttachments.length === 0) { toast.error('Minimal 1 lampiran wajib diupload'); return; }
+        if (settleExistingAttachments.length === 0 && settleAttachments.length === 0) { toast.error(t('entertain.lampiranRequired')); return; }
         setSettleSubmitting(true);
         try {
             const fd = new FormData();
@@ -804,9 +804,9 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                 );
             }
             if (result.changed) {
-                toast.success('Data diupdate dan berhasil di-settle');
+                toast.success(t('entertain.settledUpdated'));
             } else {
-                toast.success('Berhasil di-settle');
+                toast.success(t('entertain.settledSuccess'));
             }
             setShowSettleModal(false);
             setSettleItem(null);
@@ -814,7 +814,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
             setSettleExistingAttachments([]);
             fetchData();
         } catch (e) {
-            toast.error(e.message || 'Gagal settle');
+            toast.error(e.message || t('entertain.gagalSettle'));
         } finally {
             setSettleSubmitting(false);
         }
@@ -855,24 +855,24 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
     const handleSaveRule = async () => {
         if (ruleSubmitting) return; // anti double-submit
         if (!ruleForm.rule_name || !ruleForm.target_value) {
-            toast.error('Nama rule dan target wajib diisi');
+            toast.error(t('entertain.ruleRequired'));
             return;
         }
         setRuleSubmitting(true);
         try {
             if (editingRule) {
                 await entertainmentService.updateRule(editingRule.id, ruleForm);
-                toast.success('Rule berhasil diupdate');
+                toast.success(t('entertain.ruleSaved'));
             } else {
                 await entertainmentService.createRule(ruleForm);
-                toast.success('Rule berhasil dibuat');
+                toast.success(t('entertain.ruleSaved'));
             }
             setShowRuleForm(false);
             setEditingRule(null);
             setRuleForm({ rule_name: '', target_type: 'user', target_value: '', view_all: false, can_create: true, can_edit: true, can_delete: true, can_settle: true, can_export: true, export_all: false });
             fetchRules();
         } catch (e) {
-            toast.error(e.message || 'Gagal menyimpan rule');
+            toast.error(e.message || t('entertain.gagalSave'));
         } finally {
             setRuleSubmitting(false);
         }
@@ -891,7 +891,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
             setDeletingId(id);
             try {
                 await entertainmentService.delete(id);
-                toast.success('Data berhasil dihapus');
+                toast.success(t('entertain.dataDeleted'));
                 fetchData();
             } catch (e) {
                 toast.error(e.message);
@@ -903,7 +903,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
             setDeletingRuleId(id);
             try {
                 await entertainmentService.deleteRule(id);
-                toast.success('Rule berhasil dihapus');
+                toast.success(t('entertain.ruleDeleted'));
                 fetchRules();
             } catch (e) {
                 toast.error(e.message);
@@ -994,7 +994,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                 <div className="flex flex-wrap items-center gap-3">
                     {userPerms.can_create && (
                     <button
-                        onClick={() => { if (!isAdmin && unsettledCount > 0) { if (showForm) setShowForm(false); toast.warning(isEnglish ? 'Settle all pending entries before creating a new one' : 'Selesaikan semua entry yang belum settle sebelum membuat entry baru.'); return; } resetForm(); setShowForm(!showForm); }}
+                        onClick={() => { if (!isAdmin && unsettledCount > 0) { if (showForm) setShowForm(false); toast.warning(t('entertain.unsettledWarning')); return; } resetForm(); setShowForm(!showForm); }}
                         disabled={(!isAdmin && unsettledCount > 0) || submitting}
                         title={(!isAdmin && unsettledCount > 0) ? (isEnglish ? 'Settle all pending entries first' : 'Selesaikan semua entry yang belum settle dulu') : ''}
                         className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl hover:from-indigo-500 hover:to-blue-500 transition-all shadow-lg shadow-indigo-500/20 font-semibold text-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"

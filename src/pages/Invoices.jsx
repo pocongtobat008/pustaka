@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { Textarea } from '../components/ui/textarea';
 import { SummaryRow } from '../components/ui/Card';
 import { useModalKeydown, useModalScrollLock } from '../components/ui/useModalKeydown';
+import { useLanguage } from '../contexts/LanguageContext';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -224,16 +225,16 @@ const Pagination = ({ page, totalPages, setPage }) => {
 };
 
 // ── Mini Stepper Component ──
-const StatusStepper = ({ status }) => {
+const StatusStepper = ({ status, t }) => {
     let step = 0;
     if (['proforma', 'sent_back', 'rejected', 'tax_requested', 'sent_back_tax', 'tax', 'settled'].includes(status)) step = 1;
     if (['tax', 'settled'].includes(status)) step = 2;
     if (status === 'settled') step = 3;
-    if (status === 'cancelled') return <div className="text-[9px] text-red-500 font-bold uppercase tracking-widest mt-1.5 flex items-center gap-1"><Ban size={10} /> Dibatalkan</div>;
-    if (status === 'rejected') return <div className="text-[9px] text-rose-500 font-bold uppercase tracking-widest mt-1.5 flex items-center gap-1"><XCircle size={10} /> Ditolak</div>;
-    if (status === 'sent_back') return <div className="text-[9px] text-amber-600 dark:text-amber-400 font-bold uppercase tracking-widest mt-1.5 flex items-center gap-1"><RefreshCw size={10} /> Dikembalikan</div>;
+    if (status === 'cancelled') return <div className="text-[9px] text-red-500 font-bold uppercase tracking-widest mt-1.5 flex items-center gap-1"><Ban size={10} /> {t('invoice.status.cancelled')}</div>;
+    if (status === 'rejected') return <div className="text-[9px] text-rose-500 font-bold uppercase tracking-widest mt-1.5 flex items-center gap-1"><XCircle size={10} /> {t('invoice.status.rejected')}</div>;
+    if (status === 'sent_back') return <div className="text-[9px] text-amber-600 dark:text-amber-400 font-bold uppercase tracking-widest mt-1.5 flex items-center gap-1"><RefreshCw size={10} /> {t('invoice.status.sentBack')}</div>;
 
-    const titles = ['Submit', 'Proforma', 'Tax', 'Settle'];
+    const titles = [t('invoice.stepper.submit'), t('invoice.stepper.proforma'), t('invoice.stepper.tax'), t('invoice.stepper.settle')];
 
     return (
         <div className="flex items-center mt-1.5 group relative w-fit">
@@ -330,6 +331,7 @@ function parseJsonArray(str) {
 
 
 const Invoices = ({ currentUser, hasPermission, toast }) => {
+    const { t, isEnglish } = useLanguage();
     const [tab, setTab] = useState('dashboard');
 
     const [dashSearch, setDashSearch] = useState('');
@@ -1946,7 +1948,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     )}
                     <td className="px-4 py-3">
                         <span className={'inline-block whitespace-nowrap px-2.5 py-1 rounded-full text-[10px] font-bold leading-tight ' + (STATUS_MAP[inv.status]?.cls || '')}>{STATUS_MAP[inv.status]?.label || inv.status}</span>
-                        <StatusStepper status={inv.status} />
+                        <StatusStepper status={inv.status} t={t} />
                     </td>
                     <td className="px-4 py-3">
                         <div className="font-semibold text-slate-800 dark:text-white truncate max-w-[220px]" title={inv.dealer_name || '-'}>{inv.dealer_name || '-'}</div>
@@ -2139,7 +2141,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <input
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
-                                placeholder="Cari (PO, proforma, dealer...)"
+                                placeholder={t("invoice.searchPlaceholder")}
                                 className="pl-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 w-48"
                             />
                         </div>
@@ -2303,7 +2305,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <div className="flex items-center gap-2 flex-wrap">
                                 <div className="relative">
                                     <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                                    <input value={dashSearch} onChange={e => setDashSearch(e.target.value)} placeholder="Cari data..." className="pl-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                    <input value={dashSearch} onChange={e => setDashSearch(e.target.value)} placeholder={t("invoice.searchData")} className="pl-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                                 </div>
                                 <select aria-label="Dealer" value={dashDealer} onChange={e => setDashDealer(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 max-w-[160px]">
                                     <option value="">Semua Dealer</option>
@@ -2320,7 +2322,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     <button
                                         onClick={handleExportExcel}
                                         disabled={exporting}
-                                        title="Export seluruh data invoice ke Excel"
+                                        title={t("invoice.exportAll")}
                                         className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold transition-all ${exporting ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/25'}`}
                                     >
                                         <FileSpreadsheet size={15} className={exporting ? 'animate-pulse' : ''} />
@@ -2735,7 +2737,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     type="text"
                                     value={trashSearch}
                                     onChange={e => setTrashSearch(e.target.value)}
-                                    placeholder="Cari no invoice / PO / dealer..."
+                                    placeholder={t("invoice.searchInvoice")}
                                     className="w-56 pl-9 pr-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 />
                             </div>
@@ -2862,8 +2864,8 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 </button>
                             </div>
                         </div>
-                        <input className={inputCls} placeholder="NPWP (16 digit)" value={dealerForm.npwp} onChange={e => setDealerForm({ ...dealerForm, npwp: e.target.value.replace(/\D/g, '').slice(0, 16) })} />
-                        <input className={inputCls} placeholder="Nama Dealer" value={dealerForm.nama} onChange={e => setDealerForm({ ...dealerForm, nama: e.target.value })} />
+                        <input className={inputCls} placeholder={t("invoice.placeNPWP")} value={dealerForm.npwp} onChange={e => setDealerForm({ ...dealerForm, npwp: e.target.value.replace(/\D/g, '').slice(0, 16) })} />
+                        <input className={inputCls} placeholder={t("invoice.placeDealerName")} value={dealerForm.nama} onChange={e => setDealerForm({ ...dealerForm, nama: e.target.value })} />
                         <Textarea placeholder="Alamat" rows={2} value={dealerForm.alamat} onChange={e => setDealerForm({ ...dealerForm, alamat: e.target.value })} />
                         <div className="flex gap-2">
                             <button onClick={saveDealer} disabled={savingDealer} className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl gradient-bg hover:opacity-95 text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
@@ -2929,9 +2931,9 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 </button>
                             </div>
                         </div>
-                        <input className={inputCls} placeholder="Model / Kode Barang" value={barangForm.model} onChange={e => setBarangForm({ ...barangForm, model: e.target.value })} />
-                        <input className={inputCls} placeholder="Item Description" value={barangForm.item_description} onChange={e => setBarangForm({ ...barangForm, item_description: e.target.value })} />
-                        <MoneyInput className={inputCls} placeholder="Harga" value={barangForm.harga} onChange={v => setBarangForm({ ...barangForm, harga: v })} />
+                        <input className={inputCls} placeholder={t("invoice.placeModel")} value={barangForm.model} onChange={e => setBarangForm({ ...barangForm, model: e.target.value })} />
+                        <input className={inputCls} placeholder={t("invoice.placeItemDesc")} value={barangForm.item_description} onChange={e => setBarangForm({ ...barangForm, item_description: e.target.value })} />
+                        <MoneyInput className={inputCls} placeholder={t("invoice.placePrice")} value={barangForm.harga} onChange={v => setBarangForm({ ...barangForm, harga: v })} />
                         <div className="flex gap-2">
                             <button onClick={saveBarang} disabled={savingBarang} className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl gradient-bg hover:opacity-95 text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
                                 <Plus size={15} /> {savingBarang ? 'Menyimpan...' : (barangEditId ? 'Update' : 'Simpan')}
@@ -3188,7 +3190,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         type="text"
                                         value={flowForm.name}
                                         onChange={e => setFlowForm({ ...flowForm, name: e.target.value })}
-                                        placeholder="Contoh: Approval Akunting"
+                                        placeholder={t("invoice.placeExample")}
                                         className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                     />
                                 </div>
@@ -3241,7 +3243,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     value={flowForm.custom_emails}
                                     onChange={e => setFlowForm({ ...flowForm, custom_emails: e.target.value })}
                                     rows={2}
-                                    placeholder="Ketik email bebas, pisahkan dengan koma / enter. Contoh: akunting@perusahaan.com, bos@perusahaan.com"
+                                    placeholder={t("invoice.placeEmail")}
                                     className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 />
                                 <p className="text-[11px] text-slate-400 mt-1">Email custom ikut menerima notifikasi selain penanggung jawab di atas. Bisa lebih dari satu.</p>
@@ -3524,7 +3526,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             <tr key={i} className="border-b border-slate-50 dark:border-slate-800">
                                                 <td className="px-2 py-2 text-slate-400">{i + 1}</td>
                                                 <td className="px-2 py-2">
-                                                    <input className={inputCls + ' min-w-[140px]'} placeholder="No. Invoice" value={r.no_invoice} onChange={e => updateSettleRow(i, { no_invoice: e.target.value })} />
+                                                    <input className={inputCls + ' min-w-[140px]'} placeholder={t("invoice.placeNoInvoice")} value={r.no_invoice} onChange={e => updateSettleRow(i, { no_invoice: e.target.value })} />
                                                 </td>
                                                 <td className="px-2 py-2">
                                                     <input type="date" className={inputCls + ' min-w-[140px]'} value={r.tgl_invoice} onChange={e => updateSettleRow(i, { tgl_invoice: e.target.value })} />
@@ -3628,7 +3630,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     subKey="npwp"
                                     onSelect={(o) => setInvForm(prev => ({ ...prev, dealer_id: String(o.id), pelunasan_of_id: '' }))}
                                     className={inputCls + ' pr-7'}
-                                    placeholder="Cari Dealer..."
+                                    placeholder={t("invoice.searchDealer")}
                                 />
                             </div>
                             <div>
@@ -3805,7 +3807,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                     subKey="item_description"
                                                     onSelect={(o) => onSelectModel(idx, o.model)}
                                                     className={inputCls + ' pr-7 h-[38px]'}
-                                                    placeholder="Cari Model..."
+                                                    placeholder={t("invoice.searchModel")}
                                                 />
                                             </div>
                                             <div className="col-span-3">
@@ -3815,7 +3817,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                 <input className={inputCls + ' h-[38px] text-right tabular-nums'} type="number" min="1" value={row.qty} onChange={e => updateRow(idx, { qty: e.target.value })} />
                                             </div>
                                             <div className="col-span-2">
-                                                <MoneyInput className={inputCls + ' h-[38px] text-right tabular-nums'} placeholder="Harga" value={row.harga} onChange={v => updateRow(idx, { harga: v })} />
+                                                <MoneyInput className={inputCls + ' h-[38px] text-right tabular-nums'} placeholder={t("invoice.placePrice")} value={row.harga} onChange={v => updateRow(idx, { harga: v })} />
                                             </div>
                                             <div className="col-span-2 h-[38px] flex items-center justify-end text-right font-bold text-sm text-slate-800 dark:text-white tabular-nums whitespace-nowrap">
                                                 {(formatCurrency((parseFloat(row.harga) || 0) * (parseInt(row.qty) || 0)))}
@@ -3849,7 +3851,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             return { ...prev, ppn_custom: false };
                                         })}
                                         className={`shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded ${invForm.ppn_custom ? 'bg-violet-100 dark:bg-violet-500/20 text-violet-600 dark:text-violet-300' : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-300'}`}
-                                        title="Pakai PPN custom"
+                                        title={t("invoice.usePpnCustom")}
                                     >
                                         {invForm.ppn_custom ? 'PPN Custom ✓' : 'Custom PPN'}
                                     </button>

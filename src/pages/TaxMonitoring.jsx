@@ -1086,7 +1086,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                                                                     setSelectedAudit(auditWithSteps);
                                                                 }}
                                                                 className="p-1.5 hover:bg-indigo-50 text-indigo-600 rounded-lg transition-colors"
-                                                                title="Detail"
+                                                                title={t("taxmon.detail")}
                                                             >
                                                                 <Eye size={16} />
                                                             </button>
@@ -1100,7 +1100,7 @@ export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, o
                                                                     openEditModal(auditWithSteps);
                                                                 }}
                                                                 className={`p-1.5 rounded-lg transition-colors ${hasPermission('tax-monitoring', 'edit') ? 'hover:bg-gray-100 text-gray-500' : 'opacity-30 cursor-not-allowed text-gray-300'}`}
-                                                                title="Edit"
+                                                                title={t("taxmon.edit")}
                                                                 disabled={!hasPermission('tax-monitoring', 'edit')}
                                                             >
                                                                 <Edit size={16} />

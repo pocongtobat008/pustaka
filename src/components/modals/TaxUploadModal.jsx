@@ -1,6 +1,7 @@
 import React from 'react';
 import { FileText, CheckCircle2, CloudUpload } from 'lucide-react';
 import Modal from '../common/Modal';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 export default function TaxUploadModal({
     isOpen,
@@ -10,11 +11,12 @@ export default function TaxUploadModal({
     handleConfirmUpload,
     isUploadingFile
 }) {
+    const { t, isEnglish } = useLanguage();
     return (
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title="Upload Dokumen Pemeriksaan"
+            title={t("modal.taxUpload")}
             size="max-w-2xl"
         >
             <div className="space-y-6 pt-4 px-1">

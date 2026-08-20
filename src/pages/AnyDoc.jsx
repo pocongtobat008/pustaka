@@ -7,6 +7,7 @@ import {
     Archive, Brain, Loader2, X, History, Sparkles, AlertCircle, CheckCircle2, Eye,
     FileCode2, Trash2, Clock, BookOpen, Plus, ListChecks, Table2, ChevronDown, ChevronRight,
 } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const getApiUrl = () => {
     if (window.location.protocol === 'file:') return 'http://localhost:5005/api';
@@ -163,6 +164,7 @@ const ChipEditor = ({ items, onChange, placeholder, isDarkMode, accent = 'indigo
 };
 
 export default function AnyDoc({ isDarkMode, currentUser }) {
+    const { t, isEnglish } = useLanguage();
     const [file, setFile] = useState(null);
     const [dragOver, setDragOver] = useState(false);
     const [converting, setConverting] = useState(false);
@@ -386,7 +388,7 @@ export default function AnyDoc({ isDarkMode, currentUser }) {
                 icon={FileCode2}
                 iconClass="from-indigo-600 to-purple-700"
                 title="AnyDoc Converter"
-                subtitle="Konversi dokumen apa pun menjadi Markdown bersih — didukung mesin Rust Firecrawl"
+                subtitle={t("anydoc.subtitle")}
                 meta={(
                     <div className="flex items-center gap-2 flex-wrap">
                         <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${isDarkMode ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/25' : 'bg-emerald-50 text-emerald-600 border border-emerald-200'}`}>

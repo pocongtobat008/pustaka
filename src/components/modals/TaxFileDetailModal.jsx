@@ -1,6 +1,7 @@
 import React from 'react';
 import { FileText, CheckCircle2, Clock } from 'lucide-react';
 import Modal from '../common/Modal';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 export default function TaxFileDetailModal({
     isOpen,
@@ -11,11 +12,12 @@ export default function TaxFileDetailModal({
     handleSecureDownload,
     api
 }) {
+    const { t, isEnglish } = useLanguage();
     return (
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title="Detail Dokumen & OCR"
+            title={t("modal.taxFileDetail")}
             size="max-w-4xl"
         >
             <div className="flex h-full min-h-0 flex-col gap-6 pt-4 md:flex-row">

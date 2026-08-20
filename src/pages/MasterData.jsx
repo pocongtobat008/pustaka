@@ -1061,7 +1061,7 @@ export default function MasterData({
                                     <button
                                         onClick={handleDownloadTemplate}
                                         className="px-3 py-2 bg-emerald-700 text-white rounded-lg text-sm flex items-center gap-1.5 hover:bg-emerald-800 transition-colors"
-                                        title="Download template Excel untuk import users"
+                                        title={t("master.downloadTemplate")}
                                     >
                                         <Download size={15} /> Template
                                     </button>
@@ -1069,7 +1069,7 @@ export default function MasterData({
                                         onClick={() => fileInputRef.current?.click()}
                                         disabled={importLoading}
                                         className="px-3 py-2 bg-amber-700 text-white rounded-lg text-sm flex items-center gap-1.5 hover:bg-amber-800 transition-colors disabled:opacity-50"
-                                        title="Import users dari file Excel"
+                                        title={t("master.importUsers")}
                                     >
                                         {importLoading ? <Loader2 size={15} className="animate-spin" /> : <Upload size={15} />} Import
                                     </button>

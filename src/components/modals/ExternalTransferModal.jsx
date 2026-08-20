@@ -1,13 +1,15 @@
 import React from 'react';
 import { Truck } from 'lucide-react';
 import Modal from '../common/Modal';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 export default function ExternalTransferModal({ isOpen, onClose, externalDate, setExternalDate, handleExternalTransfer }) {
+    const { t, isEnglish } = useLanguage();
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Kirim ke Indoarsip"
+      title={t("modal.externalTransfer")}
       size="max-w-sm"
     >
       <div className="pt-4">

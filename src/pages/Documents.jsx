@@ -1736,7 +1736,7 @@ export default function Documents({
                                     <button
                                         onClick={() => setZoomedImage(previewFile?.fileData || previewFile?.file_data || previewFile?.filedata || getFullUrl(previewFile?.url))}
                                         className="p-4 bg-white/20 hover:bg-white/40 text-white rounded-2xl backdrop-blur-xl transition-all hover:scale-110 shadow-2xl"
-                                        title="Zoom Detail"
+                                        title={t("doc.zoomDetail")}
                                     >
                                         <ZoomIn size={32} />
                                     </button>

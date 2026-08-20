@@ -12,6 +12,7 @@ import {
     FileDown, Wand2, Sparkles, History, Trash2, RefreshCw, ChevronDown, Lock, Share2,
     PenTool, Check, Plus, Users,
 } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const getApiUrl = () => (window.location.protocol === 'file:' ? 'http://localhost:5005/api' : '/api');
 const API_URL = getApiUrl();
@@ -188,6 +189,7 @@ const ToolCard = ({ tool, active, onClick, isDarkMode }) => {
 };
 
 export default function AiPdfTools({ isDarkMode, currentUser }) {
+    const { t, isEnglish } = useLanguage();
     const [activeTool, setActiveTool] = useState('convert');
     const [files, setFiles] = useState([]);
     const [form, setForm] = useState({ quality: 'medium', mode: 'all', pages: '', language: 'eng', password: '', autoRotate: true, perPage: false });
@@ -1118,7 +1120,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                     )}
                                                     <button
                                                         onClick={(e) => { e.stopPropagation(); removeSignature(s.id); }}
-                                                        title="Hapus tanda tangan"
+                                                        title={t("aipdf.hapusTtd")}
                                                         className={`absolute top-1 right-1 p-1 rounded-md opacity-0 group-hover:opacity-100 hover:opacity-100 ${isDarkMode ? 'text-rose-300 hover:bg-rose-500/20' : 'text-rose-500 hover:bg-rose-50'}`}
                                                     >
                                                         <Trash2 size={11} />
@@ -1236,7 +1238,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                             Template Tanda Tangan ({templates.length})
                                         </p>
                                         <p className={`text-[11px] mb-2 ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>
-                                            Template <b>NR</b> (1 ttd: ttd.png menimpa "Kaoru Nomura") dan <b>DM</b> (2 ttd: + agnes.png di atas "Agnestachia") sudah otomatis siap pakai — tinggal unggah PDF & proses.
+                                            {t("aipdf.templateHint")}
                                         </p>
                                         {(activeTmpl?.name === 'NR' || activeTmpl?.name === 'DM') && (
                                             <div className={`flex items-start gap-2 p-3 rounded-xl border text-[11px] mb-2 ${isDarkMode ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-200' : 'bg-emerald-50 border-emerald-200 text-emerald-700'}`}>
@@ -1298,7 +1300,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                         )}
                                                         <button
                                                             onClick={(e) => { e.stopPropagation(); removeTemplate(t.id); }}
-                                                            title="Hapus template"
+                                                            title={t("aipdf.hapusTemplate")}
                                                             className={`p-1 rounded-md flex-shrink-0 ${isDarkMode ? 'text-rose-300 hover:bg-rose-500/20' : 'text-rose-500 hover:bg-rose-50'}`}
                                                         >
                                                             <Trash2 size={12} />
@@ -1703,7 +1705,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                             <Share2 size={9} /> {sharedDeptsOf(x).length} dept
                                                         </span>
                                                     ) : (
-                                                        <span title="Hanya pembuat (atau admin) yang bisa melihat"
+                                                        <span title={t("aipdf.privacyHint")}
                                                             className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-bold border ${isDarkMode ? 'bg-amber-500/10 border-amber-500/25 text-amber-300/80' : 'bg-amber-50 border-amber-200 text-amber-600'}`}>
                                                             <Lock size={9} /> Pribadi
                                                         </span>
@@ -1714,7 +1716,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                     {x.tool === 'ocr' && (
                                                         <button
                                                             onClick={() => setViewTextTarget(x)}
-                                                            title="Lihat teks hasil OCR"
+                                                            title={t("aipdf.viewOcrText")}
                                                             className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold transition-all hover:scale-[1.02] ${isDarkMode ? 'bg-indigo-500/15 text-indigo-300 hover:bg-indigo-500/25' : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'}`}
                                                         >
                                                             <Eye size={11} /> Lihat
@@ -1731,7 +1733,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                     {canManageHist(x) && (
                                                         <button
                                                             onClick={() => openShare(x)}
-                                                            title="Bagikan ke departemen lain"
+                                                            title={t("aipdf.shareDept")}
                                                             className={`p-1.5 rounded-lg transition-colors ${isDarkMode ? 'hover:bg-sky-500/20 text-sky-300' : 'hover:bg-sky-50 text-sky-500'}`}
                                                         >
                                                             <Share2 size={12} />
@@ -1740,7 +1742,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                     {canManageHist(x) && (
                                                         <button
                                                             onClick={() => setDelHistTarget(x)}
-                                                            title="Hapus riwayat ini"
+                                                            title={t("aipdf.deleteHistory")}
                                                             className={`p-1.5 rounded-lg transition-colors ${isDarkMode ? 'text-white/25 hover:text-rose-300 hover:bg-rose-500/15' : 'text-slate-300 hover:text-rose-500 hover:bg-rose-50'}`}
                                                         >
                                                             <Trash2 size={12} />

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Calculator, RefreshCw, Copy, Check, Keyboard, Wallet, Info, Book, Sparkles } from 'lucide-react';
 import { Card } from '../ui/Card';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 export default function TaxCalculator({
     title = "Simulasi Perhitungan PPh",
@@ -16,6 +17,7 @@ export default function TaxCalculator({
     onCopy,
     isReadOnly = false
 }) {
+    const { t, isEnglish } = useLanguage();
     const [dpp, setDpp] = useState(initialDpp || '');
     const [rate, setRate] = useState(initialRate || '');
     const [discount, setDiscount] = useState(initialDiscount || '');
@@ -353,7 +355,7 @@ export default function TaxCalculator({
                         <button
                             onClick={() => setIsPph21BukanPegawai(!isPph21BukanPegawai)}
                             className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg border transition-all flex items-center gap-1.5 ${isPph21BukanPegawai ? 'bg-amber-500 border-amber-600 text-white shadow-lg' : 'bg-gray-100 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700'}`}
-                            title="Aktifkan perhitungan PPh 21 Bukan Pegawai (50% Bruto - Progresif)"
+                            title={t("taxcalc.bukanPegawaiTip")}
                         >
                             {isPph21BukanPegawai ? 'Mode: Bukan Pegawai ON' : 'PPH 21 Bukan Pegawai?'}
                         </button>
@@ -655,7 +657,7 @@ export default function TaxCalculator({
                                         <button
                                             onClick={() => copyToClipboard(lastEmitted.current.totalDibukukan || 0, 'dibukukan')}
                                             className="p-1.5 hover:bg-white/10 rounded-lg transition-colors text-white/40 hover:text-white/80"
-                                            title="Copy Nilai Angka"
+                                            title={t("taxcalc.copyNilai")}
                                         >
                                             {copied === 'dibukukan' ? <Check size={14} /> : <Copy size={14} />}
                                         </button>

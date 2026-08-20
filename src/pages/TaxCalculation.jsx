@@ -760,14 +760,14 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                     <button
                                         onClick={handleDownloadMasterTemplate}
                                         className="text-xs flex items-center gap-1 text-gray-500 hover:text-indigo-600 transition-colors"
-                                        title="Download Template Master Objek Pajak"
+                                        title={t("taxcalc.downloadTemplateMaster")}
                                     >
                                         <Download size={14} /> {text.templateMaster}
                                     </button>
                                     {canCreate && <button
                                         onClick={() => masterFileInputRef.current.click()}
                                         className="text-xs flex items-center gap-1 text-gray-500 hover:text-indigo-600 transition-colors"
-                                        title="Import Master Objek Pajak"
+                                        title={t("taxcalc.importMaster")}
                                     >
                                         <Upload size={14} /> {text.importMaster}
                                     </button>}

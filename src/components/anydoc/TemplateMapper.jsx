@@ -9,6 +9,7 @@ import {
     Archive, Files, FileText,
 } from 'lucide-react';
 import { SummaryRow } from '../ui/Card';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const getApiUrl = () => (window.location.protocol === 'file:' ? 'http://localhost:5005/api' : '/api');
 const API_URL = getApiUrl();
@@ -828,14 +829,14 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                                     <button
                                                         onClick={() => addHeaderField(l.text)}
                                                         className={`opacity-0 group-hover:opacity-100 px-1.5 py-0.5 rounded-md text-[9px] font-bold transition-opacity ${isDarkMode ? 'bg-indigo-500/20 text-indigo-300' : 'bg-indigo-100 text-indigo-600'}`}
-                                                        title="Map sebagai field header"
+                                                        title={t("comp.mapHeader")}
                                                     >
                                                         Map field
                                                     </button>
                                                     <button
                                                         onClick={() => makeTable(l)}
                                                         className={`opacity-0 group-hover:opacity-100 px-1.5 py-0.5 rounded-md text-[9px] font-bold transition-opacity ${isDarkMode ? 'bg-emerald-500/20 text-emerald-300' : 'bg-emerald-100 text-emerald-600'}`}
-                                                        title="Jadikan header tabel item"
+                                                        title={t("comp.tableHeader")}
                                                     >
                                                         Tabel
                                                     </button>
@@ -931,7 +932,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                         )}
                                         <button
                                             onClick={() => updateCol(c.uid, { isGroup: !c.isGroup })}
-                                            title="Jadikan kolom grup: nilainya ada di baris DI ATAS baris data (mis. No Faktur) dan diwariskan ke baris di bawahnya"
+                                            title={t("comp.groupCol")}
                                             className={`px-1 py-0.5 rounded text-[9px] font-bold border transition-all ${c.isGroup
                                                 ? isDarkMode ? 'bg-purple-500/30 text-purple-200 border-purple-500/50' : 'bg-purple-200 text-purple-700 border-purple-400'
                                                 : isDarkMode ? 'bg-white/5 text-white/40 border-white/10' : 'bg-white text-slate-400 border-slate-200'}`}
@@ -1294,7 +1295,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                                                         <Share2 size={9} /> {sharedDeptsOf(x).length} dept
                                                                     </span>
                                                                 ) : (
-                                                                    <span title="Hanya pembuat (atau admin) yang bisa melihat"
+                                                                    <span title={t("comp.privacyHint")}
                                                                         className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-bold border ${isDarkMode ? 'bg-amber-500/10 border-amber-500/25 text-amber-300/80' : 'bg-amber-50 border-amber-200 text-amber-600'}`}>
                                                                         <Lock size={9} /> Pribadi
                                                                     </span>
@@ -1305,7 +1306,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                                                 <div className="flex items-center gap-1">
                                                                     <button
                                                                         onClick={() => downloadArchived(x)}
-                                                                        title="Unduh PDF asli"
+                                                                        title={t("comp.downloadPdf")}
                                                                         className={`p-1.5 rounded-lg transition-colors ${isDarkMode ? 'hover:bg-indigo-500/20 text-indigo-300' : 'hover:bg-indigo-50 text-indigo-500'}`}
                                                                     >
                                                                         <Download size={13} />
@@ -1313,7 +1314,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                                                     <button
                                                                         onClick={() => reExtractArchived(x)}
                                                                         disabled={busy === 'extract'}
-                                                                        title="Ekstrak ulang tanpa upload"
+                                                                        title={t("comp.reExtract")}
                                                                         className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[9px] font-bold transition-all ${busy === 'extract' ? 'opacity-40' : ''} ${isDarkMode ? 'bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'}`}
                                                                     >
                                                                         <Sparkles size={9} /> Ekstrak Lagi
@@ -1321,7 +1322,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                                                     {canManage(x) && (
                                                                         <button
                                                                             onClick={() => openShare('archive', x)}
-                                                                            title="Bagikan ke departemen lain"
+                                                                            title={t("comp.shareDept")}
                                                                             className={`p-1.5 rounded-lg transition-colors ${isDarkMode ? 'hover:bg-sky-500/20 text-sky-300' : 'hover:bg-sky-50 text-sky-500'}`}
                                                                         >
                                                                             <Share2 size={12} />
@@ -1330,7 +1331,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                                                     {canManage(x) && (
                                                                         <button
                                                                             onClick={() => deleteArchived(x)}
-                                                                            title="Hapus dari arsip"
+                                                                            title={t("comp.deleteFromArsip")}
                                                                             className={`p-1.5 rounded-lg transition-colors ${isDarkMode ? 'hover:bg-rose-500/20 text-white/40' : 'hover:bg-rose-50 text-slate-400'}`}
                                                                         >
                                                                             <Trash2 size={12} />
@@ -1450,7 +1451,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                                             <Share2 size={9} /> {sharedDeptsOf(x).length} dept
                                                         </span>
                                                     ) : (
-                                                        <span title="Hanya pembuat (atau admin) yang bisa melihat"
+                                                        <span title={t("comp.privacyHint")}
                                                             className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-bold border ${isDarkMode ? 'bg-amber-500/10 border-amber-500/25 text-amber-300/80' : 'bg-amber-50 border-amber-200 text-amber-600'}`}>
                                                             <Lock size={9} /> Pribadi
                                                         </span>
@@ -1461,7 +1462,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                                     <button
                                                         onClick={() => downloadExportFile(x)}
                                                         disabled={x.fileExists === false}
-                                                        title="Unduh ulang Excel ini (tanpa extract ulang)"
+                                                        title={t("comp.downloadExcel")}
                                                         className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold transition-all ${x.fileExists === false ? 'opacity-40 cursor-not-allowed' : 'hover:scale-[1.02]'} ${isDarkMode ? 'bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'}`}
                                                     >
                                                         <Download size={11} /> Unduh
@@ -1469,7 +1470,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                                     {canManage(x) && (
                                                         <button
                                                             onClick={() => openShare('export', x)}
-                                                            title="Bagikan ke departemen lain"
+                                                            title={t("comp.shareDept")}
                                                             className={`p-1.5 rounded-lg transition-colors ${isDarkMode ? 'hover:bg-sky-500/20 text-sky-300' : 'hover:bg-sky-50 text-sky-500'}`}
                                                         >
                                                             <Share2 size={12} />
@@ -1478,7 +1479,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                                     {canManage(x) && (
                                                         <button
                                                             onClick={() => setDelExportTarget(x)}
-                                                            title="Hapus history export ini"
+                                                            title={t("comp.deleteHistory")}
                                                             className={`p-1.5 rounded-lg transition-colors ${isDarkMode ? 'text-white/25 hover:text-rose-300 hover:bg-rose-500/15' : 'text-slate-300 hover:text-rose-500 hover:bg-rose-50'}`}
                                                         >
                                                             <Trash2 size={12} />

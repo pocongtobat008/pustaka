@@ -1,5 +1,6 @@
 import React from 'react';
 import { Package, Clock, FileText, Truck } from 'lucide-react';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 export default function ExternalInventoryTable({
     externalItems,
@@ -8,6 +9,7 @@ export default function ExternalInventoryTable({
     onRestoreExternal,
     hasPermission
 }) {
+    const { t, isEnglish } = useLanguage();
     return (
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
             <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-800 overflow-hidden">
@@ -72,7 +74,7 @@ export default function ExternalInventoryTable({
                                             <button
                                                 onClick={(e) => { e.stopPropagation(); onViewExternal(item); }}
                                                 className="group/btn relative p-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300"
-                                                title="Lihat Detail"
+                                                title={t("inv.viewDetail")}
                                             >
                                                 <div className="absolute inset-0 bg-indigo-500/5 rounded-xl opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
                                                 <FileText size={18} className="text-slate-400 group-hover/btn:text-indigo-600 transition-colors duration-300 relative z-10" />
@@ -81,7 +83,7 @@ export default function ExternalInventoryTable({
                                                 <button
                                                     onClick={(e) => { e.stopPropagation(); onRestoreExternal(item); }}
                                                     className="group/btn relative p-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-emerald-500/50 hover:shadow-lg hover:shadow-emerald-500/10 transition-all duration-300"
-                                                    title="Restore ke Gudang"
+                                                    title={t("inv.restoreGudang")}
                                                 >
                                                     <div className="absolute inset-0 bg-emerald-500/5 rounded-xl opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
                                                     <Truck size={18} className="text-slate-400 group-hover/btn:text-emerald-600 transition-colors duration-300 relative z-10 transform rotate-180" />
