@@ -212,7 +212,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                 const items = detailTarget.items || [];
                                 if (!items.length) return null;
                                 const totalHarga = items.reduce((s, it) => s + (num(it.harga) * (it.qty || 1)), 0);
-                                const totalPpn = items.reduce((s, it) => s + Math.round((num(it.harga) * (it.qty || 1)) * (num(it.ppn_rate) || 0.11) * 100) / 100, 0);
+                                const totalPpn = items.reduce((s, it) => s + Math.round((num(it.harga) * (it.qty || 1)) * (num(it.ppn_rate) || 0.11)), 0);
                                 return (
                                     <div className="px-4 py-3 rounded-xl gradient-bg-soft border border-slate-100 dark:border-slate-800">
                                         <h4 className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-2">
@@ -242,8 +242,8 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                                                 <td className="px-3 py-2 text-right text-slate-700 dark:text-slate-300 tabular-nums">{formatCurrency(it.harga)}</td>
                                                                 <td className="px-3 py-2 text-right font-bold text-slate-800 dark:text-white tabular-nums">{formatCurrency(num(it.harga) * (it.qty || 1))}</td>
                                                                 <td className="px-3 py-2 text-right text-indigo-600 dark:text-indigo-400 tabular-nums font-semibold">
-                                                                    <span className="text-[10px] text-slate-400">{((num(it.ppn_rate) || 0.11) * 100).toFixed(1)}%</span>{' '}
-                                                                    {formatCurrency(Math.round((num(it.harga) * (it.qty || 1)) * (num(it.ppn_rate) || 0.11) * 100) / 100)}
+                                                                    <span className="text-[10px] text-slate-400">{Math.round((num(it.ppn_rate) || 0.11) * 100)}%</span>{' '}
+                                                                    {formatCurrency(Math.round((num(it.harga) * (it.qty || 1)) * (num(it.ppn_rate) || 0.11)))}
                                                                 </td>
                                                             </tr>
                                                         ))}

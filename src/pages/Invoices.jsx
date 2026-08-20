@@ -1018,7 +1018,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
     const subtotalAll = useMemo(() =>
         round2(invRows.reduce((s, r) => s + ((parseFloat(r.harga) || 0) * (parseInt(r.qty) || 0)), 0)), [invRows]);
     const ppnPerItem = useMemo(() =>
-        invRows.map(r => Math.round(((parseFloat(r.harga) || 0) * (parseInt(r.qty) || 0)) * (parseFloat(r.ppn_rate) || 0.11) * 100) / 100), [invRows]);
+        invRows.map(r => Math.round(((parseFloat(r.harga) || 0) * (parseInt(r.qty) || 0)) * (parseFloat(r.ppn_rate) || 0.11))), [invRows]);
     const ppnVal = invForm.ppn_custom
         ? round2(invForm.ppn_amount)
         : ppnPerItem.reduce((s, v) => s + v, 0);
@@ -3838,9 +3838,9 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             <div className="col-span-2 h-[38px] flex items-center justify-end text-right font-bold text-sm text-slate-800 dark:text-white tabular-nums whitespace-nowrap">
                                                 {formatCurrency((parseFloat(row.harga) || 0) * (parseInt(row.qty) || 0))}
                                             </div>
-                                            <div className="col-span-2">
+                                            <div className="col-span-2 h-[38px] flex flex-col items-center justify-center">
                                                 <input
-                                                    className={inputCls + ' h-[38px] text-center tabular-nums text-[11px]'}
+                                                    className={inputCls + ' h-[26px] w-16 text-center tabular-nums text-[11px] px-1'}
                                                     type="number"
                                                     step="1"
                                                     min="0"
@@ -3852,9 +3852,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                     }}
                                                     title="PPN % per item"
                                                 />
-                                                <div className="text-[9px] text-center text-indigo-600 dark:text-indigo-400 tabular-nums font-semibold mt-0.5">
-                                                    {formatCurrency(Math.round(((parseFloat(row.harga) || 0) * (parseInt(row.qty) || 0)) * (parseFloat(row.ppn_rate) || 0.11) * 100) / 100)}
-                                                </div>
+                                                <span className="text-[8px] text-indigo-500 dark:text-indigo-400 tabular-nums font-bold leading-none mt-0.5">{formatCurrency(Math.round(((parseFloat(row.harga) || 0) * (parseInt(row.qty) || 0)) * (parseFloat(row.ppn_rate) || 0.11)))}</span>
                                             </div>
                                             <div className="col-span-1 h-[38px] flex items-center justify-end">
                                                 <button onClick={() => removeRow(idx)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-slate-800"><Trash2 size={14} /></button>
