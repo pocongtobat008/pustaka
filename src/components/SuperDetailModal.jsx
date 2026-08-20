@@ -212,6 +212,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                 const items = detailTarget.items || [];
                                 if (!items.length) return null;
                                 const totalHarga = items.reduce((s, it) => s + (num(it.harga) * (it.qty || 1)), 0);
+                                const totalPpn = items.reduce((s, it) => s + Math.round((num(it.harga) * (it.qty || 1)) * (num(it.ppn_rate) || 0.11) * 100) / 100, 0);
                                 return (
                                     <div className="px-4 py-3 rounded-xl gradient-bg-soft border border-slate-100 dark:border-slate-800">
                                         <h4 className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-2">
@@ -219,7 +220,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                         </h4>
                                         <div className="rounded-xl overflow-hidden border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800/70">
                                             <div className="overflow-x-auto custom-scrollbar">
-                                                <table className="w-full text-xs min-w-[440px]">
+                                                <table className="w-full text-xs min-w-[520px]">
                                                     <thead>
                                                         <tr className="text-[9px] font-black uppercase tracking-wider text-slate-400 border-b border-slate-100 dark:border-slate-700">
                                                             <th className="px-3 py-2 text-left">No</th>
@@ -228,6 +229,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                                             <th className="px-3 py-2 text-right">Qty</th>
                                                             <th className="px-3 py-2 text-right">Harga Satuan</th>
                                                             <th className="px-3 py-2 text-right">Subtotal</th>
+                                                            <th className="px-3 py-2 text-right">PPN</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -239,6 +241,10 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                                                 <td className="px-3 py-2 text-right text-slate-700 dark:text-slate-300 tabular-nums font-semibold">{it.qty || 1}</td>
                                                                 <td className="px-3 py-2 text-right text-slate-700 dark:text-slate-300 tabular-nums">{formatCurrency(it.harga)}</td>
                                                                 <td className="px-3 py-2 text-right font-bold text-slate-800 dark:text-white tabular-nums">{formatCurrency(num(it.harga) * (it.qty || 1))}</td>
+                                                                <td className="px-3 py-2 text-right text-indigo-600 dark:text-indigo-400 tabular-nums font-semibold">
+                                                                    <span className="text-[10px] text-slate-400">{((num(it.ppn_rate) || 0.11) * 100).toFixed(1)}%</span>{' '}
+                                                                    {formatCurrency(Math.round((num(it.harga) * (it.qty || 1)) * (num(it.ppn_rate) || 0.11) * 100) / 100)}
+                                                                </td>
                                                             </tr>
                                                         ))}
                                                     </tbody>
@@ -246,8 +252,9 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                                         <tr className="bg-indigo-50/60 dark:bg-indigo-500/10">
                                                             <td className="px-3 py-2 font-black text-slate-600 dark:text-slate-300" colSpan={3}>Total {items.length} Item</td>
                                                             <td className="px-3 py-2 text-right font-bold text-slate-700 dark:text-slate-300 tabular-nums">{items.reduce((s, it) => s + (it.qty || 1), 0)}</td>
-                                                            <td className="px-3 py-2 text-right text-slate-500 text-[10px]">Subtotal DPP</td>
+                                                            <td className="px-3 py-2 text-right text-slate-500 text-[10px]">DPP</td>
                                                             <td className="px-3 py-2 text-right font-black text-indigo-700 dark:text-indigo-300 tabular-nums">{formatCurrency(totalHarga)}</td>
+                                                            <td className="px-3 py-2 text-right font-black text-indigo-700 dark:text-indigo-300 tabular-nums">{formatCurrency(totalPpn)}</td>
                                                         </tr>
                                                     </tfoot>
                                                 </table>

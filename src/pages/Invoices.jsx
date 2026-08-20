@@ -753,7 +753,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
 
     useEffect(() => { loadAll(); }, [loadAll]);
 
-    const newBlankItem = () => ({ model: '', qty: 1 });
+    const newBlankItem = () => ({ model: '', qty: 1, ppn_rate: 0.11 });
     const [invRows, setInvRows] = useState([newBlankItem()]);
 
     const handleCancelInvoice = (inv) => {
@@ -924,6 +924,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                 qty: it.qty || 1,
                 item_description: it.item_description || '',
                 harga: parseCurrency(it.harga),
+                ppn_rate: it.ppn_rate != null ? Number(it.ppn_rate) : 0.11,
             }));
             setInvRows(rows.length ? rows : [newBlankItem()]);
         } catch (e) {
@@ -996,6 +997,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                 qty: it.qty || 1,
                 item_description: it.item_description || '',
                 harga: parseCurrency(it.harga),
+                ppn_rate: it.ppn_rate != null ? Number(it.ppn_rate) : 0.11,
             }));
             const sisa = ppRemaining(parent.id, editInvoiceId);
             const fullAmount = parseCurrency(parent.total_invoice);
@@ -1013,9 +1015,11 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
     const round2 = (n) => Math.round((parseFloat(n) || 0) * 100) / 100;
     const subtotalAll = useMemo(() =>
         round2(invRows.reduce((s, r) => s + ((parseFloat(r.harga) || 0) * (parseInt(r.qty) || 0)), 0)), [invRows]);
+    const ppnPerItem = useMemo(() =>
+        invRows.map(r => Math.round(((parseFloat(r.harga) || 0) * (parseInt(r.qty) || 0)) * (parseFloat(r.ppn_rate) || 0.11) * 100) / 100), [invRows]);
     const ppnVal = invForm.ppn_custom
         ? round2(invForm.ppn_amount)
-        : Math.round(subtotalAll * (parseFloat(invForm.ppn_rate) || 0.11) * 100) / 100;
+        : ppnPerItem.reduce((s, v) => s + v, 0);
     const diskonVal = round2(invForm.diskon);
     const materaiVal = round2(invForm.materai);
     const computedTotal = round2(subtotalAll + ppnVal - diskonVal + materaiVal);
@@ -1096,6 +1100,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                 item_description: r.item_description || '',
                 harga: parseFloat(r.harga) || 0,
                 qty: parseInt(r.qty) || 1,
+                ppn_rate: parseFloat(r.ppn_rate) || 0.11,
             })),
         };
         if (savingInvoice) return;
@@ -3796,18 +3801,19 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 </button>
                             </div>
                             <div className="rounded-xl border border-slate-200 dark:border-slate-700">
-                                <div className="grid grid-cols-12 gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide border-b border-slate-200 dark:border-slate-700 rounded-t-xl">
-                                    <div className="col-span-3">Model</div>
+                                <div className="grid grid-cols-14 gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide border-b border-slate-200 dark:border-slate-700 rounded-t-xl">
+                                    <div className="col-span-2">Model</div>
                                     <div className="col-span-3">Item Description</div>
                                     <div className="col-span-1 text-right">Qty</div>
                                     <div className="col-span-2 text-right">Harga</div>
                                     <div className="col-span-2 text-right">Subtotal</div>
+                                    <div className="col-span-2 text-right">PPN</div>
                                     <div className="col-span-1"></div>
                                 </div>
                                 <div className="divide-y divide-slate-100 dark:divide-slate-800">
                                     {invRows.map((row, idx) => (
-                                        <div key={idx} className="grid grid-cols-12 gap-2 px-3 py-2 items-center">
-                                            <div className="col-span-3">
+                                        <div key={idx} className="grid grid-cols-14 gap-2 px-3 py-2 items-center">
+                                            <div className="col-span-2">
                                                 <SearchAutocomplete
                                                     value={row.model}
                                                     options={barang}
@@ -3828,7 +3834,25 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                 <MoneyInput className={inputCls + ' h-[38px] text-right tabular-nums'} placeholder={t("invoice.placePrice")} value={row.harga} onChange={v => updateRow(idx, { harga: v })} />
                                             </div>
                                             <div className="col-span-2 h-[38px] flex items-center justify-end text-right font-bold text-sm text-slate-800 dark:text-white tabular-nums whitespace-nowrap">
-                                                {(formatCurrency((parseFloat(row.harga) || 0) * (parseInt(row.qty) || 0)))}
+                                                {formatCurrency((parseFloat(row.harga) || 0) * (parseInt(row.qty) || 0))}
+                                            </div>
+                                            <div className="col-span-2">
+                                                <div className="flex items-center gap-1">
+                                                    <input
+                                                        className={inputCls + ' h-[38px] w-14 text-right tabular-nums text-[11px]'}
+                                                        type="number"
+                                                        step="0.01"
+                                                        min="0"
+                                                        max="1"
+                                                        value={row.ppn_rate ?? 0.11}
+                                                        onChange={e => updateRow(idx, { ppn_rate: e.target.value })}
+                                                        title="PPN Rate per item (0-1)"
+                                                    />
+                                                    <span className="text-[10px] text-slate-400 shrink-0">%</span>
+                                                </div>
+                                                <div className="text-[9px] text-right text-indigo-600 dark:text-indigo-400 tabular-nums font-semibold mt-0.5">
+                                                    {formatCurrency(Math.round(((parseFloat(row.harga) || 0) * (parseInt(row.qty) || 0)) * (parseFloat(row.ppn_rate) || 0.11) * 100) / 100)}
+                                                </div>
                                             </div>
                                             <div className="col-span-1 h-[38px] flex items-center justify-end">
                                                 <button onClick={() => removeRow(idx)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-slate-800"><Trash2 size={14} /></button>

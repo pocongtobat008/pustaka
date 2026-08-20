@@ -232,6 +232,7 @@ async function duplicateInvoiceForReject(knexInstance, oldInv, actor) {
                 item_description: it.item_description || '',
                 harga: it.harga,
                 qty: it.qty,
+                ppn_rate: it.ppn_rate || 0.11,
                 subtotal: it.subtotal
             });
         }
@@ -1118,6 +1119,7 @@ router.post('/', async (req, res) => {
                     item_description: it.item_description || '',
                     harga: round2(it.harga),
                     qty: it.qty || 1,
+                    ppn_rate: parseFloat(it.ppn_rate) || 0.11,
                     subtotal: round2(it.harga) * (it.qty || 1),
                 });
             }
@@ -1252,6 +1254,7 @@ router.put('/:id', async (req, res) => {
                     item_description: it.item_description || '',
                     harga: round2(it.harga),
                     qty: it.qty || 1,
+                    ppn_rate: parseFloat(it.ppn_rate) || 0.11,
                     subtotal: round2(it.harga) * (it.qty || 1),
                 });
             }
