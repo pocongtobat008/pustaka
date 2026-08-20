@@ -86,7 +86,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: '100%', opacity: 0 }}
                         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                        className="fixed inset-y-0 right-0 z-[110] w-full max-w-xl md:max-w-2xl bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl shadow-2xl flex flex-col border-l border-white/20 dark:border-slate-700/50"
+                        className="fixed inset-y-0 right-0 z-[110] w-full max-w-2xl lg:max-w-4xl bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl shadow-2xl flex flex-col border-l border-white/20 dark:border-slate-700/50"
                     >
                         {/* Header */}
                         <div className="bg-gradient-to-r from-indigo-500 to-violet-500 px-6 py-5 shrink-0 shadow-sm relative z-10">

@@ -566,14 +566,23 @@ router.delete('/rules/:id', async (req, res) => {
 
 router.get('/', async (req, res) => {
     try {
+        const page = Math.max(1, parseInt(req.query.page) || 1);
+        const limit = Math.min(200, Math.max(1, parseInt(req.query.limit) || 100));
+        const offset = (page - 1) * limit;
+
+        const countRow = await knex('proforma_invoices').whereNull('deleted_at').count('id as total').first();
+        const total = Number(countRow?.total || 0);
+
         const rows = await knex('proforma_invoices')
             .select(
                 'proforma_invoices.*',
                 knex.raw('(SELECT COUNT(*) FROM proforma_invoice_items it WHERE it.invoice_id = proforma_invoices.id) as item_count')
             )
             .whereNull('deleted_at')
-            .orderBy('proforma_invoices.created_at', 'desc');
-        res.json(rows);
+            .orderBy('proforma_invoices.created_at', 'desc')
+            .limit(limit)
+            .offset(offset);
+        res.json({ data: rows, total, page, limit, totalPages: Math.ceil(total / limit) });
     } catch (err) {
         res.status(500).json({ error: 'Gagal mengambil invoice', details: [err.message] });
     }
