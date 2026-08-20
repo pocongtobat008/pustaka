@@ -830,7 +830,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                         <option value="All">{isEnglish ? 'All Statuses' : 'Semua Status'}</option>
                         <option value="KB">{isEnglish ? 'Underpaid' : 'Kurang Bayar'}</option>
                         <option value="LB">{isEnglish ? 'Overpaid' : 'Lebih Bayar'}</option>
-                        <option value="Nihil">Nihil</option>
+                        <option value="Nihil">{t("opt.nihil")}</option>
                     </select>
                 )}
 

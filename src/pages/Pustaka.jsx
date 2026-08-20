@@ -79,7 +79,7 @@ const PustakaLandingPage = ({ onClose }) => {
                         className="inline-flex items-center gap-2 px-6 py-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-full text-sm font-black uppercase tracking-widest mb-4"
                     >
                         <Sparkles size={16} />
-                        <span>The Vision</span>
+                        <span>{t("theVision") || "The Vision"}</span>
                     </motion.div>
                     <motion.h1
                         initial={{ y: 20, opacity: 0 }}

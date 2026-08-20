@@ -69,7 +69,7 @@ export default function MasterDataModals({
                                     onChange={e => setUserForm({ ...userForm, department: e.target.value })}
                                     className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner appearance-none font-bold"
                                 >
-                                    <option value="">- Pilih Dept -</option>
+                                    <option value="">{t("opt.selectDept")}</option>
                                     {departments.map(d => <option key={d.id} value={d.name}>{d.name}</option>)}
                                 </select>
                                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">

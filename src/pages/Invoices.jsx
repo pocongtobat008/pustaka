@@ -2231,7 +2231,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         <Tooltip formatter={(v) => formatCurrency(v)} />
                                         <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 11 }} />
                                         <Bar dataKey="invoice" name="Total Invoice" fill="#6366f1" radius={[4, 4, 0, 0]} />
-                                        <Bar dataKey="masuk" name="Uang Masuk" fill="#10b981" radius={[4, 4, 0, 0]} />
+                                        <Bar dataKey="masuk" name={t("invoice.chartUangMasuk")} fill="#10b981" radius={[4, 4, 0, 0]} />
                                         <Bar dataKey="settled" name="Settled" fill="#f59e0b" radius={[4, 4, 0, 0]} />
                                     </BarChart>
                                 </ResponsiveContainer>
@@ -2308,11 +2308,11 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     <input value={dashSearch} onChange={e => setDashSearch(e.target.value)} placeholder={t("invoice.searchData")} className="pl-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                                 </div>
                                 <select aria-label="Dealer" value={dashDealer} onChange={e => setDashDealer(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 max-w-[160px]">
-                                    <option value="">Semua Dealer</option>
+                                    <option value="">{t("opt.allDealer")}</option>
                                     {dashDealerOptions.map(d => <option key={d} value={d}>{d}</option>)}
                                 </select>
                                 <select aria-label="Status" value={dashStatus} onChange={e => setDashStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                    <option value="">Semua Status</option>
+                                    <option value="">{t("opt.allStatus")}</option>
                                     {dashStatusOptions.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                                 </select>
                                 {(dashSearch || dashDealer || dashStatus) && (
@@ -2338,7 +2338,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     <InvoiceTableHeader sortKey={dashSortKey} sortDir={dashSortDir} onSort={dashToggleSort} withActions={false} />
                                 </thead>
                                 <tbody>
-                                    {renderInvoiceRows(dashRootRows, pagedDashboard, { withActions: false, childrenOf: dashPelunasanChildrenOf, emptyText: 'Tidak ada data invoice' })}
+                                    {renderInvoiceRows(dashRootRows, pagedDashboard, { withActions: false, childrenOf: dashPelunasanChildrenOf, emptyText: t('invoice.emptyData') })}
                                 </tbody>
                             </table>
                         </div>
@@ -2385,7 +2385,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         </div>
                         <div className="flex items-center gap-2 flex-wrap">
                             <select aria-label="Status Invoice" value={invStatus} onChange={e => setInvStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                <option value="">Semua Status</option>
+                                <option value="">{t("opt.allStatus")}</option>
                                 {dashStatusOptions.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                             </select>
                             {invStatus && <button onClick={() => setInvStatus('')} className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-red-600 text-sm font-semibold">Reset</button>}
@@ -2742,9 +2742,9 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 />
                             </div>
                             <select aria-label="Filter Sampah" value={trashFilter} onChange={e => setTrashFilter(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                <option value="all">Semua</option>
-                                <option value="invoice">Invoice</option>
-                                <option value="proforma">Proforma</option>
+                                <option value="all">{t("opt.all")}</option>
+                                <option value="invoice">{t("opt.invoice")}</option>
+                                <option value="proforma">{t("opt.proforma")}</option>
                             </select>
                             <button onClick={loadTrash} className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-indigo-600 text-sm font-semibold" title="Muat ulang Sampah">
                                 <RefreshCw size={15} className={trashLoading ? 'animate-spin' : ''} /> Muat Ulang
@@ -2990,16 +2990,16 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         <div>
                             <label className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 block">Tipe Target</label>
                             <select className={inputCls} value={ruleForm.target_type} onChange={e => setRuleForm({ ...ruleForm, target_type: e.target.value, target_value: '' })}>
-                                <option value="user">User</option>
-                                <option value="role">Role</option>
-                                <option value="division">Divisi</option>
+                                <option value="user">{t("opt.user")}</option>
+                                <option value="role">{t("opt.role")}</option>
+                                <option value="division">{t("opt.division")}</option>
                             </select>
                         </div>
                         {ruleForm.target_type === 'user' && (
                             <div>
                                 <label className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 block">Pilih User (Master Data)</label>
                                 <select className={inputCls} value={ruleForm.target_value} onChange={e => setRuleForm({ ...ruleForm, target_value: e.target.value })}>
-                                    <option value="">— Pilih user —</option>
+                                    <option value="">{t("opt.selectUser")}</option>
                                     {masterUsers.map(u => (
                                         <option key={u.id} value={u.username}>{u.name || u.username} (@{u.username})</option>
                                     ))}
@@ -3010,7 +3010,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <div>
                                 <label className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 block">Pilih Role (Master Data)</label>
                                 <select className={inputCls} value={ruleForm.target_value} onChange={e => setRuleForm({ ...ruleForm, target_value: e.target.value })}>
-                                    <option value="">— Pilih role —</option>
+                                    <option value="">{t("opt.selectRole")}</option>
                                     {masterRoles.map(r => (
                                         <option key={r.id} value={r.id}>{r.label || r.id}</option>
                                     ))}
@@ -3021,7 +3021,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <div>
                                 <label className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 block">Pilih Divisi (Master Data)</label>
                                 <select className={inputCls} value={ruleForm.target_value} onChange={e => setRuleForm({ ...ruleForm, target_value: e.target.value })}>
-                                    <option value="">— Pilih divisi —</option>
+                                    <option value="">{t("opt.selectDivision")}</option>
                                     {masterDivisions.map(d => (
                                         <option key={d.id} value={d.name}>{d.name}</option>
                                     ))}
@@ -3214,10 +3214,10 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             onChange={e => setFlowForm({ ...flowForm, assignee_type: e.target.value, assignee_value: '' })}
                                             className="w-1/3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                         >
-                                            <option value="all">Semua</option>
-                                            <option value="role">Role</option>
-                                            <option value="user">User</option>
-                                            <option value="division">Divisi</option>
+                                            <option value="all">{t("opt.all")}</option>
+                                            <option value="role">{t("opt.role")}</option>
+                                            <option value="user">{t("opt.user")}</option>
+                                            <option value="division">{t("opt.division")}</option>
                                         </select>
                                         {flowForm.assignee_type !== 'all' && (
                                             <select
@@ -3225,7 +3225,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                 onChange={e => setFlowForm({ ...flowForm, assignee_value: e.target.value })}
                                                 className="w-2/3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                             >
-                                                <option value="">Pilih {flowForm.assignee_type}</option>
+                                                <option value="">{t("opt.selectSomething")} {flowForm.assignee_type}</option>
                                                 {flowForm.assignee_type === 'role' && flowAssigneeOptions.roles.map(r => <option key={r} value={r}>{r}</option>)}
                                                 {flowForm.assignee_type === 'user' && flowAssigneeOptions.users.map(u => <option key={u.username} value={u.username}>{u.name || u.username}</option>)}
                                                 {flowForm.assignee_type === 'division' && flowAssigneeOptions.divisions.map(d => <option key={d} value={d}>{d}</option>)}
@@ -3672,8 +3672,8 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                 pelunasan_of_id: ppType === 'pelunasan' ? prev.pelunasan_of_id : '',
                                             }));
                                         }}>
-                                            <option value="dp">DP (Down Payment)</option>
-                                            <option value="pelunasan">Pelunasan (Settlement)</option>
+                                            <option value="dp">{t("opt.dp")}</option>
+                                            <option value="pelunasan">{t("opt.pelunasan")}</option>
                                         </select>
                                         <p className="text-[10px] text-slate-400 mt-1">
                                             {invForm.pp_type === 'pelunasan'
@@ -3685,13 +3685,13 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     {invForm.pp_type === 'pelunasan' ? (
                                         <>
                                             <div>
-                                                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 block">Referensi PO DP (Pelunasan) *</label>
+                                                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 block">{t("invoice.refPoDp")}</label>
                                                 <select
                                                     className={inputCls}
                                                     value={invForm.pelunasan_of_id || ''}
                                                     onChange={e => handleSelectPelunasanPo(e.target.value)}
                                                 >
-                                                    <option value="">-- Pilih PO DP --</option>
+                                                    <option value="">{t("opt.selectPoDp")}</option>
                                                     {ppParents.map(p => {
                                                         const rem = ppRemaining(p.id, editInvoiceId);
                                                         return (
@@ -3724,7 +3724,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                         <div className="grid grid-cols-3 gap-2 text-[11px] text-indigo-600 dark:text-indigo-400">
                                                             <span>Full: <b>{formatCurrency(parent?.total_invoice)}</b></span>
                                                             <span>DP: <b>{formatCurrency(parent?.uang_masuk)}</b></span>
-                                                            <span>Pelunasan lain: <b>{formatCurrency(paidPelunasan)}</b></span>
+                                                            <span>{t("invoice.pelunasanOther")} <b>{formatCurrency(paidPelunasan)}</b></span>
                                                         </div>
                                                     </div>
                                                 );
@@ -3732,14 +3732,14 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             <div>
                                                 <label className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 block">Total Invoice (Full Amount) — sama dengan DP *</label>
                                                 <MoneyInput className={inputCls + ' bg-slate-100 dark:bg-slate-700 cursor-not-allowed'} placeholder="0" value={invForm.total_invoice} onChange={() => {}} />
-                                                <p className="text-[10px] text-slate-400 mt-1">Daftar barang pelunasan harus sama dengan full amount DP. Amount pelunasan diisi di field "Uang Masuk (Pelunasan)".</p>
+                                                <p className="text-[10px] text-slate-400 mt-1">{t("invoice.pelunasanHelp")}</p>
                                             </div>
                                         </>
                                     ) : (
                                         <div>
                                             <label className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 block">Total Invoice (Full Amount) *</label>
                                             <MoneyInput className={inputCls} placeholder="0" value={invForm.total_invoice} onChange={v => { totalTouchedRef.current = true; setInvForm(prev => ({ ...prev, total_invoice: v })); }} />
-                                            <p className="text-[10px] text-slate-400 mt-1">Masukkan total nilai penuh (full amount). Daftar barang harus berjumlah sama dengan full amount. DP diisi di field "Uang Masuk (DP)".</p>
+                                            <p className="text-[10px] text-slate-400 mt-1">{t("invoice.dpHelp")}</p>
                 </div>
             )}
 
@@ -3901,7 +3901,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     sisaLabel = 'Sisa grup setelah pelunasan ini';
                                 } else {
                                     sisaVal = round2(totalInvoice - uangMasukNow);
-                                    sisaLabel = 'Pelunasan yang harus dibayar';
+                                    sisaLabel = t('invoice.pelunasanToPay');
                                 }
                                 const lunas = sisaVal <= 0.01;
                                 return (
@@ -4269,7 +4269,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-white/60 dark:border-white/10 text-xs text-slate-600 dark:text-slate-300 space-y-2">
                                 <p>Apakah Anda yakin ingin menghapus invoice pengganti ini?</p>
                                 <ul className="list-disc list-inside text-[11px] text-slate-500 space-y-1 font-medium">
-                                    <li>Invoice pengganti <b>{deleteReplTarget.no_invoice || '#' + deleteReplTarget.id}</b> akan dihapus permanen beserta item barangnya.</li>
+                                    <li>{t("invoice.delReplaceWarning")} <b>{deleteReplTarget.no_invoice || '#' + deleteReplTarget.id}</b> akan dihapus permanen beserta item barangnya.</li>
                                     <li>Invoice asal <b>#{deleteReplTarget.rejected_from_id}</b> akan kembali ke status <b className="text-rose-500">rejected</b> tanpa pengganti, dan bisa dibuat ulang lewat menu <b>"Input Data Baru"</b>.</li>
                                 </ul>
                             </div>

@@ -53,7 +53,7 @@ export default function RestoreBoxModal({
                 value={restoreTargetSlot}
                 onChange={(e) => setRestoreTargetSlot(e.target.value)}
               >
-                <option value="">-- Pilih Slot Kosong --</option>
+                <option value="">{t("opt.selectSlot")}</option>
                 {inventory.filter(s => s.status === 'EMPTY').map(s => (
                   <option key={s.id} value={s.id}>Slot #{String(s.id).padStart(3, '0')}</option>
                 ))}

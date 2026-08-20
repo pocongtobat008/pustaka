@@ -1560,8 +1560,8 @@ export default function MasterData({
                                     onChange={(e) => setAiForm({ ...aiForm, model: e.target.value })}
                                     className={`bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 ${!currentModelInList ? 'border-amber-400 dark:border-amber-600 ring-1 ring-amber-300/50' : ''}`}
                                 >
-                                    {modelsLoading && <option value="">Memuat model...</option>}
-                                    {!modelsLoading && aiModels.length === 0 && <option value="">Tidak ada model</option>}
+                                    {modelsLoading && <option value="">{t("opt.loadingModel")}</option>}
+                                    {!modelsLoading && aiModels.length === 0 && <option value="">{t("master.noModel")}</option>}
                                     {groupedAiModels.map(g => (
                                         <optgroup key={g.provider} label={g.provider}>
                                             {g.items.map(m => <option key={m} value={m}>{m}</option>)}

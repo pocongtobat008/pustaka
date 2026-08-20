@@ -22,7 +22,7 @@ export default function TaxModals({
                             onChange={e => setTaxForm({ ...taxForm, month: e.target.value })}
                             className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner appearance-none font-bold"
                         >
-                            <option value="">- Pilih Bulan -</option>
+                            <option value="">{t("opt.selectMonth")}</option>
                             {["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"].map(m => (
                                 <option key={m} value={m}>{m}</option>
                             ))}

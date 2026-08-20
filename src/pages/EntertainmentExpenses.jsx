@@ -1133,8 +1133,8 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                             onChange={e => setSearchParams(p => ({ ...p, entry_type: e.target.value }))}
                             className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500">
                             <option value="">{text.filterAllSettle}</option>
-                            <option value="reimburse">Reimburse</option>
-                            <option value="plan">Plan</option>
+                            <option value="reimburse">{t("opt.reimburse")}</option>
+                            <option value="plan">{t("opt.plan")}</option>
                         </select>
                     </div>
                     <div className="flex-1 min-w-[150px]">
@@ -1200,9 +1200,9 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                             <select value={ruleForm.target_type}
                                                 onChange={e => setRuleForm(p => ({ ...p, target_type: e.target.value, target_value: '' }))}
                                                 className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm">
-                                                <option value="user">User</option>
-                                                <option value="division">Divisi</option>
-                                                <option value="role">Role</option>
+                                                <option value="user">{t("opt.user")}</option>
+                                                <option value="division">{t("opt.division")}</option>
+                                                <option value="role">{t("opt.role")}</option>
                                             </select>
                                         </div>
                                         <div>
@@ -1466,7 +1466,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                     <select value={form.jenis_usaha}
                                         onChange={e => setForm(p => ({ ...p, jenis_usaha: e.target.value, custom_jenis_usaha: '' }))}
                                         className={`w-full px-3 py-2.5 rounded-xl border ${errors.jenis_usaha ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`}>
-                                        <option value="">{isEnglish ? 'Select Business Type' : 'Pilih Jenis Usaha'}</option>
+                                        <option value="">t('entertain.selectBusinessType')</option>
                                         {JENIS_USAHA_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
                                     </select>
                                     {errors.jenis_usaha && <p className="text-red-500 text-xs mt-1">{errors.jenis_usaha}</p>}

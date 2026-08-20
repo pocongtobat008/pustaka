@@ -1015,10 +1015,10 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                     onChange={e => setForm({ ...form, language: e.target.value })}
                                                     className={`${inputCls} w-full`}
                                                 >
-                                                    {ocrLangsLoading && <option value="">Memuat daftar bahasa…</option>}
-                                                    {!ocrLangsLoading && ocrLangs.length === 0 && <option value="">Bahasa tidak tersedia</option>}
-                                                    <option value="auto" className="font-bold">✨ Auto — deteksi otomatis</option>
-                                                    <option value="" disabled>────────── pilih manual ──────────</option>
+                                                    {ocrLangsLoading && <option value="">{t("opt.loadingLanguages")}</option>}
+                                                    {!ocrLangsLoading && ocrLangs.length === 0 && <option value="">{t("opt.noLanguages")}</option>}
+                                                    <option value="auto" className="font-bold">{t("opt.autoDetect")}</option>
+                                                    <option value="" disabled>{t("opt.manualSelect")}</option>
                                                     {ocrLangs.map(l => (
                                                         <option key={l.code} value={l.code} disabled={!l.installed}>
                                                             {l.name}{!l.installed ? ' (pack belum terinstall)' : ''}
@@ -1088,7 +1088,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                     <div className={`flex items-start gap-2 p-3 rounded-xl border text-[11px] ${isDarkMode ? 'bg-amber-500/10 border-amber-500/30 text-amber-200' : 'bg-amber-50 border-amber-200 text-amber-700'}`}>
                                         <AlertCircle size={13} className="mt-0.5 flex-shrink-0" />
                                         <span>
-                                            Ada <b>{templates.length} template</b> (mis. {templates[0].name}). Mode ini menempatkan ttd di <b>posisi tetap</b> untuk semua halaman terpilih — gunakan <b>Template Otomatis</b> agar ttd ditempatkan otomatis di posisi nama & hanya di halaman yang ada namanya.
+                                            {t("aipdf.fixedModeHint")}
                                         </span>
                                     </div>
                                 )}
@@ -1192,12 +1192,12 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                             onChange={e => setSigForm(f => ({ ...f, position: e.target.value }))}
                                             className={`${inputCls} w-full`}
                                         >
-                                            <option value="bottom-left">Kiri bawah</option>
-                                            <option value="bottom-center">Tengah bawah</option>
-                                            <option value="bottom-right">Kanan bawah</option>
-                                            <option value="top-left">Kiri atas</option>
-                                            <option value="top-center">Tengah atas</option>
-                                            <option value="top-right">Kanan atas</option>
+                                            <option value="bottom-left">{t("opt.posBottomLeft")}</option>
+                                            <option value="bottom-center">{t("opt.posBottomCenter")}</option>
+                                            <option value="bottom-right">{t("opt.posBottomRight")}</option>
+                                            <option value="top-left">{t("opt.posTopLeft")}</option>
+                                            <option value="top-center">{t("opt.posTopCenter")}</option>
+                                            <option value="top-right">{t("opt.posTopRight")}</option>
                                         </select>
                                     </label>
                                     <label className="block">
@@ -1243,7 +1243,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                         {(activeTmpl?.name === 'NR' || activeTmpl?.name === 'DM') && (
                                             <div className={`flex items-start gap-2 p-3 rounded-xl border text-[11px] mb-2 ${isDarkMode ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-200' : 'bg-emerald-50 border-emerald-200 text-emerald-700'}`}>
                                                 <Sparkles size={13} className="mt-0.5 flex-shrink-0" />
-                                                <span><b>Template {activeTmpl.name} siap.</b> Cukup: 1) unggah file PDF di atas → 2) klik <b>Pratinjau Deteksi Blok</b> (opsional) → 3) klik <b>Proses Tanda Tangan PDF</b>. Tidak perlu atur apa pun lagi.</span>
+                                                <span dangerouslySetInnerHTML={{__html: t('aipdf.templateReady')}} />
                                             </div>
                                         )}
                                         {templates.length === 0 ? (
@@ -1347,7 +1347,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                 onChange={e => setTmplForm(f => ({ ...f, sigId: e.target.value }))}
                                                 className={`${inputCls} w-full`}
                                             >
-                                                <option value="">— pilih tanda tangan —</option>
+                                                <option value="">{t("opt.selectSignature")}</option>
                                                 {signatures.map(s => (
                                                     <option key={s.id} value={s.id}>{s.name}</option>
                                                 ))}
@@ -1366,9 +1366,9 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                     onChange={e => setTmplForm(f => ({ ...f, anchor: e.target.value }))}
                                                     className={`${inputCls} w-full`}
                                                 >
-                                                    <option value="left">Kiri</option>
-                                                    <option value="center">Tengah</option>
-                                                    <option value="right">Kanan</option>
+                                                    <option value="left">{t("opt.alignLeft")}</option>
+                                                    <option value="center">{t("opt.alignCenter")}</option>
+                                                    <option value="right">{t("opt.alignRight")}</option>
                                                 </select>
                                             </label>
                                             <label className="block">
@@ -1378,8 +1378,8 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                     onChange={e => setTmplForm(f => ({ ...f, placement: e.target.value }))}
                                                     className={`${inputCls} w-full`}
                                                 >
-                                                    <option value="above">Di atas nama</option>
-                                                    <option value="cover">Menimpa nama & jabatan</option>
+                                                    <option value="above">{t("opt.aboveName")}</option>
+                                                    <option value="cover">{t("opt.coverName")}</option>
                                                 </select>
                                             </label>
                                             <label className="block">

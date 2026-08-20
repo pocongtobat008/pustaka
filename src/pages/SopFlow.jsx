@@ -465,7 +465,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                                 value={form.category}
                                 onChange={e => setForm({ ...form, category: e.target.value })}
                             >
-                                <option>{text.defaultCategory}</option><option>Finance</option><option>HR</option><option>IT</option>
+                                <option>{text.defaultCategory}</option><option>{t("opt.finance")}</option><option>{t("opt.hr")}</option><option>{t("opt.it")}</option>
                             </select>
                         </div>
                         <div className="space-y-2">

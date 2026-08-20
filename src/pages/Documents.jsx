@@ -644,7 +644,7 @@ export default function Documents({
                                     <option value="moved">{isEnglish ? 'Moved Slot (MV_)' : 'Pindah Slot (MV_)'}</option>
                                     <option value="renamed">{isEnglish ? 'Edited (ED_)' : 'Diedit (ED_)'}</option>
                                     <option value="borrowed">{isEnglish ? 'Borrowed' : 'Dipinjam'}</option>
-                                    <option value="audit">Audit</option>
+                                    <option value="audit">{t("opt.audit")}</option>
                                 </select>
                             </div>
                         )}

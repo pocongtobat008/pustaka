@@ -285,6 +285,107 @@ const translations = {
     'comp.deleteFromArsip': 'Hapus dari arsip',
     'comp.downloadExcel': 'Unduh ulang Excel ini (tanpa extract ulang)',
     'comp.deleteHistory': 'Hapus history export ini',
+
+    // ── Options / Filter ──
+    'opt.allDealer': 'Semua Dealer',
+    'opt.allStatus': 'Semua Status',
+    'opt.all': 'Semua',
+    'opt.invoice': 'Invoice',
+    'opt.proforma': 'Proforma',
+    'opt.user': 'User',
+    'opt.role': 'Role',
+    'opt.division': 'Divisi',
+    'opt.selectUser': '— Pilih user —',
+    'opt.selectRole': '— Pilih role —',
+    'opt.selectDivision': '— Pilih divisi —',
+    'opt.selectSomething': 'Pilih',
+    'opt.dp': 'DP (Down Payment)',
+    'opt.pelunasan': 'Pelunasan (Settlement)',
+    'opt.selectPoDp': '-- Pilih PO DP --',
+    'opt.nihil': 'Nihil',
+    'opt.reimburse': 'Reimburse',
+    'opt.plan': 'Plan',
+    'opt.selectSignature': '— pilih tanda tangan —',
+    'opt.loadingLanguages': 'Memuat daftar bahasa…',
+    'opt.noLanguages': 'Bahasa tidak tersedia',
+    'opt.autoDetect': '✨ Auto — deteksi otomatis',
+    'opt.manualSelect': '────── pilih manual ──────',
+    'opt.posBottomLeft': 'Kiri bawah',
+    'opt.posBottomCenter': 'Tengah bawah',
+    'opt.posBottomRight': 'Kanan bawah',
+    'opt.posTopLeft': 'Kiri atas',
+    'opt.posTopCenter': 'Tengah atas',
+    'opt.posTopRight': 'Kanan atas',
+    'opt.alignLeft': 'Kiri',
+    'opt.alignCenter': 'Tengah',
+    'opt.alignRight': 'Kanan',
+    'opt.aboveName': 'Di atas nama',
+    'opt.coverName': 'Menimpa nama & jabatan',
+    'opt.regexPattern': 'Pola Regex',
+    'theVision': 'The Vision',
+    'opt.finance': 'Finance',
+    'opt.hr': 'HR',
+    'opt.it': 'IT',
+    'opt.audit': 'Audit',
+
+    // ── Status Map ──
+    'status.submitted': 'Submitted',
+    'status.draft': 'Draft',
+    'status.sentBack': 'Dikembalikan',
+    'status.rejected': 'Ditolak',
+    'status.approved': 'Disetujui',
+    'status.pending': 'Pending',
+    'status.cancelled': 'Dibatalkan',
+    'status.settled': 'Selesai',
+
+    // ── Invoice Help Text ──
+    'invoice.emptyData': 'Tidak ada data invoice',
+    'invoice.delReplaceWarning': 'Invoice pengganti akan dihapus permanen beserta item barangnya.',
+    'invoice.pelunasanOther': 'Pelunasan lain:',
+    'invoice.pelunasanHelp': 'Daftar barang pelunasan harus sama dengan full amount DP. Amount pelunasan diisi di field "Uang Masuk (Pelunasan)".',
+    'invoice.dpHelp': 'Masukkan total nilai penuh (full amount). Daftar barang harus berjumlah sama dengan full amount. DP diisi di field "Uang Masuk (DP)".',
+    'invoice.refPoDp': 'Referensi PO DP (Pelunasan) *',
+    'invoice.uangMasukPelunasan': 'Uang Masuk (Pelunasan) *',
+    'invoice.uangMasukDP': 'Uang Masuk (DP) *',
+    'invoice.pelunasanToPay': 'Pelunasan yang harus dibayar',
+    'invoice.chartUangMasuk': 'Uang Masuk',
+
+    // ── AI PDF Tools ──
+    'aipdf.templateReady': 'Template siap. Cukup: 1) unggah file PDF di atas → 2) klik Pratinjau Deteksi Blok (opsional) → 3) klik Proses Tanda Tangan PDF. Tidak perlu atur apa pun lagi.',
+    'aipdf.fixedModeHint': 'Mode ini menempatkan ttd di posisi tetap untuk semua halaman terpilih — gunakan Template Otomatis agar ttd ditempatkan otomatis di posisi nama & hanya di halaman yang ada namanya.',
+    'aipdf.signatureMode': 'Mode Tanda Tangan',
+    'aipdf.position': 'Posisi',
+    'aipdf.alignment': 'Penyelarasan',
+    'aipdf.signatureType': 'Tipe Tanda Tangan',
+
+    // ── SopFlow ──
+    'sop.defaultCategory': 'Default Kategori',
+
+    // ── Documents ──
+    'doc.filterAll': 'Semua',
+
+    // ── MasterData ──
+    'master.noModel': 'Tidak ada model',
+
+    // ── AiChatAssistant ──
+    'chat.resetSession': 'Mulai Awal',
+    // ── More Options ──
+    'opt.selectMonth': '- Pilih Bulan -',
+    'opt.selectDept': '- Pilih Dept -',
+    'opt.selectSlot': '-- Pilih Slot Kosong --',
+    'opt.loadingModel': 'Memuat model...',
+    'opt.labelSameLine': 'Label → nilai (baris sama)',
+    'opt.labelNextLine': 'Label → baris berikutnya',
+    'opt.labelAnchor': 'Label di bagian (anchor)',
+    'opt.regexPattern': 'Pola Regex',
+    'theVision': 'The Vision',
+
+
+    // ── Dashboard ──
+    'dash.month': 'Bulan',
+    'dash.year': 'Tahun',
+    'dash.quarter': 'Kuartal',
+    'dash.all': 'Semua',
   },
   en: {
     'language.id': 'ID',
@@ -568,6 +669,107 @@ const translations = {
     'comp.deleteFromArsip': 'Delete from archive',
     'comp.downloadExcel': 'Re-download this Excel (without re-extract)',
     'comp.deleteHistory': 'Delete this export history',
+
+    // ── Options / Filter ──
+    'opt.allDealer': 'All Dealers',
+    'opt.allStatus': 'All Status',
+    'opt.all': 'All',
+    'opt.invoice': 'Invoice',
+    'opt.proforma': 'Proforma',
+    'opt.user': 'User',
+    'opt.role': 'Role',
+    'opt.division': 'Division',
+    'opt.selectUser': '— Select user —',
+    'opt.selectRole': '— Select role —',
+    'opt.selectDivision': '— Select division —',
+    'opt.selectSomething': 'Select',
+    'opt.dp': 'DP (Down Payment)',
+    'opt.pelunasan': 'Pelunasan (Settlement)',
+    'opt.selectPoDp': '-- Select PO DP --',
+    'opt.nihil': 'Nihil',
+    'opt.reimburse': 'Reimburse',
+    'opt.plan': 'Plan',
+    'opt.selectSignature': '— select signature —',
+    'opt.loadingLanguages': 'Loading languages…',
+    'opt.noLanguages': 'Languages not available',
+    'opt.autoDetect': '✨ Auto — auto detect',
+    'opt.manualSelect': '────── select manually ──────',
+    'opt.posBottomLeft': 'Bottom left',
+    'opt.posBottomCenter': 'Bottom center',
+    'opt.posBottomRight': 'Bottom right',
+    'opt.posTopLeft': 'Top left',
+    'opt.posTopCenter': 'Top center',
+    'opt.posTopRight': 'Top right',
+    'opt.alignLeft': 'Left',
+    'opt.alignCenter': 'Center',
+    'opt.alignRight': 'Right',
+    'opt.aboveName': 'Above name',
+    'opt.coverName': 'Cover name & title',
+    'opt.regexPattern': 'Regex Pattern',
+    'theVision': 'The Vision',
+    'opt.finance': 'Finance',
+    'opt.hr': 'HR',
+    'opt.it': 'IT',
+    'opt.audit': 'Audit',
+
+    // ── Status Map ──
+    'status.submitted': 'Submitted',
+    'status.draft': 'Draft',
+    'status.sentBack': 'Sent Back',
+    'status.rejected': 'Rejected',
+    'status.approved': 'Approved',
+    'status.pending': 'Pending',
+    'status.cancelled': 'Cancelled',
+    'status.settled': 'Settled',
+
+    // ── Invoice Help Text ──
+    'invoice.emptyData': 'No invoice data',
+    'invoice.delReplaceWarning': 'Replacement invoice will be permanently deleted with all its items.',
+    'invoice.pelunasanOther': 'Other settlement:',
+    'invoice.pelunasanHelp': 'Settlement item list must match the full DP amount. Settlement amount is filled in the "Incoming Funds (Settlement)" field.',
+    'invoice.dpHelp': 'Enter the total full amount. Item list must equal the full amount. DP is filled in the "Incoming Funds (DP)" field.',
+    'invoice.refPoDp': 'PO DP Reference (Settlement) *',
+    'invoice.uangMasukPelunasan': 'Incoming Funds (Settlement) *',
+    'invoice.uangMasukDP': 'Incoming Funds (DP) *',
+    'invoice.pelunasanToPay': 'Settlement amount to pay',
+    'invoice.chartUangMasuk': 'Incoming Funds',
+
+    // ── AI PDF Tools ──
+    'aipdf.templateReady': 'Template ready. Simply: 1) upload PDF above → 2) click Block Detection Preview (optional) → 3) click Process PDF Signature. No further settings needed.',
+    'aipdf.fixedModeHint': 'This mode places signatures in a fixed position for all selected pages — use Auto Template for signatures to be placed automatically at name positions & only on pages that have the name.',
+    'aipdf.signatureMode': 'Signature Mode',
+    'aipdf.position': 'Position',
+    'aipdf.alignment': 'Alignment',
+    'aipdf.signatureType': 'Signature Type',
+
+    // ── SopFlow ──
+    'sop.defaultCategory': 'Default Category',
+
+    // ── Documents ──
+    'doc.filterAll': 'All',
+
+    // ── MasterData ──
+    'master.noModel': 'No model available',
+
+    // ── AiChatAssistant ──
+    'chat.resetSession': 'Start Over',
+    // ── More Options ──
+    'opt.selectMonth': '- Select Month -',
+    'opt.selectDept': '- Select Dept -',
+    'opt.selectSlot': '-- Select Empty Slot --',
+    'opt.loadingModel': 'Loading models...',
+    'opt.labelSameLine': 'Label → value (same line)',
+    'opt.labelNextLine': 'Label → next line',
+    'opt.labelAnchor': 'Label in section (anchor)',
+    'opt.regexPattern': 'Regex Pattern',
+    'theVision': 'The Vision',
+
+
+    // ── Dashboard ──
+    'dash.month': 'Month',
+    'dash.year': 'Year',
+    'dash.quarter': 'Quarter',
+    'dash.all': 'All',
   },
 };
 

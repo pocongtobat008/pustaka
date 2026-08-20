@@ -890,10 +890,10 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                         </div>
                                         <div className="flex gap-1.5 mt-1.5 items-center">
                                             <select value={f.matchType} onChange={e => updateHeaderField(f.uid, { matchType: e.target.value })} className={`${inputCls} max-w-[190px] ${isDarkMode ? 'bg-[#161a2e]' : 'bg-white'}`}>
-                                                <option value="label_same_line">Label → nilai (baris sama)</option>
-                                                <option value="label_next_line">Label → baris berikutnya</option>
-                                                <option value="label_after_anchor">Label di bagian (anchor)</option>
-                                                <option value="regex">Pola Regex</option>
+                                                <option value="label_same_line">{t("opt.labelSameLine")}</option>
+                                                <option value="label_next_line">{t("opt.labelNextLine")}</option>
+                                                <option value="label_after_anchor">{t("opt.labelAnchor")}</option>
+                                                <option value="regex">{t("opt.regexPattern")}</option>
                                             </select>
                                             <input value={f.pattern} onChange={e => updateHeaderField(f.uid, { pattern: e.target.value })} className={inputCls} placeholder="Label / pola (mis. NAMA)" />
                                         </div>
