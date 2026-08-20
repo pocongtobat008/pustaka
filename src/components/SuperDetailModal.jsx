@@ -207,6 +207,56 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                 </div>
                             </div>
 
+                            {/* ── Detail Barang ── */}
+                            {(() => {
+                                const items = detailTarget.items || [];
+                                if (!items.length) return null;
+                                const totalHarga = items.reduce((s, it) => s + (num(it.harga) * (it.qty || 1)), 0);
+                                return (
+                                    <div className="px-4 py-3 rounded-xl gradient-bg-soft border border-slate-100 dark:border-slate-800">
+                                        <h4 className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-2">
+                                            <Receipt size={14} className="text-indigo-500" /> Detail Barang ({items.length} item)
+                                        </h4>
+                                        <div className="rounded-xl overflow-hidden border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800/70">
+                                            <div className="overflow-x-auto custom-scrollbar">
+                                                <table className="w-full text-xs min-w-[440px]">
+                                                    <thead>
+                                                        <tr className="text-[9px] font-black uppercase tracking-wider text-slate-400 border-b border-slate-100 dark:border-slate-700">
+                                                            <th className="px-3 py-2 text-left">No</th>
+                                                            <th className="px-3 py-2 text-left">Model</th>
+                                                            <th className="px-3 py-2 text-left">Deskripsi</th>
+                                                            <th className="px-3 py-2 text-right">Qty</th>
+                                                            <th className="px-3 py-2 text-right">Harga Satuan</th>
+                                                            <th className="px-3 py-2 text-right">Subtotal</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {items.map((it, i) => (
+                                                            <tr key={it.id || i} className="border-b border-slate-50 dark:border-slate-700/50 last:border-0 hover:bg-indigo-50/40 dark:hover:bg-indigo-500/5 transition-colors">
+                                                                <td className="px-3 py-2 text-slate-400 font-semibold tabular-nums">{i + 1}</td>
+                                                                <td className="px-3 py-2 font-bold text-indigo-700 dark:text-indigo-300 whitespace-nowrap">{it.model || '-'}</td>
+                                                                <td className="px-3 py-2 text-slate-600 dark:text-slate-300 max-w-[160px] truncate" title={it.item_description || ''}>{it.item_description || '-'}</td>
+                                                                <td className="px-3 py-2 text-right text-slate-700 dark:text-slate-300 tabular-nums font-semibold">{it.qty || 1}</td>
+                                                                <td className="px-3 py-2 text-right text-slate-700 dark:text-slate-300 tabular-nums">{formatCurrency(it.harga)}</td>
+                                                                <td className="px-3 py-2 text-right font-bold text-slate-800 dark:text-white tabular-nums">{formatCurrency(num(it.harga) * (it.qty || 1))}</td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr className="bg-indigo-50/60 dark:bg-indigo-500/10">
+                                                            <td className="px-3 py-2 font-black text-slate-600 dark:text-slate-300" colSpan={3}>Total {items.length} Item</td>
+                                                            <td className="px-3 py-2 text-right font-bold text-slate-700 dark:text-slate-300 tabular-nums">{items.reduce((s, it) => s + (it.qty || 1), 0)}</td>
+                                                            <td className="px-3 py-2 text-right text-slate-500 text-[10px]">Subtotal DPP</td>
+                                                            <td className="px-3 py-2 text-right font-black text-indigo-700 dark:text-indigo-300 tabular-nums">{formatCurrency(totalHarga)}</td>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })()}
+
                             {/* ── Flow Trail / Maps Invoice ── */}
                             {(() => {
                                 const st = detailTarget.status;

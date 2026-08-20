@@ -1435,9 +1435,17 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
     const [showDetail, setShowDetail] = useState(false);
     const [detailTarget, setDetailTarget] = useState(null);
 
-    const openDetail = (target) => {
-        setDetailTarget(target);
+    const openDetail = async (target) => {
         setShowDetail(true);
+        // Set target awal (supaya modal langsung terbuka)
+        setDetailTarget(target);
+        // Fetch data lengkap termasuk items
+        try {
+            const detail = await invoiceService.getById(target.id);
+            setDetailTarget(prev => ({ ...prev, ...detail }));
+        } catch (e) {
+            // tetap tampilkan target awal jika gagal fetch
+        }
     };
 
     const openProforma = (inv) => {
@@ -4302,7 +4310,14 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                 detailTarget={detailTarget}
                 proformas={proformas}
                 invoices={invoices}
-                onNavigate={(inv) => { if (inv && inv.id) setDetailTarget(inv); }}
+                onNavigate={async (inv) => {
+                    if (!inv || !inv.id) return;
+                    setDetailTarget(inv);
+                    try {
+                        const detail = await invoiceService.getById(inv.id);
+                        setDetailTarget(prev => ({ ...prev, ...detail }));
+                    } catch {}
+                }}
                 formatCurrency={formatCurrency}
                 invoiceService={invoiceService}
             />
