@@ -38,7 +38,7 @@ export default function Documents({
         deleteDocument, copyDocument, moveDocument, restoreDocumentVersion,
         promoteCommentAttachment, addComment
     } = useDocStore();
-    const { language } = useLanguage();
+    const { language, t } = useLanguage();
     const isEnglish = language === 'en';
     const text = isEnglish
         ? {

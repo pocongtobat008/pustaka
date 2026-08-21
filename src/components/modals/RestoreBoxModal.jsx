@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { Truck, Package, ChevronRight, CheckCircle2, ArrowRight } from 'lucide-react';
 import Modal from '../common/Modal';
 
@@ -11,6 +12,7 @@ export default function RestoreBoxModal({
   setRestoreTargetSlot, 
   handleRestoreExternal 
 }) {
+    const { t } = useLanguage();
   return (
     <Modal
       isOpen={isOpen}

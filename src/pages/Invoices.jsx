@@ -755,7 +755,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
 
     useEffect(() => { loadAll(); }, [loadAll]);
 
-    const newBlankItem = () => ({ model: '', qty: 1, ppn_rate: 0.11 });
+    const newBlankItem = () => ({ model: '', qty: 1, ppn_rate: 0.11, ppn_override: '' });
     const [invRows, setInvRows] = useState([newBlankItem()]);
 
     const handleCancelInvoice = (inv) => {
@@ -927,6 +927,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                 item_description: it.item_description || '',
                 harga: parseCurrency(it.harga),
                 ppn_rate: it.ppn_rate != null ? Number(it.ppn_rate) : 0.11,
+                ppn_override: it.ppn_override != null ? Number(it.ppn_override) : '',
             }));
             setInvRows(rows.length ? rows : [newBlankItem()]);
         } catch (e) {
@@ -1000,6 +1001,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                 item_description: it.item_description || '',
                 harga: parseCurrency(it.harga),
                 ppn_rate: it.ppn_rate != null ? Number(it.ppn_rate) : 0.11,
+                ppn_override: it.ppn_override != null ? Number(it.ppn_override) : '',
             }));
             const sisa = ppRemaining(parent.id, editInvoiceId);
             const fullAmount = parseCurrency(parent.total_invoice);
@@ -1017,9 +1019,14 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
     const round2 = (n) => Math.round((parseFloat(n) || 0) * 100) / 100;
     const subtotalAll = useMemo(() =>
         round2(invRows.reduce((s, r) => s + ((parseFloat(r.harga) || 0) * (parseInt(r.qty) || 0)), 0)), [invRows]);
+    const ppnPerItem = useMemo(() =>
+        invRows.map(r => {
+            if (r.ppn_override !== '' && r.ppn_override != null) return Math.round(parseFloat(r.ppn_override) || 0);
+            return Math.round(((parseFloat(r.harga) || 0) * (parseInt(r.qty) || 0)) * (parseFloat(invForm.ppn_rate) || 0.11));
+        }), [invRows, invForm.ppn_rate]);
     const ppnVal = invForm.ppn_custom
         ? round2(invForm.ppn_amount)
-        : Math.round(subtotalAll * ((parseFloat(invForm.ppn_rate) || 0.11)));
+        : ppnPerItem.reduce((s, v) => s + v, 0);
     const diskonVal = round2(invForm.diskon);
     const materaiVal = round2(invForm.materai);
     const computedTotal = round2(subtotalAll + ppnVal - diskonVal + materaiVal);
@@ -1101,6 +1108,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                 harga: parseFloat(r.harga) || 0,
                 qty: parseInt(r.qty) || 1,
                 ppn_rate: parseFloat(invForm.ppn_rate) || 0.11,
+                ppn_override: r.ppn_override !== '' && r.ppn_override != null ? parseFloat(r.ppn_override) || 0 : null,
             })),
         };
         if (savingInvoice) return;
@@ -3852,8 +3860,13 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             <div className="col-span-2 h-[38px] flex items-center justify-end text-right font-bold text-sm text-slate-800 dark:text-white tabular-nums whitespace-nowrap">
                                                 {formatCurrency((parseFloat(row.harga) || 0) * (parseInt(row.qty) || 0))}
                                             </div>
-                                            <div className="col-span-2 h-[38px] flex items-center justify-end text-right text-xs font-bold text-indigo-600 dark:text-indigo-400 tabular-nums whitespace-nowrap">
-                                                {formatCurrency(Math.round(((parseFloat(row.harga) || 0) * (parseInt(row.qty) || 0)) * (parseFloat(invForm.ppn_rate) || 0.11)))}
+                                            <div className="col-span-2 h-[38px] flex items-center justify-end">
+                                                <MoneyInput
+                                                    className={inputCls + ' h-[30px] w-full text-right text-[11px] font-bold text-indigo-600 dark:text-indigo-400 tabular-nums px-1.5'}
+                                                    placeholder={formatCurrency(Math.round(((parseFloat(row.harga) || 0) * (parseInt(row.qty) || 0)) * (parseFloat(invForm.ppn_rate) || 0.11)))}
+                                                    value={row.ppn_override ?? ''}
+                                                    onChange={v => updateRow(idx, { ppn_override: v })}
+                                                />
                                             </div>
                                             <div className="col-span-1 h-[38px] flex items-center justify-end">
                                                 <button onClick={() => removeRow(idx)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-slate-800"><Trash2 size={14} /></button>

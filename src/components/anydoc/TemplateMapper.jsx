@@ -53,6 +53,7 @@ const cellsFromItems = (items, gap = 10) => {
 };
 
 export default function TemplateMapper({ isDarkMode, defaultView = 'train', lockView = false, currentUser = null }) {
+    const { t } = useLanguage();
     const [templates, setTemplates] = useState([]);
     const [activeId, setActiveId] = useState(null);
     const [view, setView] = useState('list'); // 'list' | 'train' | 'extract'

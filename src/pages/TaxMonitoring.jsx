@@ -37,7 +37,7 @@ const AUDIT_STEPS_EN = [
 
 export default function TaxMonitoring({ taxAudits, hasPermission, currentUser, onRefresh, syncAuditFolder }) {
     const { toasts, toast, removeToast, updateToast } = useToast();
-    const { language } = useLanguage();
+    const { language, t } = useLanguage();
     const isEnglish = language === 'en';
     const auditSteps = isEnglish ? AUDIT_STEPS_EN : AUDIT_STEPS;
     const text = isEnglish

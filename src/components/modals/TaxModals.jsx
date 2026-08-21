@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { ChevronRight, Percent, Plus, Trash2, ArrowDownRight, ArrowUpRight, Save } from 'lucide-react';
 
 export default function TaxModals({
@@ -9,6 +10,7 @@ export default function TaxModals({
     handleDeleteTaxField,
     handleSaveTaxSummary
 }) {
+    const { t } = useLanguage();
     if (!['tax-form', 'tax-form-pph', 'tax-form-ppn'].includes(modalTab)) return null;
 
     return (

@@ -31,7 +31,7 @@ const silentToast = { success: () => {}, error: () => {}, info: () => {}, warnin
 
 export default function EntertainmentExpenses({ currentUser, toast: toastProp }) {
     const toast = toastProp || silentToast;
-    const { language } = useLanguage();
+    const { language, t } = useLanguage();
     const isEnglish = language === 'en';
     const text = isEnglish ? {
         // Summary

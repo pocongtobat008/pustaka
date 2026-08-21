@@ -22,7 +22,7 @@ export default function MasterData({
     setIsModalOpen, setModalTab,
     hasPermission
 }) {
-    const { language } = useLanguage();
+    const { language, t } = useLanguage();
     const isEnglish = language === 'en';
     const dateLocale = isEnglish ? 'en-US' : 'id-ID';
     const text = isEnglish

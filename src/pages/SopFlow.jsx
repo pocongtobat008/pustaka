@@ -118,7 +118,7 @@ const SopViewer = ({ flow, onClose, text, getFullUrl }) => {
 };
 
 export default function SopFlow({ currentUser, hasPermission, users = [], departments = [], syncSopFolder }) {
-    const { language } = useLanguage();
+    const { language, t } = useLanguage();
     const isEnglish = language === 'en';
     const text = isEnglish
         ? {

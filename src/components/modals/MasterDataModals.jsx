@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { Building2, Shield, ChevronRight } from 'lucide-react';
 
 export default function MasterDataModals({
@@ -9,6 +10,7 @@ export default function MasterDataModals({
     handleBulkPermission,
     roles, departments, APP_MODULES
 }) {
+    const { t } = useLanguage();
     if (!['user-create', 'dept-form', 'role-create', 'role-edit'].includes(modalTab)) return null;
 
     return (

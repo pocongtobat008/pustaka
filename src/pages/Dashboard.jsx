@@ -72,7 +72,7 @@ export default function Dashboard({
     inventory = [] // Prop baru
 }) {
     // Language Context
-    const { language } = useLanguage();
+    const { language, t } = useLanguage();
     const isEnglish = language === 'en';
 
     // Dashboard Translations
