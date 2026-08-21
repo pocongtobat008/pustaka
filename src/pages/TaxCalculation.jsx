@@ -15,7 +15,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 
 export default function TaxCalculation({ onCopy, hasPermission }) {
     const { toast, updateToast } = useToast();
-    const { language } = useLanguage();
+    const { language, t } = useLanguage();
     const isEnglish = language === 'en';
     const text = isEnglish
         ? {
