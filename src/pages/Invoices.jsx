@@ -3860,12 +3860,18 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             <div className="col-span-2 h-[38px] flex items-center justify-end text-right font-bold text-sm text-slate-800 dark:text-white tabular-nums whitespace-nowrap">
                                                 {formatCurrency((parseFloat(row.harga) || 0) * (parseInt(row.qty) || 0))}
                                             </div>
-                                            <div className="col-span-2 h-[38px] flex items-center justify-end">
-                                                <MoneyInput
-                                                    className={inputCls + ' h-[30px] w-full text-right text-[11px] font-bold text-indigo-600 dark:text-indigo-400 tabular-nums px-1.5'}
+                                            <div className="col-span-2 h-[38px] flex items-center justify-end pr-1">
+                                                <input
+                                                    type="text"
+                                                    inputMode="numeric"
+                                                    className={inputCls + ' h-[30px] w-full text-right text-[11px] font-bold text-indigo-600 dark:text-indigo-400 tabular-nums px-1.5 cursor-text'}
                                                     placeholder={formatCurrency(Math.round(((parseFloat(row.harga) || 0) * (parseInt(row.qty) || 0)) * (parseFloat(invForm.ppn_rate) || 0.11)))}
-                                                    value={row.ppn_override ?? ''}
-                                                    onChange={v => updateRow(idx, { ppn_override: v })}
+                                                    value={row.ppn_override != null && row.ppn_override !== '' ? formatCurrency(Math.round(parseFloat(row.ppn_override) || 0)) : formatCurrency(Math.round(((parseFloat(row.harga) || 0) * (parseInt(row.qty) || 0)) * (parseFloat(invForm.ppn_rate) || 0.11)))}
+                                                    onFocus={e => e.target.select()}
+                                                    onChange={e => {
+                                                        const raw = e.target.value.replace(/[^0-9]/g, '');
+                                                        updateRow(idx, { ppn_override: raw ? Number(raw) : '' });
+                                                    }}
                                                 />
                                             </div>
                                             <div className="col-span-1 h-[38px] flex items-center justify-end">
@@ -3886,8 +3892,13 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             </div>
                             <div className="flex flex-col gap-1.5 min-w-0">
                                 <label className="text-[10px] font-bold text-slate-400 uppercase truncate">Total PPN</label>
-                                <div className="h-[38px] flex items-center font-bold text-indigo-600 dark:text-indigo-400 text-sm tabular-nums whitespace-nowrap">{formatCurrency(ppnVal)}</div>
-                                <div className="h-[12px] text-[9px] text-slate-400 truncate">Sum dari item</div>
+                                <MoneyInput
+                                    className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2 h-[38px] text-sm font-bold text-indigo-600 dark:text-indigo-400 tabular-nums"
+                                    placeholder="0"
+                                    value={invForm.ppn_custom ? (invForm.ppn_amount || '') : formatCurrency(ppnVal)}
+                                    onChange={v => setInvForm(prev => ({ ...prev, ppn_custom: true, ppn_amount: v }))}
+                                />
+                                <div className="h-[12px] text-[9px] text-slate-400 truncate">{invForm.ppn_custom ? 'Custom override' : 'Auto dari item'}</div>
                             </div>
                             <div className="flex flex-col gap-1.5 min-w-0">
                                 <label className="text-[10px] font-bold text-slate-400 uppercase truncate">Diskon</label>
