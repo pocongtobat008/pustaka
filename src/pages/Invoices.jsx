@@ -1017,11 +1017,9 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
     const round2 = (n) => Math.round((parseFloat(n) || 0) * 100) / 100;
     const subtotalAll = useMemo(() =>
         round2(invRows.reduce((s, r) => s + ((parseFloat(r.harga) || 0) * (parseInt(r.qty) || 0)), 0)), [invRows]);
-    const ppnPerItem = useMemo(() =>
-        invRows.map(r => Math.round(((parseFloat(r.harga) || 0) * (parseInt(r.qty) || 0)) * (parseFloat(r.ppn_rate) || 0.11))), [invRows]);
     const ppnVal = invForm.ppn_custom
         ? round2(invForm.ppn_amount)
-        : ppnPerItem.reduce((s, v) => s + v, 0);
+        : Math.round(subtotalAll * ((parseFloat(invForm.ppn_rate) || 0.11)));
     const diskonVal = round2(invForm.diskon);
     const materaiVal = round2(invForm.materai);
     const computedTotal = round2(subtotalAll + ppnVal - diskonVal + materaiVal);
@@ -1102,7 +1100,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                 item_description: r.item_description || '',
                 harga: parseFloat(r.harga) || 0,
                 qty: parseInt(r.qty) || 1,
-                ppn_rate: parseFloat(r.ppn_rate) || 0.11,
+                ppn_rate: parseFloat(invForm.ppn_rate) || 0.11,
             })),
         };
         if (savingInvoice) return;
@@ -3803,18 +3801,17 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 </button>
                             </div>
                             <div className="rounded-xl border border-slate-200 dark:border-slate-700">
-                                <div className="grid grid-cols-14 gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide border-b border-slate-200 dark:border-slate-700 rounded-t-xl">
+                                <div className="grid grid-cols-12 gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide border-b border-slate-200 dark:border-slate-700 rounded-t-xl">
                                     <div className="col-span-3">Model</div>
                                     <div className="col-span-3">Item Description</div>
                                     <div className="col-span-1 text-center">Qty</div>
                                     <div className="col-span-2 text-right">Harga</div>
                                     <div className="col-span-2 text-right">Subtotal</div>
-                                    <div className="col-span-2 text-center">PPN (%)</div>
                                     <div className="col-span-1"></div>
                                 </div>
                                 <div className="divide-y divide-slate-100 dark:divide-slate-800">
                                     {invRows.map((row, idx) => (
-                                        <div key={idx} className="grid grid-cols-14 gap-1.5 px-3 py-2 items-center">
+                                        <div key={idx} className="grid grid-cols-12 gap-1.5 px-3 py-2 items-center">
                                             <div className="col-span-3">
                                                 <SearchAutocomplete
                                                     value={row.model}
@@ -3838,22 +3835,6 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             <div className="col-span-2 h-[38px] flex items-center justify-end text-right font-bold text-sm text-slate-800 dark:text-white tabular-nums whitespace-nowrap">
                                                 {formatCurrency((parseFloat(row.harga) || 0) * (parseInt(row.qty) || 0))}
                                             </div>
-                                            <div className="col-span-2 h-[38px] flex flex-col items-center justify-center">
-                                                <input
-                                                    className={inputCls + ' h-[26px] w-16 text-center tabular-nums text-[11px] px-1'}
-                                                    type="number"
-                                                    step="1"
-                                                    min="0"
-                                                    max="100"
-                                                    value={Math.round((parseFloat(row.ppn_rate) || 0.11) * 100)}
-                                                    onChange={e => {
-                                                        const pct = parseFloat(e.target.value) || 0;
-                                                        updateRow(idx, { ppn_rate: Math.min(100, Math.max(0, pct)) / 100 });
-                                                    }}
-                                                    title="PPN % per item"
-                                                />
-                                                <span className="text-[8px] text-indigo-500 dark:text-indigo-400 tabular-nums font-bold leading-none mt-0.5">{formatCurrency(Math.round(((parseFloat(row.harga) || 0) * (parseInt(row.qty) || 0)) * (parseFloat(row.ppn_rate) || 0.11)))}</span>
-                                            </div>
                                             <div className="col-span-1 h-[38px] flex items-center justify-end">
                                                 <button onClick={() => removeRow(idx)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-slate-800"><Trash2 size={14} /></button>
                                             </div>
@@ -3872,20 +3853,20 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             </div>
                             <div className="flex flex-col gap-1.5 min-w-0">
                                 <div className="flex items-center justify-between gap-1">
-                                    <label className="text-[10px] font-bold text-slate-400 uppercase truncate">PPN Total</label>
-                                    <button
-                                        type="button"
-                                        onClick={() => setInvForm(prev => {
-                                            if (!prev.ppn_custom) {
-                                                return { ...prev, ppn_custom: true, ppn_amount: parseCurrency(ppnVal) };
-                                            }
-                                            return { ...prev, ppn_custom: false };
-                                        })}
-                                        className={`shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded ${invForm.ppn_custom ? 'bg-violet-100 dark:bg-violet-500/20 text-violet-600 dark:text-violet-300' : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-300'}`}
-                                        title="Override PPN total"
-                                    >
-                                        {invForm.ppn_custom ? 'Manual ✓' : 'Override'}
-                                    </button>
+                                    <label className="text-[10px] font-bold text-slate-400 uppercase truncate">PPN Rate</label>
+                                    <input
+                                        type="number"
+                                        step="1"
+                                        min="0"
+                                        max="100"
+                                        className="w-14 h-[38px] text-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-1 text-xs font-bold text-slate-800 dark:text-white tabular-nums"
+                                        value={Math.round((parseFloat(invForm.ppn_rate) || 0.11) * 100)}
+                                        onChange={e => {
+                                            const pct = parseFloat(e.target.value) || 0;
+                                            setInvForm(prev => ({ ...prev, ppn_rate: Math.min(100, Math.max(0, pct)) / 100, ppn_custom: false }));
+                                        }}
+                                        title="PPN Rate (%)"
+                                    />
                                 </div>
                                 <div className="h-[38px] flex items-center">
                                     {invForm.ppn_custom ? (
@@ -3894,7 +3875,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         <div className="h-[38px] flex items-center font-bold text-indigo-600 dark:text-indigo-400 text-sm tabular-nums whitespace-nowrap">{formatCurrency(ppnVal)}</div>
                                     )}
                                 </div>
-                                <div className="h-[12px] text-[9px] text-slate-400 truncate">{invForm.ppn_custom ? 'Custom override' : 'Sum dari item'}</div>
+                                <div className="h-[12px] text-[9px] text-slate-400 truncate">{invForm.ppn_custom ? 'Custom amount' : `Subtotal × ${Math.round((parseFloat(invForm.ppn_rate) || 0.11) * 100)}%`}</div>
                             </div>
                             <div className="flex flex-col gap-1.5 min-w-0">
                                 <label className="text-[10px] font-bold text-slate-400 uppercase truncate">Diskon</label>
