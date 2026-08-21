@@ -3884,10 +3884,10 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         </div>
 
                         {/* Summary */}
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 items-stretch">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 items-stretch">
                             <div className="flex flex-col gap-1.5 min-w-0">
                                 <label className="text-[10px] font-bold text-slate-400 uppercase truncate">Subtotal</label>
-                                <div className="h-[38px] flex items-center font-bold text-slate-800 dark:text-white text-sm tabular-nums whitespace-nowrap">{formatCurrency(subtotalAll)}</div>
+                                <div className="min-h-[38px] flex items-center font-bold text-slate-800 dark:text-white text-sm tabular-nums">{formatCurrency(subtotalAll)}</div>
                                 <div className="h-[12px] text-[9px] text-slate-400 truncate">Total seluruh barang</div>
                             </div>
                             <div className="flex flex-col gap-1.5 min-w-0">
@@ -3895,7 +3895,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 <MoneyInput
                                     className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2 h-[38px] text-sm font-bold text-indigo-600 dark:text-indigo-400 tabular-nums"
                                     placeholder="0"
-                                    value={invForm.ppn_custom ? (invForm.ppn_amount || '') : formatCurrency(ppnVal)}
+                                    value={invForm.ppn_custom ? (invForm.ppn_amount || '') : ppnVal || ''}
                                     onChange={v => setInvForm(prev => ({ ...prev, ppn_custom: true, ppn_amount: v }))}
                                 />
                                 <div className="h-[12px] text-[9px] text-slate-400 truncate">{invForm.ppn_custom ? 'Custom override' : 'Auto dari item'}</div>
