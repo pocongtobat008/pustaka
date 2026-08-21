@@ -377,8 +377,6 @@ const translations = {
     'opt.labelSameLine': 'Label → nilai (baris sama)',
     'opt.labelNextLine': 'Label → baris berikutnya',
     'opt.labelAnchor': 'Label di bagian (anchor)',
-    'opt.regexPattern': 'Pola Regex',
-    'theVision': 'The Vision',
 
 
     // ── Dashboard ──
@@ -761,8 +759,6 @@ const translations = {
     'opt.labelSameLine': 'Label → value (same line)',
     'opt.labelNextLine': 'Label → next line',
     'opt.labelAnchor': 'Label in section (anchor)',
-    'opt.regexPattern': 'Regex Pattern',
-    'theVision': 'The Vision',
 
 
     // ── Dashboard ──
