@@ -11,7 +11,7 @@ import {
     Landmark, Package, ShieldCheck, HandCoins, X, Save, LayoutDashboard,
     ArrowUpDown, ArrowUp, ArrowDown, Download, History, Filter, Ban, Megaphone,
     FileSpreadsheet, Mail, Workflow, ArrowRight, Power, ChevronUp, ChevronDown, ChevronRight, Sparkles,
-    Eye, Users, AtSign, MoreVertical, FileDown, Settings2, Trophy, TrendingUp, RotateCcw
+    Eye, Users, AtSign, MoreVertical, FileDown, Settings2, Trophy, TrendingUp, RotateCcw, PenLine
 } from 'lucide-react';
 import {
     ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip,
@@ -564,13 +564,24 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
         setActionMenu(a => a ? { ...a, y, maxH, _fixed: true } : a);
     }, [actionMenu]);
 
+    const [digitalSign, setDigitalSign] = useState(() => {
+        try { return localStorage.getItem('inv_digital_sign') === '1'; } catch { return false; }
+    });
+    const toggleDigitalSign = useCallback(() => {
+        setDigitalSign(prev => {
+            const next = !prev;
+            try { localStorage.setItem('inv_digital_sign', next ? '1' : '0'); } catch {}
+            return next;
+        });
+    }, []);
+
     const handleExportPdf = async (id, kind) => {
         if (pdfBusyId) return;
         const key = `${kind}:${id}`;
         setPdfBusyId(key);
         try {
             if (kind === 'request') await invoiceService.exportRequestPdf(id);
-            else await invoiceService.exportPdf(id);
+            else await invoiceService.exportPdf(id, { digitalSign });
         } catch (e) {
             toast?.error?.(e.message || 'Gagal membuat PDF');
         } finally {
@@ -4347,6 +4358,8 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                 }}
                 formatCurrency={formatCurrency}
                 invoiceService={invoiceService}
+                digitalSign={digitalSign}
+                onToggleDigitalSign={toggleDigitalSign}
             />
 
             {/* ── Audit Trail Modal ── */}
@@ -4568,7 +4581,22 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
 
                                     <ActionBtn disabled={reqPdfBusy || rowBusy} loading={reqPdfBusy} icon={<FileDown size={15} />} label="Export Request PDF" onClick={() => { setActionMenu(null); handleExportPdf(inv.id, 'request'); }} />
                                     {(inv?.proforma_no || prof?.proforma_no) && (
-                                        <ActionBtn disabled={invPdfBusy || rowBusy} loading={invPdfBusy} icon={<FileDown size={15} />} label="Export Invoice PDF" onClick={() => { setActionMenu(null); handleExportPdf(inv.id, 'invoice'); }} />
+                                        <>
+                                            {/* Toggle Digital Sign — pakai TTD digital jika atasan tidak ada */}
+                                            <div className="flex items-center justify-between gap-3 px-3 py-2 text-[13px] font-semibold text-slate-600 dark:text-slate-300" title="Aktifkan untuk menempelkan TTD digital di atas garis SHOGO DATE pada PDF">
+                                                <span className="flex items-center gap-2"><PenLine size={15} className={digitalSign ? 'text-indigo-600 dark:text-indigo-400' : ''} /> Digital Sign</span>
+                                                <button
+                                                    type="button"
+                                                    role="switch"
+                                                    aria-checked={digitalSign}
+                                                    onClick={toggleDigitalSign}
+                                                    className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${digitalSign ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-600'}`}
+                                                >
+                                                    <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${digitalSign ? 'translate-x-[19px]' : 'translate-x-[3px]'}`} />
+                                                </button>
+                                            </div>
+                                            <ActionBtn disabled={invPdfBusy || rowBusy} loading={invPdfBusy} icon={<FileDown size={15} />} label={digitalSign ? 'Export Invoice PDF (Signed)' : 'Export Invoice PDF'} onClick={() => { setActionMenu(null); handleExportPdf(inv.id, 'invoice'); }} />
+                                        </>
                                     )}
 
                                     <button type="button" onClick={() => { setActionMenu(null); openAudit(inv); }} className={`${itemCls} text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700`}>

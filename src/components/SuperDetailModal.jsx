@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Receipt, HandCoins, FileText, Clock, FileSignature, CheckCircle2, RefreshCw, Upload, ImagePlus, Printer, XCircle, Ban, Scale, History } from 'lucide-react';
+import { X, Receipt, HandCoins, FileText, Clock, FileSignature, CheckCircle2, RefreshCw, Upload, ImagePlus, Printer, XCircle, Ban, Scale, History, PenLine } from 'lucide-react';
 import { STATUS_MAP, TIPE_MAP } from '../pages/Invoices';
 import { API_URL } from '../services/apiClient';
 import { buildRejectChain } from '../utils/invoiceChain';
@@ -22,7 +22,7 @@ const fmtDT = (t) => {
 const num = (v) => { const n = parseFloat(v); return isNaN(n) ? 0 : n; };
 
 // Bangun rantai riwayat reject: mundur lewat rejected_from_id, maju lewat replacement_id
-export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, invoiceService, proformas, invoices, onNavigate }) => {
+export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, invoiceService, proformas, invoices, onNavigate, digitalSign, onToggleDigitalSign }) => {
     if (!detailTarget) return null;
 
     const prof = (proformas || []).find(p => (p.invoices || []).some(inv => Number(inv.id) === Number(detailTarget.id))) || null;
@@ -58,7 +58,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
         setPdfError(null);
         try {
             if (kind === 'request') await invoiceService.exportRequestPdf(detailTarget.id);
-            else await invoiceService.exportPdf(detailTarget.id);
+            else await invoiceService.exportPdf(detailTarget.id, { digitalSign });
         } catch (e) {
             setPdfError(e.message || 'Gagal membuat PDF');
         } finally {
@@ -571,9 +571,24 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                         <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/60 flex items-center justify-start gap-3 shrink-0 backdrop-blur">
                             <button onClick={onClose} className="px-5 py-2.5 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">Tutup</button>
                             {(detailTarget.proforma_no || prof?.proforma_no) && (
-                                <button onClick={() => handleExportPdf('invoice')} disabled={!!pdfBusy} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:opacity-95 text-white text-sm font-bold shadow-lg shadow-indigo-600/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
-                                    {pdfBusy === 'invoice' ? <RefreshCw size={15} className="animate-spin" /> : <Printer size={15} />} {pdfBusy === 'invoice' ? 'Membuat PDF...' : 'Invoice Proforma'}
-                                </button>
+                                <>
+                                    {/* Toggle Digital Sign — pakai TTD digital jika atasan tidak ada */}
+                                    <button
+                                        type="button"
+                                        onClick={onToggleDigitalSign}
+                                        title="Aktifkan untuk menempelkan TTD digital di atas garis SHOGO DATE pada PDF"
+                                        className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-all border ${digitalSign ? 'bg-indigo-50 dark:bg-indigo-500/10 border-indigo-300 dark:border-indigo-500/40 text-indigo-700 dark:text-indigo-300' : 'bg-white/70 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+                                    >
+                                        <PenLine size={14} />
+                                        Digital Sign
+                                        <span className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${digitalSign ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-600'}`}>
+                                            <span className={`inline-block h-3 w-3 transform rounded-full bg-white shadow transition-transform ${digitalSign ? 'translate-x-[15px]' : 'translate-x-[2px]'}`} />
+                                        </span>
+                                    </button>
+                                    <button onClick={() => handleExportPdf('invoice')} disabled={!!pdfBusy} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:opacity-95 text-white text-sm font-bold shadow-lg shadow-indigo-600/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                                        {pdfBusy === 'invoice' ? <RefreshCw size={15} className="animate-spin" /> : <Printer size={15} />} {pdfBusy === 'invoice' ? 'Membuat PDF...' : 'Invoice Proforma'}
+                                    </button>
+                                </>
                             )}
                             <button onClick={() => handleExportPdf('request')} disabled={!!pdfBusy} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-sm font-bold shadow-lg shadow-rose-600/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
                                 {pdfBusy === 'request' ? <RefreshCw size={15} className="animate-spin" /> : <FileText size={15} />} {pdfBusy === 'request' ? 'Membuat PDF...' : 'Pengajuan Proforma'}

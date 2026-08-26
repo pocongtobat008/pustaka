@@ -2140,6 +2140,31 @@ router.get('/:id/pdf/request', async (req, res) => {
     }
 });
 
+// ─── Digital Sign (TTD digital untuk PDF invoice) ───────────────────────────
+let _digitalSignDataUri = null;
+function getDigitalSignDataUri() {
+    if (_digitalSignDataUri) return _digitalSignDataUri;
+    const p = path.join(__dirname, '../assets/digital-sign.png');
+    if (!fs.existsSync(p)) return null;
+    _digitalSignDataUri = `data:image/png;base64,${fs.readFileSync(p).toString('base64')}`;
+    return _digitalSignDataUri;
+}
+
+// Sisipkan gambar TTD digital tepat DI ATAS garis tanda tangan yang mendahului teks "SHOGO DATE".
+function injectDigitalSign(html, dataUri) {
+    if (!dataUri || !html) return html;
+    const shogoIdx = html.indexOf('SHOGO DATE');
+    if (shogoIdx === -1) return html; // template tidak punya blok SHOGO DATE → abaikan
+    const imgTag = `<div style="text-align:center;margin:2px 0"><img src="${dataUri}" alt="Digital Signature" style="max-width:150px;max-height:60px;height:auto;display:inline-block" /></div>\n`;
+    const before = html.slice(0, shogoIdx);
+    const after = html.slice(shogoIdx);
+    const lineIdx = before.lastIndexOf('signature-line');
+    if (lineIdx === -1) return before + imgTag + after; // fallback: langsung di atas teks SHOGO DATE
+    const openIdx = before.lastIndexOf('<div', lineIdx);
+    if (openIdx === -1) return before + imgTag + after;
+    return before.slice(0, openIdx) + imgTag + before.slice(openIdx) + after;
+}
+
 // ─── PDF Proforma ───────────────────────────────────────────────────────────
 router.get('/:id/pdf', async (req, res) => {
     try {
@@ -2154,7 +2179,12 @@ router.get('/:id/pdf', async (req, res) => {
         const { getActiveTemplate, buildContext, compileHtml, buildPdfShell, renderHtmlToPdf } = await import('../services/pdfTemplateService.js');
         const tpl = await getActiveTemplate('proforma');
         if (tpl) {
-            const buf = await renderHtmlToPdf(buildPdfShell(compileHtml(tpl.html, buildContext(invoice, items)), tpl.css));
+            let html = compileHtml(tpl.html, buildContext(invoice, items));
+            if (String(req.query.digital_sign || '') === '1') {
+                const signUri = getDigitalSignDataUri();
+                if (signUri) html = injectDigitalSign(html, signUri);
+            }
+            const buf = await renderHtmlToPdf(buildPdfShell(html, tpl.css));
             res.setHeader('Content-Type', 'application/pdf');
             res.setHeader('Content-Disposition', `attachment; filename="proforma_${invoice.id}.pdf"`);
             return res.send(buf);

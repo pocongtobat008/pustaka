@@ -469,8 +469,9 @@ export const invoiceService = {
         window.URL.revokeObjectURL(urlObj);
     },
 
-    async exportPdf(id) {
-        const response = await fetch(`${API_URL}/invoices/${id}/pdf`, { credentials: 'include' });
+    async exportPdf(id, { digitalSign } = {}) {
+        const qs = digitalSign ? '?digital_sign=1' : '';
+        const response = await fetch(`${API_URL}/invoices/${id}/pdf${qs}`, { credentials: 'include' });
         if (!response.ok) throw new Error(await parseApiError(response, 'Gagal export PDF'));
         const blob = await response.blob();
         if (!blob.type.includes('pdf')) throw new Error('Respons bukan file PDF. Pastikan template aktif sudah benar.');
