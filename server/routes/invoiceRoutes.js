@@ -2155,7 +2155,7 @@ function injectDigitalSign(html, dataUri) {
     if (!dataUri || !html) return html;
     const shogoIdx = html.indexOf('SHOGO DATE');
     if (shogoIdx === -1) return html; // template tidak punya blok SHOGO DATE → abaikan
-    const imgTag = `<div style="text-align:center;margin:2px 0"><img src="${dataUri}" alt="Digital Signature" style="max-width:150px;max-height:60px;height:auto;display:inline-block" /></div>\n`;
+    const imgTag = `<div style="text-align:center;margin:2px 0"><img src="${dataUri}" alt="Digital Signature" style="max-width:190px;max-height:78px;height:auto;display:inline-block" /></div>\n`;
     const before = html.slice(0, shogoIdx);
     const after = html.slice(shogoIdx);
     const lineIdx = before.lastIndexOf('signature-line');
