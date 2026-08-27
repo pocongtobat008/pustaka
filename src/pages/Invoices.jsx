@@ -1036,7 +1036,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
             return Math.round(((parseFloat(r.harga) || 0) * (parseInt(r.qty) || 0)) * (parseFloat(invForm.ppn_rate) || 0.11));
         }), [invRows, invForm.ppn_rate]);
     const ppnVal = invForm.ppn_custom
-        ? round2(invForm.ppn_amount)
+        ? Math.round(parseFloat(invForm.ppn_amount) || 0)
         : ppnPerItem.reduce((s, v) => s + v, 0);
     const diskonVal = round2(invForm.diskon);
     const materaiVal = round2(invForm.materai);

@@ -1040,8 +1040,8 @@ router.post('/', async (req, res) => {
         const ppnRate = parseFloat(ppn_rate) || 0.11;
         const ppnCustom = b.ppn_custom === true || b.ppn_custom === 'true';
         const ppn = ppnCustom
-            ? round2(b.ppn_amount)
-            : Math.round(subtotal * ppnRate * 100) / 100;
+            ? Math.round(parseFloat(b.ppn_amount) || 0)
+            : Math.round(subtotal * ppnRate);
         const diskonVal = round2(diskon);
         const materaiVal = round2(materai);
         const computedTotal = round2(subtotal + ppn - diskonVal + materaiVal);
@@ -1111,7 +1111,7 @@ router.post('/', async (req, res) => {
                 tgl_uang_masuk: tgl_uang_masuk || null,
                 subtotal,
                 ppn,
-                ppn_rate: ppnCustom ? null : ppnRate,
+                ppn_rate: ppnRate,
                 ppn_custom: ppnCustom,
                 diskon: diskonVal,
                 materai: materaiVal,
@@ -1180,8 +1180,8 @@ router.put('/:id', async (req, res) => {
         const ppnRate = parseFloat(ppn_rate) || 0.11;
         const ppnCustom = b.ppn_custom === true || b.ppn_custom === 'true';
         const ppn = ppnCustom
-            ? round2(b.ppn_amount)
-            : Math.round(subtotal * ppnRate * 100) / 100;
+            ? Math.round(parseFloat(b.ppn_amount) || 0)
+            : Math.round(subtotal * ppnRate);
         const diskonVal = round2(diskon);
         const materaiVal = round2(materai);
         const computedTotal = round2(subtotal + ppn - diskonVal + materaiVal);
@@ -1250,7 +1250,7 @@ router.put('/:id', async (req, res) => {
                 tgl_uang_masuk: tgl_uang_masuk || null,
                 subtotal,
                 ppn,
-                ppn_rate: ppnCustom ? null : ppnRate,
+                ppn_rate: ppnRate,
                 ppn_custom: ppnCustom,
                 diskon: diskonVal,
                 materai: materaiVal,
@@ -2049,7 +2049,7 @@ router.post('/proforma/:id/settle', async (req, res) => {
                 tgl_uang_masuk: src?.tgl_uang_masuk || null,
                 subtotal,
                 ppn,
-                ppn_rate: ppnCustom ? null : ppnRate,
+                ppn_rate: ppnRate,
                 ppn_custom: ppnCustom,
                 diskon,
                 materai,
