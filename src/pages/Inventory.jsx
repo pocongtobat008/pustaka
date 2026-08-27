@@ -13,7 +13,7 @@ export default function Inventory({
     hasPermission, activeInvTab, setActiveInvTab, externalItems, isProcessing,
     ocrStats, onRestoreExternal, onViewExternal, inventoryIssues = [], handleResetSlot
 }) {
-    const { language } = useLanguage();
+    const { language, t } = useLanguage();
     const isEnglish = language === 'en';
     const text = isEnglish
         ? {

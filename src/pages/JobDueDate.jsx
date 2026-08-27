@@ -53,7 +53,7 @@ const calculateProgress = (issues) => {
 };
 
 export default function JobDueDate({ currentUser, users, departments, hasPermission, isDarkMode, onCopy }) {
-    const { language } = useLanguage();
+    const { language, t } = useLanguage();
     const isEnglish = language === 'en';
     const dateLocale = isEnglish ? enUS : id;
     const text = isEnglish

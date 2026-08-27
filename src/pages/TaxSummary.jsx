@@ -1023,21 +1023,21 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                             <thead className="bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-slate-300">
                                 <tr>
                                     <th className="px-6 py-4 font-semibold text-right border-b border-gray-200 dark:border-slate-700">Periode</th>
-                                    {config.pphTypes.map(t => (
-                                        <th key={t} className="px-6 py-4 font-semibold text-right border-b border-gray-200 dark:border-slate-700 group/th relative">
+                                    {config.pphTypes.map(tp => (
+                                        <th key={tp} className="px-6 py-4 font-semibold text-right border-b border-gray-200 dark:border-slate-700 group/th relative">
                                             <div className="flex items-center justify-end gap-1">
-                                                {t}
+                                                {tp}
                                                 {hasPermission('tax-summary', 'edit') && (
                                                     <div className="flex opacity-0 group-hover/th:opacity-100 transition-opacity">
                                                         <button
-                                                            onClick={(e) => { e.stopPropagation(); handleRenameTaxType('pphTypes', t); }}
+                                                            onClick={(e) => { e.stopPropagation(); handleRenameTaxType('pphTypes', tp); }}
                                                             className="p-1 text-blue-400 hover:text-blue-600 hover:bg-blue-50 rounded"
                                                             title={t("taxsum.renameColumn")}
                                                         >
                                                             <Edit3 size={12} />
                                                         </button>
                                                         <button
-                                                            onClick={(e) => { e.stopPropagation(); handleDeleteType('pphTypes', t); }}
+                                                            onClick={(e) => { e.stopPropagation(); handleDeleteType('pphTypes', tp); }}
                                                             className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded"
                                                             title={t("taxsum.deleteColumn")}
                                                         >

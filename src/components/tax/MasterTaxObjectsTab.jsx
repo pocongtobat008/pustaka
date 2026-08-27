@@ -12,7 +12,7 @@ export default function MasterTaxObjectsTab({
     onUpdate,
     hasPermission
 }) {
-    const { language } = useLanguage();
+    const { language, t } = useLanguage();
     const isEnglish = language === 'en';
     const text = isEnglish
         ? {

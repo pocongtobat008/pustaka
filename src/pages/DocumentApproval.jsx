@@ -14,7 +14,7 @@ import { db as api } from '../services/database';
 import { useLanguage } from '../contexts/LanguageContext';
 
 export default function DocumentApproval({ approvals = [], users = [], departments = [], currentUser, onRefresh, hasPermission, flows = [], syncApprovalFolder }) {
-    const { language } = useLanguage();
+    const { language, t } = useLanguage();
     const isEnglish = language === 'en';
     const dateLocale = isEnglish ? 'en-US' : 'id-ID';
     const text = isEnglish

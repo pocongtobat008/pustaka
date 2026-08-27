@@ -16,7 +16,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 // ROUTE TERSEMBUNYI: tidak ada di menu sidebar. Dibuka via Command Palette (Ctrl+K) →
 // cari "Component Showcase" (grup Developer). Hanya referensi visual — tidak ada data asli.
 export default function ComponentShowcase({ isDarkMode }) {
-    const { isEnglish } = useLanguage();
+    const { language, isEnglish } = useLanguage();
     const [showModal, setShowModal] = useState(false);
     const [sampleInput, setSampleInput] = useState('');
     const t = (en, id) => (isEnglish ? en : id);

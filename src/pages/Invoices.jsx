@@ -1222,7 +1222,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
 
     const hydrateDraftRows = (rows, p) => {
         // Tiap proforma berisi invoice sendiri-sendiri (DP & pelunasan terpisah).
-        const srcs = (p.invoices || []).filter(i => i.status !== 'cancelled');
+        let srcs = (p.invoices || []).filter(i => i.status !== 'cancelled');
         if (!srcs.length) srcs = p.invoices?.length ? p.invoices : [null];
         if (Array.isArray(rows) && rows.length) {
             return rows.map(d => ({

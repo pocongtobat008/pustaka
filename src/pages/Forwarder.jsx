@@ -59,7 +59,7 @@ const DIVISION_COLORS = {
 const divColor = (d) => DIVISION_COLORS[d] || 'bg-teal-100 text-teal-700 dark:bg-teal-500/20 dark:text-teal-300';
 
 export default function Forwarder({ isDarkMode, currentUser }) {
-    const { language } = useLanguage();
+    const { language, t } = useLanguage();
     const isEnglish = language === 'en';
     const { toast } = useToast();
 

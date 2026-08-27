@@ -18,7 +18,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useToast } from '../components/ui/Toast';
 
 export default function Book({ hasPermission }) {
-    const { language } = useLanguage();
+    const { language, t } = useLanguage();
     const { toast } = useToast();
     const isEnglish = language === 'en';
 
