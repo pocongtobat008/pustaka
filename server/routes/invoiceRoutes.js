@@ -161,18 +161,25 @@ async function expandPpGroupIds(knexInstance, ids) {
     return [...idSet];
 }
 
-async function nextRunningNumber(knexInstance, dateStr) {
-    // dateStr format YYYYMMDD
-    const prefix = `PI${dateStr}`;
+async function nextRunningNumber(knexInstance, yearMonth) {
+    // yearMonth format YYYYMM — format: PI{YYYY}{MM}{5-digit seq}
+    // Sequence continues across months, resets per year
+    const year = yearMonth.slice(0, 4);
+    const yearPrefix = `PI${year}`;
     const rows = await knexInstance('proforma_requests')
-        .where('proforma_no', 'like', `${prefix}%`)
+        .where('proforma_no', 'like', `${yearPrefix}%`)
         .select('proforma_no');
     let maxSeq = 0;
     for (const r of rows) {
-        const seq = parseInt(r.proforma_no.slice(prefix.length), 10);
-        if (!isNaN(seq) && seq > maxSeq) maxSeq = seq;
+        // Format: PI(2) + YYYY(4) + MM(2) + seq(5) = 13 chars total
+        // Extract last 5 digits as sequence
+        const full = r.proforma_no || '';
+        if (full.length >= 13) {
+            const seq = parseInt(full.slice(-5), 10);
+            if (!isNaN(seq) && seq > maxSeq) maxSeq = seq;
+        }
     }
-    return `${prefix}${String(maxSeq + 1).padStart(5, '0')}`;
+    return `${yearPrefix}${yearMonth.slice(4)}${String(maxSeq + 1).padStart(5, '0')}`;
 }
 
 // ── Duplikasi invoice hasil reject (untuk riwayat) ──────────────────────────
@@ -1579,8 +1586,7 @@ router.post('/proforma/:id/approve', async (req, res) => {
         const now = new Date();
         const yyyy = now.getFullYear();
         const mm = String(now.getMonth() + 1).padStart(2, '0');
-        const dd = String(now.getDate()).padStart(2, '0');
-        const proformaNo = await nextRunningNumber(knex, `${yyyy}${mm}${dd}`);
+        const proformaNo = await nextRunningNumber(knex, `${yyyy}${mm}`);
 
         const trx = await knex.transaction();
         try {
