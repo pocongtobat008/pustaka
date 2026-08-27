@@ -951,8 +951,8 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                 {/* Kiri: daftar tool */}
                 <div className="lg:col-span-2 space-y-2.5">
                     <p className={`text-[10px] font-black uppercase tracking-widest mb-2 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Pilih Tool</p>
-                    {TOOLS.map(t => (
-                        <ToolCard key={t.id} tool={t} active={activeTool === t.id} onClick={() => switchTool(t.id)} isDarkMode={isDarkMode} />
+                    {TOOLS.map(tool => (
+                        <ToolCard key={tool.id} tool={tool} active={activeTool === tool.id} onClick={() => switchTool(tool.id)} isDarkMode={isDarkMode} />
                     ))}
                 </div>
 
@@ -1272,34 +1272,34 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                             </div>
                                         ) : (
                                             <div className="space-y-2">
-                                                {templates.map(t => (
+                                                {templates.map(tpl => (
                                                     <div
-                                                        key={t.id}
-                                                        onClick={() => setActiveTmplId(t.id)}
-                                                        className={`relative flex items-center gap-3 rounded-xl border p-2.5 cursor-pointer transition-all ${activeTmplId === t.id
+                                                        key={tpl.id}
+                                                        onClick={() => setActiveTmplId(tpl.id)}
+                                                        className={`relative flex items-center gap-3 rounded-xl border p-2.5 cursor-pointer transition-all ${activeTmplId === tpl.id
                                                             ? 'ring-2 ring-sky-500 bg-sky-50/60 dark:bg-sky-500/10 border-sky-300 dark:border-sky-500/40'
                                                             : (isDarkMode ? 'border-white/10 bg-white/5 hover:border-sky-500/40' : 'border-slate-200 bg-white hover:border-sky-300')}`}
                                                     >
-                                                        <img src={t.sig.dataUrl} alt={t.name} className="w-16 h-9 object-contain rounded border bg-white/60 dark:bg-white/10 flex-shrink-0" />
+                                                        <img src={tpl.sig.dataUrl} alt={tpl.name} className="w-16 h-9 object-contain rounded border bg-white/60 dark:bg-white/10 flex-shrink-0" />
                                                         <div className="min-w-0 flex-1">
-                                                            <p className={`text-[12px] font-extrabold truncate ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{t.name}
-                                                                {(t.name === 'NR' || t.name === 'DM') && (
-                                                                    <span className={`ml-1.5 align-middle inline-block px-1.5 py-0.5 rounded-md text-[9px] font-black tracking-wide ${isDarkMode ? 'bg-emerald-500/20 text-emerald-300' : 'bg-emerald-100 text-emerald-700'}`}>{t.name === 'DM' ? '2 TTD' : 'SIAP PAKAI'}</span>
+                                                            <p className={`text-[12px] font-extrabold truncate ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{tpl.name}
+                                                                {(tpl.name === 'NR' || tpl.name === 'DM') && (
+                                                                    <span className={`ml-1.5 align-middle inline-block px-1.5 py-0.5 rounded-md text-[9px] font-black tracking-wide ${isDarkMode ? 'bg-emerald-500/20 text-emerald-300' : 'bg-emerald-100 text-emerald-700'}`}>{tpl.name === 'DM' ? '2 TTD' : 'SIAP PAKAI'}</span>
                                                                 )}
                                                             </p>
                                                             <p className={`text-[10px] truncate ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
-                                                                {t.rules?.length > 1
-                                                                    ? t.rules.map(r => `${r.namePattern}${r.placement === 'cover' ? ' (tutup)' : ' (atas)'}`).join(' + ')
-                                                                    : `Nama: ${t.namePattern}${t.titlePattern ? ` • Jabatan: ${t.titlePattern}` : ''} • ${t.placement === 'cover' ? 'Menimpa nama' : 'Di atas nama'} • ${t.anchor === 'center' ? 'Tengah' : t.anchor === 'right' ? 'Kanan' : 'Kiri'} • ${t.scale}%`}{t.groupByNumber ? ' • Grup per nomor' : ''}
+                                                                {tpl.rules?.length > 1
+                                                                    ? tpl.rules.map(r => `${r.namePattern}${r.placement === 'cover' ? ' (tutup)' : ' (atas)'}`).join(' + ')
+                                                                    : `Nama: ${tpl.namePattern}${tpl.titlePattern ? ` • Jabatan: ${tpl.titlePattern}` : ''} • ${tpl.placement === 'cover' ? 'Menimpa nama' : 'Di atas nama'} • ${tpl.anchor === 'center' ? 'Tengah' : tpl.anchor === 'right' ? 'Kanan' : 'Kiri'} • ${tpl.scale}%`}{tpl.groupByNumber ? ' • Grup per nomor' : ''}
                                                             </p>
                                                         </div>
-                                                        {activeTmplId === t.id && (
+                                                        {activeTmplId === tpl.id && (
                                                             <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow">
                                                                 <Check size={10} />
                                                             </span>
                                                         )}
                                                         <button
-                                                            onClick={(e) => { e.stopPropagation(); removeTemplate(t.id); }}
+                                                            onClick={(e) => { e.stopPropagation(); removeTemplate(tpl.id); }}
                                                             title={t("aipdf.hapusTemplate")}
                                                             className={`p-1 rounded-md flex-shrink-0 ${isDarkMode ? 'text-rose-300 hover:bg-rose-500/20' : 'text-rose-500 hover:bg-rose-50'}`}
                                                         >
