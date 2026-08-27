@@ -5,7 +5,7 @@ import { API_URL } from '../services/database';
 import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Profile({ currentUser, onUpdateProfile }) {
-    const { language, t } = useLanguage();
+    const { language } = useLanguage();
     const isEnglish = language === 'en';
     const text = isEnglish
         ? {

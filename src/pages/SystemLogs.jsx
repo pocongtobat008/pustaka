@@ -5,7 +5,7 @@ import { systemService } from '../services/systemService';
 import { useLanguage } from '../contexts/LanguageContext';
 
 export default function SystemLogs({ isDarkMode }) {
-    const { language, t } = useLanguage();
+    const { language } = useLanguage();
     const isEnglish = language === 'en';
     const text = isEnglish
         ? {

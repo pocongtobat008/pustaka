@@ -6,7 +6,7 @@ import { useAppStore } from '../store/useAppStore';
 export default function Login({ onLogin }) {
     const [loginForm, setLoginForm] = useState({ username: '', password: '', error: '' });
     const [showPassword, setShowPassword] = useState(false);
-    const { language, t, setLanguage } = useLanguage();
+    const { language, setLanguage } = useLanguage();
     const { isDarkMode, setIsDarkMode } = useAppStore();
     const isEnglish = language === 'en';
 
