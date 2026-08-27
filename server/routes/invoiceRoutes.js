@@ -1037,7 +1037,9 @@ router.post('/', async (req, res) => {
         if (!tgl_transaksi) return res.status(400).json({ error: 'Tgl. Transaksi wajib diisi', details: [] });
 
         const subtotal = round2(items.reduce((s, it) => s + (round2(it.harga) * (it.qty || 1)), 0));
-        const ppnRate = parseFloat(ppn_rate) || 0.11;
+        const ppnRateRaw = parseFloat(ppn_rate) || 0.11;
+        // Normalize: if > 1, treat as percentage (e.g. 11 → 0.11)
+        const ppnRate = ppnRateRaw > 1 ? ppnRateRaw / 100 : ppnRateRaw;
         const ppnCustom = b.ppn_custom === true || b.ppn_custom === 'true';
         const ppn = ppnCustom
             ? Math.round(parseFloat(b.ppn_amount) || 0)
@@ -1156,7 +1158,8 @@ router.put('/:id', async (req, res) => {
         const { id } = req.params;
         const inv = await knex('proforma_invoices').where('id', id).first();
         if (!inv) return res.status(404).json({ error: 'Invoice tidak ditemukan' });
-        if (inv.status !== 'submitted') return res.status(400).json({ error: 'Hanya invoice status submitted yang bisa diedit', details: [] });
+        const isAdmin = ['admin', 'superadmin'].includes(String(req.authUser?.role || '').toLowerCase());
+        if (inv.status !== 'submitted' && !(isAdmin && inv.status === 'settled')) return res.status(400).json({ error: isAdmin ? 'Hanya invoice submitted/settled yang bisa diedit' : 'Hanya invoice status submitted yang bisa diedit', details: [] });
 
         const b = req.body || {};
         const {
@@ -1177,7 +1180,9 @@ router.put('/:id', async (req, res) => {
         if (!tgl_transaksi) return res.status(400).json({ error: 'Tgl. Transaksi wajib diisi', details: [] });
 
         const subtotal = round2(items.reduce((s, it) => s + (round2(it.harga) * (it.qty || 1)), 0));
-        const ppnRate = parseFloat(ppn_rate) || 0.11;
+        const ppnRateRaw = parseFloat(ppn_rate) || 0.11;
+        // Normalize: if > 1, treat as percentage (e.g. 11 → 0.11)
+        const ppnRate = ppnRateRaw > 1 ? ppnRateRaw / 100 : ppnRateRaw;
         const ppnCustom = b.ppn_custom === true || b.ppn_custom === 'true';
         const ppn = ppnCustom
             ? Math.round(parseFloat(b.ppn_amount) || 0)
@@ -2023,7 +2028,8 @@ router.post('/proforma/:id/settle', async (req, res) => {
 
             const subtotal = round2(r.subtotal ?? r.dpp);
             const ppn = round2(r.ppn);
-            const ppnRate = parseFloat(r.ppn_rate) || 0.11;
+            const ppnRateRaw = parseFloat(r.ppn_rate) || 0.11;
+            const ppnRate = ppnRateRaw > 1 ? ppnRateRaw / 100 : ppnRateRaw;
             const ppnCustom = !!(r.ppn_custom === true || r.ppn_custom === 'true');
             const materai = round2(r.materai);
             const diskon = round2(r.diskon);

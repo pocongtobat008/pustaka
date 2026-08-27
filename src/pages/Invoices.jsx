@@ -4507,7 +4507,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         <Eye size={15} /> Lihat Detail
                                     </button>
 
-                                    {perms.can_edit && !inv?.proforma_no && !['settled', 'cancelled', 'rejected'].includes(st) && (
+                                    {perms.can_edit && !inv?.proforma_no && (!['settled', 'cancelled', 'rejected'].includes(st) || isAdmin) && (
                                         <button type="button" onClick={() => { setActionMenu(null); openEditInvoice(inv); }} className={`${itemCls} text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-500/10`}>
                                             <Pencil size={15} /> Edit Invoice
                                         </button>
