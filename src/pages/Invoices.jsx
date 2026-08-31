@@ -1790,34 +1790,37 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
         return s;
     }, [proformas]);
 
-    // ── Ringkasan ──
+    // ── Ringkasan (mencerminkan data yang tersaring di tabel) ──
     const summary = useMemo(() => {
         const now = Date.now();
         const day = 86400000;
-        const aged = (proformas || []).filter(p => {
+        // Gunakan data filtered agar summary = jumlah baris di tabel
+        const fInvs = filteredInvoices || [];
+        const fProfs = filteredProformas || [];
+        const aged = fProfs.filter(p => {
             const at = p.requested_at ? new Date(p.requested_at).getTime() : null;
             return at && p.status === 'approved' && (now - at) > 30 * day;
         });
-        const pendingTax = (proformas || []).filter(p => p.status === 'approved' && (p.invoices || []).some(inv => inv.status === 'tax_requested'));
-        const totalInvoice = (invoices || []).reduce((s, i) => s + (parseFloat(i.total_invoice) || 0), 0);
-        const totalSettled = (proformas || []).filter(p => p.status === 'settled').reduce((s, p) => s + (parseFloat(p.settled_amount) || 0), 0);
-        const pendingProforma = (proformas || []).filter(p => p.status === 'pending');
-        const sentBackProforma = (proformas || []).filter(p => p.status === 'sent_back');
+        const pendingTax = fProfs.filter(p => p.status === 'approved' && (p.invoices || []).some(inv => inv.status === 'tax_requested'));
+        const totalInvoiceNominal = fInvs.reduce((s, i) => s + (parseFloat(i.total_invoice) || 0), 0);
+        const totalSettled = fProfs.filter(p => p.status === 'settled').reduce((s, p) => s + (parseFloat(p.settled_amount) || 0), 0);
+        const pendingProforma = fProfs.filter(p => p.status === 'pending');
+        const sentBackProforma = fProfs.filter(p => p.status === 'sent_back');
         return {
-            totalInvoice: invoices.length,
-            totalProforma: (proformas || []).length,
-            totalApproved: (proformas || []).filter(p => p.status === 'approved').length,
-            totalSettled: (proformas || []).filter(p => p.status === 'settled').length,
+            totalInvoice: fInvs.length,
+            totalProforma: fProfs.length,
+            totalApproved: fProfs.filter(p => p.status === 'approved').length,
+            totalSettled: fProfs.filter(p => p.status === 'settled').length,
             pendingTax: pendingTax.length,
             pendingProforma: pendingProforma.length,
             sentBackProforma: sentBackProforma.length,
             aged30: aged.length,
             aged30List: aged,
-            nominalInvoice: totalInvoice,
+            nominalInvoice: totalInvoiceNominal,
             nominalSettled: totalSettled,
-            totalNominal: (proformas || []).reduce((s, p) => s + (parseFloat(p.total_nominal) || 0), 0),
+            totalNominal: fProfs.reduce((s, p) => s + (parseFloat(p.total_nominal) || 0), 0),
         };
-    }, [invoices, proformas]);
+    }, [filteredInvoices, filteredProformas]);
 
     // ── Notifikasi penting (ringkasan yang perlu tindakan) ──
     const actionSummary = useMemo(() => {
