@@ -4,84 +4,84 @@
 
 /* ── Aksesibilitas: indikator fokus keyboard yang jelas (tanpa mengganggu klik mouse) ── */
 :focus-visible {
-    outline: 2px solid #6366f1;
+    outline: 2px solid #1d4ed8;
     outline-offset: 2px;
     border-radius: 8px;
 }
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 243 75% 59%;
+    --background: 36 40% 95%;
+    --foreground: 30 10% 12%;
+    --card: 36 40% 97%;
+    --card-foreground: 30 10% 12%;
+    --popover: 36 40% 97%;
+    --popover-foreground: 30 10% 12%;
+    --primary: 220 70% 50%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --secondary: 36 30% 92%;
+    --secondary-foreground: 30 10% 15%;
+    --muted: 36 30% 92%;
+    --muted-foreground: 30 8% 42%;
+    --accent: 36 30% 92%;
+    --accent-foreground: 30 10% 15%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 243 75% 59%;
+    --border: 36 25% 85%;
+    --input: 36 25% 85%;
+    --ring: 220 70% 50%;
     --radius: 1rem;
 
     /* ── Neumorphism (light) ── */
-    --neo-bg: #eef1f8;
-    --neo-shadow: 7px 7px 16px rgba(163, 177, 198, 0.42), -7px -7px 16px rgba(255, 255, 255, 0.85);
-    --neo-shadow-sm: 4px 4px 9px rgba(163, 177, 198, 0.38), -4px -4px 9px rgba(255, 255, 255, 0.8);
-    --neo-shadow-hover: 9px 9px 20px rgba(163, 177, 198, 0.5), -9px -9px 20px rgba(255, 255, 255, 0.95);
-    --neo-inset: inset 3px 3px 7px rgba(163, 177, 198, 0.45), inset -3px -3px 7px rgba(255, 255, 255, 0.9);
-    --neo-inset-sm: inset 2px 2px 5px rgba(163, 177, 198, 0.4), inset -2px -2px 5px rgba(255, 255, 255, 0.85);
+    --neo-bg: #FAF5EE;
+    --neo-shadow: 7px 7px 16px rgba(180, 166, 140, 0.32), -7px -7px 16px rgba(255, 255, 255, 0.9);
+    --neo-shadow-sm: 4px 4px 9px rgba(180, 166, 140, 0.28), -4px -4px 9px rgba(255, 255, 255, 0.85);
+    --neo-shadow-hover: 9px 9px 20px rgba(180, 166, 140, 0.4), -9px -9px 20px rgba(255, 255, 255, 0.95);
+    --neo-inset: inset 3px 3px 7px rgba(180, 166, 140, 0.35), inset -3px -3px 7px rgba(255, 255, 255, 0.92);
+    --neo-inset-sm: inset 2px 2px 5px rgba(180, 166, 140, 0.3), inset -2px -2px 5px rgba(255, 255, 255, 0.88);
 
-    /* ── Glassmorphism (light) ── */
-    --glass-bg: rgba(255, 255, 255, 0.55);
-    --glass-bg-strong: rgba(255, 255, 255, 0.72);
-    --glass-border: rgba(255, 255, 255, 0.65);
-    --glass-border-soft: rgba(255, 255, 255, 0.35);
+    /* ── Glassmorphism (cream) ── */
+    --glass-bg: rgba(250, 245, 238, 0.6);
+    --glass-bg-strong: rgba(250, 245, 238, 0.78);
+    --glass-border: rgba(220, 210, 190, 0.5);
+    --glass-border-soft: rgba(220, 210, 190, 0.3);
     --glass-blur: 18px;
   }
 
   .dark {
-    --background: 226 43% 12%;
+    --background: 0 0% 4%;
     --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
+    --card: 0 0% 6%;
     --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
+    --popover: 0 0% 6%;
     --popover-foreground: 0 0% 98%;
-    --primary: 243 75% 59%;
+    --primary: 220 70% 50%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 240 3.7% 15.9%;
+    --secondary: 0 0% 10%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 55%;
+    --accent: 0 0% 10%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 243 75% 59%;
+    --border: 0 0% 12%;
+    --input: 0 0% 10%;
+    --ring: 220 70% 50%;
 
     /* ── Neumorphism (dark) ── */
-    --neo-bg: #101a33;
-    --neo-shadow: 6px 6px 14px rgba(0, 0, 0, 0.45), -6px -6px 14px rgba(148, 163, 255, 0.05);
-    --neo-shadow-sm: 4px 4px 9px rgba(0, 0, 0, 0.4), -4px -4px 9px rgba(148, 163, 255, 0.05);
-    --neo-shadow-hover: 8px 8px 18px rgba(0, 0, 0, 0.5), -8px -8px 18px rgba(148, 163, 255, 0.08);
-    --neo-inset: inset 3px 3px 7px rgba(0, 0, 0, 0.5), inset -3px -3px 7px rgba(148, 163, 255, 0.06);
-    --neo-inset-sm: inset 2px 2px 5px rgba(0, 0, 0, 0.45), inset -2px -2px 5px rgba(148, 163, 255, 0.06);
+    --neo-bg: #0A0A0A;
+    --neo-shadow: 6px 6px 14px rgba(0, 0, 0, 0.7), -6px -6px 14px rgba(30, 30, 30, 0.3);
+    --neo-shadow-sm: 4px 4px 9px rgba(0, 0, 0, 0.65), -4px -4px 9px rgba(30, 30, 30, 0.25);
+    --neo-shadow-hover: 8px 8px 18px rgba(0, 0, 0, 0.8), -8px -8px 18px rgba(30, 30, 30, 0.35);
+    --neo-inset: inset 3px 3px 7px rgba(0, 0, 0, 0.7), inset -3px -3px 7px rgba(30, 30, 30, 0.15);
+    --neo-inset-sm: inset 2px 2px 5px rgba(0, 0, 0, 0.65), inset -2px -2px 5px rgba(30, 30, 30, 0.12);
 
-    /* ── Glassmorphism (dark) ── */
-    --glass-bg: rgba(15, 23, 42, 0.5);
-    --glass-bg-strong: rgba(15, 23, 42, 0.68);
-    --glass-border: rgba(255, 255, 255, 0.09);
-    --glass-border-soft: rgba(255, 255, 255, 0.05);
+    /* ── Glassmorphism (black) ── */
+    --glass-bg: rgba(10, 10, 10, 0.6);
+    --glass-bg-strong: rgba(15, 15, 15, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-border-soft: rgba(255, 255, 255, 0.04);
     --glass-blur: 18px;
   }
 }
@@ -132,30 +132,30 @@
   /* Reset for mobile */
 
   body {
-    @apply text-foreground min-h-screen antialiased selection:bg-indigo-500/30;
+    @apply text-foreground min-h-screen antialiased selection:bg-blue-500/30;
     font-family: 'Plus Jakarta Sans', sans-serif;
     color-scheme: light;
     background-attachment: fixed;
-    background-color: #eef1f8;
-    /* ── Gradient Mesh Background (light) ── */
+    background-color: #FAF5EE;
+    /* ── Gradient Mesh Background (cream) ── */
     background-image:
-      radial-gradient(ellipse 80% 60% at 12% -8%, rgba(79, 70, 229, 0.16) 0%, transparent 55%),
-      radial-gradient(ellipse 70% 55% at 88% 0%, rgba(168, 85, 247, 0.14) 0%, transparent 55%),
-      radial-gradient(ellipse 65% 55% at 100% 88%, rgba(6, 182, 212, 0.12) 0%, transparent 55%),
-      radial-gradient(ellipse 55% 50% at 0% 92%, rgba(236, 72, 153, 0.10) 0%, transparent 55%),
-      linear-gradient(135deg, #eef1f8 0%, #e6ebf9 50%, #eef1f8 100%);
+      radial-gradient(ellipse 80% 60% at 12% -8%, rgba(180, 160, 120, 0.12) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 55% at 88% 0%, rgba(160, 140, 100, 0.10) 0%, transparent 55%),
+      radial-gradient(ellipse 65% 55% at 100% 88%, rgba(140, 120, 80, 0.08) 0%, transparent 55%),
+      radial-gradient(ellipse 55% 50% at 0% 92%, rgba(200, 180, 140, 0.06) 0%, transparent 55%),
+      linear-gradient(135deg, #FAF5EE 0%, #F5EDE0 50%, #FAF5EE 100%);
   }
 
   html.dark body {
     color-scheme: dark;
-    background-color: #0b1437;
-    /* ── Gradient Mesh Background (dark) ── */
+    background-color: #0A0A0A;
+    /* ── Gradient Mesh Background (black) ── */
     background-image:
-      radial-gradient(ellipse 80% 60% at 12% -8%, rgba(99, 102, 241, 0.22) 0%, transparent 55%),
-      radial-gradient(ellipse 70% 55% at 88% 0%, rgba(168, 85, 247, 0.16) 0%, transparent 55%),
-      radial-gradient(ellipse 65% 55% at 100% 88%, rgba(14, 165, 233, 0.14) 0%, transparent 55%),
-      radial-gradient(ellipse 55% 50% at 0% 92%, rgba(244, 63, 94, 0.10) 0%, transparent 55%),
-      linear-gradient(135deg, #0b1437 0%, #0d1440 50%, #0b1437 100%);
+      radial-gradient(ellipse 80% 60% at 12% -8%, rgba(60, 60, 60, 0.15) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 55% at 88% 0%, rgba(50, 50, 50, 0.12) 0%, transparent 55%),
+      radial-gradient(ellipse 65% 55% at 100% 88%, rgba(40, 40, 40, 0.10) 0%, transparent 55%),
+      radial-gradient(ellipse 55% 50% at 0% 92%, rgba(45, 45, 45, 0.08) 0%, transparent 55%),
+      linear-gradient(135deg, #0A0A0A 0%, #111111 50%, #0A0A0A 100%);
   }
 }
 
@@ -194,8 +194,8 @@
   }
 
   .glass-input:focus {
-    border-color: rgba(99, 102, 241, 0.55);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15), inset 0 2px 6px rgba(31, 38, 135, 0.05);
+    border-color: rgba(29, 78, 216, 0.55);
+    box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.15), inset 0 2px 6px rgba(31, 38, 135, 0.05);
   }
 
   .glass-btn {
@@ -208,7 +208,7 @@
   }
 
   .glass-btn:hover {
-    box-shadow: 0 8px 22px rgba(99, 102, 241, 0.22);
+    box-shadow: 0 8px 22px rgba(29, 78, 216, 0.18);
     transform: translateY(-1px);
   }
 }
@@ -309,7 +309,7 @@
    ═══════════════════════════════════════════════════════════ */
 @layer utilities {
   .gradient-text {
-    background: linear-gradient(120deg, #6366f1 0%, #8b5cf6 45%, #06b6d4 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 50%, #60a5fa 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -317,11 +317,11 @@
   }
 
   .gradient-bg {
-    background: linear-gradient(120deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 50%, #60a5fa 100%);
   }
 
   .gradient-bg-soft {
-    background: linear-gradient(120deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.10), rgba(6, 182, 212, 0.10));
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.06), rgba(29, 78, 216, 0.08), rgba(96, 165, 250, 0.06));
   }
 
   .gradient-border {
@@ -335,7 +335,7 @@
     inset: 0;
     border-radius: inherit;
     padding: 1.5px;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.7), rgba(168, 85, 247, 0.55), rgba(6, 182, 212, 0.6));
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.6), rgba(29, 78, 216, 0.5), rgba(96, 165, 250, 0.5));
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
@@ -422,7 +422,7 @@
 }
 
 .dark .react-flow__handle {
-  background-color: theme('colors.indigo.500');
+  background-color: theme('colors.blue.600');
   border-color: theme('colors.slate.950');
 }
 

@@ -240,8 +240,8 @@ const Sidebar = ({
         'cf-sidebar fixed inset-y-0 left-0 z-50 md:static md:z-0',
         'flex flex-col overflow-hidden',
         'transition-all duration-300',
-        'bg-white dark:bg-[#0b1437]',
-        'border-r border-slate-200/50 dark:border-slate-700/50',
+        'bg-[#FAF5EE] dark:bg-[#0a0a0a]',
+        'border-r border-stone-200/50 dark:border-white/5',
         // Rail mode: CSS handles width + hover expand
         isRail ? 'cf-rail' : 'cf-expanded',
     ].filter(Boolean).join(' ');
@@ -256,7 +256,7 @@ const Sidebar = ({
             onMouseLeave={() => setHovered(false)}
         >
             {/* Header: logo + name + lock button */}
-            <div className={'h-16 flex items-center px-3 shrink-0 relative ' + (isRail && !showLabels ? 'border-b border-slate-200/5 dark:border-slate-700/5' : 'border-b border-slate-200/30 dark:border-slate-700/30')}>
+            <div className={'h-16 flex items-center px-3 shrink-0 relative ' + (isRail && !showLabels ? 'border-b border-stone-200/5 dark:border-white/3' : 'border-b border-stone-200/30 dark:border-white/5')}>
                 <div className="flex items-center gap-2">
                     <div className={'cf-logo-orb w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all ' + (showLabels ? 'shadow-lg scale-100' : 'shadow-none scale-95')}>
                         <BookOpen size={16} className="text-white" strokeWidth={2.4} />
@@ -267,7 +267,7 @@ const Sidebar = ({
                             (showLabels ? 'opacity-100 w-auto' : 'opacity-0 w-0 pointer-events-none')
                         }
                     >
-                        <div className="font-extrabold text-sm text-slate-800 dark:text-white leading-tight">Pustaka</div>
+                        <div className="font-extrabold text-sm text-stone-800 dark:text-white leading-tight">Pustaka</div>
                         <div className="text-[10px] text-slate-400 dark:text-slate-500 leading-tight">v1.0.0</div>
                     </div>
                 </div>
@@ -276,7 +276,7 @@ const Sidebar = ({
                 <button
                     onClick={handleLockToggle}
                     className={
-                        'cf-lock-btn absolute top-1/2 -translate-y-1/2 right-2 w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-300 ' +
+                        'cf-lock-btn absolute top-1/2 -translate-y-1/2 right-2 w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-stone-700 dark:hover:text-white/90 hover:bg-stone-100 dark:hover:bg-white/5 transition-all duration-300 ' +
                         (showLabels ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none')
                     }
                     title={isRail ? 'Kunci sidebar (perluas permanen)' : 'Buka kunci sidebar (auto collapse)'}
@@ -289,12 +289,12 @@ const Sidebar = ({
             <div className={'cf-search-box px-3 pb-2 pt-2 shrink-0 transition-all duration-300 ' + (!showLabels ? 'opacity-0 h-0 py-0 pointer-events-none' : 'opacity-100 h-auto')}>
                 <button
                     onClick={() => setPaletteOpen(true)}
-                    className="cf-search-trigger w-full h-9 px-3 flex items-center gap-2 rounded-xl text-slate-400 focus:outline-none text-sm"
+                    className="cf-search-trigger w-full h-9 px-3 flex items-center gap-2 rounded-xl text-stone-400 focus:outline-none text-sm"
                     title={shortcutKey}
                 >
                     <Search size={15} className="shrink-0" />
                     <span className="flex-1 text-left truncate">{t('sidebar.search.placeholder')}</span>
-                    <kbd className="shrink-0 text-[9px] px-1.5 py-0.5 rounded bg-slate-100/80 dark:bg-slate-700 text-slate-400 font-semibold">{shortcutKey}</kbd>
+                    <kbd className="shrink-0 text-[9px] px-1.5 py-0.5 rounded bg-stone-100/80 dark:bg-white/10 text-slate-400 font-semibold">{shortcutKey}</kbd>
                 </button>
             </div>
 
@@ -311,8 +311,8 @@ const Sidebar = ({
                                     key={item.id}
                                     onClick={() => navigate(item.id)}
                                     className={
-                                        'cf-rail-item relative flex items-center justify-center w-8 h-8 rounded-lg text-slate-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors ' +
-                                        (isActive ? 'cf-active text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' : '')
+                                        'cf-rail-item relative flex items-center justify-center w-8 h-8 rounded-lg text-slate-400 dark:text-white/40 hover:text-blue-600 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors ' +
+                                        (isActive ? 'cf-active text-blue-600 dark:text-blue-300 bg-blue-50 dark:bg-blue-500/10' : '')
                                     }
                                     title={t(item.labelKey)}
                                 >
@@ -342,7 +342,7 @@ const Sidebar = ({
                                             'cf-group-header flex items-center gap-2 w-full px-2.5 h-8 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ' +
                                             (isActiveGroup
                                                 ? 'cf-header-active'
-                                                : 'text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300')
+                                                : 'text-slate-400 dark:text-slate-500 hover:text-stone-700 dark:hover:text-white/80')
                                         }
                                     >
                                         <ChevronDown
@@ -378,7 +378,7 @@ const Sidebar = ({
                                                         className={
                                                             'absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full transition-all ' +
                                                             (isActive
-                                                                ? 'bg-gradient-to-b from-indigo-500 to-purple-600 opacity-100'
+                                                                ? 'bg-gradient-to-b from-indigo-500 to-indigo-400 opacity-100'
                                                                 : 'opacity-0 group-hover:opacity-30')
                                                         }
                                                     />
@@ -391,8 +391,8 @@ const Sidebar = ({
                                                             className={
                                                                 'transition-colors ' +
                                                                 (isActive
-                                                                    ? 'text-indigo-600 dark:text-indigo-400'
-                                                                    : 'text-slate-400 dark:text-slate-500 group-hover:text-indigo-600 group-hover:dark:text-indigo-400')
+                                                                    ? 'text-blue-600 dark:text-blue-400'
+                                                                    : 'text-stone-400 dark:text-white/40 group-hover:text-blue-600 group-hover:dark:text-blue-300')
                                                             }
                                                         />
                                                         {item.id === 'approvals' && unreadApprovalsCount > 0 && (
@@ -420,14 +420,14 @@ const Sidebar = ({
                 {!isRail && ((ocrStats && ocrStats.counts && (ocrStats.counts.active || 0)) > 0 || (ocrStats && ocrStats.counts && (ocrStats.counts.waiting || 0)) > 0) && (
                     <div
                         onClick={() => { setModalTab('ocr-details'); setIsModalOpen(true); }}
-                        className="mt-4 mx-1 rounded-xl p-3 border border-indigo-100 dark:border-indigo-500/30 bg-indigo-50/70 dark:bg-indigo-500/10 cursor-pointer"
+                        className="mt-4 mx-1 rounded-xl p-3 border border-blue-100 dark:border-blue-500/20 bg-blue-50/70 dark:bg-blue-500/10 cursor-pointer"
                     >
                         <div className="flex items-center justify-between">
-                            <div className="text-[10px] font-bold text-indigo-600 dark:text-indigo-300 flex items-center gap-1.5">
+                            <div className="text-[10px] font-bold text-blue-600 dark:text-blue-300 flex items-center gap-1.5">
                                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-ping"></span>
                                 OCR {t('sidebar.ocr.processing')}
                             </div>
-                            <span className="text-sm font-black text-indigo-600 dark:text-indigo-300">
+                            <span className="text-sm font-black text-blue-600 dark:text-blue-300">
                                 {(ocrStats.counts.active || 0) + (ocrStats.counts.waiting || 0)}
                             </span>
                         </div>
@@ -436,7 +436,7 @@ const Sidebar = ({
             </nav>
 
             {/* Footer: user + actions — hanya untuk mobile (desktop pakai dropdown profil di header) */}
-            <div className={'md:hidden shrink-0 ' + (isRail && !showLabels ? 'border-t border-slate-200/10 dark:border-slate-700/10 p-2' : 'border-t border-slate-200/30 dark:border-slate-700/30 p-3')}>
+            <div className={'md:hidden shrink-0 ' + (isRail && !showLabels ? 'border-t border-stone-200/10 dark:border-white/5 p-2' : 'border-t border-stone-200/30 dark:border-white/5 p-3')}>
                 {isRail && !showLabels ? (
                     <div className="flex flex-col items-center gap-2">
                         <button
@@ -448,7 +448,7 @@ const Sidebar = ({
                         </button>
                         <button
                             onClick={(e) => { e.stopPropagation(); setLanguage(language === 'id' ? 'en' : 'id'); }}
-                            className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors md:hidden"
+                            className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:bg-stone-100 dark:hover:bg-white/5 transition-colors md:hidden"
                             title={t('settings.language.title')}
                         >
                             <Languages size={13} />
@@ -472,7 +472,7 @@ const Sidebar = ({
                                     {currentUser && currentUser.name ? currentUser.name.substring(0, 2).toUpperCase() : '?'}
                                 </div>
                                 <span className="cf-user-label min-w-0 flex-1">
-                                    <span className="block text-xs font-bold text-slate-700 dark:text-slate-200 truncate">
+                                    <span className="block text-xs font-bold text-stone-700 dark:text-white/90 truncate">
                                         {currentUser && currentUser.name ? currentUser.name : t('sidebar.user.guest')}
                                     </span>
                                     <span className="block text-[10px] font-semibold text-slate-400 dark:text-slate-500 truncate capitalize">
@@ -521,7 +521,7 @@ const Sidebar = ({
                                 value={paletteQuery}
                                 onChange={e => setPaletteQuery(e.target.value)}
                                 placeholder={t('sidebar.search.placeholder')}
-                                className="flex-1 bg-transparent outline-none text-sm text-slate-700 dark:text-slate-200 placeholder:text-slate-400"
+                                className="flex-1 bg-transparent outline-none text-sm text-stone-700 dark:text-white/90 placeholder:text-stone-400"
                             />
                             <kbd className="text-[9px] text-slate-400 border border-slate-200 dark:border-slate-600 rounded px-1.5 py-0.5">ESC</kbd>
                         </div>
@@ -541,10 +541,10 @@ const Sidebar = ({
                                         onClick={() => navigate(item.id)}
                                         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-indigo-50 dark:hover:bg-slate-700 transition-colors"
                                     >
-                                        <span className="w-7 h-7 rounded-md bg-indigo-50 dark:bg-indigo-500/15 text-indigo-600 dark:text-indigo-300 flex items-center justify-center shrink-0">
+                                        <span className="w-7 h-7 rounded-md bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-300 flex items-center justify-center shrink-0">
                                             <item.icon size={15} />
                                         </span>
-                                        <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                                        <span className="text-sm font-medium text-stone-700 dark:text-white/90">
                                             {t(item.labelKey)}
                                         </span>
                                         <ChevronRight size={14} className="ml-auto text-slate-300" />

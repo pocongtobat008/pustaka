@@ -4,7 +4,7 @@ export const Card = ({ children, className = '', onClick, ...rest }) => (
     <div
         onClick={onClick}
         {...rest}
-        className={`bg-white/40 dark:bg-slate-800/40 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-3xl p-6 shadow-2xl ring-1 ring-black/5 dark:ring-white/5 transition-all duration-300 ${onClick ? 'cursor-pointer hover:shadow-3xl hover:bg-white/50 dark:hover:bg-slate-700/50 transform hover:-translate-y-1' : ''} ${className}`}
+        className={`bg-white/60 dark:bg-white/[0.04] backdrop-blur-sm border border-stone-200/50 dark:border-white/[0.06] rounded-2xl p-6 transition-all duration-200 ${onClick ? 'cursor-pointer hover:shadow-lg hover:bg-white/80 dark:hover:bg-white/[0.06] transform hover:-translate-y-0.5' : ''} ${className}`}
     >
         {children}
     </div>
@@ -16,19 +16,16 @@ export const Card = ({ children, className = '', onClick, ...rest }) => (
 //        action (node tambahan di kanan, mis. tombol salin).
 export const SummaryCard = ({ title, value, subtext, icon: Icon, colorClass, gradient, valueClass = 'text-xl', valuePrefix = '', className = '', action }) => (
     <div
-        className={`group relative overflow-hidden glass-card rounded-2xl p-4 flex items-center gap-4 transition-all duration-300 hover:-translate-y-0.5 ${className}`}
+        className={`group relative bg-white/50 dark:bg-white/[0.03] border border-stone-200/60 dark:border-white/[0.06] rounded-2xl px-5 py-4 flex items-center gap-4 transition-all duration-200 hover:border-blue-300/50 dark:hover:border-blue-400/20 hover:shadow-md hover:shadow-blue-500/[0.04] ${className}`}
     >
-        {/* Hiasan sudut gradient (soft, seragam di semua kartu) */}
-        <div className={`absolute right-0 top-0 w-20 h-20 rounded-bl-[2rem] -mr-5 -mt-5 bg-gradient-to-br opacity-60 transition-all duration-300 group-hover:scale-110 group-hover:opacity-80 ${gradient ? gradient : 'from-indigo-500/15 to-purple-500/10'}`} />
-
-        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-indigo-500/20 ${colorClass ? colorClass : `bg-gradient-to-br ${gradient || 'from-indigo-500 to-purple-600'} text-white`}`}>
-            {Icon && <Icon size={22} />}
+        <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${colorClass ? colorClass : `bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400`}`}>
+            {Icon && <Icon size={20} strokeWidth={1.8} />}
         </div>
 
         <div className="min-w-0 flex-1">
-            <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-0.5 truncate">{title}</div>
-            <div className={`${valueClass} font-black leading-tight text-slate-800 dark:text-white tabular-nums truncate`}>{valuePrefix}{value}</div>
-            {subtext && <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">{subtext}</div>}
+            <div className="text-[11px] font-medium text-stone-400 dark:text-white/40 mb-0.5 truncate">{title}</div>
+            <div className={`${valueClass} font-bold leading-tight text-stone-800 dark:text-white tabular-nums truncate`}>{valuePrefix}{value}</div>
+            {subtext && <div className="text-[11px] text-stone-400 dark:text-white/35 mt-0.5 truncate">{subtext}</div>}
         </div>
 
         {action && <div className="flex-shrink-0">{action}</div>}
@@ -42,10 +39,10 @@ export const SummaryRow = ({ cards = [], cols = 4, className = '', children }) =
     const colCls = {
         2: 'sm:grid-cols-2',
         3: 'sm:grid-cols-3',
-        4: 'grid-cols-2 md:grid-cols-4',
-    }[cols] || 'grid-cols-2 md:grid-cols-4';
+        4: 'grid-cols-2 lg:grid-cols-4',
+    }[cols] || 'grid-cols-2 lg:grid-cols-4';
     return (
-        <div className={`grid ${colCls} gap-4 ${className}`}>
+        <div className={`grid ${colCls} gap-3 ${className}`}>
             {cards.map((c, i) => (
                 <SummaryCard key={c.key ?? i} {...c} />
             ))}
@@ -60,12 +57,12 @@ export const CardHeader = React.forwardRef(({ className = '', ...props }, ref) =
 CardHeader.displayName = "CardHeader";
 
 export const CardTitle = React.forwardRef(({ className = '', ...props }, ref) => (
-    <h3 ref={ref} className={`font-semibold leading-none tracking-tight ${className}`} {...props} />
+    <h3 ref={ref} className={`font-semibold leading-tight ${className}`} {...props} />
 ));
 CardTitle.displayName = "CardTitle";
 
 export const CardDescription = React.forwardRef(({ className = '', ...props }, ref) => (
-    <p ref={ref} className={`text-sm text-gray-500 dark:text-slate-400 ${className}`} {...props} />
+    <p ref={ref} className={`text-sm text-stone-500 dark:text-white/40 ${className}`} {...props} />
 ));
 CardDescription.displayName = "CardDescription";
 

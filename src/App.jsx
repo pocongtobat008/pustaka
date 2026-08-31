@@ -3708,14 +3708,14 @@ export default function App() {
       )}
 
       {/* MOBILE HEADER — glass contextual */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl border-b border-white/30 dark:border-white/10 flex items-center justify-between px-4 z-20">
+      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-[#FAF5EE]/70 dark:bg-[#0a0a0a]/70 backdrop-blur-xl border-b border-white/30 dark:border-white/10 flex items-center justify-between px-4 z-20">
         <div className="flex items-center gap-2 min-w-0">
           <div className="cf-logo-orb w-9 h-9 rounded-xl flex items-center justify-center shadow-lg shrink-0">
             <BookOpen className="text-white" size={18} />
           </div>
           <div className="min-w-0">
             <span className="block font-extrabold text-[15px] dark:text-white tracking-tight leading-tight">Pustaka</span>
-            <span className="block text-[10px] text-slate-400 truncate max-w-[150px]">
+            <span className="block text-[10px] text-stone-400 truncate max-w-[150px]">
               {tabTextMap[activeTab]?.subtitle || ''}
             </span>
           </div>
@@ -3724,12 +3724,12 @@ export default function App() {
           <button
             type="button"
             onClick={() => setIsDarkMode(!isDarkMode)}
-            className="neo-icon-btn w-10 h-10 text-slate-500 dark:text-slate-300 hover:text-yellow-500 dark:hover:text-yellow-400"
+            className="neo-icon-btn w-10 h-10 text-stone-500 dark:text-white/60 hover:text-yellow-500 dark:hover:text-yellow-400"
             title="Tema"
           >
             {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
           </button>
-          <button onClick={() => setIsSidebarCollapsed(false)} className="neo-icon-btn w-10 h-10 text-slate-500 dark:text-slate-300">
+          <button onClick={() => setIsSidebarCollapsed(false)} className="neo-icon-btn w-10 h-10 text-stone-500 dark:text-white/60">
             <Menu size={20} />
           </button>
         </div>
@@ -3741,14 +3741,14 @@ export default function App() {
           <div className="glass-panel rounded-2xl flex items-center justify-between gap-4 px-4 lg:px-5 h-[68px]">
             {/* Kiri: breadcrumb kontekstual + judul halaman aktif */}
             <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-400 dark:text-slate-500 mb-0.5">
+              <div className="flex items-center gap-1.5 text-[11px] font-bold text-stone-400 dark:text-white/40 mb-0.5">
                 <span>Pustaka</span>
-                <ChevronRight size={11} className="text-indigo-400" />
+                <ChevronRight size={11} className="text-blue-400" />
                 <span className="gradient-text truncate">
                   {tabTextMap[activeTab]?.subtitle || (isEnglish ? 'Digital Info & Services Center' : 'Pusat Informasi & Layanan Digital')}
                 </span>
               </div>
-              <h1 className="text-lg xl:text-xl font-extrabold text-slate-800 dark:text-white leading-tight truncate">
+              <h1 className="text-lg xl:text-xl font-extrabold text-stone-800 dark:text-white leading-tight truncate">
                 {tabTextMap[activeTab]?.title || 'Pustaka'}
               </h1>
             </div>
@@ -3779,7 +3779,7 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => setShowMenuLandingPopup(true)}
-                    className="gradient-bg inline-flex items-center gap-2 px-4 h-10 rounded-xl text-white text-xs font-black uppercase tracking-[0.12em] shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-0.5 active:translate-y-0 transition-all"
+                    className="gradient-bg inline-flex items-center gap-2 px-4 h-10 rounded-xl text-white text-xs font-black uppercase tracking-[0.12em] shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 hover:-translate-y-0.5 active:translate-y-0 transition-all"
                   >
                     <Sparkles size={14} />
                     {commandTextMap.labels.infoMenu}
@@ -3802,11 +3802,11 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setLanguage(isEnglish ? 'id' : 'en')}
-                  className="neo-icon-btn relative w-10 h-10 group text-slate-500 dark:text-slate-300 hover:text-indigo-500 dark:hover:text-indigo-400"
+                  className="neo-icon-btn relative w-10 h-10 group text-stone-500 dark:text-white/60 hover:text-blue-500 dark:hover:text-blue-400"
                   title={isEnglish ? 'Bahasa Indonesia' : 'English'}
                 >
                   <Globe size={17} />
-                  <span className="absolute -bottom-0.5 right-0.5 text-[8px] font-black uppercase bg-indigo-600 text-white rounded px-0.5 leading-tight">{language}</span>
+                  <span className="absolute -bottom-0.5 right-0.5 text-[8px] font-black uppercase bg-blue-600 text-white rounded px-0.5 leading-tight">{language}</span>
                 </button>
                 <span className="saas-tooltip">{isEnglish ? 'Language: Indonesia' : 'Bahasa: English'}</span>
               </div>
@@ -3817,29 +3817,29 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setProfileMenuOpen(o => !o)}
-                  className={'h-10 pl-1.5 pr-2.5 flex items-center gap-2 rounded-xl glass-btn group transition-all ' + (profileMenuOpen ? 'border-indigo-400/60 shadow-lg shadow-indigo-500/10' : 'hover:border-indigo-300/60')}
+                  className={'h-10 pl-1.5 pr-2.5 flex items-center gap-2 rounded-xl glass-btn group transition-all ' + (profileMenuOpen ? 'border-blue-400/60 shadow-lg shadow-blue-500/5' : 'hover:border-blue-300/60')}
                   title={currentUser?.name || ''}
                 >
                   <div className="w-7 h-7 rounded-full gradient-bg flex items-center justify-center text-[10px] font-extrabold text-white shadow-sm group-hover:scale-105 transition-transform">
                     {currentUser?.name ? currentUser.name.substring(0, 2).toUpperCase() : '?'}
                   </div>
-                  <span className="hidden lg:block text-xs font-bold text-slate-600 dark:text-slate-300 max-w-[100px] truncate">
+                  <span className="hidden lg:block text-xs font-bold text-stone-600 dark:text-white/80 max-w-[100px] truncate">
                     {currentUser?.name || ''}
                   </span>
-                  <ChevronDown size={14} className={'text-slate-400 transition-transform duration-200 ' + (profileMenuOpen ? 'rotate-180' : '')} />
+                  <ChevronDown size={14} className={'text-stone-400 transition-transform duration-200 ' + (profileMenuOpen ? 'rotate-180' : '')} />
                 </button>
 
                 {profileMenuOpen && (
-                  <div className="absolute right-0 top-[calc(100%+10px)] w-64 bg-white/95 dark:bg-[#0d1440]/95 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-2xl overflow-hidden shadow-2xl shadow-indigo-500/10 dark:shadow-black/40 animate-in fade-in zoom-in-95 duration-150 z-[60]">
+                  <div className="absolute right-0 top-[calc(100%+10px)] w-64 bg-[#FAF5EE]/95 dark:bg-[#0a0a0a]/95 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-2xl overflow-hidden shadow-2xl shadow-blue-500/5 dark:shadow-black/40 animate-in fade-in zoom-in-95 duration-150 z-[60]">
                     {/* Header profil */}
-                    <div className="px-4 py-3.5 border-b border-slate-100 dark:border-white/10 bg-gradient-to-r from-indigo-500/10 to-purple-500/10">
+                    <div className="px-4 py-3.5 border-b border-stone-100 dark:border-white/10 bg-gradient-to-r from-blue-500/10 to-blue-400/5">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-xs font-extrabold text-white shadow-md">
                           {currentUser?.name ? currentUser.name.substring(0, 2).toUpperCase() : '?'}
                         </div>
                         <div className="min-w-0">
-                          <p className="text-sm font-extrabold text-slate-800 dark:text-white truncate">{currentUser?.name || 'Guest'}</p>
-                          <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider capitalize">{currentUser?.role || 'user'}</p>
+                          <p className="text-sm font-extrabold text-stone-800 dark:text-white truncate">{currentUser?.name || 'Guest'}</p>
+                          <p className="text-[10px] font-bold text-stone-500 dark:text-white/40 uppercase tracking-wider capitalize">{currentUser?.role || 'user'}</p>
                         </div>
                       </div>
                     </div>
@@ -3847,24 +3847,24 @@ export default function App() {
                     <div className="p-1.5">
                       <button
                         onClick={() => { setProfileMenuOpen(false); setActiveTab('profile'); }}
-                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-indigo-50/80 dark:hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors text-left"
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-stone-600 dark:text-white/80 hover:bg-blue-50/80 dark:hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-indigo-300 transition-colors text-left"
                       >
-                        <User size={15} className="text-slate-400" /> {commandTextMap.items.profile.label}
+                        <User size={15} className="text-stone-400" /> {commandTextMap.items.profile.label}
                       </button>
                       <button
                         onClick={() => { setProfileMenuOpen(false); setIsDarkMode(!isDarkMode); }}
-                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-amber-50/80 dark:hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-300 transition-colors text-left"
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-stone-600 dark:text-white/80 hover:bg-amber-50/80 dark:hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-300 transition-colors text-left"
                       >
-                        {isDarkMode ? <Sun size={15} className="text-slate-400" /> : <Moon size={15} className="text-slate-400" />} {isDarkMode ? commandTextMap.actions.themeLight : commandTextMap.actions.themeDark}
+                        {isDarkMode ? <Sun size={15} className="text-stone-400" /> : <Moon size={15} className="text-stone-400" />} {isDarkMode ? commandTextMap.actions.themeLight : commandTextMap.actions.themeDark}
                       </button>
                     </div>
 
-                    <div className="border-t border-slate-100 dark:border-white/10 p-1.5">
+                    <div className="border-t border-stone-100 dark:border-white/10 p-1.5">
                       <button
                         onClick={() => { setProfileMenuOpen(false); setShowAboutModal(true); }}
-                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50/80 dark:hover:bg-slate-700/30 hover:text-slate-800 dark:hover:text-white transition-colors text-left"
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-stone-600 dark:text-white/80 hover:bg-stone-50/80 dark:hover:bg-white/5 hover:text-stone-800 dark:hover:text-white transition-colors text-left"
                       >
-                        <Info size={15} className="text-slate-400" /> {isEnglish ? 'About System' : 'Tentang Sistem'}
+                        <Info size={15} className="text-stone-400" /> {isEnglish ? 'About System' : 'Tentang Sistem'}
                       </button>
                       <button
                         onClick={() => { setProfileMenuOpen(false); handleLogout(); }}
