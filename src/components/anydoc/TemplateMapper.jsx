@@ -649,7 +649,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
     const cardCls = `rounded-2xl border ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`;
     const labelCls = `text-[10px] font-black uppercase tracking-widest mb-3 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`;
     const chipCls = (active) => active
-        ? 'bg-gradient-to-r from-blue-600 to-purple-700 text-white shadow-md shadow-blue-500/25'
+        ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md shadow-blue-500/25'
         : isDarkMode ? 'text-white/50 hover:text-white/90 hover:bg-white/5' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50';
 
     return (
@@ -692,7 +692,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                     value: templates.length,
                     subtext: 'Jenis dokumen (dibagikan)',
                     icon: FolderOpen,
-                    gradient: 'from-blue-500 to-purple-600',
+                    gradient: 'from-blue-500 to-blue-600',
                 },
                 {
                     title: 'Ekstraksi',
@@ -713,7 +713,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                     value: exportHistory.length,
                     subtext: activeId ? 'Bisa diunduh ulang' : 'Pilih template',
                     icon: FileText,
-                    gradient: 'from-violet-500 to-fuchsia-600',
+                    gradient: 'from-blue-500 to-fuchsia-600',
                 },
             ]} />
 
@@ -916,7 +916,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                             </div>
                             <p className={`text-[10px] mb-3 ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>
                                 Klik <b>Tabel</b> di baris header item (mis. "No Model Deskripsi Qty..."). Kolom terdeteksi otomatis dari posisi — atur nama & ID tiap kolom.
-                                Kolom <b className="text-purple-500">Grup</b> untuk nilai di baris ATAS data (mis. No Faktur) — diwariskan ke semua baris di bawahnya.
+                                Kolom <b className="text-blue-500">Grup</b> untuk nilai di baris ATAS data (mis. No Faktur) — diwariskan ke semua baris di bawahnya.
                             </p>
                             {tableCols.length === 0 && (
                                 <p className={`text-[11px] italic ${isDarkMode ? 'text-white/30' : 'text-slate-300'}`}>Belum ada tabel. Klik "Tabel" pada baris header item di sampel.</p>
@@ -924,29 +924,29 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                             <div className="flex flex-wrap gap-1.5">
                                 {tableCols.map(c => (
                                     <span key={c.uid} className={`inline-flex items-center gap-1 px-1.5 py-1 rounded-lg border ${c.isGroup
-                                        ? isDarkMode ? 'bg-purple-500/15 border-purple-500/40' : 'bg-purple-50 border-purple-300'
+                                        ? isDarkMode ? 'bg-blue-500/15 border-blue-500/40' : 'bg-blue-50 border-blue-300'
                                         : isDarkMode ? 'bg-emerald-500/10 border-emerald-500/25' : 'bg-emerald-50 border-emerald-200'}`}>
-                                        <input value={c.label} onChange={e => updateCol(c.uid, { label: e.target.value })} className={`w-[80px] px-1 py-0.5 rounded text-[10px] border-none bg-transparent outline-none ${c.isGroup ? (isDarkMode ? 'text-purple-200' : 'text-purple-700') : (isDarkMode ? 'text-emerald-200' : 'text-emerald-700')}`} />
+                                        <input value={c.label} onChange={e => updateCol(c.uid, { label: e.target.value })} className={`w-[80px] px-1 py-0.5 rounded text-[10px] border-none bg-transparent outline-none ${c.isGroup ? (isDarkMode ? 'text-blue-200' : 'text-blue-700') : (isDarkMode ? 'text-emerald-200' : 'text-emerald-700')}`} />
                                         <input value={c.key} onChange={e => updateCol(c.uid, { key: slugify(e.target.value) })} className={`w-[70px] px-1 py-0.5 rounded text-[10px] border ${isDarkMode ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-slate-200 text-slate-500'}`} placeholder="id" />
                                         {c.isGroup && (
-                                            <input value={c.pattern} onChange={e => updateCol(c.uid, { pattern: e.target.value })} title="Pola regex nilai grup (baris di atas)" className={`w-[110px] px-1 py-0.5 rounded text-[9px] font-mono border ${isDarkMode ? 'bg-white/5 border-purple-500/40 text-purple-200' : 'bg-white border-purple-300 text-purple-700'}`} placeholder="^['’]?\d{15,}$" />
+                                            <input value={c.pattern} onChange={e => updateCol(c.uid, { pattern: e.target.value })} title="Pola regex nilai grup (baris di atas)" className={`w-[110px] px-1 py-0.5 rounded text-[9px] font-mono border ${isDarkMode ? 'bg-white/5 border-blue-500/40 text-blue-200' : 'bg-white border-blue-300 text-blue-700'}`} placeholder="^['’]?\d{15,}$" />
                                         )}
                                         <button
                                             onClick={() => updateCol(c.uid, { isGroup: !c.isGroup })}
                                             title={t("comp.groupCol")}
                                             className={`px-1 py-0.5 rounded text-[9px] font-bold border transition-all ${c.isGroup
-                                                ? isDarkMode ? 'bg-purple-500/30 text-purple-200 border-purple-500/50' : 'bg-purple-200 text-purple-700 border-purple-400'
+                                                ? isDarkMode ? 'bg-blue-500/30 text-blue-200 border-blue-500/50' : 'bg-blue-200 text-blue-700 border-blue-400'
                                                 : isDarkMode ? 'bg-white/5 text-white/40 border-white/10' : 'bg-white text-slate-400 border-slate-200'}`}
                                         >
                                             Grup
                                         </button>
-                                        <button onClick={() => removeCol(c.uid)} className={`opacity-50 hover:opacity-100 ${c.isGroup ? (isDarkMode ? 'text-purple-300' : 'text-purple-600') : (isDarkMode ? 'text-emerald-300' : 'text-emerald-600')}`}><X size={11} /></button>
+                                        <button onClick={() => removeCol(c.uid)} className={`opacity-50 hover:opacity-100 ${c.isGroup ? (isDarkMode ? 'text-blue-300' : 'text-blue-600') : (isDarkMode ? 'text-emerald-300' : 'text-emerald-600')}`}><X size={11} /></button>
                                     </span>
                                 ))}
                             </div>
                             <button
                                 onClick={addGroupCol}
-                                className={`mt-2 inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all ${isDarkMode ? 'bg-purple-500/15 text-purple-300 hover:bg-purple-500/25' : 'bg-purple-50 text-purple-600 hover:bg-purple-100'}`}
+                                className={`mt-2 inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all ${isDarkMode ? 'bg-blue-500/15 text-blue-300 hover:bg-blue-500/25' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}
                             >
                                 <Plus size={11} /> Kolom Grup (No Faktur di atas baris)
                             </button>
@@ -956,7 +956,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                             <button
                                 onClick={validateAll}
                                 disabled={busy}
-                                className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${busy ? 'opacity-50' : 'hover:scale-[1.01]'} ${isDarkMode ? 'bg-purple-500/20 text-purple-300 hover:bg-purple-500/30' : 'bg-purple-100 text-purple-600 hover:bg-purple-200'}`}
+                                className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${busy ? 'opacity-50' : 'hover:scale-[1.01]'} ${isDarkMode ? 'bg-blue-500/20 text-blue-300 hover:bg-blue-500/30' : 'bg-blue-100 text-blue-600 hover:bg-blue-200'}`}
                             >
                                 {busy === 'validate' ? <Loader2 size={14} className="animate-spin" /> : <FlaskConical size={14} />} Uji ke Semua Sampel
                             </button>

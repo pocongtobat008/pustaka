@@ -332,7 +332,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                 <div className="relative flex-1 w-full md:w-auto">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                     <input
-                        className="w-full pl-10 pr-4 py-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
+                        className="w-full pl-10 pr-4 py-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
                         placeholder={text.searchPlaceholder}
                         value={searchQuery}
                         onChange={e => setSearchQuery(e.target.value)}
@@ -364,7 +364,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
 
             {/* SUMMARY CARDS */}
             <SummaryRow className="animate-in slide-in-from-bottom-4 duration-700" cards={[
-                { title: text.cards.total, value: stats.total, icon: GitBranch, gradient: 'from-blue-500 to-purple-600' },
+                { title: text.cards.total, value: stats.total, icon: GitBranch, gradient: 'from-blue-500 to-blue-600' },
                 { title: text.cards.public, value: stats.public, icon: Globe, gradient: 'from-emerald-500 to-teal-600' },
                 { title: text.cards.private, value: stats.private, icon: Lock, gradient: 'from-orange-500 to-amber-600' },
                 { title: text.cards.restricted, value: stats.restricted, icon: Shield, gradient: 'from-blue-500 to-cyan-600' },
@@ -400,7 +400,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                             <div className="space-y-2 mb-4">
                                 {(flow.steps || []).slice(0, 3).map((step, idx) => (
                                     <div key={idx} className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                                        <div className="w-4 h-4 rounded bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500">{idx + 1}</div>
+                                        <div className="w-4 h-4 rounded bg-slate-100 dark:bg-[#0d0d0d] flex items-center justify-center text-slate-500">{idx + 1}</div>
                                         <span className="truncate">{step.title}</span>
                                     </div>
                                 ))}
@@ -448,7 +448,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                 noPadding
             >
                 <div className="flex h-full min-h-[80vh] flex-col">
-                    <div className="p-6 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="p-6 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div className="space-y-2 lg:col-span-1">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.sopTitle}</label>
                             <input
@@ -522,7 +522,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                                                 }}
                                                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${isSelected
                                                     ? 'gradient-bg text-white shadow-md'
-                                                    : 'bg-white/70 dark:bg-slate-700/60 backdrop-blur-xl text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600 hover:border-blue-300'
+                                                    : 'bg-white/70 dark:bg-[#111]/60 backdrop-blur-xl text-slate-600 dark:text-white/70 border border-slate-200 dark:border-white/[0.08] hover:border-blue-300'
                                                     }`}
                                             >
                                                 {dept.name}
@@ -551,7 +551,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                                                 }}
                                                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${isSelected
                                                     ? 'gradient-bg text-white shadow-md'
-                                                    : 'bg-white/70 dark:bg-slate-700/60 backdrop-blur-xl text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600 hover:border-blue-300'
+                                                    : 'bg-white/70 dark:bg-[#111]/60 backdrop-blur-xl text-slate-600 dark:text-white/70 border border-slate-200 dark:border-white/[0.08] hover:border-blue-300'
                                                     }`}
                                             >
                                                 {user.name || user.username}

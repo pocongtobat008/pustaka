@@ -22,7 +22,7 @@ export default function TaxFileDetailModal({
         >
             <div className="flex h-full min-h-0 flex-col gap-6 pt-4 md:flex-row">
                 {/* LEFT: PREVIEW */}
-                <div className="flex-1 bg-slate-100 dark:bg-slate-800 rounded-xl overflow-hidden flex items-center justify-center border border-slate-200 dark:border-slate-700 relative">
+                <div className="flex-1 bg-slate-100 dark:bg-[#0d0d0d] rounded-xl overflow-hidden flex items-center justify-center border border-slate-200 dark:border-white/[0.06] relative">
                     {String(selectedFileDetail?.type || '').toLowerCase().startsWith('image/') ? (
                         <img src={selectedFileDetail?.fileData || getFullUrl(selectedFileDetail?.url)} alt="Preview" className="max-w-full max-h-full object-contain" onError={(e) => { e.target.style.display = 'none'; }} />
                     ) : String(selectedFileDetail?.type || '').toLowerCase().includes('pdf') ? (
@@ -53,7 +53,7 @@ export default function TaxFileDetailModal({
                         )}
                     </div>
                     <textarea
-                        className="flex-1 w-full bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl p-4 text-sm font-mono text-slate-700 dark:text-slate-300 focus:border-blue-500 focus:ring-0 resize-none outline-none leading-relaxed"
+                        className="flex-1 w-full bg-slate-50 dark:bg-[#0d0d0d] border-2 border-slate-200 dark:border-white/[0.06] rounded-xl p-4 text-sm font-mono text-slate-700 dark:text-white/70 focus:border-blue-500 focus:ring-0 resize-none outline-none leading-relaxed"
                         value={selectedFileDetail?.ocrContent || ''}
                         onChange={(e) => setSelectedFileDetail({ ...selectedFileDetail, ocrContent: e.target.value })}
                         placeholder={selectedFileDetail?.ocrContent ? "Teks hasil scan..." : "Teks belum tersedia. Mohon tunggu proses OCR selesai atau klik tombol 'Regenerate/Refresh' di bawah."}
@@ -61,7 +61,7 @@ export default function TaxFileDetailModal({
                     <div className="mt-4 flex justify-end gap-3">
                         <button
                             onClick={onClose}
-                            className="px-5 py-2.5 rounded-xl text-slate-500 font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                            className="px-5 py-2.5 rounded-xl text-slate-500 font-bold hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-colors"
                         >
                             Tutup
                         </button>

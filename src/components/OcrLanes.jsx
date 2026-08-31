@@ -81,17 +81,17 @@ const OcrLanes = ({ variant = 'floating' }) => {
               ) : (
                 <Clock size={12} className="text-amber-400 shrink-0" />
               )}
-              <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 group-hover:text-emerald-600 transition-colors uppercase tracking-wider truncate">
+              <span className="text-[10px] font-bold text-slate-400 dark:text-white/30 group-hover:text-emerald-600 transition-colors uppercase tracking-wider truncate">
                 {lane.status !== 'idle' ? lane.filename : lane.name}
               </span>
             </div>
-            <span className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 shrink-0">
+            <span className="text-[11px] font-mono font-bold text-slate-500 dark:text-white/40 shrink-0">
               {lane.status !== 'idle' ? `${lane.current}%` : '-'}
             </span>
           </div>
-          <div className="w-full bg-emerald-100/30 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden border border-emerald-100/50 dark:border-slate-700">
+          <div className="w-full bg-emerald-100/30 dark:bg-[#0d0d0d] rounded-full h-1.5 overflow-hidden border border-emerald-100/50 dark:border-white/[0.06]">
             <div
-              className={`h-full rounded-full transition-all duration-500 ease-out ${lane.status === 'active' ? 'bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.4)]' : 'bg-slate-200 dark:bg-slate-700'}`}
+              className={`h-full rounded-full transition-all duration-500 ease-out ${lane.status === 'active' ? 'bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.4)]' : 'bg-slate-200 dark:bg-[#111]'}`}
               style={{ width: `${lane.current}%` }}
             ></div>
           </div>
@@ -106,7 +106,7 @@ const OcrLanes = ({ variant = 'floating' }) => {
       <div className="relative font-sans" ref={wrapRef}>
         <button
           onClick={() => setIsExpanded(o => !o)}
-          className={'neo-icon-btn relative w-10 h-10 group ' + (totalActive > 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-300 hover:text-emerald-500 dark:hover:text-emerald-400')}
+          className={'neo-icon-btn relative w-10 h-10 group ' + (totalActive > 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-slate-500 dark:text-white/70 hover:text-emerald-500 dark:hover:text-emerald-400')}
           title={totalActive > 0 ? `OCR Monitor — ${totalActive} proses aktif` : 'OCR Monitor'}
         >
           <ScanLine size={18} />
@@ -146,7 +146,7 @@ const OcrLanes = ({ variant = 'floating' }) => {
   return (
     <div className="fixed top-[140px] right-4 z-[40] font-sans pointer-events-none">
       <div
-        className={`pointer-events-auto bg-white/80 dark:bg-slate-800/90 backdrop-blur-xl border border-emerald-200/40 dark:border-emerald-500/20 rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] overflow-hidden ${
+        className={`pointer-events-auto bg-white/80 dark:bg-[#0d0d0d]/90 backdrop-blur-xl border border-emerald-200/40 dark:border-emerald-500/20 rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] overflow-hidden ${
           isExpanded ? 'w-72' : 'w-14 h-14'
         }`}
       >
@@ -188,7 +188,7 @@ const OcrLanes = ({ variant = 'floating' }) => {
           }`}
         >
           <div className="p-4 pt-0 space-y-4">
-            <div className="h-px bg-slate-200/60 dark:bg-slate-700/50 mb-4"></div>
+            <div className="h-px bg-slate-200/60 dark:bg-[#111]/50 mb-4"></div>
             {lanesContent}
           </div>
         </div>

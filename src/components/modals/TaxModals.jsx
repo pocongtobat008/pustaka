@@ -15,14 +15,14 @@ export default function TaxModals({
 
     return (
         <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-300 pt-4">
-            <div className="grid grid-cols-3 gap-6 bg-white/30 dark:bg-slate-800/30 p-6 rounded-3xl border border-white/20 dark:border-white/5">
+            <div className="grid grid-cols-3 gap-6 bg-white/30 dark:bg-[#0d0d0d]/30 p-6 rounded-3xl border border-white/20 dark:border-white/5">
                 <div>
-                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Bulan</label>
+                    <label className="block text-xs font-bold text-slate-500 dark:text-white/40 mb-1.5 uppercase tracking-wider">Bulan</label>
                     <div className="relative">
                         <select
                             value={taxForm.month}
                             onChange={e => setTaxForm({ ...taxForm, month: e.target.value })}
-                            className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-inner appearance-none font-bold"
+                            className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-[#0d0d0d]/50 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-inner appearance-none font-bold"
                         >
                             <option value="">{t("opt.selectMonth")}</option>
                             {["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"].map(m => (
@@ -35,28 +35,28 @@ export default function TaxModals({
                     </div>
                 </div>
                 <div>
-                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Tahun</label>
+                    <label className="block text-xs font-bold text-slate-500 dark:text-white/40 mb-1.5 uppercase tracking-wider">Tahun</label>
                     <input
                         type="number"
                         value={taxForm.year}
                         onChange={e => setTaxForm({ ...taxForm, year: parseInt(e.target.value) })}
-                        className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-inner font-bold"
+                        className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-[#0d0d0d]/50 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-inner font-bold"
                     />
                 </div>
                 <div>
-                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Pembetulan Ke-</label>
+                    <label className="block text-xs font-bold text-slate-500 dark:text-white/40 mb-1.5 uppercase tracking-wider">Pembetulan Ke-</label>
                     <input
                         type="number"
                         min="0"
                         value={taxForm.pembetulan || 0}
                         onChange={e => setTaxForm({ ...taxForm, pembetulan: parseInt(e.target.value) })}
-                        className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-inner font-bold"
+                        className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-[#0d0d0d]/50 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-inner font-bold"
                     />
                 </div>
             </div>
 
             {(modalTab === 'tax-form' || modalTab === 'tax-form-pph') && (
-                <div className="bg-white/20 dark:bg-slate-800/40 p-6 rounded-[2rem] border border-white/20 dark:border-white/5 shadow-inner">
+                <div className="bg-white/20 dark:bg-[#0d0d0d]/40 p-6 rounded-[2rem] border border-white/20 dark:border-white/5 shadow-inner">
                     <div className="flex justify-between items-center mb-5">
                         <h4 className="font-black text-slate-800 dark:text-white flex items-center gap-3 text-lg">
                             <div className="p-2 bg-blue-500/10 rounded-xl text-blue-500"><Percent size={18} /></div>
@@ -70,7 +70,7 @@ export default function TaxModals({
                         {Object.keys(taxForm.data?.pph || {}).map(key => (
                             <div key={key} className="group relative">
                                 <div className="flex justify-between items-center mb-1.5 px-1">
-                                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">{key}</label>
+                                    <label className="block text-xs font-bold text-slate-500 dark:text-white/40 uppercase tracking-widest">{key}</label>
                                     <button tabIndex="-1" onClick={() => handleDeleteTaxField('pphTypes', key)} className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100" title="Hapus Field"><Trash2 size={12} /></button>
                                 </div>
                                 <input
@@ -86,7 +86,7 @@ export default function TaxModals({
                                             }
                                         })
                                     }}
-                                    className="w-full px-4 py-3.5 border-0 bg-white/60 dark:bg-slate-800/60 rounded-2xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-sm font-black text-right pr-6"
+                                    className="w-full px-4 py-3.5 border-0 bg-white/60 dark:bg-[#0d0d0d]/60 rounded-2xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-sm font-black text-right pr-6"
                                     placeholder="0"
                                 />
                             </div>
@@ -111,7 +111,7 @@ export default function TaxModals({
                             {Object.keys(taxForm.data?.ppnIn || {}).map(key => (
                                 <div key={key} className="group relative">
                                     <div className="flex justify-between items-center mb-1.5 px-1">
-                                        <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">{key}</label>
+                                        <label className="block text-xs font-bold text-slate-500 dark:text-white/40 uppercase tracking-widest">{key}</label>
                                         <button tabIndex="-1" onClick={() => handleDeleteTaxField('ppnInTypes', key)} className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100" title="Hapus Field"><Trash2 size={12} /></button>
                                     </div>
                                     <input
@@ -127,7 +127,7 @@ export default function TaxModals({
                                                 }
                                             })
                                         }}
-                                        className="w-full px-4 py-3.5 border-0 bg-white/60 dark:bg-slate-800/60 rounded-2xl focus:ring-2 focus:ring-emerald-500 dark:text-white shadow-sm font-black text-right pr-6"
+                                        className="w-full px-4 py-3.5 border-0 bg-white/60 dark:bg-[#0d0d0d]/60 rounded-2xl focus:ring-2 focus:ring-emerald-500 dark:text-white shadow-sm font-black text-right pr-6"
                                         placeholder="0"
                                     />
                                 </div>
@@ -149,7 +149,7 @@ export default function TaxModals({
                             {Object.keys(taxForm.data?.ppnOut || {}).map(key => (
                                 <div key={key} className="group relative">
                                     <div className="flex justify-between items-center mb-1.5 px-1">
-                                        <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">{key}</label>
+                                        <label className="block text-xs font-bold text-slate-500 dark:text-white/40 uppercase tracking-widest">{key}</label>
                                         <button tabIndex="-1" onClick={() => handleDeleteTaxField('ppnOutTypes', key)} className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100" title="Hapus Field"><Trash2 size={12} /></button>
                                     </div>
                                     <input
@@ -165,7 +165,7 @@ export default function TaxModals({
                                                 }
                                             })
                                         }}
-                                        className="w-full px-4 py-3.5 border-0 bg-white/60 dark:bg-slate-800/60 rounded-2xl focus:ring-2 focus:ring-amber-500 dark:text-white shadow-sm font-black text-right pr-6"
+                                        className="w-full px-4 py-3.5 border-0 bg-white/60 dark:bg-[#0d0d0d]/60 rounded-2xl focus:ring-2 focus:ring-amber-500 dark:text-white shadow-sm font-black text-right pr-6"
                                         placeholder="0"
                                     />
                                 </div>

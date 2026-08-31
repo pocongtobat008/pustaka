@@ -139,7 +139,7 @@ const TOOLS = [
         multiple: false, fields: [{ key: 'quality', label: 'Kualitas', type: 'select', options: ['low', 'medium', 'high'] }],
     },
     {
-        id: 'merge', label: 'Gabung PDF', icon: Layers, gradient: 'from-purple-500 to-violet-600', shadow: 'shadow-purple-500/25',
+        id: 'merge', label: 'Gabung PDF', icon: Layers, gradient: 'from-blue-500 to-blue-600', shadow: 'shadow-blue-500/25',
         desc: 'Gabungkan banyak PDF menjadi satu dokumen',
         multiple: true, fields: [],
     },
@@ -894,7 +894,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                     </div>
                     <button
                         onClick={() => downloadBlob(result.blob, result.filename)}
-                        className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-blue-600 to-purple-700 text-white shadow-lg shadow-blue-500/25 hover:scale-[1.02] transition-all"
+                        className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/25 hover:scale-[1.02] transition-all"
                     >
                         <Download size={14} /> Unduh
                     </button>
@@ -909,7 +909,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
         <div className="max-w-[1200px] mx-auto px-4 lg:px-6 py-6">
             {/* Header */}
             <div className="mb-6 flex items-start gap-3.5">
-                <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/20 bg-gradient-to-br from-blue-500 to-purple-600">
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/20 bg-gradient-to-br from-blue-500 to-blue-600">
                     <Wand2 size={20} className="text-white" />
                 </div>
                 <div className="flex-1">
@@ -938,7 +938,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
 
             {/* ── Ringkasan ── */}
             <SummaryRow className="mb-5" cards={[
-                { title: 'Total Tools', value: TOOLS.length, icon: Wand2, gradient: 'from-blue-500 to-purple-600' },
+                { title: 'Total Tools', value: TOOLS.length, icon: Wand2, gradient: 'from-blue-500 to-blue-600' },
                 { title: 'Riwayat Tersimpan', value: history.length, icon: History, gradient: 'from-emerald-500 to-teal-600' },
                 { title: 'Tool Aktif', value: tool.label, icon: Sparkles, gradient: 'from-amber-500 to-orange-600', valueClass: 'text-base' },
                 { title: tool.id === 'sign' ? 'Tanda Tangan' : 'Hasil OCR',
@@ -1559,9 +1559,9 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                     {[
                                         { l: 'Blok terdeteksi', v: preview.data.blocks_found ?? 0, c: 'text-sky-600 dark:text-sky-300' },
                                         { l: 'Halaman akan ditandatangani', v: preview.data.pages_signed ?? 0, c: 'text-emerald-600 dark:text-emerald-300' },
-                                        { l: 'Total halaman dokumen', v: preview.data.total_pages ?? 0, c: 'text-slate-600 dark:text-slate-300' },
+                                        { l: 'Total halaman dokumen', v: preview.data.total_pages ?? 0, c: 'text-slate-600 dark:text-white/70' },
                                         ...(preview.data.grouped
-                                            ? [{ l: 'Nota (grup)', v: `${preview.data.groups ?? 0}${preview.data.groups_multi ? ` (${preview.data.groups_multi} multi)` : ''}`, c: 'text-violet-600 dark:text-violet-300' }]
+                                            ? [{ l: 'Nota (grup)', v: `${preview.data.groups ?? 0}${preview.data.groups_multi ? ` (${preview.data.groups_multi} multi)` : ''}`, c: 'text-blue-600 dark:text-blue-300' }]
                                             : []),
                                     ].map(s => (
                                         <div key={s.l} className={`rounded-xl border px-3 py-2 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'}`}>

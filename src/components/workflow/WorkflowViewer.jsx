@@ -57,7 +57,7 @@ const ApproverNode = ({ data }) => {
     const hasDocs = (data.documents || []).length > 0;
 
     return (
-        <div className={`rounded-3xl bg-white dark:bg-slate-800 shadow-2xl border-2 min-w-[220px] max-w-[280px] transition-all cursor-pointer hover:shadow-blue-500/10 hover:shadow-3xl relative ${isDone || isDefined ? 'border-blue-500' :
+        <div className={`rounded-3xl bg-white dark:bg-[#0d0d0d] shadow-2xl border-2 min-w-[220px] max-w-[280px] transition-all cursor-pointer hover:shadow-blue-500/10 hover:shadow-3xl relative ${isDone || isDefined ? 'border-blue-500' :
             isRejected ? 'border-red-500' :
                 isActive ? 'border-amber-500 ring-4 ring-amber-500/20 scale-105 z-50' :
                     'border-slate-100 dark:border-slate-800'
@@ -73,7 +73,7 @@ const ApproverNode = ({ data }) => {
                     <div className={`w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center ${isDone || isDefined ? 'bg-blue-50 text-blue-600' :
                         isRejected ? 'bg-red-50 text-red-600' :
                             isActive ? 'bg-amber-50 text-amber-600 animate-pulse' :
-                                'bg-slate-50 dark:bg-slate-800 text-slate-400'
+                                'bg-slate-50 dark:bg-[#0d0d0d] text-slate-400'
                         }`}>
                         {isDone || isDefined ? <ShieldCheck size={20} /> :
                             isRejected ? <XCircle size={20} /> :
@@ -87,7 +87,7 @@ const ApproverNode = ({ data }) => {
                                 <span className={`text-[8px] font-black px-1.5 py-0.5 rounded-md uppercase tracking-tighter ${isDone ? 'bg-emerald-500/10 text-emerald-600' :
                                     isRejected ? 'bg-red-500/10 text-red-600' :
                                         isActive ? 'bg-amber-500/10 text-amber-600' :
-                                            'bg-slate-100 dark:bg-slate-800 text-slate-500'
+                                            'bg-slate-100 dark:bg-[#0d0d0d] text-slate-500'
                                     }`}>
                                     {data.status || 'Waiting'}
                                 </span>
@@ -159,12 +159,12 @@ function NodeDetailPopup({ node, onClose }) {
             <div className="fixed inset-0 z-[10020] bg-black/60 backdrop-blur-md animate-in fade-in duration-200" onClick={onClose} />
 
             {/* Popup */}
-            <div className="fixed left-1/2 top-1/2 z-[10030] w-[420px] max-w-[92vw] max-h-[92vh] -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-slate-800 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+            <div className="fixed left-1/2 top-1/2 z-[10030] w-[420px] max-w-[92vw] max-h-[92vh] -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-[#0d0d0d] rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in-95 duration-300">
                 {/* Header */}
                 <div className={`p-5 border-b border-slate-100 dark:border-slate-800 ${isDone ? 'bg-emerald-50 dark:bg-emerald-900/10' :
                     isRejected ? 'bg-red-50 dark:bg-red-900/10' :
                         isActive ? 'bg-amber-50 dark:bg-amber-900/10' :
-                            'bg-slate-50 dark:bg-slate-800/50'
+                            'bg-slate-50 dark:bg-[#0d0d0d]/50'
                     }`}>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -180,21 +180,21 @@ function NodeDetailPopup({ node, onClose }) {
                                 <p className="text-lg font-black text-slate-800 dark:text-white">{data.label}</p>
                             </div>
                         </div>
-                        <button onClick={onClose} className="p-2 hover:bg-white/50 dark:hover:bg-slate-700 rounded-xl transition-all">
+                        <button onClick={onClose} className="p-2 hover:bg-white/50 dark:hover:bg-white/[0.06] rounded-xl transition-all">
                             <X size={18} className="text-slate-400" />
                         </button>
                     </div>
 
                     <div className="flex items-center gap-2 mt-3">
                         {data.username && (
-                            <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-white/60 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-300">
+                            <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-white/60 dark:bg-[#0d0d0d] text-[10px] font-bold text-slate-600 dark:text-white/70">
                                 <User size={10} /> {data.username}
                             </span>
                         )}
                         <span className={`px-2 py-1 rounded-lg text-[10px] font-black uppercase ${isDone ? 'bg-emerald-500/20 text-emerald-700' :
                             isRejected ? 'bg-red-500/20 text-red-700' :
                                 isActive ? 'bg-amber-500/20 text-amber-700' :
-                                    'bg-slate-200 dark:bg-slate-700 text-slate-500'
+                                    'bg-slate-200 dark:bg-[#111] text-slate-500'
                             }`}>
                             {data.status || 'Waiting'}
                         </span>
@@ -234,7 +234,7 @@ function NodeDetailPopup({ node, onClose }) {
                                     return isImage(url) ? (
                                         <div
                                             key={dIdx}
-                                            className="relative aspect-video rounded-xl overflow-hidden border border-amber-200/50 dark:border-amber-800/50 bg-white dark:bg-slate-800 cursor-pointer group/img hover:ring-2 hover:ring-blue-500 transition-all"
+                                            className="relative aspect-video rounded-xl overflow-hidden border border-amber-200/50 dark:border-amber-800/50 bg-white dark:bg-[#0d0d0d] cursor-pointer group/img hover:ring-2 hover:ring-blue-500 transition-all"
                                             onClick={() => setPreviewImage(getFullUrl(url))}
                                         >
                                             <img
@@ -252,10 +252,10 @@ function NodeDetailPopup({ node, onClose }) {
                                             href={getFullUrl(url)}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="flex items-center gap-2 p-3 rounded-xl bg-white dark:bg-slate-800 border border-amber-200/50 dark:border-amber-800/50 hover:bg-amber-50 transition-all"
+                                            className="flex items-center gap-2 p-3 rounded-xl bg-white dark:bg-[#0d0d0d] border border-amber-200/50 dark:border-amber-800/50 hover:bg-amber-50 transition-all"
                                         >
                                             <FileText size={16} className="text-amber-500 flex-shrink-0" />
-                                            <span className="text-xs font-bold text-slate-600 dark:text-slate-300 truncate">
+                                            <span className="text-xs font-bold text-slate-600 dark:text-white/70 truncate">
                                                 {doc.name || (typeof url === 'string' ? url.split('/').pop() : `File ${dIdx + 1}`)}
                                             </span>
                                         </a>

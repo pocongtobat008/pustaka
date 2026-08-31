@@ -26,13 +26,13 @@ export default function OcrLaneStatus({ API_BASE }) {
   if (!lanes || lanes.length === 0) return null;
 
   return (
-    <div className="fixed right-4 top-4 z-50 w-80 max-w-[90vw] p-2 bg-white/90 dark:bg-slate-800/80 rounded-xl shadow-lg border border-slate-100 dark:border-slate-800 backdrop-blur">
+    <div className="fixed right-4 top-4 z-50 w-80 max-w-[90vw] p-2 bg-white/90 dark:bg-[#0d0d0d]/80 rounded-xl shadow-lg border border-slate-100 dark:border-slate-800 backdrop-blur">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-3">
           <div className="text-xs font-black uppercase">OCR Lanes</div>
           <div className="text-[11px] text-slate-500">Total {total}</div>
         </div>
-        <button onClick={() => setMinimized(s => !s)} className="p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800">
+        <button onClick={() => setMinimized(s => !s)} className="p-1 rounded-md hover:bg-slate-100 dark:hover:bg-white/[0.05]">
           {minimized ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
         </button>
       </div>
@@ -45,7 +45,7 @@ export default function OcrLaneStatus({ API_BASE }) {
                 <div className="truncate">{l.name}</div>
                 <div className="font-black">{l.count}/{l.capacity}</div>
               </div>
-              <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
+              <div className="w-full bg-slate-100 dark:bg-[#0d0d0d] rounded-full h-2 overflow-hidden">
                 <div style={{ width: `${Math.min(l.loadPct, 200)}%` }} className={`h-full ${l.loadPct >= 100 ? 'bg-red-500' : 'bg-emerald-500'} rounded-full`} />
               </div>
             </div>

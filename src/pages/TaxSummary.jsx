@@ -203,9 +203,9 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy, isEnglish }) => {
 
     return (
         <div className="space-y-6 animate-in slide-in-from-bottom-2 duration-500">
-            <Card className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-gray-200 dark:border-slate-700 p-4">
+            <Card className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border-gray-200 dark:border-white/[0.06] p-4">
                 <div className="space-y-4">
-                    <div className="flex gap-2 border-b border-gray-100 dark:border-slate-700 pb-4 overflow-x-auto">
+                    <div className="flex gap-2 border-b border-gray-100 dark:border-white/[0.06] pb-4 overflow-x-auto">
                         {[
                             { id: 'manual', label: t.modes.manual },
                             { id: 'mom', label: t.modes.mom },
@@ -216,7 +216,7 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy, isEnglish }) => {
                             <button
                                 key={mode.id}
                                 onClick={() => setCompMode(mode.id)}
-                                className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors whitespace-nowrap ${compMode === mode.id ? 'bg-blue-100 text-blue-700 dark:bg-blue-600 dark:text-white shadow-sm' : 'text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700'}`}
+                                className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors whitespace-nowrap ${compMode === mode.id ? 'bg-blue-100 text-blue-700 dark:bg-blue-600 dark:text-white shadow-sm' : 'text-gray-500 dark:text-white/40 hover:bg-gray-100 dark:hover:bg-white/[0.06]'}`}
                             >
                                 {mode.label}
                             </button>
@@ -227,15 +227,15 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy, isEnglish }) => {
                         {compMode === 'manual' && (
                             <>
                                 <span className="text-sm font-bold text-gray-500 mr-2">{t.filter}</span>
-                                <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={compFilters.month} onChange={e => setCompFilters(prev => ({ ...prev, month: e.target.value }))}>
+                                <select className="p-2 text-xs rounded-lg border dark:bg-[#111] dark:border-white/[0.08]" value={compFilters.month} onChange={e => setCompFilters(prev => ({ ...prev, month: e.target.value }))}>
                                     <option value="All">{t.allMonth}</option>
                                     {months.map(m => <option key={m} value={m}>{monthDisplay(m)}</option>)}
                                 </select>
-                                <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={compFilters.year} onChange={e => setCompFilters(prev => ({ ...prev, year: e.target.value }))}>
+                                <select className="p-2 text-xs rounded-lg border dark:bg-[#111] dark:border-white/[0.08]" value={compFilters.year} onChange={e => setCompFilters(prev => ({ ...prev, year: e.target.value }))}>
                                     <option value="All">{t.allYear}</option>
                                     {uniqueYears.map(y => <option key={y} value={y}>{y}</option>)}
                                 </select>
-                                <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={compFilters.pembetulan} onChange={e => setCompFilters(prev => ({ ...prev, pembetulan: e.target.value }))}>
+                                <select className="p-2 text-xs rounded-lg border dark:bg-[#111] dark:border-white/[0.08]" value={compFilters.pembetulan} onChange={e => setCompFilters(prev => ({ ...prev, pembetulan: e.target.value }))}>
                                     <option value="All">{t.allRevision}</option>
                                     {uniquePembetulan.map(p => <option key={p} value={p}>P-{p}</option>)}
                                 </select>
@@ -246,15 +246,15 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy, isEnglish }) => {
                         {compMode === 'mom' && (
                             <>
                                 <span className="text-sm font-bold text-gray-500 mr-2">{t.choose}</span>
-                                <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedYear} onChange={e => setSelectedYear(e.target.value)}>
+                                <select className="p-2 text-xs rounded-lg border dark:bg-[#111] dark:border-white/[0.08]" value={selectedYear} onChange={e => setSelectedYear(e.target.value)}>
                                     {uniqueYears.map(y => <option key={y} value={y}>{y}</option>)}
                                 </select>
                                 <div className="h-4 w-px bg-gray-300 mx-2"></div>
-                                <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedMonthA} onChange={e => setSelectedMonthA(e.target.value)}>
+                                <select className="p-2 text-xs rounded-lg border dark:bg-[#111] dark:border-white/[0.08]" value={selectedMonthA} onChange={e => setSelectedMonthA(e.target.value)}>
                                     {months.map(m => <option key={m} value={m}>{monthDisplay(m)}</option>)}
                                 </select>
                                 <span className="text-xs text-gray-400">vs</span>
-                                <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedMonthB} onChange={e => setSelectedMonthB(e.target.value)}>
+                                <select className="p-2 text-xs rounded-lg border dark:bg-[#111] dark:border-white/[0.08]" value={selectedMonthB} onChange={e => setSelectedMonthB(e.target.value)}>
                                     {months.map(m => <option key={m} value={m}>{monthDisplay(m)}</option>)}
                                 </select>
                             </>
@@ -263,17 +263,17 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy, isEnglish }) => {
                         {compMode === 'diff_year' && (
                             <>
                                 <span className="text-sm font-bold text-gray-500 mr-2">{t.choose}</span>
-                                <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedMonthA} onChange={e => setSelectedMonthA(e.target.value)}>
+                                <select className="p-2 text-xs rounded-lg border dark:bg-[#111] dark:border-white/[0.08]" value={selectedMonthA} onChange={e => setSelectedMonthA(e.target.value)}>
                                     {months.map(m => <option key={m} value={m}>{monthDisplay(m)}</option>)}
                                 </select>
-                                <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedYearA} onChange={e => setSelectedYearA(e.target.value)}>
+                                <select className="p-2 text-xs rounded-lg border dark:bg-[#111] dark:border-white/[0.08]" value={selectedYearA} onChange={e => setSelectedYearA(e.target.value)}>
                                     {uniqueYears.map(y => <option key={y} value={y}>{y}</option>)}
                                 </select>
                                 <span className="text-xs text-gray-400">vs</span>
-                                <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedMonthB} onChange={e => setSelectedMonthB(e.target.value)}>
+                                <select className="p-2 text-xs rounded-lg border dark:bg-[#111] dark:border-white/[0.08]" value={selectedMonthB} onChange={e => setSelectedMonthB(e.target.value)}>
                                     {months.map(m => <option key={m} value={m}>{monthDisplay(m)}</option>)}
                                 </select>
-                                <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedYearB} onChange={e => setSelectedYearB(e.target.value)}>
+                                <select className="p-2 text-xs rounded-lg border dark:bg-[#111] dark:border-white/[0.08]" value={selectedYearB} onChange={e => setSelectedYearB(e.target.value)}>
                                     {uniqueYears.map(y => <option key={y} value={y}>{y}</option>)}
                                 </select>
                             </>
@@ -282,15 +282,15 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy, isEnglish }) => {
                         {compMode === 'yoy' && (
                             <>
                                 <span className="text-sm font-bold text-gray-500 mr-2">{t.choose}</span>
-                                <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedMonth} onChange={e => setSelectedMonth(e.target.value)}>
+                                <select className="p-2 text-xs rounded-lg border dark:bg-[#111] dark:border-white/[0.08]" value={selectedMonth} onChange={e => setSelectedMonth(e.target.value)}>
                                     {months.map(m => <option key={m} value={m}>{monthDisplay(m)}</option>)}
                                 </select>
                                 <div className="h-4 w-px bg-gray-300 mx-2"></div>
-                                <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedYearA} onChange={e => setSelectedYearA(e.target.value)}>
+                                <select className="p-2 text-xs rounded-lg border dark:bg-[#111] dark:border-white/[0.08]" value={selectedYearA} onChange={e => setSelectedYearA(e.target.value)}>
                                     {uniqueYears.map(y => <option key={y} value={y}>{y}</option>)}
                                 </select>
                                 <span className="text-xs text-gray-400">vs</span>
-                                <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedYearB} onChange={e => setSelectedYearB(e.target.value)}>
+                                <select className="p-2 text-xs rounded-lg border dark:bg-[#111] dark:border-white/[0.08]" value={selectedYearB} onChange={e => setSelectedYearB(e.target.value)}>
                                     {uniqueYears.map(y => <option key={y} value={y}>{y}</option>)}
                                 </select>
                             </>
@@ -299,18 +299,18 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy, isEnglish }) => {
                         {compMode === 'rev' && (
                             <>
                                 <span className="text-sm font-bold text-gray-500 mr-2">{t.choose}</span>
-                                <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedMonth} onChange={e => setSelectedMonth(e.target.value)}>
+                                <select className="p-2 text-xs rounded-lg border dark:bg-[#111] dark:border-white/[0.08]" value={selectedMonth} onChange={e => setSelectedMonth(e.target.value)}>
                                     {months.map(m => <option key={m} value={m}>{monthDisplay(m)}</option>)}
                                 </select>
-                                <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedYear} onChange={e => setSelectedYear(e.target.value)}>
+                                <select className="p-2 text-xs rounded-lg border dark:bg-[#111] dark:border-white/[0.08]" value={selectedYear} onChange={e => setSelectedYear(e.target.value)}>
                                     {uniqueYears.map(y => <option key={y} value={y}>{y}</option>)}
                                 </select>
                                 <div className="h-4 w-px bg-gray-300 mx-2"></div>
-                                <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedRevA} onChange={e => setSelectedRevA(e.target.value)}>
+                                <select className="p-2 text-xs rounded-lg border dark:bg-[#111] dark:border-white/[0.08]" value={selectedRevA} onChange={e => setSelectedRevA(e.target.value)}>
                                     {uniquePembetulan.map(p => <option key={p} value={p}>P-{p}</option>)}
                                 </select>
                                 <span className="text-xs text-gray-400">vs</span>
-                                <select className="p-2 text-xs rounded-lg border dark:bg-slate-700 dark:border-slate-600" value={selectedRevB} onChange={e => setSelectedRevB(e.target.value)}>
+                                <select className="p-2 text-xs rounded-lg border dark:bg-[#111] dark:border-white/[0.08]" value={selectedRevB} onChange={e => setSelectedRevB(e.target.value)}>
                                     {uniquePembetulan.map(p => <option key={p} value={p}>P-{p}</option>)}
                                 </select>
                             </>
@@ -337,7 +337,7 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy, isEnglish }) => {
                             const valA = getSafeValue(dataA, t, 'pph');
                             const valB = getSafeValue(dataB, t, 'pph');
                             return (
-                                <div key={t} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-slate-800 rounded-lg">
+                                <div key={t} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-[#0d0d0d] rounded-lg">
                                     <div className="text-sm font-medium">{t}</div>
                                     <div className="text-right">
                                         <div className="text-sm font-bold dark:text-white">Rp {valB.toLocaleString()}</div>
@@ -359,7 +359,7 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy, isEnglish }) => {
                                 const valB = getSafeValue(dataB, t, 'ppnIn');
                                 return (
                                     <div key={t} className="flex justify-between items-center mb-1 text-sm border-b border-dashed border-gray-100 pb-1 last:border-0">
-                                        <span className="text-gray-600 dark:text-slate-400">{t}</span>
+                                        <span className="text-gray-600 dark:text-white/40">{t}</span>
                                         <div className="text-right flex items-center gap-3">
                                             <span>Rp {valB.toLocaleString()}</span>
                                             {renderDelta(valA, valB)}
@@ -375,7 +375,7 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy, isEnglish }) => {
                                 const valB = getSafeValue(dataB, t, 'ppnOut');
                                 return (
                                     <div key={t} className="flex justify-between items-center mb-1 text-sm border-b border-dashed border-gray-100 pb-1 last:border-0">
-                                        <span className="text-gray-600 dark:text-slate-400">{t}</span>
+                                        <span className="text-gray-600 dark:text-white/40">{t}</span>
                                         <div className="text-right flex items-center gap-3">
                                             <span>Rp {valB.toLocaleString()}</span>
                                             {renderDelta(valA, valB)}
@@ -793,9 +793,9 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
         const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
         return (
-            <div className="flex flex-wrap gap-2 items-center bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 p-2 rounded-xl">
+            <div className="flex flex-wrap gap-2 items-center bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-white/40 dark:border-white/10 p-2 rounded-xl">
                 <select
-                    className="p-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-600 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl dark:text-white text-slate-700"
+                    className="p-1.5 text-xs rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl dark:text-white text-slate-700"
                     value={filters.month}
                     onChange={e => setFilters(prev => ({ ...prev, month: e.target.value }))}
                 >
@@ -804,7 +804,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                 </select>
 
                 <select
-                    className="p-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-600 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl dark:text-white text-slate-700"
+                    className="p-1.5 text-xs rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl dark:text-white text-slate-700"
                     value={filters.year}
                     onChange={e => setFilters(prev => ({ ...prev, year: e.target.value }))}
                 >
@@ -813,7 +813,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                 </select>
 
                 <select
-                    className="p-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-600 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl dark:text-white text-slate-700"
+                    className="p-1.5 text-xs rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl dark:text-white text-slate-700"
                     value={filters.pembetulan}
                     onChange={e => setFilters(prev => ({ ...prev, pembetulan: e.target.value }))}
                 >
@@ -823,7 +823,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
 
                 {type === 'ppn' && (
                     <select
-                        className="p-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-600 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl dark:text-white text-slate-700"
+                        className="p-1.5 text-xs rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl dark:text-white text-slate-700"
                         value={filters.status}
                         onChange={e => setFilters(prev => ({ ...prev, status: e.target.value }))}
                     >
@@ -877,7 +877,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                         valuePrefix: 'Rp ',
                         valueClass: 'text-lg',
                         icon: Landmark,
-                        gradient: 'from-blue-600 to-purple-700',
+                        gradient: 'from-blue-600 to-blue-700',
                         action: (
                             <button
                                 onClick={(e) => { e.stopPropagation(); onCopy(grandTotalPPh, "Estimasi PPh Terutang"); }}
@@ -908,7 +908,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                     })),
                 ]}>
                     {hasPermission('tax-summary', 'edit') && (
-                        <button onClick={() => handleAddType('pphTypes')} className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-2xl text-gray-400 hover:border-blue-400 hover:text-blue-500 transition-colors">
+                        <button onClick={() => handleAddType('pphTypes')} className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 dark:border-white/[0.06] rounded-2xl text-gray-400 hover:border-blue-400 hover:text-blue-500 transition-colors">
                             <Plus size={20} />
                             <span className="text-xs font-medium mt-1">{isEnglish ? 'Add Tax Type' : 'Tambah Tipe Pajak'}</span>
                         </button>
@@ -949,7 +949,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                                         <Plus size={14} /> {isEnglish ? 'Input PPh' : 'Input PPh'}
                                     </button>
                                 )}
-                                <button className="p-2 hover:bg-gray-100 rounded-lg dark:hover:bg-slate-700"><Download size={16} className="text-gray-500" /></button>
+                                <button className="p-2 hover:bg-gray-100 rounded-lg dark:hover:bg-white/[0.06]"><Download size={16} className="text-gray-500" /></button>
                             </div>
                         </div>
                         <div className="h-[350px] min-h-[350px]">
@@ -1018,13 +1018,13 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                             {renderFilterControls('pph')}
                         </div>
                     </div>
-                    <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-slate-700">
+                    <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-white/[0.06]">
                         <table className="w-full text-sm text-left">
-                            <thead className="bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-slate-300">
+                            <thead className="bg-gray-50 dark:bg-[#0d0d0d] text-gray-700 dark:text-white/70">
                                 <tr>
-                                    <th className="px-6 py-4 font-semibold text-right border-b border-gray-200 dark:border-slate-700">Periode</th>
+                                    <th className="px-6 py-4 font-semibold text-right border-b border-gray-200 dark:border-white/[0.06]">Periode</th>
                                     {config.pphTypes.map(tp => (
-                                        <th key={tp} className="px-6 py-4 font-semibold text-right border-b border-gray-200 dark:border-slate-700 group/th relative">
+                                        <th key={tp} className="px-6 py-4 font-semibold text-right border-b border-gray-200 dark:border-white/[0.06] group/th relative">
                                             <div className="flex items-center justify-end gap-1">
                                                 {tp}
                                                 {hasPermission('tax-summary', 'edit') && (
@@ -1048,8 +1048,8 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                                             </div>
                                         </th>
                                     ))}
-                                    <th className="px-6 py-4 font-semibold text-right border-b border-gray-200 dark:border-slate-700">Total</th>
-                                    <th className="px-6 py-4 font-semibold text-center border-b border-gray-200 dark:border-slate-700">Aksi</th>
+                                    <th className="px-6 py-4 font-semibold text-right border-b border-gray-200 dark:border-white/[0.06]">Total</th>
+                                    <th className="px-6 py-4 font-semibold text-center border-b border-gray-200 dark:border-white/[0.06]">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
@@ -1059,7 +1059,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                                     return (
                                         <tr key={idx}
                                             style={{ animationDelay: `${idx * 50}ms` }}
-                                            className={`hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors group animate-in zoom-in-95 fade-in fill-mode-both duration-500 ${hasPermission('tax-summary', 'edit') ? 'cursor-pointer' : ''}`}
+                                            className={`hover:bg-gray-50 dark:hover:bg-white/[0.05]/50 transition-colors group animate-in zoom-in-95 fade-in fill-mode-both duration-500 ${hasPermission('tax-summary', 'edit') ? 'cursor-pointer' : ''}`}
                                             onClick={() => hasPermission('tax-summary', 'edit') && handleEditRow(s)}>
                                             <td className="px-6 py-4 font-medium dark:text-white">{s.month} {s.year}</td>
                                             {config.pphTypes.map(t => {
@@ -1270,10 +1270,10 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                             {renderFilterControls('ppn')}
                         </div>
                     </div>
-                    <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-slate-700">
+                    <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-white/[0.06]">
                         <table className="w-full text-sm text-left">
-                            <thead className="bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-slate-300">
-                                <tr className="border-b border-gray-200 dark:border-slate-700">
+                            <thead className="bg-gray-50 dark:bg-[#0d0d0d] text-gray-700 dark:text-white/70">
+                                <tr className="border-b border-gray-200 dark:border-white/[0.06]">
                                     <th className="px-6 py-4 font-semibold" rowSpan="2">Periode</th>
                                     <th className={`px-6 py-2 font-semibold text-center bg-emerald-50/50 dark:bg-emerald-900/20 ${hasPermission('tax-summary', 'edit') ? 'cursor-pointer hover:bg-emerald-100 dark:hover:bg-emerald-900/30' : ''}`} colSpan={config.ppnInTypes.length} onClick={() => hasPermission('tax-summary', 'edit') && handleAddType('ppnInTypes')}>
                                         PPN Masukan (In) {hasPermission('tax-summary', 'edit') && <Plus size={12} className="inline ml-1 opacity-50" />}
@@ -1281,7 +1281,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                                     <th className={`px-6 py-2 font-semibold text-center bg-amber-50/50 dark:bg-amber-900/20 ${hasPermission('tax-summary', 'edit') ? 'cursor-pointer hover:bg-amber-100 dark:hover:bg-amber-900/30' : ''}`} colSpan={config.ppnOutTypes.length} onClick={() => hasPermission('tax-summary', 'edit') && handleAddType('ppnOutTypes')}>
                                         PPN Keluaran (Out) {hasPermission('tax-summary', 'edit') && <Plus size={12} className="inline ml-1 opacity-50" />}
                                     </th>
-                                    <th className="px-4 py-4 font-semibold text-center bg-gray-100 dark:bg-slate-700" rowSpan="2">Status</th>
+                                    <th className="px-4 py-4 font-semibold text-center bg-gray-100 dark:bg-[#111]" rowSpan="2">Status</th>
                                     <th className="px-4 py-4 font-semibold" rowSpan="2">Aksi</th>
                                 </tr>
                                 <tr>
@@ -1344,7 +1344,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                                     return (
                                         <tr key={idx}
                                             style={{ animationDelay: `${idx * 50}ms` }}
-                                            className={`hover:bg-gray-50 dark:hover:bg-slate-800/50 group animate-in zoom-in-95 fade-in fill-mode-both duration-500 ${hasPermission('tax-summary', 'edit') ? 'cursor-pointer' : ''}`}
+                                            className={`hover:bg-gray-50 dark:hover:bg-white/[0.05]/50 group animate-in zoom-in-95 fade-in fill-mode-both duration-500 ${hasPermission('tax-summary', 'edit') ? 'cursor-pointer' : ''}`}
                                             onClick={() => hasPermission('tax-summary', 'edit') && handleEditRow(s, 'ppn')}>
                                             <td className="px-6 py-4 font-medium dark:text-white">{s.month} {s.year}</td>
                                             {config.ppnInTypes.map(t => <td key={t} className="px-4 py-4 text-right">Rp {getSafeValue(s, t, 'ppnIn').toLocaleString()}</td>)}
@@ -1379,7 +1379,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
         <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
             {/* Header & Tabs */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 p-1 rounded-xl w-fit shadow-sm">
+                <div className="flex bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-white/40 dark:border-white/10 p-1 rounded-xl w-fit shadow-sm">
                     <button
                         onClick={() => setActiveTab('pph')}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'pph' ? 'gradient-bg shadow-sm text-white' : 'text-gray-500 hover:text-gray-700'}`}
@@ -1402,21 +1402,21 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
 
                 {/* Import/Export Actions */}
                 <div className="flex flex-wrap gap-2">
-                    <div className="flex gap-1 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-lg p-1">
+                    <div className="flex gap-1 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-gray-200 dark:border-white/[0.06] rounded-lg p-1">
                         {(activeTab === 'pph' || activeTab === 'comparison') && (
                             <button
                                 onClick={() => downloadTemplate('pph')}
-                                className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded flex items-center gap-2"
+                                className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-white/[0.06] rounded flex items-center gap-2"
                                 title={t("taxsum.downloadTemplatePPh")}
                             >
                                 <Download size={14} /> Template PPh
                             </button>
                         )}
-                        {activeTab === 'comparison' && <div className="w-px bg-gray-200 dark:bg-slate-700 my-1"></div>}
+                        {activeTab === 'comparison' && <div className="w-px bg-gray-200 dark:bg-[#111] my-1"></div>}
                         {(activeTab === 'ppn' || activeTab === 'comparison') && (
                             <button
                                 onClick={() => downloadTemplate('ppn')}
-                                className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded flex items-center gap-2"
+                                className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-white/[0.06] rounded flex items-center gap-2"
                                 title={t("taxsum.downloadTemplatePPN")}
                             >
                                 <Download size={14} /> Template PPN
@@ -1451,7 +1451,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
 
             {/* AI SMART INSIGHT BANNER */}
             <div className={`p-4 rounded-2xl border backdrop-blur-md flex items-center gap-4 animate-in slide-in-from-top-4 duration-700 ${insight.color}`}>
-                <div className="p-2.5 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-xl shadow-sm shrink-0">
+                <div className="p-2.5 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-xl shadow-sm shrink-0">
                     {insight.icon}
                 </div>
                 <div className="flex-1">

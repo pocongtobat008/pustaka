@@ -11,9 +11,9 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { SIGNATURE_PLACEHOLDER_PNG } from '../../server/services/signaturePlaceholder.js';
 
 const btnPrimary = 'inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:opacity-95 text-white text-sm font-semibold shadow-lg shadow-blue-500/25 transition-all disabled:opacity-50';
-const btnSecondary = 'inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-200 text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all';
-const btnGhost = 'inline-flex items-center justify-center rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all';
-const panelCls = 'rounded-3xl bg-white/40 dark:bg-slate-800/40 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-2xl ring-1 ring-black/5 dark:ring-white/5';
+const btnSecondary = 'inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-600 dark:text-slate-200 text-sm font-semibold hover:bg-slate-200 dark:hover:bg-white/[0.06] transition-all';
+const btnGhost = 'inline-flex items-center justify-center rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all';
+const panelCls = 'rounded-3xl bg-white/40 dark:bg-[#0d0d0d]/40 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-2xl ring-1 ring-black/5 dark:ring-white/5';
 
 // ── Helper render (sama dengan server) ──
 const formatRupiah = (n) => {
@@ -575,7 +575,7 @@ export default function PdfTemplateDesigner({ currentUser, hasPermission, toast 
                     value: templates.length,
                     subtext: isEnglish ? 'Total PDF templates' : 'Total template PDF',
                     icon: FileCode2,
-                    gradient: 'from-blue-500 to-purple-600',
+                    gradient: 'from-blue-500 to-blue-600',
                 },
                 {
                     title: isEnglish ? 'Active' : 'Aktif',
@@ -596,7 +596,7 @@ export default function PdfTemplateDesigner({ currentUser, hasPermission, toast 
                     value: recentInvoices.length,
                     subtext: isEnglish ? 'For preview testing' : 'Untuk uji preview',
                     icon: Receipt,
-                    gradient: 'from-violet-500 to-fuchsia-600',
+                    gradient: 'from-blue-500 to-fuchsia-600',
                 },
             ]} />
 

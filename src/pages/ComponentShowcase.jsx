@@ -22,10 +22,10 @@ export default function ComponentShowcase({ isDarkMode }) {
     const t = (en, id) => (isEnglish ? en : id);
 
     const btnPrimary = 'inline-flex items-center gap-2 px-4 py-2.5 gradient-bg text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-500/25 hover:opacity-90 transition-all';
-    const btnOutline = 'inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-sm font-semibold';
+    const btnOutline = 'inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 dark:border-white/[0.08] text-slate-600 dark:text-white/70 hover:bg-slate-50 dark:hover:bg-white/[0.06] transition-colors text-sm font-semibold';
     const btnGreen = 'inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-500/25 transition-all';
     const btnRed = 'inline-flex items-center gap-2 px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-rose-500/25 transition-all';
-    const sectionTitle = 'text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-3';
+    const sectionTitle = 'text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-white/40 mb-3';
 
     return (
         <div className="max-w-[1400px] mx-auto px-4 lg:px-6 py-6 space-y-8 animate-in fade-in duration-500">
@@ -49,7 +49,7 @@ export default function ComponentShowcase({ isDarkMode }) {
                     { title: t('Total Invoice', 'Total Invoice'), value: '27', icon: FileText, gradient: 'from-blue-600 to-blue-700', subtext: t('Rp 1.240.000.000', 'Rp 1.240.000.000'), valueClass: 'text-2xl' },
                     { title: t('Proforma', 'Proforma'), value: '18', icon: CheckCircle2, gradient: 'from-amber-500 to-orange-600', subtext: t('5 approved', '5 disetujui'), valueClass: 'text-2xl' },
                     { title: t('Occupancy', 'Okupansi'), value: '72%', icon: LayoutDashboard, gradient: 'from-emerald-500 to-teal-600', subtext: t('Warehouse capacity', 'Kapasitas gudang'), valueClass: 'text-2xl' },
-                    { title: t('Notifications', 'Notifikasi'), value: '3', icon: Bell, gradient: 'from-violet-500 to-purple-600', subtext: t('Need action', 'Perlu tindakan'), valueClass: 'text-2xl' },
+                    { title: t('Notifications', 'Notifikasi'), value: '3', icon: Bell, gradient: 'from-blue-500 to-blue-600', subtext: t('Need action', 'Perlu tindakan'), valueClass: 'text-2xl' },
                 ]} />
             </section>
 
@@ -59,7 +59,7 @@ export default function ComponentShowcase({ isDarkMode }) {
                 <Card>
                     <PageHeader
                         icon={LayoutDashboard}
-                        iconClass="from-blue-500 to-purple-600"
+                        iconClass="from-blue-500 to-blue-600"
                         title={t('Example Page Header', 'Contoh Header Halaman')}
                         subtitle={t('Icon + title + subtitle + optional actions — identical across all pages.', 'Ikon + judul + subjudul + aksi opsional — identik di semua halaman.')}
                         actions={<button className={btnPrimary}><Download size={15} /> {t('Export', 'Ekspor')}</button>}
@@ -81,7 +81,7 @@ export default function ComponentShowcase({ isDarkMode }) {
                         </button>
                         <button className={`${btnPrimary} opacity-50 cursor-not-allowed`} disabled>{t('Disabled', 'Nonaktif')}</button>
                     </div>
-                    <p className="text-xs text-slate-400 dark:text-slate-500">{t('Rule: primary = gradient-bg; semantic colors = green (create/export), red (delete/danger), blue (info). Icon-only buttons must have aria-label/title.', 'Aturan: primer = gradient-bg; warna semantik = hijau (buat/ekspor), merah (hapus/bahaya), biru (info). Tombol ikon wajib punya aria-label/title.')}</p>
+                    <p className="text-xs text-slate-400 dark:text-white/30">{t('Rule: primary = gradient-bg; semantic colors = green (create/export), red (delete/danger), blue (info). Icon-only buttons must have aria-label/title.', 'Aturan: primer = gradient-bg; warna semantik = hijau (buat/ekspor), merah (hapus/bahaya), biru (info). Tombol ikon wajib punya aria-label/title.')}</p>
                 </Card>
             </section>
 
@@ -90,11 +90,11 @@ export default function ComponentShowcase({ isDarkMode }) {
                 <div className={sectionTitle}>{t('4. Form Inputs (Input / Select / Textarea)', '4. Input Form (Input / Select / Textarea)')}</div>
                 <Card className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
-                        <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5">{t('Text Input', 'Input Teks')}</label>
+                        <label className="block text-xs font-bold text-slate-500 dark:text-white/40 mb-1.5">{t('Text Input', 'Input Teks')}</label>
                         <Input value={sampleInput} onChange={(e) => setSampleInput(e.target.value)} placeholder={t('Type something…', 'Ketik sesuatu…')} />
                     </div>
                     <div>
-                        <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5">{t('Select', 'Pilihan')}</label>
+                        <label className="block text-xs font-bold text-slate-500 dark:text-white/40 mb-1.5">{t('Select', 'Pilihan')}</label>
                         <Select defaultValue="1">
                             <option value="1">{t('Option A', 'Pilihan A')}</option>
                             <option value="2">{t('Option B', 'Pilihan B')}</option>
@@ -102,7 +102,7 @@ export default function ComponentShowcase({ isDarkMode }) {
                         </Select>
                     </div>
                     <div className="md:col-span-2">
-                        <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5">{t('Textarea', 'Area Teks')}</label>
+                        <label className="block text-xs font-bold text-slate-500 dark:text-white/40 mb-1.5">{t('Textarea', 'Area Teks')}</label>
                         <Textarea rows={3} placeholder={t('Long description…', 'Deskripsi panjang…')} />
                     </div>
                 </Card>
@@ -128,7 +128,7 @@ export default function ComponentShowcase({ isDarkMode }) {
                         { title: t('Total Invoice', 'Total Invoice'), value: '27', icon: FileText, gradient: 'from-blue-600 to-blue-700', subtext: t('Rp 1.240.000.000', 'Rp 1.240.000.000'), valueClass: 'text-2xl' },
                         { title: t('Proforma', 'Proforma'), value: '18', icon: CheckCircle2, gradient: 'from-amber-500 to-orange-600', subtext: t('5 approved', '5 disetujui'), valueClass: 'text-2xl' },
                         { title: t('Occupancy', 'Okupansi'), value: '72%', icon: LayoutDashboard, gradient: 'from-emerald-500 to-teal-600', subtext: t('Warehouse capacity', 'Kapasitas gudang'), valueClass: 'text-2xl' },
-                        { title: t('Notifications', 'Notifikasi'), value: '3', icon: Bell, gradient: 'from-violet-500 to-purple-600', subtext: t('Need action', 'Perlu tindakan'), valueClass: 'text-2xl' },
+                        { title: t('Notifications', 'Notifikasi'), value: '3', icon: Bell, gradient: 'from-blue-500 to-blue-600', subtext: t('Need action', 'Perlu tindakan'), valueClass: 'text-2xl' },
                     ]} />
                     <div className="flex flex-wrap gap-3 items-center">
                         <button className="inline-flex items-center gap-2 px-4 py-2.5 gradient-bg text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-500/25"><Plus size={15} /> {t('Primary', 'Primer')}</button>
@@ -149,13 +149,13 @@ export default function ComponentShowcase({ isDarkMode }) {
                     <button className={btnPrimary} onClick={() => setShowModal(true)}>
                         <Info size={15} /> {t('Open Modal', 'Buka Modal')}
                     </button>
-                    <p className="text-xs text-slate-400 dark:text-slate-500">{t('ESC to close • glass header + body • scroll lock', 'ESC untuk tutup • header glass + body • kunci scroll')}</p>
+                    <p className="text-xs text-slate-400 dark:text-white/30">{t('ESC to close • glass header + body • scroll lock', 'ESC untuk tutup • header glass + body • kunci scroll')}</p>
                 </Card>
             </section>
 
             <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={t('Modal Example', 'Contoh Modal')} size="max-w-lg">
                 <div className="space-y-3">
-                    <p className="text-sm text-slate-600 dark:text-slate-300">{t('This modal uses the centralized ui/Modal component — glass styling, ESC to close, body scroll lock. Used identically across all menus.', 'Modal ini memakai komponen ui/Modal terpusat — gaya glass, ESC untuk menutup, kunci scroll body. Dipakai identik di semua menu.')}</p>
+                    <p className="text-sm text-slate-600 dark:text-white/70">{t('This modal uses the centralized ui/Modal component — glass styling, ESC to close, body scroll lock. Used identically across all menus.', 'Modal ini memakai komponen ui/Modal terpusat — gaya glass, ESC untuk menutup, kunci scroll body. Dipakai identik di semua menu.')}</p>
                     <div className="flex justify-end gap-2 pt-2">
                         <button className={btnOutline} onClick={() => setShowModal(false)}>{t('Cancel', 'Batal')}</button>
                         <button className={btnPrimary} onClick={() => setShowModal(false)}><CheckCircle2 size={15} /> {t('Confirm', 'Simpan')}</button>
@@ -163,7 +163,7 @@ export default function ComponentShowcase({ isDarkMode }) {
                 </div>
             </Modal>
 
-            <p className="text-center text-[11px] text-slate-400 dark:text-slate-500 pt-4">
+            <p className="text-center text-[11px] text-slate-400 dark:text-white/30 pt-4">
                 {t('All components share one source of truth: src/components/ui/* — changes here apply everywhere.', 'Semua komponen berbagi satu sumber kebenaran: src/components/ui/* — perubahan di sini berlaku di semua tempat.')}
             </p>
         </div>

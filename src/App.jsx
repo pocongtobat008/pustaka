@@ -3667,7 +3667,7 @@ export default function App() {
       <div className="h-screen w-screen flex items-center justify-center bg-[#eef1f8] dark:bg-[#0b1437]">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-gray-500 dark:text-slate-400 font-medium">{commandTextMap.labels.loading}</p>
+          <p className="text-gray-500 dark:text-white/40 font-medium">{commandTextMap.labels.loading}</p>
         </div>
       </div>
     );
@@ -4159,7 +4159,7 @@ export default function App() {
         </AnimatePresence>
 
         {copyNotification && (
-          <div className="fixed bottom-10 right-10 bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border border-emerald-500/50 p-4 rounded-[2rem] shadow-2xl z-[200] animate-in slide-in-from-bottom-8 flex items-center gap-4 ring-8 ring-emerald-500/5">
+          <div className="fixed bottom-10 right-10 bg-white/80 dark:bg-[#0d0d0d]/80 backdrop-blur-xl border border-emerald-500/50 p-4 rounded-[2rem] shadow-2xl z-[200] animate-in slide-in-from-bottom-8 flex items-center gap-4 ring-8 ring-emerald-500/5">
             <div className="p-3 bg-emerald-500 rounded-2xl text-white shadow-lg shadow-emerald-500/30 animate-bounce">
               <CheckCircle2 size={18} />
             </div>
@@ -4182,23 +4182,23 @@ export default function App() {
         <div className="relative z-10 pt-4">
           <div className="flex justify-between items-center mb-6">
             <div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium tracking-wide uppercase mt-1">
+              <p className="text-xs text-slate-500 dark:text-white/40 font-medium tracking-wide uppercase mt-1">
                 Kembalikan ke Gudang
               </p>
             </div>
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-500 to-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
               <Truck className="text-white" size={24} />
             </div>
           </div>
 
           {/* Item Summary Card */}
-          <div className="bg-white/50 dark:bg-slate-800/50 rounded-2xl p-4 border border-white/40 dark:border-white/5 mb-6 flex gap-4 items-center">
+          <div className="bg-white/50 dark:bg-[#0d0d0d]/50 rounded-2xl p-4 border border-white/40 dark:border-white/5 mb-6 flex gap-4 items-center">
             <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
               <Package size={20} />
             </div>
             <div>
               <h4 className="font-bold text-slate-800 dark:text-white text-lg">{selectedExternalItem?.boxId}</h4>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-500 dark:text-white/40">
                 Dari: <span className="font-semibold text-blue-500">{selectedExternalItem?.destination}</span>
               </p>
             </div>
@@ -4206,12 +4206,12 @@ export default function App() {
 
           <div className="space-y-4">
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider ml-1">
+              <label className="text-xs font-bold text-slate-500 dark:text-white/40 uppercase tracking-wider ml-1">
                 Pilih Slot Tujuan (Kosong)
               </label>
               <div className="relative">
                 <select
-                  className="w-full appearance-none bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all cursor-pointer hover:bg-white/80 dark:hover:bg-slate-800/80"
+                  className="w-full appearance-none bg-white/50 dark:bg-[#0d0d0d]/50 border border-slate-200 dark:border-white/[0.06] rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all cursor-pointer hover:bg-white/80 dark:hover:bg-white/[0.05]/80"
                   value={restoreTargetSlot}
                   onChange={(e) => setRestoreTargetSlot(e.target.value)}
                 >
@@ -4232,7 +4232,7 @@ export default function App() {
             <div className="flex gap-3 pt-4">
               <button
                 onClick={() => setShowRestoreForm(false)}
-                className="flex-1 px-4 py-3 rounded-xl text-sm font-bold text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
+                className="flex-1 px-4 py-3 rounded-xl text-sm font-bold text-slate-500 hover:text-slate-700 dark:text-white/40 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
               >
                 Batal
               </button>
@@ -4242,8 +4242,8 @@ export default function App() {
                 className={`
                   flex-[2] px-4 py-3 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 shadow-lg transition-all
                   ${!restoreTargetSlot
-                    ? 'bg-slate-300 dark:bg-slate-700 cursor-not-allowed text-slate-400'
-                    : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-blue-500/25 hover:scale-[1.02] active:scale-95'
+                    ? 'bg-slate-300 dark:bg-[#111] cursor-not-allowed text-slate-400'
+                    : 'bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-blue-500 hover:shadow-blue-500/25 hover:scale-[1.02] active:scale-95'
                   }
                 `}
               >
@@ -4349,23 +4349,23 @@ export default function App() {
         <div className="relative z-10 pt-4">
           <div className="flex justify-between items-center mb-6">
             <div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium tracking-wide uppercase mt-1">
+              <p className="text-xs text-slate-500 dark:text-white/40 font-medium tracking-wide uppercase mt-1">
                 Kembalikan ke Gudang
               </p>
             </div>
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-500 to-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
               <Truck className="text-white" size={24} />
             </div>
           </div>
 
           {/* Item Summary Card */}
-          <div className="bg-white/50 dark:bg-slate-800/50 rounded-2xl p-4 border border-white/40 dark:border-white/5 mb-6 flex gap-4 items-center">
+          <div className="bg-white/50 dark:bg-[#0d0d0d]/50 rounded-2xl p-4 border border-white/40 dark:border-white/5 mb-6 flex gap-4 items-center">
             <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
               <Package size={20} />
             </div>
             <div>
               <h4 className="font-bold text-slate-800 dark:text-white text-lg">{selectedExternalItem?.boxId}</h4>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-500 dark:text-white/40">
                 Dari: <span className="font-semibold text-blue-500">{selectedExternalItem?.destination}</span>
               </p>
             </div>
@@ -4373,12 +4373,12 @@ export default function App() {
 
           <div className="space-y-4">
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider ml-1">
+              <label className="text-xs font-bold text-slate-500 dark:text-white/40 uppercase tracking-wider ml-1">
                 Pilih Slot Tujuan (Kosong)
               </label>
               <div className="relative">
                 <select
-                  className="w-full appearance-none bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all cursor-pointer hover:bg-white/80 dark:hover:bg-slate-800/80"
+                  className="w-full appearance-none bg-white/50 dark:bg-[#0d0d0d]/50 border border-slate-200 dark:border-white/[0.06] rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all cursor-pointer hover:bg-white/80 dark:hover:bg-white/[0.05]/80"
                   value={restoreTargetSlot}
                   onChange={(e) => setRestoreTargetSlot(e.target.value)}
                 >
@@ -4399,7 +4399,7 @@ export default function App() {
             <div className="flex gap-3 pt-4">
               <button
                 onClick={() => setShowRestoreForm(false)}
-                className="flex-1 px-4 py-3 rounded-xl text-sm font-bold text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
+                className="flex-1 px-4 py-3 rounded-xl text-sm font-bold text-slate-500 hover:text-slate-700 dark:text-white/40 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
               >
                 Batal
               </button>
@@ -4409,8 +4409,8 @@ export default function App() {
                 className={`
                   flex-[2] px-4 py-3 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 shadow-lg transition-all
                   ${!restoreTargetSlot
-                    ? 'bg-slate-300 dark:bg-slate-700 cursor-not-allowed text-slate-400'
-                    : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-blue-500/25 hover:scale-[1.02] active:scale-95'
+                    ? 'bg-slate-300 dark:bg-[#111] cursor-not-allowed text-slate-400'
+                    : 'bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-blue-500 hover:shadow-blue-500/25 hover:scale-[1.02] active:scale-95'
                   }
                 `}
               >
@@ -4442,7 +4442,7 @@ export default function App() {
                 type="date"
                 value={externalDate}
                 onChange={(e) => setExternalDate(e.target.value)}
-                className="w-full px-6 py-4 text-lg font-black border-2 border-blue-500/10 bg-slate-50 dark:bg-slate-800/50 rounded-2xl focus:border-blue-500 transition-all outline-none dark:text-white"
+                className="w-full px-6 py-4 text-lg font-black border-2 border-blue-500/10 bg-slate-50 dark:bg-[#0d0d0d]/50 rounded-2xl focus:border-blue-500 transition-all outline-none dark:text-white"
               />
             </div>
 
@@ -4455,7 +4455,7 @@ export default function App() {
               </button>
               <button
                 onClick={() => setShowExternalForm(false)}
-                className="w-full py-4 bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white text-xs font-black rounded-2xl transition-all uppercase tracking-widest"
+                className="w-full py-4 bg-slate-100 dark:bg-[#0d0d0d] text-slate-500 hover:text-slate-800 dark:hover:text-white text-xs font-black rounded-2xl transition-all uppercase tracking-widest"
               >
                 Batalkan
               </button>
@@ -4474,11 +4474,11 @@ export default function App() {
       >
         <div className="flex h-full min-h-[80vh] flex-col">
           {/* Header Controls (Name & Description) */}
-          <div className="p-6 bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-6">
+          <div className="p-6 bg-white dark:bg-[#0d0d0d] border-b border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nama Alur Persetujuan</label>
               <input
-                className="w-full px-5 py-3 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white font-black"
+                className="w-full px-5 py-3 bg-slate-50 dark:bg-[#0d0d0d] border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white font-black"
                 placeholder="Contoh: Alur Pengadaan Barang"
                 value={flowForm.name}
                 onChange={e => setFlowForm({ ...flowForm, name: e.target.value })}
@@ -4487,7 +4487,7 @@ export default function App() {
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Deskripsi Singkat</label>
               <input
-                className="w-full px-5 py-3 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white font-medium"
+                className="w-full px-5 py-3 bg-slate-50 dark:bg-[#0d0d0d] border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white font-medium"
                 placeholder="Tujuan dari alur persetujuan ini..."
                 value={flowForm.description}
                 onChange={e => setFlowForm({ ...flowForm, description: e.target.value })}

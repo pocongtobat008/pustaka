@@ -376,9 +376,9 @@ export default function Dashboard({
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             {/* STARTUP STYLE GREETING SECTION */}
-            <div className="relative overflow-hidden bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white/40 dark:border-white/10 shadow-2xl shadow-blue-500/10 group">
+            <div className="relative overflow-hidden bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white/40 dark:border-white/10 shadow-2xl shadow-blue-500/10 group">
                 <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all duration-700 pointer-events-none"></div>
-                <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl group-hover:bg-purple-500/20 transition-all duration-700 pointer-events-none"></div>
+                <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all duration-700 pointer-events-none"></div>
 
                 <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="space-y-2">
@@ -389,7 +389,7 @@ export default function Dashboard({
                             </div>
                             <button
                                 onClick={onOpenLanding}
-                                className="group relative flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full text-[11px] font-black uppercase tracking-widest transition-all hover:scale-110 hover:shadow-[0_0_20px_rgba(79,70,229,0.4)] active:scale-95 ring-4 ring-blue-500/10 overflow-hidden"
+                                className="group relative flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-blue-600 to-blue-600 text-white rounded-full text-[11px] font-black uppercase tracking-widest transition-all hover:scale-110 hover:shadow-[0_0_20px_rgba(79,70,229,0.4)] active:scale-95 ring-4 ring-blue-500/10 overflow-hidden"
                             >
                                 <div className="absolute inset-0 bg-white/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity animate-pulse"></div>
                                 <Sparkles size={14} className="relative z-10 animate-pulse" />
@@ -400,7 +400,7 @@ export default function Dashboard({
                         <h1 className="text-4xl md:text-5xl font-black text-[#2B3674] dark:text-white tracking-tight">
                             {getGreeting()}, <span className="text-blue-600">{currentUser?.name?.split(' ')[0] || 'User'}</span>
                         </h1>
-                        <p className="text-lg text-slate-500 dark:text-slate-400 font-medium max-w-xl leading-relaxed">
+                        <p className="text-lg text-slate-500 dark:text-white/40 font-medium max-w-xl leading-relaxed">
                             {text.welcome}<span className="font-bold text-blue-500">Pustaka</span>. {text.makeProductive}
                         </p>
                     </div>
@@ -432,10 +432,10 @@ export default function Dashboard({
             </div>
 
             {/* 🔍 SEMANTIC SEARCH BAR */}
-            <div className="bg-white/50 dark:bg-slate-800/50 backdrop-blur-xl p-6 rounded-3xl border border-white/20 shadow-xl shadow-blue-500/5 relative overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+            <div className="bg-white/50 dark:bg-[#0d0d0d]/50 backdrop-blur-xl p-6 rounded-3xl border border-white/20 shadow-xl shadow-blue-500/5 relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
 
-                <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 mb-4 flex items-center gap-2">
+                <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-600 dark:from-blue-400 dark:to-blue-400 mb-4 flex items-center gap-2">
                     <ScanLine className="text-blue-500" /> {text.aiSemanticSearch}
                 </h2>
 
@@ -477,7 +477,7 @@ export default function Dashboard({
                 {/* SEARCH RESULTS */}
                 {(searchResults.length > 0 || isSearching) && (
                     <div className="mt-6 space-y-3 animate-in fade-in slide-in-from-top-4 relative z-10">
-                        <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                        <h3 className="text-sm font-bold text-slate-500 dark:text-white/40 uppercase tracking-wider flex items-center gap-2">
                             {text.semanticAnalysis}
                             <span className="text-[10px] bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full">{text.beta}</span>
                         </h3>
@@ -497,7 +497,7 @@ export default function Dashboard({
                                         <div className={`p-2 rounded-lg 
                                             ${doc.matchType === 'invoice' ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400' :
                                                 doc.matchType === 'external_item' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400' :
-                                                    doc.matchType === 'tax_summary' ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400' :
+                                                    doc.matchType === 'tax_summary' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
                                                         doc.matchType === 'tax_monitoring' ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400' :
                                                             doc.matchType === 'approval' ? 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400' :
                                                                 doc.matchType === 'pustaka' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
@@ -513,7 +513,7 @@ export default function Dashboard({
                                                                 doc.matchType === 'inventory' ? <Grid3x3 size={20} /> :
                                                                     (doc.type?.includes('pdf') ? <FileDigit size={20} /> : <FileText size={20} />)}
                                         </div>
-                                        <span className={`text-xs font-bold px-2 py-1 rounded-full ${doc.score > 0.3 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}`}>
+                                        <span className={`text-xs font-bold px-2 py-1 rounded-full ${doc.score > 0.3 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-slate-100 text-slate-600 dark:bg-[#0d0d0d] dark:text-white/40'}`}>
                                             {(doc.score * 100).toFixed(0)}% Match
                                         </span>
                                     </div>
@@ -521,13 +521,13 @@ export default function Dashboard({
                                     <h4 className="font-bold text-slate-800 dark:text-white mb-1 line-clamp-1 group-hover/card:text-blue-600 dark:group-hover/card:text-blue-400 transition-colors relative z-10 cursor-pointer" onClick={() => handleViewDoc(doc)}>
                                         {doc.title}
                                     </h4>
-                                    <p className="text-xs text-slate-500 dark:text-slate-400 relative z-10 mb-3 block truncate">
+                                    <p className="text-xs text-slate-500 dark:text-white/40 relative z-10 mb-3 block truncate">
                                         {doc.uploadDate ? new Date(doc.uploadDate).toLocaleDateString() : text.systemData} • {doc.size || doc.category || text.metadata}
                                     </p>
 
                                     {/* OCR Snippet Result */}
                                     {(doc.ocrContent || doc.content || doc.text) && (
-                                        <div className="relative z-10 mb-3 text-[10px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 p-2 rounded border border-slate-100 dark:border-slate-800 line-clamp-2 italic leading-relaxed">
+                                        <div className="relative z-10 mb-3 text-[10px] text-slate-500 dark:text-white/40 bg-slate-50 dark:bg-[#0d0d0d]/50 p-2 rounded border border-slate-100 dark:border-slate-800 line-clamp-2 italic leading-relaxed">
                                             "{(doc.ocrContent || doc.content || doc.text).substring(0, 120).replace(/\n/g, ' ')}..."
                                         </div>
                                     )}
@@ -592,12 +592,12 @@ export default function Dashboard({
                                             className={`w-full text-[10px] py-1 rounded-lg transition-colors font-bold flex items-center justify-center gap-1 uppercase tracking-wider
                                                 ${doc.matchType === 'invoice' ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 hover:bg-amber-100' :
                                                     doc.matchType === 'external_item' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 hover:bg-emerald-100' :
-                                                        doc.matchType === 'tax_summary' ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 hover:bg-purple-100' :
+                                                        doc.matchType === 'tax_summary' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 hover:bg-blue-100' :
                                                             doc.matchType === 'tax_monitoring' ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 hover:bg-orange-100' :
                                                                 doc.matchType === 'approval' ? 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 hover:bg-rose-100' :
                                                                     doc.matchType === 'pustaka' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 hover:bg-blue-100' :
                                                                         doc.matchType === 'tax_object' ? 'bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400' :
-                                                                            doc.matchType === 'inventory' ? 'bg-slate-50 dark:bg-slate-800/30 hover:bg-slate-100 dark:hover:bg-slate-900/50 text-slate-600 dark:text-slate-400' :
+                                                                            doc.matchType === 'inventory' ? 'bg-slate-50 dark:bg-[#0d0d0d]/30 hover:bg-slate-100 dark:hover:bg-slate-900/50 text-slate-600 dark:text-white/40' :
                                                                                 'bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400'}`}
                                         >
                                             {doc.matchType === 'invoice' ? `📦 ${doc.folderName}` :
@@ -624,7 +624,7 @@ export default function Dashboard({
                                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                                     disabled={currentPage === 1}
                                     aria-label="Previous page" title={t("tooltip.previous")}
-                                    className="p-2 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 text-slate-500 disabled:opacity-30 transition-all hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                                    className="p-2 rounded-xl bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-white/40 dark:border-white/10 text-slate-500 disabled:opacity-30 transition-all hover:bg-blue-50 dark:hover:bg-blue-900/20"
                                 >
                                     <ChevronLeft size={20} />
                                 </button>
@@ -642,7 +642,7 @@ export default function Dashboard({
                                                 type="button"
                                                 key={page}
                                                 onClick={() => setCurrentPage(page)}
-                                                className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${currentPage === page ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'bg-white/70 dark:bg-slate-800/60 text-slate-500 hover:bg-blue-50 dark:hover:bg-blue-900/20'}`}
+                                                className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${currentPage === page ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'bg-white/70 dark:bg-[#0d0d0d]/60 text-slate-500 hover:bg-blue-50 dark:hover:bg-blue-900/20'}`}
                                             >
                                                 {page}
                                             </button>
@@ -655,7 +655,7 @@ export default function Dashboard({
                                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(searchResults.length / resultsPerPage)))}
                                     disabled={currentPage === Math.ceil(searchResults.length / resultsPerPage)}
                                     aria-label="Next page" title={t("tooltip.next")}
-                                    className="p-2 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 text-slate-500 disabled:opacity-30 transition-all hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                                    className="p-2 rounded-xl bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-white/40 dark:border-white/10 text-slate-500 disabled:opacity-30 transition-all hover:bg-blue-50 dark:hover:bg-blue-900/20"
                                 >
                                     <ChevronRight size={20} />
                                 </button>
@@ -670,7 +670,7 @@ export default function Dashboard({
 
                 {/* 1. Main Storage Command Center - Jumbo Bento Card */}
                 <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }} viewport={{ once: true }} className="md:col-span-4 lg:col-span-4 lg:row-span-2 group">
-                    <ShadCard className="h-full relative overflow-hidden border-slate-200/50 bg-white/60 dark:bg-slate-800/40 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-500 flex flex-col justify-between">
+                    <ShadCard className="h-full relative overflow-hidden border-slate-200/50 bg-white/60 dark:bg-[#0d0d0d]/40 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-500 flex flex-col justify-between">
                         <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-[80px] group-hover:bg-blue-500/20 transition-all duration-700" />
                         <CardHeader className="pb-2">
                             <div className="flex items-start justify-between gap-3">
@@ -682,14 +682,14 @@ export default function Dashboard({
                                     <CardTitle className="text-2xl font-black tracking-tight">{text.storageCenter}</CardTitle>
                                     <CardDescription className="text-sm font-medium">{text.storageDesc}</CardDescription>
                                 </div>
-                                <div className="p-3 bg-white/70 dark:bg-slate-800/60 rounded-2xl border border-white/40 dark:border-white/10">
+                                <div className="p-3 bg-white/70 dark:bg-[#0d0d0d]/60 rounded-2xl border border-white/40 dark:border-white/10">
                                     <Grid3x3 size={24} className="text-blue-500" />
                                 </div>
                             </div>
                         </CardHeader>
                         <CardContent className="space-y-6 pt-4">
                             <SummaryRow cards={[
-                                { title: text.occupancy, value: `${bentoStats.occupancyPercent}%`, icon: Grid3x3, gradient: 'from-blue-500 to-purple-600', valueClass: 'text-2xl' },
+                                { title: text.occupancy, value: `${bentoStats.occupancyPercent}%`, icon: Grid3x3, gradient: 'from-blue-500 to-blue-600', valueClass: 'text-2xl' },
                                 { title: text.usedSlots, value: bentoStats.usedSlots, icon: Package, gradient: 'from-emerald-500 to-teal-600', valueClass: 'text-2xl' },
                                 { title: text.externalBox, value: externalItems?.length || 0, icon: Truck, gradient: 'from-amber-500 to-orange-600', valueClass: 'text-2xl' },
                                 { title: text.available, value: stats?.empty || 0, icon: Boxes, gradient: 'from-sky-500 to-cyan-600', valueClass: 'text-2xl' },
@@ -698,10 +698,10 @@ export default function Dashboard({
                                 <button onClick={() => setActiveTab('inventory')} className="flex items-center gap-2 rounded-xl gradient-bg px-4 py-2.5 text-xs font-bold text-white transition-all hover:shadow-lg hover:shadow-blue-500/40 active:scale-95">
                                     {text.openInventory} <ArrowRight size={14} />
                                 </button>
-                                <button onClick={() => setActiveTab('documents')} className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 transition-all hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 active:scale-95">
+                                <button onClick={() => setActiveTab('documents')} className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 transition-all hover:bg-slate-50 dark:border-white/[0.06] dark:bg-[#0d0d0d] dark:text-slate-200 dark:hover:bg-white/[0.06] active:scale-95">
                                     {text.viewDocuments}
                                 </button>
-                                <button onClick={() => setActiveTab('tax-summary')} className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 transition-all hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 active:scale-95">
+                                <button onClick={() => setActiveTab('tax-summary')} className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 transition-all hover:bg-slate-50 dark:border-white/[0.06] dark:bg-[#0d0d0d] dark:text-slate-200 dark:hover:bg-white/[0.06] active:scale-95">
                                     {text.taxSummaryTab}
                                 </button>
                             </div>
@@ -744,7 +744,7 @@ export default function Dashboard({
 
                 {/* 3. Tax Control - Wide Bento Card */}
                 <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }} viewport={{ once: true }} className="md:col-span-2 lg:col-span-3">
-                    <ShadCard className="h-full border-slate-200/60 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md hover:shadow-lg transition-shadow">
+                    <ShadCard className="h-full border-slate-200/60 bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-md hover:shadow-lg transition-shadow">
                         <CardHeader className="pb-4">
                             <CardTitle className="flex items-center gap-2 text-base font-bold"><FileSearch className="text-amber-500" size={18} /> {text.taxControl}</CardTitle>
                         </CardHeader>
@@ -757,11 +757,11 @@ export default function Dashboard({
                                         <ArrowUpRight className="text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity" size={20} />
                                     </div>
                                 </div>
-                                <div className="rounded-2xl border border-violet-100 bg-violet-50/50 p-4 dark:border-violet-900/30 dark:bg-violet-950/20 group hover:bg-violet-50 dark:hover:bg-violet-900/30 transition-colors cursor-pointer" onClick={() => setActiveTab('tax-summary')}>
-                                    <p className="text-[11px] font-bold text-violet-700/80 dark:text-violet-400/80 uppercase tracking-wider mb-2">{text.taxSummaryCount}</p>
+                                <div className="rounded-2xl border border-blue-100 bg-blue-50/50 p-4 dark:border-blue-900/30 dark:bg-blue-950/20 group hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors cursor-pointer" onClick={() => setActiveTab('tax-summary')}>
+                                    <p className="text-[11px] font-bold text-blue-700/80 dark:text-blue-400/80 uppercase tracking-wider mb-2">{text.taxSummaryCount}</p>
                                     <div className="flex items-center justify-between">
-                                        <p className="text-3xl font-black text-violet-800 dark:text-violet-300">{taxSummaries?.length || 0}</p>
-                                        <ArrowUpRight className="text-violet-400 opacity-0 group-hover:opacity-100 transition-opacity" size={20} />
+                                        <p className="text-3xl font-black text-blue-800 dark:text-blue-300">{taxSummaries?.length || 0}</p>
+                                        <ArrowUpRight className="text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" size={20} />
                                     </div>
                                 </div>
                             </div>
@@ -771,20 +771,20 @@ export default function Dashboard({
 
                 {/* 4. Recent Docs - Compact List */}
                 <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} viewport={{ once: true }} className="md:col-span-2 lg:col-span-3">
-                    <ShadCard className="h-full border-slate-200/60 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md hover:shadow-lg transition-shadow">
+                    <ShadCard className="h-full border-slate-200/60 bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-md hover:shadow-lg transition-shadow">
                         <CardHeader className="pb-3 flex flex-row items-center justify-between">
                             <CardTitle className="flex items-center gap-2 text-base font-bold"><FileText className="text-blue-500" size={18} /> {text.recentDocs}</CardTitle>
                             <button onClick={() => setActiveTab('documents')} className="text-xs font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 transition-colors">Lihat Semua</button>
                         </CardHeader>
                         <CardContent className="space-y-3 pb-6">
                             {docList.slice(0, 3).map((doc) => (
-                                <button key={doc.id} onClick={() => handleViewDoc(doc)} className="group flex w-full items-center gap-3 rounded-2xl border border-transparent hover:border-slate-200 bg-transparent hover:bg-white p-2 text-left transition-all dark:hover:border-slate-700 dark:hover:bg-slate-800 shadow-none hover:shadow-sm">
-                                    <div className="rounded-xl bg-slate-100 p-2.5 text-slate-500 group-hover:bg-blue-50 group-hover:text-blue-600 dark:bg-slate-800 dark:text-slate-400 dark:group-hover:bg-blue-900/30 dark:group-hover:text-blue-400 transition-colors">
+                                <button key={doc.id} onClick={() => handleViewDoc(doc)} className="group flex w-full items-center gap-3 rounded-2xl border border-transparent hover:border-slate-200 bg-transparent hover:bg-white p-2 text-left transition-all dark:hover:border-slate-700 dark:hover:bg-white/[0.05] shadow-none hover:shadow-sm">
+                                    <div className="rounded-xl bg-slate-100 p-2.5 text-slate-500 group-hover:bg-blue-50 group-hover:text-blue-600 dark:bg-[#0d0d0d] dark:text-white/40 dark:group-hover:bg-blue-900/30 dark:group-hover:text-blue-400 transition-colors">
                                         {doc.type?.includes('pdf') ? <FileDigit size={18} /> : <FileText size={18} />}
                                     </div>
                                     <div className="min-w-0 flex-1">
                                         <p className="truncate text-sm font-bold text-slate-700 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">{doc.title}</p>
-                                        <p className="text-xs font-medium text-slate-500/80 dark:text-slate-500 mt-0.5">{new Date(doc.uploadDate).toLocaleDateString()} • {doc.size}</p>
+                                        <p className="text-xs font-medium text-slate-500/80 dark:text-white/30 mt-0.5">{new Date(doc.uploadDate).toLocaleDateString()} • {doc.size}</p>
                                     </div>
                                 </button>
                             ))}
@@ -809,16 +809,16 @@ export default function Dashboard({
                         <PieChart size={20} className="text-blue-500" /> {text.storageDistribution}
                     </h3>
                     <div className="space-y-4">
-                        <div className="w-full bg-gray-100 dark:bg-slate-800 rounded-full h-6 overflow-hidden flex shadow-inner">
+                        <div className="w-full bg-gray-100 dark:bg-[#0d0d0d] rounded-full h-6 overflow-hidden flex shadow-inner">
                             <div className="bg-emerald-500 h-full transition-all duration-500" style={{ width: `${((stats?.stored || 0) / (TOTAL_SLOTS || 1)) * 100}%` }} title={`Tersimpan: ${stats?.stored || 0}`}></div>
                             <div className="bg-amber-500 h-full transition-all duration-500" style={{ width: `${((stats?.borrowed || 0) / (TOTAL_SLOTS || 1)) * 100}%` }} title={`Dipinjam: ${stats?.borrowed || 0}`}></div>
-                            <div className="bg-purple-500 h-full transition-all duration-500" style={{ width: `${((stats?.audit || 0) / (TOTAL_SLOTS || 1)) * 100}%` }} title={`Audit: ${stats?.audit || 0}`}></div>
+                            <div className="bg-blue-500 h-full transition-all duration-500" style={{ width: `${((stats?.audit || 0) / (TOTAL_SLOTS || 1)) * 100}%` }} title={`Audit: ${stats?.audit || 0}`}></div>
                         </div>
                         <div className="grid grid-cols-2 gap-4 text-sm">
-                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500"></div><span className="text-gray-600 dark:text-slate-400">{text.stored} ({stats?.stored || 0})</span></div>
-                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-amber-500"></div><span className="text-gray-600 dark:text-slate-400">{text.borrowed} ({stats?.borrowed || 0})</span></div>
-                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-purple-500"></div><span className="text-gray-600 dark:text-slate-400">{text.audit} ({stats?.audit || 0})</span></div>
-                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-gray-200 dark:bg-slate-700"></div><span className="text-gray-600 dark:text-slate-400">{text.empty} ({stats?.empty || 0})</span></div>
+                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500"></div><span className="text-gray-600 dark:text-white/40">{text.stored} ({stats?.stored || 0})</span></div>
+                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-amber-500"></div><span className="text-gray-600 dark:text-white/40">{text.borrowed} ({stats?.borrowed || 0})</span></div>
+                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-blue-500"></div><span className="text-gray-600 dark:text-white/40">{text.audit} ({stats?.audit || 0})</span></div>
+                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-gray-200 dark:bg-[#111]"></div><span className="text-gray-600 dark:text-white/40">{text.empty} ({stats?.empty || 0})</span></div>
                         </div>
                     </div>
                 </Card>
@@ -829,13 +829,13 @@ export default function Dashboard({
                     </h3>
                     <div className="space-y-3">
                         {docList.slice(0, 3).map(doc => (
-                            <div key={doc.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer" onClick={() => handleViewDoc(doc)}>
+                            <div key={doc.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-white/[0.05] rounded-lg transition-colors cursor-pointer" onClick={() => handleViewDoc(doc)}>
                                 <div className="w-10 h-10 rounded bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-500">
                                     {doc.type?.includes('pdf') ? <FileDigit size={20} /> : <FileText size={20} />}
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="font-medium text-gray-900 dark:text-white truncate text-sm">{doc.title}</div>
-                                    <div className="text-xs text-gray-500 dark:text-slate-400">{new Date(doc.uploadDate).toLocaleDateString()} • {doc.size}</div>
+                                    <div className="text-xs text-gray-500 dark:text-white/40">{new Date(doc.uploadDate).toLocaleDateString()} • {doc.size}</div>
                                 </div>
                             </div>
                         ))}
@@ -845,16 +845,16 @@ export default function Dashboard({
             </div>
 
             <Card className="max-h-[400px] overflow-y-auto relative p-0 sm:p-0" tabIndex={0} aria-label={text.auditLog}>
-                <div className="sticky top-0 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl z-10 p-6 pb-2 border-b border-white/20 dark:border-white/10">
+                <div className="sticky top-0 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl z-10 p-6 pb-2 border-b border-white/20 dark:border-white/10">
                     <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                        <History size={20} className="text-purple-500" /> {text.auditLog}
+                        <History size={20} className="text-blue-500" /> {text.auditLog}
                     </h3>
                 </div>
                 <div className="p-6 pt-2 space-y-3">
                     {logs.map(log => (
                         <div key={log.id} className="border-b border-slate-100 dark:border-slate-800 pb-2">
                             <div
-                                className="flex justify-between text-sm cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 p-2 rounded-lg transition-colors"
+                                className="flex justify-between text-sm cursor-pointer hover:bg-slate-50 dark:hover:bg-white/[0.05]/50 p-2 rounded-lg transition-colors"
                                 onClick={() => toggleLog(log.id)}
                             >
                                 <div>
@@ -873,7 +873,7 @@ export default function Dashboard({
                             </div>
 
                             {expandedLogId === log.id && (log.oldValue || log.newValue) && (
-                                <div className="mt-2 text-xs bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg border border-slate-200 dark:border-slate-700 font-mono animate-in slide-in-from-top-1">
+                                <div className="mt-2 text-xs bg-slate-50 dark:bg-[#0d0d0d]/50 p-3 rounded-lg border border-slate-200 dark:border-white/[0.06] font-mono animate-in slide-in-from-top-1">
                                     <div className="grid grid-cols-1 gap-2">
                                         {log.oldValue && (
                                             <div className="bg-red-50 dark:bg-red-900/10 p-2 rounded border border-red-100 dark:border-red-900/20 text-red-700 dark:text-red-400 overflow-x-auto">

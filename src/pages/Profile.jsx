@@ -117,7 +117,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                         <User className="text-blue-500" size={32} />
                         {text.pageTitle}
                     </h2>
-                    <p className="text-gray-500 dark:text-slate-400 mt-2 font-medium">
+                    <p className="text-gray-500 dark:text-white/40 mt-2 font-medium">
                         {text.pageSubtitle}
                     </p>
                 </div>
@@ -129,9 +129,9 @@ export default function Profile({ currentUser, onUpdateProfile }) {
 
             {/* ── Ringkasan — konsisten dengan SummaryCard di semua menu ── */}
             <SummaryRow cards={[
-                { title: isEnglish ? 'Role' : 'Peran', value: currentUser?.role || '-', icon: ShieldCheck, gradient: 'from-blue-500 to-purple-600', valueClass: 'text-lg' },
+                { title: isEnglish ? 'Role' : 'Peran', value: currentUser?.role || '-', icon: ShieldCheck, gradient: 'from-blue-500 to-blue-600', valueClass: 'text-lg' },
                 { title: isEnglish ? 'Department' : 'Departemen', value: currentUser?.department || '-', icon: Building2, gradient: 'from-sky-500 to-blue-600', valueClass: 'text-lg' },
-                { title: isEnglish ? 'Username' : 'Username', value: currentUser?.username || '-', icon: AtSign, gradient: 'from-violet-500 to-fuchsia-600', valueClass: 'text-lg' },
+                { title: isEnglish ? 'Username' : 'Username', value: currentUser?.username || '-', icon: AtSign, gradient: 'from-blue-500 to-fuchsia-600', valueClass: 'text-lg' },
                 { title: isEnglish ? 'Account Status' : 'Status Akun', value: isEnglish ? 'Active' : 'Aktif', icon: BadgeCheck, gradient: 'from-emerald-500 to-teal-600', valueClass: 'text-lg' },
             ]} />
 
@@ -169,12 +169,12 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                             </p>
 
                             <div className="mt-6 w-full space-y-3">
-                                <div className="flex items-center justify-between text-sm p-3 bg-white/70 dark:bg-slate-800/50 backdrop-blur-xl rounded-xl border border-gray-100 dark:border-slate-700">
-                                    <span className="text-gray-500 dark:text-slate-400">{text.username}</span>
+                                <div className="flex items-center justify-between text-sm p-3 bg-white/70 dark:bg-[#0d0d0d]/50 backdrop-blur-xl rounded-xl border border-gray-100 dark:border-white/[0.06]">
+                                    <span className="text-gray-500 dark:text-white/40">{text.username}</span>
                                     <span className="font-bold dark:text-white">{currentUser?.username}</span>
                                 </div>
-                                <div className="flex items-center justify-between text-sm p-3 bg-white/70 dark:bg-slate-800/50 backdrop-blur-xl rounded-xl border border-gray-100 dark:border-slate-700">
-                                    <span className="text-gray-500 dark:text-slate-400">{text.department}</span>
+                                <div className="flex items-center justify-between text-sm p-3 bg-white/70 dark:bg-[#0d0d0d]/50 backdrop-blur-xl rounded-xl border border-gray-100 dark:border-white/[0.06]">
+                                    <span className="text-gray-500 dark:text-white/40">{text.department}</span>
                                     <span className="font-bold dark:text-white">{currentUser?.department || '-'}</span>
                                 </div>
                             </div>
@@ -195,7 +195,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
 
                         <div className="space-y-6">
                             <div className="group">
-                                <label className="block text-sm font-bold text-[#A3AED0] dark:text-slate-400 mb-2 transition-colors group-focus-within:text-blue-500 uppercase tracking-wider">
+                                <label className="block text-sm font-bold text-[#A3AED0] dark:text-white/40 mb-2 transition-colors group-focus-within:text-blue-500 uppercase tracking-wider">
                                     {text.fullName}
                                 </label>
                                 <div className="relative group-focus-within:scale-[1.01] transition-transform duration-300">
@@ -203,7 +203,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                                         type="text"
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
-                                        className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all dark:text-white font-semibold"
+                                        className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-[#0d0d0d]/50 backdrop-blur-xl border border-gray-200 dark:border-white/[0.06] rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all dark:text-white font-semibold"
                                         placeholder={text.fullNamePlaceholder}
                                         required
                                     />
@@ -231,7 +231,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                             </div>
 
                             <div className="group">
-                                <label className="block text-sm font-bold text-[#A3AED0] dark:text-slate-400 mb-2 transition-colors group-focus-within:text-blue-500 uppercase tracking-wider">
+                                <label className="block text-sm font-bold text-[#A3AED0] dark:text-white/40 mb-2 transition-colors group-focus-within:text-blue-500 uppercase tracking-wider">
                                     {text.currentPassword}
                                 </label>
                                 <div className="relative group-focus-within:scale-[1.01] transition-transform duration-300">
@@ -239,7 +239,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                                         type="password"
                                         value={currentPassword}
                                         onChange={(e) => setCurrentPassword(e.target.value)}
-                                        className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all dark:text-white font-semibold"
+                                        className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-[#0d0d0d]/50 backdrop-blur-xl border border-gray-200 dark:border-white/[0.06] rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all dark:text-white font-semibold"
                                         placeholder="••••••••"
                                         required={newPassword.length > 0}
                                     />
@@ -249,7 +249,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="group">
-                                    <label className="block text-sm font-bold text-[#A3AED0] dark:text-slate-400 mb-2 transition-colors group-focus-within:text-blue-500 uppercase tracking-wider">
+                                    <label className="block text-sm font-bold text-[#A3AED0] dark:text-white/40 mb-2 transition-colors group-focus-within:text-blue-500 uppercase tracking-wider">
                                         {text.newPassword}
                                     </label>
                                     <div className="relative group-focus-within:scale-[1.01] transition-transform duration-300">
@@ -257,13 +257,13 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                                             type="password"
                                             value={newPassword}
                                             onChange={(e) => setNewPassword(e.target.value)}
-                                            className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all dark:text-white font-semibold"
+                                            className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-[#0d0d0d]/50 backdrop-blur-xl border border-gray-200 dark:border-white/[0.06] rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all dark:text-white font-semibold"
                                             placeholder="••••••••"
                                         />
                                     </div>
                                 </div>
                                 <div className="group">
-                                    <label className="block text-sm font-bold text-[#A3AED0] dark:text-slate-400 mb-2 transition-colors group-focus-within:text-blue-500 uppercase tracking-wider">
+                                    <label className="block text-sm font-bold text-[#A3AED0] dark:text-white/40 mb-2 transition-colors group-focus-within:text-blue-500 uppercase tracking-wider">
                                         {text.confirmNewPassword}
                                     </label>
                                     <div className="relative group-focus-within:scale-[1.01] transition-transform duration-300">
@@ -271,7 +271,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                                             type="password"
                                             value={confirmPassword}
                                             onChange={(e) => setConfirmPassword(e.target.value)}
-                                            className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all dark:text-white font-semibold"
+                                            className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-[#0d0d0d]/50 backdrop-blur-xl border border-gray-200 dark:border-white/[0.06] rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all dark:text-white font-semibold"
                                             placeholder="••••••••"
                                         />
                                     </div>

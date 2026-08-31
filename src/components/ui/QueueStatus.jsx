@@ -37,7 +37,7 @@ export default function QueueStatus() {
 
     if (loading && !queue.total) {
         return (
-            <div className="flex items-center justify-center p-8 bg-white/50 dark:bg-slate-800/50 backdrop-blur-md rounded-3xl border border-white/20 shadow-xl">
+            <div className="flex items-center justify-center p-8 bg-white/50 dark:bg-[#0d0d0d]/50 backdrop-blur-md rounded-3xl border border-white/20 shadow-xl">
                 <Loader2 className="w-6 h-6 animate-spin text-blue-500 mr-3" />
                 <span className="text-sm font-bold text-slate-500">Memuat Antrian OCR...</span>
             </div>
@@ -45,11 +45,11 @@ export default function QueueStatus() {
     }
 
     return (
-        <div className="bg-white/50 dark:bg-slate-800/50 backdrop-blur-xl p-6 rounded-[2rem] border border-white/20 shadow-xl shadow-blue-500/5 relative overflow-hidden group h-full">
+        <div className="bg-white/50 dark:bg-[#0d0d0d]/50 backdrop-blur-xl p-6 rounded-[2rem] border border-white/20 shadow-xl shadow-blue-500/5 relative overflow-hidden group h-full">
             <div className="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-all duration-700 pointer-events-none"></div>
 
             <div className="flex items-center justify-between mb-6 relative z-10">
-                <h2 className="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 flex items-center gap-2">
+                <h2 className="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-600 dark:from-blue-400 dark:to-blue-400 flex items-center gap-2">
                     <ScanLine className="text-blue-500" /> Antrian OCR
                 </h2>
                 <div className="flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full text-[10px] font-black uppercase tracking-widest">
@@ -87,7 +87,7 @@ export default function QueueStatus() {
                         </div>
                         <div className="w-full bg-blue-100 dark:bg-blue-950 rounded-full h-1.5 overflow-hidden">
                             <div
-                                className="bg-gradient-to-r from-blue-500 to-purple-500 h-full transition-all duration-500 shadow-[0_0_10px_rgba(29,78,216,0.5)]"
+                                className="bg-gradient-to-r from-blue-500 to-blue-500 h-full transition-all duration-500 shadow-[0_0_10px_rgba(29,78,216,0.5)]"
                                 style={{ width: `${job.progress}%` }}
                             ></div>
                         </div>
@@ -96,8 +96,8 @@ export default function QueueStatus() {
 
                 {/* WAITING JOBS */}
                 {queue.waiting.map((job, idx) => (
-                    <div key={job.id} className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-2xl transition-all group/item border border-transparent hover:border-slate-100 dark:hover:border-slate-800">
-                        <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover/item:bg-blue-50 dark:group-hover/item:bg-blue-900/30 group-hover/item:text-blue-500 transition-all font-black text-xs">
+                    <div key={job.id} className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-white/[0.05]/50 rounded-2xl transition-all group/item border border-transparent hover:border-slate-100 dark:hover:border-slate-800">
+                        <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] flex items-center justify-center text-slate-400 group-hover/item:bg-blue-50 dark:group-hover/item:bg-blue-900/30 group-hover/item:text-blue-500 transition-all font-black text-xs">
                             {idx + 1}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -109,7 +109,7 @@ export default function QueueStatus() {
                                 <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Menunggu Antrian</span>
                             </div>
                         </div>
-                        <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800 group-hover/item:bg-blue-50 dark:group-hover/item:bg-blue-900/30 transition-all opacity-0 group-hover/item:opacity-100 scale-90 group-hover/item:scale-100">
+                        <div className="p-2 rounded-lg bg-slate-50 dark:bg-[#0d0d0d] group-hover/item:bg-blue-50 dark:group-hover/item:bg-blue-900/30 transition-all opacity-0 group-hover/item:opacity-100 scale-90 group-hover/item:scale-100">
                             <CheckCircle2 size={16} className="text-blue-500/50" />
                         </div>
                     </div>
@@ -117,10 +117,10 @@ export default function QueueStatus() {
 
                 {queue.total === 0 && !loading && (
                     <div className="flex flex-col items-center justify-center py-12 text-center">
-                        <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-full mb-4 text-slate-300">
+                        <div className="p-4 bg-slate-50 dark:bg-[#0d0d0d]/50 rounded-full mb-4 text-slate-300">
                             <CheckCircle2 size={40} />
                         </div>
-                        <p className="text-sm font-bold text-slate-600 dark:text-slate-400">Semua Beres!</p>
+                        <p className="text-sm font-bold text-slate-600 dark:text-white/40">Semua Beres!</p>
                         <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-widest font-medium">Tidak ada antrian OCR aktif</p>
                     </div>
                 )}

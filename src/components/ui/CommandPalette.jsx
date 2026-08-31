@@ -80,11 +80,11 @@ const CommandPalette = ({ items = [], onSelect, quickActions = [], disabled = fa
         size="sm"
         disabled={disabled}
         onClick={() => setOpen(true)}
-        className="h-10 rounded-2xl border-slate-200 bg-white/80 px-3 text-xs font-semibold text-slate-600 shadow-sm transition hover:bg-white dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-300"
+        className="h-10 rounded-2xl border-slate-200 bg-white/80 px-3 text-xs font-semibold text-slate-600 shadow-sm transition hover:bg-white dark:border-white/[0.06] dark:bg-[#0d0d0d]/70 dark:text-white/70"
       >
         <Search size={14} />
         <span>Search</span>
-        <kbd className="rounded border border-slate-200 bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+        <kbd className="rounded border border-slate-200 bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-700 dark:border-white/[0.06] dark:bg-[#0d0d0d] dark:text-white/70">
           {shortcutHint}
         </kbd>
       </Button>
@@ -127,7 +127,7 @@ const CommandPalette = ({ items = [], onSelect, quickActions = [], disabled = fa
                       );
                     })}
                   </CommandGroup>
-                  <CommandSeparator className="my-1 h-px bg-slate-200 dark:bg-slate-800" />
+                  <CommandSeparator className="my-1 h-px bg-slate-200 dark:bg-[#0d0d0d]" />
                 </>
               )}
 

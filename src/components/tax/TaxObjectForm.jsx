@@ -115,26 +115,26 @@ export default function TaxObjectForm({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Jenis Identitas</label>
-                            <select name="idType" value={formData.idType} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white">
+                            <select name="idType" value={formData.idType} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white">
                                 <option value="NPWP">NPWP</option>
                                 <option value="KTP">KTP (NIK)</option>
                             </select>
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nomor Identitas</label>
-                            <input type="text" name="identityNumber" value={formData.identityNumber} onChange={handleInputChange} disabled={isReadOnly} maxLength={16} placeholder="16 digit angka" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" />
+                            <input type="text" name="identityNumber" value={formData.identityNumber} onChange={handleInputChange} disabled={isReadOnly} maxLength={16} placeholder="16 digit angka" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" />
                         </div>
                         <div className="md:col-span-2">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Wajib Pajak</label>
-                            <input type="text" name="name" value={formData.name} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" placeholder="Nama Lengkap / Badan Usaha" />
+                            <input type="text" name="name" value={formData.name} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" placeholder="Nama Lengkap / Badan Usaha" />
                         </div>
                         <div className="md:col-span-2">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Wajib Pajak</label>
-                            <input type="email" name="email" value={formData.email} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" placeholder="contoh@email.com" />
+                            <input type="email" name="email" value={formData.email} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" placeholder="contoh@email.com" />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Jenis Pajak</label>
-                            <select name="taxType" value={formData.taxType} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white">
+                            <select name="taxType" value={formData.taxType} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white">
                                 <option value="23" disabled={formData.idType === 'KTP'}>PPh 23 {formData.idType === 'KTP' ? '(Hanya NPWP)' : ''}</option>
                                 <option value="4(2)">PPh 4(2)</option>
                                 <option value="21">PPh 21</option>
@@ -143,15 +143,15 @@ export default function TaxObjectForm({
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kode Objek Pajak</label>
-                            <input type="text" name="taxObjectCode" value={formData.taxObjectCode} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 outline-none dark:text-gray-300 cursor-not-allowed" placeholder="Auto-fill" readOnly />
+                            <input type="text" name="taxObjectCode" value={formData.taxObjectCode} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-gray-50 dark:bg-[#0d0d0d] outline-none dark:text-gray-300 cursor-not-allowed" placeholder="Auto-fill" readOnly />
                         </div>
                         <div className="md:col-span-2 relative">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Objek Pajak (Cari & Pilih)</label>
-                            <input type="text" name="taxObjectName" value={formData.taxObjectName} onChange={(e) => { if (isReadOnly) return; handleInputChange(e); setShowObjectDropdown(true); }} onFocus={() => !isReadOnly && setShowObjectDropdown(true)} onBlur={() => setTimeout(() => setShowObjectDropdown(false), 200)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" placeholder="Ketik untuk mencari..." autoComplete="off" />
+                            <input type="text" name="taxObjectName" value={formData.taxObjectName} onChange={(e) => { if (isReadOnly) return; handleInputChange(e); setShowObjectDropdown(true); }} onFocus={() => !isReadOnly && setShowObjectDropdown(true)} onBlur={() => setTimeout(() => setShowObjectDropdown(false), 200)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" placeholder="Ketik untuk mencari..." autoComplete="off" />
                             {showObjectDropdown && (
-                                <div className="absolute z-50 w-full mt-1 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-xl shadow-xl max-h-60 overflow-y-auto">
+                                <div className="absolute z-50 w-full mt-1 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-gray-200 dark:border-white/[0.06] rounded-xl shadow-xl max-h-60 overflow-y-auto">
                                     {masterData.filter(item => String(item.tax_type) === String(formData.taxType) && ((item.name || '').toLowerCase().includes((formData.taxObjectName || '').toLowerCase()) || (item.code || '').toLowerCase().includes((formData.taxObjectName || '').toLowerCase()))).map((item) => (
-                                        <button key={item.id} className="w-full text-left px-4 py-3 hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors border-b border-gray-100 dark:border-slate-700 last:border-0" onClick={() => {
+                                        <button key={item.id} className="w-full text-left px-4 py-3 hover:bg-blue-50 dark:hover:bg-white/[0.06] transition-colors border-b border-gray-100 dark:border-white/[0.06] last:border-0" onClick={() => {
                                             const isPph21 = String(item.tax_type) === '21';
                                             setFormData(prev => ({ ...prev, taxObjectName: item.name, taxObjectCode: item.code, taxType: item.tax_type, isPph21BukanPegawai: isPph21, usePpn: !isPph21 }));
                                             setCalcData(prev => ({ ...prev, rate: item.rate ?? prev.rate, isPph21BukanPegawai: isPph21, usePpn: !isPph21 }));
@@ -159,7 +159,7 @@ export default function TaxObjectForm({
                                         }}>
                                             <div className="font-medium text-gray-800 dark:text-gray-200">{item.name}</div>
                                             <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
-                                                <span className="bg-gray-100 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono">{item.code}</span>
+                                                <span className="bg-gray-100 dark:bg-[#0d0d0d] px-1.5 py-0.5 rounded font-mono">{item.code}</span>
                                                 <span className="text-blue-500 font-medium">PPh {item.tax_type}</span>
                                                 {item.rate !== undefined && <span className="bg-blue-100 dark:bg-blue-900/40 px-1.5 py-0.5 rounded text-blue-700 dark:text-blue-300 font-bold ml-auto">{item.rate}%</span>}
                                             </div>
@@ -193,15 +193,15 @@ export default function TaxObjectForm({
             </div>
 
             <div className="space-y-6">
-                <Card className="bg-slate-50 dark:bg-slate-800 border-dashed border-2 border-slate-200 dark:border-slate-700 h-full flex flex-col justify-center items-center text-center p-8 text-gray-500">
+                <Card className="bg-slate-50 dark:bg-[#0d0d0d] border-dashed border-2 border-slate-200 dark:border-white/[0.06] h-full flex flex-col justify-center items-center text-center p-8 text-gray-500">
                     <FileText size={48} className="mb-4 text-slate-300" />
                     <p className="font-medium">Summary Data</p>
                     {(calcData.dpp > 0 || formData.name) && (
-                        <div className="w-full text-left bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl p-4 rounded-lg shadow-sm border border-gray-100 dark:border-slate-700 text-sm space-y-2 mt-4">
+                        <div className="w-full text-left bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl p-4 rounded-lg shadow-sm border border-gray-100 dark:border-white/[0.06] text-sm space-y-2 mt-4">
                             <div className="flex justify-between"><span className="text-gray-500">Nama:</span><span className="font-medium">{formData.name || '-'}</span></div>
                             <div className="flex justify-between"><span className="text-gray-500">Jenis:</span><span className="font-medium">PPh {formData.taxType}</span></div>
                             <div className="flex justify-between"><span className="text-gray-500">Total Diterima:</span><span className="font-bold text-emerald-600">{formatCurrency(calcData.totalPayable)}</span></div>
-                            <div className="flex justify-between border-t border-gray-100 dark:border-slate-700 pt-2 mt-1">
+                            <div className="flex justify-between border-t border-gray-100 dark:border-white/[0.06] pt-2 mt-1">
                                 <span className="text-gray-500">DPP + PPN:</span>
                                 <span className="font-bold text-blue-600">{formatCurrency((calcData.calculationDpp || 0) + (calcData.ppn || 0))}</span>
                             </div>
@@ -216,11 +216,11 @@ export default function TaxObjectForm({
                                 </div>
                             )}
                             {calcData.breakdown && calcData.breakdown.length > 0 && (
-                                <div className="mt-4 pt-3 border-t border-dashed border-gray-200 dark:border-slate-700">
+                                <div className="mt-4 pt-3 border-t border-dashed border-gray-200 dark:border-white/[0.06]">
                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Detail Penjumlah:</p>
                                     <div className="space-y-2">
                                         {calcData.breakdown.map((item, i) => (
-                                            <div key={i} className="bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg text-[11px]">
+                                            <div key={i} className="bg-slate-50 dark:bg-[#0d0d0d]/50 p-2 rounded-lg text-[11px]">
                                                 <div className="flex justify-between font-bold">
                                                     <span>Item {i + 1}</span>
                                                     <span>{formatCurrency(item.value)}</span>

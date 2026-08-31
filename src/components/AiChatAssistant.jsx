@@ -44,7 +44,7 @@ const ResultCard = ({ result, isDarkMode, onNavigate, onLocationClick }) => {
         document: { icon: FileText, color: 'from-blue-500 to-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20', label: 'Dokumen' },
         invoice: { icon: FileSpreadsheet, color: 'from-emerald-500 to-green-600', bg: 'bg-emerald-50 dark:bg-emerald-900/20', label: 'Invoice' },
         external: { icon: Package, color: 'from-amber-500 to-orange-600', bg: 'bg-amber-50 dark:bg-amber-900/20', label: 'Eksternal' },
-        tax_summary: { icon: Bot, color: 'from-purple-500 to-pink-600', bg: 'bg-purple-50 dark:bg-purple-900/20', label: 'Pajak' },
+        tax_summary: { icon: Bot, color: 'from-blue-500 to-pink-600', bg: 'bg-blue-50 dark:bg-blue-900/20', label: 'Pajak' },
     };
     const config = typeConfig[result.type] || typeConfig.document;
     const Icon = config.icon;
@@ -103,7 +103,7 @@ const ResultCard = ({ result, isDarkMode, onNavigate, onLocationClick }) => {
                             className={`w-full text-[10px] py-1.5 rounded-lg transition-colors font-bold flex items-center justify-center gap-1 uppercase tracking-wider
                                 ${result.matchType === 'invoice' ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 hover:bg-amber-100' :
                                     result.matchType === 'external_item' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 hover:bg-emerald-100' :
-                                        result.matchType === 'tax_summary' ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 hover:bg-purple-100' :
+                                        result.matchType === 'tax_summary' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 hover:bg-blue-100' :
                                             result.matchType === 'tax_monitoring' ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 hover:bg-orange-100' :
                                                 result.matchType === 'approval' ? 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 hover:bg-rose-100' :
                                                     result.matchType === 'pustaka' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 hover:bg-blue-100' :
@@ -130,7 +130,7 @@ const ResultCard = ({ result, isDarkMode, onNavigate, onLocationClick }) => {
 // Typing indicator
 const TypingIndicator = ({ isDarkMode, status }) => (
     <div className="flex items-start gap-2 px-4 py-3">
-        <div className={`w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg text-xs flex-shrink-0`}>
+        <div className={`w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg text-xs flex-shrink-0`}>
             🤖
         </div>
         <div className={`px-4 py-3 rounded-2xl rounded-bl-lg ${isDarkMode ? 'bg-white/8 border border-white/5' : 'bg-slate-100'}`}>
@@ -178,7 +178,7 @@ function formatInline(text) {
     // inline code `text`
     const codeMatch = remaining.match(/^(`)(.+?)\1(.*)$/s);
     if (codeMatch) {
-      parts.push(<code key={key++} className="px-1 py-0.5 rounded text-[11px] font-mono bg-slate-200 dark:bg-slate-700 text-pink-600 dark:text-pink-300">{codeMatch[2]}</code>);
+      parts.push(<code key={key++} className="px-1 py-0.5 rounded text-[11px] font-mono bg-slate-200 dark:bg-[#111] text-pink-600 dark:text-pink-300">{codeMatch[2]}</code>);
       remaining = codeMatch[3];
       continue;
     }
@@ -1196,7 +1196,7 @@ export default function AiChatAssistant({
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         onClick={() => setIsOpen(true)}
-                        className="fixed bottom-6 right-6 z-[200] w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-purple-700 text-white shadow-2xl shadow-blue-500/40 flex items-center justify-center group"
+                        className="fixed bottom-6 right-6 z-[200] w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-2xl shadow-blue-500/40 flex items-center justify-center group"
                         style={{ WebkitTapHighlightColor: 'transparent' }}
                     >
                         <span className="text-2xl group-hover:scale-110 transition-transform">🤖</span>
@@ -1227,7 +1227,7 @@ export default function AiChatAssistant({
                         {/* Header */}
                         <div className={`p-4 flex items-center gap-3 border-b flex-shrink-0 ${isDarkMode ? 'border-white/10' : 'border-slate-100'
                             }`}>
-                            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center shadow-lg shadow-blue-500/30 text-lg">
+                            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/30 text-lg">
                                 🤖
                             </div>
                             <div className="flex-1">
@@ -1241,7 +1241,7 @@ export default function AiChatAssistant({
                             </div>
                             <button
                                 onClick={() => setAgentMode(!agentMode)}
-                                className={`px-2.5 py-1.5 rounded-xl transition-all text-[10px] font-black uppercase tracking-wider flex items-center gap-1 ${agentMode ? 'bg-gradient-to-r from-blue-600 to-purple-700 text-white shadow-lg shadow-blue-500/30' : isDarkMode ? 'hover:bg-white/10 text-white/50' : 'hover:bg-slate-100 text-slate-400'}`}
+                                className={`px-2.5 py-1.5 rounded-xl transition-all text-[10px] font-black uppercase tracking-wider flex items-center gap-1 ${agentMode ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30' : isDarkMode ? 'hover:bg-white/10 text-white/50' : 'hover:bg-slate-100 text-slate-400'}`}
                                 title="Mode Agent: gunakan LLM eksternal (function-calling) untuk mencari database & membuat laporan"
                             >
                                 <Bot size={14} /> Agent
@@ -1343,13 +1343,13 @@ export default function AiChatAssistant({
                             {messages.map((msg, i) => (
                                 <div key={i} className={`flex gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                     {msg.role === 'assistant' && (
-                                        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-lg mt-0.5 text-xs">
+                                        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center flex-shrink-0 shadow-lg mt-0.5 text-xs">
                                             🤖
                                         </div>
                                     )}
                                     <div className={`max-w-[85%] space-y-2`}>
                                         <div className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed break-words overflow-hidden ${msg.role === 'user'
-                                            ? 'bg-gradient-to-br from-blue-600 to-purple-700 text-white rounded-br-lg shadow-lg shadow-blue-500/20'
+                                            ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-br-lg shadow-lg shadow-blue-500/20'
                                             : isDarkMode
                                                 ? 'bg-white/8 text-white/90 rounded-bl-lg border border-white/5'
                                                 : 'bg-slate-100 text-slate-700 rounded-bl-lg'
@@ -1448,7 +1448,7 @@ export default function AiChatAssistant({
                                         {/* Semantic analysis metadata - Tax analysis indicator */}
                                         {msg.isAnalysis && (
                                             <div className="flex flex-wrap gap-1 px-1">
-                                                <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide ${isDarkMode ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'bg-purple-100 text-purple-700 border border-purple-200'}`}>
+                                                <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide ${isDarkMode ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30' : 'bg-blue-100 text-blue-700 border border-blue-200'}`}>
                                                     ✨ AI Analysis
                                                 </span>
                                             </div>
@@ -1584,7 +1584,7 @@ export default function AiChatAssistant({
                                     className={`p-2 rounded-xl transition-all ${isStreaming
                                         ? 'bg-red-500/15 text-red-400 hover:bg-red-500/25 hover:scale-105 active:scale-95'
                                         : input.trim() && !isLoading
-                                            ? 'bg-gradient-to-br from-blue-600 to-purple-700 text-white shadow-lg shadow-blue-500/30 hover:scale-105 active:scale-95'
+                                            ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30 hover:scale-105 active:scale-95'
                                             : isDarkMode ? 'text-white/20' : 'text-slate-300'
                                         }`}
                                 >

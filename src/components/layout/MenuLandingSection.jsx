@@ -171,7 +171,7 @@ const menuLandingConfig = {
     subtitle:
       'Tampilkan insight kepatuhan, histori pembayaran, dan tren performa agar manajemen punya gambaran pajak yang komprehensif.',
     icon: LineChart,
-    accent: 'from-violet-500 to-blue-600',
+    accent: 'from-blue-500 to-blue-600',
     features: [
       'Visual ringkas untuk status pembayaran dan indikator kepatuhan.',
       'Konsolidasi data dari proses monitoring dan kalkulasi.',
@@ -286,7 +286,7 @@ const menuLandingConfig = {
     subtitle:
       'Kelola struktur akun pembukuan secara hierarkis dengan pencarian cerdas dan import Excel untuk efisiensi input data.',
     icon: BookOpen,
-    accent: 'from-blue-500 to-purple-600',
+    accent: 'from-blue-500 to-blue-600',
     features: [
       'Struktur COA hierarkis: Induk, Sub COA, dan Departemen.',
       'Pencarian semantic berbasis kode, nama, dan keterangan di semua level.',
@@ -332,7 +332,7 @@ const menuLandingConfig = {
     subtitle:
       'Kelola pengajuan proforma, approval, faktur pajak, hingga settlement dalam satu alur yang terstruktur dan dapat diaudit.',
     icon: ClipboardCheck,
-    accent: 'from-violet-500 to-purple-600',
+    accent: 'from-blue-500 to-blue-600',
     features: [
       'Alur proforma terstruktur: submit, approve, tax, dan settle.',
       'Faktur pajak 17 digit dengan lampiran untuk kepatuhan.',
@@ -378,7 +378,7 @@ const menuLandingConfig = {
     subtitle:
       'Ekstrak data terstruktur dari file PDF secara otomatis dengan model AI untuk mempercepat input data dan verifikasi.',
     icon: Brain,
-    accent: 'from-fuchsia-500 to-purple-600',
+    accent: 'from-fuchsia-500 to-blue-600',
     features: [
       'Ekstraksi otomatis field penting dari dokumen PDF.',
       'Integrasi dengan template yang sudah dilatih.',
@@ -1121,7 +1121,7 @@ export default function MenuLandingSection({
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 16, scale: 0.98 }}
         transition={{ duration: 0.3 }}
-        className="relative overflow-hidden rounded-[2.2rem] border border-white/30 dark:border-white/10 bg-white/85 dark:bg-slate-800/85 backdrop-blur-xl p-6 md:p-8 max-w-6xl mx-auto shadow-2xl shadow-slate-900/20"
+        className="relative overflow-hidden rounded-[2.2rem] border border-white/30 dark:border-white/10 bg-white/85 dark:bg-[#0d0d0d]/85 backdrop-blur-xl p-6 md:p-8 max-w-6xl mx-auto shadow-2xl shadow-slate-900/20"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full blur-3xl bg-gradient-to-br from-white/20 to-transparent pointer-events-none" />
@@ -1148,7 +1148,7 @@ export default function MenuLandingSection({
               <h2 className="text-2xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white leading-tight mb-3">
                 {displayTitle}
               </h2>
-              <p className="text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+              <p className="text-sm md:text-base text-slate-600 dark:text-white/70 leading-relaxed font-medium">
                 {displaySubtitle}
               </p>
             </div>
@@ -1159,8 +1159,8 @@ export default function MenuLandingSection({
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div className="rounded-2xl border border-slate-200/70 dark:border-slate-700/60 bg-white/80 dark:bg-slate-950/50 p-5">
-              <h3 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 font-bold mb-3">{uiText.mainFeatures}</h3>
+            <div className="rounded-2xl border border-slate-200/70 dark:border-white/[0.06]/60 bg-white/80 dark:bg-slate-950/50 p-5">
+              <h3 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-white/40 font-bold mb-3">{uiText.mainFeatures}</h3>
               <ul className="space-y-2">
                 {displayFeatures.map((item) => (
                   <li key={item} className="text-sm text-slate-700 dark:text-slate-200 flex gap-2 leading-relaxed">
@@ -1171,8 +1171,8 @@ export default function MenuLandingSection({
               </ul>
             </div>
 
-            <div className="rounded-2xl border border-slate-200/70 dark:border-slate-700/60 bg-white/80 dark:bg-slate-950/50 p-5">
-              <h3 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 font-bold mb-3">{uiText.businessFunctions}</h3>
+            <div className="rounded-2xl border border-slate-200/70 dark:border-white/[0.06]/60 bg-white/80 dark:bg-slate-950/50 p-5">
+              <h3 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-white/40 font-bold mb-3">{uiText.businessFunctions}</h3>
               <ul className="space-y-2">
                 {displayFunctions.map((item) => (
                   <li key={item} className="text-sm text-slate-700 dark:text-slate-200 flex gap-2 leading-relaxed">
@@ -1183,17 +1183,17 @@ export default function MenuLandingSection({
               </ul>
             </div>
 
-            <div className="rounded-2xl border border-slate-200/70 dark:border-slate-700/60 bg-white/80 dark:bg-slate-950/50 p-5">
-              <h3 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 font-bold mb-3">{uiText.useCases}</h3>
+            <div className="rounded-2xl border border-slate-200/70 dark:border-white/[0.06]/60 bg-white/80 dark:bg-slate-950/50 p-5">
+              <h3 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-white/40 font-bold mb-3">{uiText.useCases}</h3>
               <div className="flex flex-wrap gap-2 mb-4">
                 {displayUseCases.map((item) => (
-                  <span key={item} className="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200">
+                  <span key={item} className="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-[#0d0d0d] text-xs font-bold text-slate-700 dark:text-slate-200">
                     {item}
                   </span>
                 ))}
               </div>
 
-              <h4 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 font-bold mb-2">{uiText.quickNavigation}</h4>
+              <h4 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-white/40 font-bold mb-2">{uiText.quickNavigation}</h4>
               <div className="space-y-2">
                 {config.quickActions.map((action) => {
                   const ActionIcon = action.icon || Briefcase;
@@ -1241,7 +1241,7 @@ export default function MenuLandingSection({
             </h3>
             <ul className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {displayAdvantages.map((item) => (
-                <li key={item} className="rounded-xl bg-white/80 dark:bg-slate-800/60 border border-emerald-200/70 dark:border-emerald-500/30 p-3 text-sm text-slate-700 dark:text-slate-200 leading-relaxed flex gap-2">
+                <li key={item} className="rounded-xl bg-white/80 dark:bg-[#0d0d0d]/60 border border-emerald-200/70 dark:border-emerald-500/30 p-3 text-sm text-slate-700 dark:text-slate-200 leading-relaxed flex gap-2">
                   <Zap size={16} className="mt-0.5 text-emerald-500 shrink-0" />
                   <span>{item}</span>
                 </li>

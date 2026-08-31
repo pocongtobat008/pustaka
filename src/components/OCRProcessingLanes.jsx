@@ -53,7 +53,7 @@ const OCRProcessingLanes = () => {
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            className="fixed bottom-8 right-8 z-[999] w-80 bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-[2.5rem] border border-slate-200 dark:border-white/10 shadow-2xl shadow-blue-500/10 overflow-hidden"
+            className="fixed bottom-8 right-8 z-[999] w-80 bg-white/80 dark:bg-[#0d0d0d]/80 backdrop-blur-xl rounded-[2.5rem] border border-slate-200 dark:border-white/10 shadow-2xl shadow-blue-500/10 overflow-hidden"
         >
             {/* Header - Klik untuk Toggle */}
             <div 
@@ -87,7 +87,7 @@ const OCRProcessingLanes = () => {
                     >
                         <div className="p-5 space-y-4 max-h-72 overflow-y-auto custom-scrollbar">
                             {ocrJobs.map((job) => (
-                                <div key={job.id} className="space-y-2 p-3 rounded-2xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-transparent hover:border-blue-500/20 transition-all">
+                                <div key={job.id} className="space-y-2 p-3 rounded-2xl bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-transparent hover:border-blue-500/20 transition-all">
                                     <div className="flex items-center justify-between gap-3">
                                         <div className="flex items-center gap-2 min-w-0">
                                             <FileText size={14} className="text-slate-400 shrink-0" />
@@ -99,7 +99,7 @@ const OCRProcessingLanes = () => {
                                         <motion.div 
                                             initial={{ width: 0 }}
                                             animate={{ width: `${job.progress || 0}%` }}
-                                            className="h-full bg-gradient-to-r from-blue-500 to-purple-600"
+                                            className="h-full bg-gradient-to-r from-blue-500 to-blue-600"
                                         />
                                     </div>
                                     <div className="flex items-center gap-2">

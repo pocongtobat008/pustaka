@@ -211,7 +211,7 @@ export default function MasterTaxObjectsTab({
                         <input
                             type="text"
                             placeholder={text.searchPlaceholder}
-                            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white"
+                            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -219,7 +219,7 @@ export default function MasterTaxObjectsTab({
                     <div className="relative">
                         <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                         <select
-                            className="pl-9 pr-4 py-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white appearance-none"
+                            className="pl-9 pr-4 py-2 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white appearance-none"
                             value={filterType}
                             onChange={(e) => setFilterType(e.target.value)}
                         >
@@ -242,11 +242,11 @@ export default function MasterTaxObjectsTab({
             </div>
 
             {/* Table Card */}
-            <Card className="overflow-hidden border-none shadow-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl">
+            <Card className="overflow-hidden border-none shadow-xl bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-gray-50 dark:bg-slate-800/50 text-gray-500 dark:text-slate-400 text-xs uppercase tracking-wider font-bold">
+                            <tr className="bg-gray-50 dark:bg-[#0d0d0d]/50 text-gray-500 dark:text-white/40 text-xs uppercase tracking-wider font-bold">
                                 <th className="px-6 py-4 border-b dark:border-slate-800">Kode</th>
                                 <th className="px-6 py-4 border-b dark:border-slate-800">Nama Objek Pajak</th>
                                 <th className="px-6 py-4 border-b dark:border-slate-800">Jenis</th>
@@ -256,9 +256,9 @@ export default function MasterTaxObjectsTab({
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
                             {paginatedData.length > 0 ? paginatedData.map((item) => (
-                                <tr key={item.id} className="hover:bg-gray-50/50 dark:hover:bg-slate-800/30 transition-colors group">
+                                <tr key={item.id} className="hover:bg-gray-50/50 dark:hover:bg-white/[0.05]/30 transition-colors group">
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className="font-mono text-xs font-bold bg-gray-100 dark:bg-slate-800 border dark:border-slate-800 px-2 py-1 rounded text-gray-600 dark:text-slate-300 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 group-hover:text-blue-600 transition-colors">
+                                        <span className="font-mono text-xs font-bold bg-gray-100 dark:bg-[#0d0d0d] border dark:border-slate-800 px-2 py-1 rounded text-gray-600 dark:text-white/70 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 group-hover:text-blue-600 transition-colors">
                                             {item.code}
                                         </span>
                                     </td>
@@ -323,7 +323,7 @@ export default function MasterTaxObjectsTab({
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                    <div className="px-6 py-4 bg-gray-50 dark:bg-slate-800/30 border-t dark:border-slate-800 flex items-center justify-between">
+                    <div className="px-6 py-4 bg-gray-50 dark:bg-[#0d0d0d]/30 border-t dark:border-slate-800 flex items-center justify-between">
                         <div className="text-xs text-gray-500">
                             {text.showing} <span className="font-bold">{(currentPage - 1) * rowsPerPage + 1}</span> - <span className="font-bold">{Math.min(currentPage * rowsPerPage, filteredData.length)}</span> {text.from} <span className="font-bold">{filteredData.length}</span> {text.data}
                         </div>
@@ -331,7 +331,7 @@ export default function MasterTaxObjectsTab({
                             <button
                                 disabled={currentPage === 1}
                                 onClick={() => setCurrentPage(prev => prev - 1)}
-                                className="p-1 rounded bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border dark:border-slate-700 disabled:opacity-30 transition-all hover:bg-gray-50 dark:hover:bg-slate-700"
+                                className="p-1 rounded bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border dark:border-white/[0.06] disabled:opacity-30 transition-all hover:bg-gray-50 dark:hover:bg-white/[0.06]"
                             >
                                 <ChevronLeft size={18} />
                             </button>
@@ -341,7 +341,7 @@ export default function MasterTaxObjectsTab({
                                     onClick={() => setCurrentPage(i + 1)}
                                     className={`w-8 h-8 rounded text-xs font-bold transition-all ${currentPage === i + 1
                                         ? 'gradient-bg text-white shadow-lg'
-                                        : 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border dark:border-slate-700 text-gray-500 hover:bg-gray-50 dark:hover:bg-slate-700'
+                                        : 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border dark:border-white/[0.06] text-gray-500 hover:bg-gray-50 dark:hover:bg-white/[0.06]'
                                         }`}
                                 >
                                     {i + 1}
@@ -350,7 +350,7 @@ export default function MasterTaxObjectsTab({
                             <button
                                 disabled={currentPage === totalPages}
                                 onClick={() => setCurrentPage(prev => prev + 1)}
-                                className="p-1 rounded bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border dark:border-slate-700 disabled:opacity-30 transition-all hover:bg-gray-50 dark:hover:bg-slate-700"
+                                className="p-1 rounded bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border dark:border-white/[0.06] disabled:opacity-30 transition-all hover:bg-gray-50 dark:hover:bg-white/[0.06]"
                             >
                                 <ChevronRight size={18} />
                             </button>
@@ -368,7 +368,7 @@ export default function MasterTaxObjectsTab({
             >
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* section: Basic Info */}
-                    <div className="bg-slate-50/50 dark:bg-slate-800/30 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-4">
+                    <div className="bg-slate-50/50 dark:bg-[#0d0d0d]/30 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-4">
                         <div className="flex items-center gap-2 mb-2">
                             <div className="w-1.5 h-4 bg-blue-500 rounded-full"></div>
                             <h4 className="text-xs font-black uppercase tracking-widest text-slate-500">{text.objectInfo}</h4>
@@ -380,7 +380,7 @@ export default function MasterTaxObjectsTab({
                                 <input
                                     type="text"
                                     required
-                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white font-mono text-sm"
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white font-mono text-sm"
                                     placeholder={text.codeExample}
                                     value={formData.code}
                                     onChange={(e) => setFormData({ ...formData, code: e.target.value })}
@@ -389,7 +389,7 @@ export default function MasterTaxObjectsTab({
                             <div className="col-span-1">
                                 <label className="block text-xs font-bold text-gray-500 mb-1.5 ml-1">{text.taxType}</label>
                                 <select
-                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white appearance-none"
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white appearance-none"
                                     value={formData.tax_type}
                                     onChange={(e) => setFormData({ ...formData, tax_type: e.target.value })}
                                 >
@@ -406,7 +406,7 @@ export default function MasterTaxObjectsTab({
                             <input
                                 type="text"
                                 required
-                                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white font-semibold"
+                                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white font-semibold"
                                 placeholder="Nama deskripsi objek pajak..."
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -415,7 +415,7 @@ export default function MasterTaxObjectsTab({
                     </div>
 
                     {/* section: Calculation Settings */}
-                    <div className="bg-slate-50/50 dark:bg-slate-800/30 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-4">
+                    <div className="bg-slate-50/50 dark:bg-[#0d0d0d]/30 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-4">
                         <div className="flex items-center gap-2 mb-2">
                             <div className="w-1.5 h-4 bg-emerald-500 rounded-full"></div>
                             <h4 className="text-xs font-black uppercase tracking-widest text-slate-500">{text.rateSettings}</h4>
@@ -429,7 +429,7 @@ export default function MasterTaxObjectsTab({
                                         type="number"
                                         step="0.01"
                                         required
-                                        className="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white font-black text-lg"
+                                        className="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white font-black text-lg"
                                         placeholder="0"
                                         value={formData.rate}
                                         onChange={(e) => setFormData({ ...formData, rate: e.target.value })}
@@ -440,7 +440,7 @@ export default function MasterTaxObjectsTab({
                             <div className="col-span-1">
                                 <label className="block text-xs font-bold text-gray-500 mb-1.5 ml-1">{text.markupMode}</label>
                                 <select
-                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white appearance-none"
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white appearance-none"
                                     value={formData.markup_mode}
                                     onChange={(e) => setFormData({ ...formData, markup_mode: e.target.value })}
                                 >
@@ -452,7 +452,7 @@ export default function MasterTaxObjectsTab({
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                            <label className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${formData.is_pph21_bukan_pegawai ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl'}`}>
+                            <label className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${formData.is_pph21_bukan_pegawai ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl'}`}>
                                 <span className={`text-[11px] font-bold ${formData.is_pph21_bukan_pegawai ? 'text-blue-600' : 'text-gray-500'}`}>{text.nonEmployee}</span>
                                 <input
                                     type="checkbox"
@@ -461,7 +461,7 @@ export default function MasterTaxObjectsTab({
                                     onChange={(e) => setFormData({ ...formData, is_pph21_bukan_pegawai: e.target.checked ? 1 : 0 })}
                                 />
                             </label>
-                            <label className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${formData.use_ppn ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl'}`}>
+                            <label className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${formData.use_ppn ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl'}`}>
                                 <span className={`text-[11px] font-bold ${formData.use_ppn ? 'text-blue-600' : 'text-gray-500'}`}>{text.usePpn}</span>
                                 <input
                                     type="checkbox"
@@ -476,7 +476,7 @@ export default function MasterTaxObjectsTab({
                     <div>
                         <label className="block text-xs font-bold text-gray-500 mb-1.5 ml-1">{text.internalNote}</label>
                         <textarea
-                            className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white text-sm"
+                            className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white text-sm"
                             rows="2"
                             placeholder={text.notePlaceholder}
                             value={formData.note}
@@ -488,7 +488,7 @@ export default function MasterTaxObjectsTab({
                         <button
                             type="button"
                             onClick={() => setIsFormOpen(false)}
-                            className="flex-1 px-4 py-3 rounded-xl font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 transition-all"
+                            className="flex-1 px-4 py-3 rounded-xl font-bold bg-slate-100 dark:bg-[#0d0d0d] text-slate-600 dark:text-white/40 hover:bg-slate-200 transition-all"
                         >
                             {text.cancel}
                         </button>

@@ -10,7 +10,7 @@ export default function LoadingFallback() {
             </div>
             <div className="text-center">
                 <h3 className="text-lg font-black text-slate-800 dark:text-white uppercase tracking-widest">Memuat</h3>
-                <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter">Menyiapkan modul aplikasi...</p>
+                <p className="text-xs font-bold text-slate-400 dark:text-white/30 uppercase tracking-tighter">Menyiapkan modul aplikasi...</p>
             </div>
         </div>
     );

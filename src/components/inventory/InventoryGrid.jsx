@@ -45,7 +45,7 @@ const Cell = React.memo(({ slotId, slot, handleSlotClick, getStatusStyle, isMatc
             disabled={!matched && inventorySearchQuery}
             className={`h-full w-full min-h-[140px] rounded-[2rem] flex flex-col items-center justify-center relative group transition-all duration-500 animate-in zoom-in-90 fade-in fill-mode-both p-4
             ${status === 'EMPTY'
-                    ? 'bg-white/30 dark:bg-slate-800/20 backdrop-blur-sm border-2 border-dashed border-slate-300/60 dark:border-slate-600/60 hover:border-blue-400 hover:bg-white/60 dark:hover:bg-slate-800/40 hover:shadow-[0_0_30px_rgba(29,78,216,0.2)] hover:scale-105 z-0 hover:z-10'
+                    ? 'bg-white/30 dark:bg-[#0d0d0d]/20 backdrop-blur-sm border-2 border-dashed border-slate-300/60 dark:border-white/[0.08]/60 hover:border-blue-400 hover:bg-white/60 dark:hover:bg-white/[0.05]/40 hover:shadow-[0_0_30px_rgba(29,78,216,0.2)] hover:scale-105 z-0 hover:z-10'
                     : `border-2 ${statusStyle.color} shadow-xl hover:shadow-2xl hover:scale-110 hover:-rotate-2 z-0 hover:z-10 ring-1 ring-white/10 opacity-100`
                 }
             ${!matched && inventorySearchQuery ? 'opacity-20 grayscale cursor-not-allowed scale-90' : 'opacity-100'}
@@ -81,7 +81,7 @@ const Cell = React.memo(({ slotId, slot, handleSlotClick, getStatusStyle, isMatc
             ) : (
                 <div className="flex flex-col items-center gap-2 opacity-40 group-hover:opacity-100 transition-all">
                     <Plus size={40} className="text-slate-300 dark:text-slate-600 group-hover:text-blue-400 group-hover:rotate-90 transition-all duration-500" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Kosong</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-white/30">Kosong</span>
                 </div>
             )}
         </button>

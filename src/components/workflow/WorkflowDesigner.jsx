@@ -59,7 +59,7 @@ const ApproverNode = ({ data }) => {
     const hasDocs = (data.documents || []).length > 0;
 
     return (
-        <div className="px-6 py-4 rounded-3xl bg-white dark:bg-slate-800 shadow-2xl border-2 border-blue-100 dark:border-blue-800 min-w-[200px] group relative hover:border-blue-500 transition-all">
+        <div className="px-6 py-4 rounded-3xl bg-white dark:bg-[#0d0d0d] shadow-2xl border-2 border-blue-100 dark:border-blue-800 min-w-[200px] group relative hover:border-blue-500 transition-all">
             {/* One handle per side — all source, connectionMode=loose handles direction */}
             <Handle id="top" type="source" position={Position.Top} className={`${handleStyle} bg-blue-500`} />
             <Handle id="right" type="source" position={Position.Right} className={`${handleStyle} bg-blue-500`} />
@@ -266,12 +266,12 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
     return (
         <div className="w-full h-full bg-slate-50 dark:bg-slate-950 relative overflow-hidden flex">
             {/* Toolbar */}
-            <div className="w-80 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-800 p-6 flex flex-col gap-4 z-10 shadow-2xl overflow-hidden">
+            <div className="w-80 bg-white dark:bg-[#0d0d0d] border-r border-slate-200 dark:border-slate-800 p-6 flex flex-col gap-4 z-10 shadow-2xl overflow-hidden">
                 <div className="flex justify-between items-center mb-2">
                     <h2 className="text-lg font-black text-slate-800 dark:text-white flex items-center gap-2">
                         <Save className="text-blue-500" size={20} /> Workflow
                     </h2>
-                    <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all">
+                    <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-white/[0.05] rounded-xl transition-all">
                         <X size={20} className="text-slate-400" />
                     </button>
                 </div>
@@ -287,7 +287,7 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
                 </div>
 
                 {selectedEdge && (
-                    <div className="space-y-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                    <div className="space-y-3 p-4 rounded-2xl bg-slate-50 dark:bg-[#0d0d0d] border border-slate-200 dark:border-white/[0.06]">
                         <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest">Edge Properties</p>
                         <p className="text-[10px] text-slate-500">Pilih warna untuk garis yang sedang dipilih.</p>
                         <div className="flex items-center gap-2">
@@ -313,7 +313,7 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
                 {selectedNode && (
                     <div className="flex-1 min-h-0 overflow-y-auto space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-300 custom-scrollbar pr-1">
                         {/* Header */}
-                        <div className="flex justify-between items-center sticky top-0 bg-white dark:bg-slate-800 z-10 pb-2">
+                        <div className="flex justify-between items-center sticky top-0 bg-white dark:bg-[#0d0d0d] z-10 pb-2">
                             <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest">Node Properties</p>
                             <button onClick={() => deleteNode(selectedNode.id)} className="text-red-500 hover:text-red-600 p-1">
                                 <Trash2 size={16} />
@@ -328,7 +328,7 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
                                     <button
                                         key={u.username}
                                         onClick={() => selectUser(u.username, u.name)}
-                                        className={`w-full text-left p-3 rounded-xl border-2 transition-all ${selectedNode.data.username === u.username ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-transparent bg-slate-50 dark:bg-slate-800 hover:border-slate-200'}`}
+                                        className={`w-full text-left p-3 rounded-xl border-2 transition-all ${selectedNode.data.username === u.username ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-transparent bg-slate-50 dark:bg-[#0d0d0d] hover:border-slate-200'}`}
                                     >
                                         <p className="text-sm font-bold dark:text-white">{u.name}</p>
                                         <p className="text-[10px] text-slate-400">{u.username} - {u.department}</p>
@@ -347,7 +347,7 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
                                 onChange={(e) => updateInstruction(e.target.value)}
                                 placeholder="Tuliskan instruksi kerja untuk step ini..."
                                 rows={4}
-                                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white text-sm resize-none"
+                                className="w-full px-4 py-3 bg-slate-50 dark:bg-[#0d0d0d] border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white text-sm resize-none"
                             />
                         </div>
 
@@ -382,13 +382,13 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
                                     {(selectedNode.data.documents || []).map((doc, idx) => {
                                         const url = doc.url || doc;
                                         return (
-                                            <div key={idx} className="relative group/att rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+                                            <div key={idx} className="relative group/att rounded-xl overflow-hidden border border-slate-200 dark:border-white/[0.06] bg-slate-50 dark:bg-[#0d0d0d]">
                                                 {isImage(url) ? (
                                                     <img src={getFullUrl(url)} alt={doc.name || `File ${idx + 1}`} className="w-full aspect-video object-cover" />
                                                 ) : (
                                                     <div className="flex items-center gap-2 p-3">
                                                         <FileText size={16} className="text-amber-500 flex-shrink-0" />
-                                                        <span className="text-[9px] font-bold text-slate-600 dark:text-slate-300 truncate">
+                                                        <span className="text-[9px] font-bold text-slate-600 dark:text-white/70 truncate">
                                                             {doc.name || (typeof url === 'string' ? url.split('/').pop() : `File ${idx + 1}`)}
                                                         </span>
                                                     </div>
@@ -440,7 +440,7 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
                 >
                     <Background color="#94a3b8" gap={20} size={1} />
                     <Controls />
-                    <Panel position="top-right" className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md p-3 rounded-2xl border border-white/20 shadow-xl">
+                    <Panel position="top-right" className="bg-white/90 dark:bg-[#0d0d0d]/90 backdrop-blur-md p-3 rounded-2xl border border-white/20 shadow-xl">
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Status Flow</p>
                         <p className="text-xs font-bold text-slate-800 dark:text-white">Drafting Master Flow</p>
                     </Panel>

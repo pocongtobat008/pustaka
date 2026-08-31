@@ -28,7 +28,7 @@ export default function UploadModal({ uploadForm, setUploadForm, fileInputRef, h
         <h3 className="text-xl font-bold dark:text-white">Sedang Memproses...</h3>
         <p className="text-sm text-gray-500 mt-2">{uploadForm.processingMessage || 'Mengunggah dokumen ke sistem...'}</p>
 
-        <div className="mt-6 mx-auto h-2 w-full max-w-xs overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+        <div className="mt-6 mx-auto h-2 w-full max-w-xs overflow-hidden rounded-full bg-slate-200 dark:bg-[#111]">
           <motion.div
             className="h-full rounded-full bg-gradient-to-r from-blue-500 via-blue-500 to-cyan-400"
             initial={{ x: '-100%' }}
@@ -50,30 +50,30 @@ export default function UploadModal({ uploadForm, setUploadForm, fileInputRef, h
       <motion.div
         whileHover={{ y: -2, scale: 1.01 }}
         whileTap={{ scale: 0.995 }}
-        className={`group relative flex flex-col items-center justify-center border-dashed rounded-2xl p-10 text-center transition-all duration-300 cursor-pointer ${uploadForm.fileData ? 'border-2 border-blue-500 bg-blue-50/30 dark:bg-blue-900/10' : 'border border-slate-200 dark:border-slate-700 hover:border-blue-300 hover:bg-slate-50/50 dark:hover:bg-slate-800/30'}`}
+        className={`group relative flex flex-col items-center justify-center border-dashed rounded-2xl p-10 text-center transition-all duration-300 cursor-pointer ${uploadForm.fileData ? 'border-2 border-blue-500 bg-blue-50/30 dark:bg-blue-900/10' : 'border border-slate-200 dark:border-white/[0.06] hover:border-blue-300 hover:bg-slate-50/50 dark:hover:bg-white/[0.05]/30'}`}
         onClick={() => fileInputRef.current.click()}
       >
         <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileSelect} accept="image/*,.pdf,.docx,.doc,.xlsx,.xls,.pptx" />
 
-        <div className="mb-4 p-4 rounded-full bg-slate-50 dark:bg-slate-800 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 transition-colors duration-300">
-          <UploadCloud className="text-slate-400 dark:text-slate-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-300" size={32} />
+        <div className="mb-4 p-4 rounded-full bg-slate-50 dark:bg-[#0d0d0d] group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 transition-colors duration-300">
+          <UploadCloud className="text-slate-400 dark:text-white/30 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-300" size={32} />
         </div>
 
-        <p className="text-sm font-semibold text-slate-600 dark:text-slate-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+        <p className="text-sm font-semibold text-slate-600 dark:text-white/70 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
           {uploadForm.title || 'Klik di sini untuk upload file'}
         </p>
         {!uploadForm.title && (
-          <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 font-medium uppercase tracking-wider">
+          <p className="text-[10px] text-slate-400 dark:text-white/30 mt-1 font-medium uppercase tracking-wider">
             Semua Jenis File (PDF, Gambar, Office) - Max 30MB
           </p>
         )}
       </motion.div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Judul Dokumen</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-white/70 mb-1">Judul Dokumen</label>
         <input
           value={uploadForm.title}
           onChange={(e) => setUploadForm({ ...uploadForm, title: e.target.value })}
-          className="w-full px-4 py-2 border rounded-lg dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+          className="w-full px-4 py-2 border rounded-lg dark:bg-[#0d0d0d] dark:border-white/[0.06] dark:text-white"
         />
       </div>
       <div className="flex justify-end gap-3 pt-4">

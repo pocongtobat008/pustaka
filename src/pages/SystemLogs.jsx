@@ -60,16 +60,16 @@ export default function SystemLogs({ isDarkMode }) {
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div className="flex bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 p-1 rounded-xl shadow-sm">
+                <div className="flex bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-white/40 dark:border-white/10 p-1 rounded-xl shadow-sm">
                     <button
                         onClick={() => setLogType('error')}
-                        className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${logType === 'error' ? 'gradient-bg text-white shadow-md' : 'text-gray-500 dark:text-slate-500 hover:text-gray-700 dark:hover:text-slate-300'}`}
+                        className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${logType === 'error' ? 'gradient-bg text-white shadow-md' : 'text-gray-500 dark:text-white/30 hover:text-gray-700 dark:hover:text-slate-300'}`}
                     >
                         <AlertCircle size={16} /> {text.systemErrors}
                     </button>
                     <button
                         onClick={() => setLogType('ocr')}
-                        className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all ${logType === 'ocr' ? 'bg-white/70 dark:bg-slate-700/60 backdrop-blur-xl text-amber-600 shadow-sm' : 'text-gray-500'}`}
+                        className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all ${logType === 'ocr' ? 'bg-white/70 dark:bg-[#111]/60 backdrop-blur-xl text-amber-600 shadow-sm' : 'text-gray-500'}`}
                     >
                         <FileWarning size={16} /> {text.ocrFailures}
                     </button>
@@ -83,10 +83,10 @@ export default function SystemLogs({ isDarkMode }) {
                             placeholder={text.searchPlaceholder}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full pl-10 pr-4 py-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-gray-200 dark:border-white/[0.06] rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
-                    <button onClick={fetchLogs} className="p-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-xl hover:bg-gray-50">
+                    <button onClick={fetchLogs} className="p-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-gray-200 dark:border-white/[0.06] rounded-xl hover:bg-gray-50">
                         <RefreshCw size={20} className={`text-gray-500 ${isLoading ? 'animate-spin' : ''}`} />
                     </button>
                 </div>
@@ -99,7 +99,7 @@ export default function SystemLogs({ isDarkMode }) {
                     value: allLines.length.toLocaleString('id-ID'),
                     subtext: isEnglish ? 'Log lines loaded' : 'Baris log dimuat',
                     icon: Terminal,
-                    gradient: 'from-blue-500 to-purple-600',
+                    gradient: 'from-blue-500 to-blue-600',
                 },
                 {
                     title: isEnglish ? 'Errors' : 'Error',
@@ -120,7 +120,7 @@ export default function SystemLogs({ isDarkMode }) {
                     value: logType === 'error' ? 'error.log' : 'ocr-failures.log',
                     subtext: isEnglish ? 'Currently viewed' : 'Sedang dilihat',
                     icon: FileWarning,
-                    gradient: 'from-violet-500 to-fuchsia-600',
+                    gradient: 'from-blue-500 to-fuchsia-600',
                 },
             ]} />
 

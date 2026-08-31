@@ -310,9 +310,9 @@ export class SemanticAnalyzer {
             underpayment: 'rose',
             overpayment: 'emerald',
             history: 'amber',
-            trend: 'purple',
+            trend: 'blue',
             status: 'blue',
-            forecast: 'violet',
+            forecast: 'blue',
             summary: 'cyan',
             anomaly: 'orange',
             compliance: 'green'

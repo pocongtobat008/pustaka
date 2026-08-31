@@ -141,14 +141,14 @@ export default function KnowledgeGraph({ data, height = 520 }) {
         <div className="space-y-3">
             {/* Controls */}
             <div className="flex flex-wrap items-center gap-2 text-xs">
-                <span className="font-bold text-gray-500 dark:text-slate-400">Filter:</span>
+                <span className="font-bold text-gray-500 dark:text-white/40">Filter:</span>
                 {['all', 'category', 'training_doc', 'knowledge', 'correction', 'brain_memory'].map(f => (
                     <button key={f} onClick={() => setFilter(f)}
-                        className={`px-2 py-1 rounded-md transition-colors ${filter === f ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700'}`}>
+                        className={`px-2 py-1 rounded-md transition-colors ${filter === f ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-[#0d0d0d] text-gray-600 dark:text-white/70 hover:bg-gray-200 dark:hover:bg-white/[0.06]'}`}>
                         {f === 'all' ? 'Semua' : (TYPE_LABEL[f] || f)}
                     </button>
                 ))}
-                <div className="ml-auto flex gap-3 text-[11px] text-gray-500 dark:text-slate-400">
+                <div className="ml-auto flex gap-3 text-[11px] text-gray-500 dark:text-white/40">
                     <span>📁 {stats.trainingDocs || 0} docs</span>
                     <span>🧩 {stats.chunks || 0} chunks</span>
                     <span>🧠 {stats.knowledge || 0} knowledge</span>
@@ -159,7 +159,7 @@ export default function KnowledgeGraph({ data, height = 520 }) {
             </div>
 
             {/* Legend */}
-            <div className="flex flex-wrap gap-3 text-[11px] text-gray-500 dark:text-slate-400">
+            <div className="flex flex-wrap gap-3 text-[11px] text-gray-500 dark:text-white/40">
                 <Legend color="#8b5cf6" label="Kategori" />
                 <Legend color="#22d3ee" label="Dokumen Training" />
                 <Legend color="#67e8f9" label="Chunk" />
@@ -169,7 +169,7 @@ export default function KnowledgeGraph({ data, height = 520 }) {
                 <Legend color="#f59e0b" label="1MBrain Memory" />
             </div>
 
-            <div ref={wrapRef} className="relative w-full rounded-xl border dark:border-slate-700/50 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 overflow-hidden">
+            <div ref={wrapRef} className="relative w-full rounded-xl border dark:border-white/[0.06]/50 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-[#0d0d0d] overflow-hidden">
                 <canvas
                     ref={canvasRef}
                     className="block touch-none"
@@ -179,7 +179,7 @@ export default function KnowledgeGraph({ data, height = 520 }) {
                     onMouseLeave={onUp}
                     onWheel={onWheel}
                 />
-                <div className="absolute bottom-2 left-2 text-[10px] text-gray-400 dark:text-slate-500 pointer-events-none">
+                <div className="absolute bottom-2 left-2 text-[10px] text-gray-400 dark:text-white/30 pointer-events-none">
                     Scroll = zoom · Drag node = geser · Drag kosong = pan · Hover = detail
                 </div>
             </div>
@@ -189,19 +189,19 @@ export default function KnowledgeGraph({ data, height = 520 }) {
                 const n = simRef.current.byId?.[(selected || {}).id] || simRef.current.byId?.[hover];
                 if (!n) return null;
                 return (
-                    <div className="text-xs bg-white dark:bg-slate-800 border dark:border-slate-700/50 rounded-lg p-3">
+                    <div className="text-xs bg-white dark:bg-[#0d0d0d] border dark:border-white/[0.06]/50 rounded-lg p-3">
                         <div className="flex items-center gap-2 mb-1">
                             <span className="w-3 h-3 rounded-full" style={{ background: n.color }} />
                             <span className="font-bold dark:text-white">{n.label}</span>
-                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-slate-400">{TYPE_LABEL[n.type] || n.type}</span>
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-[#0d0d0d] text-gray-500 dark:text-white/40">{TYPE_LABEL[n.type] || n.type}</span>
                         </div>
-                        {n.category && <div className="text-gray-500 dark:text-slate-400">Kategori: {n.category}</div>}
-                        {n.status && <div className="text-gray-500 dark:text-slate-400">Status: {n.status}</div>}
-                        {n.meta?.usedInTraining !== undefined && <div className="text-gray-500 dark:text-slate-400">Terpakai di training: {n.meta.usedInTraining ? 'Ya' : 'Belum'}</div>}
-                        {n.meta?.repeatCount !== undefined && <div className="text-gray-500 dark:text-slate-400">Ditanyakan: {n.meta.repeatCount}x</div>}
-                        {n.meta?.confidence !== undefined && <div className="text-gray-500 dark:text-slate-400">Confidence: {(n.meta.confidence * 100).toFixed(0)}%</div>}
-                        {n.meta?.applied !== undefined && <div className="text-gray-500 dark:text-slate-400">Diterapkan: {n.meta.applied ? 'Ya' : 'Belum'}</div>}
-                        {n.meta?.severity !== undefined && <div className="text-gray-500 dark:text-slate-400">Severity: {(n.meta.severity * 100).toFixed(0)}%</div>}
+                        {n.category && <div className="text-gray-500 dark:text-white/40">Kategori: {n.category}</div>}
+                        {n.status && <div className="text-gray-500 dark:text-white/40">Status: {n.status}</div>}
+                        {n.meta?.usedInTraining !== undefined && <div className="text-gray-500 dark:text-white/40">Terpakai di training: {n.meta.usedInTraining ? 'Ya' : 'Belum'}</div>}
+                        {n.meta?.repeatCount !== undefined && <div className="text-gray-500 dark:text-white/40">Ditanyakan: {n.meta.repeatCount}x</div>}
+                        {n.meta?.confidence !== undefined && <div className="text-gray-500 dark:text-white/40">Confidence: {(n.meta.confidence * 100).toFixed(0)}%</div>}
+                        {n.meta?.applied !== undefined && <div className="text-gray-500 dark:text-white/40">Diterapkan: {n.meta.applied ? 'Ya' : 'Belum'}</div>}
+                        {n.meta?.severity !== undefined && <div className="text-gray-500 dark:text-white/40">Severity: {(n.meta.severity * 100).toFixed(0)}%</div>}
                     </div>
                 );
             })()}

@@ -21,7 +21,7 @@ const SUPPORTED_FORMATS = [
     { ext: 'PowerPoint', icon: '📽️', colors: 'from-orange-500 to-red-600', desc: '.ppt .pptx .pps .pot' },
     { ext: 'PDF', icon: '📄', colors: 'from-rose-500 to-pink-600', desc: '.pdf' },
     { ext: 'OpenDocument', icon: '📂', colors: 'from-teal-500 to-cyan-600', desc: '.odt .ods .odp' },
-    { ext: 'Lainnya', icon: '📚', colors: 'from-purple-500 to-violet-600', desc: '.rtf .epub .csv .txt' },
+    { ext: 'Lainnya', icon: '📚', colors: 'from-blue-500 to-blue-600', desc: '.rtf .epub .csv .txt' },
 ];
 
 const EXTENSION_PATTERN = /\.(docx?|docm|pptx?|ppsx?|potx?|pptm|ppsm|xlsx?|xlsm|xlsb|odt|ods|odp|rtf|epub|csv|pdf|md|txt)$/i;
@@ -386,7 +386,7 @@ export default function AnyDoc({ isDarkMode, currentUser }) {
             {/* Header halaman — PageHeader terpusat (konsisten semua menu) */}
             <PageHeader
                 icon={FileCode2}
-                iconClass="from-blue-600 to-purple-700"
+                iconClass="from-blue-600 to-blue-700"
                 title="AnyDoc Converter"
                 subtitle={t("anydoc.subtitle")}
                 meta={(
@@ -411,7 +411,7 @@ export default function AnyDoc({ isDarkMode, currentUser }) {
 
             {/* ── Ringkasan ── */}
             <SummaryRow className="mb-5" cards={[
-                { title: 'Format Didukung', value: SUPPORTED_FORMATS.length, icon: FileText, gradient: 'from-blue-500 to-purple-600' },
+                { title: 'Format Didukung', value: SUPPORTED_FORMATS.length, icon: FileText, gradient: 'from-blue-500 to-blue-600' },
                 { title: 'Riwayat Konversi', value: history.length, icon: History, gradient: 'from-emerald-500 to-teal-600' },
                 { title: 'Mode Aktif', value: mode === 'convert' ? 'Konversi' : 'Ekstrak', icon: mode === 'convert' ? FileCode2 : FileSpreadsheet, gradient: mode === 'convert' ? 'from-amber-500 to-orange-600' : 'from-teal-500 to-emerald-600', valueClass: 'text-base' },
                 { title: 'File Siap Ekstrak', value: extractFiles.length, icon: ListChecks, gradient: 'from-cyan-500 to-blue-600' },
@@ -422,7 +422,7 @@ export default function AnyDoc({ isDarkMode, currentUser }) {
                 <button
                     onClick={() => setMode('convert')}
                     className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${mode === 'convert'
-                        ? 'bg-gradient-to-r from-blue-600 to-purple-700 text-white shadow-md shadow-blue-500/25'
+                        ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md shadow-blue-500/25'
                         : isDarkMode ? 'text-white/50 hover:text-white/90 hover:bg-white/5' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
                 >
                     <FileCode2 size={14} /> Konversi Markdown
@@ -451,7 +451,7 @@ export default function AnyDoc({ isDarkMode, currentUser }) {
                             {history.map((h, i) => (
                                 <a key={i} href={h.url} target="_blank" rel="noreferrer"
                                     className={`flex items-center gap-3 p-3 rounded-xl border transition-all hover:scale-[1.01] ${isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-slate-50 border-slate-200 hover:bg-slate-100'}`}>
-                                    <div className={`w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0`}>
+                                    <div className={`w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center flex-shrink-0`}>
                                         <FileText size={14} className="text-white" />
                                     </div>
                                     <div className="flex-1 min-w-0">
@@ -511,7 +511,7 @@ export default function AnyDoc({ isDarkMode, currentUser }) {
                         />
                         <div
                             style={{ transform: dragOver ? 'scale(1.1)' : 'scale(1)', transition: 'transform 0.2s' }}
-                            className={`w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-xl shadow-blue-500/30 mb-4`}
+                            className={`w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-xl shadow-blue-500/30 mb-4`}
                         >
                             <UploadCloud size={28} className="text-white" />
                         </div>
@@ -534,7 +534,7 @@ export default function AnyDoc({ isDarkMode, currentUser }) {
                         disabled={!file || converting}
                         className={`w-full py-3.5 rounded-xl font-extrabold text-sm flex items-center justify-center gap-2 transition-all ${!file || converting
                             ? isDarkMode ? 'bg-white/5 text-white/30 cursor-not-allowed' : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                            : 'bg-gradient-to-r from-blue-600 to-purple-700 text-white shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-[1.01] active:scale-[0.99]'}`}
+                            : 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-[1.01] active:scale-[0.99]'}`}
                     >
                         {converting ? <><Loader2 size={17} className="animate-spin" /> Mengonversi...</> : <><Sparkles size={17} /> Konversi ke Markdown</>}
                     </button>
@@ -571,7 +571,7 @@ export default function AnyDoc({ isDarkMode, currentUser }) {
                             {/* Result meta */}
                             <div className={`rounded-2xl border p-4 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-sm'}`}>
                                 <div className="flex items-center gap-3 flex-wrap">
-                                    <div className={`w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0`}>
+                                    <div className={`w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center flex-shrink-0`}>
                                         <FileText size={16} className="text-white" />
                                     </div>
                                     <div className="flex-1 min-w-0">
@@ -608,8 +608,8 @@ export default function AnyDoc({ isDarkMode, currentUser }) {
                                     </button>
                                     <button onClick={() => handleSave('train')} disabled={!!saving}
                                         className={`flex items-center justify-center gap-1.5 py-2 rounded-xl text-[11px] font-bold transition-all border ${isDarkMode
-                                            ? 'bg-purple-500/10 border-purple-500/25 text-purple-300 hover:bg-purple-500/20'
-                                            : 'bg-purple-50 border-purple-200 text-purple-600 hover:bg-purple-100'}`}>
+                                            ? 'bg-blue-500/10 border-blue-500/25 text-blue-300 hover:bg-blue-500/20'
+                                            : 'bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100'}`}>
                                         {saving === 'train' ? <Loader2 size={13} className="animate-spin" /> : <Brain size={13} />} AI Training
                                     </button>
                                 </div>

@@ -22,7 +22,7 @@ export default function TaxUploadModal({
             <div className="space-y-6 pt-4 px-1">
                 {/* Preview Section */}
                 <div className="flex flex-col md:flex-row gap-6">
-                    <div className="w-full md:w-1/3 bg-slate-100 dark:bg-slate-800 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 flex items-center justify-center h-48 relative group">
+                    <div className="w-full md:w-1/3 bg-slate-100 dark:bg-[#0d0d0d] rounded-xl overflow-hidden border border-slate-200 dark:border-white/[0.06] flex items-center justify-center h-48 relative group">
                         {uploadForm.fileType?.startsWith('image/') ? (
                             <img src={uploadForm.fileData} alt="Preview" className="max-w-full max-h-full object-contain" />
                         ) : (
@@ -37,9 +37,9 @@ export default function TaxUploadModal({
                     </div>
                     <div className="flex-1 space-y-4">
                         <div>
-                            <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Judul Dokumen</label>
+                            <label className="block text-xs font-bold text-slate-500 dark:text-white/40 mb-1">Judul Dokumen</label>
                             <input
-                                className="w-full px-4 py-2 border rounded-lg bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                className="w-full px-4 py-2 border rounded-lg bg-white dark:bg-[#0d0d0d] dark:border-white/[0.06] dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                                 value={uploadForm.title}
                                 onChange={(e) => setUploadForm({ ...uploadForm, title: e.target.value })}
                                 placeholder="Masukkan judul dokumen..."
@@ -47,7 +47,7 @@ export default function TaxUploadModal({
                         </div>
                         <div>
                             <div className="flex justify-between items-center mb-1">
-                                <label className="block text-xs font-bold text-slate-500 dark:text-slate-400">Hasil OCR (Text Extraction)</label>
+                                <label className="block text-xs font-bold text-slate-500 dark:text-white/40">Hasil OCR (Text Extraction)</label>
                                 {uploadForm.ocrContent && (
                                     <span className="text-[10px] text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded flex items-center gap-1">
                                         <CheckCircle2 size={10} /> Berhasil
@@ -56,7 +56,7 @@ export default function TaxUploadModal({
                             </div>
                             <div className="relative">
                                 <textarea
-                                    className="w-full h-24 px-4 py-2 border rounded-lg bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 text-xs font-mono resize-none focus:ring-1 focus:ring-blue-500 outline-none transition-all"
+                                    className="w-full h-24 px-4 py-2 border rounded-lg bg-white dark:bg-[#0d0d0d] dark:border-white/[0.06] dark:text-white/70 text-xs font-mono resize-none focus:ring-1 focus:ring-blue-500 outline-none transition-all"
                                     value={uploadForm.ocrContent}
                                     onChange={(e) => setUploadForm({ ...uploadForm, ocrContent: e.target.value })}
                                     placeholder="Klik tombol 'Proses OCR' untuk mengekstrak teks otomatis dari dokumen..."
@@ -74,11 +74,11 @@ export default function TaxUploadModal({
                 {/* Progress Bar if processing */}
                 {uploadForm.isProcessing && (
                     <div className="space-y-2 animate-in fade-in duration-300">
-                        <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400">
+                        <div className="flex justify-between text-xs text-slate-500 dark:text-white/40">
                             <span>{uploadForm.processingMessage}</span>
                             <span className="animate-pulse font-bold text-blue-500">Processing...</span>
                         </div>
-                        <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
+                        <div className="w-full bg-slate-200 dark:bg-[#111] rounded-full h-1.5 overflow-hidden">
                             <div className="bg-blue-600 h-full rounded-full animate-progress-indeterminate"></div>
                         </div>
                     </div>
@@ -88,7 +88,7 @@ export default function TaxUploadModal({
                 <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white font-bold text-sm transition-colors"
+                        className="px-4 py-2 text-slate-500 hover:text-slate-700 dark:text-white/40 dark:hover:text-white font-bold text-sm transition-colors"
                     >
                         Batal
                     </button>

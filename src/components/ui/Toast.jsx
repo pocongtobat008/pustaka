@@ -135,7 +135,7 @@ export function ToastContainer({ toasts, onRemove }) {
                             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
                             className={`
                 pointer-events-auto
-                bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl 
+                bg-white/90 dark:bg-[#0d0d0d]/90 backdrop-blur-xl 
                 border ${config.border} 
                 p-3.5 rounded-2xl shadow-2xl 
                 ring-8 ${config.ring}
@@ -164,7 +164,7 @@ export function ToastContainer({ toasts, onRemove }) {
 
                                 {/* Progress Bar */}
                                 {toast.progress !== undefined && (
-                                    <div className="mt-2 w-full bg-gray-200 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
+                                    <div className="mt-2 w-full bg-gray-200 dark:bg-[#111] rounded-full h-1.5 overflow-hidden">
                                         <motion.div
                                             initial={{ width: 0 }}
                                             animate={{ width: `${toast.progress}%` }}
@@ -177,7 +177,7 @@ export function ToastContainer({ toasts, onRemove }) {
                             {/* Close Button */}
                             {!isLoading && (
                                 <button
-                                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 flex-shrink-0"
+                                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-slate-200 dark:hover:bg-white/[0.06] flex-shrink-0"
                                     onClick={(e) => { e.stopPropagation(); onRemove(toast.id); }}
                                 >
                                     <X size={12} className="text-slate-400" />

@@ -579,12 +579,12 @@ export default function Documents({
                 <SummaryRow cols={3} className="mb-2" cards={[
                     { title: isEnglish ? 'Total Documents' : 'Total Dokumen', value: (docList || []).length, icon: FileText, gradient: 'from-blue-500 to-cyan-600' },
                     { title: isEnglish ? 'Total Folders' : 'Total Folder', value: (folders || []).length, icon: FolderOpen, gradient: 'from-amber-500 to-orange-600' },
-                    { title: isEnglish ? 'Total Revisions' : 'Total Revisi', value: docStats?.totalRevisions || 0, icon: History, gradient: 'from-blue-500 to-purple-600' },
+                    { title: isEnglish ? 'Total Revisions' : 'Total Revisi', value: docStats?.totalRevisions || 0, icon: History, gradient: 'from-blue-500 to-blue-600' },
                 ]} />
 
                 {/* AI SMART INSIGHT BANNER */}
                 <div className={`p-4 rounded-2xl border backdrop-blur-md flex items-center gap-4 animate-in slide-in-from-top-4 duration-700 ${insight.color}`}>
-                    <div className="p-2.5 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-xl shadow-sm shrink-0">
+                    <div className="p-2.5 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-xl shadow-sm shrink-0">
                         {insight.icon}
                     </div>
                     <div className="flex-1">
@@ -597,17 +597,17 @@ export default function Documents({
                     </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl p-4 rounded-2xl border border-white/40 dark:border-white/10 shadow-xl ring-1 ring-black/5">
+                <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-white/80 dark:bg-[#0d0d0d]/80 backdrop-blur-xl p-4 rounded-2xl border border-white/40 dark:border-white/10 shadow-xl ring-1 ring-black/5">
                     <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto">
-                        <div className="flex gap-1 mr-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-lg p-1 shadow-sm">
-                            <button onClick={navigateBack} disabled={historyIndex <= 0} aria-label="Back" title="Back" className={`p-1 rounded hover:bg-white dark:hover:bg-slate-700 transition-colors ${historyIndex <= 0 ? 'text-gray-300 dark:text-slate-600' : 'text-gray-600 dark:text-slate-300'}`}>
+                        <div className="flex gap-1 mr-2 bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-lg p-1 shadow-sm">
+                            <button onClick={navigateBack} disabled={historyIndex <= 0} aria-label="Back" title="Back" className={`p-1 rounded hover:bg-white dark:hover:bg-white/[0.06] transition-colors ${historyIndex <= 0 ? 'text-gray-300 dark:text-slate-600' : 'text-gray-600 dark:text-white/70'}`}>
                                 <ChevronLeft size={18} />
                             </button>
-                            <button onClick={navigateForward} disabled={!folderHistory || historyIndex >= folderHistory.length - 1} aria-label="Forward" title="Forward" className={`p-1 rounded hover:bg-white dark:hover:bg-slate-700 transition-colors ${!folderHistory || historyIndex >= folderHistory.length - 1 ? 'text-gray-300 dark:text-slate-600' : 'text-gray-600 dark:text-slate-300'}`}>
+                            <button onClick={navigateForward} disabled={!folderHistory || historyIndex >= folderHistory.length - 1} aria-label="Forward" title="Forward" className={`p-1 rounded hover:bg-white dark:hover:bg-white/[0.06] transition-colors ${!folderHistory || historyIndex >= folderHistory.length - 1 ? 'text-gray-300 dark:text-slate-600' : 'text-gray-600 dark:text-white/70'}`}>
                                 <ChevronRight size={18} />
                             </button>
                         </div>
-                        <button onClick={() => navigateFolder(null)} aria-label="All folders (root)" title="All folders" className={`p-2 rounded-lg transition-all ${currentFolderId === null ? 'bg-blue-100 text-blue-600 dark:bg-blue-600 dark:text-white shadow-sm' : 'hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-500 dark:text-slate-400'}`}>
+                        <button onClick={() => navigateFolder(null)} aria-label="All folders (root)" title="All folders" className={`p-2 rounded-lg transition-all ${currentFolderId === null ? 'bg-blue-100 text-blue-600 dark:bg-blue-600 dark:text-white shadow-sm' : 'hover:bg-gray-100 dark:hover:bg-white/[0.06] text-gray-500 dark:text-white/40'}`}>
                             <HardDrive size={20} />
                         </button>
                         {currentFolderId && (
@@ -626,16 +626,16 @@ export default function Documents({
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder={isEnglish ? 'Search documents...' : 'Cari dokumen...'}
-                                className="w-full pl-10 pr-4 py-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none dark:text-white"
+                                className="w-full pl-10 pr-4 py-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-slate-200 dark:border-white/[0.06] rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none dark:text-white"
                             />
                         </div>
                         {isViewingDataBox && (
-                            <div className="flex items-center gap-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-lg px-3 shadow-sm">
+                            <div className="flex items-center gap-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-gray-200 dark:border-white/[0.06] rounded-lg px-3 shadow-sm">
                                 <AlertCircle size={14} className="text-blue-500" />
                                 <select
                                     value={statusFilter}
                                     onChange={(e) => setStatusFilter(e.target.value)}
-                                    className="bg-transparent py-2 text-xs font-bold text-gray-600 dark:text-slate-300 focus:outline-none cursor-pointer"
+                                    className="bg-transparent py-2 text-xs font-bold text-gray-600 dark:text-white/70 focus:outline-none cursor-pointer"
                                 >
                                     <option value="all">{isEnglish ? 'All Statuses' : 'Semua Status'}</option>
                                     <option value="active">{isEnglish ? 'Normal (Warehouse)' : 'Normal (Gudang)'}</option>
@@ -736,12 +736,12 @@ export default function Documents({
 
                 {/* HISTORY PANEL */}
                 {showHistory && (
-                    <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-200 dark:border-slate-800 rounded-xl p-4 animate-in slide-in-from-top-2">
+                    <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-gray-200 dark:border-slate-800 rounded-xl p-4 animate-in slide-in-from-top-2">
                         <h3 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2"><History size={18} /> {isEnglish ? 'Document Activity History' : 'Riwayat Aktivitas Dokumen'}</h3>
                         <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
                             {docLogs.slice(0, 20).map(log => (
-                                <div key={log.id} className="flex items-start gap-3 p-3 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-lg border border-white/40 dark:border-white/10">
-                                    <div className="p-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-full shadow-sm">
+                                <div key={log.id} className="flex items-start gap-3 p-3 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-lg border border-white/40 dark:border-white/10">
+                                    <div className="p-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-full shadow-sm">
                                         <User size={14} className="text-blue-500" />
                                     </div>
                                     <div className="flex-1">
@@ -750,7 +750,7 @@ export default function Documents({
                                             <span className="text-xs text-gray-400 flex items-center gap-1"><Clock size={12} /> {new Date(log.timestamp).toLocaleString()}</span>
                                         </div>
                                         <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mt-0.5">{log.action}</p>
-                                        <p className="text-sm text-gray-600 dark:text-slate-300">{log.details}</p>
+                                        <p className="text-sm text-gray-600 dark:text-white/70">{log.details}</p>
                                     </div>
                                 </div>
                             ))}
@@ -840,7 +840,7 @@ export default function Documents({
                             // Menentukan ikon dan badge spesifik berdasarkan kata kunci status di nama folder
                             let SyncIcon = History;
                             let BadgeIcon = RefreshCw;
-                            let badgeColor = isInvSync ? 'bg-blue-500' : 'bg-purple-500';
+                            let badgeColor = isInvSync ? 'bg-blue-500' : 'bg-blue-500';
                             let badgeTitle = "Synced/History Folder";
 
                             if (isSyncFolder) {
@@ -855,7 +855,7 @@ export default function Documents({
                                 } else if (folder.name.includes(' - BORROWED')) {
                                     SyncIcon = Clock; BadgeIcon = Clock; badgeColor = 'bg-amber-500'; badgeTitle = "Box Sedang Dipinjam";
                                 } else if (folder.name.includes(' - AUDIT')) {
-                                    SyncIcon = Shield; BadgeIcon = Shield; badgeColor = 'bg-purple-600'; badgeTitle = "Box Sedang Audit";
+                                    SyncIcon = Shield; BadgeIcon = Shield; badgeColor = 'bg-blue-600'; badgeTitle = "Box Sedang Audit";
                                 }
                             }
 
@@ -863,7 +863,7 @@ export default function Documents({
                                 <div key={folder.id}
                                     onClick={() => navigateFolder(folder.id)}
                                     style={{ animationDelay: `${idx * 20}ms` }}
-                                    className={`group relative flex flex-col items-center p-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/10 hover:border-blue-200 dark:hover:border-blue-800 cursor-pointer transition-all duration-500 animate-in zoom-in-90 fade-in fill-mode-both shadow-sm aspect-[1/1.1] hover:scale-110 hover:-rotate-1 ${selectedFolderIds.has(folder.id) ? 'ring-2 ring-blue-500 bg-blue-50/50 dark:bg-blue-900/20 shadow-md' : ''} ${activeFolderMenuId === folder.id ? 'z-[120] ring-2 ring-blue-500 shadow-2xl scale-[1.02]' : 'z-10'} ${isSyncFolder ? 'opacity-80 grayscale-[0.3]' : ''}`}
+                                    className={`group relative flex flex-col items-center p-4 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-gray-200 dark:border-white/[0.06] rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/10 hover:border-blue-200 dark:hover:border-blue-800 cursor-pointer transition-all duration-500 animate-in zoom-in-90 fade-in fill-mode-both shadow-sm aspect-[1/1.1] hover:scale-110 hover:-rotate-1 ${selectedFolderIds.has(folder.id) ? 'ring-2 ring-blue-500 bg-blue-50/50 dark:bg-blue-900/20 shadow-md' : ''} ${activeFolderMenuId === folder.id ? 'z-[120] ring-2 ring-blue-500 shadow-2xl scale-[1.02]' : 'z-10'} ${isSyncFolder ? 'opacity-80 grayscale-[0.3]' : ''}`}
                                 >
                                     {/* Folder Selection Checkbox */}
                                     {hasPermission('documents', 'delete') && !(['DataBox', 'TaxAudit', 'PUSTAKA', 'ApprovalDoc', 'SOP'].includes(folder.name)) && (
@@ -879,17 +879,17 @@ export default function Documents({
                                     )}
                                     <div className="flex-1 flex items-center justify-center w-full relative">
                                         <div className={`w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform ${isInvSync ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-500' :
-                                            isTaxSync ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-500' :
+                                            isTaxSync ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-500' :
                                                 'bg-amber-100 dark:bg-amber-900/30 text-amber-500'
                                             }`}>
                                             {isSyncFolder ? <SyncIcon size={32} /> : <FolderOpen size={36} fill="currentColor" className="opacity-80" />}
                                         </div>
                                         {/* Privacy Indicator Badge */}
                                         {folder.privacy !== 'public' && (
-                                            <div className="absolute -top-1 -right-1 w-6 h-6 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-full flex items-center justify-center border border-gray-200 dark:border-slate-700 shadow-sm" title={folder.privacy === 'private' ? 'Private' : folder.privacy === 'dept' ? 'Department' : 'Specific Users'}>
+                                            <div className="absolute -top-1 -right-1 w-6 h-6 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-full flex items-center justify-center border border-gray-200 dark:border-white/[0.06] shadow-sm" title={folder.privacy === 'private' ? 'Private' : folder.privacy === 'dept' ? 'Department' : 'Specific Users'}>
                                                 {folder.privacy === 'private' && <Lock size={12} className="text-red-500" />}
                                                 {folder.privacy === 'dept' && <Building size={12} className="text-blue-500" />}
-                                                {folder.privacy === 'user' && <User size={12} className="text-purple-500" />}
+                                                {folder.privacy === 'user' && <User size={12} className="text-blue-500" />}
                                             </div>
                                         )}
                                         {/* Sync/History Badge */}
@@ -923,14 +923,14 @@ export default function Documents({
                                                 setActiveFolderMenuId(activeFolderMenuId === folder.id ? null : folder.id);
                                             }}
                                             aria-label={isEnglish ? 'Folder options' : 'Opsi folder'}
-                                            className="p-1.5 bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700 text-gray-500 hover:text-blue-600 rounded-full transition-all opacity-0 group-hover:opacity-100"
+                                            className="p-1.5 bg-white/50 dark:bg-[#0d0d0d]/50 hover:bg-white dark:hover:bg-white/[0.06] text-gray-500 hover:text-blue-600 rounded-full transition-all opacity-0 group-hover:opacity-100"
                                         >
                                             <MoreVertical size={16} />
                                         </button>
 
                                         {activeFolderMenuId === folder.id && (
                                             <div
-                                                className={`absolute right-0 top-full mt-2 w-48 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-700 z-[130] overflow-hidden animate-in zoom-in-95 slide-in-from-top-2 duration-200 origin-top-right`}
+                                                className={`absolute right-0 top-full mt-2 w-48 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100 dark:border-white/[0.06] z-[130] overflow-hidden animate-in zoom-in-95 slide-in-from-top-2 duration-200 origin-top-right`}
                                             >
                                                 <div className="py-1">
                                                     {hasPermission('documents', 'edit') && (
@@ -947,7 +947,7 @@ export default function Documents({
                                                                 setIsFolderModalOpen(true);
                                                                 setActiveFolderMenuId(null);
                                                             }}
-                                                            className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2"
+                                                            className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2"
                                                         >
                                                             {(['DataBox', 'TaxAudit', 'PUSTAKA', 'ApprovalDoc'].includes(folder.name)) ? (
                                                                 <Shield size={14} className="text-amber-500 group-hover:scale-110 transition-transform" />
@@ -961,18 +961,18 @@ export default function Documents({
                                                     {!(['DataBox', 'TaxAudit', 'PUSTAKA', 'ApprovalDoc'].includes(folder.name)) && (
                                                         <>
                                                             {hasPermission('documents', 'create') && (
-                                                                <button onClick={(e) => { e.stopPropagation(); startMgmtOp('copy', 'folder', folder); setActiveFolderMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
+                                                                <button onClick={(e) => { e.stopPropagation(); startMgmtOp('copy', 'folder', folder); setActiveFolderMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                     <Copy size={14} className="group-hover:scale-110 group-hover:text-blue-500 transition-all" /> {isEnglish ? 'Copy' : 'Salin'}
                                                                 </button>
                                                             )}
                                                             {hasPermission('documents', 'edit') && (
-                                                                <button onClick={(e) => { e.stopPropagation(); startMgmtOp('move', 'folder', folder); setActiveFolderMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
+                                                                <button onClick={(e) => { e.stopPropagation(); startMgmtOp('move', 'folder', folder); setActiveFolderMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                     <Move size={14} className="group-hover:translate-x-1 transition-transform" /> {isEnglish ? 'Move' : 'Pindah'}
                                                                 </button>
                                                             )}
                                                             {hasPermission('documents', 'delete') && (
                                                                 <>
-                                                                    <div className="h-px bg-gray-100 dark:bg-slate-800 my-1" />
+                                                                    <div className="h-px bg-gray-100 dark:bg-[#0d0d0d] my-1" />
                                                                     <button
                                                                         onClick={(e) => { handleDeleteFolder(e, folder.id); setActiveFolderMenuId(null); }}
                                                                         className="group w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-2"
@@ -1068,7 +1068,7 @@ export default function Documents({
                                                     setActiveMenuId(activeMenuId === doc.id ? null : doc.id);
                                                 }}
                                                 aria-label={isEnglish ? 'Document options' : 'Opsi dokumen'}
-                                                className="p-1.5 text-gray-400 hover:text-gray-600 dark:text-slate-500 dark:hover:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+                                                className="p-1.5 text-gray-400 hover:text-gray-600 dark:text-white/30 dark:hover:text-slate-300 hover:bg-gray-100 dark:hover:bg-white/[0.05] rounded-full transition-colors"
                                             >
                                                 <MoreVertical size={16} />
                                             </button>
@@ -1076,13 +1076,13 @@ export default function Documents({
                                             { /* Dropdown Menu */}
                                             {activeMenuId === doc.id && (
                                                 <div
-                                                    className={`absolute right-0 top-full mt-2 w-48 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-700 z-[130] overflow-hidden animate-in zoom-in-95 slide-in-from-top-2 duration-200 origin-top-right`}
+                                                    className={`absolute right-0 top-full mt-2 w-48 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100 dark:border-white/[0.06] z-[130] overflow-hidden animate-in zoom-in-95 slide-in-from-top-2 duration-200 origin-top-right`}
                                                 >
                                                     <div className="py-1">
-                                                        <button onClick={(e) => { e.stopPropagation(); handlePreview(doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
+                                                        <button onClick={(e) => { e.stopPropagation(); handlePreview(doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                             <Eye size={14} className="text-blue-500 group-hover:scale-110 transition-transform" /> {isEnglish ? 'View Detail' : 'Lihat Detail'}
                                                         </button>
-                                                        <button onClick={(e) => { e.stopPropagation(); handleDownload(doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
+                                                        <button onClick={(e) => { e.stopPropagation(); handleDownload(doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                             <Download size={14} className="text-green-500 group-hover:translate-y-0.5 transition-transform" /> Download
                                                         </button>
                                                         <button
@@ -1092,33 +1092,33 @@ export default function Documents({
                                                                 setIsRevisionModalOpen(true);
                                                                 setActiveMenuId(null);
                                                             }}
-                                                            className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2"
+                                                            className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2"
                                                         >
                                                             <History size={14} className="text-blue-500 group-hover:rotate-[-20deg] transition-transform" /> {isEnglish ? 'Revision History' : 'Riwayat Revisi'}
                                                         </button>
-                                                        <div className="h-px bg-gray-100 dark:bg-slate-800 my-1" />
+                                                        <div className="h-px bg-gray-100 dark:bg-[#0d0d0d] my-1" />
 
                                                         {hasPermission('documents', 'create') && (
-                                                            <button onClick={(e) => { e.stopPropagation(); startMgmtOp('copy', 'file', doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
+                                                            <button onClick={(e) => { e.stopPropagation(); startMgmtOp('copy', 'file', doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                 <Copy size={14} className="group-hover:scale-110 transition-transform" /> {isEnglish ? 'Copy' : 'Salin'}
                                                             </button>
                                                         )}
                                                         {hasPermission('documents', 'edit') && (
                                                             <>
-                                                                <button onClick={(e) => { e.stopPropagation(); startMgmtOp('move', 'file', doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
+                                                                <button onClick={(e) => { e.stopPropagation(); startMgmtOp('move', 'file', doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                     <Move size={14} className="group-hover:translate-x-1 transition-transform" /> {isEnglish ? 'Move' : 'Pindah'}
                                                                 </button>
-                                                                <button onClick={(e) => { handleRenameDoc(e, doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
+                                                                <button onClick={(e) => { handleRenameDoc(e, doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                     <PenLine size={14} className="group-hover:rotate-12 transition-transform" /> {isEnglish ? 'Rename' : 'Ganti Nama'}
                                                                 </button>
-                                                                <button onClick={(e) => { handleEditDoc(e, doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
+                                                                <button onClick={(e) => { handleEditDoc(e, doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                     <UploadCloud size={14} className="group-hover:-translate-y-1 transition-transform" /> {isEnglish ? 'Update File' : 'Update File'}
                                                                 </button>
                                                             </>
                                                         )}
                                                         {hasPermission('documents', 'delete') && (
                                                             <>
-                                                                <div className="h-px bg-gray-100 dark:bg-slate-800 my-1" />
+                                                                <div className="h-px bg-gray-100 dark:bg-[#0d0d0d] my-1" />
                                                                 <button onClick={(e) => { handleDeleteDoc(e, doc.id); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-2">
                                                                     <Trash2 size={14} className="group-hover:scale-110 transition-transform" /> {isEnglish ? 'Delete' : 'Hapus'}
                                                                 </button>
@@ -1131,13 +1131,13 @@ export default function Documents({
 
                                         {/* Quick Actions (Hover Only) */}
                                         <div className="absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-10">
-                                            <button onClick={(e) => { e.stopPropagation(); handlePreview(doc); }} className="p-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-gray-500 hover:text-blue-600 rounded-full shadow-md border border-gray-100 dark:border-slate-700" title={isEnglish ? 'View' : 'Lihat'}>
+                                            <button onClick={(e) => { e.stopPropagation(); handlePreview(doc); }} className="p-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-gray-500 hover:text-blue-600 rounded-full shadow-md border border-gray-100 dark:border-white/[0.06]" title={isEnglish ? 'View' : 'Lihat'}>
                                                 <Eye size={16} />
                                             </button>
-                                            <button onClick={(e) => { e.stopPropagation(); handleDownload(doc); }} className="p-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-gray-500 hover:text-green-600 rounded-full shadow-md border border-gray-100 dark:border-slate-700" title="Download">
+                                            <button onClick={(e) => { e.stopPropagation(); handleDownload(doc); }} className="p-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-gray-500 hover:text-green-600 rounded-full shadow-md border border-gray-100 dark:border-white/[0.06]" title="Download">
                                                 <Download size={16} />
                                             </button>
-                                            <button onClick={(e) => { e.stopPropagation(); setSelectedDocForRevision(doc); setIsRevisionModalOpen(true); }} className="p-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-gray-500 hover:text-blue-600 rounded-full shadow-md border border-gray-100 dark:border-slate-700" title={isEnglish ? 'Revision History' : 'Riwayat Revisi'}>
+                                            <button onClick={(e) => { e.stopPropagation(); setSelectedDocForRevision(doc); setIsRevisionModalOpen(true); }} className="p-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-gray-500 hover:text-blue-600 rounded-full shadow-md border border-gray-100 dark:border-white/[0.06]" title={isEnglish ? 'Revision History' : 'Riwayat Revisi'}>
                                                 <History size={16} />
                                             </button>
                                         </div>
@@ -1146,7 +1146,7 @@ export default function Documents({
                                             {doc.type && doc.type.includes('pdf') ?
                                                 <FileDigit size={40} className="text-red-500 drop-shadow-sm" strokeWidth={1.5} /> :
                                                 doc.type && doc.type.includes('image') ?
-                                                    <Image size={40} className="text-purple-500 drop-shadow-sm" strokeWidth={1.5} /> :
+                                                    <Image size={40} className="text-blue-500 drop-shadow-sm" strokeWidth={1.5} /> :
                                                     <File size={40} className="text-blue-500 drop-shadow-sm" strokeWidth={1.5} />
                                             }
                                         </div>
@@ -1156,8 +1156,8 @@ export default function Documents({
                                                 {doc.title}
                                             </h3>
 
-                                            <div className="flex items-center justify-between text-[10px] text-gray-500 dark:text-slate-400 mt-auto">
-                                                <span className="font-mono bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-300 px-1.5 py-0.5 rounded">{doc.size}</span>
+                                            <div className="flex items-center justify-between text-[10px] text-gray-500 dark:text-white/40 mt-auto">
+                                                <span className="font-mono bg-gray-100 dark:bg-[#0d0d0d] text-gray-600 dark:text-white/70 px-1.5 py-0.5 rounded">{doc.size}</span>
                                                 {(doc.status === 'processing' || doc.status === 'waiting') && !(doc.ocrContent && doc.ocrContent.trim().length > 50) ? (
                                                     <span className="text-amber-500 font-bold animate-pulse">{isEnglish ? 'OCR PROCESSING...' : 'PROSES OCR...'}</span>
                                                 ) : doc.status === 'failed' ? (
@@ -1180,7 +1180,7 @@ export default function Documents({
                                             )}
 
                                             {isContentMatch && (
-                                                <div className="mt-2 p-1.5 bg-yellow-50 dark:bg-yellow-900/10 rounded border border-yellow-100 dark:border-yellow-900/20 text-[10px] text-gray-600 dark:text-slate-300">
+                                                <div className="mt-2 p-1.5 bg-yellow-50 dark:bg-yellow-900/10 rounded border border-yellow-100 dark:border-yellow-900/20 text-[10px] text-gray-600 dark:text-white/70">
                                                     <span className="flex items-center gap-1 font-bold text-yellow-700 dark:text-yellow-500 mb-0.5"><Highlighter size={10} /> {isEnglish ? 'Match:' : 'Match:'}</span>
                                                     <p className="line-clamp-2 italic leading-tight opacity-90">"{getSearchSnippet(doc.ocrContent, searchQuery)}"</p>
                                                 </div>
@@ -1192,8 +1192,8 @@ export default function Documents({
                         </div>
                     ) : (
                         // --- LIST VIEW ---
-                        <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-xl border border-gray-200 dark:border-slate-800 shadow-sm">
-                            <div className="grid grid-cols-12 gap-4 px-6 py-4 bg-slate-50/80 dark:bg-slate-800/50 border-b border-white/60 dark:border-white/10 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                        <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-xl border border-gray-200 dark:border-slate-800 shadow-sm">
+                            <div className="grid grid-cols-12 gap-4 px-6 py-4 bg-slate-50/80 dark:bg-[#0d0d0d]/50 border-b border-white/60 dark:border-white/10 text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 <div className="col-span-6 md:col-span-5">{isEnglish ? 'Document Name' : 'Nama Dokumen'}</div>
                                 <div className="col-span-2 hidden md:block">{isEnglish ? 'Size' : 'Ukuran'}</div>
                                 <div className="col-span-2 hidden md:block">{isEnglish ? 'Version' : 'Versi'}</div>
@@ -1256,7 +1256,7 @@ export default function Documents({
 
                                         return (
                                             <div style={style}>
-                                                <div className={`group grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer border-b border-gray-100 dark:border-slate-800 h-full ${selectedDocIds.has(doc.id) ? 'bg-blue-50/40 dark:bg-blue-900/10' : ''}`}
+                                                <div className={`group grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-gray-50 dark:hover:bg-white/[0.05]/50 transition-colors cursor-pointer border-b border-gray-100 dark:border-slate-800 h-full ${selectedDocIds.has(doc.id) ? 'bg-blue-50/40 dark:bg-blue-900/10' : ''}`}
                                                     onClick={(e) => {
                                                         if (e.ctrlKey || e.metaKey) toggleDocSelection(doc.id);
                                                         else handlePreview(doc);
@@ -1274,11 +1274,11 @@ export default function Documents({
                                                                 />
                                                             </div>
                                                         )}
-                                                        <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-lg">
+                                                        <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-slate-100 dark:bg-[#0d0d0d] rounded-lg">
                                                             {doc.type && doc.type.includes('pdf') ?
                                                                 <FileDigit size={18} className="text-red-500" /> :
                                                                 doc.type && doc.type.includes('image') ?
-                                                                    <Image size={18} className="text-purple-500" /> :
+                                                                    <Image size={18} className="text-blue-500" /> :
                                                                     <File size={18} className="text-blue-500" />
                                                             }
                                                         </div>
@@ -1292,7 +1292,7 @@ export default function Documents({
                                                             )}
                                                         </div>
                                                     </div>
-                                                    <div className="col-span-2 hidden md:flex items-center text-sm text-gray-500 dark:text-slate-400 font-mono">
+                                                    <div className="col-span-2 hidden md:flex items-center text-sm text-gray-500 dark:text-white/40 font-mono">
                                                         {doc.size}
                                                     </div>
                                                     <div className="col-span-2 hidden md:flex items-center">
@@ -1323,39 +1323,39 @@ export default function Documents({
                                                                 <MoreVertical size={16} />
                                                             </button>
                                                             {activeMenuId === doc.id && (
-                                                                <div className={`absolute right-0 top-full mt-2 w-48 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-xl shadow-xl border border-gray-100 dark:border-slate-700 z-[130] overflow-hidden`} onClick={(e) => e.stopPropagation()}>
+                                                                <div className={`absolute right-0 top-full mt-2 w-48 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-xl shadow-xl border border-gray-100 dark:border-white/[0.06] z-[130] overflow-hidden`} onClick={(e) => e.stopPropagation()}>
                                                                     <div className="py-1">
-                                                                        <button onClick={() => { handlePreview(doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
+                                                                        <button onClick={() => { handlePreview(doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                             <Eye size={14} className="text-blue-500" /> {isEnglish ? 'View Detail' : 'Lihat Detail'}
                                                                         </button>
-                                                                        <button onClick={() => { handleDownload(doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
+                                                                        <button onClick={() => { handleDownload(doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                             <Download size={14} className="text-green-500" /> Download
                                                                         </button>
-                                                                        <button onClick={(e) => { e.stopPropagation(); setSelectedDocForRevision(doc); setIsRevisionModalOpen(true); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
+                                                                        <button onClick={(e) => { e.stopPropagation(); setSelectedDocForRevision(doc); setIsRevisionModalOpen(true); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                             <History size={14} className="text-blue-500" /> {isEnglish ? 'Revision History' : 'Riwayat Revisi'}
                                                                         </button>
-                                                                        <div className="h-px bg-gray-100 dark:bg-slate-800 my-1" />
+                                                                        <div className="h-px bg-gray-100 dark:bg-[#0d0d0d] my-1" />
                                                                         {hasPermission('documents', 'create') && (
-                                                                            <button onClick={() => { startMgmtOp('copy', 'file', doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
+                                                                            <button onClick={() => { startMgmtOp('copy', 'file', doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                                 <Copy size={14} /> {isEnglish ? 'Copy' : 'Salin'}
                                                                             </button>
                                                                         )}
                                                                         {hasPermission('documents', 'edit') && (
                                                                             <>
-                                                                                <button onClick={() => { startMgmtOp('move', 'file', doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
+                                                                                <button onClick={() => { startMgmtOp('move', 'file', doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                                     <Move size={14} /> {isEnglish ? 'Move' : 'Pindah'}
                                                                                 </button>
-                                                                                <button onClick={(e) => { handleRenameDoc(e, doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
+                                                                                <button onClick={(e) => { handleRenameDoc(e, doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                                     <PenLine size={14} /> {isEnglish ? 'Rename' : 'Ganti Nama'}
                                                                                 </button>
-                                                                                <button onClick={(e) => { handleEditDoc(e, doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
+                                                                                <button onClick={(e) => { handleEditDoc(e, doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                                     <UploadCloud size={14} /> {isEnglish ? 'Update File' : 'Update File'}
                                                                                 </button>
                                                                             </>
                                                                         )}
                                                                         {hasPermission('documents', 'delete') && (
                                                                             <>
-                                                                                <div className="h-px bg-gray-100 dark:bg-slate-800 my-1" />
+                                                                                <div className="h-px bg-gray-100 dark:bg-[#0d0d0d] my-1" />
                                                                                 <button onClick={(e) => { handleDeleteDoc(e, doc.id); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-2">
                                                                                     <Trash2 size={14} /> {isEnglish ? 'Delete' : 'Hapus'}
                                                                                 </button>
@@ -1431,7 +1431,7 @@ export default function Documents({
                             </div>
                         </div>
                         <div className="p-3 gradient-bg-soft rounded-2xl border border-slate-100 dark:border-slate-800">
-                            <p className="text-xs font-bold text-slate-600 dark:text-slate-300 truncate">
+                            <p className="text-xs font-bold text-slate-600 dark:text-white/70 truncate">
                                 "{mgmtOp?.item?.title || mgmtOp?.item?.name}"
                             </p>
                         </div>
@@ -1440,9 +1440,9 @@ export default function Documents({
                     <div className="space-y-2 mb-6 max-h-[40vh] overflow-y-auto custom-scrollbar pr-2">
                         <button
                             onClick={() => performCopyMove(null)}
-                            className="w-full flex items-center gap-3 px-4 py-3 bg-white/40 dark:bg-slate-800/40 hover:bg-white/80 dark:hover:bg-slate-800 hover:shadow-lg hover:scale-[1.02] border border-transparent hover:border-blue-200 transition-all rounded-2xl group"
+                            className="w-full flex items-center gap-3 px-4 py-3 bg-white/40 dark:bg-[#0d0d0d]/40 hover:bg-white/80 dark:hover:bg-white/[0.05] hover:shadow-lg hover:scale-[1.02] border border-transparent hover:border-blue-200 transition-all rounded-2xl group"
                         >
-                            <div className="p-2.5 bg-slate-100 dark:bg-slate-700/50 rounded-xl group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 text-slate-500 group-hover:text-blue-600 transition-colors">
+                            <div className="p-2.5 bg-slate-100 dark:bg-[#111]/50 rounded-xl group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 text-slate-500 group-hover:text-blue-600 transition-colors">
                                 <HardDrive size={20} />
                             </div>
                             <span className="font-bold text-slate-700 dark:text-slate-200">{isEnglish ? 'All Documents (Root)' : 'Semua Dokumen (Root)'}</span>
@@ -1452,7 +1452,7 @@ export default function Documents({
                             <button
                                 key={folder.id}
                                 onClick={() => performCopyMove(folder.id)}
-                                className="w-full flex items-center gap-3 px-4 py-3 bg-white/40 dark:bg-slate-800/40 hover:bg-white/80 dark:hover:bg-slate-800 hover:shadow-lg hover:scale-[1.02] border border-transparent hover:border-amber-200 transition-all rounded-2xl group"
+                                className="w-full flex items-center gap-3 px-4 py-3 bg-white/40 dark:bg-[#0d0d0d]/40 hover:bg-white/80 dark:hover:bg-white/[0.05] hover:shadow-lg hover:scale-[1.02] border border-transparent hover:border-amber-200 transition-all rounded-2xl group"
                             >
                                 <div className="p-2.5 bg-amber-50 dark:bg-amber-900/10 rounded-xl group-hover:bg-amber-100 dark:group-hover:bg-amber-900/30 text-amber-500/70 group-hover:text-amber-600 transition-colors">
                                     <FolderOpen size={20} fill="currentColor" className="opacity-80" />
@@ -1471,7 +1471,7 @@ export default function Documents({
                                 <span className="text-blue-600 animate-pulse">{isEnglish ? 'Connecting...' : 'Menghubungkan...'}</span>
                                 <span className="text-slate-500">{opProgress}%</span>
                             </div>
-                            <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                            <div className="w-full bg-slate-100 dark:bg-[#0d0d0d] rounded-full h-1.5 overflow-hidden">
                                 <div
                                     className="bg-blue-600 h-full transition-all duration-300 ease-out shadow-[0_0_15px_rgba(79,70,229,0.5)]"
                                     style={{ width: `${opProgress}%` }}
@@ -1491,7 +1491,7 @@ export default function Documents({
             >
                 <div className="space-y-6 px-1 pt-4 custom-scrollbar">
                     <div>
-                        <label className="block text-[10px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest ml-1">{isEnglish ? 'Folder Name' : 'Nama Folder'}</label>
+                        <label className="block text-[10px] font-black text-slate-500 dark:text-white/40 mb-2 uppercase tracking-widest ml-1">{isEnglish ? 'Folder Name' : 'Nama Folder'}</label>
                         <input
                             value={folderForm.name}
                             onChange={(e) => setFolderForm({ ...folderForm, name: e.target.value })}
@@ -1503,7 +1503,7 @@ export default function Documents({
                     </div>
 
                     <div>
-                        <label className="block text-[10px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest ml-1">{isEnglish ? 'Privacy & Access Control' : 'Privasi & Akses Kontrol'}</label>
+                        <label className="block text-[10px] font-black text-slate-500 dark:text-white/40 mb-2 uppercase tracking-widest ml-1">{isEnglish ? 'Privacy & Access Control' : 'Privasi & Akses Kontrol'}</label>
                         <div className="grid grid-cols-2 gap-3">
                             {[
                                 { id: 'public', label: isEnglish ? 'Public' : 'Umum', icon: Users, desc: isEnglish ? 'Public Access' : 'Akses Publik' },
@@ -1516,12 +1516,12 @@ export default function Documents({
                                     onClick={() => setFolderForm({ ...folderForm, privacy: type.id })}
                                     className={`p-4 rounded-3xl border-2 text-left transition-all relative overflow-hidden group/btn ${folderForm.privacy === type.id
                                         ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20 shadow-lg scale-[1.02]'
-                                        : 'border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-800/30 hover:border-blue-300'
+                                        : 'border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-[#0d0d0d]/30 hover:border-blue-300'
                                         }`}
                                 >
                                     <div className="flex items-center gap-2 mb-1 relative z-10">
                                         <type.icon size={18} className={`${folderForm.privacy === type.id ? 'text-blue-600' : 'text-slate-400'} group-hover/btn:scale-110 transition-transform duration-300`} />
-                                        <span className={`text-xs font-black uppercase tracking-tight ${folderForm.privacy === type.id ? 'text-blue-950 dark:text-blue-100' : 'text-slate-600 dark:text-slate-300'}`}>{type.label}</span>
+                                        <span className={`text-xs font-black uppercase tracking-tight ${folderForm.privacy === type.id ? 'text-blue-950 dark:text-blue-100' : 'text-slate-600 dark:text-white/70'}`}>{type.label}</span>
                                     </div>
                                     <p className={`text-[9px] font-bold uppercase tracking-widest relative z-10 ${folderForm.privacy === type.id ? 'text-blue-600/70 dark:text-blue-400/80' : 'text-slate-400'}`}>{type.desc}</p>
 
@@ -1539,7 +1539,7 @@ export default function Documents({
                             <label className="block text-[10px] font-black text-blue-700 dark:text-blue-300 mb-3 uppercase tracking-widest">{isEnglish ? 'Select Registered Departments' : 'Pilih Departemen Terdaftar'}</label>
                             <div className="max-h-40 overflow-y-auto pr-2 custom-scrollbar space-y-1.5">
                                 {(departments || []).map(dept => (
-                                    <label key={dept.id} className="flex items-center gap-3 p-3 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 rounded-2xl cursor-pointer transition-all border border-transparent hover:border-blue-200">
+                                    <label key={dept.id} className="flex items-center gap-3 p-3 bg-white/60 dark:bg-[#0d0d0d]/60 hover:bg-white dark:hover:bg-white/[0.05] rounded-2xl cursor-pointer transition-all border border-transparent hover:border-blue-200">
                                         <input
                                             type="checkbox"
                                             checked={folderForm.allowedDepts.includes(dept.name)}
@@ -1549,7 +1549,7 @@ export default function Documents({
                                                     : folderForm.allowedDepts.filter(d => d !== dept.name);
                                                 setFolderForm({ ...folderForm, allowedDepts: newDepts });
                                             }}
-                                            className="w-5 h-5 rounded-lg text-blue-600 focus:ring-blue-500 border-blue-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl"
+                                            className="w-5 h-5 rounded-lg text-blue-600 focus:ring-blue-500 border-blue-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl"
                                         />
                                         <span className="text-sm font-black text-slate-700 dark:text-slate-200 uppercase tracking-tight">{dept.name}</span>
                                     </label>
@@ -1559,11 +1559,11 @@ export default function Documents({
                     )}
 
                     {folderForm.privacy === 'user' && (
-                        <div className="p-5 bg-purple-50/50 dark:bg-purple-900/20 rounded-[2rem] border border-purple-100 dark:border-purple-800/50 animate-in slide-in-from-top-2">
-                            <label className="block text-[10px] font-black text-purple-700 dark:text-purple-300 mb-3 uppercase tracking-widest">{isEnglish ? 'Specific User Access' : 'Akses Pengguna Spesifik'}</label>
+                        <div className="p-5 bg-blue-50/50 dark:bg-blue-900/20 rounded-[2rem] border border-blue-100 dark:border-blue-800/50 animate-in slide-in-from-top-2">
+                            <label className="block text-[10px] font-black text-blue-700 dark:text-blue-300 mb-3 uppercase tracking-widest">{isEnglish ? 'Specific User Access' : 'Akses Pengguna Spesifik'}</label>
                             <div className="max-h-40 overflow-y-auto pr-2 custom-scrollbar space-y-1.5">
                                 {(users || []).filter(u => u.username !== currentUser?.username).map(user => (
-                                    <label key={user.id} className="flex items-center gap-3 p-3 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 rounded-2xl cursor-pointer transition-all border border-transparent hover:border-purple-200">
+                                    <label key={user.id} className="flex items-center gap-3 p-3 bg-white/60 dark:bg-[#0d0d0d]/60 hover:bg-white dark:hover:bg-white/[0.05] rounded-2xl cursor-pointer transition-all border border-transparent hover:border-blue-200">
                                         <input
                                             type="checkbox"
                                             checked={folderForm.allowedUsers.includes(user.username)}
@@ -1573,11 +1573,11 @@ export default function Documents({
                                                     : folderForm.allowedUsers.filter(u => u !== user.username);
                                                 setFolderForm({ ...folderForm, allowedUsers: newUsers });
                                             }}
-                                            className="w-5 h-5 rounded-lg text-purple-600 focus:ring-purple-500 border-purple-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl"
+                                            className="w-5 h-5 rounded-lg text-blue-600 focus:ring-blue-500 border-blue-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl"
                                         />
                                         <div className="text-left leading-tight">
                                             <span className="text-sm font-black text-slate-700 dark:text-slate-200 uppercase tracking-tight block">{user.name}</span>
-                                            <span className="text-[10px] text-purple-600/70 font-bold">{user.department}</span>
+                                            <span className="text-[10px] text-blue-600/70 font-bold">{user.department}</span>
                                         </div>
                                     </label>
                                 ))}
@@ -1586,7 +1586,7 @@ export default function Documents({
                     )}
 
                     <div className="flex gap-3 pt-6 border-t border-slate-100 dark:border-slate-800 mt-2">
-                        <button onClick={() => setIsFolderModalOpen(false)} className="flex-1 py-4 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white text-xs font-black uppercase tracking-widest transition-all">{isEnglish ? 'Cancel' : 'Batalkan'}</button>
+                        <button onClick={() => setIsFolderModalOpen(false)} className="flex-1 py-4 text-slate-500 hover:text-slate-800 dark:text-white/40 dark:hover:text-white text-xs font-black uppercase tracking-widest transition-all">{isEnglish ? 'Cancel' : 'Batalkan'}</button>
                         <button
                             onClick={() => {
                                 if (folderForm.id) {
@@ -1607,14 +1607,14 @@ export default function Documents({
             {/* FLOATING BULK ACTIONS BAR */}
             {
                 (selectedDocIds.size > 0 || selectedFolderIds.size > 0) && (
-                    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white/70 dark:bg-slate-800/80 backdrop-blur-3xl shadow-2xl rounded-full px-6 py-3 flex items-center gap-4 z-50 border border-white/40 dark:border-white/10 animate-in slide-in-from-bottom-4 duration-300 ring-1 ring-black/5">
-                        <span className="text-sm font-bold text-slate-700 dark:text-gray-200 pl-2 border-r border-slate-200 dark:border-slate-700 pr-5">
+                    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white/70 dark:bg-[#0d0d0d]/80 backdrop-blur-3xl shadow-2xl rounded-full px-6 py-3 flex items-center gap-4 z-50 border border-white/40 dark:border-white/10 animate-in slide-in-from-bottom-4 duration-300 ring-1 ring-black/5">
+                        <span className="text-sm font-bold text-slate-700 dark:text-gray-200 pl-2 border-r border-slate-200 dark:border-white/[0.06] pr-5">
                             {selectedDocIds.size + selectedFolderIds.size} {isEnglish ? 'items selected' : 'item dipilih'}
                         </span>
 
                         <button
                             onClick={handleDeselectAll}
-                            className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white text-sm font-medium transition-colors"
+                            className="text-slate-500 hover:text-slate-800 dark:text-white/40 dark:hover:text-white text-sm font-medium transition-colors"
                         >
                             {isEnglish ? 'Cancel' : 'Batal'}
                         </button>
@@ -1649,12 +1649,12 @@ export default function Documents({
             >
                 <div className="space-y-4 pt-4">
                     <div className="flex items-center gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800/50">
-                        <div className="p-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-xl shadow-sm">
+                        <div className="p-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-xl shadow-sm">
                             <FileText size={24} className="text-blue-600" />
                         </div>
                         <div>
                             <h4 className="font-bold text-slate-800 dark:text-white truncate max-w-[300px]">{selectedDocForRevision?.title}</h4>
-                            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest">ID: {selectedDocForRevision?.id} • {isEnglish ? 'Current Version' : 'Versi Saat Ini'}: v{selectedDocForRevision?.version}</p>
+                            <p className="text-[10px] text-slate-500 dark:text-white/40 font-bold uppercase tracking-widest">ID: {selectedDocForRevision?.id} • {isEnglish ? 'Current Version' : 'Versi Saat Ini'}: v{selectedDocForRevision?.version}</p>
                         </div>
                     </div>
 
@@ -1669,17 +1669,17 @@ export default function Documents({
 
                             if (history.length === 0) {
                                 return (
-                                    <div className="py-12 text-center text-slate-400 italic gradient-bg-soft rounded-2xl border border-dashed border-slate-200 dark:border-slate-700">
+                                    <div className="py-12 text-center text-slate-400 italic gradient-bg-soft rounded-2xl border border-dashed border-slate-200 dark:border-white/[0.06]">
                                         {isEnglish ? 'No revision history for this document yet.' : 'Belum ada riwayat revisi untuk dokumen ini.'}
                                     </div>
                                 );
                             }
 
                             return history.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).map((rev, idx) => (
-                                <div key={idx} className="group flex items-center gap-4 p-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-2xl hover:border-blue-300 dark:hover:border-blue-700 transition-all">
+                                <div key={idx} className="group flex items-center gap-4 p-4 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-2xl hover:border-blue-300 dark:hover:border-blue-700 transition-all">
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 mb-1">
-                                            <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] font-bold rounded uppercase">{isEnglish ? 'Revision' : 'Revisi'}</span>
+                                            <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-[#0d0d0d] text-slate-500 dark:text-white/40 text-[10px] font-bold rounded uppercase">{isEnglish ? 'Revision' : 'Revisi'}</span>
                                             <span className="text-xs font-bold text-slate-700 dark:text-slate-200">{new Date(rev.timestamp).toLocaleString()}</span>
                                         </div>
                                         <p className="text-[10px] text-slate-400 font-medium truncate">{isEnglish ? 'Uploaded by' : 'Diunggah oleh'}: <span className="text-blue-600 dark:text-blue-400">{rev.user}</span> • {isEnglish ? 'Size' : 'Ukuran'}: {rev.size}</p>
@@ -1689,7 +1689,7 @@ export default function Documents({
                                             href={rev.url}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="p-2 bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-blue-600 rounded-xl transition-colors"
+                                            className="p-2 bg-slate-100 dark:bg-[#0d0d0d] text-slate-500 hover:text-blue-600 rounded-xl transition-colors"
                                             title={isEnglish ? 'View This Version' : 'Lihat Versi Ini'}
                                         >
                                             <Eye size={16} />
@@ -1754,7 +1754,7 @@ export default function Documents({
                                 </div>
                             )
                         ) : previewHtml ? (
-                            <div className="w-full h-full p-8 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl overflow-auto prose dark:prose-invert max-w-none shadow-inner" dangerouslySetInnerHTML={{ __html: previewHtml }} />
+                            <div className="w-full h-full p-8 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl overflow-auto prose dark:prose-invert max-w-none shadow-inner" dangerouslySetInnerHTML={{ __html: previewHtml }} />
                         ) : (
                             <div className="text-center p-10 text-slate-400">
                                 <FileText size={64} className="mx-auto mb-4 opacity-20" />
@@ -1784,7 +1784,7 @@ export default function Documents({
                             <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 flex items-center gap-2 shrink-0">
                                 <MoreVertical size={12} className="text-blue-500" /> {isEnglish ? 'Coordination History' : 'Riwayat Koordinasi'}
                             </h4>
-                            <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-1 bg-slate-50/30 dark:bg-slate-800/30 rounded-2xl p-2">
+                            <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-1 bg-slate-50/30 dark:bg-[#0d0d0d]/30 rounded-2xl p-2">
                                 <div className="space-y-4 flex flex-col">
                                     {Array.isArray(comments) && comments.map(c => {
                                         const isMe = c.user === currentUser?.name || c.user === currentUser?.username;
@@ -1793,7 +1793,7 @@ export default function Documents({
 
                                         return (
                                             <div key={c.id} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} w-full animate-in slide-in-from-bottom-2`}>
-                                                <div className={`max-w-[85%] p-3 rounded-2xl shadow-sm ${isMe ? 'gradient-bg text-white rounded-tr-none' : 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-100 dark:border-slate-800 rounded-tl-none'}`}>
+                                                <div className={`max-w-[85%] p-3 rounded-2xl shadow-sm ${isMe ? 'gradient-bg text-white rounded-tr-none' : 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-gray-100 dark:border-slate-800 rounded-tl-none'}`}>
                                                     <div className="flex justify-between items-center gap-4 text-[9px] mb-1 opacity-80 font-black uppercase tracking-wider">
                                                         {!isMe && <span className="text-blue-600 dark:text-blue-400">{c.user}</span>}
                                                         <span className={isMe ? 'text-blue-100 ml-auto' : 'text-slate-400'}>
@@ -1802,7 +1802,7 @@ export default function Documents({
                                                     </div>
                                                     <p className="text-xs leading-relaxed break-words">{c.text}</p>
                                                     {c.attachmentUrl && (
-                                                        <div className={`mt-2 flex items-center justify-between p-2 rounded-lg border border-dashed ${isMe ? 'bg-white/10 border-white/20' : 'gradient-bg-soft border-slate-200 dark:border-slate-700'}`}>
+                                                        <div className={`mt-2 flex items-center justify-between p-2 rounded-lg border border-dashed ${isMe ? 'bg-white/10 border-white/20' : 'gradient-bg-soft border-slate-200 dark:border-white/[0.06]'}`}>
                                                             <div className="flex items-center gap-2 overflow-hidden">
                                                                 <Paperclip size={10} className={isMe ? 'text-blue-200' : 'text-blue-500'} />
                                                                 <span className="text-[9px] font-bold truncate max-w-[100px]">{c.attachmentName}</span>
@@ -1846,7 +1846,7 @@ export default function Documents({
                             />
                             <div className="flex justify-between items-center">
                                 <label className="flex items-center gap-2 cursor-pointer">
-                                    <div className={`p-2 rounded-lg ${commentAttachment ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
+                                    <div className={`p-2 rounded-lg ${commentAttachment ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 dark:bg-[#0d0d0d] text-slate-400'}`}>
                                         <Paperclip size={14} />
                                     </div>
                                     <span className="text-[10px] font-bold text-slate-500 truncate max-w-[100px]">{commentAttachment ? commentAttachment.name : (isEnglish ? 'Attachment' : 'Lampiran')}</span>
@@ -1858,7 +1858,7 @@ export default function Documents({
 
                         {/* Action Buttons */}
                         <div className="flex gap-3 shrink-0">
-                            <button onClick={() => setSelectedDocPreview(null)} className="flex-1 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all">{isEnglish ? 'Close' : 'Tutup'}</button>
+                            <button onClick={() => setSelectedDocPreview(null)} className="flex-1 py-2.5 bg-slate-100 dark:bg-[#0d0d0d] text-slate-500 dark:text-white/40 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all">{isEnglish ? 'Close' : 'Tutup'}</button>
                             <button onClick={() => handleDownload(selectedDocPreview)} className="flex-[2] py-2.5 gradient-bg text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-500/20 hover:bg-blue-500 transition-all flex items-center justify-center gap-2"><Download size={14} /> {isEnglish ? 'Download' : 'Download'}</button>
                         </div>
                     </div>
@@ -1869,7 +1869,7 @@ export default function Documents({
                             <Sparkles size={14} className="text-blue-500" />
                             <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{isEnglish ? 'Text Extraction Result (OCR)' : 'Hasil Ekstraksi Teks (OCR)'}</h4>
                         </div>
-                        <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar w-full bg-slate-50 dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-4 text-xs font-mono text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-wrap shadow-inner">
+                        <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar w-full bg-slate-50 dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-4 text-xs font-mono text-slate-600 dark:text-white/40 leading-relaxed whitespace-pre-wrap shadow-inner">
                             {selectedDocPreview?.ocrContent || (isEnglish ? 'No detected text data.' : 'Tidak ada data teks yang terdeteksi.')}
                         </div>
                     </div>

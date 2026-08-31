@@ -30,12 +30,12 @@ export default function OcrQueueModal({ ocrStats, API_BASE, toast }) {
         </h4>
         <div className="space-y-3">
           {(ocrStats?.activeJobs || []).length === 0 ? (
-            <div className="text-center py-8 bg-slate-50 dark:bg-slate-800/50 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
+            <div className="text-center py-8 bg-slate-50 dark:bg-[#0d0d0d]/50 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
               <p className="text-slate-400 font-bold">Tidak ada pekerjaan yang sedang berjalan.</p>
             </div>
           ) : (
             ocrStats.activeJobs.map(job => (
-              <div key={job.id} className="bg-white dark:bg-slate-800 p-4 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-sm">
+              <div key={job.id} className="bg-white dark:bg-[#0d0d0d] p-4 rounded-[2rem] border border-slate-100 dark:border-white/[0.06] shadow-sm">
                 <div className="flex justify-between items-start mb-3">
                   <div className="min-w-0">
                     <p className="text-xs font-black text-slate-800 dark:text-white truncate">{job.filename}</p>
@@ -45,7 +45,7 @@ export default function OcrQueueModal({ ocrStats, API_BASE, toast }) {
                     <span className="text-lg font-black text-blue-600 dark:text-blue-400">{job.progress || 0}%</span>
                   </div>
                 </div>
-                <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-3 overflow-hidden">
+                <div className="w-full bg-slate-100 dark:bg-[#0d0d0d] rounded-full h-3 overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${job.progress || 0}%` }}

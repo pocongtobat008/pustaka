@@ -51,13 +51,13 @@ export default function TaxWpDatabase({
                 </div>
                 <div className="relative w-full md:w-64">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-                    <input type="text" placeholder="Cari Nama / Identitas..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-9 pr-4 py-2 rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <input type="text" placeholder="Cari Nama / Identitas..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-9 pr-4 py-2 rounded-lg border border-gray-200 dark:border-white/[0.06] bg-gray-50 dark:bg-[#0d0d0d] focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 </div>
             </div>
 
             <div className="overflow-x-auto">
                 <table className="w-full text-sm text-left">
-                    <thead className="bg-gray-50 dark:bg-slate-800 text-gray-600 dark:text-gray-300 font-medium border-b dark:border-slate-700">
+                    <thead className="bg-gray-50 dark:bg-[#0d0d0d] text-gray-600 dark:text-gray-300 font-medium border-b dark:border-white/[0.06]">
                         <tr>
                             <th className="px-4 py-3">Nama Wajib Pajak</th>
                             <th className="px-4 py-3">Jenis Pajak</th>
@@ -73,7 +73,7 @@ export default function TaxWpDatabase({
                             <tr><td colSpan="7" className="px-4 py-8 text-center text-gray-500">Tidak ada data ditemukan.</td></tr>
                         ) : (
                             paginatedData.map((item) => (
-                                <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
+                                <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-white/[0.05]/50 transition-colors">
                                     <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-200">{item.name || '-'}</td>
                                     <td className="px-4 py-3"><span className="px-2 py-1 rounded bg-blue-50 text-blue-600 text-xs font-medium">PPh {item.tax_type}</span></td>
                                     <td className="px-4 py-3 text-right font-medium text-gray-700 dark:text-gray-300">{item.rate}%</td>
@@ -112,7 +112,7 @@ export default function TaxWpDatabase({
                 <div className="px-6 py-4 flex items-center justify-between border-t border-gray-100 dark:border-slate-800">
                     <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                         <p className="text-sm text-gray-500">Showing <span className="font-bold">{(currentPage - 1) * rowsPerPage + 1}</span> to <span className="font-bold">{Math.min(currentPage * rowsPerPage, filteredData.length)}</span> of <span className="font-bold">{filteredData.length}</span> entries</p>
-                        <nav className="relative z-0 inline-flex rounded-xl shadow-sm -space-x-px bg-white dark:bg-slate-800 p-1 border border-gray-200 dark:border-slate-700">
+                        <nav className="relative z-0 inline-flex rounded-xl shadow-sm -space-x-px bg-white dark:bg-[#0d0d0d] p-1 border border-gray-200 dark:border-white/[0.06]">
                             <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} className="relative inline-flex items-center px-2 py-2 rounded-lg text-gray-400 hover:bg-blue-50 disabled:opacity-30"><ChevronLeft size={20} /></button>
                             {[...Array(totalPages)].map((_, i) => {
                                 const page = i + 1;

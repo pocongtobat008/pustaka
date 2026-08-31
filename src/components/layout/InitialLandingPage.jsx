@@ -34,7 +34,7 @@ const InitialLandingPage = ({ onClose, language = 'id' }) => {
       <div className="flex justify-end mb-8">
         <button
           onClick={onClose}
-          className="p-3 bg-white dark:bg-slate-800 rounded-2xl shadow-lg text-slate-400 hover:text-red-500 transition-all hover:scale-110"
+          className="p-3 bg-white dark:bg-[#0d0d0d] rounded-2xl shadow-lg text-slate-400 hover:text-red-500 transition-all hover:scale-110"
         >
           <X size={24} />
         </button>
@@ -57,13 +57,13 @@ const InitialLandingPage = ({ onClose, language = 'id' }) => {
           className="text-4xl md:text-6xl font-black text-[#2B3674] dark:text-white tracking-tight leading-tight"
         >
           {t.title1} <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">{t.title2}</span>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-600">{t.title2}</span>
         </motion.h1>
         <motion.p
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="text-lg text-slate-500 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed font-medium"
+          className="text-lg text-slate-500 dark:text-white/40 max-w-3xl mx-auto leading-relaxed font-medium"
         >
           {t.subtitle}
         </motion.p>
@@ -74,7 +74,7 @@ const InitialLandingPage = ({ onClose, language = 'id' }) => {
           initial={{ x: -50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="p-8 bg-white dark:bg-slate-800 rounded-[3rem] shadow-xl border border-slate-100 dark:border-slate-700 relative overflow-hidden group"
+          className="p-8 bg-white dark:bg-[#0d0d0d] rounded-[3rem] shadow-xl border border-slate-100 dark:border-white/[0.06] relative overflow-hidden group"
         >
           <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
             <AlertCircle size={120} />
@@ -83,7 +83,7 @@ const InitialLandingPage = ({ onClose, language = 'id' }) => {
             <Target size={28} />
           </div>
           <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-4 uppercase tracking-tight">{t.backgroundTitle}</h3>
-          <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+          <p className="text-slate-600 dark:text-white/40 leading-relaxed font-medium">
             {t.background}
           </p>
         </motion.div>
@@ -92,7 +92,7 @@ const InitialLandingPage = ({ onClose, language = 'id' }) => {
           initial={{ x: 50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="p-8 bg-gradient-to-br from-blue-600 to-purple-700 rounded-[3rem] shadow-2xl text-white relative overflow-hidden group"
+          className="p-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-[3rem] shadow-2xl text-white relative overflow-hidden group"
         >
           <div className="absolute bottom-0 left-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
             <Sparkles size={120} />

@@ -24,7 +24,7 @@ export const getStatusStyle = (status) => {
         };
         case 'AUDIT': return {
             label: 'Sedang Audit',
-            color: 'bg-purple-500/10 backdrop-blur-md border-purple-500/30 text-purple-700 dark:text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.1)] hover:shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:bg-purple-500/20 hover:border-purple-500/50',
+            color: 'bg-blue-500/10 backdrop-blur-md border-blue-500/30 text-blue-700 dark:text-blue-400 shadow-[0_0_15px_rgba(168,85,247,0.1)] hover:shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:bg-blue-500/20 hover:border-blue-500/50',
             icon: AlertCircle
         };
         case 'MOVED': return {
@@ -49,7 +49,7 @@ export const getStatusStyle = (status) => {
         };
         default: return {
             label: 'Tersedia',
-            color: 'bg-slate-500/5 backdrop-blur-md border-slate-200 dark:border-slate-700/50 text-slate-500 dark:text-slate-500 hover:bg-slate-500/10 hover:border-slate-400',
+            color: 'bg-slate-500/5 backdrop-blur-md border-slate-200 dark:border-white/[0.06]/50 text-slate-500 dark:text-white/30 hover:bg-slate-500/10 hover:border-slate-400',
             icon: null
         };
     }

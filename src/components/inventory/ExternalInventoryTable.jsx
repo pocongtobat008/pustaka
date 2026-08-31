@@ -12,9 +12,9 @@ export default function ExternalInventoryTable({
     const { t, isEnglish } = useLanguage();
     return (
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-            <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-800 overflow-hidden">
+            <div className="bg-white dark:bg-[#0d0d0d] rounded-xl border border-gray-200 dark:border-slate-800 overflow-hidden">
                 <table className="w-full text-sm text-left border-collapse">
-                    <thead className="bg-white/60 dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 backdrop-blur-xl border-b border-white/30 dark:border-white/5">
+                    <thead className="bg-white/60 dark:bg-[#0d0d0d]/60 text-slate-600 dark:text-white/70 backdrop-blur-xl border-b border-white/30 dark:border-white/5">
                         <tr>
                             <th className="px-6 py-5 font-bold uppercase tracking-wider text-xs">Box ID</th>
                             <th className="px-6 py-5 font-bold uppercase tracking-wider text-xs">Tujuan</th>
@@ -28,13 +28,13 @@ export default function ExternalInventoryTable({
                     <tbody>
                         {externalItems.filter(isMatch).length === 0 ? (
                             <tr>
-                                <td colSpan={7} className="px-6 py-8 text-center text-gray-500 dark:text-slate-400">
+                                <td colSpan={7} className="px-6 py-8 text-center text-gray-500 dark:text-white/40">
                                     Belum ada data barang keluar {externalItems.length > 0 && "yang cocok dengan pencarian"}.
                                 </td>
                             </tr>
                         ) : (
                             externalItems.filter(isMatch).map(item => (
-                                <tr key={item.id} className="hover:bg-white/40 dark:hover:bg-slate-800/40 transition-colors group border-b border-blue-50 dark:border-slate-800/50">
+                                <tr key={item.id} className="hover:bg-white/40 dark:hover:bg-white/[0.05]/40 transition-colors group border-b border-blue-50 dark:border-slate-800/50">
                                     <td className="px-6 py-4 font-bold text-slate-800 dark:text-white flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400">
                                             <Package size={20} />
@@ -44,22 +44,22 @@ export default function ExternalInventoryTable({
                                     <td className="px-6 py-4">
                                         <span className="px-3 py-1 bg-blue-100/50 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-bold border border-blue-200 dark:border-blue-500/30 backdrop-blur-sm shadow-sm">{item.destination}</span>
                                     </td>
-                                    <td className="px-6 py-4 text-slate-500 dark:text-slate-400">
+                                    <td className="px-6 py-4 text-slate-500 dark:text-white/40">
                                         <div className="flex items-center gap-2">
                                             <Clock size={14} className="text-blue-400" />
                                             {new Date(item.sentDate).toLocaleDateString()}
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-                                            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center text-[10px] font-bold shadow-inner">
+                                        <div className="flex items-center gap-2 text-slate-600 dark:text-white/70">
+                                            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-[#111] dark:to-[#0d0d0d] flex items-center justify-center text-[10px] font-bold shadow-inner">
                                                 {item.sender?.charAt(0) || '?'}
                                             </div>
                                             <span className="font-medium text-xs">{item.sender}</span>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <div className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+                                        <div className="text-xs text-slate-500 dark:text-white/40 font-mono">
                                             {(item.boxData?.ordners?.length || 0)} Ord • {(item.boxData?.ordners?.reduce((acc, o) => acc + (o.invoices?.length || 0), 0) || 0)} Inv
                                         </div>
                                     </td>
@@ -73,7 +73,7 @@ export default function ExternalInventoryTable({
                                         <div className="flex gap-2 justify-end transition-opacity">
                                             <button
                                                 onClick={(e) => { e.stopPropagation(); onViewExternal(item); }}
-                                                className="group/btn relative p-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300"
+                                                className="group/btn relative p-2.5 bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-white/[0.06] rounded-xl hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300"
                                                 title={t("inv.viewDetail")}
                                             >
                                                 <div className="absolute inset-0 bg-blue-500/5 rounded-xl opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
@@ -82,7 +82,7 @@ export default function ExternalInventoryTable({
                                             {hasPermission('inventory', 'edit') && (
                                                 <button
                                                     onClick={(e) => { e.stopPropagation(); onRestoreExternal(item); }}
-                                                    className="group/btn relative p-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-emerald-500/50 hover:shadow-lg hover:shadow-emerald-500/10 transition-all duration-300"
+                                                    className="group/btn relative p-2.5 bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-white/[0.06] rounded-xl hover:border-emerald-500/50 hover:shadow-lg hover:shadow-emerald-500/10 transition-all duration-300"
                                                     title={t("inv.restoreGudang")}
                                                 >
                                                     <div className="absolute inset-0 bg-emerald-500/5 rounded-xl opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>

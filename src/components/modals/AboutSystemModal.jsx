@@ -120,7 +120,7 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
                 </div>
                 <div>
                     <div className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">Pustaka</div>
-                    <div className="text-xs font-bold text-slate-400 dark:text-slate-500">
+                    <div className="text-xs font-bold text-slate-400 dark:text-white/30">
                         {text.version} 1.0.0 • Document OS
                     </div>
                 </div>
@@ -131,7 +131,7 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
 
             {/* Deskripsi */}
             <div className="glass-card rounded-2xl p-5 mb-6">
-                <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                <p className="text-sm leading-relaxed text-slate-600 dark:text-white/70">
                     {text.aboutDesc}
                 </p>
             </div>
@@ -147,7 +147,7 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
                             {text.visionTitle}
                         </h3>
                     </div>
-                    <p className="text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">
+                    <p className="text-[13px] leading-relaxed text-slate-600 dark:text-white/70">
                         {text.visionDesc}
                     </p>
                 </div>
@@ -162,7 +162,7 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
                     </div>
                     <ul className="space-y-2">
                         {text.mission.map((m, i) => (
-                            <li key={i} className="flex items-start gap-2 text-[13px] leading-relaxed text-slate-600 dark:text-slate-300">
+                            <li key={i} className="flex items-start gap-2 text-[13px] leading-relaxed text-slate-600 dark:text-white/70">
                                 <span className="mt-1.5 w-1.5 h-1.5 rounded-full gradient-bg shrink-0"></span>
                                 {m}
                             </li>
@@ -196,14 +196,14 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
                                 <span className="w-7 h-7 rounded-lg gradient-bg-soft text-blue-500 dark:text-blue-300 flex items-center justify-center shrink-0">
                                     <Icon size={14} />
                                 </span>
-                                <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300 leading-tight">
+                                <span className="text-[11px] font-bold text-slate-600 dark:text-white/70 leading-tight">
                                     {f.label}
                                 </span>
                             </div>
                         );
                     })}
                 </div>
-                <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-4 text-center">
+                <p className="text-[11px] font-semibold text-slate-400 dark:text-white/30 mt-4 text-center">
                     {text.updated}
                 </p>
             </div>

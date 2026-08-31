@@ -4,7 +4,7 @@ import { CheckCircle2 } from 'lucide-react';
 export default function CopyNotification({ label }) {
   if (!label) return null;
   return (
-    <div className="fixed bottom-10 right-10 bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border border-emerald-500/50 p-4 rounded-[2rem] shadow-2xl z-[200] animate-in slide-in-from-bottom-8 flex items-center gap-4 ring-8 ring-emerald-500/5">
+    <div className="fixed bottom-10 right-10 bg-white/80 dark:bg-[#0d0d0d]/80 backdrop-blur-xl border border-emerald-500/50 p-4 rounded-[2rem] shadow-2xl z-[200] animate-in slide-in-from-bottom-8 flex items-center gap-4 ring-8 ring-emerald-500/5">
       <div className="p-3 bg-emerald-500 rounded-2xl text-white shadow-lg shadow-emerald-500/30 animate-bounce">
         <CheckCircle2 size={18} />
       </div>

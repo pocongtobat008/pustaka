@@ -4,7 +4,7 @@ import { CheckCircle2 } from 'lucide-react';
 export default function AuditStepTracker({ AUDIT_STEPS, selectedAudit, activeStep, setActiveStep }) {
     return (
         <div className="hidden md:flex items-center justify-between relative px-4">
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-gray-200 dark:bg-slate-700 -z-10" />
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-gray-200 dark:bg-[#111] -z-10" />
             {AUDIT_STEPS.map((step, index) => {
                 const sData = selectedAudit.steps?.[step.id - 1] || {};
                 const isDone = sData.status === 'Done';
@@ -25,7 +25,7 @@ export default function AuditStepTracker({ AUDIT_STEPS, selectedAudit, activeSte
                                     ? 'bg-emerald-500 border-emerald-100 dark:border-emerald-900/50 text-white scale-100 shadow-md shadow-emerald-500/20'
                                     : isActive
                                         ? 'bg-blue-600 border-blue-100 dark:border-blue-900/50 text-white scale-110 shadow-lg shadow-blue-500/30'
-                                        : 'bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-400 dark:text-gray-500'}`}
+                                        : 'bg-white dark:bg-[#0d0d0d] border-gray-200 dark:border-white/[0.06] text-gray-400 dark:text-gray-500'}`}
                         >
                             {isDone ? <CheckCircle2 size={18} /> : <span className="text-sm font-bold">{step.id}</span>}
                         </div>

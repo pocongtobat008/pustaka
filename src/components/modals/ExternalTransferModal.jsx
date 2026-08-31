@@ -25,7 +25,7 @@ export default function ExternalTransferModal({ isOpen, onClose, externalDate, s
               type="date"
               value={externalDate}
               onChange={(e) => setExternalDate(e.target.value)}
-              className="w-full px-6 py-4 text-lg font-black border-2 border-blue-500/10 bg-slate-50 dark:bg-slate-800/50 rounded-2xl focus:border-blue-500 transition-all outline-none dark:text-white"
+              className="w-full px-6 py-4 text-lg font-black border-2 border-blue-500/10 bg-slate-50 dark:bg-[#0d0d0d]/50 rounded-2xl focus:border-blue-500 transition-all outline-none dark:text-white"
             />
           </div>
 
@@ -36,7 +36,7 @@ export default function ExternalTransferModal({ isOpen, onClose, externalDate, s
             >
               Konfirmasi Pengiriman
             </button>
-            <button onClick={onClose} className="w-full py-4 bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white text-xs font-black rounded-2xl transition-all uppercase tracking-widest">Batalkan</button>
+            <button onClick={onClose} className="w-full py-4 bg-slate-100 dark:bg-[#0d0d0d] text-slate-500 hover:text-slate-800 dark:hover:text-white text-xs font-black rounded-2xl transition-all uppercase tracking-widest">Batalkan</button>
           </div>
         </div>
       </div>

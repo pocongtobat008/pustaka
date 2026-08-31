@@ -24,7 +24,7 @@ function OrdnerInput({ editingItem, newOrdner, setNewOrdner, addOrdner }) {
                     value={local.noOrdner}
                     onChange={e => setLocal(prev => ({ ...prev, noOrdner: e.target.value }))}
                     onBlur={() => setNewOrdner(prev => ({ ...prev, noOrdner: local.noOrdner }))}
-                    className="w-full px-4 py-3 border-b-2 border-transparent bg-white/50 dark:bg-slate-800/50 rounded-xl focus:border-blue-500 dark:text-white text-sm font-black transition-all outline-none"
+                    className="w-full px-4 py-3 border-b-2 border-transparent bg-white/50 dark:bg-[#0d0d0d]/50 rounded-xl focus:border-blue-500 dark:text-white text-sm font-black transition-all outline-none"
                     placeholder="ORD-001"
                 />
             </div>
@@ -34,7 +34,7 @@ function OrdnerInput({ editingItem, newOrdner, setNewOrdner, addOrdner }) {
                     value={local.period}
                     onChange={e => setLocal(prev => ({ ...prev, period: e.target.value }))}
                     onBlur={() => setNewOrdner(prev => ({ ...prev, period: local.period }))}
-                    className="w-full px-4 py-3 border-b-2 border-transparent bg-white/50 dark:bg-slate-800/50 rounded-xl focus:border-blue-500 dark:text-white text-sm font-black transition-all outline-none"
+                    className="w-full px-4 py-3 border-b-2 border-transparent bg-white/50 dark:bg-[#0d0d0d]/50 rounded-xl focus:border-blue-500 dark:text-white text-sm font-black transition-all outline-none"
                     placeholder="2024"
                 />
             </div>
@@ -80,7 +80,7 @@ function InvoiceInput({ newInvoice, setNewInvoice, invoiceFileInputRef, handleIn
     }, [newInvoice, editingItem]);
 
     return (
-        <div className="flex flex-col gap-3 bg-white/50 dark:bg-slate-800/50 p-4 rounded-2xl border border-white/50 dark:border-white/5 w-full">
+        <div className="flex flex-col gap-3 bg-white/50 dark:bg-[#0d0d0d]/50 p-4 rounded-2xl border border-white/50 dark:border-white/5 w-full">
             <div className="flex gap-3 items-center">
                 <input placeholder="NO INVOICE" value={local.invoiceNo} onChange={e => setLocal(prev => ({ ...prev, invoiceNo: e.target.value }))} className="flex-1 min-w-[100px] px-3 py-2 text-[10px] border-b border-slate-200 dark:border-slate-800 bg-transparent dark:text-white font-black uppercase tracking-wider focus:ring-0" title="Nomor Invoice" />
                 <input placeholder="VENDOR" value={local.vendor} onChange={e => setLocal(prev => ({ ...prev, vendor: e.target.value }))} className="flex-1 min-w-[100px] px-3 py-2 text-[10px] border-b border-slate-200 dark:border-slate-800 bg-transparent dark:text-white font-black uppercase tracking-wider focus:ring-0" title="Nama Vendor" />
@@ -92,7 +92,7 @@ function InvoiceInput({ newInvoice, setNewInvoice, invoiceFileInputRef, handleIn
 
                 <div className="relative">
                     <input type="file" ref={invoiceFileInputRef} className="hidden" onChange={(e) => { handleInvoiceFileSelect(e); setLocal(prev => ({ ...prev, file: e.target.files[0], rawFile: e.target.files[0], fileName: e.target.files[0]?.name })); }} accept="image/*,.pdf,.docx,.doc,.xlsx,.xls,.pptx" />
-                    <button onClick={() => invoiceFileInputRef.current.click()} className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${local.file ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`} title={local.fileName || "Lampirkan File (OCR Auto)"}>
+                    <button onClick={() => invoiceFileInputRef.current.click()} className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${local.file ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 dark:bg-[#0d0d0d] text-slate-400 hover:bg-slate-200 dark:hover:bg-white/[0.06]'}`} title={local.fileName || "Lampirkan File (OCR Auto)"}>
                         {local.isProcessing ? <div className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /> : <Paperclip size={14} />}
                     </button>
                 </div>
@@ -127,7 +127,7 @@ export default function InventoryModals({
             <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -z-10 animate-pulse"></div>
 
             {/* Header Box ID - Capsule Style */}
-            <div className="bg-white/40 dark:bg-slate-800/40 p-5 rounded-[2rem] border border-white/60 dark:border-white/5 shadow-sm mb-8 backdrop-blur-sm">
+            <div className="bg-white/40 dark:bg-[#0d0d0d]/40 p-5 rounded-[2rem] border border-white/60 dark:border-white/5 shadow-sm mb-8 backdrop-blur-sm">
                 <div className="flex items-center gap-4">
                     <div className="p-3 bg-blue-500/10 rounded-2xl text-blue-600 shadow-inner">
                         <Package size={24} />
@@ -151,16 +151,16 @@ export default function InventoryModals({
             </div>
 
             {/* TAB SELECTOR */}
-            <div className="flex bg-slate-100/50 dark:bg-slate-800/50 p-1.5 rounded-2xl mb-8 backdrop-blur-sm border border-white/20 dark:border-white/5">
+            <div className="flex bg-slate-100/50 dark:bg-[#0d0d0d]/50 p-1.5 rounded-2xl mb-8 backdrop-blur-sm border border-white/20 dark:border-white/5">
                 <button
                     onClick={() => setModalTab('details')}
-                    className={`flex-1 py-3 text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${modalTab === 'details' ? 'bg-white/70 dark:bg-slate-700/60 backdrop-blur-xl shadow-xl text-blue-600 dark:text-white scale-[1.02] ring-1 ring-black/5' : 'text-slate-500 hover:text-slate-700 hover:bg-white/40'}`}
+                    className={`flex-1 py-3 text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${modalTab === 'details' ? 'bg-white/70 dark:bg-[#111]/60 backdrop-blur-xl shadow-xl text-blue-600 dark:text-white scale-[1.02] ring-1 ring-black/5' : 'text-slate-500 hover:text-slate-700 hover:bg-white/40'}`}
                 >
                     <Package size={18} /> Detail Isi Kardus
                 </button>
                 <button
                     onClick={() => setModalTab('history')}
-                    className={`flex-1 py-3 text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${modalTab === 'history' ? 'bg-white/70 dark:bg-slate-700/60 backdrop-blur-xl shadow-xl text-blue-600 dark:text-white scale-[1.02] ring-1 ring-black/5' : 'text-slate-500 hover:text-slate-700 hover:bg-white/40'}`}
+                    className={`flex-1 py-3 text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${modalTab === 'history' ? 'bg-white/70 dark:bg-[#111]/60 backdrop-blur-xl shadow-xl text-blue-600 dark:text-white scale-[1.02] ring-1 ring-black/5' : 'text-slate-500 hover:text-slate-700 hover:bg-white/40'}`}
                 >
                     <History size={18} /> Riwayat Mutasi
                 </button>
@@ -191,7 +191,7 @@ export default function InventoryModals({
                             </div>
                         )}
                         {(boxForm.ordners || []).map((ord, ordIdx) => (
-                            <div key={ord.id || `ordner-${ordIdx}`} className={`group transition-all duration-300 rounded-3xl border ${expandedOrdnerIds.includes(ord.id) ? 'bg-blue-500/10 border-blue-500/30 shadow-lg shadow-blue-500/5' : 'bg-white/40 dark:bg-slate-800/40 border-white/50 dark:border-white/5 hover:bg-white/60 dark:hover:bg-slate-800/60'}`}>
+                            <div key={ord.id || `ordner-${ordIdx}`} className={`group transition-all duration-300 rounded-3xl border ${expandedOrdnerIds.includes(ord.id) ? 'bg-blue-500/10 border-blue-500/30 shadow-lg shadow-blue-500/5' : 'bg-white/40 dark:bg-[#0d0d0d]/40 border-white/50 dark:border-white/5 hover:bg-white/60 dark:hover:bg-white/[0.05]/60'}`}>
                                 <div className="flex justify-between items-center p-4 cursor-pointer" onClick={() => setExpandedOrdnerIds(prev => prev.includes(ord.id) ? prev.filter(id => id !== ord.id) : [...prev, ord.id])}>
                                     <div className="flex items-center gap-4">
                                         <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all ${expandedOrdnerIds.includes(ord.id) ? 'gradient-bg text-white shadow-lg shadow-blue-600/30' : 'bg-blue-50 dark:bg-blue-900/20 text-blue-500 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40'}`}>
@@ -211,7 +211,7 @@ export default function InventoryModals({
                                                 <button onClick={(e) => { e.stopPropagation(); removeOrdner(ord.id); }} className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-600 transition-all"><Trash2 size={14} /></button>
                                             )}
                                         </div>
-                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${expandedOrdnerIds.includes(ord.id) ? 'gradient-bg text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700'}`}>
+                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${expandedOrdnerIds.includes(ord.id) ? 'gradient-bg text-white' : 'bg-slate-100 dark:bg-[#0d0d0d] text-slate-500 hover:bg-slate-200 dark:hover:bg-white/[0.06]'}`}>
                                             <ChevronRight size={22} className={`transition-transform duration-300 ${expandedOrdnerIds.includes(ord.id) ? 'rotate-90' : ''}`} />
                                         </div>
                                     </div>
@@ -290,13 +290,13 @@ export default function InventoryModals({
                     </div >
 
                     {/* FOOTER ACTIONS - Capsule Style */}
-                    < div className="bg-white/40 dark:bg-slate-800/40 p-6 rounded-[2.5rem] border border-white/60 dark:border-white/5 shadow-sm mt-8 backdrop-blur-sm" >
+                    < div className="bg-white/40 dark:bg-[#0d0d0d]/40 p-6 rounded-[2.5rem] border border-white/60 dark:border-white/5 shadow-sm mt-8 backdrop-blur-sm" >
                         <div className="flex flex-wrap items-center justify-between gap-6">
                             <div className="flex gap-4">
                                 {selectedSlotId && hasPermission('inventory', 'edit') && (
                                     <button
                                         onClick={() => setShowMoveInput(!showMoveInput)}
-                                        className={`px-8 py-4 rounded-2xl text-[10px] font-black flex items-center gap-3 transition-all active:scale-95 ${showMoveInput ? 'gradient-bg text-white shadow-xl shadow-blue-500/30' : 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-slate-500 hover:bg-blue-50 dark:hover:bg-blue-900/40 hover:text-blue-600 border border-slate-200 dark:border-white/5 shadow-sm'}`}
+                                        className={`px-8 py-4 rounded-2xl text-[10px] font-black flex items-center gap-3 transition-all active:scale-95 ${showMoveInput ? 'gradient-bg text-white shadow-xl shadow-blue-500/30' : 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-slate-500 hover:bg-blue-50 dark:hover:bg-blue-900/40 hover:text-blue-600 border border-slate-200 dark:border-white/5 shadow-sm'}`}
                                     >
                                         <ArrowLeftRight size={18} /> PINDAH SLOT
                                     </button>
@@ -345,7 +345,7 @@ export default function InventoryModals({
                         {/* Row 3: Status & External Actions - Capsule Style */}
                         {
                             (selectedSlotId || selectedExternalItem) && (selectedSlotId ? (inventory.find(s => s.id == selectedSlotId) || inventory[selectedSlotId - 1])?.status !== 'EMPTY' : true) && (
-                                <div className="bg-white/40 dark:bg-slate-800/40 p-6 rounded-[2.5rem] border border-white/60 dark:border-white/5 shadow-sm mt-8 backdrop-blur-sm">
+                                <div className="bg-white/40 dark:bg-[#0d0d0d]/40 p-6 rounded-[2.5rem] border border-white/60 dark:border-white/5 shadow-sm mt-8 backdrop-blur-sm">
                                     <div className={`grid ${selectedSlotId ? 'grid-cols-2' : 'grid-cols-1'} gap-4`}>
                                         {selectedSlotId && hasPermission('inventory', 'edit') && (
                                             <>
@@ -358,7 +358,7 @@ export default function InventoryModals({
                                                         <Clock size={24} className="group-hover:scale-110 transition-transform" /> SET DIPINJAM
                                                     </button>
                                                 )}
-                                                <button onClick={() => handleStatusChange('AUDIT', 'Sedang Audit')} className="p-5 border-2 border-purple-500/20 bg-purple-500/5 hover:bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-3xl text-sm font-black flex items-center justify-center gap-3 transition-all transform active:scale-95 group shadow-sm">
+                                                <button onClick={() => handleStatusChange('AUDIT', 'Sedang Audit')} className="p-5 border-2 border-blue-500/20 bg-blue-500/5 hover:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-3xl text-sm font-black flex items-center justify-center gap-3 transition-all transform active:scale-95 group shadow-sm">
                                                     <AlertCircle size={24} className="group-hover:scale-110 transition-transform" /> SET AUDIT
                                                 </button>
                                                 <button onClick={() => {
@@ -425,7 +425,7 @@ export default function InventoryModals({
 
                         <div className="relative pl-4">
                             {/* Vertical Trail Line */}
-                            <div className="absolute left-[39px] top-4 bottom-4 w-1 bg-slate-100 dark:bg-slate-800 rounded-full"></div>
+                            <div className="absolute left-[39px] top-4 bottom-4 w-1 bg-slate-100 dark:bg-[#0d0d0d] rounded-full"></div>
 
                             {(() => {
                                 const history = (selectedSlotId ? (inventory.find(s => s.id == selectedSlotId))?.history : selectedExternalItem?.history) || [];
@@ -452,7 +452,7 @@ export default function InventoryModals({
                                         if (a === 'STORED' || a === 'RESTORED') return { icon: CheckCircle2, color: 'bg-blue-500', text: 'text-blue-600', bg: 'bg-blue-50' };
                                         if (a === 'MOVED') return { icon: ArrowLeftRight, color: 'bg-blue-500', text: 'text-blue-600', bg: 'bg-blue-50' };
                                         if (a === 'BORROWED') return { icon: User, color: 'bg-amber-500', text: 'text-amber-600', bg: 'bg-amber-50' };
-                                        if (a === 'AUDIT') return { icon: Shield, color: 'bg-purple-500', text: 'text-purple-600', bg: 'bg-purple-50' };
+                                        if (a === 'AUDIT') return { icon: Shield, color: 'bg-blue-500', text: 'text-blue-600', bg: 'bg-blue-50' };
                                         if (a === 'EXTERNAL') return { icon: Truck, color: 'bg-orange-500', text: 'text-orange-600', bg: 'bg-orange-50' };
                                         if (a === 'REMOVED') return { icon: Trash2, color: 'bg-red-500', text: 'text-red-600', bg: 'bg-red-50' };
                                         return { icon: History, color: 'bg-slate-500', text: 'text-slate-600', bg: 'bg-slate-50' };
@@ -469,7 +469,7 @@ export default function InventoryModals({
                                             </div>
 
                                             {/* Content Card */}
-                                            <div className="bg-white dark:bg-slate-800/50 p-5 rounded-3xl border border-slate-100 dark:border-white/5 shadow-sm group-hover:shadow-md transition-all group-hover:-translate-y-1">
+                                            <div className="bg-white dark:bg-[#0d0d0d]/50 p-5 rounded-3xl border border-slate-100 dark:border-white/5 shadow-sm group-hover:shadow-md transition-all group-hover:-translate-y-1">
                                                 <div className="flex justify-between items-start mb-3">
                                                     <div>
                                                         <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-lg ${config.bg} ${config.text}`}>
@@ -491,10 +491,10 @@ export default function InventoryModals({
 
                                                 <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-50 dark:border-white/5">
                                                     <div className="flex items-center gap-2">
-                                                        <div className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-[10px] font-black text-slate-500">
+                                                        <div className="w-6 h-6 rounded-full bg-slate-100 dark:bg-[#111] flex items-center justify-center text-[10px] font-black text-slate-500">
                                                             {histItem.user?.charAt(0).toUpperCase()}
                                                         </div>
-                                                        <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400">Oleh: <span className="text-blue-500">{histItem.user}</span></span>
+                                                        <span className="text-[10px] font-bold text-slate-500 dark:text-white/40">Oleh: <span className="text-blue-500">{histItem.user}</span></span>
                                                     </div>
                                                     <div className="text-[10px] font-black text-slate-300 uppercase tracking-tighter">Verified Trail</div>
                                                 </div>
@@ -514,7 +514,7 @@ export default function InventoryModals({
                             <ChevronLeft size={14} /> Kembali ke Daftar
                         </button>
 
-                        <div className="bg-white/50 dark:bg-slate-800/50 p-6 rounded-3xl border border-white/60 dark:border-white/5 shadow-sm">
+                        <div className="bg-white/50 dark:bg-[#0d0d0d]/50 p-6 rounded-3xl border border-white/60 dark:border-white/5 shadow-sm">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
                                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 block">Nomor Invoice</span>
@@ -565,8 +565,8 @@ export default function InventoryModals({
 
                             {/* Invoice Preview */}
                             {selectedInvoice.file && (
-                                <div className="mt-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-inner">
-                                    <div className="p-2 gradient-bg-soft border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                                <div className="mt-4 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-inner">
+                                    <div className="p-2 gradient-bg-soft border-b border-slate-200 dark:border-white/[0.06] flex justify-between items-center">
                                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Preview Lampiran</span>
                                     </div>
                                     <div className="h-[450px] overflow-auto bg-slate-50 dark:bg-slate-950 flex items-center justify-center relative">
@@ -596,9 +596,9 @@ export default function InventoryModals({
                         </div>
 
                         {selectedInvoice.ocrContent && (
-                            <div className="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-3xl border border-slate-200 dark:border-slate-800">
-                                <div className="flex items-center gap-2 mb-3"><FileText size={16} className="text-blue-500" /><h4 className="text-xs font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest">Hasil Scan OCR</h4></div>
-                                <div className="p-4 bg-white dark:bg-slate-950 rounded-2xl border border-slate-100 dark:border-slate-800 text-xs font-mono text-slate-600 dark:text-slate-400 leading-relaxed max-h-60 overflow-y-auto custom-scrollbar whitespace-pre-wrap">{typeof selectedInvoice.ocrContent === 'object' ? JSON.stringify(selectedInvoice.ocrContent, null, 2) : selectedInvoice.ocrContent}</div>
+                            <div className="bg-slate-50 dark:bg-[#0d0d0d]/50 p-5 rounded-3xl border border-slate-200 dark:border-slate-800">
+                                <div className="flex items-center gap-2 mb-3"><FileText size={16} className="text-blue-500" /><h4 className="text-xs font-black text-slate-600 dark:text-white/70 uppercase tracking-widest">Hasil Scan OCR</h4></div>
+                                <div className="p-4 bg-white dark:bg-slate-950 rounded-2xl border border-slate-100 dark:border-slate-800 text-xs font-mono text-slate-600 dark:text-white/40 leading-relaxed max-h-60 overflow-y-auto custom-scrollbar whitespace-pre-wrap">{typeof selectedInvoice.ocrContent === 'object' ? JSON.stringify(selectedInvoice.ocrContent, null, 2) : selectedInvoice.ocrContent}</div>
                             </div>
                         )}
                     </div>

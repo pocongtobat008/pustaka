@@ -83,7 +83,7 @@
 }
 
 .dark .cf-logo-orb {
-    box-shadow: 0 4px 18px rgba(139, 92, 246, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 18px rgba(29, 78, 216, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 /* ── Search trigger: neumorphic inset ── */
@@ -263,7 +263,7 @@
 }
 
 .dark .saas-search-results button:hover {
-    background: rgba(139, 92, 246, 0.14);
+    background: rgba(29, 78, 216, 0.14);
 }
 
 /* ── Footer user card: warm glass chip ── */

@@ -59,7 +59,7 @@ export default function Login({ onLogin }) {
         <main role="main" className="min-h-screen w-full flex items-center justify-center overflow-hidden relative p-4">
             {/* Animated Background Elements — gradient mesh */}
             <div className="absolute top-[-15%] left-[-10%] w-[45%] h-[45%] bg-blue-500/25 dark:bg-blue-500/30 rounded-full blur-[120px] animate-pulse"></div>
-            <div className="absolute bottom-[-15%] right-[-10%] w-[45%] h-[45%] bg-purple-500/25 dark:bg-purple-500/30 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+            <div className="absolute bottom-[-15%] right-[-10%] w-[45%] h-[45%] bg-blue-500/25 dark:bg-blue-500/30 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
             <div className="absolute top-[35%] right-[5%] w-[22%] h-[22%] bg-cyan-400/15 dark:bg-cyan-400/20 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '4s' }}></div>
             <div className="absolute bottom-[10%] left-[20%] w-[18%] h-[18%] bg-pink-400/10 dark:bg-pink-400/15 rounded-full blur-[90px] animate-pulse" style={{ animationDelay: '3s' }}></div>
 
@@ -145,7 +145,7 @@ export default function Login({ onLogin }) {
 
                             <button
                                 onClick={() => setIsDarkMode(!isDarkMode)}
-                                className="neo-icon-btn w-9 h-9 xl:w-10 xl:h-10 text-slate-500 dark:text-slate-300 hover:text-amber-500 dark:hover:text-amber-400 group"
+                                className="neo-icon-btn w-9 h-9 xl:w-10 xl:h-10 text-slate-500 dark:text-white/70 hover:text-amber-500 dark:hover:text-amber-400 group"
                                 title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
                             >
                                 {isDarkMode ? (
@@ -157,7 +157,7 @@ export default function Login({ onLogin }) {
                         </div>
 
                         <h2 className="text-2xl xl:text-3xl font-black text-[#2B3674] dark:text-white mb-1 xl:mb-2 tracking-tight">{text.welcome}</h2>
-                        <p className="text-xs xl:text-sm text-gray-500 dark:text-slate-400 font-bold">{text.credentialHint}</p>
+                        <p className="text-xs xl:text-sm text-gray-500 dark:text-white/40 font-bold">{text.credentialHint}</p>
                     </div>
 
                     {loginForm.error && (
@@ -168,7 +168,7 @@ export default function Login({ onLogin }) {
 
                     <form onSubmit={handleSubmit} className="space-y-4 xl:space-y-6">
                         <div className="group">
-                            <label className="block text-xs xl:text-sm font-black text-[#2B3674] dark:text-slate-300 mb-1.5 xl:mb-2 uppercase tracking-widest ml-1">{text.username}</label>
+                            <label className="block text-xs xl:text-sm font-black text-[#2B3674] dark:text-white/70 mb-1.5 xl:mb-2 uppercase tracking-widest ml-1">{text.username}</label>
                             <div className="relative group-focus-within:scale-[1.01] transition-all duration-300">
                                 <User className="absolute left-3 xl:left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors w-4 h-4 xl:w-5 xl:h-5" />
                                 <input
@@ -181,7 +181,7 @@ export default function Login({ onLogin }) {
                             </div>
                         </div>
                         <div className="group">
-                            <label className="block text-xs xl:text-sm font-black text-[#2B3674] dark:text-slate-300 mb-1.5 xl:mb-2 uppercase tracking-widest ml-1">{text.password}</label>
+                            <label className="block text-xs xl:text-sm font-black text-[#2B3674] dark:text-white/70 mb-1.5 xl:mb-2 uppercase tracking-widest ml-1">{text.password}</label>
                             <div className="relative group-focus-within:scale-[1.01] transition-all duration-300">
                                 <FileKey className="absolute left-3 xl:left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors w-4 h-4 xl:w-5 xl:h-5" />
                                 <input
@@ -222,7 +222,7 @@ export default function Login({ onLogin }) {
                             {text.guest}
                         </button>
                     </form>
-                    <p className="text-center text-[10px] xl:text-xs text-slate-500 dark:text-slate-400 mt-6 xl:mt-10 font-bold uppercase tracking-widest">{text.version}</p>
+                    <p className="text-center text-[10px] xl:text-xs text-slate-500 dark:text-white/40 mt-6 xl:mt-10 font-bold uppercase tracking-widest">{text.version}</p>
                 </div>
             </div>
         </main>

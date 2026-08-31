@@ -268,7 +268,7 @@ const Sidebar = ({
                         }
                     >
                         <div className="font-extrabold text-sm text-stone-800 dark:text-white leading-tight">Pustaka</div>
-                        <div className="text-[10px] text-slate-400 dark:text-slate-500 leading-tight">v1.0.0</div>
+                        <div className="text-[10px] text-slate-400 dark:text-white/30 leading-tight">v1.0.0</div>
                     </div>
                 </div>
 
@@ -342,7 +342,7 @@ const Sidebar = ({
                                             'cf-group-header flex items-center gap-2 w-full px-2.5 h-8 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ' +
                                             (isActiveGroup
                                                 ? 'cf-header-active'
-                                                : 'text-slate-400 dark:text-slate-500 hover:text-stone-700 dark:hover:text-white/80')
+                                                : 'text-slate-400 dark:text-white/30 hover:text-stone-700 dark:hover:text-white/80')
                                         }
                                     >
                                         <ChevronDown
@@ -475,7 +475,7 @@ const Sidebar = ({
                                     <span className="block text-xs font-bold text-stone-700 dark:text-white/90 truncate">
                                         {currentUser && currentUser.name ? currentUser.name : t('sidebar.user.guest')}
                                     </span>
-                                    <span className="block text-[10px] font-semibold text-slate-400 dark:text-slate-500 truncate capitalize">
+                                    <span className="block text-[10px] font-semibold text-slate-400 dark:text-white/30 truncate capitalize">
                                         {currentUser && currentUser.role ? currentUser.role : 'user'}
                                     </span>
                                 </span>
@@ -485,7 +485,7 @@ const Sidebar = ({
                         <div className="grid grid-cols-2 gap-1.5 md:hidden">
                             <button
                                 onClick={(e) => { e.stopPropagation(); setLanguage(language === 'id' ? 'en' : 'id'); }}
-                                className="neo-btn flex items-center justify-center gap-1.5 h-9 text-slate-500 dark:text-slate-300 hover:text-blue-500 dark:hover:text-blue-300 text-xs font-semibold"
+                                className="neo-btn flex items-center justify-center gap-1.5 h-9 text-slate-500 dark:text-white/70 hover:text-blue-500 dark:hover:text-blue-300 text-xs font-semibold"
                                 title={t('settings.language.title')}
                             >
                                 <Languages size={13} />
@@ -493,7 +493,7 @@ const Sidebar = ({
                             </button>
                             <button
                                 onClick={handleLogout}
-                                className="neo-btn flex items-center justify-center gap-1.5 h-9 text-slate-500 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 text-xs font-semibold"
+                                className="neo-btn flex items-center justify-center gap-1.5 h-9 text-slate-500 dark:text-white/70 hover:text-red-500 dark:hover:text-red-400 text-xs font-semibold"
                                 title={t("tooltip.logout")}
                             >
                                 <LogOut size={13} />
@@ -514,7 +514,7 @@ const Sidebar = ({
                         onClick={e => e.stopPropagation()}
                         className="cf-palette-panel w-full max-w-md rounded-2xl overflow-hidden"
                     >
-                        <div className="flex items-center gap-2 px-4 h-12 border-b border-slate-100 dark:border-slate-700">
+                        <div className="flex items-center gap-2 px-4 h-12 border-b border-slate-100 dark:border-white/[0.06]">
                             <Search size={16} className="text-slate-400" />
                             <input
                                 ref={paletteRef}
@@ -523,7 +523,7 @@ const Sidebar = ({
                                 placeholder={t('sidebar.search.placeholder')}
                                 className="flex-1 bg-transparent outline-none text-sm text-stone-700 dark:text-white/90 placeholder:text-stone-400"
                             />
-                            <kbd className="text-[9px] text-slate-400 border border-slate-200 dark:border-slate-600 rounded px-1.5 py-0.5">ESC</kbd>
+                            <kbd className="text-[9px] text-slate-400 border border-slate-200 dark:border-white/[0.08] rounded px-1.5 py-0.5">ESC</kbd>
                         </div>
                         <div className="max-h-[55vh] overflow-y-auto p-2 saas-search-results">
                             {!paletteQuery.trim() ? (
@@ -539,7 +539,7 @@ const Sidebar = ({
                                     <button
                                         key={item.id}
                                         onClick={() => navigate(item.id)}
-                                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors"
+                                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-blue-50 dark:hover:bg-white/[0.06] transition-colors"
                                     >
                                         <span className="w-7 h-7 rounded-md bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-300 flex items-center justify-center shrink-0">
                                             <item.icon size={15} />

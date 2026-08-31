@@ -269,7 +269,7 @@ export default function DocIntelligenceStudio({ files, results, isDarkMode, onUp
                         {docs.map((d, i) => (
                             <button key={i} onClick={() => { setDocIdx(i); setPageNum(d.pageStart || 1); setActiveKey(null); }}
                                 className={`${chipBase} flex-shrink-0 max-w-[240px] ${curDocIdx === i
-                                    ? dark ? 'bg-purple-500/25 border-purple-500/50 text-purple-200' : 'bg-purple-50 border-purple-300 text-purple-700'
+                                    ? dark ? 'bg-blue-500/25 border-blue-500/50 text-blue-200' : 'bg-blue-50 border-blue-300 text-blue-700'
                                     : dark ? 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'}`}>
                                 <span className="truncate">#{i + 1}{d.value ? ` • ${d.value}` : ''}</span>
                                 <span className={`text-[9px] flex-shrink-0 ${dark ? 'text-white/30' : 'text-slate-400'}`}>
