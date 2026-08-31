@@ -24,17 +24,17 @@ export default function AuditStepTracker({ AUDIT_STEPS, selectedAudit, activeSte
                     ${isDone
                                     ? 'bg-emerald-500 border-emerald-100 dark:border-emerald-900/50 text-white scale-100 shadow-md shadow-emerald-500/20'
                                     : isActive
-                                        ? 'bg-indigo-600 border-indigo-100 dark:border-indigo-900/50 text-white scale-110 shadow-lg shadow-indigo-500/30'
+                                        ? 'bg-blue-600 border-blue-100 dark:border-blue-900/50 text-white scale-110 shadow-lg shadow-blue-500/30'
                                         : 'bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-400 dark:text-gray-500'}`}
                         >
                             {isDone ? <CheckCircle2 size={18} /> : <span className="text-sm font-bold">{step.id}</span>}
                         </div>
 
                         <div className="absolute top-12 w-32 text-center transition-all duration-300">
-                            <p className={`text-xs font-bold mb-0.5 ${isActive ? 'text-indigo-600 scale-105' : isDone ? 'text-emerald-600' : 'text-gray-400'}`}>
+                            <p className={`text-xs font-bold mb-0.5 ${isActive ? 'text-blue-600 scale-105' : isDone ? 'text-emerald-600' : 'text-gray-400'}`}>
                                 {step.title}
                             </p>
-                            <p className={`text-[10px] ${isActive ? 'text-indigo-400' : 'text-gray-400 hidden group-hover:block'}`}>
+                            <p className={`text-[10px] ${isActive ? 'text-blue-400' : 'text-gray-400 hidden group-hover:block'}`}>
                                 {sData.status || 'Pending'}
                             </p>
                         </div>

@@ -30,7 +30,7 @@ export default function UploadModal({ uploadForm, setUploadForm, fileInputRef, h
 
         <div className="mt-6 mx-auto h-2 w-full max-w-xs overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
           <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400"
+            className="h-full rounded-full bg-gradient-to-r from-blue-500 via-blue-500 to-cyan-400"
             initial={{ x: '-100%' }}
             animate={{ x: ['-100%', '100%'] }}
             transition={{ repeat: Infinity, duration: 1.3, ease: 'linear' }}
@@ -50,16 +50,16 @@ export default function UploadModal({ uploadForm, setUploadForm, fileInputRef, h
       <motion.div
         whileHover={{ y: -2, scale: 1.01 }}
         whileTap={{ scale: 0.995 }}
-        className={`group relative flex flex-col items-center justify-center border-dashed rounded-2xl p-10 text-center transition-all duration-300 cursor-pointer ${uploadForm.fileData ? 'border-2 border-indigo-500 bg-indigo-50/30 dark:bg-indigo-900/10' : 'border border-slate-200 dark:border-slate-700 hover:border-indigo-300 hover:bg-slate-50/50 dark:hover:bg-slate-800/30'}`}
+        className={`group relative flex flex-col items-center justify-center border-dashed rounded-2xl p-10 text-center transition-all duration-300 cursor-pointer ${uploadForm.fileData ? 'border-2 border-blue-500 bg-blue-50/30 dark:bg-blue-900/10' : 'border border-slate-200 dark:border-slate-700 hover:border-blue-300 hover:bg-slate-50/50 dark:hover:bg-slate-800/30'}`}
         onClick={() => fileInputRef.current.click()}
       >
         <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileSelect} accept="image/*,.pdf,.docx,.doc,.xlsx,.xls,.pptx" />
 
-        <div className="mb-4 p-4 rounded-full bg-slate-50 dark:bg-slate-800 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/30 transition-colors duration-300">
-          <UploadCloud className="text-slate-400 dark:text-slate-500 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition-colors duration-300" size={32} />
+        <div className="mb-4 p-4 rounded-full bg-slate-50 dark:bg-slate-800 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 transition-colors duration-300">
+          <UploadCloud className="text-slate-400 dark:text-slate-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-300" size={32} />
         </div>
 
-        <p className="text-sm font-semibold text-slate-600 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+        <p className="text-sm font-semibold text-slate-600 dark:text-slate-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
           {uploadForm.title || 'Klik di sini untuk upload file'}
         </p>
         {!uploadForm.title && (

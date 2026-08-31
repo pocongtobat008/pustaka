@@ -22,7 +22,7 @@ export default function TaxModals({
                         <select
                             value={taxForm.month}
                             onChange={e => setTaxForm({ ...taxForm, month: e.target.value })}
-                            className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner appearance-none font-bold"
+                            className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-inner appearance-none font-bold"
                         >
                             <option value="">{t("opt.selectMonth")}</option>
                             {["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"].map(m => (
@@ -40,7 +40,7 @@ export default function TaxModals({
                         type="number"
                         value={taxForm.year}
                         onChange={e => setTaxForm({ ...taxForm, year: parseInt(e.target.value) })}
-                        className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner font-bold"
+                        className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-inner font-bold"
                     />
                 </div>
                 <div>
@@ -50,7 +50,7 @@ export default function TaxModals({
                         min="0"
                         value={taxForm.pembetulan || 0}
                         onChange={e => setTaxForm({ ...taxForm, pembetulan: parseInt(e.target.value) })}
-                        className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner font-bold"
+                        className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-inner font-bold"
                     />
                 </div>
             </div>
@@ -59,10 +59,10 @@ export default function TaxModals({
                 <div className="bg-white/20 dark:bg-slate-800/40 p-6 rounded-[2rem] border border-white/20 dark:border-white/5 shadow-inner">
                     <div className="flex justify-between items-center mb-5">
                         <h4 className="font-black text-slate-800 dark:text-white flex items-center gap-3 text-lg">
-                            <div className="p-2 bg-indigo-500/10 rounded-xl text-indigo-500"><Percent size={18} /></div>
+                            <div className="p-2 bg-blue-500/10 rounded-xl text-blue-500"><Percent size={18} /></div>
                             PPh (Pajak Penghasilan)
                         </h4>
-                        <button type="button" onClick={() => handleAddTaxField('pphTypes')} className="flex items-center gap-2 text-xs font-black text-indigo-600 dark:text-indigo-400 bg-indigo-50 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-all border border-indigo-100/50">
+                        <button type="button" onClick={() => handleAddTaxField('pphTypes')} className="flex items-center gap-2 text-xs font-black text-blue-600 dark:text-blue-400 bg-blue-50 px-3 py-1.5 rounded-full hover:bg-blue-100 transition-all border border-blue-100/50">
                             <Plus size={14} /> TAMBAH FIELD
                         </button>
                     </div>
@@ -86,7 +86,7 @@ export default function TaxModals({
                                             }
                                         })
                                     }}
-                                    className="w-full px-4 py-3.5 border-0 bg-white/60 dark:bg-slate-800/60 rounded-2xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-sm font-black text-right pr-6"
+                                    className="w-full px-4 py-3.5 border-0 bg-white/60 dark:bg-slate-800/60 rounded-2xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-sm font-black text-right pr-6"
                                     placeholder="0"
                                 />
                             </div>
@@ -178,7 +178,7 @@ export default function TaxModals({
             <div className="flex justify-end pt-8 border-t border-white/20 dark:border-white/5">
                 <button
                     onClick={handleSaveTaxSummary}
-                    className="px-12 py-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white rounded-2xl font-black shadow-xl shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-all hover:-translate-y-0.5 active:scale-95 flex items-center gap-3"
+                    className="px-12 py-4 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-blue-500 text-white rounded-2xl font-black shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all hover:-translate-y-0.5 active:scale-95 flex items-center gap-3"
                 >
                     <Save size={20} />
                     SIMPAN DATA PAJAK

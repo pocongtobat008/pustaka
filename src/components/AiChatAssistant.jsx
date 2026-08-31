@@ -41,7 +41,7 @@ const formatRelativeTime = (dateStr) => {
 // Result card component
 const ResultCard = ({ result, isDarkMode, onNavigate, onLocationClick }) => {
     const typeConfig = {
-        document: { icon: FileText, color: 'from-blue-500 to-indigo-600', bg: 'bg-blue-50 dark:bg-blue-900/20', label: 'Dokumen' },
+        document: { icon: FileText, color: 'from-blue-500 to-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20', label: 'Dokumen' },
         invoice: { icon: FileSpreadsheet, color: 'from-emerald-500 to-green-600', bg: 'bg-emerald-50 dark:bg-emerald-900/20', label: 'Invoice' },
         external: { icon: Package, color: 'from-amber-500 to-orange-600', bg: 'bg-amber-50 dark:bg-amber-900/20', label: 'Eksternal' },
         tax_summary: { icon: Bot, color: 'from-purple-500 to-pink-600', bg: 'bg-purple-50 dark:bg-purple-900/20', label: 'Pajak' },
@@ -55,7 +55,7 @@ const ResultCard = ({ result, isDarkMode, onNavigate, onLocationClick }) => {
             animate={{ opacity: 1, y: 0 }}
             className={`p-3 rounded-xl border transition-all group hover:scale-[1.02] ${isDarkMode
                 ? 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20'
-                : 'bg-white border-slate-200 hover:bg-slate-50 hover:border-indigo-300 shadow-sm'
+                : 'bg-white border-slate-200 hover:bg-slate-50 hover:border-blue-300 shadow-sm'
                 }`}
         >
             <div className="flex flex-col gap-3">
@@ -91,7 +91,7 @@ const ResultCard = ({ result, isDarkMode, onNavigate, onLocationClick }) => {
                 <div className="flex gap-2 relative z-10 pt-2 border-t border-slate-100 dark:border-white/5">
                     <button
                         onClick={(e) => { e.stopPropagation(); onNavigate?.(result); }}
-                        className="flex-1 text-xs bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 py-2 rounded-lg transition-all font-bold flex items-center justify-center gap-1.5 border border-indigo-100 dark:border-indigo-800 hover:bg-indigo-100"
+                        className="flex-1 text-xs bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 py-2 rounded-lg transition-all font-bold flex items-center justify-center gap-1.5 border border-blue-100 dark:border-blue-800 hover:bg-blue-100"
                     >
                         <Eye size={14} /> {result.matchType === 'note' ? 'Lihat Konteks' : 'Preview'}
                     </button>
@@ -107,8 +107,8 @@ const ResultCard = ({ result, isDarkMode, onNavigate, onLocationClick }) => {
                                             result.matchType === 'tax_monitoring' ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 hover:bg-orange-100' :
                                                 result.matchType === 'approval' ? 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 hover:bg-rose-100' :
                                                     result.matchType === 'pustaka' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 hover:bg-blue-100' :
-                                                        result.matchType === 'tax_object' ? 'bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400' :
-                                                            'bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400'}`}
+                                                        result.matchType === 'tax_object' ? 'bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400' :
+                                                            'bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400'}`}
                         >
                             {result.matchType === 'invoice' ? `📦 ${result.folderName || 'Finance'}` :
                                 result.matchType === 'external_item' ? `🚚 ${result.folderName || 'Eksternal'}` :
@@ -130,7 +130,7 @@ const ResultCard = ({ result, isDarkMode, onNavigate, onLocationClick }) => {
 // Typing indicator
 const TypingIndicator = ({ isDarkMode, status }) => (
     <div className="flex items-start gap-2 px-4 py-3">
-        <div className={`w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg text-xs flex-shrink-0`}>
+        <div className={`w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg text-xs flex-shrink-0`}>
             🤖
         </div>
         <div className={`px-4 py-3 rounded-2xl rounded-bl-lg ${isDarkMode ? 'bg-white/8 border border-white/5' : 'bg-slate-100'}`}>
@@ -139,7 +139,7 @@ const TypingIndicator = ({ isDarkMode, status }) => (
                     {[0, 1, 2].map(i => (
                         <motion.div
                             key={i}
-                            className={`w-2 h-2 rounded-full ${isDarkMode ? 'bg-indigo-400' : 'bg-indigo-500'}`}
+                            className={`w-2 h-2 rounded-full ${isDarkMode ? 'bg-blue-400' : 'bg-blue-500'}`}
                             animate={{ scale: [1, 1.3, 1], opacity: [0.5, 1, 0.5] }}
                             transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.15 }}
                         />
@@ -164,14 +164,14 @@ function formatInline(text) {
     // bold **text**
     const boldMatch = remaining.match(/^(\*\*)(.+?)\1(.*)$/s);
     if (boldMatch) {
-      parts.push(<b key={key++} className="font-bold text-indigo-400">{boldMatch[2]}</b>);
+      parts.push(<b key={key++} className="font-bold text-blue-400">{boldMatch[2]}</b>);
       remaining = boldMatch[3];
       continue;
     }
     // italic *text*
     const italicMatch = remaining.match(/^(\*)(.+?)\1(.*)$/s);
     if (italicMatch) {
-      parts.push(<i key={key++} className="italic text-indigo-300">{italicMatch[2]}</i>);
+      parts.push(<i key={key++} className="italic text-blue-300">{italicMatch[2]}</i>);
       remaining = italicMatch[3];
       continue;
     }
@@ -209,7 +209,7 @@ const MarkdownRenderer = ({ content, isDarkMode }) => {
             const match = line.match(/> \[!(\w+)\]/);
             const type = match ? match[1] : 'NOTE';
             const colors = {
-                NOTE: 'blue', TIP: 'emerald', IMPORTANT: 'indigo', WARNING: 'amber', CAUTION: 'red'
+                NOTE: 'blue', TIP: 'emerald', IMPORTANT: 'blue', WARNING: 'amber', CAUTION: 'red'
             };
             const color = colors[type] || 'blue';
             return (
@@ -225,27 +225,27 @@ const MarkdownRenderer = ({ content, isDarkMode }) => {
 
         // Handle Headers
         if (line.startsWith('### ')) {
-            return <h3 key={index} className="text-sm font-bold mt-3 mb-1 text-indigo-500">{formatInline(line.replace('### ', ''))}</h3>;
+            return <h3 key={index} className="text-sm font-bold mt-3 mb-1 text-blue-500">{formatInline(line.replace('### ', ''))}</h3>;
         }
         if (line.startsWith('## ')) {
-            return <h2 key={index} className="text-base font-bold mt-4 mb-1.5 text-indigo-500">{formatInline(line.replace('## ', ''))}</h2>;
+            return <h2 key={index} className="text-base font-bold mt-4 mb-1.5 text-blue-500">{formatInline(line.replace('## ', ''))}</h2>;
         }
         if (line.startsWith('# ')) {
-            return <h1 key={index} className="text-lg font-bold mt-4 mb-1.5 text-indigo-500">{formatInline(line.replace('# ', ''))}</h1>;
+            return <h1 key={index} className="text-lg font-bold mt-4 mb-1.5 text-blue-500">{formatInline(line.replace('# ', ''))}</h1>;
         }
 
         const formattedLine = formatInline(line);
 
         // Handle Unordered Lists (- or *)
         if (line.trim().match(/^[-*]\s/)) {
-            return <div key={index} className="flex gap-2 pl-1 my-0.5"><span className="text-indigo-500">•</span><div>{formattedLine}</div></div>;
+            return <div key={index} className="flex gap-2 pl-1 my-0.5"><span className="text-blue-500">•</span><div>{formattedLine}</div></div>;
         }
 
         // Handle Numbered Lists (e.g. "1. item", "2. item")
         const numberedMatch = line.trim().match(/^(\d+)\.\s(.+)$/);
         if (numberedMatch) {
             const inner = formatInline(numberedMatch[2]);
-            return <div key={index} className="flex gap-2 pl-1 my-0.5"><span className="text-indigo-500 font-bold min-w-[1.2rem]">{numberedMatch[1]}.</span><div>{inner}</div></div>;
+            return <div key={index} className="flex gap-2 pl-1 my-0.5"><span className="text-blue-500 font-bold min-w-[1.2rem]">{numberedMatch[1]}.</span><div>{inner}</div></div>;
         }
 
         // Handle Tables (Minimalist)
@@ -254,7 +254,7 @@ const MarkdownRenderer = ({ content, isDarkMode }) => {
             if (cells.length > 0 && !line.includes('---')) {
                 return (
                     <div key={index} className={`grid grid-cols-${cells.length} gap-2 py-1 px-2 text-[10px] border-b ${isDarkMode ? 'border-white/5' : 'border-slate-100'}`}>
-                        {cells.map((c, i) => <div key={i} className={index === 0 ? "font-bold text-indigo-400" : ""}>{c}</div>)}
+                        {cells.map((c, i) => <div key={i} className={index === 0 ? "font-bold text-blue-400" : ""}>{c}</div>)}
                     </div>
                 );
             }
@@ -1196,12 +1196,12 @@ export default function AiChatAssistant({
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         onClick={() => setIsOpen(true)}
-                        className="fixed bottom-6 right-6 z-[200] w-14 h-14 rounded-full bg-gradient-to-br from-indigo-600 to-purple-700 text-white shadow-2xl shadow-indigo-500/40 flex items-center justify-center group"
+                        className="fixed bottom-6 right-6 z-[200] w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-purple-700 text-white shadow-2xl shadow-blue-500/40 flex items-center justify-center group"
                         style={{ WebkitTapHighlightColor: 'transparent' }}
                     >
                         <span className="text-2xl group-hover:scale-110 transition-transform">🤖</span>
                         {/* Pulse ring */}
-                        <span className="absolute inset-0 rounded-full bg-indigo-500 animate-ping opacity-20" />
+                        <span className="absolute inset-0 rounded-full bg-blue-500 animate-ping opacity-20" />
                     </motion.button>
                 )}
             </AnimatePresence>
@@ -1227,7 +1227,7 @@ export default function AiChatAssistant({
                         {/* Header */}
                         <div className={`p-4 flex items-center gap-3 border-b flex-shrink-0 ${isDarkMode ? 'border-white/10' : 'border-slate-100'
                             }`}>
-                            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center shadow-lg shadow-indigo-500/30 text-lg">
+                            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center shadow-lg shadow-blue-500/30 text-lg">
                                 🤖
                             </div>
                             <div className="flex-1">
@@ -1241,7 +1241,7 @@ export default function AiChatAssistant({
                             </div>
                             <button
                                 onClick={() => setAgentMode(!agentMode)}
-                                className={`px-2.5 py-1.5 rounded-xl transition-all text-[10px] font-black uppercase tracking-wider flex items-center gap-1 ${agentMode ? 'bg-gradient-to-r from-indigo-600 to-purple-700 text-white shadow-lg shadow-indigo-500/30' : isDarkMode ? 'hover:bg-white/10 text-white/50' : 'hover:bg-slate-100 text-slate-400'}`}
+                                className={`px-2.5 py-1.5 rounded-xl transition-all text-[10px] font-black uppercase tracking-wider flex items-center gap-1 ${agentMode ? 'bg-gradient-to-r from-blue-600 to-purple-700 text-white shadow-lg shadow-blue-500/30' : isDarkMode ? 'hover:bg-white/10 text-white/50' : 'hover:bg-slate-100 text-slate-400'}`}
                                 title="Mode Agent: gunakan LLM eksternal (function-calling) untuk mencari database & membuat laporan"
                             >
                                 <Bot size={14} /> Agent
@@ -1292,7 +1292,7 @@ export default function AiChatAssistant({
                                             <span className={`text-xs font-bold ${isDarkMode ? 'text-white/70' : 'text-slate-500'}`}>Riwayat Chat</span>
                                             <button
                                                 onClick={createNewSession}
-                                                className="flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
+                                                className="flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
                                             >
                                                 <Plus size={12} /> Baru
                                             </button>
@@ -1308,7 +1308,7 @@ export default function AiChatAssistant({
                                                     onClick={() => loadSessionMessages(s.id)}
                                                     className={`flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer transition-all group ${
                                                         sessionId === s.id
-                                                            ? isDarkMode ? 'bg-indigo-500/20 border border-indigo-500/30' : 'bg-indigo-50 border border-indigo-200'
+                                                            ? isDarkMode ? 'bg-blue-500/20 border border-blue-500/30' : 'bg-blue-50 border border-blue-200'
                                                             : isDarkMode ? 'hover:bg-white/5' : 'hover:bg-white'
                                                     }`}
                                                 >
@@ -1343,13 +1343,13 @@ export default function AiChatAssistant({
                             {messages.map((msg, i) => (
                                 <div key={i} className={`flex gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                     {msg.role === 'assistant' && (
-                                        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-lg mt-0.5 text-xs">
+                                        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-lg mt-0.5 text-xs">
                                             🤖
                                         </div>
                                     )}
                                     <div className={`max-w-[85%] space-y-2`}>
                                         <div className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed break-words overflow-hidden ${msg.role === 'user'
-                                            ? 'bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded-br-lg shadow-lg shadow-indigo-500/20'
+                                            ? 'bg-gradient-to-br from-blue-600 to-purple-700 text-white rounded-br-lg shadow-lg shadow-blue-500/20'
                                             : isDarkMode
                                                 ? 'bg-white/8 text-white/90 rounded-bl-lg border border-white/5'
                                                 : 'bg-slate-100 text-slate-700 rounded-bl-lg'
@@ -1357,10 +1357,10 @@ export default function AiChatAssistant({
                                             {/* Thinking (reasoning) panel — collapsible */}
                                             {(msg.reasoning || (msg.thinkingSteps && msg.thinkingSteps.length > 0)) && (
                                                 <details className={`mb-2 rounded-xl overflow-hidden group ${isDarkMode ? 'bg-white/5 border border-white/10' : 'bg-slate-50 border border-slate-200'}`}>
-                                                    <summary className={`cursor-pointer select-none px-2.5 py-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide ${isDarkMode ? 'text-indigo-300 hover:text-indigo-200' : 'text-indigo-600 hover:text-indigo-500'}`}>
+                                                    <summary className={`cursor-pointer select-none px-2.5 py-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide ${isDarkMode ? 'text-blue-300 hover:text-blue-200' : 'text-blue-600 hover:text-blue-500'}`}>
                                                         <Brain size={12} className={msg.streaming ? 'animate-pulse' : ''} />
                                                         Thinking
-                                                        {msg.streaming && <span className={`w-1 h-1 rounded-full ${isDarkMode ? 'bg-indigo-400' : 'bg-indigo-500'} animate-ping`} />}
+                                                        {msg.streaming && <span className={`w-1 h-1 rounded-full ${isDarkMode ? 'bg-blue-400' : 'bg-blue-500'} animate-ping`} />}
                                                     </summary>
                                                     <div className={`px-3 py-2 border-t ${isDarkMode ? 'border-white/10' : 'border-slate-200'}`}>
                                                         {/* Step trail: status + tool calls */}
@@ -1385,14 +1385,14 @@ export default function AiChatAssistant({
                                             )}
                                             <MarkdownRenderer content={msg.text} isDarkMode={isDarkMode} />
                                             {msg.streaming && (
-                                                <span className={`inline-block w-[2px] h-4 align-middle ml-0.5 animate-pulse ${isDarkMode ? 'bg-indigo-400' : 'bg-indigo-600'}`} />
+                                                <span className={`inline-block w-[2px] h-4 align-middle ml-0.5 animate-pulse ${isDarkMode ? 'bg-blue-400' : 'bg-blue-600'}`} />
                                             )}
                                         </div>
 
                                         {/* Agent report badge */}
                                         {msg.isReport && (
                                             <div className="flex flex-wrap gap-1 px-1">
-                                                <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide ${isDarkMode ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' : 'bg-indigo-100 text-indigo-700 border border-indigo-200'}`}>
+                                                <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide ${isDarkMode ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30' : 'bg-blue-100 text-blue-700 border border-blue-200'}`}>
                                                     🤖 AI Agent Report
                                                 </span>
                                                 {msg.partial && (
@@ -1409,8 +1409,8 @@ export default function AiChatAssistant({
                                                     <button
                                                         onClick={() => handleContinuePartial(msg)}
                                                         className={`text-[9px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wide transition-all flex items-center gap-1 ${isDarkMode
-                                                            ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/35'
-                                                            : 'bg-indigo-100 text-indigo-700 border border-indigo-200 hover:bg-indigo-200'
+                                                            ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30 hover:bg-blue-500/35'
+                                                            : 'bg-blue-100 text-blue-700 border border-blue-200 hover:bg-blue-200'
                                                             }`}
                                                         title="Lanjutkan jawaban yang terhenti"
                                                     >
@@ -1458,7 +1458,7 @@ export default function AiChatAssistant({
                                         {msg.intent && (msg.intent.vendor || msg.intent.minAmount || msg.intent.maxAmount) && (
                                             <div className="flex flex-wrap gap-1 px-1">
                                                 {msg.intent.vendor && (
-                                                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${isDarkMode ? 'bg-indigo-500/20 text-indigo-300' : 'bg-indigo-100 text-indigo-700'}`}>
+                                                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${isDarkMode ? 'bg-blue-500/20 text-blue-300' : 'bg-blue-100 text-blue-700'}`}>
                                                         🏢 {msg.intent.vendor}
                                                     </span>
                                                 )}
@@ -1483,8 +1483,8 @@ export default function AiChatAssistant({
                                                         key={si}
                                                         onClick={() => handleSend(s)}
                                                         className={`text-[10px] px-2.5 py-1 rounded-full font-medium transition-all flex items-center gap-1 ${isDarkMode
-                                                            ? 'bg-indigo-500/15 text-indigo-300 hover:bg-indigo-500/25 border border-indigo-500/20'
-                                                            : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border border-indigo-100'
+                                                            ? 'bg-blue-500/15 text-blue-300 hover:bg-blue-500/25 border border-blue-500/20'
+                                                            : 'bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-100'
                                                         }`}
                                                     >
                                                         <ArrowRight size={10} />
@@ -1545,8 +1545,8 @@ export default function AiChatAssistant({
                                         key={i}
                                         onClick={() => handleSend(qa.text || qa)}
                                         className={`text-[11px] px-3 py-1.5 rounded-full font-medium transition-all flex items-center gap-1.5 ${isDarkMode
-                                            ? 'bg-white/5 text-white/60 hover:bg-indigo-500/20 hover:text-indigo-300 border border-white/5'
-                                            : 'bg-slate-100 text-slate-500 hover:bg-indigo-100 hover:text-indigo-700'
+                                            ? 'bg-white/5 text-white/60 hover:bg-blue-500/20 hover:text-blue-300 border border-white/5'
+                                            : 'bg-slate-100 text-slate-500 hover:bg-blue-100 hover:text-blue-700'
                                             }`}
                                     >
                                         <span>{qa.icon || '💬'}</span>
@@ -1559,8 +1559,8 @@ export default function AiChatAssistant({
                         {/* Input */}
                         <div className={`p-3 border-t flex-shrink-0 ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
                             <div className={`flex items-center gap-2 rounded-2xl px-4 py-2 ${isDarkMode
-                                ? 'bg-white/5 border border-white/10 focus-within:border-indigo-500/50'
-                                : 'bg-slate-100 border border-transparent focus-within:border-indigo-300 focus-within:bg-white'
+                                ? 'bg-white/5 border border-white/10 focus-within:border-blue-500/50'
+                                : 'bg-slate-100 border border-transparent focus-within:border-blue-300 focus-within:bg-white'
                                 } transition-all`}>
                                 <Search size={16} className={`flex-shrink-0 ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`} />
                                 <input
@@ -1584,7 +1584,7 @@ export default function AiChatAssistant({
                                     className={`p-2 rounded-xl transition-all ${isStreaming
                                         ? 'bg-red-500/15 text-red-400 hover:bg-red-500/25 hover:scale-105 active:scale-95'
                                         : input.trim() && !isLoading
-                                            ? 'bg-gradient-to-br from-indigo-600 to-purple-700 text-white shadow-lg shadow-indigo-500/30 hover:scale-105 active:scale-95'
+                                            ? 'bg-gradient-to-br from-blue-600 to-purple-700 text-white shadow-lg shadow-blue-500/30 hover:scale-105 active:scale-95'
                                             : isDarkMode ? 'text-white/20' : 'text-slate-300'
                                         }`}
                                 >

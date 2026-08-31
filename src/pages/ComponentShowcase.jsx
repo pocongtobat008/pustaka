@@ -21,7 +21,7 @@ export default function ComponentShowcase({ isDarkMode }) {
     const [sampleInput, setSampleInput] = useState('');
     const t = (en, id) => (isEnglish ? en : id);
 
-    const btnPrimary = 'inline-flex items-center gap-2 px-4 py-2.5 gradient-bg text-white rounded-xl text-sm font-bold shadow-lg shadow-indigo-500/25 hover:opacity-90 transition-all';
+    const btnPrimary = 'inline-flex items-center gap-2 px-4 py-2.5 gradient-bg text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-500/25 hover:opacity-90 transition-all';
     const btnOutline = 'inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-sm font-semibold';
     const btnGreen = 'inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-500/25 transition-all';
     const btnRed = 'inline-flex items-center gap-2 px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-rose-500/25 transition-all';
@@ -32,7 +32,7 @@ export default function ComponentShowcase({ isDarkMode }) {
             {/* Header — pakai PageHeader (sama seperti halaman lain) */}
             <PageHeader
                 icon={Sparkles}
-                iconClass="from-indigo-500 to-cyan-500"
+                iconClass="from-blue-500 to-cyan-500"
                 title={t('Component Showcase', 'Showcase Komponen')}
                 subtitle={t('Central UI kit — glass + gradient. All components below come from src/components/ui.', 'Kit UI terpusat — glass + gradient. Semua komponen di bawah berasal dari src/components/ui.')}
                 meta={(
@@ -46,7 +46,7 @@ export default function ComponentShowcase({ isDarkMode }) {
             <section>
                 <div className={sectionTitle}>{t('1. Summary Cards (SummaryRow)', '1. Kartu Ringkasan (SummaryRow)')}</div>
                 <SummaryRow cards={[
-                    { title: t('Total Invoice', 'Total Invoice'), value: '27', icon: FileText, gradient: 'from-blue-600 to-indigo-700', subtext: t('Rp 1.240.000.000', 'Rp 1.240.000.000'), valueClass: 'text-2xl' },
+                    { title: t('Total Invoice', 'Total Invoice'), value: '27', icon: FileText, gradient: 'from-blue-600 to-blue-700', subtext: t('Rp 1.240.000.000', 'Rp 1.240.000.000'), valueClass: 'text-2xl' },
                     { title: t('Proforma', 'Proforma'), value: '18', icon: CheckCircle2, gradient: 'from-amber-500 to-orange-600', subtext: t('5 approved', '5 disetujui'), valueClass: 'text-2xl' },
                     { title: t('Occupancy', 'Okupansi'), value: '72%', icon: LayoutDashboard, gradient: 'from-emerald-500 to-teal-600', subtext: t('Warehouse capacity', 'Kapasitas gudang'), valueClass: 'text-2xl' },
                     { title: t('Notifications', 'Notifikasi'), value: '3', icon: Bell, gradient: 'from-violet-500 to-purple-600', subtext: t('Need action', 'Perlu tindakan'), valueClass: 'text-2xl' },
@@ -59,7 +59,7 @@ export default function ComponentShowcase({ isDarkMode }) {
                 <Card>
                     <PageHeader
                         icon={LayoutDashboard}
-                        iconClass="from-indigo-500 to-purple-600"
+                        iconClass="from-blue-500 to-purple-600"
                         title={t('Example Page Header', 'Contoh Header Halaman')}
                         subtitle={t('Icon + title + subtitle + optional actions — identical across all pages.', 'Ikon + judul + subjudul + aksi opsional — identik di semua halaman.')}
                         actions={<button className={btnPrimary}><Download size={15} /> {t('Export', 'Ekspor')}</button>}
@@ -76,7 +76,7 @@ export default function ComponentShowcase({ isDarkMode }) {
                         <button className={btnOutline}><Save size={15} /> {t('Outline / Secondary', 'Garis / Sekunder')}</button>
                         <button className={btnGreen}><CheckCircle2 size={15} /> {t('Success (green)', 'Sukses (hijau)')}</button>
                         <button className={btnRed}><Trash2 size={15} /> {t('Danger (red)', 'Bahaya (merah)')}</button>
-                        <button className="p-2.5 rounded-xl glass-card text-slate-500 hover:text-indigo-600 transition-colors" aria-label={t('Icon button', 'Tombol ikon')} title={t('Icon only — needs aria-label', 'Hanya ikon — perlu aria-label')}>
+                        <button className="p-2.5 rounded-xl glass-card text-slate-500 hover:text-blue-600 transition-colors" aria-label={t('Icon button', 'Tombol ikon')} title={t('Icon only — needs aria-label', 'Hanya ikon — perlu aria-label')}>
                             <Eye size={18} />
                         </button>
                         <button className={`${btnPrimary} opacity-50 cursor-not-allowed`} disabled>{t('Disabled', 'Nonaktif')}</button>
@@ -112,7 +112,7 @@ export default function ComponentShowcase({ isDarkMode }) {
             <section>
                 <div className={sectionTitle}>{t('5. Badges', '5. Badge')}</div>
                 <Card className="flex flex-wrap gap-3 items-center">
-                    <Badge className="bg-indigo-600 text-white">{t('Status: Active', 'Status: Aktif')}</Badge>
+                    <Badge className="bg-blue-600 text-white">{t('Status: Active', 'Status: Aktif')}</Badge>
                     <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">{t('Approved', 'Disetujui')}</Badge>
                     <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300">{t('Pending', 'Tertunda')}</Badge>
                     <Badge className="bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300">{t('Rejected', 'Ditolak')}</Badge>
@@ -125,13 +125,13 @@ export default function ComponentShowcase({ isDarkMode }) {
                 <div className={sectionTitle}>{t('6. Dark Mode Preview (forced-dark)', '6. Pratinjau Mode Gelap (paksa dark)')}</div>
                 <div className="dark bg-[#0b1437] rounded-3xl p-6 border border-white/10 space-y-5">
                     <SummaryRow cards={[
-                        { title: t('Total Invoice', 'Total Invoice'), value: '27', icon: FileText, gradient: 'from-blue-600 to-indigo-700', subtext: t('Rp 1.240.000.000', 'Rp 1.240.000.000'), valueClass: 'text-2xl' },
+                        { title: t('Total Invoice', 'Total Invoice'), value: '27', icon: FileText, gradient: 'from-blue-600 to-blue-700', subtext: t('Rp 1.240.000.000', 'Rp 1.240.000.000'), valueClass: 'text-2xl' },
                         { title: t('Proforma', 'Proforma'), value: '18', icon: CheckCircle2, gradient: 'from-amber-500 to-orange-600', subtext: t('5 approved', '5 disetujui'), valueClass: 'text-2xl' },
                         { title: t('Occupancy', 'Okupansi'), value: '72%', icon: LayoutDashboard, gradient: 'from-emerald-500 to-teal-600', subtext: t('Warehouse capacity', 'Kapasitas gudang'), valueClass: 'text-2xl' },
                         { title: t('Notifications', 'Notifikasi'), value: '3', icon: Bell, gradient: 'from-violet-500 to-purple-600', subtext: t('Need action', 'Perlu tindakan'), valueClass: 'text-2xl' },
                     ]} />
                     <div className="flex flex-wrap gap-3 items-center">
-                        <button className="inline-flex items-center gap-2 px-4 py-2.5 gradient-bg text-white rounded-xl text-sm font-bold shadow-lg shadow-indigo-500/25"><Plus size={15} /> {t('Primary', 'Primer')}</button>
+                        <button className="inline-flex items-center gap-2 px-4 py-2.5 gradient-bg text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-500/25"><Plus size={15} /> {t('Primary', 'Primer')}</button>
                         <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-600 text-slate-300 hover:bg-slate-700 transition-colors text-sm font-semibold"><Save size={15} /> {t('Outline', 'Garis')}</button>
                         <button className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-500/25"><CheckCircle2 size={15} /> {t('Success', 'Sukses')}</button>
                         <Badge className="bg-emerald-500/15 text-emerald-300">{t('Approved', 'Disetujui')}</Badge>

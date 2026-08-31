@@ -31,7 +31,7 @@ export default function DocumentViewerModal({
                         <span className="flex items-center gap-1"><Clock size={14} /> {viewDocData.uploadDate ? new Date(viewDocData.uploadDate).toLocaleDateString() : '-'}</span>
                         <span className="flex items-center gap-1"><FileJson size={14} /> {viewDocData.size}</span>
                     </div>
-                    <button onClick={() => handleDownload(viewDocData)} className="mt-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center gap-2 text-sm font-medium"><Download size={16} /> Download File</button>
+                    <button onClick={() => handleDownload(viewDocData)} className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-2 text-sm font-medium"><Download size={16} /> Download File</button>
                 </div>
             </div>
 
@@ -41,13 +41,13 @@ export default function DocumentViewerModal({
                 <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 overflow-hidden min-h-[300px] max-h-[600px] overflow-y-auto shadow-inner flex items-center justify-center relative">
                     {isGeneratingPreview ? (
                         <div className="flex flex-col items-center gap-3">
-                            <RefreshCw size={32} className="text-indigo-500 animate-spin" />
+                            <RefreshCw size={32} className="text-blue-500 animate-spin" />
                             <p className="text-[10px] font-bold text-slate-500 animate-pulse uppercase tracking-widest text-center">Menyiapkan Preview...</p>
                         </div>
                     ) : String(viewDocData?.type || '').toLowerCase().includes('image') ? (
                         <img src={viewDocData?.fileData || viewDocData?.file_data || viewDocData?.filedata || getFullUrl(viewDocData?.url) || undefined} alt="Preview" className="max-w-full mx-auto" onError={(e) => { e.target.style.display = 'none'; }} />
                     ) : pdfBlobUrl ? (
-                        <Suspense fallback={<div className="flex items-center justify-center h-[300px]"><RefreshCw size={28} className="text-indigo-500 animate-spin" /></div>}>
+                        <Suspense fallback={<div className="flex items-center justify-center h-[300px]"><RefreshCw size={28} className="text-blue-500 animate-spin" /></div>}>
                             <PdfViewer src={pdfBlobUrl} className="w-full h-[600px]" />
                         </Suspense>
                     ) : previewHtml ? (
@@ -91,7 +91,7 @@ export default function DocumentViewerModal({
                                         </div>
                                         <button
                                             onClick={() => handleRestoreVersion(viewDocData.id, ver.timestamp)}
-                                            className="text-xs bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-3 py-1.5 rounded-md font-bold transition-colors"
+                                            className="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded-md font-bold transition-colors"
                                         >
                                             RESTORE
                                         </button>

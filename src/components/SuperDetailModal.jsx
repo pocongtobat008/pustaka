@@ -89,7 +89,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                         className="fixed inset-y-0 right-0 z-[110] w-full max-w-2xl lg:max-w-4xl bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl shadow-2xl flex flex-col border-l border-white/20 dark:border-slate-700/50"
                     >
                         {/* Header */}
-                        <div className="bg-gradient-to-r from-indigo-500 to-violet-500 px-6 py-5 shrink-0 shadow-sm relative z-10">
+                        <div className="bg-gradient-to-r from-blue-500 to-violet-500 px-6 py-5 shrink-0 shadow-sm relative z-10">
                             <div className="flex items-start justify-between gap-4">
                                 <div className="flex items-start gap-3.5">
                                     <div className="shrink-0 w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center ring-1 ring-white/30">
@@ -126,7 +126,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                 </div>
                                 <div className="px-4 py-3 rounded-xl gradient-bg-soft">
                                     <div className="text-[10px] font-bold text-slate-400 uppercase">No Proforma</div>
-                                    <div className="text-sm font-bold text-indigo-600 mt-1">{detailTarget.proforma_no || (prof?.proforma_no) || '-'}</div>
+                                    <div className="text-sm font-bold text-blue-600 mt-1">{detailTarget.proforma_no || (prof?.proforma_no) || '-'}</div>
                                 </div>
                             </div>
 
@@ -149,7 +149,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                                         <div className={`relative z-10 w-7 h-7 rounded-full flex items-center justify-center shrink-0 ring-4 ${isRejected
                                                             ? 'bg-red-50 text-rose-500 ring-red-50/60 dark:bg-red-500/10 dark:ring-red-500/5'
                                                             : isCurrent
-                                                                ? 'gradient-bg text-white ring-indigo-100 dark:ring-indigo-500/20'
+                                                                ? 'gradient-bg text-white ring-blue-100 dark:ring-blue-500/20'
                                                                 : 'bg-emerald-50 text-emerald-600 ring-emerald-50/60 dark:bg-emerald-500/10 dark:ring-emerald-500/5'}`}>
                                                             {isRejected ? <XCircle size={14} /> : <CheckCircle2 size={14} />}
                                                         </div>
@@ -159,11 +159,11 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                                             disabled={isCurrent || !onNavigate}
                                                             onClick={() => onNavigate && onNavigate(c)}
                                                             className={`flex-1 text-left px-3 py-2 rounded-xl text-xs transition-all border ${isCurrent
-                                                                ? 'bg-indigo-600/10 dark:bg-indigo-500/15 border-indigo-300 dark:border-indigo-500/40 cursor-default'
-                                                                : 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-slate-200 dark:border-slate-700 hover:border-indigo-400 hover:shadow-md hover:shadow-indigo-500/5 cursor-pointer'}`}
+                                                                ? 'bg-blue-600/10 dark:bg-blue-500/15 border-blue-300 dark:border-blue-500/40 cursor-default'
+                                                                : 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:shadow-md hover:shadow-blue-500/5 cursor-pointer'}`}
                                                         >
                                                             <div className="flex items-center justify-between gap-2">
-                                                                <span className={`font-black ${isCurrent ? 'text-indigo-600 dark:text-indigo-300' : 'text-slate-700 dark:text-slate-200'}`}>
+                                                                <span className={`font-black ${isCurrent ? 'text-blue-600 dark:text-blue-300' : 'text-slate-700 dark:text-slate-200'}`}>
                                                                     #{c.id}{c.no_invoice ? ` · ${c.no_invoice}` : ''}
                                                                 </span>
                                                                 <span className={`px-1.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wide ${isRejected ? 'bg-red-50 text-rose-500 dark:bg-red-500/10' : 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10'}`}>
@@ -174,7 +174,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                                                 <span className="truncate">{c.dealer_name || '-'}</span>
                                                                 {idx > 0 && <span className="shrink-0 text-slate-300 dark:text-slate-600">• {isRejected ? 'hasil reject dari #' + (c.rejected_from_id ?? '-') : 'pengganti dari #' + (c.rejected_from_id ?? '-')}</span>}
                                                             </div>
-                                                            {isCurrent && <div className="text-[9px] font-bold text-indigo-500 dark:text-indigo-300 mt-1">◀ Invoice yang sedang dilihat</div>}
+                                                            {isCurrent && <div className="text-[9px] font-bold text-blue-500 dark:text-blue-300 mt-1">◀ Invoice yang sedang dilihat</div>}
                                                         </button>
                                                     </div>
                                                 );
@@ -202,7 +202,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                         <div className="flex justify-between"><span className="text-slate-500 text-xs">Materai:</span><span className="font-semibold text-slate-700 dark:text-slate-300">{formatCurrency(detailTarget.materai)}</span></div>
                                         <div className="flex justify-between"><span className="text-slate-500 text-xs">Diskon:</span><span className="font-semibold text-red-600">{formatCurrency(detailTarget.diskon)}</span></div>
                                         <div className="flex justify-between border-t border-slate-200 dark:border-slate-700 pt-1 mt-1"><span className="text-xs font-bold text-slate-600 dark:text-slate-400">Total Invoice:</span><span className="text-lg font-black text-teal-600">{formatCurrency(detailTarget.total_invoice)}</span></div>
-                                        <div className="flex justify-between"><span className="text-slate-500 text-xs">Uang Masuk:</span><span className="font-semibold text-indigo-600">{formatCurrency(detailTarget.uang_masuk)}</span></div>
+                                        <div className="flex justify-between"><span className="text-slate-500 text-xs">Uang Masuk:</span><span className="font-semibold text-blue-600">{formatCurrency(detailTarget.uang_masuk)}</span></div>
                                     </div>
                                 </div>
                             </div>
@@ -216,7 +216,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                 return (
                                     <div className="px-4 py-3 rounded-xl gradient-bg-soft border border-slate-100 dark:border-slate-800">
                                         <h4 className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-2">
-                                            <Receipt size={14} className="text-indigo-500" /> Detail Barang ({items.length} item)
+                                            <Receipt size={14} className="text-blue-500" /> Detail Barang ({items.length} item)
                                         </h4>
                                         <div className="rounded-xl overflow-hidden border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800/70">
                                             <div className="overflow-x-auto custom-scrollbar">
@@ -234,14 +234,14 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                                     </thead>
                                                     <tbody>
                                                         {items.map((it, i) => (
-                                                            <tr key={it.id || i} className="border-b border-slate-50 dark:border-slate-700/50 last:border-0 hover:bg-indigo-50/40 dark:hover:bg-indigo-500/5 transition-colors">
+                                                            <tr key={it.id || i} className="border-b border-slate-50 dark:border-slate-700/50 last:border-0 hover:bg-blue-50/40 dark:hover:bg-blue-500/5 transition-colors">
                                                                 <td className="px-3 py-2 text-slate-400 font-semibold tabular-nums">{i + 1}</td>
-                                                                <td className="px-3 py-2 font-bold text-indigo-700 dark:text-indigo-300 whitespace-nowrap">{it.model || '-'}</td>
+                                                                <td className="px-3 py-2 font-bold text-blue-700 dark:text-blue-300 whitespace-nowrap">{it.model || '-'}</td>
                                                                 <td className="px-3 py-2 text-slate-600 dark:text-slate-300 max-w-[160px] truncate" title={it.item_description || ''}>{it.item_description || '-'}</td>
                                                                 <td className="px-3 py-2 text-right text-slate-700 dark:text-slate-300 tabular-nums font-semibold">{it.qty || 1}</td>
                                                                 <td className="px-3 py-2 text-right text-slate-700 dark:text-slate-300 tabular-nums">{formatCurrency(it.harga)}</td>
                                                                 <td className="px-3 py-2 text-right font-bold text-slate-800 dark:text-white tabular-nums">{formatCurrency(num(it.harga) * (it.qty || 1))}</td>
-                                                                <td className="px-3 py-2 text-right text-indigo-600 dark:text-indigo-400 tabular-nums font-semibold">
+                                                                <td className="px-3 py-2 text-right text-blue-600 dark:text-blue-400 tabular-nums font-semibold">
                                                                     <span className="text-[10px] text-slate-400">{Math.round((num(it.ppn_rate) || 0.11) * 100)}%</span>{' '}
                                                                     {formatCurrency(Math.round((num(it.harga) * (it.qty || 1)) * (num(it.ppn_rate) || 0.11)))}
                                                                 </td>
@@ -249,12 +249,12 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                                         ))}
                                                     </tbody>
                                                     <tfoot>
-                                                        <tr className="bg-indigo-50/60 dark:bg-indigo-500/10">
+                                                        <tr className="bg-blue-50/60 dark:bg-blue-500/10">
                                                             <td className="px-3 py-2 font-black text-slate-600 dark:text-slate-300" colSpan={3}>Total {items.length} Item</td>
                                                             <td className="px-3 py-2 text-right font-bold text-slate-700 dark:text-slate-300 tabular-nums">{items.reduce((s, it) => s + (it.qty || 1), 0)}</td>
                                                             <td className="px-3 py-2 text-right text-slate-500 text-[10px]">DPP</td>
-                                                            <td className="px-3 py-2 text-right font-black text-indigo-700 dark:text-indigo-300 tabular-nums">{formatCurrency(totalHarga)}</td>
-                                                            <td className="px-3 py-2 text-right font-black text-indigo-700 dark:text-indigo-300 tabular-nums">{formatCurrency(totalPpn)}</td>
+                                                            <td className="px-3 py-2 text-right font-black text-blue-700 dark:text-blue-300 tabular-nums">{formatCurrency(totalHarga)}</td>
+                                                            <td className="px-3 py-2 text-right font-black text-blue-700 dark:text-blue-300 tabular-nums">{formatCurrency(totalPpn)}</td>
                                                         </tr>
                                                     </tfoot>
                                                 </table>
@@ -268,7 +268,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                             {(() => {
                                 const st = detailTarget.status;
                                 const route = [
-                                    { key: 'invoice_created', name: 'Request Invoice', desc: 'Invoice dibuat & diinput', icon: <Receipt size={15} />, doneCls: 'bg-indigo-500 text-white', nodeCls: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400', textCls: 'text-slate-800 dark:text-white' },
+                                    { key: 'invoice_created', name: 'Request Invoice', desc: 'Invoice dibuat & diinput', icon: <Receipt size={15} />, doneCls: 'bg-blue-500 text-white', nodeCls: 'bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400', textCls: 'text-slate-800 dark:text-white' },
                                     { key: 'proforma_pending', name: 'Approval Akunting', desc: 'Proforma diajukan, menunggu approval', icon: <FileSignature size={15} />, doneCls: 'bg-blue-500 text-white', nodeCls: 'bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400', textCls: 'text-slate-800 dark:text-white' },
                                     { key: 'proforma_approved', name: 'Marketing', desc: 'Proforma disetujui', icon: <CheckCircle2 size={15} />, doneCls: 'bg-emerald-500 text-white', nodeCls: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400', textCls: 'text-slate-800 dark:text-white' },
                                     { key: 'tax_requested', name: 'Request Faktur ke Tax', desc: 'Faktur pajak diajukan', icon: <Upload size={15} />, doneCls: 'bg-orange-500 text-white', nodeCls: 'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400', textCls: 'text-slate-800 dark:text-white' },
@@ -311,16 +311,16 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                                 const done = i < curIdx;
                                                 const isCurrent = i === curIdx && !branch;
                                                 const isBlocked = i === curIdx && !!branch;
-                                                const nodeColor = isBlocked ? branchCls.node : done ? s.doneCls : isCurrent ? 'gradient-bg text-white ring-indigo-200 dark:ring-indigo-500/30' : 'bg-slate-200 text-slate-400 dark:bg-slate-700 dark:text-slate-500';
+                                                const nodeColor = isBlocked ? branchCls.node : done ? s.doneCls : isCurrent ? 'gradient-bg text-white ring-blue-200 dark:ring-blue-500/30' : 'bg-slate-200 text-slate-400 dark:bg-slate-700 dark:text-slate-500';
                                                 const textColor = isBlocked ? branchCls.label : done || isCurrent ? s.textCls : 'text-slate-400 dark:text-slate-500';
                                                 return (
                                                     <div key={s.key} className="relative flex items-start gap-3 pb-6 last:pb-0">
-                                                        {i !== route.length - 1 && <div className={`absolute top-9 left-[11px] bottom-0 w-[2px] rounded-full ${done ? 'bg-indigo-400 dark:bg-indigo-500/60' : 'bg-slate-200 dark:bg-slate-700'}`} />}
+                                                        {i !== route.length - 1 && <div className={`absolute top-9 left-[11px] bottom-0 w-[2px] rounded-full ${done ? 'bg-blue-400 dark:bg-blue-500/60' : 'bg-slate-200 dark:bg-slate-700'}`} />}
                                                         <div className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center z-10 ring-4 ring-white dark:ring-slate-900 ${nodeColor}`}>{s.icon}</div>
                                                         <div className="flex-1 pt-0.5">
                                                             <div className="flex items-center gap-2 flex-wrap">
                                                                 <span className={`text-sm font-bold ${textColor}`}>{s.name}</span>
-                                                                {isCurrent && <span className="px-1.5 py-0.5 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300 text-[9px] font-bold">SEKARANG</span>}
+                                                                {isCurrent && <span className="px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 text-[9px] font-bold">SEKARANG</span>}
                                                                 {done && <span className="text-[10px] font-bold text-slate-400">✓ Selesai</span>}
                                                             </div>
                                                             <div className="text-[10px] text-slate-400 mt-0.5">{s.desc}</div>
@@ -384,7 +384,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                                 </div>
                                                 <div className="flex justify-between md:flex-col md:gap-0.5">
                                                     <span className="text-[10px] text-slate-500 uppercase">Uang Masuk</span>
-                                                    <span className="font-bold text-indigo-600 tabular-nums">{formatCurrency(uangMasuk)}</span>
+                                                    <span className="font-bold text-blue-600 tabular-nums">{formatCurrency(uangMasuk)}</span>
                                                 </div>
                                                 <div className="flex justify-between md:flex-col md:gap-0.5">
                                                     <span className="text-[10px] text-slate-500 uppercase">Sisa Tagihan</span>
@@ -577,15 +577,15 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                         type="button"
                                         onClick={onToggleDigitalSign}
                                         title="Aktifkan untuk menempelkan TTD digital di atas garis SHOGO DATE pada PDF"
-                                        className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-all border ${digitalSign ? 'bg-indigo-50 dark:bg-indigo-500/10 border-indigo-300 dark:border-indigo-500/40 text-indigo-700 dark:text-indigo-300' : 'bg-white/70 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+                                        className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-all border ${digitalSign ? 'bg-blue-50 dark:bg-blue-500/10 border-blue-300 dark:border-blue-500/40 text-blue-700 dark:text-blue-300' : 'bg-white/70 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
                                     >
                                         <PenLine size={14} />
                                         Digital Sign
-                                        <span className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${digitalSign ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-600'}`}>
+                                        <span className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${digitalSign ? 'bg-blue-600' : 'bg-slate-300 dark:bg-slate-600'}`}>
                                             <span className={`inline-block h-3 w-3 transform rounded-full bg-white shadow transition-transform ${digitalSign ? 'translate-x-[15px]' : 'translate-x-[2px]'}`} />
                                         </span>
                                     </button>
-                                    <button onClick={() => handleExportPdf('invoice')} disabled={!!pdfBusy} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:opacity-95 text-white text-sm font-bold shadow-lg shadow-indigo-600/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <button onClick={() => handleExportPdf('invoice')} disabled={!!pdfBusy} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:opacity-95 text-white text-sm font-bold shadow-lg shadow-blue-600/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
                                         {pdfBusy === 'invoice' ? <RefreshCw size={15} className="animate-spin" /> : <Printer size={15} />} {pdfBusy === 'invoice' ? 'Membuat PDF...' : 'Invoice Proforma'}
                                     </button>
                                 </>

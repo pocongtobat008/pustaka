@@ -16,7 +16,7 @@ const getApiUrl = () => {
 const API_URL = getApiUrl();
 
 const SUPPORTED_FORMATS = [
-    { ext: 'Word', icon: '📝', colors: 'from-blue-500 to-indigo-600', desc: '.doc .docx .docm' },
+    { ext: 'Word', icon: '📝', colors: 'from-blue-500 to-blue-600', desc: '.doc .docx .docm' },
     { ext: 'Excel', icon: '📊', colors: 'from-emerald-500 to-green-600', desc: '.xls .xlsx .xlsm .xlsb' },
     { ext: 'PowerPoint', icon: '📽️', colors: 'from-orange-500 to-red-600', desc: '.ppt .pptx .pps .pot' },
     { ext: 'PDF', icon: '📄', colors: 'from-rose-500 to-pink-600', desc: '.pdf' },
@@ -72,7 +72,7 @@ const SimpleMarkdown = ({ content, isDarkMode }) => {
                             <div key={i} className={`grid gap-2 py-1 px-2 text-xs border-b ${isDarkMode ? 'border-white/5' : 'border-slate-100'}`}
                                 style={{ gridTemplateColumns: `repeat(${cells.length}, minmax(0,1fr))` }}>
                                 {cells.map((c, ci) => (
-                                    <div key={ci} className={isHeader ? `font-bold ${isDarkMode ? 'text-indigo-300' : 'text-indigo-600'}` : ''}>{c}</div>
+                                    <div key={ci} className={isHeader ? `font-bold ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}` : ''}>{c}</div>
                                 ))}
                             </div>
                         );
@@ -84,17 +84,17 @@ const SimpleMarkdown = ({ content, isDarkMode }) => {
                 const h2 = trimmed.match(/^##\s+(.+)/);
                 const h1 = trimmed.match(/^#\s+(.+)/);
                 if (h1) return <div key={i} className={`text-lg font-extrabold mt-3 ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>{h1[1]}</div>;
-                if (h2) return <div key={i} className={`text-base font-bold mt-2 ${isDarkMode ? 'text-indigo-300' : 'text-indigo-700'}`}>{h2[1]}</div>;
-                if (h3) return <div key={i} className={`text-sm font-bold mt-2 ${isDarkMode ? 'text-indigo-300/80' : 'text-indigo-600'}`}>{h3[1]}</div>;
+                if (h2) return <div key={i} className={`text-base font-bold mt-2 ${isDarkMode ? 'text-blue-300' : 'text-blue-700'}`}>{h2[1]}</div>;
+                if (h3) return <div key={i} className={`text-sm font-bold mt-2 ${isDarkMode ? 'text-blue-300/80' : 'text-blue-600'}`}>{h3[1]}</div>;
 
                 // Lists
                 const ul = trimmed.match(/^\s*[-*]\s+(.+)/);
                 const ol = trimmed.match(/^\s*(\d+)[.)]\s+(.+)/);
-                if (ul) return <div key={i} className={`flex gap-2 text-sm ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}><span className="text-indigo-500">•</span><span>{ul[1]}</span></div>;
-                if (ol) return <div key={i} className={`flex gap-2 text-sm ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}><span className="text-indigo-500 font-bold">{ol[1]}.</span><span>{ol[2]}</span></div>;
+                if (ul) return <div key={i} className={`flex gap-2 text-sm ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}><span className="text-blue-500">•</span><span>{ul[1]}</span></div>;
+                if (ol) return <div key={i} className={`flex gap-2 text-sm ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}><span className="text-blue-500 font-bold">{ol[1]}.</span><span>{ol[2]}</span></div>;
 
                 // Blockquote
-                if (trimmed.startsWith('>')) return <div key={i} className={`text-sm italic pl-3 border-l-4 ${isDarkMode ? 'border-indigo-500/50 text-white/60' : 'border-indigo-300 text-slate-500'}`}>{trimmed.replace(/^>\s?/, '')}</div>;
+                if (trimmed.startsWith('>')) return <div key={i} className={`text-sm italic pl-3 border-l-4 ${isDarkMode ? 'border-blue-500/50 text-white/60' : 'border-blue-300 text-slate-500'}`}>{trimmed.replace(/^>\s?/, '')}</div>;
 
                 // Inline code
                 if (trimmed.startsWith('```')) return null;
@@ -117,7 +117,7 @@ const SimpleMarkdown = ({ content, isDarkMode }) => {
 };
 
 // Editor kolom berupa chip (tambah/hapus) — untuk mapping field ekstraksi PDF
-const ChipEditor = ({ items, onChange, placeholder, isDarkMode, accent = 'indigo' }) => {
+const ChipEditor = ({ items, onChange, placeholder, isDarkMode, accent = 'blue' }) => {
     const [draft, setDraft] = useState('');
     const add = () => {
         const v = draft.trim();
@@ -126,7 +126,7 @@ const ChipEditor = ({ items, onChange, placeholder, isDarkMode, accent = 'indigo
     };
     const accentCls = accent === 'emerald'
         ? (isDarkMode ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30' : 'bg-emerald-50 text-emerald-700 border-emerald-200')
-        : (isDarkMode ? 'bg-indigo-500/15 text-indigo-300 border-indigo-500/30' : 'bg-indigo-50 text-indigo-700 border-indigo-200');
+        : (isDarkMode ? 'bg-blue-500/15 text-blue-300 border-blue-500/30' : 'bg-blue-50 text-blue-700 border-blue-200');
     return (
         <div>
             <div className="flex flex-wrap gap-1.5 mb-2">
@@ -149,13 +149,13 @@ const ChipEditor = ({ items, onChange, placeholder, isDarkMode, accent = 'indigo
                     onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); add(); } }}
                     placeholder={placeholder}
                     className={`flex-1 min-w-0 px-2.5 py-1.5 rounded-lg text-xs border outline-none transition-colors ${isDarkMode
-                        ? 'bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-indigo-500/60'
-                        : 'bg-white/70 backdrop-blur-xl border-slate-200 text-slate-700 placeholder-slate-300 focus:border-indigo-400'}`}
+                        ? 'bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-blue-500/60'
+                        : 'bg-white/70 backdrop-blur-xl border-slate-200 text-slate-700 placeholder-slate-300 focus:border-blue-400'}`}
                 />
                 <button type="button" onClick={add}
                     className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all ${isDarkMode
-                        ? 'bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30'
-                        : 'bg-indigo-100 text-indigo-600 hover:bg-indigo-200'}`}>
+                        ? 'bg-blue-500/20 text-blue-300 hover:bg-blue-500/30'
+                        : 'bg-blue-100 text-blue-600 hover:bg-blue-200'}`}>
                     <Plus size={12} /> Tambah
                 </button>
             </div>
@@ -386,7 +386,7 @@ export default function AnyDoc({ isDarkMode, currentUser }) {
             {/* Header halaman — PageHeader terpusat (konsisten semua menu) */}
             <PageHeader
                 icon={FileCode2}
-                iconClass="from-indigo-600 to-purple-700"
+                iconClass="from-blue-600 to-purple-700"
                 title="AnyDoc Converter"
                 subtitle={t("anydoc.subtitle")}
                 meta={(
@@ -411,7 +411,7 @@ export default function AnyDoc({ isDarkMode, currentUser }) {
 
             {/* ── Ringkasan ── */}
             <SummaryRow className="mb-5" cards={[
-                { title: 'Format Didukung', value: SUPPORTED_FORMATS.length, icon: FileText, gradient: 'from-indigo-500 to-purple-600' },
+                { title: 'Format Didukung', value: SUPPORTED_FORMATS.length, icon: FileText, gradient: 'from-blue-500 to-purple-600' },
                 { title: 'Riwayat Konversi', value: history.length, icon: History, gradient: 'from-emerald-500 to-teal-600' },
                 { title: 'Mode Aktif', value: mode === 'convert' ? 'Konversi' : 'Ekstrak', icon: mode === 'convert' ? FileCode2 : FileSpreadsheet, gradient: mode === 'convert' ? 'from-amber-500 to-orange-600' : 'from-teal-500 to-emerald-600', valueClass: 'text-base' },
                 { title: 'File Siap Ekstrak', value: extractFiles.length, icon: ListChecks, gradient: 'from-cyan-500 to-blue-600' },
@@ -422,7 +422,7 @@ export default function AnyDoc({ isDarkMode, currentUser }) {
                 <button
                     onClick={() => setMode('convert')}
                     className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${mode === 'convert'
-                        ? 'bg-gradient-to-r from-indigo-600 to-purple-700 text-white shadow-md shadow-indigo-500/25'
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-700 text-white shadow-md shadow-blue-500/25'
                         : isDarkMode ? 'text-white/50 hover:text-white/90 hover:bg-white/5' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
                 >
                     <FileCode2 size={14} /> Konversi Markdown
@@ -451,7 +451,7 @@ export default function AnyDoc({ isDarkMode, currentUser }) {
                             {history.map((h, i) => (
                                 <a key={i} href={h.url} target="_blank" rel="noreferrer"
                                     className={`flex items-center gap-3 p-3 rounded-xl border transition-all hover:scale-[1.01] ${isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-slate-50 border-slate-200 hover:bg-slate-100'}`}>
-                                    <div className={`w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0`}>
+                                    <div className={`w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0`}>
                                         <FileText size={14} className="text-white" />
                                     </div>
                                     <div className="flex-1 min-w-0">
@@ -497,10 +497,10 @@ export default function AnyDoc({ isDarkMode, currentUser }) {
                         onDrop={(e) => { e.preventDefault(); setDragOver(false); handleFileSelect(e.dataTransfer.files?.[0]); }}
                         onClick={() => inputRef.current?.click()}
                         className={`relative rounded-2xl border-2 border-dashed p-8 text-center cursor-pointer transition-all group ${dragOver
-                            ? 'border-indigo-500 bg-indigo-500/10 scale-[1.01]'
+                            ? 'border-blue-500 bg-blue-500/10 scale-[1.01]'
                             : isDarkMode
-                                ? 'border-white/15 bg-white/5 hover:border-indigo-500/50 hover:bg-white/8'
-                                : 'border-slate-300 bg-white hover:border-indigo-400 hover:bg-indigo-50/40 shadow-sm'}`}
+                                ? 'border-white/15 bg-white/5 hover:border-blue-500/50 hover:bg-white/8'
+                                : 'border-slate-300 bg-white hover:border-blue-400 hover:bg-blue-50/40 shadow-sm'}`}
                     >
                         <input
                             ref={inputRef}
@@ -511,7 +511,7 @@ export default function AnyDoc({ isDarkMode, currentUser }) {
                         />
                         <div
                             style={{ transform: dragOver ? 'scale(1.1)' : 'scale(1)', transition: 'transform 0.2s' }}
-                            className={`w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-xl shadow-indigo-500/30 mb-4`}
+                            className={`w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-xl shadow-blue-500/30 mb-4`}
                         >
                             <UploadCloud size={28} className="text-white" />
                         </div>
@@ -522,7 +522,7 @@ export default function AnyDoc({ isDarkMode, currentUser }) {
                             {file ? `${formatFileSize(file.size)} • klik untuk ganti` : 'atau klik untuk memilih file (maks 50 MB)'}
                         </p>
                         {file && (
-                            <div className={`mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold ${isDarkMode ? 'bg-indigo-500/20 text-indigo-300' : 'bg-indigo-100 text-indigo-600'}`}>
+                            <div className={`mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold ${isDarkMode ? 'bg-blue-500/20 text-blue-300' : 'bg-blue-100 text-blue-600'}`}>
                                 <FileText size={13} /> {file.name.split('.').pop().toUpperCase()}
                             </div>
                         )}
@@ -534,7 +534,7 @@ export default function AnyDoc({ isDarkMode, currentUser }) {
                         disabled={!file || converting}
                         className={`w-full py-3.5 rounded-xl font-extrabold text-sm flex items-center justify-center gap-2 transition-all ${!file || converting
                             ? isDarkMode ? 'bg-white/5 text-white/30 cursor-not-allowed' : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                            : 'bg-gradient-to-r from-indigo-600 to-purple-700 text-white shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 hover:scale-[1.01] active:scale-[0.99]'}`}
+                            : 'bg-gradient-to-r from-blue-600 to-purple-700 text-white shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-[1.01] active:scale-[0.99]'}`}
                     >
                         {converting ? <><Loader2 size={17} className="animate-spin" /> Mengonversi...</> : <><Sparkles size={17} /> Konversi ke Markdown</>}
                     </button>
@@ -571,13 +571,13 @@ export default function AnyDoc({ isDarkMode, currentUser }) {
                             {/* Result meta */}
                             <div className={`rounded-2xl border p-4 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-sm'}`}>
                                 <div className="flex items-center gap-3 flex-wrap">
-                                    <div className={`w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0`}>
+                                    <div className={`w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0`}>
                                         <FileText size={16} className="text-white" />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className={`text-sm font-bold truncate ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>{result.originalName}</p>
                                         <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                                            <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold ${isDarkMode ? 'bg-indigo-500/20 text-indigo-300' : 'bg-indigo-100 text-indigo-600'}`}>{result.formatLabel}</span>
+                                            <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold ${isDarkMode ? 'bg-blue-500/20 text-blue-300' : 'bg-blue-100 text-blue-600'}`}>{result.formatLabel}</span>
                                             <span className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>{result.charCount} karakter • {result.lineCount} baris</span>
                                         </div>
                                     </div>
@@ -716,7 +716,7 @@ export default function AnyDoc({ isDarkMode, currentUser }) {
 
                             <div className={`rounded-2xl border p-4 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-sm'}`}>
                                 <p className={`text-[10px] font-black uppercase tracking-widest mb-3 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Mapping Kolom</p>
-                                <p className={`text-[11px] font-bold mb-1.5 flex items-center gap-1 ${isDarkMode ? 'text-indigo-300' : 'text-indigo-600'}`}>
+                                <p className={`text-[11px] font-bold mb-1.5 flex items-center gap-1 ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}`}>
                                     <Table2 size={12} /> Kolom Data Nota (1 baris per PDF)
                                 </p>
                                 <ChipEditor items={fields} onChange={setFields} placeholder="Tambah kolom, mis. No. Surat Jalan" isDarkMode={isDarkMode} />

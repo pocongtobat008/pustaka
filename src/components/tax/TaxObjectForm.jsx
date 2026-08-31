@@ -99,13 +99,13 @@ export default function TaxObjectForm({
                 <Card className={`relative ${showObjectDropdown ? 'z-30' : 'z-10'}`}>
                     <div className="flex justify-between items-center mb-6 border-b pb-2 dark:border-gray-700">
                         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
-                            <User size={20} className="text-indigo-600" /> Data Subjek & Objek Pajak
+                            <User size={20} className="text-blue-600" /> Data Subjek & Objek Pajak
                         </h3>
                         <div className="flex gap-2">
-                            <button onClick={handleDownloadMasterTemplate} className="text-xs flex items-center gap-1 text-gray-500 hover:text-indigo-600 transition-colors">
+                            <button onClick={handleDownloadMasterTemplate} className="text-xs flex items-center gap-1 text-gray-500 hover:text-blue-600 transition-colors">
                                 <Download size={14} /> Template Master
                             </button>
-                            {canCreate && <button onClick={() => masterFileInputRef.current.click()} className="text-xs flex items-center gap-1 text-gray-500 hover:text-indigo-600 transition-colors">
+                            {canCreate && <button onClick={() => masterFileInputRef.current.click()} className="text-xs flex items-center gap-1 text-gray-500 hover:text-blue-600 transition-colors">
                                 <Upload size={14} /> Import Master
                             </button>}
                             <input type="file" ref={masterFileInputRef} onChange={handleImportMaster} accept=".xlsx, .xls" className="hidden" />
@@ -115,26 +115,26 @@ export default function TaxObjectForm({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Jenis Identitas</label>
-                            <select name="idType" value={formData.idType} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white">
+                            <select name="idType" value={formData.idType} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white">
                                 <option value="NPWP">NPWP</option>
                                 <option value="KTP">KTP (NIK)</option>
                             </select>
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nomor Identitas</label>
-                            <input type="text" name="identityNumber" value={formData.identityNumber} onChange={handleInputChange} disabled={isReadOnly} maxLength={16} placeholder="16 digit angka" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white" />
+                            <input type="text" name="identityNumber" value={formData.identityNumber} onChange={handleInputChange} disabled={isReadOnly} maxLength={16} placeholder="16 digit angka" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" />
                         </div>
                         <div className="md:col-span-2">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Wajib Pajak</label>
-                            <input type="text" name="name" value={formData.name} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white" placeholder="Nama Lengkap / Badan Usaha" />
+                            <input type="text" name="name" value={formData.name} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" placeholder="Nama Lengkap / Badan Usaha" />
                         </div>
                         <div className="md:col-span-2">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Wajib Pajak</label>
-                            <input type="email" name="email" value={formData.email} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white" placeholder="contoh@email.com" />
+                            <input type="email" name="email" value={formData.email} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" placeholder="contoh@email.com" />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Jenis Pajak</label>
-                            <select name="taxType" value={formData.taxType} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white">
+                            <select name="taxType" value={formData.taxType} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white">
                                 <option value="23" disabled={formData.idType === 'KTP'}>PPh 23 {formData.idType === 'KTP' ? '(Hanya NPWP)' : ''}</option>
                                 <option value="4(2)">PPh 4(2)</option>
                                 <option value="21">PPh 21</option>
@@ -147,11 +147,11 @@ export default function TaxObjectForm({
                         </div>
                         <div className="md:col-span-2 relative">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Objek Pajak (Cari & Pilih)</label>
-                            <input type="text" name="taxObjectName" value={formData.taxObjectName} onChange={(e) => { if (isReadOnly) return; handleInputChange(e); setShowObjectDropdown(true); }} onFocus={() => !isReadOnly && setShowObjectDropdown(true)} onBlur={() => setTimeout(() => setShowObjectDropdown(false), 200)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white" placeholder="Ketik untuk mencari..." autoComplete="off" />
+                            <input type="text" name="taxObjectName" value={formData.taxObjectName} onChange={(e) => { if (isReadOnly) return; handleInputChange(e); setShowObjectDropdown(true); }} onFocus={() => !isReadOnly && setShowObjectDropdown(true)} onBlur={() => setTimeout(() => setShowObjectDropdown(false), 200)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" placeholder="Ketik untuk mencari..." autoComplete="off" />
                             {showObjectDropdown && (
                                 <div className="absolute z-50 w-full mt-1 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-xl shadow-xl max-h-60 overflow-y-auto">
                                     {masterData.filter(item => String(item.tax_type) === String(formData.taxType) && ((item.name || '').toLowerCase().includes((formData.taxObjectName || '').toLowerCase()) || (item.code || '').toLowerCase().includes((formData.taxObjectName || '').toLowerCase()))).map((item) => (
-                                        <button key={item.id} className="w-full text-left px-4 py-3 hover:bg-indigo-50 dark:hover:bg-slate-700 transition-colors border-b border-gray-100 dark:border-slate-700 last:border-0" onClick={() => {
+                                        <button key={item.id} className="w-full text-left px-4 py-3 hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors border-b border-gray-100 dark:border-slate-700 last:border-0" onClick={() => {
                                             const isPph21 = String(item.tax_type) === '21';
                                             setFormData(prev => ({ ...prev, taxObjectName: item.name, taxObjectCode: item.code, taxType: item.tax_type, isPph21BukanPegawai: isPph21, usePpn: !isPph21 }));
                                             setCalcData(prev => ({ ...prev, rate: item.rate ?? prev.rate, isPph21BukanPegawai: isPph21, usePpn: !isPph21 }));
@@ -160,8 +160,8 @@ export default function TaxObjectForm({
                                             <div className="font-medium text-gray-800 dark:text-gray-200">{item.name}</div>
                                             <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
                                                 <span className="bg-gray-100 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono">{item.code}</span>
-                                                <span className="text-indigo-500 font-medium">PPh {item.tax_type}</span>
-                                                {item.rate !== undefined && <span className="bg-indigo-100 dark:bg-indigo-900/40 px-1.5 py-0.5 rounded text-indigo-700 dark:text-indigo-300 font-bold ml-auto">{item.rate}%</span>}
+                                                <span className="text-blue-500 font-medium">PPh {item.tax_type}</span>
+                                                {item.rate !== undefined && <span className="bg-blue-100 dark:bg-blue-900/40 px-1.5 py-0.5 rounded text-blue-700 dark:text-blue-300 font-bold ml-auto">{item.rate}%</span>}
                                             </div>
                                         </button>
                                     ))}
@@ -186,7 +186,7 @@ export default function TaxObjectForm({
 
                 {!isReadOnly && <div className="flex justify-end gap-3">
                     {editingId && <button onClick={() => { setEditingId(null); setFormData({ idType: 'NPWP', identityNumber: '', name: '', email: '', taxType: '23', taxObjectCode: '', taxObjectName: '', markupMode: 'none', isPph21BukanPegawai: false, usePpn: true }); setCalcData({ dpp: 0, rate: 0, pph: 0, ppn: 0, totalPayable: 0, discount: 0, dppNet: 0, markupMode: 'none', isPph21BukanPegawai: false, usePpn: true }); }} className="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-xl transition-all">Batal Edit</button>}
-                    <button onClick={handleSave} disabled={isLoading || !formData.identityNumber || !formData.name} className="px-6 py-3 bg-indigo-600 hover:opacity-95 text-white font-bold rounded-xl flex items-center gap-2 shadow-lg transition-all disabled:opacity-50">
+                    <button onClick={handleSave} disabled={isLoading || !formData.identityNumber || !formData.name} className="px-6 py-3 bg-blue-600 hover:opacity-95 text-white font-bold rounded-xl flex items-center gap-2 shadow-lg transition-all disabled:opacity-50">
                         <Save size={20} /> {isLoading ? 'Menyimpan...' : editingId ? 'Update Data' : 'Simpan Data to Database WP'}
                     </button>
                 </div>}
@@ -203,7 +203,7 @@ export default function TaxObjectForm({
                             <div className="flex justify-between"><span className="text-gray-500">Total Diterima:</span><span className="font-bold text-emerald-600">{formatCurrency(calcData.totalPayable)}</span></div>
                             <div className="flex justify-between border-t border-gray-100 dark:border-slate-700 pt-2 mt-1">
                                 <span className="text-gray-500">DPP + PPN:</span>
-                                <span className="font-bold text-indigo-600">{formatCurrency((calcData.calculationDpp || 0) + (calcData.ppn || 0))}</span>
+                                <span className="font-bold text-blue-600">{formatCurrency((calcData.calculationDpp || 0) + (calcData.ppn || 0))}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-gray-500">DPP - PPh:</span>
@@ -212,7 +212,7 @@ export default function TaxObjectForm({
                             {calcData.markupMode !== 'none' && (
                                 <div className="flex justify-between">
                                     <span className="text-gray-500">Gross Up:</span>
-                                    <span className="font-bold text-indigo-600 uppercase">{calcData.markupMode}</span>
+                                    <span className="font-bold text-blue-600 uppercase">{calcData.markupMode}</span>
                                 </div>
                             )}
                             {calcData.breakdown && calcData.breakdown.length > 0 && (

@@ -155,8 +155,8 @@ export default function Inventory({
             const totalMatches = internalMatchCount + externalMatchCount;
             return {
                 text: text.insightSearch(totalMatches),
-                icon: <Search className="text-indigo-500" size={20} />,
-                color: "border-indigo-200 dark:border-indigo-800/50 bg-indigo-50/50 dark:bg-indigo-900/10 text-indigo-800 dark:text-indigo-200"
+                icon: <Search className="text-blue-500" size={20} />,
+                color: "border-blue-200 dark:border-blue-800/50 bg-blue-50/50 dark:bg-blue-900/10 text-blue-800 dark:text-blue-200"
             };
         }
 
@@ -325,7 +325,7 @@ export default function Inventory({
             </div>
 
             {/* CONTROL BAR */}
-            <div className="flex flex-col gap-6 mb-8 bg-white/40 dark:bg-slate-800/40 backdrop-blur-2xl p-6 rounded-[2rem] border border-white/50 dark:border-white/10 shadow-2xl shadow-indigo-500/10 group hover:shadow-indigo-500/20 transition-all duration-500">
+            <div className="flex flex-col gap-6 mb-8 bg-white/40 dark:bg-slate-800/40 backdrop-blur-2xl p-6 rounded-[2rem] border border-white/50 dark:border-white/10 shadow-2xl shadow-blue-500/10 group hover:shadow-blue-500/20 transition-all duration-500">
                 <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4 w-full md:w-auto">
                         <div className="flex bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 p-1.5 rounded-2xl shadow-sm">
@@ -351,14 +351,14 @@ export default function Inventory({
 
                         {/* SEARCH BAR */}
                         <div className="relative w-full md:w-96 group/search">
-                            <div className="absolute inset-0 bg-indigo-500/20 blur-xl opacity-0 group-hover/search:opacity-100 transition-opacity duration-500 rounded-full"></div>
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-indigo-500/70" size={20} />
+                            <div className="absolute inset-0 bg-blue-500/20 blur-xl opacity-0 group-hover/search:opacity-100 transition-opacity duration-500 rounded-full"></div>
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500/70" size={20} />
                             <input
                                 type="text"
                                 value={inventorySearchQuery}
                                 onChange={(e) => setInventorySearchQuery(e.target.value)}
                                 placeholder={text.searchPlaceholder}
-                                className="w-full pl-12 pr-4 py-3 border border-white/40 dark:border-white/10 rounded-2xl bg-white/50 dark:bg-slate-800/50 backdrop-blur-md focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500/50 dark:text-white transition-all text-sm font-medium shadow-inner placeholder:text-slate-400"
+                                className="w-full pl-12 pr-4 py-3 border border-white/40 dark:border-white/10 rounded-2xl bg-white/50 dark:bg-slate-800/50 backdrop-blur-md focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500/50 dark:text-white transition-all text-sm font-medium shadow-inner placeholder:text-slate-400"
                             />
                         </div>
                     </div>
@@ -392,7 +392,7 @@ export default function Inventory({
                         )}
                         <button
                             onClick={handleExportInventory}
-                            className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl text-sm font-bold flex items-center gap-2 transition-all shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-0.5"
+                            className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-blue-500 text-white rounded-xl text-sm font-bold flex items-center gap-2 transition-all shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-0.5"
                             title={text.reportTitle}
                         >
                             <FileText size={18} /> {text.report}
@@ -420,7 +420,7 @@ export default function Inventory({
                         {!inventorySearchQuery && TOTAL_SLOTS > itemsPerPage && (
                             <div className="flex justify-between items-center py-4 px-2 border-t border-slate-200 dark:border-slate-800 flex-wrap gap-4">
                                 <span className="text-sm text-slate-500 dark:text-slate-400 font-medium bg-white/50 dark:bg-slate-800/50 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700">
-                                    {text.totalSlot || "Total Slot"}: <strong className="text-indigo-600 dark:text-indigo-400">{TOTAL_SLOTS}</strong>
+                                    {text.totalSlot || "Total Slot"}: <strong className="text-blue-600 dark:text-blue-400">{TOTAL_SLOTS}</strong>
                                 </span>
                                 <div className="flex items-center gap-3">
                                     <button
@@ -477,15 +477,15 @@ export default function Inventory({
                 <div className="p-10 flex flex-col items-center text-center">
 
                         <div className="relative mb-8">
-                            <div className="w-24 h-24 border-4 border-indigo-100 dark:border-indigo-900/30 rounded-full"></div>
-                            <div className="w-24 h-24 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
-                            <Package className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-indigo-600 animate-bounce" size={32} />
+                            <div className="w-24 h-24 border-4 border-blue-100 dark:border-blue-900/30 rounded-full"></div>
+                            <div className="w-24 h-24 border-4 border-blue-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
+                            <Package className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-blue-600 animate-bounce" size={32} />
                         </div>
                         <h3 className="text-2xl font-black text-gray-800 dark:text-white mb-3 uppercase tracking-tight">{text.movingBox}</h3>
                         <p className="text-sm text-gray-500 dark:text-slate-400 leading-relaxed font-medium">
                             {text.movingHint}
                         </p>
-                        <div className="mt-6 flex items-center gap-2 text-indigo-500 font-bold text-xs uppercase tracking-widest">
+                        <div className="mt-6 flex items-center gap-2 text-blue-500 font-bold text-xs uppercase tracking-widest">
                             <RefreshCw size={14} className="animate-spin" /> {text.syncingDb}
                         </div>
                 </div>

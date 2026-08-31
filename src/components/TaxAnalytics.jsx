@@ -77,8 +77,8 @@ export default function TaxAnalytics({ taxSummaries = [], taxAudits = [] }) {
             {/* 1. Tax Trend (Line/Area Chart) */}
             <Card className="lg:col-span-2">
                 <div className="flex items-center gap-2 mb-6">
-                    <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
-                        <TrendingUp size={20} className="text-indigo-600 dark:text-indigo-400" />
+                    <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                        <TrendingUp size={20} className="text-blue-600 dark:text-blue-400" />
                     </div>
                     <div>
                         <h3 className="font-bold text-gray-900 dark:text-white">Tren Perpajakan</h3>

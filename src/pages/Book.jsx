@@ -443,7 +443,7 @@ export default function Book({ hasPermission }) {
                     {text.showing} {current * pageSize + 1}-{Math.min((current + 1) * pageSize, rowCount || total * pageSize)} {text.of} {rowCount || total * pageSize}
                 </p>
                 <div className="flex items-center gap-1">
-                    <button onClick={() => onChange(current - 1)} disabled={current === 0} className="p-2 rounded-xl text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 disabled:opacity-30 disabled:pointer-events-none transition-all">
+                    <button onClick={() => onChange(current - 1)} disabled={current === 0} className="p-2 rounded-xl text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 disabled:opacity-30 disabled:pointer-events-none transition-all">
                         <ChevronLeft size={16} />
                     </button>
                     {visible.map((p, i) => {
@@ -452,13 +452,13 @@ export default function Book({ hasPermission }) {
                         return (
                             <React.Fragment key={p}>
                                 {showEllipsis && <span className="px-1 text-slate-300 dark:text-slate-600">...</span>}
-                                <button onClick={() => onChange(p)} className={`min-w-[36px] h-9 rounded-xl text-xs font-bold transition-all ${p === current ? 'gradient-bg text-white shadow-lg shadow-indigo-500/30' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'}`}>
+                                <button onClick={() => onChange(p)} className={`min-w-[36px] h-9 rounded-xl text-xs font-bold transition-all ${p === current ? 'gradient-bg text-white shadow-lg shadow-blue-500/30' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'}`}>
                                     {p + 1}
                                 </button>
                             </React.Fragment>
                         );
                     })}
-                    <button onClick={() => onChange(current + 1)} disabled={current >= total - 1} className="p-2 rounded-xl text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 disabled:opacity-30 disabled:pointer-events-none transition-all">
+                    <button onClick={() => onChange(current + 1)} disabled={current >= total - 1} className="p-2 rounded-xl text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 disabled:opacity-30 disabled:pointer-events-none transition-all">
                         <ChevronRight size={16} />
                     </button>
                 </div>
@@ -491,13 +491,13 @@ export default function Book({ hasPermission }) {
                                         const key = _ === text.code ? 'code' : _ === text.name ? 'name' : _ === text.description ? 'description' : _ === text.status ? 'is_active' : _ === text.parent ? (level === 'sub_account' ? 'account_name' : 'sub_name') : _ === text.parent + ' ' + text.code ? (level === 'sub_account' ? 'account_code' : 'sub_code') : null;
                                         if (key === 'is_active') return <td key={ci} className="px-6 py-4"><span className={`px-2 py-1 text-[10px] font-bold rounded-full ${row.is_active ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400' : 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400'}`}>{row.is_active ? text.active : text.inactive}</span></td>;
                                         if (key === 'account_name' || key === 'sub_name') return <td key={ci} className="px-6 py-4 text-xs text-slate-500 dark:text-slate-400">{row[key]}</td>;
-                                        if (key === 'account_code' || key === 'sub_code') return <td key={ci} className="px-6 py-4 font-mono text-xs text-indigo-500 dark:text-indigo-400">{row[key]}</td>;
+                                        if (key === 'account_code' || key === 'sub_code') return <td key={ci} className="px-6 py-4 font-mono text-xs text-blue-500 dark:text-blue-400">{row[key]}</td>;
                                         return <td key={ci} className="px-6 py-4 font-medium text-slate-800 dark:text-white">{key ? row[key] : ''}</td>;
                                     })}
                                     <td className="px-6 py-4 text-right">
                                         <div className="flex items-center justify-end gap-1">
                                             {hasPermission('book', 'edit') && (
-                                                <button onClick={() => openEditForm(level, row)} className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all" title="Edit">
+                                                <button onClick={() => openEditForm(level, row)} className="p-1.5 rounded-lg text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all" title="Edit">
                                                     <Edit3 size={14} />
                                                 </button>
                                             )}
@@ -531,7 +531,7 @@ export default function Book({ hasPermission }) {
             <div className="p-6 space-y-4">
                 <PageHeader
                     icon={Layers}
-                    iconClass="from-indigo-500 to-purple-600"
+                    iconClass="from-blue-500 to-purple-600"
                     title={text.overviewTitle}
                     subtitle={text.overviewSubtitle}
                     actions={(
@@ -600,18 +600,18 @@ export default function Book({ hasPermission }) {
                                             <React.Fragment key={acc.id}>
                                                 {/* COA row */}
                                                 <tr
-                                                    className="hover:bg-indigo-50/30 dark:hover:bg-indigo-900/10 transition-colors cursor-pointer"
+                                                    className="hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-colors cursor-pointer"
                                                     onClick={() => toggleExpand(acc.id)}
                                                 >
                                                     <td className="px-4 py-3 text-xs text-slate-400 font-mono">{globalIdx + 1}</td>
                                                     <td className="px-4 py-3">
-                                                        <button className="p-1 rounded text-slate-400 hover:text-indigo-500 transition-all">
+                                                        <button className="p-1 rounded text-slate-400 hover:text-blue-500 transition-all">
                                                             {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                                                         </button>
                                                     </td>
                                                     <td className="px-4 py-3">
                                                         <div className="flex items-center gap-2">
-                                                            <span className="font-mono text-xs font-black text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 px-2 py-0.5 rounded-md">{acc.code}</span>
+                                                            <span className="font-mono text-xs font-black text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2 py-0.5 rounded-md">{acc.code}</span>
                                                             <span className="text-xs font-bold text-slate-800 dark:text-white">{acc.name}</span>
                                                         </div>
                                                     </td>
@@ -691,7 +691,7 @@ export default function Book({ hasPermission }) {
     const renderImportTab = () => (
         <div className="p-8 max-w-xl mx-auto">
             <div className="text-center mb-8">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-xl">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-xl">
                     <FileSpreadsheet size={28} className="text-white" />
                 </div>
                 <h3 className="text-lg font-extrabold text-slate-800 dark:text-white">{text.importTitle}</h3>
@@ -702,7 +702,7 @@ export default function Book({ hasPermission }) {
                 <div className="space-y-5">
                     <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-slate-100 dark:border-slate-800 p-6 shadow-sm">
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                                 {importProgress === 100 ? (
                                     <CheckCircle2 size={20} className="text-white" />
                                 ) : (
@@ -720,19 +720,19 @@ export default function Book({ hasPermission }) {
                         </div>
                         <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2.5 overflow-hidden">
                             <div
-                                className={`h-full rounded-full transition-all duration-300 ease-out ${importProgress === 100 ? 'bg-gradient-to-r from-emerald-500 to-teal-500' : 'bg-gradient-to-r from-indigo-500 to-purple-600'}`}
+                                className={`h-full rounded-full transition-all duration-300 ease-out ${importProgress === 100 ? 'bg-gradient-to-r from-emerald-500 to-teal-500' : 'bg-gradient-to-r from-blue-500 to-purple-600'}`}
                                 style={{ width: `${importProgress}%` }}
                             />
                         </div>
                         <div className="flex items-center justify-between mt-3 text-[10px] font-bold">
                             <span className="text-slate-400">{importProcessed}/{importTotal} baris diproses</span>
-                            <span className="text-indigo-600 dark:text-indigo-300">{importProgress}%</span>
+                            <span className="text-blue-600 dark:text-blue-300">{importProgress}%</span>
                         </div>
                     </div>
                 </div>
             ) : (
                 <>
-                    <div className="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center hover:border-indigo-400 transition-colors">
+                    <div className="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center hover:border-blue-400 transition-colors">
                         <input
                             ref={fileInputRef}
                             type="file"
@@ -759,7 +759,7 @@ export default function Book({ hasPermission }) {
                             <button
                                 onClick={handleImport}
                                 disabled={importing}
-                                className="flex-1 flex items-center justify-center gap-2 py-3 gradient-bg text-white text-xs font-black rounded-2xl hover:bg-indigo-500 shadow-xl shadow-indigo-500/30 transition-all uppercase tracking-widest disabled:opacity-50"
+                                className="flex-1 flex items-center justify-center gap-2 py-3 gradient-bg text-white text-xs font-black rounded-2xl hover:bg-blue-500 shadow-xl shadow-blue-500/30 transition-all uppercase tracking-widest disabled:opacity-50"
                             >
                                 <Upload size={14} /> {text.importBtn}
                             </button>
@@ -779,19 +779,19 @@ export default function Book({ hasPermission }) {
                                 </thead>
                                 <tbody>
                                     <tr className="border-b border-slate-100 dark:border-slate-800">
-                                        <td className="px-3 py-2 font-mono text-indigo-500">1</td>
+                                        <td className="px-3 py-2 font-mono text-blue-500">1</td>
                                         <td className="px-3 py-2">Aktiva</td>
-                                        <td className="px-3 py-2 font-mono text-indigo-500">1-1</td>
+                                        <td className="px-3 py-2 font-mono text-blue-500">1-1</td>
                                         <td className="px-3 py-2">Kas</td>
-                                        <td className="px-3 py-2 font-mono text-indigo-500">1-1-01</td>
+                                        <td className="px-3 py-2 font-mono text-blue-500">1-1-01</td>
                                         <td className="px-3 py-2">Kas Kecil</td>
                                     </tr>
                                     <tr>
-                                        <td className="px-3 py-2 font-mono text-indigo-500">2</td>
+                                        <td className="px-3 py-2 font-mono text-blue-500">2</td>
                                         <td className="px-3 py-2">Pasiva</td>
-                                        <td className="px-3 py-2 font-mono text-indigo-500">2-1</td>
+                                        <td className="px-3 py-2 font-mono text-blue-500">2-1</td>
                                         <td className="px-3 py-2">Utang Usaha</td>
-                                        <td className="px-3 py-2 font-mono text-indigo-500">2-1-01</td>
+                                        <td className="px-3 py-2 font-mono text-blue-500">2-1-01</td>
                                         <td className="px-3 py-2">Utang Supplier</td>
                                     </tr>
                                 </tbody>
@@ -816,11 +816,11 @@ export default function Book({ hasPermission }) {
                     {pagedData.map(acc => (
                         <div key={acc.id} className="group">
                             <div className="flex items-center px-6 py-4 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors cursor-pointer" onClick={() => toggleExpand(acc.id)}>
-                                <button className="mr-3 text-slate-400 group-hover:text-indigo-500 transition-colors">
+                                <button className="mr-3 text-slate-400 group-hover:text-blue-500 transition-colors">
                                     {expandedAccounts.has(acc.id) ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                                 </button>
                                 <div className="flex-1 grid grid-cols-12 gap-4 items-center">
-                                    <div className="col-span-2 font-mono text-sm font-bold text-indigo-600 dark:text-indigo-400">{acc.code}</div>
+                                    <div className="col-span-2 font-mono text-sm font-bold text-blue-600 dark:text-blue-400">{acc.code}</div>
                                     <div className="col-span-4 font-bold text-slate-800 dark:text-white">{acc.name}</div>
                                     <div className="col-span-3 text-xs text-slate-400 truncate">{acc.description || '-'}</div>
                                     <div className="col-span-2">
@@ -836,7 +836,7 @@ export default function Book({ hasPermission }) {
                                             <button onClick={() => openAddForm('sub_account', acc.id)} className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all" title="Tambah Sub COA">
                                                 <Plus size={12} />
                                             </button>
-                                            <button onClick={() => openEditForm('account', acc)} className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all" title="Edit">
+                                            <button onClick={() => openEditForm('account', acc)} className="p-1.5 rounded-lg text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all" title="Edit">
                                                 <Edit3 size={12} />
                                             </button>
                                         </>
@@ -850,7 +850,7 @@ export default function Book({ hasPermission }) {
                             </div>
                             {expandedAccounts.has(acc.id) && (acc.sub_accounts || []).map(sub => (
                                 <div key={sub.id} className="ml-10">
-                                    <div className="flex items-center px-6 py-3 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors border-l-2 border-indigo-100 dark:border-indigo-900/30">
+                                    <div className="flex items-center px-6 py-3 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors border-l-2 border-blue-100 dark:border-blue-900/30">
                                         <div className="flex-1 grid grid-cols-12 gap-4 items-center">
                                             <div className="col-span-2 font-mono text-xs font-bold text-cyan-600 dark:text-cyan-400">{sub.code}</div>
                                             <div className="col-span-4 font-medium text-sm text-slate-700 dark:text-slate-300">{sub.name}</div>
@@ -868,7 +868,7 @@ export default function Book({ hasPermission }) {
                                                     <button onClick={() => openAddForm('department', sub.id)} className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all" title="Tambah Departemen">
                                                         <Plus size={12} />
                                                     </button>
-                                                    <button onClick={() => openEditForm('sub_account', sub)} className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all" title="Edit">
+                                                    <button onClick={() => openEditForm('sub_account', sub)} className="p-1.5 rounded-lg text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all" title="Edit">
                                                         <Edit3 size={12} />
                                                     </button>
                                                 </>
@@ -894,7 +894,7 @@ export default function Book({ hasPermission }) {
                                                 </div>
                                                 <div className="flex items-center gap-1 ml-4 opacity-0 group-hover:opacity-100 transition-opacity">
                                                     {hasPermission('book', 'edit') && (
-                                                        <button onClick={() => openEditForm('department', dep)} className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all" title="Edit">
+                                                        <button onClick={() => openEditForm('department', dep)} className="p-1.5 rounded-lg text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all" title="Edit">
                                                             <Edit3 size={12} />
                                                         </button>
                                                     )}
@@ -926,7 +926,7 @@ export default function Book({ hasPermission }) {
     return (
         <div className="space-y-6">
             <SummaryRow cols={3} cards={[
-                { title: text.stats.accounts, value: stats.accounts, icon: BookOpen, gradient: 'from-indigo-500 to-purple-600' },
+                { title: text.stats.accounts, value: stats.accounts, icon: BookOpen, gradient: 'from-blue-500 to-purple-600' },
                 { title: text.stats.subs, value: stats.sub_accounts, icon: FolderOpen, gradient: 'from-cyan-500 to-blue-600' },
                 { title: text.stats.deps, value: stats.departments, icon: Building2, gradient: 'from-amber-500 to-orange-600' },
             ]} />
@@ -980,7 +980,7 @@ export default function Book({ hasPermission }) {
                                 {hasPermission('book', 'edit') && activeTab !== 'overview' && (
                                     <button
                                         onClick={() => openAddForm(activeTab === 'accounts' ? 'account' : activeTab === 'subs' ? 'sub_account' : 'department')}
-                                        className="flex items-center gap-2 px-3 py-2 gradient-bg text-white text-xs font-bold rounded-xl hover:bg-indigo-500 shadow-lg shadow-indigo-500/20 transition-all whitespace-nowrap"
+                                        className="flex items-center gap-2 px-3 py-2 gradient-bg text-white text-xs font-bold rounded-xl hover:bg-blue-500 shadow-lg shadow-blue-500/20 transition-all whitespace-nowrap"
                                     >
                                         <Plus size={14} /> {text.addNew}
                                     </button>
@@ -990,7 +990,7 @@ export default function Book({ hasPermission }) {
                                         <Trash size={13} /> <span className="hidden sm:inline">{text.deleteAll}</span>
                                     </button>
                                 )}
-                                <button onClick={fetchData} className="p-2 rounded-xl text-slate-400 hover:text-indigo-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all" title="Refresh">
+                                <button onClick={fetchData} className="p-2 rounded-xl text-slate-400 hover:text-blue-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all" title="Refresh">
                                     <RefreshCw size={16} />
                                 </button>
                             </div>
@@ -1000,9 +1000,9 @@ export default function Book({ hasPermission }) {
 
                 {/* Import Progress Bar (compact, inline) */}
                 {importing && importTotal > 0 && (
-                    <div className="px-4 py-2.5 border-b border-slate-100 dark:border-slate-800 bg-indigo-50/50 dark:bg-indigo-950/20">
+                    <div className="px-4 py-2.5 border-b border-slate-100 dark:border-slate-800 bg-blue-50/50 dark:bg-blue-950/20">
                         <div className="flex items-center justify-between mb-1.5">
-                            <span className="text-xs font-bold text-indigo-700 dark:text-indigo-300">{importStage}</span>
+                            <span className="text-xs font-bold text-blue-700 dark:text-blue-300">{importStage}</span>
                             <span className="text-[10px] font-black text-slate-500 dark:text-slate-400">
                                 {importProcessed}/{importTotal}
                                 {importSuccess > 0 && <span className="text-emerald-600 dark:text-emerald-400 ml-2">{importSuccess} ✓</span>}
@@ -1011,7 +1011,7 @@ export default function Book({ hasPermission }) {
                         </div>
                         <div className="w-full bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-full h-1.5 overflow-hidden shadow-inner">
                             <div
-                                className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 transition-all duration-300"
+                                className="h-full rounded-full bg-gradient-to-r from-blue-500 to-violet-500 transition-all duration-300"
                                 style={{ width: `${importProgress}%` }}
                             />
                         </div>
@@ -1033,7 +1033,7 @@ export default function Book({ hasPermission }) {
                             >
                                 {tab.label}
                                 {tab.count !== undefined && (
-                                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-black ${activeTab === tab.id ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/40' : 'bg-gray-200 dark:bg-slate-600 text-gray-500 dark:text-slate-400'}`}>{tab.count}</span>
+                                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-black ${activeTab === tab.id ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40' : 'bg-gray-200 dark:bg-slate-600 text-gray-500 dark:text-slate-400'}`}>{tab.count}</span>
                                 )}
                             </button>
                         ))}
@@ -1043,7 +1043,7 @@ export default function Book({ hasPermission }) {
                 <div className="min-h-[400px]">
                     {loading ? (
                         <div className="flex items-center justify-center py-20">
-                            <Loader2 size={24} className="animate-spin text-indigo-500" />
+                            <Loader2 size={24} className="animate-spin text-blue-500" />
                             <span className="ml-3 text-sm text-slate-400">{text.loading}</span>
                         </div>
                     ) : activeTab === 'overview' ? (
@@ -1074,7 +1074,7 @@ export default function Book({ hasPermission }) {
                 footer={
                     <div className="flex gap-3">
                         <button onClick={() => setShowForm(false)} className="flex-1 py-3 bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white text-xs font-black rounded-2xl transition-all uppercase tracking-widest">{text.cancel}</button>
-                        <button onClick={handleSave} className="flex-1 py-3 gradient-bg text-white text-xs font-black rounded-2xl hover:bg-indigo-500 shadow-xl shadow-indigo-500/30 transition-all uppercase tracking-widest">{text.save}</button>
+                        <button onClick={handleSave} className="flex-1 py-3 gradient-bg text-white text-xs font-black rounded-2xl hover:bg-blue-500 shadow-xl shadow-blue-500/30 transition-all uppercase tracking-widest">{text.save}</button>
                     </div>
                 }
             >

@@ -25,13 +25,13 @@ const SopViewer = ({ flow, onClose, text, getFullUrl }) => {
             {/* Full Screen Header */}
             <div className="bg-slate-900/50 backdrop-blur-xl border-b border-white/5 p-6 flex justify-between items-center shrink-0">
                 <div className="flex items-center gap-4">
-                    <div className="p-3 bg-indigo-500 rounded-2xl text-white shadow-lg shadow-indigo-500/20">
+                    <div className="p-3 bg-blue-500 rounded-2xl text-white shadow-lg shadow-blue-500/20">
                         <GitBranch size={24} />
                     </div>
                     <div>
                         <h2 className="text-xl font-black text-white leading-tight">{flow.title}</h2>
                         <div className="flex items-center gap-3 mt-1">
-                            <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">{flow.category || 'Standard'}</span>
+                            <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest">{flow.category || 'Standard'}</span>
                             <span className="w-1 h-1 rounded-full bg-slate-700" />
                             <span className="text-[10px] font-bold text-slate-500 uppercase">{flow.steps?.length || 0} {text.steps}</span>
                         </div>
@@ -332,7 +332,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                 <div className="relative flex-1 w-full md:w-auto">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                     <input
-                        className="w-full pl-10 pr-4 py-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white"
+                        className="w-full pl-10 pr-4 py-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
                         placeholder={text.searchPlaceholder}
                         value={searchQuery}
                         onChange={e => setSearchQuery(e.target.value)}
@@ -355,7 +355,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                             });
                             setIsModalOpen(true);
                         }}
-                        className="px-6 py-2.5 gradient-bg text-white rounded-xl font-bold flex items-center gap-2 hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-500/20"
+                        className="px-6 py-2.5 gradient-bg text-white rounded-xl font-bold flex items-center gap-2 hover:bg-blue-500 transition-all shadow-lg shadow-blue-500/20"
                     >
                         <Plus size={18} /> {text.createFlow}
                     </button>
@@ -364,7 +364,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
 
             {/* SUMMARY CARDS */}
             <SummaryRow className="animate-in slide-in-from-bottom-4 duration-700" cards={[
-                { title: text.cards.total, value: stats.total, icon: GitBranch, gradient: 'from-indigo-500 to-purple-600' },
+                { title: text.cards.total, value: stats.total, icon: GitBranch, gradient: 'from-blue-500 to-purple-600' },
                 { title: text.cards.public, value: stats.public, icon: Globe, gradient: 'from-emerald-500 to-teal-600' },
                 { title: text.cards.private, value: stats.private, icon: Lock, gradient: 'from-orange-500 to-amber-600' },
                 { title: text.cards.restricted, value: stats.restricted, icon: Shield, gradient: 'from-blue-500 to-cyan-600' },
@@ -372,7 +372,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredFlows.map(flow => (
-                    <Card key={flow.id} className="group hover:border-indigo-500 transition-all relative overflow-hidden flex flex-col h-full">
+                    <Card key={flow.id} className="group hover:border-blue-500 transition-all relative overflow-hidden flex flex-col h-full">
                         <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                             <GitBranch size={80} />
                         </div>
@@ -380,7 +380,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                         {/* AREA KLIK UNTUK VIEW (ATAS) */}
                         <div className="flex-1 cursor-pointer" onClick={() => setSelectedFlow(flow)}>
                             <div className="flex justify-between items-start mb-4">
-                                <div className="p-3 bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl text-indigo-600">
+                                <div className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-2xl text-blue-600">
                                     <GitBranch size={24} />
                                 </div>
                                 <div className="flex flex-col items-end gap-1">
@@ -419,7 +419,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                                         setForm({ ...flow, accent_color: flow.accent_color || '#6366f1' });
                                         setIsModalOpen(true);
                                     }}
-                                    className="flex-1 py-3 gradient-bg text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-indigo-500 transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20 active:scale-95"
+                                    className="flex-1 py-3 gradient-bg text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-500 transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 active:scale-95"
                                 >
                                     <Edit3 size={16} /> {text.editFlow}
                                 </button>
@@ -452,7 +452,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                         <div className="space-y-2 lg:col-span-1">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.sopTitle}</label>
                             <input
-                                className="w-full px-5 py-3 gradient-bg-soft border-2 border-transparent focus:border-indigo-500 rounded-2xl outline-none dark:text-white font-black"
+                                className="w-full px-5 py-3 gradient-bg-soft border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white font-black"
                                 placeholder={text.sopTitlePlaceholder}
                                 value={form.title}
                                 onChange={e => setForm({ ...form, title: e.target.value })}
@@ -461,7 +461,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                         <div className="space-y-2">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.category}</label>
                             <select
-                                className="w-full px-5 py-3 gradient-bg-soft border-2 border-transparent focus:border-indigo-500 rounded-2xl outline-none dark:text-white font-bold appearance-none"
+                                className="w-full px-5 py-3 gradient-bg-soft border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white font-bold appearance-none"
                                 value={form.category}
                                 onChange={e => setForm({ ...form, category: e.target.value })}
                             >
@@ -471,7 +471,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                         <div className="space-y-2">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.privacy}</label>
                             <select
-                                className="w-full px-5 py-3 gradient-bg-soft border-2 border-transparent focus:border-indigo-500 rounded-2xl outline-none dark:text-white font-bold appearance-none"
+                                className="w-full px-5 py-3 gradient-bg-soft border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white font-bold appearance-none"
                                 value={form.privacy_type}
                                 onChange={e => setForm({ ...form, privacy_type: e.target.value })}
                             >
@@ -495,7 +495,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                                     <button
                                         key={color.hex}
                                         onClick={() => setForm({ ...form, accent_color: color.hex })}
-                                        className={`w-7 h-7 rounded-full border-2 transition-all ${form.accent_color === color.hex ? 'border-white dark:border-slate-900 ring-2 ring-indigo-500 scale-110 shadow-lg' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                                        className={`w-7 h-7 rounded-full border-2 transition-all ${form.accent_color === color.hex ? 'border-white dark:border-slate-900 ring-2 ring-blue-500 scale-110 shadow-lg' : 'border-transparent opacity-60 hover:opacity-100'}`}
                                         style={{ backgroundColor: color.hex }}
                                         title={color.name}
                                     />
@@ -522,7 +522,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                                                 }}
                                                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${isSelected
                                                     ? 'gradient-bg text-white shadow-md'
-                                                    : 'bg-white/70 dark:bg-slate-700/60 backdrop-blur-xl text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600 hover:border-indigo-300'
+                                                    : 'bg-white/70 dark:bg-slate-700/60 backdrop-blur-xl text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600 hover:border-blue-300'
                                                     }`}
                                             >
                                                 {dept.name}
@@ -551,7 +551,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                                                 }}
                                                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${isSelected
                                                     ? 'gradient-bg text-white shadow-md'
-                                                    : 'bg-white/70 dark:bg-slate-700/60 backdrop-blur-xl text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600 hover:border-indigo-300'
+                                                    : 'bg-white/70 dark:bg-slate-700/60 backdrop-blur-xl text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600 hover:border-blue-300'
                                                     }`}
                                             >
                                                 {user.name || user.username}

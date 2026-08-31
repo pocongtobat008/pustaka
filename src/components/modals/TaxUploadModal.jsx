@@ -39,7 +39,7 @@ export default function TaxUploadModal({
                         <div>
                             <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Judul Dokumen</label>
                             <input
-                                className="w-full px-4 py-2 border rounded-lg bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                                className="w-full px-4 py-2 border rounded-lg bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                                 value={uploadForm.title}
                                 onChange={(e) => setUploadForm({ ...uploadForm, title: e.target.value })}
                                 placeholder="Masukkan judul dokumen..."
@@ -56,7 +56,7 @@ export default function TaxUploadModal({
                             </div>
                             <div className="relative">
                                 <textarea
-                                    className="w-full h-24 px-4 py-2 border rounded-lg bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 text-xs font-mono resize-none focus:ring-1 focus:ring-indigo-500 outline-none transition-all"
+                                    className="w-full h-24 px-4 py-2 border rounded-lg bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 text-xs font-mono resize-none focus:ring-1 focus:ring-blue-500 outline-none transition-all"
                                     value={uploadForm.ocrContent}
                                     onChange={(e) => setUploadForm({ ...uploadForm, ocrContent: e.target.value })}
                                     placeholder="Klik tombol 'Proses OCR' untuk mengekstrak teks otomatis dari dokumen..."
@@ -76,10 +76,10 @@ export default function TaxUploadModal({
                     <div className="space-y-2 animate-in fade-in duration-300">
                         <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400">
                             <span>{uploadForm.processingMessage}</span>
-                            <span className="animate-pulse font-bold text-indigo-500">Processing...</span>
+                            <span className="animate-pulse font-bold text-blue-500">Processing...</span>
                         </div>
                         <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
-                            <div className="bg-indigo-600 h-full rounded-full animate-progress-indeterminate"></div>
+                            <div className="bg-blue-600 h-full rounded-full animate-progress-indeterminate"></div>
                         </div>
                     </div>
                 )}
@@ -95,7 +95,7 @@ export default function TaxUploadModal({
                     <button
                         onClick={handleConfirmUpload}
                         disabled={uploadForm.isProcessing}
-                        className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold shadow-lg shadow-indigo-500/20 transition-all transform active:scale-95 text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 flex items-center gap-2"
+                        className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-lg shadow-blue-500/20 transition-all transform active:scale-95 text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 flex items-center gap-2"
                     >
                         <CloudUpload size={18} /> Upload & Proses Background
                     </button>

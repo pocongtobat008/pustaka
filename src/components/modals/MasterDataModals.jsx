@@ -23,7 +23,7 @@ export default function MasterDataModals({
                             <input
                                 value={userForm.username}
                                 onChange={e => setUserForm({ ...userForm, username: e.target.value })}
-                                className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner placeholder:text-slate-400 font-bold"
+                                className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-inner placeholder:text-slate-400 font-bold"
                                 placeholder="Username untuk login"
                             />
                         </div>
@@ -33,7 +33,7 @@ export default function MasterDataModals({
                                 type="password"
                                 value={userForm.password}
                                 onChange={e => setUserForm({ ...userForm, password: e.target.value })}
-                                className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner placeholder:text-slate-400"
+                                className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-inner placeholder:text-slate-400"
                                 placeholder={userForm.id ? "••••••••" : "Password login"}
                             />
                         </div>
@@ -43,7 +43,7 @@ export default function MasterDataModals({
                         <input
                             value={userForm.name}
                             onChange={e => setUserForm({ ...userForm, name: e.target.value })}
-                            className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner font-bold"
+                            className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-inner font-bold"
                             placeholder="Nama lengkap user"
                         />
                     </div>
@@ -54,7 +54,7 @@ export default function MasterDataModals({
                                 <select
                                     value={userForm.role}
                                     onChange={e => setUserForm({ ...userForm, role: e.target.value })}
-                                    className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner appearance-none font-bold"
+                                    className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-inner appearance-none font-bold"
                                 >
                                     {roles.map(r => <option key={r.id} value={r.id}>{r.label || r.id}</option>)}
                                 </select>
@@ -69,7 +69,7 @@ export default function MasterDataModals({
                                 <select
                                     value={userForm.department}
                                     onChange={e => setUserForm({ ...userForm, department: e.target.value })}
-                                    className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner appearance-none font-bold"
+                                    className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-slate-800/50 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-inner appearance-none font-bold"
                                 >
                                     <option value="">{t("opt.selectDept")}</option>
                                     {departments.map(d => <option key={d.id} value={d.name}>{d.name}</option>)}
@@ -83,7 +83,7 @@ export default function MasterDataModals({
                     <div className="flex justify-end pt-6 border-t border-white/20 dark:border-white/5">
                         <button
                             onClick={handleSaveUser}
-                            className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white rounded-xl font-black shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-all hover:-translate-y-0.5"
+                            className="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-blue-500 text-white rounded-xl font-black shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all hover:-translate-y-0.5"
                         >
                             Simpan User
                         </button>
@@ -100,7 +100,7 @@ export default function MasterDataModals({
                             <input
                                 value={deptForm.name}
                                 onChange={e => setDeptForm({ ...deptForm, name: e.target.value })}
-                                className="w-full pl-12 pr-4 py-4 border-0 bg-white/50 dark:bg-slate-800/50 rounded-2xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner font-black text-lg"
+                                className="w-full pl-12 pr-4 py-4 border-0 bg-white/50 dark:bg-slate-800/50 rounded-2xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-inner font-black text-lg"
                                 placeholder="Contoh: IT Support"
                             />
                         </div>
@@ -108,7 +108,7 @@ export default function MasterDataModals({
                     <div className="flex justify-end pt-4">
                         <button
                             onClick={handleSaveDept}
-                            className="px-10 py-3.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white rounded-2xl font-black shadow-xl shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-all hover:-translate-y-0.5"
+                            className="px-10 py-3.5 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-blue-500 text-white rounded-2xl font-black shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all hover:-translate-y-0.5"
                         >
                             Simpan Departemen
                         </button>
@@ -125,7 +125,7 @@ export default function MasterDataModals({
                             <input
                                 value={roleForm.name}
                                 onChange={e => setRoleForm({ ...roleForm, name: e.target.value })}
-                                className="w-full pl-12 pr-4 py-4 border-0 bg-white/50 dark:bg-slate-800/50 rounded-2xl focus:ring-2 focus:ring-indigo-500 dark:text-white shadow-inner font-black text-lg"
+                                className="w-full pl-12 pr-4 py-4 border-0 bg-white/50 dark:bg-slate-800/50 rounded-2xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-inner font-black text-lg"
                                 placeholder="Contoh: Manager"
                             />
                         </div>
@@ -141,7 +141,7 @@ export default function MasterDataModals({
                                                 type="checkbox"
                                                 checked={Object.values(APP_MODULES).every(m => ['view', 'create', 'edit', 'delete'].every(a => (roleForm.permissions[m.id] || []).includes(a)))}
                                                 onChange={() => handleBulkPermission('all')}
-                                                className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                                                className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 cursor-pointer"
                                             />
                                             <span className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Modul</span>
                                         </div>
@@ -153,7 +153,7 @@ export default function MasterDataModals({
                                                     type="checkbox"
                                                     checked={Object.values(APP_MODULES).every(m => (roleForm.permissions[m.id] || []).includes(action))}
                                                     onChange={() => handleBulkPermission('action', action)}
-                                                    className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                                                    className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 cursor-pointer"
                                                 />
                                                 <span className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">{action}</span>
                                             </div>
@@ -170,7 +170,7 @@ export default function MasterDataModals({
                                                     type="checkbox"
                                                     checked={['view', 'create', 'edit', 'delete'].every(a => (roleForm.permissions[mod.id] || []).includes(a))}
                                                     onChange={() => handleBulkPermission('module', mod.id)}
-                                                    className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                                                    className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 cursor-pointer"
                                                 />
                                                 <span className="font-black text-slate-700 dark:text-slate-200">{mod.label}</span>
                                             </div>
@@ -184,7 +184,7 @@ export default function MasterDataModals({
                                                         onChange={() => handleTogglePermission(mod.id, action)}
                                                         className="sr-only peer"
                                                     />
-                                                    <div className="w-10 h-5 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+                                                    <div className="w-10 h-5 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
                                                 </label>
                                             </td>
                                         ))}
@@ -197,7 +197,7 @@ export default function MasterDataModals({
                     <div className="flex justify-end pt-2">
                         <button
                             onClick={handleSaveRole}
-                            className="px-12 py-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white rounded-2xl font-black shadow-xl shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-all hover:-translate-y-0.5 active:scale-95"
+                            className="px-12 py-4 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-blue-500 text-white rounded-2xl font-black shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all hover:-translate-y-0.5 active:scale-95"
                         >
                             Simpan Role & Izin
                         </button>

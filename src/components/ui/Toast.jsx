@@ -107,11 +107,11 @@ const TOAST_CONFIG = {
     },
     loading: {
         icon: Loader2,
-        bg: 'bg-indigo-500',
-        ring: 'ring-indigo-500/10',
-        border: 'border-indigo-500/30',
+        bg: 'bg-blue-500',
+        ring: 'ring-blue-500/10',
+        border: 'border-blue-500/30',
         label: 'Memproses',
-        labelColor: 'text-indigo-600 dark:text-indigo-400',
+        labelColor: 'text-blue-600 dark:text-blue-400',
     },
 };
 

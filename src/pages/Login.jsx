@@ -58,7 +58,7 @@ export default function Login({ onLogin }) {
     return (
         <main role="main" className="min-h-screen w-full flex items-center justify-center overflow-hidden relative p-4">
             {/* Animated Background Elements — gradient mesh */}
-            <div className="absolute top-[-15%] left-[-10%] w-[45%] h-[45%] bg-indigo-500/25 dark:bg-indigo-500/30 rounded-full blur-[120px] animate-pulse"></div>
+            <div className="absolute top-[-15%] left-[-10%] w-[45%] h-[45%] bg-blue-500/25 dark:bg-blue-500/30 rounded-full blur-[120px] animate-pulse"></div>
             <div className="absolute bottom-[-15%] right-[-10%] w-[45%] h-[45%] bg-purple-500/25 dark:bg-purple-500/30 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
             <div className="absolute top-[35%] right-[5%] w-[22%] h-[22%] bg-cyan-400/15 dark:bg-cyan-400/20 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '4s' }}></div>
             <div className="absolute bottom-[10%] left-[20%] w-[18%] h-[18%] bg-pink-400/10 dark:bg-pink-400/15 rounded-full blur-[90px] animate-pulse" style={{ animationDelay: '3s' }}></div>
@@ -85,9 +85,9 @@ export default function Login({ onLogin }) {
 
                         <h1 className="text-3xl lg:text-4xl xl:text-5xl font-black text-white leading-tight mb-4 xl:mb-6">
                             {text.titleMain.split('\n')[0]}<br />
-                            <span className="text-indigo-200">{text.titleAccent}</span>
+                            <span className="text-blue-200">{text.titleAccent}</span>
                         </h1>
-                        <p className="text-indigo-100 text-sm xl:text-lg font-medium max-w-md">
+                        <p className="text-blue-100 text-sm xl:text-lg font-medium max-w-md">
                             {text.subtitle}
                         </p>
                     </div>
@@ -136,10 +136,10 @@ export default function Login({ onLogin }) {
                         <div className="absolute -top-2 xl:-top-4 right-0 flex items-center gap-2">
                             <button
                                 onClick={() => setLanguage(isEnglish ? 'id' : 'en')}
-                                className="neo-btn flex items-center gap-1.5 px-2.5 py-1.5 xl:px-3 xl:py-2 text-slate-600 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 group"
+                                className="neo-btn flex items-center gap-1.5 px-2.5 py-1.5 xl:px-3 xl:py-2 text-slate-600 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 group"
                                 title={isEnglish ? 'Change to Indonesian' : 'Ganti ke Bahasa Inggris'}
                             >
-                                <Globe size={14} className="group-hover:text-indigo-500 w-3 h-3 xl:w-3.5 xl:h-3.5" />
+                                <Globe size={14} className="group-hover:text-blue-500 w-3 h-3 xl:w-3.5 xl:h-3.5" />
                                 <span className="text-[9px] xl:text-[10px] font-black uppercase tracking-widest">{isEnglish ? 'EN' : 'ID'}</span>
                             </button>
 
@@ -151,7 +151,7 @@ export default function Login({ onLogin }) {
                                 {isDarkMode ? (
                                     <Sun size={14} className="text-amber-400 group-hover:scale-110 transition-transform w-3.5 h-3.5 xl:w-4 xl:h-4" />
                                 ) : (
-                                    <Moon size={14} className="text-indigo-600 group-hover:scale-110 transition-transform w-3.5 h-3.5 xl:w-4 xl:h-4" />
+                                    <Moon size={14} className="text-blue-600 group-hover:scale-110 transition-transform w-3.5 h-3.5 xl:w-4 xl:h-4" />
                                 )}
                             </button>
                         </div>
@@ -170,7 +170,7 @@ export default function Login({ onLogin }) {
                         <div className="group">
                             <label className="block text-xs xl:text-sm font-black text-[#2B3674] dark:text-slate-300 mb-1.5 xl:mb-2 uppercase tracking-widest ml-1">{text.username}</label>
                             <div className="relative group-focus-within:scale-[1.01] transition-all duration-300">
-                                <User className="absolute left-3 xl:left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors w-4 h-4 xl:w-5 xl:h-5" />
+                                <User className="absolute left-3 xl:left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors w-4 h-4 xl:w-5 xl:h-5" />
                                 <input
                                     type="text"
                                     value={loginForm.username}
@@ -183,7 +183,7 @@ export default function Login({ onLogin }) {
                         <div className="group">
                             <label className="block text-xs xl:text-sm font-black text-[#2B3674] dark:text-slate-300 mb-1.5 xl:mb-2 uppercase tracking-widest ml-1">{text.password}</label>
                             <div className="relative group-focus-within:scale-[1.01] transition-all duration-300">
-                                <FileKey className="absolute left-3 xl:left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors w-4 h-4 xl:w-5 xl:h-5" />
+                                <FileKey className="absolute left-3 xl:left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors w-4 h-4 xl:w-5 xl:h-5" />
                                 <input
                                     type={showPassword ? 'text' : 'password'}
                                     value={loginForm.password}
@@ -194,7 +194,7 @@ export default function Login({ onLogin }) {
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 xl:right-4 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors"
+                                    className="absolute right-3 xl:right-4 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
                                     title={showPassword ? (isEnglish ? 'Hide password' : 'Sembunyikan password') : (isEnglish ? 'Show password' : 'Lihat password')}
                                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                                 >
@@ -202,7 +202,7 @@ export default function Login({ onLogin }) {
                                 </button>
                             </div>
                         </div>
-                        <button type="submit" className="w-full py-3 xl:py-4 gradient-bg text-white rounded-xl xl:rounded-2xl text-sm xl:text-base font-black shadow-xl shadow-indigo-500/35 transition-all hover:scale-[1.02] hover:shadow-indigo-500/50 active:scale-[0.98] flex items-center justify-center gap-2 xl:gap-3 group">
+                        <button type="submit" className="w-full py-3 xl:py-4 gradient-bg text-white rounded-xl xl:rounded-2xl text-sm xl:text-base font-black shadow-xl shadow-blue-500/35 transition-all hover:scale-[1.02] hover:shadow-blue-500/50 active:scale-[0.98] flex items-center justify-center gap-2 xl:gap-3 group">
                             {text.submit}
                             <ArrowRight className="group-hover:translate-x-1 transition-transform w-4 h-4 xl:w-5 xl:h-5" />
                         </button>
@@ -216,7 +216,7 @@ export default function Login({ onLogin }) {
                         <button
                             type="button"
                             onClick={handleGuestLogin}
-                            className="neo-btn w-full py-3 xl:py-4 text-indigo-600 dark:text-indigo-400 rounded-xl xl:rounded-2xl text-sm xl:text-base font-black hover:text-indigo-700 dark:hover:text-indigo-300 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 xl:gap-3 group"
+                            className="neo-btn w-full py-3 xl:py-4 text-blue-600 dark:text-blue-400 rounded-xl xl:rounded-2xl text-sm xl:text-base font-black hover:text-blue-700 dark:hover:text-blue-300 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 xl:gap-3 group"
                         >
                             <User className="group-hover:scale-110 transition-transform w-4 h-4 xl:w-5 xl:h-5" />
                             {text.guest}

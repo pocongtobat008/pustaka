@@ -119,7 +119,7 @@ export default function PdfViewer({ src, className = '' }) {
     if (loading) {
         return (
             <div className={`flex flex-col items-center justify-center gap-3 ${className}`}>
-                <Loader2 size={32} className="text-indigo-500 animate-spin" />
+                <Loader2 size={32} className="text-blue-500 animate-spin" />
                 <p className="text-sm font-bold text-slate-500 animate-pulse">Memuat PDF...</p>
             </div>
         );

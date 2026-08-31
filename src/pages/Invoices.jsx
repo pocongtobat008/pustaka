@@ -90,7 +90,7 @@ export const paymentBadge = (inv) => {
     if (tipe === 'PP' && ppType === 'dp') return { label: 'DP', cls: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-500/10 dark:text-cyan-400' };
     if (tipe === 'PP' && ppType === 'pelunasan') return { label: 'Pelunasan', cls: 'bg-teal-100 text-teal-700 dark:bg-teal-500/10 dark:text-teal-400' };
     if (tipe === 'PP') return { label: 'PP', cls: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-500/10 dark:text-cyan-400' };
-    if (tipe === 'PF') return { label: 'PF', cls: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400' };
+    if (tipe === 'PF') return { label: 'PF', cls: 'bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400' };
     return { label: 'CBD', cls: 'bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400' };
 };
 
@@ -216,7 +216,7 @@ const Pagination = ({ page, totalPages, setPage }) => {
                 {pages.map((p, i) => p === '...' ? (
                     <span key={`e${i}`} className="px-1 text-xs text-slate-400">…</span>
                 ) : (
-                    <button key={p} onClick={() => setPage(p)} className={`${btnCls} ${p === page ? 'gradient-bg text-white shadow-lg shadow-indigo-500/25' : 'text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'}`}>{p}</button>
+                    <button key={p} onClick={() => setPage(p)} className={`${btnCls} ${p === page ? 'gradient-bg text-white shadow-lg shadow-blue-500/25' : 'text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'}`}>{p}</button>
                 ))}
                 <button disabled={page >= totalPages} onClick={() => setPage(page + 1)} aria-label="Next page" title="Next" className={`${btnCls} text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed`}>»</button>
             </div>
@@ -240,8 +240,8 @@ const StatusStepper = ({ status, t }) => {
         <div className="flex items-center mt-1.5 group relative w-fit">
             {[0, 1, 2, 3].map(i => (
                 <React.Fragment key={i}>
-                    <div className={`relative w-2 h-2 rounded-full transition-colors ${i <= step ? 'bg-indigo-500 shadow-[0_0_5px_rgba(99,102,241,0.5)]' : 'bg-slate-200 dark:bg-slate-700'}`} title={titles[i]} />
-                    {i < 3 && <div className={`h-[2px] w-3 transition-colors ${i < step ? 'bg-indigo-500' : 'bg-slate-200 dark:bg-slate-700'}`} />}
+                    <div className={`relative w-2 h-2 rounded-full transition-colors ${i <= step ? 'bg-blue-500 shadow-[0_0_5px_rgba(29,78,216,0.5)]' : 'bg-slate-200 dark:bg-slate-700'}`} title={titles[i]} />
+                    {i < 3 && <div className={`h-[2px] w-3 transition-colors ${i < step ? 'bg-blue-500' : 'bg-slate-200 dark:bg-slate-700'}`} />}
                 </React.Fragment>
             ))}
         </div>
@@ -250,9 +250,9 @@ const StatusStepper = ({ status, t }) => {
 
 // ── Gaya tabel profesional (dipakai dashboard & invoice) ──
 const TH_CLS = "px-4 py-3.5 text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-white/60 dark:border-white/10 bg-slate-50/80 dark:bg-slate-800/50 sticky top-0 z-10 backdrop-blur";
-const TH_SORT_CLS = "px-4 py-3.5 text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-white/60 dark:border-white/10 bg-slate-50/80 dark:bg-slate-800/50 sticky top-0 z-10 backdrop-blur cursor-pointer select-none hover:text-indigo-600 transition-colors";
+const TH_SORT_CLS = "px-4 py-3.5 text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-white/60 dark:border-white/10 bg-slate-50/80 dark:bg-slate-800/50 sticky top-0 z-10 backdrop-blur cursor-pointer select-none hover:text-blue-600 transition-colors";
 const TD_CLS = "px-4 py-3 text-sm text-slate-600 dark:text-slate-300";
-const TROW_CLS = "border-b border-slate-100 dark:border-slate-800/60 transition-colors hover:bg-indigo-50/70 dark:hover:bg-slate-800/50";
+const TROW_CLS = "border-b border-slate-100 dark:border-slate-800/60 transition-colors hover:bg-blue-50/70 dark:hover:bg-slate-800/50";
 const NUM_RIGHT = "px-4 py-3 text-right tabular-nums whitespace-nowrap";
 
 const SearchAutocomplete = ({ value, options, labelKey, subKey, onSelect, className, placeholder }) => {
@@ -292,7 +292,7 @@ const SearchAutocomplete = ({ value, options, labelKey, subKey, onSelect, classN
                             key={o.id}
                             type="button"
                             onMouseDown={e => { e.preventDefault(); select(o); }}
-                            className="block w-full text-left px-3 py-2 hover:bg-indigo-50 dark:hover:bg-slate-800"
+                            className="block w-full text-left px-3 py-2 hover:bg-blue-50 dark:hover:bg-slate-800"
                         >
                             <div className="font-semibold text-xs text-slate-800 dark:text-white">{o[labelKey]}</div>
                             {o[subKey] && <div className="text-[10px] text-slate-400 truncate">{o[subKey]}</div>}
@@ -1965,7 +1965,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                 <tr key={inv.id} onClick={() => openDetail(inv)} className={TROW_CLS + ' ' + rowBg + ' cursor-pointer'}>
                     <td className="w-8 px-1 py-3 text-center">
                         {hasKids && (
-                            <button onClick={(e) => { e.stopPropagation(); toggleExpandDp(inv.id); }} className="inline-flex items-center justify-center w-6 h-6 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-slate-200/70 dark:hover:bg-slate-700 transition-colors" title={expanded ? 'Sembunyikan pelunasan' : 'Tampilkan pelunasan'}>
+                            <button onClick={(e) => { e.stopPropagation(); toggleExpandDp(inv.id); }} className="inline-flex items-center justify-center w-6 h-6 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-slate-200/70 dark:hover:bg-slate-700 transition-colors" title={expanded ? 'Sembunyikan pelunasan' : 'Tampilkan pelunasan'}>
                                 {expanded ? <ChevronDown size={15} /> : <ChevronRight size={15} />}
                             </button>
                         )}
@@ -1973,7 +1973,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     <td className="px-4 py-3 font-bold text-slate-500 dark:text-slate-400 tabular-nums text-center">{pager.start + rowIdx + 1}</td>
                     {withActions && (
                         <td className="px-4 py-3" onClick={e => e.stopPropagation()}>
-                            <button onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setActionMenu(prev => prev && prev.inv?.id === inv.id ? null : openRowMenu(inv, r, 'invoice')); }} className={'p-1.5 rounded-lg transition-colors ' + (actionMenu?.inv?.id === inv.id ? 'bg-indigo-50 text-indigo-600 dark:bg-slate-800' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200')} title="Aksi">
+                            <button onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setActionMenu(prev => prev && prev.inv?.id === inv.id ? null : openRowMenu(inv, r, 'invoice')); }} className={'p-1.5 rounded-lg transition-colors ' + (actionMenu?.inv?.id === inv.id ? 'bg-blue-50 text-blue-600 dark:bg-slate-800' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200')} title="Aksi">
                                 <MoreVertical size={15} />
                             </button>
                         </td>
@@ -1990,12 +1990,12 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     <td className="px-4 py-3 whitespace-nowrap">
                         <span className="px-2 py-1 rounded-lg text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200">{inv.tipe}</span>
                         {isDp && <span className="ml-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300">DP</span>}
-                        {hasKids && <span className="ml-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300" title={kids.length + ' pelunasan'}>{kids.length}x PLN</span>}
+                        {hasKids && <span className="ml-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300" title={kids.length + ' pelunasan'}>{kids.length}x PLN</span>}
                     </td>
                     <td className={TD_CLS + ' whitespace-nowrap'}>{inv.tgl_transaksi || '-'}</td>
                     <td className={NUM_RIGHT + ' font-bold text-slate-800 dark:text-white'}>{formatCurrency(inv.total_invoice)}</td>
                     <td className={NUM_RIGHT + ' text-slate-600 dark:text-slate-300'}>{formatCurrency(inv.uang_masuk)}</td>
-                    <td className="px-4 py-3 text-indigo-600 dark:text-indigo-400 font-semibold text-xs whitespace-nowrap">
+                    <td className="px-4 py-3 text-blue-600 dark:text-blue-400 font-semibold text-xs whitespace-nowrap">
                         {inv.proforma_no || '-'}
                         {inv.no_invoice && <div className="text-[9px] text-slate-400 font-medium mt-0.5">No: {inv.no_invoice}</div>}
                         {(() => {
@@ -2009,7 +2009,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         return (
                                             <React.Fragment key={c.id}>
                                                 {idx > 0 && <span className="text-[8px] text-slate-300 dark:text-slate-600">→</span>}
-                                                <span className={`px-1 py-px rounded text-[8px] font-bold leading-tight ${isCur ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/25 dark:text-indigo-300' : c.status === 'rejected' ? 'bg-red-50 text-rose-500 dark:bg-red-500/10' : 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10'}`}>
+                                                <span className={`px-1 py-px rounded text-[8px] font-bold leading-tight ${isCur ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/25 dark:text-blue-300' : c.status === 'rejected' ? 'bg-red-50 text-rose-500 dark:bg-red-500/10' : 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10'}`}>
                                                     #{c.id}{c.no_invoice ? ` ${c.no_invoice}` : ''}
                                                 </span>
                                             </React.Fragment>
@@ -2024,12 +2024,12 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
             if (hasKids && expanded) {
                 kids.forEach((child) => {
                     rows.push(
-                        <tr key={'child-' + child.id} onClick={() => openDetail(child)} className={TROW_CLS + ' bg-indigo-50/40 dark:bg-indigo-500/5 cursor-pointer'}>
-                            <td className="w-8 px-1 py-3 text-center text-indigo-400">↳</td>
+                        <tr key={'child-' + child.id} onClick={() => openDetail(child)} className={TROW_CLS + ' bg-blue-50/40 dark:bg-blue-500/5 cursor-pointer'}>
+                            <td className="w-8 px-1 py-3 text-center text-blue-400">↳</td>
                             <td className="px-4 py-3"></td>
                             {withActions && (
                                 <td className="px-4 py-3" onClick={e => e.stopPropagation()}>
-                                    <button onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setActionMenu(prev => prev && prev.inv?.id === child.id ? null : openRowMenu(child, r, 'invoice')); }} className={'p-1.5 rounded-lg transition-colors ' + (actionMenu?.inv?.id === child.id ? 'bg-indigo-50 text-indigo-600 dark:bg-slate-800' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200')} title="Aksi">
+                                    <button onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setActionMenu(prev => prev && prev.inv?.id === child.id ? null : openRowMenu(child, r, 'invoice')); }} className={'p-1.5 rounded-lg transition-colors ' + (actionMenu?.inv?.id === child.id ? 'bg-blue-50 text-blue-600 dark:bg-slate-800' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200')} title="Aksi">
                                         <MoreVertical size={15} />
                                     </button>
                                 </td>
@@ -2045,12 +2045,12 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <td className={TD_CLS + ' whitespace-nowrap'}>{child.no_po || '-'}</td>
                             <td className="px-4 py-3 whitespace-nowrap">
                                 <span className="px-2 py-1 rounded-lg text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200">{child.tipe}</span>
-                                <span className="ml-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300">PELUNASAN</span>
+                                <span className="ml-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300">PELUNASAN</span>
                             </td>
                             <td className={TD_CLS + ' whitespace-nowrap'}>{child.tgl_transaksi || '-'}</td>
                             <td className={NUM_RIGHT + ' font-bold text-slate-700 dark:text-slate-200'}>{formatCurrency(child.total_invoice)}</td>
-                            <td className={NUM_RIGHT + ' text-indigo-600 dark:text-indigo-400 font-semibold'}>{formatCurrency(child.uang_masuk)}</td>
-                            <td className="px-4 py-3 text-indigo-600 dark:text-indigo-400 font-semibold text-xs whitespace-nowrap">{child.proforma_no || '-'}</td>
+                            <td className={NUM_RIGHT + ' text-blue-600 dark:text-blue-400 font-semibold'}>{formatCurrency(child.uang_masuk)}</td>
+                            <td className="px-4 py-3 text-blue-600 dark:text-blue-400 font-semibold text-xs whitespace-nowrap">{child.proforma_no || '-'}</td>
                         </tr>
                     );
                 });
@@ -2111,21 +2111,21 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
         <button
             onClick={() => setTab(id)}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${tab === id
-                ? 'gradient-bg text-white shadow-lg shadow-indigo-500/25'
+                ? 'gradient-bg text-white shadow-lg shadow-blue-500/25'
                 : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
         >
             {icon}{label}
         </button>
     );
 
-    const inputCls = "w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500";
+    const inputCls = "w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500";
 
     return (
         <div className="p-4 md:p-6 space-y-4">
 
             {/* ── Dashboard Cards (di atas tab) ── */}
             <SummaryRow cards={[
-                { title: 'Total Invoice', value: summary.totalInvoice.toLocaleString('id-ID'), icon: Receipt, gradient: 'from-blue-600 to-indigo-700', subtext: `${formatCurrency(summary.nominalInvoice)} • ${summary.sentBackProforma} sent back`, valueClass: 'text-2xl' },
+                { title: 'Total Invoice', value: summary.totalInvoice.toLocaleString('id-ID'), icon: Receipt, gradient: 'from-blue-600 to-blue-700', subtext: `${formatCurrency(summary.nominalInvoice)} • ${summary.sentBackProforma} sent back`, valueClass: 'text-2xl' },
                 { title: 'Proforma', value: summary.totalProforma.toLocaleString('id-ID'), icon: FileSignature, gradient: 'from-amber-500 to-orange-600', subtext: `${summary.totalApproved} approved • ${summary.pendingProforma} pending • ${formatCurrency(summary.totalNominal)}`, valueClass: 'text-2xl' },
                 { title: 'Menunggu Tax', value: summary.pendingTax.toLocaleString('id-ID'), icon: FileText, gradient: 'from-violet-600 to-purple-700', subtext: 'Proforma perlu faktur pajak — segera lampirkan', valueClass: 'text-2xl' },
                 { title: 'Settled', value: summary.totalSettled.toLocaleString('id-ID'), icon: HandCoins, gradient: 'from-teal-500 to-emerald-700', subtext: `${formatCurrency(summary.nominalSettled)} • selesai di-settle`, valueClass: 'text-2xl' },
@@ -2174,15 +2174,15 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
                                 placeholder={t("invoice.searchPlaceholder")}
-                                className="pl-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 w-48"
+                                className="pl-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-48"
                             />
                         </div>
                     )}
                     {tab !== 'dashboard' && (
                         <>
-                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2.5 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" title="Dari Tanggal" />
+                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2.5 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500" title="Dari Tanggal" />
                             <span className="text-xs text-slate-400">s/d</span>
-                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2.5 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" title="Sampai Tanggal" />
+                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2.5 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500" title="Sampai Tanggal" />
                             {(search || dateFrom || dateTo) && (
                                 <button onClick={() => { setSearch(''); setDateFrom(''); setDateTo(''); }} className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-red-600 text-sm font-semibold" title="Reset filter">Reset</button>
                             )}
@@ -2196,7 +2196,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <Plus size={16} /> New Invoice
                         </button>
                     )}
-                    <button onClick={loadAll} className="p-2 rounded-xl text-slate-500 hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all" title="Refresh">
+                    <button onClick={loadAll} className="p-2 rounded-xl text-slate-500 hover:text-blue-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all" title="Refresh">
                         <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
                     </button>
                 </div>
@@ -2211,7 +2211,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 p-5 shadow-sm">
                             <div className="flex items-center justify-between mb-4">
                                 <h2 className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
-                                    <span className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"><PieChart size={14} /></span>
+                                    <span className="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400"><PieChart size={14} /></span>
                                     Distribusi Status
                                 </h2>
                                 <span className="text-[11px] font-semibold text-slate-400 tabular-nums">{dashStatusDist.reduce((s, e) => s + e.value, 0)} invoice</span>
@@ -2292,12 +2292,12 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             <div key={d.name} className="group">
                                                 <div className="flex items-center gap-2 text-xs mb-1">
                                                     <span className={`w-5 h-5 shrink-0 rounded-md flex items-center justify-center text-[10px] font-black ${rankCls}`}>{i + 1}</span>
-                                                    <span className="font-semibold text-slate-600 dark:text-slate-300 truncate flex-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{d.name}</span>
+                                                    <span className="font-semibold text-slate-600 dark:text-slate-300 truncate flex-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{d.name}</span>
                                                     <span className="font-bold text-slate-700 dark:text-slate-200 tabular-nums">{formatCurrency(d.value)}</span>
                                                     <span className="text-[10px] font-semibold text-slate-400 tabular-nums w-9 text-right">{Math.round((d.value / max) * 100)}%</span>
                                                 </div>
                                                 <div className="h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden ml-7">
-                                                    <div className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-violet-500" style={{ width: `${(d.value / max) * 100}%` }} />
+                                                    <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-violet-500" style={{ width: `${(d.value / max) * 100}%` }} />
                                                 </div>
                                             </div>
                                         );
@@ -2309,7 +2309,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         {/* Quick stats */}
                         <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-3">
                             {[
-                                { label: 'Total Invoice', val: summary.totalInvoice.toLocaleString('id-ID'), sub: formatCurrency(summary.nominalInvoice), icon: <Receipt size={16} />, cls: 'from-blue-600 to-indigo-700', w: 'text-blue-100' },
+                                { label: 'Total Invoice', val: summary.totalInvoice.toLocaleString('id-ID'), sub: formatCurrency(summary.nominalInvoice), icon: <Receipt size={16} />, cls: 'from-blue-600 to-blue-700', w: 'text-blue-100' },
                                 { label: 'Proforma', val: summary.totalProforma.toLocaleString('id-ID'), sub: `${summary.totalApproved} approved • ${summary.pendingProforma} pending`, icon: <FileSignature size={16} />, cls: 'from-amber-500 to-orange-600', w: 'text-amber-100' },
                                 { label: 'Menunggu Tax', val: summary.pendingTax.toLocaleString('id-ID'), sub: 'perlu faktur pajak', icon: <FileText size={16} />, cls: 'from-violet-600 to-purple-700', w: 'text-violet-100' },
                                 { label: 'Settled', val: summary.totalSettled.toLocaleString('id-ID'), sub: formatCurrency(summary.nominalSettled), icon: <HandCoins size={16} />, cls: 'from-teal-500 to-emerald-700', w: 'text-teal-100' },
@@ -2328,7 +2328,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl shadow-sm border border-white/60 dark:border-white/10 overflow-hidden">
                         <div className="flex flex-wrap items-center justify-between gap-3 p-4 border-b border-white/60 dark:border-white/10">
                             <div className="flex items-center gap-2">
-                                <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600"><LayoutDashboard size={16} /></div>
+                                <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600"><LayoutDashboard size={16} /></div>
                                 <div>
                                     <h3 className="font-bold text-slate-800 dark:text-white">Daftar Invoice</h3>
                                     <div className="text-[11px] text-slate-400">{dashFiltered.length} data</div>
@@ -2337,13 +2337,13 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <div className="flex items-center gap-2 flex-wrap">
                                 <div className="relative">
                                     <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                                    <input value={dashSearch} onChange={e => setDashSearch(e.target.value)} placeholder={t("invoice.searchData")} className="pl-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                    <input value={dashSearch} onChange={e => setDashSearch(e.target.value)} placeholder={t("invoice.searchData")} className="pl-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                                 </div>
-                                <select aria-label="Dealer" value={dashDealer} onChange={e => setDashDealer(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 max-w-[160px]">
+                                <select aria-label="Dealer" value={dashDealer} onChange={e => setDashDealer(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 max-w-[160px]">
                                     <option value="">{t("opt.allDealer")}</option>
                                     {dashDealerOptions.map(d => <option key={d} value={d}>{d}</option>)}
                                 </select>
-                                <select aria-label="Status" value={dashStatus} onChange={e => setDashStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <select aria-label="Status" value={dashStatus} onChange={e => setDashStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     <option value="">{t("opt.allStatus")}</option>
                                     {dashStatusOptions.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                                 </select>
@@ -2383,9 +2383,9 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Invoice</span>
                                 <span className="text-sm font-black text-teal-600 dark:text-teal-400 tabular-nums whitespace-nowrap">{formatCurrency(dashFiltered.filter(r => !(r.pp_type === 'pelunasan')).reduce((s, r) => s + (parseFloat(r.total_invoice) || 0), 0))}</span>
                             </div>
-                            <div className="flex flex-col gap-0.5 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-l-4 border-l-indigo-500 border border-white/60 dark:border-white/10 px-3 py-2">
+                            <div className="flex flex-col gap-0.5 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-l-4 border-l-blue-500 border border-white/60 dark:border-white/10 px-3 py-2">
                                 <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Uang Masuk</span>
-                                <span className="text-sm font-black text-indigo-600 dark:text-indigo-400 tabular-nums whitespace-nowrap">{formatCurrency(dashFiltered.reduce((s, r) => s + (parseFloat(r.uang_masuk) || 0), 0))}</span>
+                                <span className="text-sm font-black text-blue-600 dark:text-blue-400 tabular-nums whitespace-nowrap">{formatCurrency(dashFiltered.reduce((s, r) => s + (parseFloat(r.uang_masuk) || 0), 0))}</span>
                             </div>
                             <div className="flex flex-col gap-0.5 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-l-4 border-l-amber-500 border border-white/60 dark:border-white/10 px-3 py-2">
                                 <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Sisa (Total − Uang Masuk)</span>
@@ -2416,7 +2416,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             </div>
                         </div>
                         <div className="flex items-center gap-2 flex-wrap">
-                            <select aria-label="Status Invoice" value={invStatus} onChange={e => setInvStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <select aria-label="Status Invoice" value={invStatus} onChange={e => setInvStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="">{t("opt.allStatus")}</option>
                                 {dashStatusOptions.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                             </select>
@@ -2444,7 +2444,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         </div>
                         <div className="flex flex-col gap-0.5">
                             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Uang Masuk</span>
-                            <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400 tabular-nums whitespace-nowrap">{formatCurrency(filteredInvoices.reduce((s, r) => s + (parseFloat(r.uang_masuk) || 0), 0))}</span>
+                            <span className="text-sm font-bold text-blue-600 dark:text-blue-400 tabular-nums whitespace-nowrap">{formatCurrency(filteredInvoices.reduce((s, r) => s + (parseFloat(r.uang_masuk) || 0), 0))}</span>
                         </div>
                         <div className="flex flex-col gap-0.5">
                             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Sisa (Total − Uang Masuk)</span>
@@ -2461,7 +2461,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <h3 className="font-bold text-slate-800 dark:text-white">Daftar Pengajuan Proforma</h3>
                         <div className="flex items-center gap-2">
-                            <select aria-label="Status Proforma" value={profStatus} onChange={e => setProfStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <select aria-label="Status Proforma" value={profStatus} onChange={e => setProfStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 {PROFORMA_STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                             </select>
                             {profStatus && <button onClick={() => setProfStatus('')} className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-red-600 text-sm font-semibold" title="Reset filter">Reset</button>}
@@ -2474,7 +2474,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         </div>
                     )}
                     {pagedProformas.slice(filteredProformas).map((p, pi) => (
-                        <div key={p.id} className={`${pi % 2 === 0 ? 'bg-white/60 dark:bg-slate-800/50' : 'bg-slate-50/70 dark:bg-slate-800/30'} rounded-2xl border border-white/60 dark:border-white/10 p-5 space-y-3 hover:border-indigo-200 dark:hover:border-indigo-500/40 transition-colors`}>
+                        <div key={p.id} className={`${pi % 2 === 0 ? 'bg-white/60 dark:bg-slate-800/50' : 'bg-slate-50/70 dark:bg-slate-800/30'} rounded-2xl border border-white/60 dark:border-white/10 p-5 space-y-3 hover:border-blue-200 dark:hover:border-blue-500/40 transition-colors`}>
                             <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
                                 <div className="flex items-center gap-3 min-w-0">
                                     <div className={`p-3 rounded-2xl shrink-0 ${p.status === 'approved' ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
@@ -2510,7 +2510,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         </span>
                                     )}
                                     <div className="hidden sm:block w-px h-8 bg-slate-100 dark:bg-slate-700 mx-0.5" />
-                                    <button onClick={() => openDetail(p.invoices?.[0] || { id: p.id })} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 font-semibold transition-colors" title="Lihat Detail Invoice">
+                                    <button onClick={() => openDetail(p.invoices?.[0] || { id: p.id })} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20 font-semibold transition-colors" title="Lihat Detail Invoice">
                                         <FileText size={15} /> Detail
                                     </button>
                                     <button onClick={() => openAudit(p.invoices?.[0] || { id: p.id })} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-500/20 font-semibold transition-colors" title="Lihat Audit Trail">
@@ -2534,7 +2534,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     const invStatus = inv.status || 'proforma';
                                     const isTaxDone = invStatus === 'tax' || invStatus === 'settled';
                                     return (
-                                        <div key={inv.id} className="flex items-center gap-3 px-3 py-2.5 rounded-xl gradient-bg-soft border border-white/60 dark:border-white/10 min-w-[200px] max-w-full hover:border-indigo-200 dark:hover:border-indigo-500/40 transition-colors">
+                                        <div key={inv.id} className="flex items-center gap-3 px-3 py-2.5 rounded-xl gradient-bg-soft border border-white/60 dark:border-white/10 min-w-[200px] max-w-full hover:border-blue-200 dark:hover:border-blue-500/40 transition-colors">
                                             <div className="min-w-0 flex-1">
                                                 <div className="flex items-center gap-1.5">
                                                     <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold whitespace-nowrap ${paymentBadge(inv).cls}`}>{paymentBadge(inv).label}</span>
@@ -2610,7 +2610,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <h3 className="font-bold text-slate-800 dark:text-white">Daftar Faktur Pajak</h3>
                         <div className="flex items-center gap-2">
-                            <select aria-label="Status Pajak" value={taxStatus} onChange={e => setTaxStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <select aria-label="Status Pajak" value={taxStatus} onChange={e => setTaxStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 {TAX_STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                             </select>
                             {taxStatus && <button onClick={() => setTaxStatus('')} className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-red-600 text-sm font-semibold" title="Reset filter">Reset</button>}
@@ -2649,7 +2649,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         );
                                     })()}
                                     <div className="hidden sm:block w-px h-8 bg-slate-100 dark:bg-slate-700 mx-0.5" />
-                                    <button onClick={() => openDetail(p.invoices?.[0] || { id: p.id })} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 font-semibold transition-colors" title="Lihat Detail Invoice">
+                                    <button onClick={() => openDetail(p.invoices?.[0] || { id: p.id })} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20 font-semibold transition-colors" title="Lihat Detail Invoice">
                                         <FileText size={15} /> Detail
                                     </button>
                                     <button onClick={() => openAudit(p.invoices?.[0] || { id: p.id })} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-500/20 font-semibold transition-colors" title="Lihat Audit Trail">
@@ -2770,15 +2770,15 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     value={trashSearch}
                                     onChange={e => setTrashSearch(e.target.value)}
                                     placeholder={t("invoice.searchInvoice")}
-                                    className="w-56 pl-9 pr-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="w-56 pl-9 pr-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
-                            <select aria-label="Filter Sampah" value={trashFilter} onChange={e => setTrashFilter(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <select aria-label="Filter Sampah" value={trashFilter} onChange={e => setTrashFilter(e.target.value)} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="all">{t("opt.all")}</option>
                                 <option value="invoice">{t("opt.invoice")}</option>
                                 <option value="proforma">{t("opt.proforma")}</option>
                             </select>
-                            <button onClick={loadTrash} className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-indigo-600 text-sm font-semibold" title="Muat ulang Sampah">
+                            <button onClick={loadTrash} className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-blue-600 text-sm font-semibold" title="Muat ulang Sampah">
                                 <RefreshCw size={15} className={trashLoading ? 'animate-spin' : ''} /> Muat Ulang
                             </button>
                         </div>
@@ -2887,7 +2887,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         <div className="flex items-center justify-between gap-2">
                             <h3 className="font-bold text-slate-800 dark:text-white">{dealerEditId ? 'Edit Dealer' : 'Tambah Dealer'}</h3>
                             <div className="flex items-center gap-1">
-                                <button onClick={() => { if (pdfBusyId) return; setPdfBusyId('dtpl'); invoiceService.downloadDealerTemplate().catch(e => toast?.error?.(e.message)).finally(() => setPdfBusyId(null)); }} disabled={!!pdfBusyId} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] font-bold hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed" title="Download Template">
+                                <button onClick={() => { if (pdfBusyId) return; setPdfBusyId('dtpl'); invoiceService.downloadDealerTemplate().catch(e => toast?.error?.(e.message)).finally(() => setPdfBusyId(null)); }} disabled={!!pdfBusyId} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] font-bold hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed" title="Download Template">
                                     <FileText size={12} /> Template
                                 </button>
                                 <input ref={dealerImportRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={e => { if (e.target.files[0]) handleDealerImport(e.target.files[0]); e.target.value = ''; }} />
@@ -2931,7 +2931,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             <td className="px-4 py-3 text-slate-500 dark:text-slate-400 text-xs">{d.alamat}</td>
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center justify-end gap-1">
-                                                    {perms.can_manage_master && <button onClick={() => editDealer(d)} className="p-1.5 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-800" title="Edit"><Pencil size={15} /></button>}
+                                                    {perms.can_manage_master && <button onClick={() => editDealer(d)} className="p-1.5 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-slate-800" title="Edit"><Pencil size={15} /></button>}
                                                     {perms.can_manage_master && <button onClick={() => deleteDealer(d)} className="p-1.5 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-slate-800" title="Hapus"><Trash2 size={15} /></button>}
                                                 </div>
                                             </td>
@@ -2954,7 +2954,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         <div className="flex items-center justify-between gap-2">
                             <h3 className="font-bold text-slate-800 dark:text-white">{barangEditId ? 'Edit Barang' : 'Tambah Barang'}</h3>
                             <div className="flex items-center gap-1">
-                                <button onClick={() => { if (pdfBusyId) return; setPdfBusyId('btpl'); invoiceService.downloadBarangTemplate().catch(e => toast?.error?.(e.message)).finally(() => setPdfBusyId(null)); }} disabled={!!pdfBusyId} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] font-bold hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed" title="Download Template">
+                                <button onClick={() => { if (pdfBusyId) return; setPdfBusyId('btpl'); invoiceService.downloadBarangTemplate().catch(e => toast?.error?.(e.message)).finally(() => setPdfBusyId(null)); }} disabled={!!pdfBusyId} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] font-bold hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed" title="Download Template">
                                     <FileText size={12} /> Template
                                 </button>
                                 <input ref={barangImportRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={e => { if (e.target.files[0]) handleBarangImport(e.target.files[0]); e.target.value = ''; }} />
@@ -2993,12 +2993,12 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 <tbody>
                                     {pagedBarang.slice(filteredBarang).map((b, bi) => (
                                         <tr key={b.id} className={`${TROW_CLS} ${bi % 2 === 0 ? 'bg-white/60 dark:bg-slate-800/50' : 'bg-slate-50/70 dark:bg-slate-800/30'}`}>
-                                            <td className="px-4 py-3 font-mono text-xs font-bold text-indigo-600 dark:text-indigo-400 whitespace-nowrap">{b.model}</td>
+                                            <td className="px-4 py-3 font-mono text-xs font-bold text-blue-600 dark:text-blue-400 whitespace-nowrap">{b.model}</td>
                                             <td className="px-4 py-3 text-slate-600 dark:text-slate-300 text-xs">{b.item_description}</td>
                                             <td className="px-4 py-3 text-right font-semibold text-slate-800 dark:text-white whitespace-nowrap tabular-nums">{formatCurrency(b.harga)}</td>
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center justify-end gap-1">
-                                                    {perms.can_manage_master && <button onClick={() => editBarang(b)} className="p-1.5 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-800" title="Edit"><Pencil size={15} /></button>}
+                                                    {perms.can_manage_master && <button onClick={() => editBarang(b)} className="p-1.5 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-slate-800" title="Edit"><Pencil size={15} /></button>}
                                                     {perms.can_manage_master && <button onClick={() => deleteBarang(b)} className="p-1.5 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-slate-800" title="Hapus"><Trash2 size={15} /></button>}
                                                 </div>
                                             </td>
@@ -3067,7 +3067,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     <div className="space-y-1.5">
                                         {PERM_VIEW_FIELDS.map(([key, label]) => (
                                             <label key={key} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
-                                                <input type="checkbox" checked={!!ruleForm[key]} onChange={e => setRuleForm({ ...ruleForm, [key]: e.target.checked })} className="w-4 h-4 accent-indigo-600" />
+                                                <input type="checkbox" checked={!!ruleForm[key]} onChange={e => setRuleForm({ ...ruleForm, [key]: e.target.checked })} className="w-4 h-4 accent-blue-600" />
                                                 {label}
                                             </label>
                                         ))}
@@ -3078,7 +3078,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     <div className="space-y-1.5">
                                         {PERM_ACTION_FIELDS.map(([key, label]) => (
                                             <label key={key} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
-                                                <input type="checkbox" checked={!!ruleForm[key]} onChange={e => setRuleForm({ ...ruleForm, [key]: e.target.checked })} className="w-4 h-4 accent-indigo-600" />
+                                                <input type="checkbox" checked={!!ruleForm[key]} onChange={e => setRuleForm({ ...ruleForm, [key]: e.target.checked })} className="w-4 h-4 accent-blue-600" />
                                                 {label}
                                             </label>
                                         ))}
@@ -3090,7 +3090,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <p className="text-xs text-slate-400 italic">Pilih target terlebih dahulu untuk mengatur akses tab & tombol.</p>
                         )}
                         <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200 pt-1">
-                            <input type="checkbox" checked={!!ruleForm.is_active} onChange={e => setRuleForm({ ...ruleForm, is_active: e.target.checked })} className="w-4 h-4 accent-indigo-600" />
+                            <input type="checkbox" checked={!!ruleForm.is_active} onChange={e => setRuleForm({ ...ruleForm, is_active: e.target.checked })} className="w-4 h-4 accent-blue-600" />
                             Rule Aktif (matikan untuk nonaktifkan sementara)
                         </label>
                         <div className="flex gap-2 pt-1">
@@ -3145,7 +3145,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             </td>
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center justify-end gap-1">
-                                                    {perms.can_manage_rule && <button onClick={() => editRule(r)} className="p-1.5 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-800" title="Edit"><Pencil size={15} /></button>}
+                                                    {perms.can_manage_rule && <button onClick={() => editRule(r)} className="p-1.5 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-slate-800" title="Edit"><Pencil size={15} /></button>}
                                                     {perms.can_manage_rule && <button onClick={() => deleteRule(r)} className="p-1.5 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-slate-800" title="Hapus"><Trash2 size={15} /></button>}
                                                 </div>
                                             </td>
@@ -3166,7 +3166,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     {/* Header bar */}
                     <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl p-5 border border-white/60 dark:border-white/10 flex flex-wrap items-center justify-between gap-3 shadow-sm">
                         <div className="flex items-center gap-3">
-                            <div className="p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                            <div className="p-3 rounded-2xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400">
                                 <Workflow size={20} />
                             </div>
                             <div>
@@ -3195,7 +3195,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             {perms.can_manage_rule && (
                                 <button
                                     onClick={() => openFlowForm(null)}
-                                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl gradient-bg hover:opacity-95 text-white text-xs font-semibold shadow-lg shadow-indigo-500/25 transition-all"
+                                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl gradient-bg hover:opacity-95 text-white text-xs font-semibold shadow-lg shadow-blue-500/25 transition-all"
                                 >
                                     <Plus size={14} /> Tambah Step Alur
                                 </button>
@@ -3205,7 +3205,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
 
                     {/* Inline Form (Add/Edit) */}
                     {flowOpen && (
-                        <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl p-5 border-2 border-indigo-500/30 dark:border-indigo-500/40 space-y-4 shadow-xl">
+                        <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl p-5 border-2 border-blue-500/30 dark:border-blue-500/40 space-y-4 shadow-xl">
                             <div className="flex items-center justify-between border-b border-white/60 dark:border-white/10 pb-3">
                                 <h4 className="font-bold text-sm text-slate-800 dark:text-white">
                                     {flowForm.id ? 'Edit Step Alur' : 'Tambah Step Alur Baru'}
@@ -3223,7 +3223,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         value={flowForm.name}
                                         onChange={e => setFlowForm({ ...flowForm, name: e.target.value })}
                                         placeholder={t("invoice.placeExample")}
-                                        className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     />
                                 </div>
                                 <div>
@@ -3231,7 +3231,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     <select
                                         value={flowForm.event}
                                         onChange={e => setFlowForm({ ...flowForm, event: e.target.value })}
-                                        className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     >
                                         {Object.entries(flowEvents).map(([k, v]) => (
                                             <option key={k} value={k}>{v}</option>
@@ -3244,7 +3244,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         <select
                                             value={flowForm.assignee_type}
                                             onChange={e => setFlowForm({ ...flowForm, assignee_type: e.target.value, assignee_value: '' })}
-                                            className="w-1/3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                            className="w-1/3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         >
                                             <option value="all">{t("opt.all")}</option>
                                             <option value="role">{t("opt.role")}</option>
@@ -3255,7 +3255,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             <select
                                                 value={flowForm.assignee_value}
                                                 onChange={e => setFlowForm({ ...flowForm, assignee_value: e.target.value })}
-                                                className="w-2/3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                className="w-2/3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                             >
                                                 <option value="">{t("opt.selectSomething")} {flowForm.assignee_type}</option>
                                                 {flowForm.assignee_type === 'role' && flowAssigneeOptions.roles.map(r => <option key={r} value={r}>{r}</option>)}
@@ -3276,7 +3276,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     onChange={e => setFlowForm({ ...flowForm, custom_emails: e.target.value })}
                                     rows={2}
                                     placeholder={t("invoice.placeEmail")}
-                                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                                 <p className="text-[11px] text-slate-400 mt-1">Email custom ikut menerima notifikasi selain penanggung jawab di atas. Bisa lebih dari satu.</p>
                             </div>
@@ -3288,7 +3288,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             type="checkbox"
                                             checked={flowForm.notify_email}
                                             onChange={e => setFlowForm({ ...flowForm, notify_email: e.target.checked })}
-                                            className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                                            className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                                         />
                                         Kirim Notifikasi Email & In-App
                                     </label>
@@ -3297,7 +3297,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             type="checkbox"
                                             checked={flowForm.is_active}
                                             onChange={e => setFlowForm({ ...flowForm, is_active: e.target.checked })}
-                                            className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                                            className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                                         />
                                         Aktif
                                     </label>
@@ -3308,13 +3308,13 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     </div>
                                 )}
                                 <div className="flex items-center gap-2">
-                                    <button onClick={previewFormRecipients} className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-indigo-200 dark:border-indigo-500/30 text-indigo-600 dark:text-indigo-400 text-xs font-semibold hover:bg-indigo-50 dark:hover:bg-indigo-500/10" title="Lihat daftar penerima email untuk konfigurasi ini (tanpa mengirim)">
+                                    <button onClick={previewFormRecipients} className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-blue-200 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 text-xs font-semibold hover:bg-blue-50 dark:hover:bg-blue-500/10" title="Lihat daftar penerima email untuk konfigurasi ini (tanpa mengirim)">
                                         <Eye size={13} /> Preview Penerima
                                     </button>
                                     <button onClick={() => setFlowOpen(false)} className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">
                                         Batal
                                     </button>
-                                    <button onClick={saveFlowStep} disabled={flowSaving} className="flex items-center gap-1.5 px-4 py-2 rounded-xl gradient-bg hover:opacity-95 text-white text-xs font-semibold shadow-lg shadow-indigo-500/25">
+                                    <button onClick={saveFlowStep} disabled={flowSaving} className="flex items-center gap-1.5 px-4 py-2 rounded-xl gradient-bg hover:opacity-95 text-white text-xs font-semibold shadow-lg shadow-blue-500/25">
                                         <Save size={14} /> {flowSaving ? 'Menyimpan...' : 'Simpan Step'}
                                     </button>
                                 </div>
@@ -3338,16 +3338,16 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <div className="flex items-center gap-2 overflow-x-auto pb-4 custom-scrollbar">
                                 {[...flowSteps].sort((a, b) => a.step_no - b.step_no).map((s, idx, arr) => (
                                     <div key={s.id} className="flex items-center gap-2 shrink-0">
-                                        <div className={`p-4 rounded-2xl border ${s.is_active ? 'bg-slate-50 dark:bg-slate-800/80 border-indigo-200 dark:border-indigo-500/30' : 'bg-slate-100/50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-800 opacity-60'} min-w-[200px] space-y-2 relative group`}>
+                                        <div className={`p-4 rounded-2xl border ${s.is_active ? 'bg-slate-50 dark:bg-slate-800/80 border-blue-200 dark:border-blue-500/30' : 'bg-slate-100/50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-800 opacity-60'} min-w-[200px] space-y-2 relative group`}>
                                             <div className="flex items-center justify-between">
-                                                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300">
+                                                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300">
                                                     Step {s.step_no}
                                                 </span>
                                                 {perms.can_manage_rule && (
                                                     <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100">
-                                                        <button onClick={() => moveFlowStep(s, -1)} disabled={idx === 0} className="p-1 hover:text-indigo-600 disabled:opacity-30" title="Geser Kiri"><ChevronUp size={13} className="-rotate-90" /></button>
-                                                        <button onClick={() => moveFlowStep(s, 1)} disabled={idx === arr.length - 1} className="p-1 hover:text-indigo-600 disabled:opacity-30" title="Geser Kanan"><ChevronDown size={13} className="-rotate-90" /></button>
-                                                        <button onClick={() => openFlowForm(s)} className="p-1 hover:text-indigo-600" title="Edit"><Pencil size={13} /></button>
+                                                        <button onClick={() => moveFlowStep(s, -1)} disabled={idx === 0} className="p-1 hover:text-blue-600 disabled:opacity-30" title="Geser Kiri"><ChevronUp size={13} className="-rotate-90" /></button>
+                                                        <button onClick={() => moveFlowStep(s, 1)} disabled={idx === arr.length - 1} className="p-1 hover:text-blue-600 disabled:opacity-30" title="Geser Kanan"><ChevronDown size={13} className="-rotate-90" /></button>
+                                                        <button onClick={() => openFlowForm(s)} className="p-1 hover:text-blue-600" title="Edit"><Pencil size={13} /></button>
                                                         <button onClick={() => removeFlowStep(s)} className="p-1 hover:text-red-500" title="Hapus"><Trash2 size={13} /></button>
                                                     </div>
                                                 )}
@@ -3370,7 +3370,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                         <Mail size={10} className="inline mr-0.5" /> Notif ON
                                                     </span>
                                                 )}
-                                                <button onClick={() => openRecipients({ stepId: s.id, title: `Penerima — Step ${s.step_no}: ${s.name}` })} className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400 font-semibold hover:bg-indigo-200 dark:hover:bg-indigo-500/20" title="Lihat penerima email untuk step ini (tanpa mengirim)">
+                                                <button onClick={() => openRecipients({ stepId: s.id, title: `Penerima — Step ${s.step_no}: ${s.name}` })} className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400 font-semibold hover:bg-blue-200 dark:hover:bg-blue-500/20" title="Lihat penerima email untuk step ini (tanpa mengirim)">
                                                     <Eye size={10} /> Penerima
                                                 </button>
                                             </div>
@@ -3407,7 +3407,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                             <div className="flex flex-wrap items-center gap-1.5">
                                                                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Token:</span>
                                                                 {emailTpl.tokens.map(([tk, desc]) => (
-                                                                    <span key={tk} title={desc} className="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[10px] font-mono text-indigo-600 dark:text-indigo-400 cursor-help">{tk}</span>
+                                                                    <span key={tk} title={desc} className="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[10px] font-mono text-blue-600 dark:text-blue-400 cursor-help">{tk}</span>
                                                                 ))}
                                                             </div>
                                                         )}
@@ -3481,7 +3481,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col" onClick={e => e.stopPropagation()}>
                                 <div className="flex items-center justify-between p-5 border-b border-white/60 dark:border-white/10">
                                     <div className="flex items-center gap-2">
-                                        <Users size={18} className="text-indigo-600" />
+                                        <Users size={18} className="text-blue-600" />
                                         <h3 className="font-bold text-slate-800 dark:text-white">{recipTitle}</h3>
                                     </div>
                                     <button onClick={() => setRecipOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><X size={18} /></button>
@@ -3748,12 +3748,12 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                 );
                                                 const paidPelunasan = others.reduce((s, i) => s + (parseFloat(i.uang_masuk) || 0), 0);
                                                 return (
-                                                    <div className="col-span-full rounded-xl border border-indigo-200 dark:border-indigo-500/30 bg-indigo-50 dark:bg-indigo-500/10 px-4 py-3 text-xs space-y-1">
+                                                    <div className="col-span-full rounded-xl border border-blue-200 dark:border-blue-500/30 bg-blue-50 dark:bg-blue-500/10 px-4 py-3 text-xs space-y-1">
                                                         <div className="flex items-center justify-between">
-                                                            <span className="font-semibold text-indigo-700 dark:text-indigo-300">Sisa Full Amount {invForm.pelunasan_of_id ? `(PO ${parent?.no_po || '-'})` : ''}</span>
-                                                            <span className="text-base font-black text-indigo-800 dark:text-indigo-200">{formatCurrency(rem)}</span>
+                                                            <span className="font-semibold text-blue-700 dark:text-blue-300">Sisa Full Amount {invForm.pelunasan_of_id ? `(PO ${parent?.no_po || '-'})` : ''}</span>
+                                                            <span className="text-base font-black text-blue-800 dark:text-blue-200">{formatCurrency(rem)}</span>
                                                         </div>
-                                                        <div className="grid grid-cols-3 gap-2 text-[11px] text-indigo-600 dark:text-indigo-400">
+                                                        <div className="grid grid-cols-3 gap-2 text-[11px] text-blue-600 dark:text-blue-400">
                                                             <span>Full: <b>{formatCurrency(parent?.total_invoice)}</b></span>
                                                             <span>DP: <b>{formatCurrency(parent?.uang_masuk)}</b></span>
                                                             <span>{t("invoice.pelunasanOther")} <b>{formatCurrency(paidPelunasan)}</b></span>
@@ -3831,7 +3831,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         <div>
                             <div className="flex items-center justify-between mb-2">
                                 <label className="text-xs font-bold text-slate-500 dark:text-slate-400">Daftar Barang *</label>
-                                <button onClick={addRow} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-semibold hover:bg-indigo-100 dark:hover:bg-indigo-500/20">
+                                <button onClick={addRow} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold hover:bg-blue-100 dark:hover:bg-blue-500/20">
                                     <Plus size={13} /> Tambah Barang
                                 </button>
                             </div>
@@ -3875,7 +3875,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                 <input
                                                     type="text"
                                                     inputMode="numeric"
-                                                    className={inputCls + ' h-[30px] w-full text-right text-[11px] font-bold text-indigo-600 dark:text-indigo-400 tabular-nums px-1.5 cursor-text'}
+                                                    className={inputCls + ' h-[30px] w-full text-right text-[11px] font-bold text-blue-600 dark:text-blue-400 tabular-nums px-1.5 cursor-text'}
                                                     placeholder={formatCurrency(Math.round(((parseFloat(row.harga) || 0) * (parseInt(row.qty) || 0)) * (parseFloat(invForm.ppn_rate) || 0.11)))}
                                                     value={row.ppn_override != null && row.ppn_override !== '' ? formatCurrency(Math.round(parseFloat(row.ppn_override) || 0)) : formatCurrency(Math.round(((parseFloat(row.harga) || 0) * (parseInt(row.qty) || 0)) * (parseFloat(invForm.ppn_rate) || 0.11)))}
                                                     onFocus={e => e.target.select()}
@@ -3904,7 +3904,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <div className="flex flex-col gap-1.5 min-w-0">
                                 <label className="text-[10px] font-bold text-slate-400 uppercase truncate">Total PPN</label>
                                 <MoneyInput
-                                    className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2 h-[38px] text-sm font-bold text-indigo-600 dark:text-indigo-400 tabular-nums"
+                                    className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl px-2 h-[38px] text-sm font-bold text-blue-600 dark:text-blue-400 tabular-nums"
                                     placeholder="0"
                                     value={invForm.ppn_custom ? (invForm.ppn_amount || '') : ppnVal || ''}
                                     onChange={v => setInvForm(prev => ({ ...prev, ppn_custom: true, ppn_amount: v }))}
@@ -3988,7 +3988,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 ).filter(Boolean);
                                 if (!sels.length) return <div className="text-sm text-slate-400">Invoice tidak ditemukan.</div>;
                                 return sels.map(sel => (
-                                    <div key={sel.id} className="p-3 rounded-xl border border-indigo-200 dark:border-indigo-500/30 bg-indigo-50 dark:bg-indigo-500/10">
+                                    <div key={sel.id} className="p-3 rounded-xl border border-blue-200 dark:border-blue-500/30 bg-blue-50 dark:bg-blue-500/10">
                                         <div className="text-sm font-semibold text-slate-800 dark:text-white">#{sel.id} • {sel.dealer_name}</div>
                                         <div className="text-xs text-slate-400">{sel.no_po} • {formatCurrency(sel.total_invoice)}</div>
                                     </div>
@@ -4000,7 +4000,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             {(proformaForm.attachments || []).length > 0 && (
                                 <div className="mb-2 flex flex-wrap gap-2">
                                     {(proformaForm.attachments || []).map((f, i) => (
-                                        <span key={'old-' + i} className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs">
+                                        <span key={'old-' + i} className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs">
                                             <FileText size={12} /> {f.length > 26 ? f.slice(0, 26) + '…' : f}
                                             <button type="button" onClick={() => setProformaForm(prev => ({ ...prev, attachments: (prev.attachments || []).filter((_, j) => j !== i) }))} className="text-red-400 hover:text-red-600" title="Hapus lampiran lama">
                                                 <X size={12} />
@@ -4010,7 +4010,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 </div>
                             )}
                             <input ref={fileInputRef} type="file" multiple className="hidden" onChange={e => setProformaFiles([...e.target.files])} />
-                            <button onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-300 text-sm w-full justify-center hover:border-indigo-400 hover:text-indigo-500">
+                            <button onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-300 text-sm w-full justify-center hover:border-blue-400 hover:text-blue-500">
                                 <Upload size={16} /> {proformaFiles.length ? `${proformaFiles.length} file dipilih` : 'Pilih File Pendukung'}
                             </button>
                             {proformaFiles.length > 0 && (
@@ -4023,7 +4023,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         </div>
                         <div className="flex items-center justify-end gap-2">
                             <button onClick={() => setShowProforma(false)} className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm font-semibold">Batal</button>
-                            <button onClick={handleNewProforma} disabled={savingProforma} className="flex items-center gap-2 px-5 py-2.5 rounded-xl gradient-bg hover:opacity-95 text-white text-sm font-bold shadow-lg shadow-indigo-500/25 disabled:opacity-60 disabled:cursor-not-allowed">
+                            <button onClick={handleNewProforma} disabled={savingProforma} className="flex items-center gap-2 px-5 py-2.5 rounded-xl gradient-bg hover:opacity-95 text-white text-sm font-bold shadow-lg shadow-blue-500/25 disabled:opacity-60 disabled:cursor-not-allowed">
                                 <FileSignature size={16} /> {savingProforma ? 'Mengirim...' : proformaResubmit ? 'Ajukan Ulang' : 'Ajukan'}
                             </button>
                         </div>
@@ -4439,7 +4439,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                     value={actionModal.notes || ''}
                                                     onChange={e => setActionModal({ ...actionModal, notes: e.target.value })}
                                                     placeholder={config.notePlaceholder}
-                                                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/40 resize-none"
+                                                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 resize-none"
                                                 />
                                             </div>
                                         )}
@@ -4542,7 +4542,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         );
                                     })()}
                                     {perms.can_proforma && ['submitted', 'sent_back'].includes(st) && (!prof) && !proformaBlockedInvoiceIds.has(Number(inv?.id)) && (
-                                        <button type="button" onClick={() => { setActionMenu(null); openProforma(inv); }} className={`${itemCls} text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10`}>
+                                        <button type="button" onClick={() => { setActionMenu(null); openProforma(inv); }} className={`${itemCls} text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10`}>
                                             <FileSignature size={15} /> {st === 'submitted' ? 'Ajukan Proforma' : 'Resubmit Proforma'}
                                         </button>
                                     )}
@@ -4584,13 +4584,13 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         <>
                                             {/* Toggle Digital Sign — pakai TTD digital jika atasan tidak ada */}
                                             <div className="flex items-center justify-between gap-3 px-3 py-2 text-[13px] font-semibold text-slate-600 dark:text-slate-300" title="Aktifkan untuk menempelkan TTD digital di atas garis SHOGO DATE pada PDF">
-                                                <span className="flex items-center gap-2"><PenLine size={15} className={digitalSign ? 'text-indigo-600 dark:text-indigo-400' : ''} /> Digital Sign</span>
+                                                <span className="flex items-center gap-2"><PenLine size={15} className={digitalSign ? 'text-blue-600 dark:text-blue-400' : ''} /> Digital Sign</span>
                                                 <button
                                                     type="button"
                                                     role="switch"
                                                     aria-checked={digitalSign}
                                                     onClick={toggleDigitalSign}
-                                                    className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${digitalSign ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-600'}`}
+                                                    className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${digitalSign ? 'bg-blue-600' : 'bg-slate-300 dark:bg-slate-600'}`}
                                                 >
                                                     <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${digitalSign ? 'translate-x-[19px]' : 'translate-x-[3px]'}`} />
                                                 </button>

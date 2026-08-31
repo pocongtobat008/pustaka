@@ -15,7 +15,7 @@ export default function AiDocTrain({ isDarkMode, currentUser }) {
     return (
         <div className="max-w-[1400px] mx-auto px-4 lg:px-6 py-6">
             {/* Header halaman — PageHeader terpusat (konsisten semua menu) */}
-            <PageHeader icon={FlaskConical} iconClass="from-indigo-500 to-purple-600" title={title} subtitle={desc} />
+            <PageHeader icon={FlaskConical} iconClass="from-blue-500 to-purple-600" title={title} subtitle={desc} />
 
             {/* TemplateMapper dalam mode training (lockView: tanpa tab ekstraksi) */}
             <TemplateMapper isDarkMode={isDarkMode} currentUser={currentUser} defaultView="train" lockView />

@@ -306,7 +306,7 @@ export class SemanticAnalyzer {
 
     _getIntentColor(intent) {
         const colors = {
-            comparison: 'indigo',
+            comparison: 'blue',
             underpayment: 'rose',
             overpayment: 'emerald',
             history: 'amber',

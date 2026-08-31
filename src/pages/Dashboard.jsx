@@ -376,20 +376,20 @@ export default function Dashboard({
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             {/* STARTUP STYLE GREETING SECTION */}
-            <div className="relative overflow-hidden bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white/40 dark:border-white/10 shadow-2xl shadow-indigo-500/10 group">
-                <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl group-hover:bg-indigo-500/20 transition-all duration-700 pointer-events-none"></div>
+            <div className="relative overflow-hidden bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white/40 dark:border-white/10 shadow-2xl shadow-blue-500/10 group">
+                <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all duration-700 pointer-events-none"></div>
                 <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl group-hover:bg-purple-500/20 transition-all duration-700 pointer-events-none"></div>
 
                 <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="space-y-2">
                         <div className="flex flex-wrap items-center gap-4">
-                            <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-black text-xs uppercase tracking-[0.2em]">
+                            <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-black text-xs uppercase tracking-[0.2em]">
                                 <Clock size={14} />
                                 <span>{new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
                             </div>
                             <button
                                 onClick={onOpenLanding}
-                                className="group relative flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full text-[11px] font-black uppercase tracking-widest transition-all hover:scale-110 hover:shadow-[0_0_20px_rgba(79,70,229,0.4)] active:scale-95 ring-4 ring-indigo-500/10 overflow-hidden"
+                                className="group relative flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full text-[11px] font-black uppercase tracking-widest transition-all hover:scale-110 hover:shadow-[0_0_20px_rgba(79,70,229,0.4)] active:scale-95 ring-4 ring-blue-500/10 overflow-hidden"
                             >
                                 <div className="absolute inset-0 bg-white/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity animate-pulse"></div>
                                 <Sparkles size={14} className="relative z-10 animate-pulse" />
@@ -398,10 +398,10 @@ export default function Dashboard({
                             </button>
                         </div>
                         <h1 className="text-4xl md:text-5xl font-black text-[#2B3674] dark:text-white tracking-tight">
-                            {getGreeting()}, <span className="text-indigo-600">{currentUser?.name?.split(' ')[0] || 'User'}</span>
+                            {getGreeting()}, <span className="text-blue-600">{currentUser?.name?.split(' ')[0] || 'User'}</span>
                         </h1>
                         <p className="text-lg text-slate-500 dark:text-slate-400 font-medium max-w-xl leading-relaxed">
-                            {text.welcome}<span className="font-bold text-indigo-500">Pustaka</span>. {text.makeProductive}
+                            {text.welcome}<span className="font-bold text-blue-500">Pustaka</span>. {text.makeProductive}
                         </p>
                     </div>
 
@@ -410,33 +410,33 @@ export default function Dashboard({
                         <button
                             type="button"
                             onClick={handleRefreshQuote}
-                            className="absolute top-4 right-4 w-8 h-8 neo-icon-btn text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-400"
+                            className="absolute top-4 right-4 w-8 h-8 neo-icon-btn text-slate-400 hover:text-blue-500 dark:hover:text-blue-400"
                             title={isEnglish ? 'New quote' : 'Kutipan baru'}
                         >
                             <RefreshCw key={'spin' + quoteAnimKey} size={14} className="animate-spin-once" />
                         </button>
 
                         <div className="flex items-center gap-3 mb-3 pr-9">
-                            <div className="p-2 gradient-bg rounded-xl text-white shadow-lg shadow-indigo-500/30">
+                            <div className="p-2 gradient-bg rounded-xl text-white shadow-lg shadow-blue-500/30">
                                 <Sparkles size={18} />
                             </div>
-                            <span className="font-black text-[10px] uppercase tracking-widest text-indigo-600 dark:text-indigo-400">{text.workLabel}</span>
+                            <span className="font-black text-[10px] uppercase tracking-widest text-blue-600 dark:text-blue-400">{text.workLabel}</span>
                         </div>
                         <p key={'quote' + quoteAnimKey} className="text-sm font-bold text-slate-700 dark:text-slate-200 leading-snug italic animate-in fade-in slide-in-from-bottom-1 duration-300">
-                            <span className="text-indigo-400 select-none">“</span>
+                            <span className="text-blue-400 select-none">“</span>
                             {getWorkSuggestion()}
-                            <span className="text-indigo-400 select-none">”</span>
+                            <span className="text-blue-400 select-none">”</span>
                         </p>
                     </div>
                 </div>
             </div>
 
             {/* 🔍 SEMANTIC SEARCH BAR */}
-            <div className="bg-white/50 dark:bg-slate-800/50 backdrop-blur-xl p-6 rounded-3xl border border-white/20 shadow-xl shadow-indigo-500/5 relative overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+            <div className="bg-white/50 dark:bg-slate-800/50 backdrop-blur-xl p-6 rounded-3xl border border-white/20 shadow-xl shadow-blue-500/5 relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
 
-                <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 mb-4 flex items-center gap-2">
-                    <ScanLine className="text-indigo-500" /> {text.aiSemanticSearch}
+                <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 mb-4 flex items-center gap-2">
+                    <ScanLine className="text-blue-500" /> {text.aiSemanticSearch}
                 </h2>
 
                 <form onSubmit={handleSearch} className="relative z-10">
@@ -463,7 +463,7 @@ export default function Dashboard({
                             aria-label={text.searchPlaceholder}
                             title={text.searchPlaceholder}
                             disabled={isSearching}
-                            className="absolute right-2 top-2 bottom-2 aspect-square gradient-bg hover:opacity-95 text-white rounded-xl flex items-center justify-center transition-all disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-indigo-500/20 active:scale-95"
+                            className="absolute right-2 top-2 bottom-2 aspect-square gradient-bg hover:opacity-95 text-white rounded-xl flex items-center justify-center transition-all disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-blue-500/20 active:scale-95"
                         >
                             {isSearching ? (
                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -479,7 +479,7 @@ export default function Dashboard({
                     <div className="mt-6 space-y-3 animate-in fade-in slide-in-from-top-4 relative z-10">
                         <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2">
                             {text.semanticAnalysis}
-                            <span className="text-[10px] bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded-full">{text.beta}</span>
+                            <span className="text-[10px] bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full">{text.beta}</span>
                         </h3>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -502,9 +502,9 @@ export default function Dashboard({
                                                             doc.matchType === 'approval' ? 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400' :
                                                                 doc.matchType === 'pustaka' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
                                                                     doc.matchType === 'note' ? 'bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400' :
-                                                                        doc.matchType === 'tax_object' ? 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400' :
-                                                                            doc.matchType === 'inventory' ? 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400' :
-                                                                                'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400'}`}>
+                                                                        doc.matchType === 'tax_object' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
+                                                                            doc.matchType === 'inventory' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
+                                                                                'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'}`}>
                                             {doc.matchType === 'invoice' ? <Package size={20} /> :
                                                 doc.matchType === 'external_item' ? <Truck size={20} /> :
                                                     doc.matchType === 'tax_summary' ? <FileBarChart size={20} /> :
@@ -518,7 +518,7 @@ export default function Dashboard({
                                         </span>
                                     </div>
 
-                                    <h4 className="font-bold text-slate-800 dark:text-white mb-1 line-clamp-1 group-hover/card:text-indigo-600 dark:group-hover/card:text-indigo-400 transition-colors relative z-10 cursor-pointer" onClick={() => handleViewDoc(doc)}>
+                                    <h4 className="font-bold text-slate-800 dark:text-white mb-1 line-clamp-1 group-hover/card:text-blue-600 dark:group-hover/card:text-blue-400 transition-colors relative z-10 cursor-pointer" onClick={() => handleViewDoc(doc)}>
                                         {doc.title}
                                     </h4>
                                     <p className="text-xs text-slate-500 dark:text-slate-400 relative z-10 mb-3 block truncate">
@@ -535,7 +535,7 @@ export default function Dashboard({
                                     <div className="flex gap-2 relative z-10">
                                         <button
                                             onClick={(e) => { e.stopPropagation(); handleViewDoc(doc); }}
-                                            className="flex-1 text-xs bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 py-2 rounded-lg transition-all font-bold flex items-center justify-center gap-1.5 border border-indigo-100 dark:border-indigo-800 hover:bg-indigo-100"
+                                            className="flex-1 text-xs bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 py-2 rounded-lg transition-all font-bold flex items-center justify-center gap-1.5 border border-blue-100 dark:border-blue-800 hover:bg-blue-100"
                                         >
                                             <Eye size={14} /> {doc.matchType === 'note' ? text.viewContext : text.preview}
                                         </button>
@@ -549,7 +549,7 @@ export default function Dashboard({
                                                         handleDownload(doc.data || doc);
                                                     }
                                                 }}
-                                                className="flex-1 text-xs bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-all font-medium flex items-center justify-center gap-1.5 shadow-sm active:scale-95"
+                                                className="flex-1 text-xs bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition-all font-medium flex items-center justify-center gap-1.5 shadow-sm active:scale-95"
                                             >
                                                 <Download size={14} /> {text.download}
                                             </button>
@@ -596,9 +596,9 @@ export default function Dashboard({
                                                             doc.matchType === 'tax_monitoring' ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 hover:bg-orange-100' :
                                                                 doc.matchType === 'approval' ? 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 hover:bg-rose-100' :
                                                                     doc.matchType === 'pustaka' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 hover:bg-blue-100' :
-                                                                        doc.matchType === 'tax_object' ? 'bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400' :
+                                                                        doc.matchType === 'tax_object' ? 'bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400' :
                                                                             doc.matchType === 'inventory' ? 'bg-slate-50 dark:bg-slate-800/30 hover:bg-slate-100 dark:hover:bg-slate-900/50 text-slate-600 dark:text-slate-400' :
-                                                                                'bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400'}`}
+                                                                                'bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400'}`}
                                         >
                                             {doc.matchType === 'invoice' ? `📦 ${doc.folderName}` :
                                                 doc.matchType === 'external_item' ? `🚚 ${doc.folderName}` :
@@ -624,7 +624,7 @@ export default function Dashboard({
                                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                                     disabled={currentPage === 1}
                                     aria-label="Previous page" title={t("tooltip.previous")}
-                                    className="p-2 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 text-slate-500 disabled:opacity-30 transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20"
+                                    className="p-2 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 text-slate-500 disabled:opacity-30 transition-all hover:bg-blue-50 dark:hover:bg-blue-900/20"
                                 >
                                     <ChevronLeft size={20} />
                                 </button>
@@ -642,7 +642,7 @@ export default function Dashboard({
                                                 type="button"
                                                 key={page}
                                                 onClick={() => setCurrentPage(page)}
-                                                className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${currentPage === page ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'bg-white/70 dark:bg-slate-800/60 text-slate-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20'}`}
+                                                className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${currentPage === page ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'bg-white/70 dark:bg-slate-800/60 text-slate-500 hover:bg-blue-50 dark:hover:bg-blue-900/20'}`}
                                             >
                                                 {page}
                                             </button>
@@ -655,7 +655,7 @@ export default function Dashboard({
                                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(searchResults.length / resultsPerPage)))}
                                     disabled={currentPage === Math.ceil(searchResults.length / resultsPerPage)}
                                     aria-label="Next page" title={t("tooltip.next")}
-                                    className="p-2 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 text-slate-500 disabled:opacity-30 transition-all hover:bg-indigo-50 dark:hover:bg-indigo-900/20"
+                                    className="p-2 rounded-xl bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 text-slate-500 disabled:opacity-30 transition-all hover:bg-blue-50 dark:hover:bg-blue-900/20"
                                 >
                                     <ChevronRight size={20} />
                                 </button>
@@ -671,31 +671,31 @@ export default function Dashboard({
                 {/* 1. Main Storage Command Center - Jumbo Bento Card */}
                 <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }} viewport={{ once: true }} className="md:col-span-4 lg:col-span-4 lg:row-span-2 group">
                     <ShadCard className="h-full relative overflow-hidden border-slate-200/50 bg-white/60 dark:bg-slate-800/40 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-500 flex flex-col justify-between">
-                        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-indigo-500/10 blur-[80px] group-hover:bg-indigo-500/20 transition-all duration-700" />
+                        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-[80px] group-hover:bg-blue-500/20 transition-all duration-700" />
                         <CardHeader className="pb-2">
                             <div className="flex items-start justify-between gap-3">
                                 <div className="space-y-1">
-                                    <Badge variant="outline" className="bg-indigo-50/50 text-indigo-600 border-indigo-200/50 dark:bg-indigo-900/30 dark:text-indigo-400 dark:border-indigo-800/50 w-fit mb-2">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 mr-2 animate-pulse"></div>
+                                    <Badge variant="outline" className="bg-blue-50/50 text-blue-600 border-blue-200/50 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50 w-fit mb-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mr-2 animate-pulse"></div>
                                         {text.live} Sync
                                     </Badge>
                                     <CardTitle className="text-2xl font-black tracking-tight">{text.storageCenter}</CardTitle>
                                     <CardDescription className="text-sm font-medium">{text.storageDesc}</CardDescription>
                                 </div>
                                 <div className="p-3 bg-white/70 dark:bg-slate-800/60 rounded-2xl border border-white/40 dark:border-white/10">
-                                    <Grid3x3 size={24} className="text-indigo-500" />
+                                    <Grid3x3 size={24} className="text-blue-500" />
                                 </div>
                             </div>
                         </CardHeader>
                         <CardContent className="space-y-6 pt-4">
                             <SummaryRow cards={[
-                                { title: text.occupancy, value: `${bentoStats.occupancyPercent}%`, icon: Grid3x3, gradient: 'from-indigo-500 to-purple-600', valueClass: 'text-2xl' },
+                                { title: text.occupancy, value: `${bentoStats.occupancyPercent}%`, icon: Grid3x3, gradient: 'from-blue-500 to-purple-600', valueClass: 'text-2xl' },
                                 { title: text.usedSlots, value: bentoStats.usedSlots, icon: Package, gradient: 'from-emerald-500 to-teal-600', valueClass: 'text-2xl' },
                                 { title: text.externalBox, value: externalItems?.length || 0, icon: Truck, gradient: 'from-amber-500 to-orange-600', valueClass: 'text-2xl' },
                                 { title: text.available, value: stats?.empty || 0, icon: Boxes, gradient: 'from-sky-500 to-cyan-600', valueClass: 'text-2xl' },
                             ]} />
                             <div className="flex flex-wrap gap-3">
-                                <button onClick={() => setActiveTab('inventory')} className="flex items-center gap-2 rounded-xl gradient-bg px-4 py-2.5 text-xs font-bold text-white transition-all hover:shadow-lg hover:shadow-indigo-500/40 active:scale-95">
+                                <button onClick={() => setActiveTab('inventory')} className="flex items-center gap-2 rounded-xl gradient-bg px-4 py-2.5 text-xs font-bold text-white transition-all hover:shadow-lg hover:shadow-blue-500/40 active:scale-95">
                                     {text.openInventory} <ArrowRight size={14} />
                                 </button>
                                 <button onClick={() => setActiveTab('documents')} className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 transition-all hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 active:scale-95">
@@ -714,7 +714,7 @@ export default function Dashboard({
                     <ShadCard className="h-full bg-gradient-to-b from-slate-900 to-slate-950 text-white border-0 shadow-xl flex flex-col justify-between">
                         <CardHeader className="pb-0">
                             <div className="flex items-center justify-between">
-                                <CardTitle className="flex items-center gap-2 text-lg font-bold"><ScanLine className="text-indigo-400" size={20} /> Pipeline OCR</CardTitle>
+                                <CardTitle className="flex items-center gap-2 text-lg font-bold"><ScanLine className="text-blue-400" size={20} /> Pipeline OCR</CardTitle>
                                 {bentoStats.active > 0 && <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>}
                             </div>
                             <CardDescription className="text-slate-400 font-medium">{text.ocrDesc}</CardDescription>
@@ -722,7 +722,7 @@ export default function Dashboard({
                         <CardContent className="mt-6 flex-1 flex flex-col justify-end space-y-3">
                             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 flex items-center justify-between border border-white/5">
                                 <span className="text-sm font-semibold text-slate-300">{text.ocrActive}</span>
-                                <span className="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-400">{bentoStats.active}</span>
+                                <span className="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-400">{bentoStats.active}</span>
                             </div>
                             <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 flex items-center justify-between border border-white/5">
                                 <span className="text-sm font-semibold text-slate-400">{text.ocrWaiting}</span>
@@ -773,17 +773,17 @@ export default function Dashboard({
                 <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} viewport={{ once: true }} className="md:col-span-2 lg:col-span-3">
                     <ShadCard className="h-full border-slate-200/60 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md hover:shadow-lg transition-shadow">
                         <CardHeader className="pb-3 flex flex-row items-center justify-between">
-                            <CardTitle className="flex items-center gap-2 text-base font-bold"><FileText className="text-indigo-500" size={18} /> {text.recentDocs}</CardTitle>
-                            <button onClick={() => setActiveTab('documents')} className="text-xs font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 transition-colors">Lihat Semua</button>
+                            <CardTitle className="flex items-center gap-2 text-base font-bold"><FileText className="text-blue-500" size={18} /> {text.recentDocs}</CardTitle>
+                            <button onClick={() => setActiveTab('documents')} className="text-xs font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 transition-colors">Lihat Semua</button>
                         </CardHeader>
                         <CardContent className="space-y-3 pb-6">
                             {docList.slice(0, 3).map((doc) => (
                                 <button key={doc.id} onClick={() => handleViewDoc(doc)} className="group flex w-full items-center gap-3 rounded-2xl border border-transparent hover:border-slate-200 bg-transparent hover:bg-white p-2 text-left transition-all dark:hover:border-slate-700 dark:hover:bg-slate-800 shadow-none hover:shadow-sm">
-                                    <div className="rounded-xl bg-slate-100 p-2.5 text-slate-500 group-hover:bg-indigo-50 group-hover:text-indigo-600 dark:bg-slate-800 dark:text-slate-400 dark:group-hover:bg-indigo-900/30 dark:group-hover:text-indigo-400 transition-colors">
+                                    <div className="rounded-xl bg-slate-100 p-2.5 text-slate-500 group-hover:bg-blue-50 group-hover:text-blue-600 dark:bg-slate-800 dark:text-slate-400 dark:group-hover:bg-blue-900/30 dark:group-hover:text-blue-400 transition-colors">
                                         {doc.type?.includes('pdf') ? <FileDigit size={18} /> : <FileText size={18} />}
                                     </div>
                                     <div className="min-w-0 flex-1">
-                                        <p className="truncate text-sm font-bold text-slate-700 dark:text-slate-200 group-hover:text-indigo-700 dark:group-hover:text-indigo-300 transition-colors">{doc.title}</p>
+                                        <p className="truncate text-sm font-bold text-slate-700 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">{doc.title}</p>
                                         <p className="text-xs font-medium text-slate-500/80 dark:text-slate-500 mt-0.5">{new Date(doc.uploadDate).toLocaleDateString()} • {doc.size}</p>
                                     </div>
                                 </button>
@@ -806,7 +806,7 @@ export default function Dashboard({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
                     <h3 className="font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
-                        <PieChart size={20} className="text-indigo-500" /> {text.storageDistribution}
+                        <PieChart size={20} className="text-blue-500" /> {text.storageDistribution}
                     </h3>
                     <div className="space-y-4">
                         <div className="w-full bg-gray-100 dark:bg-slate-800 rounded-full h-6 overflow-hidden flex shadow-inner">
@@ -859,7 +859,7 @@ export default function Dashboard({
                             >
                                 <div>
                                     <div className="flex items-center gap-2">
-                                        <span className="font-semibold text-indigo-600 dark:text-indigo-400">{log.action}</span>
+                                        <span className="font-semibold text-blue-600 dark:text-blue-400">{log.action}</span>
                                         {log.oldValue && <span className="text-[10px] bg-amber-100 text-amber-600 px-1.5 py-0.5 rounded border border-amber-200">{text.auditBadge}</span>}
                                     </div>
                                     <p className="text-gray-500">{log.details}</p>

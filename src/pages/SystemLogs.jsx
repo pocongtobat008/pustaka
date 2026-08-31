@@ -83,7 +83,7 @@ export default function SystemLogs({ isDarkMode }) {
                             placeholder={text.searchPlaceholder}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="w-full pl-10 pr-4 py-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
                     <button onClick={fetchLogs} className="p-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-xl hover:bg-gray-50">
@@ -99,7 +99,7 @@ export default function SystemLogs({ isDarkMode }) {
                     value: allLines.length.toLocaleString('id-ID'),
                     subtext: isEnglish ? 'Log lines loaded' : 'Baris log dimuat',
                     icon: Terminal,
-                    gradient: 'from-indigo-500 to-purple-600',
+                    gradient: 'from-blue-500 to-purple-600',
                 },
                 {
                     title: isEnglish ? 'Errors' : 'Error',

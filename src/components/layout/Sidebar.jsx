@@ -378,7 +378,7 @@ const Sidebar = ({
                                                         className={
                                                             'absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full transition-all ' +
                                                             (isActive
-                                                                ? 'bg-gradient-to-b from-indigo-500 to-indigo-400 opacity-100'
+                                                                ? 'bg-gradient-to-b from-blue-500 to-blue-400 opacity-100'
                                                                 : 'opacity-0 group-hover:opacity-30')
                                                         }
                                                     />
@@ -424,7 +424,7 @@ const Sidebar = ({
                     >
                         <div className="flex items-center justify-between">
                             <div className="text-[10px] font-bold text-blue-600 dark:text-blue-300 flex items-center gap-1.5">
-                                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-ping"></span>
+                                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping"></span>
                                 OCR {t('sidebar.ocr.processing')}
                             </div>
                             <span className="text-sm font-black text-blue-600 dark:text-blue-300">
@@ -448,7 +448,7 @@ const Sidebar = ({
                         </button>
                         <button
                             onClick={(e) => { e.stopPropagation(); setLanguage(language === 'id' ? 'en' : 'id'); }}
-                            className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:bg-stone-100 dark:hover:bg-white/5 transition-colors md:hidden"
+                            className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-stone-100 dark:hover:bg-white/5 transition-colors md:hidden"
                             title={t('settings.language.title')}
                         >
                             <Languages size={13} />
@@ -466,7 +466,7 @@ const Sidebar = ({
                         <div className="cf-user-card mb-2 px-2 py-2">
                             <button
                                 onClick={() => navigate('profile')}
-                                className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-xl hover:bg-indigo-50/70 dark:hover:bg-indigo-900/20 text-left transition-colors"
+                                className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-xl hover:bg-blue-50/70 dark:hover:bg-blue-900/20 text-left transition-colors"
                             >
                                 <div className="w-9 h-9 rounded-full gradient-bg flex items-center justify-center text-[11px] font-extrabold text-white shrink-0 shadow-md">
                                     {currentUser && currentUser.name ? currentUser.name.substring(0, 2).toUpperCase() : '?'}
@@ -485,7 +485,7 @@ const Sidebar = ({
                         <div className="grid grid-cols-2 gap-1.5 md:hidden">
                             <button
                                 onClick={(e) => { e.stopPropagation(); setLanguage(language === 'id' ? 'en' : 'id'); }}
-                                className="neo-btn flex items-center justify-center gap-1.5 h-9 text-slate-500 dark:text-slate-300 hover:text-indigo-500 dark:hover:text-indigo-300 text-xs font-semibold"
+                                className="neo-btn flex items-center justify-center gap-1.5 h-9 text-slate-500 dark:text-slate-300 hover:text-blue-500 dark:hover:text-blue-300 text-xs font-semibold"
                                 title={t('settings.language.title')}
                             >
                                 <Languages size={13} />
@@ -539,7 +539,7 @@ const Sidebar = ({
                                     <button
                                         key={item.id}
                                         onClick={() => navigate(item.id)}
-                                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-indigo-50 dark:hover:bg-slate-700 transition-colors"
+                                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors"
                                     >
                                         <span className="w-7 h-7 rounded-md bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-300 flex items-center justify-center shrink-0">
                                             <item.icon size={15} />

@@ -42,14 +42,14 @@ export default function OcrQueueModal({ ocrStats, API_BASE, toast }) {
                     <p className="text-[10px] text-slate-400 font-black uppercase mt-0.5">Job ID: {job.id}</p>
                   </div>
                   <div className="text-right">
-                    <span className="text-lg font-black text-indigo-600 dark:text-indigo-400">{job.progress || 0}%</span>
+                    <span className="text-lg font-black text-blue-600 dark:text-blue-400">{job.progress || 0}%</span>
                   </div>
                 </div>
                 <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-3 overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${job.progress || 0}%` }}
-                    className="bg-indigo-600 h-full rounded-full"
+                    className="bg-blue-600 h-full rounded-full"
                   />
                 </div>
               </div>

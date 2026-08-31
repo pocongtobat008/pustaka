@@ -144,7 +144,7 @@ export default function KnowledgeGraph({ data, height = 520 }) {
                 <span className="font-bold text-gray-500 dark:text-slate-400">Filter:</span>
                 {['all', 'category', 'training_doc', 'knowledge', 'correction', 'brain_memory'].map(f => (
                     <button key={f} onClick={() => setFilter(f)}
-                        className={`px-2 py-1 rounded-md transition-colors ${filter === f ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700'}`}>
+                        className={`px-2 py-1 rounded-md transition-colors ${filter === f ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700'}`}>
                         {f === 'all' ? 'Semua' : (TYPE_LABEL[f] || f)}
                     </button>
                 ))}

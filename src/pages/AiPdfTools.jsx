@@ -129,7 +129,7 @@ const compressPct = (row) => {
 // ── Definisi 6 tool ──
 const TOOLS = [
     {
-        id: 'convert', label: 'PDF → Word', icon: FileText, gradient: 'from-indigo-500 to-blue-600', shadow: 'shadow-indigo-500/25',
+        id: 'convert', label: 'PDF → Word', icon: FileText, gradient: 'from-blue-500 to-blue-600', shadow: 'shadow-blue-500/25',
         desc: 'Konversi PDF ke DOCX dengan tata letak asli (teks, tabel, gambar)',
         multiple: false, fields: [],
     },
@@ -894,7 +894,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                     </div>
                     <button
                         onClick={() => downloadBlob(result.blob, result.filename)}
-                        className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-600 to-purple-700 text-white shadow-lg shadow-indigo-500/25 hover:scale-[1.02] transition-all"
+                        className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-blue-600 to-purple-700 text-white shadow-lg shadow-blue-500/25 hover:scale-[1.02] transition-all"
                     >
                         <Download size={14} /> Unduh
                     </button>
@@ -903,13 +903,13 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
         );
     };
 
-    const inputCls = `px-2.5 py-1.5 rounded-lg text-xs border outline-none transition-colors ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-indigo-500/60' : 'bg-white/70 backdrop-blur-xl border-slate-200 text-slate-700 placeholder-slate-300 focus:border-indigo-400'}`;
+    const inputCls = `px-2.5 py-1.5 rounded-lg text-xs border outline-none transition-colors ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-blue-500/60' : 'bg-white/70 backdrop-blur-xl border-slate-200 text-slate-700 placeholder-slate-300 focus:border-blue-400'}`;
 
     return (
         <div className="max-w-[1200px] mx-auto px-4 lg:px-6 py-6">
             {/* Header */}
             <div className="mb-6 flex items-start gap-3.5">
-                <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-indigo-500/20 bg-gradient-to-br from-indigo-500 to-purple-600">
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/20 bg-gradient-to-br from-blue-500 to-purple-600">
                     <Wand2 size={20} className="text-white" />
                 </div>
                 <div className="flex-1">
@@ -938,7 +938,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
 
             {/* ── Ringkasan ── */}
             <SummaryRow className="mb-5" cards={[
-                { title: 'Total Tools', value: TOOLS.length, icon: Wand2, gradient: 'from-indigo-500 to-purple-600' },
+                { title: 'Total Tools', value: TOOLS.length, icon: Wand2, gradient: 'from-blue-500 to-purple-600' },
                 { title: 'Riwayat Tersimpan', value: history.length, icon: History, gradient: 'from-emerald-500 to-teal-600' },
                 { title: 'Tool Aktif', value: tool.label, icon: Sparkles, gradient: 'from-amber-500 to-orange-600', valueClass: 'text-base' },
                 { title: tool.id === 'sign' ? 'Tanda Tangan' : 'Hasil OCR',
@@ -975,7 +975,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                             onDragLeave={() => setDragOver(false)}
                             onDrop={e => { e.preventDefault(); setDragOver(false); onFiles(e.dataTransfer.files); }}
                             onClick={() => inputRef.current?.click()}
-                            className={`mt-4 rounded-2xl border-2 border-dashed p-8 text-center cursor-pointer transition-all ${dragOver ? 'border-indigo-500 bg-indigo-500/5' : (isDarkMode ? 'border-white/15 bg-white/5 hover:border-indigo-500/50' : 'border-slate-300 bg-white hover:border-indigo-400')}`}
+                            className={`mt-4 rounded-2xl border-2 border-dashed p-8 text-center cursor-pointer transition-all ${dragOver ? 'border-blue-500 bg-blue-500/5' : (isDarkMode ? 'border-white/15 bg-white/5 hover:border-blue-500/50' : 'border-slate-300 bg-white hover:border-blue-400')}`}
                         >
                             <input ref={inputRef} type="file" multiple accept=".pdf" className="hidden"
                                 onChange={e => { onFiles(e.target.files); e.target.value = ''; }} />
@@ -991,7 +991,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                             <div className="mt-3 space-y-1.5">
                                 {files.map((f, i) => (
                                     <div key={i} className={`flex items-center gap-2 px-3 py-2 rounded-xl ${isDarkMode ? 'bg-white/5' : 'bg-slate-50'}`}>
-                                        <FileText size={13} className={`flex-shrink-0 ${isDarkMode ? 'text-indigo-300' : 'text-indigo-500'}`} />
+                                        <FileText size={13} className={`flex-shrink-0 ${isDarkMode ? 'text-blue-300' : 'text-blue-500'}`} />
                                         <span className={`flex-1 min-w-0 truncate text-xs font-semibold ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{f.name}</span>
                                         <span className={`text-[10px] flex-shrink-0 ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>{formatFileSize(f.size)}</span>
                                         <button onClick={() => removeFile(i)} className={`p-1 rounded-md ${isDarkMode ? 'hover:bg-white/10 text-white/40' : 'hover:bg-slate-200 text-slate-400'}`}><X size={12} /></button>
@@ -1046,7 +1046,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                         type="checkbox"
                                         checked={form.autoRotate}
                                         onChange={e => setForm({ ...form, autoRotate: e.target.checked })}
-                                        className="accent-indigo-500 w-3.5 h-3.5"
+                                        className="accent-blue-500 w-3.5 h-3.5"
                                     />
                                     <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>Putar otomatis — deteksi orientasi halaman (landscape / miring)</span>
                                 </label>
@@ -1056,7 +1056,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                             type="checkbox"
                                             checked={form.perPage}
                                             onChange={e => setForm({ ...form, perPage: e.target.checked })}
-                                            className="accent-indigo-500 w-3.5 h-3.5"
+                                            className="accent-blue-500 w-3.5 h-3.5"
                                         />
                                         <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>Deteksi bahasa per halaman (dokumen campuran bahasa — lebih lambat)</span>
                                     </label>
@@ -1640,7 +1640,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                             onClick={() => setShowHistory(s => !s)}
                             className={`w-full flex items-center gap-2.5 px-4 py-3 text-left transition-colors ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-slate-50'}`}
                         >
-                            <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isDarkMode ? 'bg-indigo-500/15 text-indigo-300' : 'bg-indigo-100 text-indigo-600'}`}>
+                            <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isDarkMode ? 'bg-blue-500/15 text-blue-300' : 'bg-blue-100 text-blue-600'}`}>
                                 <History size={15} />
                             </div>
                             <div className="flex-1">
@@ -1648,7 +1648,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                 <p className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>File yang pernah diproses — unduh ulang tanpa proses ulang</p>
                             </div>
                             {history.length > 0 && (
-                                <span className={`px-2 py-0.5 rounded-full text-[9px] font-black ${isDarkMode ? 'bg-indigo-500/20 text-indigo-300' : 'bg-indigo-100 text-indigo-600'}`}>
+                                <span className={`px-2 py-0.5 rounded-full text-[9px] font-black ${isDarkMode ? 'bg-blue-500/20 text-blue-300' : 'bg-blue-100 text-blue-600'}`}>
                                     {history.length}
                                 </span>
                             )}
@@ -1677,12 +1677,12 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                             const dateStr = t && !isNaN(t) ? t.toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : '';
                                             return (
                                                 <div key={x.id} className={`flex items-center gap-2.5 px-4 py-2.5 border-b last:border-b-0 ${isDarkMode ? 'border-white/5 hover:bg-white/5' : 'border-slate-50 hover:bg-slate-50'}`}>
-                                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${isDarkMode ? 'bg-indigo-500/10 text-indigo-300' : 'bg-indigo-50 text-indigo-600'}`}>
+                                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${isDarkMode ? 'bg-blue-500/10 text-blue-300' : 'bg-blue-50 text-blue-600'}`}>
                                                         <FileText size={14} />
                                                     </div>
                                                     <div className="flex-1 min-w-0">
                                                         <p className={`text-[11px] font-bold truncate ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>
-                                                            <span className={`mr-1.5 px-1.5 py-0.5 rounded-md text-[9px] font-black ${isDarkMode ? 'bg-indigo-500/15 text-indigo-300' : 'bg-indigo-100 text-indigo-600'}`}>
+                                                            <span className={`mr-1.5 px-1.5 py-0.5 rounded-md text-[9px] font-black ${isDarkMode ? 'bg-blue-500/15 text-blue-300' : 'bg-blue-100 text-blue-600'}`}>
                                                                 {TOOL_LABEL[x.tool] || x.tool}
                                                             </span>
                                                             {x.tool === 'ocr' && x.language_name && (
@@ -1717,7 +1717,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                         <button
                                                             onClick={() => setViewTextTarget(x)}
                                                             title={t("aipdf.viewOcrText")}
-                                                            className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold transition-all hover:scale-[1.02] ${isDarkMode ? 'bg-indigo-500/15 text-indigo-300 hover:bg-indigo-500/25' : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'}`}
+                                                            className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold transition-all hover:scale-[1.02] ${isDarkMode ? 'bg-blue-500/15 text-blue-300 hover:bg-blue-500/25' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}
                                                         >
                                                             <Eye size={11} /> Lihat
                                                         </button>

@@ -32,7 +32,7 @@ const StartNode = () => (
 );
 
 const EndNode = ({ data }) => (
-    <div className={`px-6 py-3 rounded-2xl text-white shadow-xl border-2 flex items-center gap-3 min-w-[150px] relative ${data.status === 'Completed' ? 'bg-indigo-600 border-indigo-400' : 'bg-slate-400 border-slate-300'}`}>
+    <div className={`px-6 py-3 rounded-2xl text-white shadow-xl border-2 flex items-center gap-3 min-w-[150px] relative ${data.status === 'Completed' ? 'bg-blue-600 border-blue-400' : 'bg-slate-400 border-slate-300'}`}>
         <Handle id="top" type="source" position={Position.Top} className="opacity-0" />
         <Handle id="right" type="source" position={Position.Right} className="opacity-0" />
         <Handle id="bottom" type="source" position={Position.Bottom} className="opacity-0" />
@@ -57,7 +57,7 @@ const ApproverNode = ({ data }) => {
     const hasDocs = (data.documents || []).length > 0;
 
     return (
-        <div className={`rounded-3xl bg-white dark:bg-slate-800 shadow-2xl border-2 min-w-[220px] max-w-[280px] transition-all cursor-pointer hover:shadow-indigo-500/10 hover:shadow-3xl relative ${isDone || isDefined ? 'border-indigo-500' :
+        <div className={`rounded-3xl bg-white dark:bg-slate-800 shadow-2xl border-2 min-w-[220px] max-w-[280px] transition-all cursor-pointer hover:shadow-blue-500/10 hover:shadow-3xl relative ${isDone || isDefined ? 'border-blue-500' :
             isRejected ? 'border-red-500' :
                 isActive ? 'border-amber-500 ring-4 ring-amber-500/20 scale-105 z-50' :
                     'border-slate-100 dark:border-slate-800'
@@ -70,7 +70,7 @@ const ApproverNode = ({ data }) => {
 
             <div className="px-5 py-4">
                 <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center ${isDone || isDefined ? 'bg-indigo-50 text-indigo-600' :
+                    <div className={`w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center ${isDone || isDefined ? 'bg-blue-50 text-blue-600' :
                         isRejected ? 'bg-red-50 text-red-600' :
                             isActive ? 'bg-amber-50 text-amber-600 animate-pulse' :
                                 'bg-slate-50 dark:bg-slate-800 text-slate-400'
@@ -104,7 +104,7 @@ const ApproverNode = ({ data }) => {
                 {(hasNotes || hasDocs) && (
                     <div className="flex items-center gap-1.5 mt-3 pt-2 border-t border-slate-100 dark:border-slate-800">
                         {hasNotes && (
-                            <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 text-[8px] font-bold">
+                            <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-blue-50 dark:bg-blue-900/30 text-blue-500 text-[8px] font-bold">
                                 <MessageSquareText size={9} /> Instruksi
                             </span>
                         )}
@@ -171,7 +171,7 @@ function NodeDetailPopup({ node, onClose }) {
                             <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isDone ? 'bg-emerald-500 text-white' :
                                 isRejected ? 'bg-red-500 text-white' :
                                     isActive ? 'bg-amber-500 text-white' :
-                                        'bg-indigo-500 text-white'
+                                        'bg-blue-500 text-white'
                                 }`}>
                                 <ShieldCheck size={24} />
                             </div>
@@ -211,11 +211,11 @@ function NodeDetailPopup({ node, onClose }) {
                     {/* Instruction */}
                     <div>
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1 mb-2">
-                            <MessageSquareText size={10} className="text-indigo-500" /> Instruksi Kerja
+                            <MessageSquareText size={10} className="text-blue-500" /> Instruksi Kerja
                         </p>
                         {notes ? (
-                            <div className="p-4 bg-indigo-50/60 dark:bg-indigo-900/20 rounded-2xl border border-indigo-100 dark:border-indigo-800/50">
-                                <p className="text-sm text-indigo-700 dark:text-indigo-300 leading-relaxed whitespace-pre-wrap">{notes}</p>
+                            <div className="p-4 bg-blue-50/60 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800/50">
+                                <p className="text-sm text-blue-700 dark:text-blue-300 leading-relaxed whitespace-pre-wrap">{notes}</p>
                             </div>
                         ) : (
                             <p className="text-xs text-slate-400 italic px-1">Tidak ada instruksi khusus untuk step ini.</p>
@@ -234,7 +234,7 @@ function NodeDetailPopup({ node, onClose }) {
                                     return isImage(url) ? (
                                         <div
                                             key={dIdx}
-                                            className="relative aspect-video rounded-xl overflow-hidden border border-amber-200/50 dark:border-amber-800/50 bg-white dark:bg-slate-800 cursor-pointer group/img hover:ring-2 hover:ring-indigo-500 transition-all"
+                                            className="relative aspect-video rounded-xl overflow-hidden border border-amber-200/50 dark:border-amber-800/50 bg-white dark:bg-slate-800 cursor-pointer group/img hover:ring-2 hover:ring-blue-500 transition-all"
                                             onClick={() => setPreviewImage(getFullUrl(url))}
                                         >
                                             <img

@@ -528,8 +528,8 @@ export default function Documents({
             const matches = docList.filter(d => d.title.toLowerCase().includes(searchQuery.toLowerCase()) || (d.ocrContent || '').toLowerCase().includes(searchQuery.toLowerCase())).length;
             return {
                 text: text.insightSearch(matches),
-                icon: <Search className="text-indigo-500" size={20} />,
-                color: "border-indigo-200 dark:border-indigo-800/50 bg-indigo-50/50 dark:bg-indigo-900/10 text-indigo-800 dark:text-indigo-200"
+                icon: <Search className="text-blue-500" size={20} />,
+                color: "border-blue-200 dark:border-blue-800/50 bg-blue-50/50 dark:bg-blue-900/10 text-blue-800 dark:text-blue-200"
             };
         }
 
@@ -565,8 +565,8 @@ export default function Documents({
 
         return {
             text: text.tips[new Date().getHours() % text.tips.length],
-            icon: <Sparkles className="text-indigo-500" size={20} />,
-            color: "border-indigo-200 dark:border-indigo-800/50 bg-indigo-50/50 dark:bg-indigo-900/10 text-indigo-800 dark:text-indigo-200"
+            icon: <Sparkles className="text-blue-500" size={20} />,
+            color: "border-blue-200 dark:border-blue-800/50 bg-blue-50/50 dark:bg-blue-900/10 text-blue-800 dark:text-blue-200"
         };
     };
 
@@ -579,7 +579,7 @@ export default function Documents({
                 <SummaryRow cols={3} className="mb-2" cards={[
                     { title: isEnglish ? 'Total Documents' : 'Total Dokumen', value: (docList || []).length, icon: FileText, gradient: 'from-blue-500 to-cyan-600' },
                     { title: isEnglish ? 'Total Folders' : 'Total Folder', value: (folders || []).length, icon: FolderOpen, gradient: 'from-amber-500 to-orange-600' },
-                    { title: isEnglish ? 'Total Revisions' : 'Total Revisi', value: docStats?.totalRevisions || 0, icon: History, gradient: 'from-indigo-500 to-purple-600' },
+                    { title: isEnglish ? 'Total Revisions' : 'Total Revisi', value: docStats?.totalRevisions || 0, icon: History, gradient: 'from-blue-500 to-purple-600' },
                 ]} />
 
                 {/* AI SMART INSIGHT BANNER */}
@@ -607,7 +607,7 @@ export default function Documents({
                                 <ChevronRight size={18} />
                             </button>
                         </div>
-                        <button onClick={() => navigateFolder(null)} aria-label="All folders (root)" title="All folders" className={`p-2 rounded-lg transition-all ${currentFolderId === null ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-600 dark:text-white shadow-sm' : 'hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-500 dark:text-slate-400'}`}>
+                        <button onClick={() => navigateFolder(null)} aria-label="All folders (root)" title="All folders" className={`p-2 rounded-lg transition-all ${currentFolderId === null ? 'bg-blue-100 text-blue-600 dark:bg-blue-600 dark:text-white shadow-sm' : 'hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-500 dark:text-slate-400'}`}>
                             <HardDrive size={20} />
                         </button>
                         {currentFolderId && (
@@ -626,12 +626,12 @@ export default function Documents({
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder={isEnglish ? 'Search documents...' : 'Cari dokumen...'}
-                                className="w-full pl-10 pr-4 py-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:text-white"
+                                className="w-full pl-10 pr-4 py-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none dark:text-white"
                             />
                         </div>
                         {isViewingDataBox && (
                             <div className="flex items-center gap-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-lg px-3 shadow-sm">
-                                <AlertCircle size={14} className="text-indigo-500" />
+                                <AlertCircle size={14} className="text-blue-500" />
                                 <select
                                     value={statusFilter}
                                     onChange={(e) => setStatusFilter(e.target.value)}
@@ -665,7 +665,7 @@ export default function Documents({
                                         handleSelectAll();
                                     }
                                 }}
-                                className={`group p-1.5 rounded-md transition-all ${(selectedDocIds.size > 0 || selectedFolderIds.size > 0) ? 'bg-indigo-100 text-indigo-600 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`group p-1.5 rounded-md transition-all ${(selectedDocIds.size > 0 || selectedFolderIds.size > 0) ? 'bg-blue-100 text-blue-600 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                                 title={isEnglish ? 'Select All' : 'Pilih Semua (Select All)'}
                             >
                                 <Check size={18} className="group-hover:scale-110 transition-transform" />
@@ -674,20 +674,20 @@ export default function Documents({
                         <div className="flex bg-white rounded-lg border border-gray-200 p-1">
                             <button
                                 onClick={() => setViewMode('grid')}
-                                className={`group p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-indigo-100 text-indigo-600 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`group p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-blue-100 text-blue-600 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                                 title={isEnglish ? 'Grid View' : 'Grid View'}
                             >
                                 <LayoutGrid size={18} className="group-hover:scale-110 transition-transform" />
                             </button>
                             <button
                                 onClick={() => setViewMode('list')}
-                                className={`group p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-indigo-100 text-indigo-600 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`group p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-blue-100 text-blue-600 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                                 title={isEnglish ? 'List View' : 'List View'}
                             >
                                 <List size={18} className="group-hover:scale-110 transition-transform" />
                             </button>
                         </div>
-                        <button onClick={() => setShowHistory(!showHistory)} aria-label={isEnglish ? 'History' : 'Riwayat'} className={`px-3 py-2 rounded-lg border flex items-center gap-2 ${showHistory ? 'bg-indigo-100 text-indigo-600 border-indigo-200' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'}`}>
+                        <button onClick={() => setShowHistory(!showHistory)} aria-label={isEnglish ? 'History' : 'Riwayat'} className={`px-3 py-2 rounded-lg border flex items-center gap-2 ${showHistory ? 'bg-blue-100 text-blue-600 border-blue-200' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'}`}>
                             <History size={18} />
                         </button>
                         {hasPermission('documents', 'create') && (
@@ -701,7 +701,7 @@ export default function Documents({
                                 />
                                 <button
                                     onClick={() => bulkInputRef.current.click()}
-                                    className="group px-4 py-2 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 rounded-lg font-medium flex items-center justify-center gap-2 transition-all"
+                                    className="group px-4 py-2 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-lg font-medium flex items-center justify-center gap-2 transition-all"
                                     title={isEnglish ? 'Upload Multiple Files' : 'Upload Banyak File Sekaligus'}
                                 >
                                     <FileStack size={18} className="group-hover:scale-110 transition-transform" /> Bulk
@@ -742,14 +742,14 @@ export default function Documents({
                             {docLogs.slice(0, 20).map(log => (
                                 <div key={log.id} className="flex items-start gap-3 p-3 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-lg border border-white/40 dark:border-white/10">
                                     <div className="p-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-full shadow-sm">
-                                        <User size={14} className="text-indigo-500" />
+                                        <User size={14} className="text-blue-500" />
                                     </div>
                                     <div className="flex-1">
                                         <div className="flex justify-between">
                                             <span className="font-bold text-sm dark:text-white">{log.user}</span>
                                             <span className="text-xs text-gray-400 flex items-center gap-1"><Clock size={12} /> {new Date(log.timestamp).toLocaleString()}</span>
                                         </div>
-                                        <p className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mt-0.5">{log.action}</p>
+                                        <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mt-0.5">{log.action}</p>
                                         <p className="text-sm text-gray-600 dark:text-slate-300">{log.details}</p>
                                     </div>
                                 </div>
@@ -851,7 +851,7 @@ export default function Documents({
                                 } else if (folder.name.startsWith('MV_')) {
                                     SyncIcon = ArrowLeftRight; BadgeIcon = ArrowLeftRight; badgeColor = 'bg-blue-600'; badgeTitle = "Pindah Slot Rak";
                                 } else if (folder.name.startsWith('ED_')) {
-                                    SyncIcon = Edit3; BadgeIcon = Edit3; badgeColor = 'bg-indigo-500'; badgeTitle = "Box Diganti Nama";
+                                    SyncIcon = Edit3; BadgeIcon = Edit3; badgeColor = 'bg-blue-500'; badgeTitle = "Box Diganti Nama";
                                 } else if (folder.name.includes(' - BORROWED')) {
                                     SyncIcon = Clock; BadgeIcon = Clock; badgeColor = 'bg-amber-500'; badgeTitle = "Box Sedang Dipinjam";
                                 } else if (folder.name.includes(' - AUDIT')) {
@@ -863,7 +863,7 @@ export default function Documents({
                                 <div key={folder.id}
                                     onClick={() => navigateFolder(folder.id)}
                                     style={{ animationDelay: `${idx * 20}ms` }}
-                                    className={`group relative flex flex-col items-center p-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/10 hover:border-indigo-200 dark:hover:border-indigo-800 cursor-pointer transition-all duration-500 animate-in zoom-in-90 fade-in fill-mode-both shadow-sm aspect-[1/1.1] hover:scale-110 hover:-rotate-1 ${selectedFolderIds.has(folder.id) ? 'ring-2 ring-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/20 shadow-md' : ''} ${activeFolderMenuId === folder.id ? 'z-[120] ring-2 ring-indigo-500 shadow-2xl scale-[1.02]' : 'z-10'} ${isSyncFolder ? 'opacity-80 grayscale-[0.3]' : ''}`}
+                                    className={`group relative flex flex-col items-center p-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-200 dark:border-slate-700 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/10 hover:border-blue-200 dark:hover:border-blue-800 cursor-pointer transition-all duration-500 animate-in zoom-in-90 fade-in fill-mode-both shadow-sm aspect-[1/1.1] hover:scale-110 hover:-rotate-1 ${selectedFolderIds.has(folder.id) ? 'ring-2 ring-blue-500 bg-blue-50/50 dark:bg-blue-900/20 shadow-md' : ''} ${activeFolderMenuId === folder.id ? 'z-[120] ring-2 ring-blue-500 shadow-2xl scale-[1.02]' : 'z-10'} ${isSyncFolder ? 'opacity-80 grayscale-[0.3]' : ''}`}
                                 >
                                     {/* Folder Selection Checkbox */}
                                     {hasPermission('documents', 'delete') && !(['DataBox', 'TaxAudit', 'PUSTAKA', 'ApprovalDoc', 'SOP'].includes(folder.name)) && (
@@ -873,7 +873,7 @@ export default function Documents({
                                                 checked={selectedFolderIds.has(folder.id)}
                                                 aria-label={isEnglish ? `Select folder ${folder.name}` : `Pilih folder ${folder.name}`}
                                                         onChange={(e) => { e.stopPropagation(); toggleFolderSelection(folder.id, folder.name); }}
-                                                className="w-5 h-5 rounded-md border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer shadow-sm"
+                                                className="w-5 h-5 rounded-md border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer shadow-sm"
                                             />
                                         </div>
                                     )}
@@ -923,7 +923,7 @@ export default function Documents({
                                                 setActiveFolderMenuId(activeFolderMenuId === folder.id ? null : folder.id);
                                             }}
                                             aria-label={isEnglish ? 'Folder options' : 'Opsi folder'}
-                                            className="p-1.5 bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700 text-gray-500 hover:text-indigo-600 rounded-full transition-all opacity-0 group-hover:opacity-100"
+                                            className="p-1.5 bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700 text-gray-500 hover:text-blue-600 rounded-full transition-all opacity-0 group-hover:opacity-100"
                                         >
                                             <MoreVertical size={16} />
                                         </button>
@@ -962,7 +962,7 @@ export default function Documents({
                                                         <>
                                                             {hasPermission('documents', 'create') && (
                                                                 <button onClick={(e) => { e.stopPropagation(); startMgmtOp('copy', 'folder', folder); setActiveFolderMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
-                                                                    <Copy size={14} className="group-hover:scale-110 group-hover:text-indigo-500 transition-all" /> {isEnglish ? 'Copy' : 'Salin'}
+                                                                    <Copy size={14} className="group-hover:scale-110 group-hover:text-blue-500 transition-all" /> {isEnglish ? 'Copy' : 'Salin'}
                                                                 </button>
                                                             )}
                                                             {hasPermission('documents', 'edit') && (
@@ -1013,7 +1013,7 @@ export default function Documents({
 
                                 return (
                                     <div key={doc.id} style={{ animationDelay: `${(folders.length + idx) * 20}ms` }}
-                                        className={`group relative flex flex-col p-4 glass-card rounded-2xl transition-all duration-500 animate-in zoom-in-90 fade-in fill-mode-both h-full hover:scale-105 hover:shadow-2xl ${selectedDocIds.has(doc.id) ? 'ring-2 ring-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/20' : ''} ${activeMenuId === doc.id ? 'z-[120] ring-2 ring-indigo-500 shadow-2xl scale-[1.02]' : 'z-10'}`}>
+                                        className={`group relative flex flex-col p-4 glass-card rounded-2xl transition-all duration-500 animate-in zoom-in-90 fade-in fill-mode-both h-full hover:scale-105 hover:shadow-2xl ${selectedDocIds.has(doc.id) ? 'ring-2 ring-blue-500 bg-blue-50/50 dark:bg-blue-900/20' : ''} ${activeMenuId === doc.id ? 'z-[120] ring-2 ring-blue-500 shadow-2xl scale-[1.02]' : 'z-10'}`}>
 
                                         {/* Realtime OCR Overlay */}
                                         {(() => {
@@ -1031,7 +1031,7 @@ export default function Documents({
                                                 return (
                                                     <div className="absolute inset-x-0 top-0 h-1 bg-gray-100 dark:bg-gray-700 overflow-hidden rounded-t-2xl z-20">
                                                         <div
-                                                            className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 transition-all duration-500 ease-out"
+                                                            className="h-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-500 ease-out"
                                                             style={{ width: `${activeJob.progress || 5}%` }}
                                                         />
                                                     </div>
@@ -1055,7 +1055,7 @@ export default function Documents({
                                                     checked={selectedDocIds.has(doc.id)}
                                                     aria-label={isEnglish ? `Select ${doc.title}` : `Pilih ${doc.title}`}
                                                     onChange={(e) => { e.stopPropagation(); toggleDocSelection(doc.id); }}
-                                                    className="w-5 h-5 rounded-md border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer shadow-sm"
+                                                    className="w-5 h-5 rounded-md border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer shadow-sm"
                                                 />
                                             </div>
                                         )}
@@ -1094,7 +1094,7 @@ export default function Documents({
                                                             }}
                                                             className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2"
                                                         >
-                                                            <History size={14} className="text-indigo-500 group-hover:rotate-[-20deg] transition-transform" /> {isEnglish ? 'Revision History' : 'Riwayat Revisi'}
+                                                            <History size={14} className="text-blue-500 group-hover:rotate-[-20deg] transition-transform" /> {isEnglish ? 'Revision History' : 'Riwayat Revisi'}
                                                         </button>
                                                         <div className="h-px bg-gray-100 dark:bg-slate-800 my-1" />
 
@@ -1137,7 +1137,7 @@ export default function Documents({
                                             <button onClick={(e) => { e.stopPropagation(); handleDownload(doc); }} className="p-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-gray-500 hover:text-green-600 rounded-full shadow-md border border-gray-100 dark:border-slate-700" title="Download">
                                                 <Download size={16} />
                                             </button>
-                                            <button onClick={(e) => { e.stopPropagation(); setSelectedDocForRevision(doc); setIsRevisionModalOpen(true); }} className="p-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-gray-500 hover:text-indigo-600 rounded-full shadow-md border border-gray-100 dark:border-slate-700" title={isEnglish ? 'Revision History' : 'Riwayat Revisi'}>
+                                            <button onClick={(e) => { e.stopPropagation(); setSelectedDocForRevision(doc); setIsRevisionModalOpen(true); }} className="p-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-gray-500 hover:text-blue-600 rounded-full shadow-md border border-gray-100 dark:border-slate-700" title={isEnglish ? 'Revision History' : 'Riwayat Revisi'}>
                                                 <History size={16} />
                                             </button>
                                         </div>
@@ -1164,7 +1164,7 @@ export default function Documents({
                                                     <span className="text-red-500 font-bold">{isEnglish ? 'OCR FAILED' : 'OCR GAGAL'}</span>
                                                 ) : (
                                                     <div className="flex flex-col items-end">
-                                                        <span className="font-bold text-indigo-500">v{doc.version}</span>
+                                                        <span className="font-bold text-blue-500">v{doc.version}</span>
                                                         {doc.versionsHistory?.length > 0 && (
                                                             <span className="text-[8px] text-slate-400 font-medium">({doc.versionsHistory.length} Revisi)</span>
                                                         )}
@@ -1223,7 +1223,7 @@ export default function Documents({
                                             const folder = item;
                                             return (
                                                 <div style={style}>
-                                                    <div className={`group grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-indigo-50/30 dark:hover:bg-indigo-900/10 transition-colors cursor-pointer border-b border-gray-100 dark:border-slate-800 h-full ${selectedFolderIds.has(folder.id) ? 'bg-indigo-50/40 dark:bg-indigo-900/10' : ''}`}
+                                                    <div className={`group grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-colors cursor-pointer border-b border-gray-100 dark:border-slate-800 h-full ${selectedFolderIds.has(folder.id) ? 'bg-blue-50/40 dark:bg-blue-900/10' : ''}`}
                                                         onClick={() => navigateFolder(folder.id)}
                                                     >
                                                         <div className="col-span-6 md:col-span-12 flex items-center gap-4 overflow-hidden">
@@ -1234,7 +1234,7 @@ export default function Documents({
                                                                         checked={selectedFolderIds.has(folder.id)}
                                                                         aria-label={isEnglish ? `Select folder ${folder.name}` : `Pilih folder ${folder.name}`}
                                                                         onChange={() => toggleFolderSelection(folder.id, folder.name)}
-                                                                        className="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                                                                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                                                                     />
                                                                 </div>
                                                             )}
@@ -1256,7 +1256,7 @@ export default function Documents({
 
                                         return (
                                             <div style={style}>
-                                                <div className={`group grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer border-b border-gray-100 dark:border-slate-800 h-full ${selectedDocIds.has(doc.id) ? 'bg-indigo-50/40 dark:bg-indigo-900/10' : ''}`}
+                                                <div className={`group grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer border-b border-gray-100 dark:border-slate-800 h-full ${selectedDocIds.has(doc.id) ? 'bg-blue-50/40 dark:bg-blue-900/10' : ''}`}
                                                     onClick={(e) => {
                                                         if (e.ctrlKey || e.metaKey) toggleDocSelection(doc.id);
                                                         else handlePreview(doc);
@@ -1270,7 +1270,7 @@ export default function Documents({
                                                                     checked={selectedDocIds.has(doc.id)}
                                                                     aria-label={isEnglish ? `Select ${doc.title}` : `Pilih ${doc.title}`}
                                                                     onChange={() => toggleDocSelection(doc.id)}
-                                                                    className="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                                                                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                                                                 />
                                                             </div>
                                                         )}
@@ -1297,7 +1297,7 @@ export default function Documents({
                                                     </div>
                                                     <div className="col-span-2 hidden md:flex items-center">
                                                         <div className="flex flex-col">
-                                                            <span className="px-2 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-xs font-bold rounded-md">v{doc.version}</span>
+                                                            <span className="px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold rounded-md">v{doc.version}</span>
                                                             {doc.versionsHistory && (Array.isArray(doc.versionsHistory) ? doc.versionsHistory.length > 0 : (typeof doc.versionsHistory === 'string' && doc.versionsHistory !== '[]')) && (
                                                                 <span className="text-[9px] text-slate-400 font-medium ml-1">({Array.isArray(doc.versionsHistory) ? doc.versionsHistory.length : JSON.parse(doc.versionsHistory).length} Revisi)</span>
                                                             )}
@@ -1311,14 +1311,14 @@ export default function Documents({
                                                             <button onClick={(e) => { e.stopPropagation(); handleDownload(doc) }} className="group/btn p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg" title="Download">
                                                                 <Download size={16} />
                                                             </button>
-                                                            <button onClick={(e) => { e.stopPropagation(); setSelectedDocForRevision(doc); setIsRevisionModalOpen(true); }} className="group/btn p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg" title="Riwayat Revisi">
+                                                            <button onClick={(e) => { e.stopPropagation(); setSelectedDocForRevision(doc); setIsRevisionModalOpen(true); }} className="group/btn p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg" title="Riwayat Revisi">
                                                                 <History size={16} />
                                                             </button>
                                                         </div>
                                                         <div className="relative">
                                                             <button
                                                                 onClick={(e) => { e.stopPropagation(); setActiveMenuId(activeMenuId === doc.id ? null : doc.id); }}
-                                                                className="p-1.5 text-gray-400 hover:text-indigo-600 rounded-lg transition-colors"
+                                                                className="p-1.5 text-gray-400 hover:text-blue-600 rounded-lg transition-colors"
                                                             >
                                                                 <MoreVertical size={16} />
                                                             </button>
@@ -1332,7 +1332,7 @@ export default function Documents({
                                                                             <Download size={14} className="text-green-500" /> Download
                                                                         </button>
                                                                         <button onClick={(e) => { e.stopPropagation(); setSelectedDocForRevision(doc); setIsRevisionModalOpen(true); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800 flex items-center gap-2">
-                                                                            <History size={14} className="text-indigo-500" /> {isEnglish ? 'Revision History' : 'Riwayat Revisi'}
+                                                                            <History size={14} className="text-blue-500" /> {isEnglish ? 'Revision History' : 'Riwayat Revisi'}
                                                                         </button>
                                                                         <div className="h-px bg-gray-100 dark:bg-slate-800 my-1" />
                                                                         {hasPermission('documents', 'create') && (
@@ -1420,7 +1420,7 @@ export default function Documents({
                 <div className="flex flex-col relative pt-4">
                     <div className="mb-6">
                         <div className="flex items-center gap-3 mb-2">
-                            <div className={`p-2.5 rounded-2xl ${mgmtOp?.type === 'copy' ? 'bg-indigo-100 text-indigo-600' : 'bg-emerald-100 text-emerald-600'}`}>
+                            <div className={`p-2.5 rounded-2xl ${mgmtOp?.type === 'copy' ? 'bg-blue-100 text-blue-600' : 'bg-emerald-100 text-emerald-600'}`}>
                                 {mgmtOp?.type === 'copy' ? <Copy size={20} /> : <Move size={20} />}
                             </div>
                             <div>
@@ -1440,9 +1440,9 @@ export default function Documents({
                     <div className="space-y-2 mb-6 max-h-[40vh] overflow-y-auto custom-scrollbar pr-2">
                         <button
                             onClick={() => performCopyMove(null)}
-                            className="w-full flex items-center gap-3 px-4 py-3 bg-white/40 dark:bg-slate-800/40 hover:bg-white/80 dark:hover:bg-slate-800 hover:shadow-lg hover:scale-[1.02] border border-transparent hover:border-indigo-200 transition-all rounded-2xl group"
+                            className="w-full flex items-center gap-3 px-4 py-3 bg-white/40 dark:bg-slate-800/40 hover:bg-white/80 dark:hover:bg-slate-800 hover:shadow-lg hover:scale-[1.02] border border-transparent hover:border-blue-200 transition-all rounded-2xl group"
                         >
-                            <div className="p-2.5 bg-slate-100 dark:bg-slate-700/50 rounded-xl group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/40 text-slate-500 group-hover:text-indigo-600 transition-colors">
+                            <div className="p-2.5 bg-slate-100 dark:bg-slate-700/50 rounded-xl group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 text-slate-500 group-hover:text-blue-600 transition-colors">
                                 <HardDrive size={20} />
                             </div>
                             <span className="font-bold text-slate-700 dark:text-slate-200">{isEnglish ? 'All Documents (Root)' : 'Semua Dokumen (Root)'}</span>
@@ -1468,12 +1468,12 @@ export default function Documents({
                     {isExecutingOp && (
                         <div className="pt-4 border-t border-white/20 dark:border-white/5">
                             <div className="flex justify-between text-[10px] font-black uppercase tracking-widest mb-2 px-1">
-                                <span className="text-indigo-600 animate-pulse">{isEnglish ? 'Connecting...' : 'Menghubungkan...'}</span>
+                                <span className="text-blue-600 animate-pulse">{isEnglish ? 'Connecting...' : 'Menghubungkan...'}</span>
                                 <span className="text-slate-500">{opProgress}%</span>
                             </div>
                             <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
                                 <div
-                                    className="bg-indigo-600 h-full transition-all duration-300 ease-out shadow-[0_0_15px_rgba(79,70,229,0.5)]"
+                                    className="bg-blue-600 h-full transition-all duration-300 ease-out shadow-[0_0_15px_rgba(79,70,229,0.5)]"
                                     style={{ width: `${opProgress}%` }}
                                 ></div>
                             </div>
@@ -1496,7 +1496,7 @@ export default function Documents({
                             value={folderForm.name}
                             onChange={(e) => setFolderForm({ ...folderForm, name: e.target.value })}
                             disabled={['DataBox', 'TaxAudit', 'PUSTAKA', 'ApprovalDoc'].includes(folderForm.name)}
-                            className={`w-full px-6 py-4 gradient-bg-soft border-2 border-slate-100 dark:border-slate-800 rounded-2xl focus:border-indigo-500 transition-all outline-none dark:text-white font-black ${folderForm.name === 'DataBox' || folderForm.name === 'TaxAudit' || folderForm.name === 'ApprovalDoc' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`w-full px-6 py-4 gradient-bg-soft border-2 border-slate-100 dark:border-slate-800 rounded-2xl focus:border-blue-500 transition-all outline-none dark:text-white font-black ${folderForm.name === 'DataBox' || folderForm.name === 'TaxAudit' || folderForm.name === 'ApprovalDoc' ? 'opacity-50 cursor-not-allowed' : ''}`}
                             placeholder={isEnglish ? 'Example: Financial Report' : 'Contoh: Laporan Keuangan'}
                             autoFocus
                         />
@@ -1515,18 +1515,18 @@ export default function Documents({
                                     key={type.id}
                                     onClick={() => setFolderForm({ ...folderForm, privacy: type.id })}
                                     className={`p-4 rounded-3xl border-2 text-left transition-all relative overflow-hidden group/btn ${folderForm.privacy === type.id
-                                        ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/20 shadow-lg scale-[1.02]'
-                                        : 'border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-800/30 hover:border-indigo-300'
+                                        ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20 shadow-lg scale-[1.02]'
+                                        : 'border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-800/30 hover:border-blue-300'
                                         }`}
                                 >
                                     <div className="flex items-center gap-2 mb-1 relative z-10">
-                                        <type.icon size={18} className={`${folderForm.privacy === type.id ? 'text-indigo-600' : 'text-slate-400'} group-hover/btn:scale-110 transition-transform duration-300`} />
-                                        <span className={`text-xs font-black uppercase tracking-tight ${folderForm.privacy === type.id ? 'text-indigo-950 dark:text-indigo-100' : 'text-slate-600 dark:text-slate-300'}`}>{type.label}</span>
+                                        <type.icon size={18} className={`${folderForm.privacy === type.id ? 'text-blue-600' : 'text-slate-400'} group-hover/btn:scale-110 transition-transform duration-300`} />
+                                        <span className={`text-xs font-black uppercase tracking-tight ${folderForm.privacy === type.id ? 'text-blue-950 dark:text-blue-100' : 'text-slate-600 dark:text-slate-300'}`}>{type.label}</span>
                                     </div>
-                                    <p className={`text-[9px] font-bold uppercase tracking-widest relative z-10 ${folderForm.privacy === type.id ? 'text-indigo-600/70 dark:text-indigo-400/80' : 'text-slate-400'}`}>{type.desc}</p>
+                                    <p className={`text-[9px] font-bold uppercase tracking-widest relative z-10 ${folderForm.privacy === type.id ? 'text-blue-600/70 dark:text-blue-400/80' : 'text-slate-400'}`}>{type.desc}</p>
 
                                     {folderForm.privacy === type.id && (
-                                        <div className="absolute top-0 right-0 w-12 h-12 bg-indigo-500/10 rounded-full -mr-6 -mt-6 blur-xl"></div>
+                                        <div className="absolute top-0 right-0 w-12 h-12 bg-blue-500/10 rounded-full -mr-6 -mt-6 blur-xl"></div>
                                     )}
                                 </button>
                             ))}
@@ -1535,11 +1535,11 @@ export default function Documents({
 
                     {/* Conditional Inputs */}
                     {folderForm.privacy === 'dept' && (
-                        <div className="p-5 bg-indigo-50/50 dark:bg-indigo-900/20 rounded-[2rem] border border-indigo-100 dark:border-indigo-800/50 animate-in slide-in-from-top-2">
-                            <label className="block text-[10px] font-black text-indigo-700 dark:text-indigo-300 mb-3 uppercase tracking-widest">{isEnglish ? 'Select Registered Departments' : 'Pilih Departemen Terdaftar'}</label>
+                        <div className="p-5 bg-blue-50/50 dark:bg-blue-900/20 rounded-[2rem] border border-blue-100 dark:border-blue-800/50 animate-in slide-in-from-top-2">
+                            <label className="block text-[10px] font-black text-blue-700 dark:text-blue-300 mb-3 uppercase tracking-widest">{isEnglish ? 'Select Registered Departments' : 'Pilih Departemen Terdaftar'}</label>
                             <div className="max-h-40 overflow-y-auto pr-2 custom-scrollbar space-y-1.5">
                                 {(departments || []).map(dept => (
-                                    <label key={dept.id} className="flex items-center gap-3 p-3 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 rounded-2xl cursor-pointer transition-all border border-transparent hover:border-indigo-200">
+                                    <label key={dept.id} className="flex items-center gap-3 p-3 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 rounded-2xl cursor-pointer transition-all border border-transparent hover:border-blue-200">
                                         <input
                                             type="checkbox"
                                             checked={folderForm.allowedDepts.includes(dept.name)}
@@ -1549,7 +1549,7 @@ export default function Documents({
                                                     : folderForm.allowedDepts.filter(d => d !== dept.name);
                                                 setFolderForm({ ...folderForm, allowedDepts: newDepts });
                                             }}
-                                            className="w-5 h-5 rounded-lg text-indigo-600 focus:ring-indigo-500 border-indigo-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl"
+                                            className="w-5 h-5 rounded-lg text-blue-600 focus:ring-blue-500 border-blue-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl"
                                         />
                                         <span className="text-sm font-black text-slate-700 dark:text-slate-200 uppercase tracking-tight">{dept.name}</span>
                                     </label>
@@ -1597,7 +1597,7 @@ export default function Documents({
                                 setIsFolderModalOpen(false);
                             }}
                             disabled={!folderForm.name}
-                            className="flex-[2] py-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white text-xs font-black uppercase tracking-widest rounded-[1.25rem] shadow-xl shadow-indigo-600/30 hover:shadow-indigo-600/50 hover:-translate-y-0.5 transition-all active:scale-95 disabled:opacity-50"
+                            className="flex-[2] py-4 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-blue-500 text-white text-xs font-black uppercase tracking-widest rounded-[1.25rem] shadow-xl shadow-blue-600/30 hover:shadow-blue-600/50 hover:-translate-y-0.5 transition-all active:scale-95 disabled:opacity-50"
                         >
                             {folderForm.id ? (isEnglish ? 'Save Changes' : 'Simpan Perubahan') : (isEnglish ? 'Create Folder Now' : 'Buat Folder Sekarang')}
                         </button>
@@ -1648,9 +1648,9 @@ export default function Documents({
                 size="max-w-xl"
             >
                 <div className="space-y-4 pt-4">
-                    <div className="flex items-center gap-3 p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl border border-indigo-100 dark:border-indigo-800/50">
+                    <div className="flex items-center gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800/50">
                         <div className="p-2 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-xl shadow-sm">
-                            <FileText size={24} className="text-indigo-600" />
+                            <FileText size={24} className="text-blue-600" />
                         </div>
                         <div>
                             <h4 className="font-bold text-slate-800 dark:text-white truncate max-w-[300px]">{selectedDocForRevision?.title}</h4>
@@ -1676,13 +1676,13 @@ export default function Documents({
                             }
 
                             return history.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).map((rev, idx) => (
-                                <div key={idx} className="group flex items-center gap-4 p-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-2xl hover:border-indigo-300 dark:hover:border-indigo-700 transition-all">
+                                <div key={idx} className="group flex items-center gap-4 p-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-2xl hover:border-blue-300 dark:hover:border-blue-700 transition-all">
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 mb-1">
                                             <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] font-bold rounded uppercase">{isEnglish ? 'Revision' : 'Revisi'}</span>
                                             <span className="text-xs font-bold text-slate-700 dark:text-slate-200">{new Date(rev.timestamp).toLocaleString()}</span>
                                         </div>
-                                        <p className="text-[10px] text-slate-400 font-medium truncate">{isEnglish ? 'Uploaded by' : 'Diunggah oleh'}: <span className="text-indigo-600 dark:text-indigo-400">{rev.user}</span> • {isEnglish ? 'Size' : 'Ukuran'}: {rev.size}</p>
+                                        <p className="text-[10px] text-slate-400 font-medium truncate">{isEnglish ? 'Uploaded by' : 'Diunggah oleh'}: <span className="text-blue-600 dark:text-blue-400">{rev.user}</span> • {isEnglish ? 'Size' : 'Ukuran'}: {rev.size}</p>
                                     </div>
                                     <div className="flex gap-2">
                                         <a
@@ -1697,7 +1697,7 @@ export default function Documents({
                                         <button
                                             onClick={() => handleRestoreVersion(selectedDocForRevision.id, rev.timestamp)}
                                             disabled={isRestoring}
-                                            className="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-indigo-600/20 transition-all flex items-center gap-1.5 active:scale-95 disabled:opacity-50"
+                                            className="px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center gap-1.5 active:scale-95 disabled:opacity-50"
                                         >
                                             <RefreshCw size={14} className={isRestoring ? 'animate-spin' : ''} />
                                             {isEnglish ? 'Restore' : 'Restore'}
@@ -1726,7 +1726,7 @@ export default function Documents({
                     <div className="flex-[3] bg-slate-100 dark:bg-slate-950 rounded-3xl overflow-hidden flex items-center justify-center border border-slate-200 dark:border-slate-800 relative shadow-inner min-w-0 min-h-[500px] lg:min-h-0 lg:h-full">
                         {isGeneratingPreview ? (
                             <div className="flex flex-col items-center gap-3">
-                                <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                                <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                                 <p className="text-sm font-bold text-slate-500 animate-pulse">{isEnglish ? 'Preparing Preview...' : 'Menyiapkan Preview...'}</p>
                             </div>
                         ) : previewFile?.type?.toLowerCase()?.startsWith('image/') ? (
@@ -1760,7 +1760,7 @@ export default function Documents({
                                 <FileText size={64} className="mx-auto mb-4 opacity-20" />
                                 <p className="font-bold uppercase tracking-widest text-xs">{isEnglish ? 'Limited Preview' : 'Preview Terbatas'}</p>
                                 <p className="text-[10px] mt-2 opacity-60">{isEnglish ? 'This format does not support direct preview.' : 'Format ini tidak mendukung preview langsung.'}<br />{isEnglish ? 'Use Download button to view the file.' : 'Gunakan tombol Download untuk melihat file.'}</p>
-                                <button onClick={() => handleDownload(selectedDocPreview)} className="mt-6 px-6 py-2 gradient-bg text-white rounded-xl text-xs font-black shadow-lg shadow-indigo-500/20 hover:scale-105 transition-all">{isEnglish ? 'DOWNLOAD FILE' : 'DOWNLOAD FILE'}</button>
+                                <button onClick={() => handleDownload(selectedDocPreview)} className="mt-6 px-6 py-2 gradient-bg text-white rounded-xl text-xs font-black shadow-lg shadow-blue-500/20 hover:scale-105 transition-all">{isEnglish ? 'DOWNLOAD FILE' : 'DOWNLOAD FILE'}</button>
                             </div>
                         )}
                     </div>
@@ -1768,9 +1768,9 @@ export default function Documents({
                     {/* COLUMN 2: METADATA & CHAT */}
                     <div className="flex-1 flex flex-col h-full space-y-3 overflow-hidden min-w-[280px]">
                         {/* Doc Info */}
-                        <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl border border-indigo-100 dark:border-indigo-800/50 shrink-0">
-                            <h4 className="font-black text-indigo-900 dark:text-indigo-100 text-sm truncate mb-1">{selectedDocPreview?.title}</h4>
-                            <div className="flex flex-wrap gap-2 text-[10px] font-bold text-indigo-600/70 dark:text-indigo-400/70 uppercase tracking-wider">
+                        <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800/50 shrink-0">
+                            <h4 className="font-black text-blue-900 dark:text-blue-100 text-sm truncate mb-1">{selectedDocPreview?.title}</h4>
+                            <div className="flex flex-wrap gap-2 text-[10px] font-bold text-blue-600/70 dark:text-blue-400/70 uppercase tracking-wider">
                                 <span>{selectedDocPreview?.size}</span>
                                 <span>•</span>
                                 <span>v{selectedDocPreview?.version}</span>
@@ -1782,7 +1782,7 @@ export default function Documents({
                         {/* Chat Messages */}
                         <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
                             <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 flex items-center gap-2 shrink-0">
-                                <MoreVertical size={12} className="text-indigo-500" /> {isEnglish ? 'Coordination History' : 'Riwayat Koordinasi'}
+                                <MoreVertical size={12} className="text-blue-500" /> {isEnglish ? 'Coordination History' : 'Riwayat Koordinasi'}
                             </h4>
                             <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-1 bg-slate-50/30 dark:bg-slate-800/30 rounded-2xl p-2">
                                 <div className="space-y-4 flex flex-col">
@@ -1795,8 +1795,8 @@ export default function Documents({
                                             <div key={c.id} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} w-full animate-in slide-in-from-bottom-2`}>
                                                 <div className={`max-w-[85%] p-3 rounded-2xl shadow-sm ${isMe ? 'gradient-bg text-white rounded-tr-none' : 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-gray-100 dark:border-slate-800 rounded-tl-none'}`}>
                                                     <div className="flex justify-between items-center gap-4 text-[9px] mb-1 opacity-80 font-black uppercase tracking-wider">
-                                                        {!isMe && <span className="text-indigo-600 dark:text-indigo-400">{c.user}</span>}
-                                                        <span className={isMe ? 'text-indigo-100 ml-auto' : 'text-slate-400'}>
+                                                        {!isMe && <span className="text-blue-600 dark:text-blue-400">{c.user}</span>}
+                                                        <span className={isMe ? 'text-blue-100 ml-auto' : 'text-slate-400'}>
                                                             {isValidDate ? timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-'}
                                                         </span>
                                                     </div>
@@ -1804,7 +1804,7 @@ export default function Documents({
                                                     {c.attachmentUrl && (
                                                         <div className={`mt-2 flex items-center justify-between p-2 rounded-lg border border-dashed ${isMe ? 'bg-white/10 border-white/20' : 'gradient-bg-soft border-slate-200 dark:border-slate-700'}`}>
                                                             <div className="flex items-center gap-2 overflow-hidden">
-                                                                <Paperclip size={10} className={isMe ? 'text-indigo-200' : 'text-indigo-500'} />
+                                                                <Paperclip size={10} className={isMe ? 'text-blue-200' : 'text-blue-500'} />
                                                                 <span className="text-[9px] font-bold truncate max-w-[100px]">{c.attachmentName}</span>
                                                             </div>
                                                             <div className="flex gap-2 shrink-0 ml-2">
@@ -1817,7 +1817,7 @@ export default function Documents({
                                                                             handlePreview({ id: 'att-' + c.id, url: c.attachmentUrl, title: c.attachmentName, type: c.attachmentType, fileData: null }, true);
                                                                         }
                                                                     }}
-                                                                    className={`text-[9px] font-black uppercase hover:underline ${isMe ? 'text-white' : 'text-indigo-600'}`}
+                                                                    className={`text-[9px] font-black uppercase hover:underline ${isMe ? 'text-white' : 'text-blue-600'}`}
                                                                 >
                                                                     {c.attachmentType?.startsWith('image/') ? 'Zoom' : 'Preview'}
                                                                 </button>
@@ -1841,7 +1841,7 @@ export default function Documents({
                             <textarea
                                 value={newComment} onChange={e => setNewComment(e.target.value)}
                                 placeholder={isEnglish ? 'Write a comment...' : 'Tulis komentar...'}
-                                className="w-full p-3 text-xs bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none dark:text-white resize-none"
+                                className="w-full p-3 text-xs bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none dark:text-white resize-none"
                                 rows="2"
                             />
                             <div className="flex justify-between items-center">
@@ -1859,14 +1859,14 @@ export default function Documents({
                         {/* Action Buttons */}
                         <div className="flex gap-3 shrink-0">
                             <button onClick={() => setSelectedDocPreview(null)} className="flex-1 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all">{isEnglish ? 'Close' : 'Tutup'}</button>
-                            <button onClick={() => handleDownload(selectedDocPreview)} className="flex-[2] py-2.5 gradient-bg text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-indigo-500/20 hover:bg-indigo-500 transition-all flex items-center justify-center gap-2"><Download size={14} /> {isEnglish ? 'Download' : 'Download'}</button>
+                            <button onClick={() => handleDownload(selectedDocPreview)} className="flex-[2] py-2.5 gradient-bg text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-500/20 hover:bg-blue-500 transition-all flex items-center justify-center gap-2"><Download size={14} /> {isEnglish ? 'Download' : 'Download'}</button>
                         </div>
                     </div>
 
                     {/* COLUMN 3: OCR RESULTS */}
                     <div className="flex-1 flex flex-col h-full min-w-[280px] overflow-hidden">
                         <div className="flex items-center gap-2 mb-2 shrink-0">
-                            <Sparkles size={14} className="text-indigo-500" />
+                            <Sparkles size={14} className="text-blue-500" />
                             <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{isEnglish ? 'Text Extraction Result (OCR)' : 'Hasil Ekstraksi Teks (OCR)'}</h4>
                         </div>
                         <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar w-full bg-slate-50 dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-4 text-xs font-mono text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-wrap shadow-inner">

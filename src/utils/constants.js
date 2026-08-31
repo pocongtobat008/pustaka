@@ -34,7 +34,7 @@ export const getStatusStyle = (status) => {
         };
         case 'EXTERNAL': return {
             label: 'Indoarsip',
-            color: 'bg-indigo-500/10 backdrop-blur-md border-indigo-500/30 text-indigo-700 dark:text-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.1)] hover:shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:bg-indigo-500/20 hover:border-indigo-500/50',
+            color: 'bg-blue-500/10 backdrop-blur-md border-blue-500/30 text-blue-700 dark:text-blue-400 shadow-[0_0_15px_rgba(29,78,216,0.1)] hover:shadow-[0_0_20px_rgba(29,78,216,0.3)] hover:bg-blue-500/20 hover:border-blue-500/50',
             icon: Truck
         };
         case 'REMOVED': return {

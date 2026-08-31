@@ -24,7 +24,7 @@ function OrdnerInput({ editingItem, newOrdner, setNewOrdner, addOrdner }) {
                     value={local.noOrdner}
                     onChange={e => setLocal(prev => ({ ...prev, noOrdner: e.target.value }))}
                     onBlur={() => setNewOrdner(prev => ({ ...prev, noOrdner: local.noOrdner }))}
-                    className="w-full px-4 py-3 border-b-2 border-transparent bg-white/50 dark:bg-slate-800/50 rounded-xl focus:border-indigo-500 dark:text-white text-sm font-black transition-all outline-none"
+                    className="w-full px-4 py-3 border-b-2 border-transparent bg-white/50 dark:bg-slate-800/50 rounded-xl focus:border-blue-500 dark:text-white text-sm font-black transition-all outline-none"
                     placeholder="ORD-001"
                 />
             </div>
@@ -34,13 +34,13 @@ function OrdnerInput({ editingItem, newOrdner, setNewOrdner, addOrdner }) {
                     value={local.period}
                     onChange={e => setLocal(prev => ({ ...prev, period: e.target.value }))}
                     onBlur={() => setNewOrdner(prev => ({ ...prev, period: local.period }))}
-                    className="w-full px-4 py-3 border-b-2 border-transparent bg-white/50 dark:bg-slate-800/50 rounded-xl focus:border-indigo-500 dark:text-white text-sm font-black transition-all outline-none"
+                    className="w-full px-4 py-3 border-b-2 border-transparent bg-white/50 dark:bg-slate-800/50 rounded-xl focus:border-blue-500 dark:text-white text-sm font-black transition-all outline-none"
                     placeholder="2024"
                 />
             </div>
             <button
                 onClick={() => addOrdner(local)}
-                className={`w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-lg transition-all hover:scale-105 active:scale-95 ${editingItem?.type === 'ordner' ? 'bg-amber-500' : 'bg-indigo-600 hover:bg-indigo-500'}`}
+                className={`w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-lg transition-all hover:scale-105 active:scale-95 ${editingItem?.type === 'ordner' ? 'bg-amber-500' : 'bg-blue-600 hover:bg-blue-500'}`}
             >
                 {editingItem?.type === 'ordner' ? <Save size={20} /> : <Plus size={20} />}
             </button>
@@ -84,7 +84,7 @@ function InvoiceInput({ newInvoice, setNewInvoice, invoiceFileInputRef, handleIn
             <div className="flex gap-3 items-center">
                 <input placeholder="NO INVOICE" value={local.invoiceNo} onChange={e => setLocal(prev => ({ ...prev, invoiceNo: e.target.value }))} className="flex-1 min-w-[100px] px-3 py-2 text-[10px] border-b border-slate-200 dark:border-slate-800 bg-transparent dark:text-white font-black uppercase tracking-wider focus:ring-0" title="Nomor Invoice" />
                 <input placeholder="VENDOR" value={local.vendor} onChange={e => setLocal(prev => ({ ...prev, vendor: e.target.value }))} className="flex-1 min-w-[100px] px-3 py-2 text-[10px] border-b border-slate-200 dark:border-slate-800 bg-transparent dark:text-white font-black uppercase tracking-wider focus:ring-0" title="Nama Vendor" />
-                <input placeholder="NO FAKTUR" value={local.taxInvoiceNo} onChange={e => setLocal(prev => ({ ...prev, taxInvoiceNo: e.target.value }))} className="flex-1 min-w-[100px] px-3 py-2 text-[10px] border-b border-indigo-500/20 bg-transparent dark:text-white font-black uppercase tracking-wider focus:ring-0" title="Nomor Faktur Pajak" />
+                <input placeholder="NO FAKTUR" value={local.taxInvoiceNo} onChange={e => setLocal(prev => ({ ...prev, taxInvoiceNo: e.target.value }))} className="flex-1 min-w-[100px] px-3 py-2 text-[10px] border-b border-blue-500/20 bg-transparent dark:text-white font-black uppercase tracking-wider focus:ring-0" title="Nomor Faktur Pajak" />
                 <input type="date" value={local.paymentDate} onChange={e => setLocal(prev => ({ ...prev, paymentDate: e.target.value }))} className="w-28 px-3 py-2 text-[10px] border-b border-slate-200 dark:border-slate-800 bg-transparent dark:text-white font-black focus:ring-0" title="Tanggal Pembayaran" />
             </div>
             <div className="flex gap-3 items-center">
@@ -93,11 +93,11 @@ function InvoiceInput({ newInvoice, setNewInvoice, invoiceFileInputRef, handleIn
                 <div className="relative">
                     <input type="file" ref={invoiceFileInputRef} className="hidden" onChange={(e) => { handleInvoiceFileSelect(e); setLocal(prev => ({ ...prev, file: e.target.files[0], rawFile: e.target.files[0], fileName: e.target.files[0]?.name })); }} accept="image/*,.pdf,.docx,.doc,.xlsx,.xls,.pptx" />
                     <button onClick={() => invoiceFileInputRef.current.click()} className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${local.file ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`} title={local.fileName || "Lampirkan File (OCR Auto)"}>
-                        {local.isProcessing ? <div className="w-3 h-3 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" /> : <Paperclip size={14} />}
+                        {local.isProcessing ? <div className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /> : <Paperclip size={14} />}
                     </button>
                 </div>
 
-                <button onClick={() => { addInvoice(ord.id, local); setLocal({ invoiceNo: '', vendor: '', paymentDate: '', taxInvoiceNo: '', specialNote: '', file: null, fileName: '', rawFile: null, isProcessing: false }); }} className={`w-8 h-8 rounded-lg flex items-center justify-center text-white transition-all hover:scale-105 active:scale-95 ${editingItem?.type === 'invoice' ? 'bg-amber-500' : 'bg-indigo-600'}`}>
+                <button onClick={() => { addInvoice(ord.id, local); setLocal({ invoiceNo: '', vendor: '', paymentDate: '', taxInvoiceNo: '', specialNote: '', file: null, fileName: '', rawFile: null, isProcessing: false }); }} className={`w-8 h-8 rounded-lg flex items-center justify-center text-white transition-all hover:scale-105 active:scale-95 ${editingItem?.type === 'invoice' ? 'bg-amber-500' : 'bg-blue-600'}`}>
                     {editingItem?.type === 'invoice' ? <Save size={14} /> : <Plus size={14} />}
                 </button>
             </div>
@@ -124,12 +124,12 @@ export default function InventoryModals({
 
     return (
         <div className="space-y-6 animate-in fade-in duration-500 pt-4">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl -z-10 animate-pulse"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -z-10 animate-pulse"></div>
 
             {/* Header Box ID - Capsule Style */}
             <div className="bg-white/40 dark:bg-slate-800/40 p-5 rounded-[2rem] border border-white/60 dark:border-white/5 shadow-sm mb-8 backdrop-blur-sm">
                 <div className="flex items-center gap-4">
-                    <div className="p-3 bg-indigo-500/10 rounded-2xl text-indigo-600 shadow-inner">
+                    <div className="p-3 bg-blue-500/10 rounded-2xl text-blue-600 shadow-inner">
                         <Package size={24} />
                     </div>
                     <div className="flex flex-col min-w-[120px]">
@@ -154,13 +154,13 @@ export default function InventoryModals({
             <div className="flex bg-slate-100/50 dark:bg-slate-800/50 p-1.5 rounded-2xl mb-8 backdrop-blur-sm border border-white/20 dark:border-white/5">
                 <button
                     onClick={() => setModalTab('details')}
-                    className={`flex-1 py-3 text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${modalTab === 'details' ? 'bg-white/70 dark:bg-slate-700/60 backdrop-blur-xl shadow-xl text-indigo-600 dark:text-white scale-[1.02] ring-1 ring-black/5' : 'text-slate-500 hover:text-slate-700 hover:bg-white/40'}`}
+                    className={`flex-1 py-3 text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${modalTab === 'details' ? 'bg-white/70 dark:bg-slate-700/60 backdrop-blur-xl shadow-xl text-blue-600 dark:text-white scale-[1.02] ring-1 ring-black/5' : 'text-slate-500 hover:text-slate-700 hover:bg-white/40'}`}
                 >
                     <Package size={18} /> Detail Isi Kardus
                 </button>
                 <button
                     onClick={() => setModalTab('history')}
-                    className={`flex-1 py-3 text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${modalTab === 'history' ? 'bg-white/70 dark:bg-slate-700/60 backdrop-blur-xl shadow-xl text-indigo-600 dark:text-white scale-[1.02] ring-1 ring-black/5' : 'text-slate-500 hover:text-slate-700 hover:bg-white/40'}`}
+                    className={`flex-1 py-3 text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${modalTab === 'history' ? 'bg-white/70 dark:bg-slate-700/60 backdrop-blur-xl shadow-xl text-blue-600 dark:text-white scale-[1.02] ring-1 ring-black/5' : 'text-slate-500 hover:text-slate-700 hover:bg-white/40'}`}
                 >
                     <History size={18} /> Riwayat Mutasi
                 </button>
@@ -170,7 +170,7 @@ export default function InventoryModals({
                 <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500">
                     {/* Input Area - Integrated Row */}
                     {hasPermission('inventory', 'edit') && (
-                        <div className="flex gap-4 items-end bg-indigo-500/5 dark:bg-indigo-500/10 p-6 rounded-3xl border border-indigo-500/10 group/input transition-all hover:bg-indigo-500/[0.08]">
+                        <div className="flex gap-4 items-end bg-blue-500/5 dark:bg-blue-500/10 p-6 rounded-3xl border border-blue-500/10 group/input transition-all hover:bg-blue-500/[0.08]">
                             <OrdnerInput
                                 hasPermission={hasPermission}
                                 editingItem={editingItem}
@@ -191,10 +191,10 @@ export default function InventoryModals({
                             </div>
                         )}
                         {(boxForm.ordners || []).map((ord, ordIdx) => (
-                            <div key={ord.id || `ordner-${ordIdx}`} className={`group transition-all duration-300 rounded-3xl border ${expandedOrdnerIds.includes(ord.id) ? 'bg-indigo-500/10 border-indigo-500/30 shadow-lg shadow-indigo-500/5' : 'bg-white/40 dark:bg-slate-800/40 border-white/50 dark:border-white/5 hover:bg-white/60 dark:hover:bg-slate-800/60'}`}>
+                            <div key={ord.id || `ordner-${ordIdx}`} className={`group transition-all duration-300 rounded-3xl border ${expandedOrdnerIds.includes(ord.id) ? 'bg-blue-500/10 border-blue-500/30 shadow-lg shadow-blue-500/5' : 'bg-white/40 dark:bg-slate-800/40 border-white/50 dark:border-white/5 hover:bg-white/60 dark:hover:bg-slate-800/60'}`}>
                                 <div className="flex justify-between items-center p-4 cursor-pointer" onClick={() => setExpandedOrdnerIds(prev => prev.includes(ord.id) ? prev.filter(id => id !== ord.id) : [...prev, ord.id])}>
                                     <div className="flex items-center gap-4">
-                                        <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all ${expandedOrdnerIds.includes(ord.id) ? 'gradient-bg text-white shadow-lg shadow-indigo-600/30' : 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/40'}`}>
+                                        <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all ${expandedOrdnerIds.includes(ord.id) ? 'gradient-bg text-white shadow-lg shadow-blue-600/30' : 'bg-blue-50 dark:bg-blue-900/20 text-blue-500 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40'}`}>
                                             {expandedOrdnerIds.includes(ord.id) ? <FolderOpen size={20} /> : <Package size={20} />}
                                         </div>
                                         <div>
@@ -238,7 +238,7 @@ export default function InventoryModals({
                                             <div className="flex justify-end mb-2">
                                                 <button
                                                     onClick={(e) => { e.stopPropagation(); fetchInventory(); }}
-                                                    className="flex items-center gap-1.5 text-[10px] uppercase font-bold text-indigo-500 hover:text-indigo-700 hover:bg-indigo-50 px-2 py-1 rounded-lg transition-colors"
+                                                    className="flex items-center gap-1.5 text-[10px] uppercase font-bold text-blue-500 hover:text-blue-700 hover:bg-blue-50 px-2 py-1 rounded-lg transition-colors"
                                                 >
                                                     <RefreshCw size={12} /> Refresh Status OCR
                                                 </button>
@@ -249,7 +249,7 @@ export default function InventoryModals({
                                                     return (
                                                         <div key={inv.id} className="group/inv flex items-center justify-between p-3 hover:bg-white dark:hover:bg-slate-900/50 rounded-xl transition-all border border-transparent hover:border-slate-200 dark:hover:border-white/5">
                                                             <div className="flex items-center gap-3">
-                                                                <FileText size={14} className="text-slate-400 group-hover/inv:text-indigo-500 transition-colors" />
+                                                                <FileText size={14} className="text-slate-400 group-hover/inv:text-blue-500 transition-colors" />
                                                                 <div className="flex flex-col">
                                                                     <span className="font-black text-xs text-slate-700 dark:text-white tracking-tight">{inv.invoiceNo ? String(inv.invoiceNo) : '-'}</span>
                                                                     <div className="flex items-center gap-2 mt-0.5">
@@ -260,7 +260,7 @@ export default function InventoryModals({
                                                                         <div className="flex items-center gap-1 text-[9px] text-slate-400 mt-1">
                                                                             <Paperclip size={10} /> {String(inv.fileName)}
                                                                             {inv.status === 'uploading' ? (
-                                                                                <span className="text-indigo-500 font-bold text-[8px] border border-indigo-200 dark:border-indigo-800 px-1 rounded ml-1 animate-pulse">UPLOADING...</span>
+                                                                                <span className="text-blue-500 font-bold text-[8px] border border-blue-200 dark:border-blue-800 px-1 rounded ml-1 animate-pulse">UPLOADING...</span>
                                                                             ) : inv.status === 'done' ? (
                                                                                 <span className="text-emerald-500 font-bold text-[8px] border border-emerald-200 dark:border-emerald-800 px-1 rounded ml-1">OCR READY</span>
                                                                             ) : (
@@ -271,7 +271,7 @@ export default function InventoryModals({
                                                                 </div>
                                                             </div>
                                                             <div className="flex gap-1 opacity-0 group-hover/inv:opacity-100 transition-all">
-                                                                <button onClick={() => inv.status !== 'uploading' && handleViewInvoice(inv)} className={`p-1.5 text-slate-400 transition-colors ${inv.status === 'uploading' ? 'opacity-40 cursor-not-allowed' : 'hover:text-indigo-600'}`} title="Lihat Detail"><Eye size={12} /></button>
+                                                                <button onClick={() => inv.status !== 'uploading' && handleViewInvoice(inv)} className={`p-1.5 text-slate-400 transition-colors ${inv.status === 'uploading' ? 'opacity-40 cursor-not-allowed' : 'hover:text-blue-600'}`} title="Lihat Detail"><Eye size={12} /></button>
                                                                 {hasPermission('inventory', 'edit') && (
                                                                     <button onClick={() => editInvoice(inv, ord.id)} className="p-1.5 text-slate-400 hover:text-blue-600 transition-colors"><Edit3 size={12} /></button>
                                                                 )}
@@ -296,7 +296,7 @@ export default function InventoryModals({
                                 {selectedSlotId && hasPermission('inventory', 'edit') && (
                                     <button
                                         onClick={() => setShowMoveInput(!showMoveInput)}
-                                        className={`px-8 py-4 rounded-2xl text-[10px] font-black flex items-center gap-3 transition-all active:scale-95 ${showMoveInput ? 'gradient-bg text-white shadow-xl shadow-indigo-500/30' : 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-slate-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 hover:text-indigo-600 border border-slate-200 dark:border-white/5 shadow-sm'}`}
+                                        className={`px-8 py-4 rounded-2xl text-[10px] font-black flex items-center gap-3 transition-all active:scale-95 ${showMoveInput ? 'gradient-bg text-white shadow-xl shadow-blue-500/30' : 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-slate-500 hover:bg-blue-50 dark:hover:bg-blue-900/40 hover:text-blue-600 border border-slate-200 dark:border-white/5 shadow-sm'}`}
                                     >
                                         <ArrowLeftRight size={18} /> PINDAH SLOT
                                     </button>
@@ -307,7 +307,7 @@ export default function InventoryModals({
                                 selectedSlotId && hasPermission('inventory', 'edit') && (
                                     <button
                                         onClick={handleSaveBox}
-                                        className="px-12 py-4 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white rounded-2xl shadow-2xl shadow-indigo-500/20 flex items-center gap-3 text-[10px] font-black transition-all hover:shadow-indigo-500/40 active:scale-95 hover:-translate-y-1"
+                                        className="px-12 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-2xl shadow-2xl shadow-blue-500/20 flex items-center gap-3 text-[10px] font-black transition-all hover:shadow-blue-500/40 active:scale-95 hover:-translate-y-1"
                                     >
                                         <Save size={18} /> SIMPAN DATA
                                     </button>
@@ -318,12 +318,12 @@ export default function InventoryModals({
                         {/* Row 2: Move Input */}
                         {
                             showMoveInput && (
-                                <div className="mt-6 flex gap-4 items-center bg-indigo-500/5 dark:bg-indigo-500/10 p-5 rounded-3xl border border-indigo-500/10 animate-in slide-in-from-top-2 duration-300">
-                                    <div className="w-12 h-12 rounded-xl gradient-bg text-white flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                                <div className="mt-6 flex gap-4 items-center bg-blue-500/5 dark:bg-blue-500/10 p-5 rounded-3xl border border-blue-500/10 animate-in slide-in-from-top-2 duration-300">
+                                    <div className="w-12 h-12 rounded-xl gradient-bg text-white flex items-center justify-center shadow-lg shadow-blue-500/20">
                                         <ArrowLeftRight size={20} />
                                     </div>
                                     <div className="flex-1">
-                                        <span className="text-[10px] font-black text-indigo-600 dark:text-indigo-300 uppercase tracking-widest block mb-1 ml-1">Slot Tujuan</span>
+                                        <span className="text-[10px] font-black text-blue-600 dark:text-blue-300 uppercase tracking-widest block mb-1 ml-1">Slot Tujuan</span>
                                         <input
                                             type="number"
                                             placeholder="1-100"
@@ -334,7 +334,7 @@ export default function InventoryModals({
                                     </div>
                                     <button
                                         onClick={handleMoveBox}
-                                        className="px-8 py-3 gradient-bg text-white text-[10px] font-black rounded-xl hover:opacity-95 shadow-xl shadow-indigo-500/20 transition-all active:scale-95"
+                                        className="px-8 py-3 gradient-bg text-white text-[10px] font-black rounded-xl hover:opacity-95 shadow-xl shadow-blue-500/20 transition-all active:scale-95"
                                     >
                                         KONFIRMASI
                                     </button>
@@ -364,7 +364,7 @@ export default function InventoryModals({
                                                 <button onClick={() => {
                                                     setShowExternalForm(true);
                                                     setExternalDate(new Date().toISOString().split('T')[0]);
-                                                }} className="p-5 border-2 border-indigo-500/20 bg-indigo-500/5 hover:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-3xl text-sm font-black flex items-center justify-center gap-3 transition-all transform active:scale-95 group shadow-sm">
+                                                }} className="p-5 border-2 border-blue-500/20 bg-blue-500/5 hover:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-3xl text-sm font-black flex items-center justify-center gap-3 transition-all transform active:scale-95 group shadow-sm">
                                                     <Truck size={24} className="group-hover:scale-110 transition-transform" /> KIRIM KE INDOARSIP
                                                 </button>
                                             </>
@@ -397,12 +397,12 @@ export default function InventoryModals({
                 modalTab === 'history' && (
                     <div className="space-y-6 py-4 animate-in fade-in duration-500 max-h-[60vh] overflow-y-auto pr-4 custom-scrollbar">
                         {/* Current Status Summary Card */}
-                        <div className="bg-indigo-600 rounded-[2rem] p-6 text-white shadow-xl shadow-indigo-500/20 relative overflow-hidden mb-8">
+                        <div className="bg-blue-600 rounded-[2rem] p-6 text-white shadow-xl shadow-blue-500/20 relative overflow-hidden mb-8">
                             <div className="absolute top-0 right-0 p-4 opacity-10">
                                 <History size={120} />
                             </div>
                             <div className="relative z-10">
-                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-100 mb-2">Status Terkini Kardus</p>
+                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-100 mb-2">Status Terkini Kardus</p>
                                 <div className="flex items-center gap-4">
                                     <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-inner">
                                         <Package size={28} />
@@ -414,7 +414,7 @@ export default function InventoryModals({
                                                 {selectedSlotId ? `Slot #${selectedSlotId}` : selectedExternalItem?.destination || 'External'}
                                             </span>
                                             <div className="w-1 h-1 rounded-full bg-white/40"></div>
-                                            <span className="text-[10px] font-bold text-indigo-100">
+                                            <span className="text-[10px] font-bold text-blue-100">
                                                 Update: {new Date((selectedSlotId ? (inventory.find(s => s.id == selectedSlotId))?.lastUpdated : selectedExternalItem?.sentDate) || Date.now()).toLocaleDateString()}
                                             </span>
                                         </div>
@@ -449,7 +449,7 @@ export default function InventoryModals({
                                     const getActionConfig = (action) => {
                                         const a = action?.toUpperCase();
                                         if (a === 'CREATED' || a === 'IMPORTED') return { icon: Plus, color: 'bg-emerald-500', text: 'text-emerald-600', bg: 'bg-emerald-50' };
-                                        if (a === 'STORED' || a === 'RESTORED') return { icon: CheckCircle2, color: 'bg-indigo-500', text: 'text-indigo-600', bg: 'bg-indigo-50' };
+                                        if (a === 'STORED' || a === 'RESTORED') return { icon: CheckCircle2, color: 'bg-blue-500', text: 'text-blue-600', bg: 'bg-blue-50' };
                                         if (a === 'MOVED') return { icon: ArrowLeftRight, color: 'bg-blue-500', text: 'text-blue-600', bg: 'bg-blue-50' };
                                         if (a === 'BORROWED') return { icon: User, color: 'bg-amber-500', text: 'text-amber-600', bg: 'bg-amber-50' };
                                         if (a === 'AUDIT') return { icon: Shield, color: 'bg-purple-500', text: 'text-purple-600', bg: 'bg-purple-50' };
@@ -494,7 +494,7 @@ export default function InventoryModals({
                                                         <div className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-[10px] font-black text-slate-500">
                                                             {histItem.user?.charAt(0).toUpperCase()}
                                                         </div>
-                                                        <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400">Oleh: <span className="text-indigo-500">{histItem.user}</span></span>
+                                                        <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400">Oleh: <span className="text-blue-500">{histItem.user}</span></span>
                                                     </div>
                                                     <div className="text-[10px] font-black text-slate-300 uppercase tracking-tighter">Verified Trail</div>
                                                 </div>
@@ -510,7 +510,7 @@ export default function InventoryModals({
             {
                 modalTab === 'invoice-detail' && selectedInvoice && (
                     <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
-                        <button onClick={() => setModalTab('details')} className="flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-indigo-600 transition-colors uppercase tracking-wider">
+                        <button onClick={() => setModalTab('details')} className="flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-blue-600 transition-colors uppercase tracking-wider">
                             <ChevronLeft size={14} /> Kembali ke Daftar
                         </button>
 
@@ -535,7 +535,7 @@ export default function InventoryModals({
                                 </div>
                                 <div>
                                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 block">Lokasi File (Kardus / Ordner)</span>
-                                    <p className="text-sm font-bold text-indigo-600 dark:text-indigo-400">
+                                    <p className="text-sm font-bold text-blue-600 dark:text-blue-400">
                                         {selectedInvoice.location || selectedInvoice.folderName || 'Inventory'}
                                     </p>
                                 </div>
@@ -544,11 +544,11 @@ export default function InventoryModals({
                             <div className="grid grid-cols-2 gap-6 mb-6">
                                 <div>
                                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 block">No Faktur Pajak</span>
-                                    <p className="text-lg font-bold text-indigo-600 dark:text-indigo-400">{selectedInvoice.taxInvoiceNo || '-'}</p>
+                                    <p className="text-lg font-bold text-blue-600 dark:text-blue-400">{selectedInvoice.taxInvoiceNo || '-'}</p>
                                 </div>
                                 <div>
                                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 block">Lampiran File</span>
-                                    {selectedInvoice.fileName ? <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold text-sm"><Paperclip size={16} /> {String(selectedInvoice.fileName)}</div> : <span className="text-sm text-slate-400 italic">Tidak ada file</span>}
+                                    {selectedInvoice.fileName ? <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold text-sm"><Paperclip size={16} /> {String(selectedInvoice.fileName)}</div> : <span className="text-sm text-slate-400 italic">Tidak ada file</span>}
                                 </div>
                             </div>
 
@@ -561,7 +561,7 @@ export default function InventoryModals({
                                 </div>
                             </div>
 
-                            {selectedInvoice.file && <button onClick={() => handleDownloadInvoice(selectedInvoice)} className="w-full py-3 bg-indigo-600 hover:opacity-95 text-white rounded-xl font-bold shadow-lg shadow-indigo-500/20 transition-all flex items-center justify-center gap-2"><Download size={18} /> Download Lampiran PDF/Gambar</button>}
+                            {selectedInvoice.file && <button onClick={() => handleDownloadInvoice(selectedInvoice)} className="w-full py-3 bg-blue-600 hover:opacity-95 text-white rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2"><Download size={18} /> Download Lampiran PDF/Gambar</button>}
 
                             {/* Invoice Preview */}
                             {selectedInvoice.file && (
@@ -572,13 +572,13 @@ export default function InventoryModals({
                                     <div className="h-[450px] overflow-auto bg-slate-50 dark:bg-slate-950 flex items-center justify-center relative">
                                         {isGeneratingPreview ? (
                                             <div className="flex flex-col items-center gap-3">
-                                                <RefreshCw size={32} className="text-indigo-500 animate-spin" />
+                                                <RefreshCw size={32} className="text-blue-500 animate-spin" />
                                                 <p className="text-[10px] font-bold text-slate-500 animate-pulse uppercase tracking-widest text-center">Menyiapkan Preview...</p>
                                             </div>
                                         ) : (typeof selectedInvoice.file === 'string' && (selectedInvoice.file.match(/.(jpg|jpeg|png|webp)$/i) || selectedInvoice.file.startsWith('data:image'))) ? (
                                             <img src={getFullUrl(selectedInvoice.file)} alt="Invoice Preview" className="max-w-full mx-auto" />
                                         ) : (pdfBlobUrl) ? (
-                                            <Suspense fallback={<div className="flex items-center justify-center h-full py-12"><RefreshCw size={28} className="text-indigo-500 animate-spin" /></div>}>
+                                            <Suspense fallback={<div className="flex items-center justify-center h-full py-12"><RefreshCw size={28} className="text-blue-500 animate-spin" /></div>}>
                                                 <PdfViewer src={pdfBlobUrl} className="w-full h-full" />
                                             </Suspense>
                                         ) : (previewHtml) ? (
@@ -597,7 +597,7 @@ export default function InventoryModals({
 
                         {selectedInvoice.ocrContent && (
                             <div className="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-3xl border border-slate-200 dark:border-slate-800">
-                                <div className="flex items-center gap-2 mb-3"><FileText size={16} className="text-indigo-500" /><h4 className="text-xs font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest">Hasil Scan OCR</h4></div>
+                                <div className="flex items-center gap-2 mb-3"><FileText size={16} className="text-blue-500" /><h4 className="text-xs font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest">Hasil Scan OCR</h4></div>
                                 <div className="p-4 bg-white dark:bg-slate-950 rounded-2xl border border-slate-100 dark:border-slate-800 text-xs font-mono text-slate-600 dark:text-slate-400 leading-relaxed max-h-60 overflow-y-auto custom-scrollbar whitespace-pre-wrap">{typeof selectedInvoice.ocrContent === 'object' ? JSON.stringify(selectedInvoice.ocrContent, null, 2) : selectedInvoice.ocrContent}</div>
                             </div>
                         )}

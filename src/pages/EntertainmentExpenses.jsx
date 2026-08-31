@@ -962,7 +962,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
 
             {/* Summary Cards */}
             <SummaryRow cols={3} cards={[
-                { title: text.totalEntries, value: totalEntries, icon: ClipboardList, gradient: 'from-indigo-500 to-purple-600', subtext: text.totalEntriesSub },
+                { title: text.totalEntries, value: totalEntries, icon: ClipboardList, gradient: 'from-blue-500 to-purple-600', subtext: text.totalEntriesSub },
                 { title: text.totalNilai, value: new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(totalNilai), icon: DollarSign, gradient: 'from-emerald-500 to-teal-600', subtext: text.totalNilaiSub },
                 { title: text.totalLampiran, value: totalLampiran, icon: FileText, gradient: 'from-amber-500 to-orange-600', subtext: text.totalLampiranSub },
             ]} />
@@ -997,7 +997,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                         onClick={() => { if (!isAdmin && unsettledCount > 0) { if (showForm) setShowForm(false); toast.warning(t('entertain.unsettledWarning')); return; } resetForm(); setShowForm(!showForm); }}
                         disabled={(!isAdmin && unsettledCount > 0) || submitting}
                         title={(!isAdmin && unsettledCount > 0) ? (isEnglish ? 'Settle all pending entries first' : 'Selesaikan semua entry yang belum settle dulu') : ''}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl hover:from-indigo-500 hover:to-blue-500 transition-all shadow-lg shadow-indigo-500/20 font-semibold text-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-600 text-white rounded-xl hover:from-blue-500 hover:to-blue-500 transition-all shadow-lg shadow-blue-500/20 font-semibold text-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
                     >
                         {showForm ? <X size={18} /> : <Plus size={18} />}
                         {showForm ? (isEnglish ? 'Close Form' : 'Tutup Form') : text.addNew}
@@ -1110,19 +1110,19 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                     <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{text.filterTanggalFrom}</label>
                     <input type="date" aria-label={text.filterTanggalFrom} value={searchParams.tanggal_from}
                         onChange={e => setSearchParams(p => ({ ...p, tanggal_from: e.target.value }))}
-                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500" />
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500" />
                 </div>
                 <div className="flex-1 min-w-[130px]">
                     <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{text.filterTanggalTo}</label>
                     <input type="date" aria-label={text.filterTanggalTo} value={searchParams.tanggal_to}
                         onChange={e => setSearchParams(p => ({ ...p, tanggal_to: e.target.value }))}
-                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500" />
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500" />
                 </div>
                     <div className="flex-1 min-w-[150px]">
                         <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{text.filterJenis}</label>
                         <select aria-label={text.filterJenis} value={searchParams.jenis}
                             onChange={e => setSearchParams(p => ({ ...p, jenis: e.target.value }))}
-                            className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500">
+                            className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500">
                             <option value="">{text.filterAllSettle}</option>
                             {JENIS_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
                         </select>
@@ -1131,7 +1131,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                         <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{isEnglish ? 'Entry Type' : 'Tipe Entry'}</label>
                         <select aria-label={isEnglish ? 'Entry Type' : 'Tipe Entry'} value={searchParams.entry_type}
                             onChange={e => setSearchParams(p => ({ ...p, entry_type: e.target.value }))}
-                            className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500">
+                            className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500">
                             <option value="">{text.filterAllSettle}</option>
                             <option value="reimburse">{t("opt.reimburse")}</option>
                             <option value="plan">{t("opt.plan")}</option>
@@ -1142,7 +1142,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                         <input type="text" placeholder={text.filterNoAf + ' (Enter)'} value={searchParams.no_gl}
                             onChange={e => setSearchParams(p => ({ ...p, no_gl: e.target.value }))}
                             onKeyDown={handleSearchKeyDown}
-                            className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm font-mono focus:ring-2 focus:ring-indigo-500" />
+                            className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm font-mono focus:ring-2 focus:ring-blue-500" />
                     </div>
                     <div className="flex-[2] min-w-[200px]">
                         <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{text.filterSearch}</label>
@@ -1151,11 +1151,11 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                             <input type="text" placeholder={text.searchPlaceholder + ' (Enter)'} value={searchParams.search}
                                 onChange={e => setSearchParams(p => ({ ...p, search: e.target.value }))}
                                 onKeyDown={handleSearchKeyDown}
-                                className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500" />
+                                className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500" />
                         </div>
                     </div>
                     <button onClick={() => { setPage(1); }}
-                        className="px-4 py-2 gradient-bg text-white rounded-xl hover:bg-indigo-700 transition-colors text-sm font-semibold">
+                        className="px-4 py-2 gradient-bg text-white rounded-xl hover:bg-blue-700 transition-colors text-sm font-semibold">
                         <Filter size={16} className="inline-block mr-1" />
                         {text.filterBtn}
                     </button>
@@ -1353,7 +1353,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                     <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
                         transition={{ type: 'spring', damping: 28, stiffness: 300 }}
                         className="fixed top-0 right-0 z-[71] h-full w-full max-w-[600px] bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl shadow-2xl flex flex-col">
-                        <div className="bg-gradient-to-r from-indigo-600 to-blue-600 px-6 py-4 flex items-center justify-between shrink-0">
+                        <div className="bg-gradient-to-r from-blue-600 to-blue-600 px-6 py-4 flex items-center justify-between shrink-0">
                             <h3 className="text-white font-bold text-lg">{editingId ? text.formEdit : text.formNew} Entertainment Expenses</h3>
                             <button type="button" onClick={() => { resetForm(); setShowForm(false); }}
                                 className="p-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
@@ -1365,7 +1365,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                             {/* Entry Type (Plan / Reimburse) */}
                             <div className="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-slate-100 dark:bg-slate-700/40">
                                 <button type="button" onClick={() => setEntryType('plan')}
-                                    className={`py-2.5 rounded-xl text-sm font-bold transition-all ${entryType === 'plan' ? 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-indigo-600 shadow' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}>
+                                    className={`py-2.5 rounded-xl text-sm font-bold transition-all ${entryType === 'plan' ? 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-blue-600 shadow' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}>
                                     Plan
                                 </button>
                                 <button type="button" onClick={() => setEntryType('reimburse')}
@@ -1387,7 +1387,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                     <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblTanggal}</label>
                                     <input type="date" value={form.tanggal}
                                         onChange={e => setForm(p => ({ ...p, tanggal: e.target.value }))}
-                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.tanggal ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
+                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.tanggal ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500`} />
                                     {errors.tanggal && <p className="text-red-500 text-xs mt-1">{errors.tanggal}</p>}
                                 </div>
                                 {/* Jenis */}
@@ -1395,7 +1395,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                     <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblJenis}</label>
                                     <select value={form.jenis}
                                         onChange={e => setForm(p => ({ ...p, jenis: e.target.value }))}
-                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.jenis ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`}>
+                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.jenis ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500`}>
                                         <option value="">{text.pilihJenis}</option>
                                         {JENIS_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
                                     </select>
@@ -1416,7 +1416,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                         <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblTempat} *</label>
                                         <input type="text" value={form.tempat}
                                             onChange={e => setForm(p => ({ ...p, tempat: e.target.value }))}
-                                            className={`w-full px-3 py-2.5 rounded-xl border ${errors.tempat ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
+                                            className={`w-full px-3 py-2.5 rounded-xl border ${errors.tempat ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500`} />
                                         {errors.tempat && <p className="text-red-500 text-xs mt-1">{errors.tempat}</p>}
                                     </div>
                                     {/* Address Venue */}
@@ -1425,7 +1425,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                         <textarea value={form.alamat}
                                             onChange={e => setForm(p => ({ ...p, alamat: e.target.value }))}
                                             rows={2}
-                                            className={`w-full px-3 py-2.5 rounded-xl border ${errors.alamat ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
+                                            className={`w-full px-3 py-2.5 rounded-xl border ${errors.alamat ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500`} />
                                         {errors.alamat && <p className="text-red-500 text-xs mt-1">{errors.alamat}</p>}
                                     </div>
                                 </div>
@@ -1438,7 +1438,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">Rp</span>
                                         <input type="text" value={form.nilai ? formatCurrency(form.nilai) : ''}
                                             onChange={handleNilaiChange}
-                                            className={`w-full pl-10 pr-3 py-2.5 rounded-xl border ${errors.nilai ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
+                                            className={`w-full pl-10 pr-3 py-2.5 rounded-xl border ${errors.nilai ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500`} />
                                     </div>
                                     {errors.nilai && <p className="text-red-500 text-xs mt-1">{errors.nilai}</p>}
                                 </div>
@@ -1448,7 +1448,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                     <input type="text" value={form.no_gl}
                                         onChange={e => setForm(p => ({ ...p, no_gl: formatAf(e.target.value) }))}
                                         placeholder="PR000001"
-                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.no_gl ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
+                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.no_gl ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500`} />
                                     {errors.no_gl && <p className="text-red-500 text-xs mt-1">{errors.no_gl}</p>}
                                 </div>
                                 {/* No GL */}
@@ -1457,7 +1457,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                     <input type="text" value={form.gl_number}
                                         onChange={e => setForm(p => ({ ...p, gl_number: e.target.value }))}
                                         placeholder={isEnglish ? 'Enter GL number' : 'Isi No GL'}
-                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.gl_number ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
+                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.gl_number ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500`} />
                                     {errors.gl_number && <p className="text-red-500 text-xs mt-1">{errors.gl_number}</p>}
                                 </div>
                                 {/* Jenis Usaha */}
@@ -1465,7 +1465,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                     <label className="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">{text.lblJenisUsaha}</label>
                                     <select value={form.jenis_usaha}
                                         onChange={e => setForm(p => ({ ...p, jenis_usaha: e.target.value, custom_jenis_usaha: '' }))}
-                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.jenis_usaha ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`}>
+                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.jenis_usaha ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500`}>
                                         <option value="">t('entertain.selectBusinessType')</option>
                                         {JENIS_USAHA_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
                                     </select>
@@ -1516,11 +1516,11 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                 ))}
                                 <div className="flex flex-wrap items-center justify-between gap-3 mt-1">
                                     <button type="button" onClick={addGroup}
-                                        className="inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-700 text-sm font-semibold">
+                                        className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 text-sm font-semibold">
                                         <Plus size={14} /> {text.btnTambahGroupRelasi}
                                     </button>
-                                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700">
-                                        <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-300 uppercase tracking-wide">{text.lblJumlahRelasi}</span>
+                                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700">
+                                        <span className="text-xs font-semibold text-blue-600 dark:text-blue-300 uppercase tracking-wide">{text.lblJumlahRelasi}</span>
                                         <span className="inline-flex items-center justify-center min-w-[28px] h-7 px-2 rounded-lg gradient-bg text-white text-sm font-bold">
                                             {jumlahRelasi}
                                         </span>
@@ -1538,7 +1538,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                 <textarea value={form.catatan_kode}
                                     onChange={e => setForm(p => ({ ...p, catatan_kode: e.target.value }))}
                                     rows={2}
-                                    className={`w-full px-3 py-2.5 rounded-xl border ${errors.catatan_kode ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-indigo-500`} />
+                                    className={`w-full px-3 py-2.5 rounded-xl border ${errors.catatan_kode ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'} bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500`} />
                                 {errors.catatan_kode && <p className="text-red-500 text-xs mt-1">{errors.catatan_kode}</p>}
                             </div>
 
@@ -1643,7 +1643,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                     </>
                                 ) : (
                                     <button type="submit" disabled={submitting}
-                                        className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl hover:from-indigo-500 hover:to-blue-500 transition-all shadow-lg font-semibold disabled:opacity-50">
+                                        className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-600 text-white rounded-xl hover:from-blue-500 hover:to-blue-500 transition-all shadow-lg font-semibold disabled:opacity-50">
                                         {submitting ? (
                                             <Loader2 size={18} className="animate-spin" />
                                         ) : (
@@ -1701,7 +1701,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                                 const r = e.currentTarget.getBoundingClientRect();
                                                 setActionMenu(prev => prev && prev.item?.id === item.id ? null : openRowMenu(item, r));
                                             }}
-                                            className={`p-1.5 rounded-lg transition-colors ${actionMenu?.item?.id === item.id ? 'bg-indigo-50 text-indigo-600 dark:bg-slate-800' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200'}`}
+                                            className={`p-1.5 rounded-lg transition-colors ${actionMenu?.item?.id === item.id ? 'bg-blue-50 text-blue-600 dark:bg-slate-800' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200'}`}
                                             title={text.aksi}
                                         >
                                             <MoreVertical size={16} />
@@ -1717,7 +1717,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                                     Reimburse
                                                 </span>
                                             ) : (
-                                                <span className="px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-[10px] font-bold">
+                                                <span className="px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 text-[10px] font-bold">
                                                     Plan
                                                 </span>
                                             )}
@@ -1749,7 +1749,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                         )}
                                     </td>
                                     <td className="px-4 py-3">
-                                        <span className="px-2 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-lg text-xs font-semibold">
+                                        <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-semibold">
                                             {item.jenis === 'Custom' ? item.custom_jenis : item.jenis}
                                         </span>
                                     </td>
@@ -2112,7 +2112,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                         <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }}
                             className="bg-white/95 dark:bg-slate-800/80 backdrop-blur-xl rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-white/70 dark:border-white/10"
                             onClick={e => e.stopPropagation()}>
-                            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+                            <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
                                 <h3 className="text-white font-bold text-lg">{text.previewTitle}</h3>
                                 <button onClick={() => setShowPreview(false)}
                                     className="p-1.5 text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition-colors">
@@ -2134,7 +2134,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                         <span className={`px-2.5 py-1 rounded-lg text-[11px] font-bold ${
                                             previewData.entry_type === 'reimburse'
                                                 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300'
-                                                : 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300'
+                                                : 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300'
                                         }`}>
                                             {previewData.entry_type === 'reimburse' ? 'Reimburse' : 'Plan'}
                                         </span>
@@ -2154,7 +2154,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
 
                                 {/* Informasi Umum */}
                                 <div className="bg-white dark:bg-slate-700/40 rounded-2xl p-4 border border-slate-200 dark:border-slate-600 shadow-sm">
-                                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-300 mb-3">
+                                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-300 mb-3">
                                         {isEnglish ? 'General Information' : 'Informasi Umum'}
                                     </h4>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -2455,7 +2455,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                 transition={{ type: 'spring', damping: 22, stiffness: 300 }}
                                 className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-md overflow-hidden"
                                 onClick={e => e.stopPropagation()}>
-                                <div className="bg-gradient-to-r from-sky-600 to-indigo-600 px-6 py-4 flex items-center justify-between">
+                                <div className="bg-gradient-to-r from-sky-600 to-blue-600 px-6 py-4 flex items-center justify-between">
                                     <h3 className="text-white font-bold text-lg flex items-center gap-2">
                                         <Hash size={20} /> {text.glTitle}
                                     </h3>
@@ -2477,7 +2477,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                                 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300'
                                                 : glTarget.status === 'draft'
                                                 ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300'
-                                                : 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300'
+                                                : 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300'
                                         }`}>
                                             {glTarget.status === 'settled' ? (isEnglish ? 'Settled' : 'Settled')
                                                 : glTarget.status === 'draft' ? 'Draft'
@@ -2520,7 +2520,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                                     setGlSaving(false);
                                                 }
                                             }}
-                                            className="inline-flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-sky-600 to-indigo-600 text-white rounded-xl hover:opacity-90 transition-opacity text-sm font-bold disabled:opacity-40 disabled:cursor-not-allowed">
+                                            className="inline-flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-sky-600 to-blue-600 text-white rounded-xl hover:opacity-90 transition-opacity text-sm font-bold disabled:opacity-40 disabled:cursor-not-allowed">
                                             {glSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />} {text.glSave}
                                         </button>
                                     </div>

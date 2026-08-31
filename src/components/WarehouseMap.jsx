@@ -56,7 +56,7 @@ const WarehouseMap = ({ inventory, onSelectInfo }) => {
     return (
         <div className="bg-white/50 backdrop-blur-md p-6 rounded-2xl border border-white/40 shadow-xl">
             <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent flex items-center gap-2">
+                <h3 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-600 bg-clip-text text-transparent flex items-center gap-2">
                     <Map className="w-6 h-6 text-blue-600" />
                     Denah Gudang Interaktif
                 </h3>

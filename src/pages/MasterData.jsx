@@ -797,7 +797,7 @@ export default function MasterData({
             'bg-rose-100 text-rose-700 dark:bg-rose-500/10 dark:text-rose-300 border-rose-200 dark:border-rose-800',
             'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300 border-amber-200 dark:border-amber-800',
             'bg-teal-100 text-teal-700 dark:bg-teal-500/10 dark:text-teal-300 border-teal-200 dark:border-teal-800',
-            'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800',
+            'bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-300 border-blue-200 dark:border-blue-800',
             'bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-500/10 dark:text-fuchsia-300 border-fuchsia-200 dark:border-fuchsia-800',
         ];
         let h = 0; for (const c of String(p)) h = (h * 31 + c.charCodeAt(0)) % 997;
@@ -1115,7 +1115,7 @@ export default function MasterData({
                                         className="w-full flex items-center justify-between p-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/60 dark:border-white/10 rounded-2xl hover:shadow-md transition-all group"
                                     >
                                         <div className="flex items-center gap-3">
-                                            <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl text-indigo-600">
+                                            <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-xl text-blue-600">
                                                 <Building2 size={18} />
                                             </div>
                                             <div className="text-left">
@@ -1123,7 +1123,7 @@ export default function MasterData({
                                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{deptUsers.length} {text.registeredMembers}</p>
                                             </div>
                                         </div>
-                                        <div className={`p-2 rounded-xl transition-all ${expandedDepts[deptName] ? 'gradient-bg text-white rotate-90' : 'gradient-bg-soft text-slate-400 group-hover:text-indigo-600'}`}>
+                                        <div className={`p-2 rounded-xl transition-all ${expandedDepts[deptName] ? 'gradient-bg text-white rotate-90' : 'gradient-bg-soft text-slate-400 group-hover:text-blue-600'}`}>
                                             <ChevronRight size={18} />
                                         </div>
                                     </button>
@@ -1131,20 +1131,20 @@ export default function MasterData({
                                     {expandedDepts[deptName] && (
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pl-4 animate-in slide-in-from-top-2 duration-300">
                                             {deptUsers.map(u => (
-                                                <div key={u.id} className="flex items-center justify-between p-4 bg-white/40 dark:bg-slate-800/40 backdrop-blur-sm rounded-2xl border border-white/60 dark:border-white/5 hover:border-indigo-300 transition-all group/user">
+                                                <div key={u.id} className="flex items-center justify-between p-4 bg-white/40 dark:bg-slate-800/40 backdrop-blur-sm rounded-2xl border border-white/60 dark:border-white/5 hover:border-blue-300 transition-all group/user">
                                                     <div className="flex items-center gap-4">
                                                         <div className="relative">
-                                                            <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-black text-lg shadow-lg">
+                                                            <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center text-white font-black text-lg shadow-lg">
                                                                 {u.name.charAt(0)}
                                                             </div>
                                                             <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-white/70 dark:bg-slate-800/60 rounded-lg flex items-center justify-center border border-white/60 dark:border-white/10 shadow-sm">
-                                                                <Shield size={10} className="text-indigo-500" />
+                                                                <Shield size={10} className="text-blue-500" />
                                                             </div>
                                                         </div>
                                                         <div>
                                                             <div className="font-black text-slate-800 dark:text-white text-sm tracking-tight">{u.name}</div>
                                                             <div className="flex items-center gap-2 mt-0.5">
-                                                                <span className="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-md">{u.role}</span>
+                                                                <span className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-md">{u.role}</span>
                                                                 <span className="text-[10px] font-bold text-slate-400 uppercase">@{u.username}</span>
                                                             </div>
                                                         </div>
@@ -1196,7 +1196,7 @@ export default function MasterData({
                                         </div>
                                         <div className="flex gap-1">
                                             {hasPermission('master', 'edit') && (
-                                                <button onClick={() => handleEditRole(r)} className="p-2 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg"><Edit3 size={16} /></button>
+                                                <button onClick={() => handleEditRole(r)} className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg"><Edit3 size={16} /></button>
                                             )}
                                             {hasPermission('master', 'delete') && (
                                                 <button onClick={() => handleDeleteRole(r.id)} className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"><Trash2 size={16} /></button>
@@ -1216,11 +1216,11 @@ export default function MasterData({
                                                     title={hasRule ? actions.join(', ') : (hasPermission('master', 'edit') ? text.setNow : text.noPermissionSet)}
                                                     className={`px-2 py-1 rounded text-[10px] flex flex-col text-left border transition-all ${hasPermission('master', 'edit')
                                                         ? (hasRule
-                                                            ? 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-gray-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600 cursor-pointer'
+                                                            ? 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-gray-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600 cursor-pointer'
                                                             : 'bg-amber-50 dark:bg-amber-500/10 border-dashed border-amber-300 dark:border-amber-500/40 hover:border-amber-400 cursor-pointer')
                                                         : 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border-gray-200 dark:border-slate-700 cursor-default opacity-70'}`}
                                                 >
-                                                    <span className={`font-bold uppercase ${hasRule ? 'text-indigo-500' : 'text-amber-500 dark:text-amber-400'}`}>
+                                                    <span className={`font-bold uppercase ${hasRule ? 'text-blue-500' : 'text-amber-500 dark:text-amber-400'}`}>
                                                         {mod.label}
                                                     </span>
                                                     <span className={`${hasRule ? 'text-gray-400' : 'text-amber-400/80 dark:text-amber-500/70 italic'}`}>
@@ -1234,7 +1234,7 @@ export default function MasterData({
                                             .filter(mod => !APP_MODULES[mod])
                                             .map(mod => (
                                                 <div key={mod} className="px-2 py-1 bg-white/70 dark:bg-slate-800/60 border border-gray-200 dark:border-slate-700 rounded text-[10px] flex flex-col">
-                                                    <span className="font-bold text-indigo-500 uppercase">{mod}</span>
+                                                    <span className="font-bold text-blue-500 uppercase">{mod}</span>
                                                     <span className="text-gray-400">{Array.isArray(perms[mod]) ? perms[mod].join(', ') : ''}</span>
                                                 </div>
                                             ))}
@@ -1258,7 +1258,7 @@ export default function MasterData({
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {flows.map(f => (
-                            <div key={f.id} className="p-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-xl hover:border-indigo-300 transition-all">
+                            <div key={f.id} className="p-4 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-xl hover:border-blue-300 transition-all">
                                 <div className="flex justify-between items-start mb-4">
                                     <div>
                                         <div className="font-bold text-lg dark:text-white">{f.name}</div>
@@ -1266,7 +1266,7 @@ export default function MasterData({
                                     </div>
                                     <div className="flex gap-1">
                                         {hasPermission('master', 'edit') && (
-                                            <button onClick={() => handleEditFlow(f)} className="p-2 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg" title={text.editFlow}><Edit3 size={16} /></button>
+                                            <button onClick={() => handleEditFlow(f)} className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg" title={text.editFlow}><Edit3 size={16} /></button>
                                         )}
                                         {hasPermission('master', 'delete') && (
                                             <button onClick={() => handleDeleteFlow(f.id)} className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg" title={text.deleteFlow}><Trash2 size={16} /></button>
@@ -1276,7 +1276,7 @@ export default function MasterData({
                                 <div className="space-y-2">
                                     {(f.steps || []).map((s, idx) => (
                                         <div key={idx} className="flex items-center gap-2 text-xs">
-                                            <div className="w-5 h-5 rounded bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold">{idx + 1}</div>
+                                            <div className="w-5 h-5 rounded bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold">{idx + 1}</div>
                                             <span className="dark:text-slate-300 font-medium flex items-center gap-1"><ShieldCheck size={12} /> {s.name}</span>
                                         </div>
                                     ))}
@@ -1292,13 +1292,13 @@ export default function MasterData({
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div>
                             <h3 className="font-bold text-lg dark:text-white flex items-center gap-2 lowercase">
-                                <History size={20} className="text-indigo-500" />
+                                <History size={20} className="text-blue-500" />
                                 {logSource === 'database' ? text.auditTrailSystem : `${text.systemLogFile}: ${logSource.split('_')[0].toUpperCase()} File`}
                             </h3>
                             <div className="flex bg-gray-100 dark:bg-slate-800 p-1 rounded-xl mt-3 w-fit border border-white/60 dark:border-white/10">
                                 <button
                                     onClick={() => setLogSource('database')}
-                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'database' ? 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'database' ? 'bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                                 >
                                     <History size={12} /> Database
                                 </button>
@@ -1328,7 +1328,7 @@ export default function MasterData({
                                 <Input
                                     type="text"
                                     placeholder={text.searchLogs}
-                                    className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border border-white/60 dark:border-white/10 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white"
+                                    className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border border-white/60 dark:border-white/10 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
                                     value={logSearchQuery}
                                     onChange={(e) => setLogSearchQuery(e.target.value)}
                                 />
@@ -1365,7 +1365,7 @@ export default function MasterData({
                                                         </td>
                                                         <td className="px-6 py-4 font-bold text-slate-700 dark:text-slate-200">{log.user || text.system}</td>
                                                         <td className="px-6 py-4">
-                                                            <span className="px-2 py-1 bg-indigo-50 dark:bg-indigo-900/30 dark:text-indigo-300 text-indigo-600 dark:text-indigo-400 rounded-lg text-[10px] font-black uppercase tracking-wider border border-indigo-100 dark:border-indigo-800">
+                                                            <span className="px-2 py-1 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-300 text-blue-600 dark:text-blue-400 rounded-lg text-[10px] font-black uppercase tracking-wider border border-blue-100 dark:border-blue-800">
                                                                 {log.action}
                                                             </span>
                                                         </td>
@@ -1374,7 +1374,7 @@ export default function MasterData({
                                                             {(log.oldValue || log.newValue) && (
                                                                 <button
                                                                     onClick={() => setExpandedLogId(expandedLogId === log.id ? null : log.id)}
-                                                                    className="p-2 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl text-indigo-500 transition-all"
+                                                                    className="p-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-xl text-blue-500 transition-all"
                                                                 >
                                                                     {expandedLogId === log.id ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                                                                 </button>
@@ -1402,13 +1402,13 @@ export default function MasterData({
                             {totalLogPages > 1 && (
                                 <div className="px-6 py-4 flex items-center justify-between border-t border-slate-50 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-800/30 rounded-b-2xl">
                                     <div className="text-xs text-slate-500 dark:text-slate-400">
-                                        {text.showing} <span className="font-bold text-indigo-600">{(logCurrentPage - 1) * logsPerPage + 1}</span> {text.to} <span className="font-bold text-indigo-600">{Math.min(logCurrentPage * logsPerPage, filteredLogs.length)}</span> {text.of} <span className="font-bold text-indigo-600">{filteredLogs.length}</span> {text.logsWord}
+                                        {text.showing} <span className="font-bold text-blue-600">{(logCurrentPage - 1) * logsPerPage + 1}</span> {text.to} <span className="font-bold text-blue-600">{Math.min(logCurrentPage * logsPerPage, filteredLogs.length)}</span> {text.of} <span className="font-bold text-blue-600">{filteredLogs.length}</span> {text.logsWord}
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <button
                                             onClick={() => setLogCurrentPage(prev => Math.max(prev - 1, 1))}
                                             disabled={logCurrentPage === 1}
-                                            className="p-2 rounded-lg text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 disabled:opacity-30 transition-colors"
+                                            className="p-2 rounded-lg text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 disabled:opacity-30 transition-colors"
                                         >
                                             <ChevronLeft size={18} />
                                         </button>
@@ -1424,7 +1424,7 @@ export default function MasterData({
                                                     <button
                                                         key={page}
                                                         onClick={() => setLogCurrentPage(page)}
-                                                        className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${logCurrentPage === page ? 'gradient-bg text-white shadow-md shadow-indigo-500/20' : 'text-slate-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20'}`}
+                                                        className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${logCurrentPage === page ? 'gradient-bg text-white shadow-md shadow-blue-500/20' : 'text-slate-500 hover:bg-blue-50 dark:hover:bg-blue-900/20'}`}
                                                     >
                                                         {page}
                                                     </button>
@@ -1435,7 +1435,7 @@ export default function MasterData({
                                         <button
                                             onClick={() => setLogCurrentPage(prev => Math.min(prev + 1, totalLogPages))}
                                             disabled={logCurrentPage === totalLogPages}
-                                            className="p-2 rounded-lg text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 disabled:opacity-30 transition-colors"
+                                            className="p-2 rounded-lg text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 disabled:opacity-30 transition-colors"
                                         >
                                             <ChevronRight size={18} />
                                         </button>
@@ -1448,7 +1448,7 @@ export default function MasterData({
                             {isFileLoading ? (
                                 <div className="absolute inset-0 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm rounded-2xl">
                                     <div className="flex flex-col items-center gap-3">
-                                        <Activity className="w-8 h-8 text-indigo-500 animate-spin" />
+                                        <Activity className="w-8 h-8 text-blue-500 animate-spin" />
                                         <div className="text-sm font-bold text-slate-300">{text.loadingLogFile}</div>
                                     </div>
                                 </div>
@@ -1485,7 +1485,7 @@ export default function MasterData({
                                             <button onClick={() => handleEditDept(d)} className="p-1 text-gray-400 hover:text-blue-500"><Edit3 size={14} /></button>
                                         )}
                                     </div>
-                                    <div className="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 mb-2">
+                                    <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 mb-2">
                                         <Building2 size={20} />
                                     </div>
                                     <div className="font-bold dark:text-white text-sm">{d.name}</div>
@@ -1506,7 +1506,7 @@ export default function MasterData({
                         <div className="flex justify-between items-center mb-6">
                             <div>
                                 <h3 className="font-bold text-lg dark:text-white flex items-center gap-2">
-                                    <Bot size={20} className="text-indigo-500" /> {text.aiSettingsTitle}
+                                    <Bot size={20} className="text-blue-500" /> {text.aiSettingsTitle}
                                 </h3>
                                 <p className="text-xs text-gray-500 mt-1">{text.aiSettingsDesc}</p>
                             </div>
@@ -1593,7 +1593,7 @@ export default function MasterData({
                                 <Input
                                     type="checkbox" checked={aiForm.enabled}
                                     onChange={(e) => setAiForm({ ...aiForm, enabled: e.target.checked })}
-                                    className="w-4 h-4 rounded text-indigo-600"
+                                    className="w-4 h-4 rounded text-blue-600"
                                 />
                                 <span className="text-sm font-medium dark:text-slate-200">{text.enabled}</span>
                             </label>
@@ -1655,7 +1655,7 @@ export default function MasterData({
                                                 {r.ok ? <CheckCircle2 size={12} className="shrink-0" /> : <XCircle size={12} className="shrink-0" />}
                                                 <span className="max-w-[160px] truncate">{r.model}</span>
                                                 <span className="opacity-60">· {r.ms}ms</span>
-                                                {r.ok && r.toolCalls && <span className="px-1 rounded bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-300">tool</span>}
+                                                {r.ok && r.toolCalls && <span className="px-1 rounded bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-300">tool</span>}
                                                 {r.ok && (
                                                     <button
                                                         onClick={() => setAiForm(f => ({ ...f, model: r.model }))}
@@ -1680,7 +1680,7 @@ export default function MasterData({
                         <div className="flex justify-between items-center mb-6">
                             <div>
                                 <h3 className="font-bold text-lg dark:text-white flex items-center gap-2">
-                                    <FileText size={20} className="text-indigo-500" /> {text.trainingTitle}
+                                    <FileText size={20} className="text-blue-500" /> {text.trainingTitle}
                                 </h3>
                                 <p className="text-xs text-gray-500 mt-1">{text.trainingDesc}</p>
                             </div>
@@ -1865,7 +1865,7 @@ export default function MasterData({
                                 {/* Stats Cards */}
                                 {learningStats && (
                                     <SummaryRow cards={[
-                                        { title: 'Knowledge Points', value: learningStats.totalKnowledgePoints, icon: Brain, gradient: 'from-indigo-500 to-purple-600', valueClass: 'text-xl' },
+                                        { title: 'Knowledge Points', value: learningStats.totalKnowledgePoints, icon: Brain, gradient: 'from-blue-500 to-purple-600', valueClass: 'text-xl' },
                                         { title: 'Training Efficiency', value: learningStats.trainingEfficiency, icon: Gauge, gradient: 'from-emerald-500 to-teal-600', valueClass: 'text-xl' },
                                         { title: 'Untrained Points', value: learningStats.untrainedPoints, icon: Zap, gradient: 'from-amber-500 to-orange-600', valueClass: 'text-xl' },
                                         { title: 'Docs Generated', value: learningStats.docsGenerated, icon: FileText, gradient: 'from-violet-500 to-purple-600', valueClass: 'text-xl' },
@@ -1928,7 +1928,7 @@ export default function MasterData({
                                                         <tr key={i} className="border-t dark:border-slate-700/50 hover:bg-gray-50 dark:hover:bg-slate-800/50">
                                                             <td className="px-4 py-2 font-medium dark:text-white">{t.topic}</td>
                                                             <td className="px-4 py-2">
-                                                                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-300 text-indigo-600 dark:text-indigo-300">{t.category}</span>
+                                                                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 text-blue-600 dark:text-blue-300">{t.category}</span>
                                                             </td>
                                                             <td className="px-4 py-2 text-center font-bold dark:text-white">{t.ask_count}</td>
                                                             <td className="px-4 py-2 text-center">
@@ -1966,7 +1966,7 @@ export default function MasterData({
                                             {learningLogs.slice((logPage - 1) * ROWS_PER_PAGE, logPage * ROWS_PER_PAGE).map((log, i) => (
                                                 <div key={i} className="border dark:border-slate-700/50 rounded-lg p-3 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
                                                     <div className="flex items-center gap-2 mb-1">
-                                                        <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-300 text-indigo-600 dark:text-indigo-300">{log.category}</span>
+                                                        <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 text-blue-600 dark:text-blue-300">{log.category}</span>
                                                         <span className="font-bold text-sm dark:text-white">{log.topic}</span>
                                                         <span className="text-xs text-gray-400 ml-auto">×{log.repeat_count}</span>
                                                         {log.used_in_training && <span className="text-xs text-emerald-500 font-bold">✓ Trained</span>}
@@ -2215,9 +2215,9 @@ export default function MasterData({
                                         </div>
                                         <div className="text-sm font-black text-amber-600 dark:text-amber-300">{brainHealth?.status === 'ok' ? 'Connected' : 'Offline'}</div>
                                     </div>
-                                    <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-3 text-center">
-                                        <div className="text-2xl font-black text-indigo-600 dark:text-indigo-300">{brainStats?.memoryCount ?? '-'}</div>
-                                        <div className="text-xs text-indigo-500 dark:text-indigo-400 mt-1">Memories</div>
+                                    <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 text-center">
+                                        <div className="text-2xl font-black text-blue-600 dark:text-blue-300">{brainStats?.memoryCount ?? '-'}</div>
+                                        <div className="text-xs text-blue-500 dark:text-blue-400 mt-1">Memories</div>
                                     </div>
                                     <div className="bg-violet-50 dark:bg-violet-900/20 rounded-lg p-3 text-center">
                                         <div className="text-2xl font-black text-violet-600 dark:text-violet-300">{brainStats?.associationCount ?? '-'}</div>
@@ -2262,9 +2262,9 @@ export default function MasterData({
                                     {brainSearchResults.length > 0 && (
                                         <div className="mt-2 space-y-1 max-h-48 overflow-y-auto">
                                             {brainSearchResults.map((r, i) => (
-                                                <div key={r.memory?.id || i} className="text-xs bg-gray-50 dark:bg-slate-800/50 rounded p-2 border-l-2 border-indigo-400">
+                                                <div key={r.memory?.id || i} className="text-xs bg-gray-50 dark:bg-slate-800/50 rounded p-2 border-l-2 border-blue-400">
                                                     <div className="flex items-center gap-2 mb-0.5">
-                                                        <span className="text-[10px] px-1 rounded bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-300 text-indigo-600 dark:text-indigo-400">{r.memory?.type}</span>
+                                                        <span className="text-[10px] px-1 rounded bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 text-blue-600 dark:text-blue-400">{r.memory?.type}</span>
                                                         <span className="text-[10px] text-gray-400">score: {(r.score * 100).toFixed(0)}%</span>
                                                     </div>
                                                     <p className="text-gray-700 dark:text-slate-300 line-clamp-2">{r.memory?.content}</p>
@@ -2378,7 +2378,7 @@ export default function MasterData({
                                 <div className="flex justify-between items-center">
                                     <div>
                                         <h4 className="font-bold text-sm text-gray-700 dark:text-slate-300 flex items-center gap-2">
-                                            <Brain size={16} className="text-indigo-500" /> Peta Pengetahuan AI (Knowledge Brain)
+                                            <Brain size={16} className="text-blue-500" /> Peta Pengetahuan AI (Knowledge Brain)
                                         </h4>
                                         <p className="text-xs text-gray-500 mt-0.5">Visualisasi hubungan: dokumen training → chunk → knowledge → koreksi, dikelompokkan per kategori.</p>
                                     </div>
@@ -2425,7 +2425,7 @@ export default function MasterData({
                                                 {doc.tags && <p className="text-[10px] text-gray-400 mt-0.5">{doc.tags}</p>}
                                             </td>
                                             <td className="px-4 py-3">
-                                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-300 text-indigo-600 dark:text-indigo-400">{doc.file_type}</span>
+                                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 text-blue-600 dark:text-blue-400">{doc.file_type}</span>
                                             </td>
                                             <td className="px-4 py-3 text-gray-600 dark:text-slate-400">{text.categories[doc.category] || doc.category}</td>
                                             <td className="px-4 py-3 text-gray-600 dark:text-slate-400">{new Date(doc.created_at).toLocaleDateString()}</td>
@@ -2444,7 +2444,7 @@ export default function MasterData({
                                                     <button onClick={() => openTrainingDetail(doc)} className="p-1.5 rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" title={text.detailLearning}>
                                                         <Info size={14} />
                                                     </button>
-                                                    <button onClick={() => openTrainingPreview(doc.id)} className="p-1.5 rounded-lg text-gray-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors" title={text.preview}>
+                                                    <button onClick={() => openTrainingPreview(doc.id)} className="p-1.5 rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" title={text.preview}>
                                                         <Eye size={14} />
                                                     </button>
                                                     <button onClick={() => handleTrainingReprocess(doc.id)} className="p-1.5 rounded-lg text-gray-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors" title={text.reprocess}>
@@ -2480,7 +2480,7 @@ export default function MasterData({
                         </div>
                         <div className="p-5 overflow-y-auto">
                             <div className="flex gap-2 mb-4">
-                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-300 text-indigo-600 dark:text-indigo-400">{trainingPreview.file_type}</span>
+                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 text-blue-600 dark:text-blue-400">{trainingPreview.file_type}</span>
                                 <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${trainingPreview.status === 'active' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'}`}>
                                     {text[trainingPreview.status] || trainingPreview.status}
                                 </span>

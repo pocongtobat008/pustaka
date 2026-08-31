@@ -34,19 +34,19 @@ export default function ExternalInventoryTable({
                             </tr>
                         ) : (
                             externalItems.filter(isMatch).map(item => (
-                                <tr key={item.id} className="hover:bg-white/40 dark:hover:bg-slate-800/40 transition-colors group border-b border-indigo-50 dark:border-slate-800/50">
+                                <tr key={item.id} className="hover:bg-white/40 dark:hover:bg-slate-800/40 transition-colors group border-b border-blue-50 dark:border-slate-800/50">
                                     <td className="px-6 py-4 font-bold text-slate-800 dark:text-white flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                                        <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400">
                                             <Package size={20} />
                                         </div>
                                         {item.boxId}
                                     </td>
                                     <td className="px-6 py-4">
-                                        <span className="px-3 py-1 bg-indigo-100/50 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 rounded-lg text-xs font-bold border border-indigo-200 dark:border-indigo-500/30 backdrop-blur-sm shadow-sm">{item.destination}</span>
+                                        <span className="px-3 py-1 bg-blue-100/50 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-bold border border-blue-200 dark:border-blue-500/30 backdrop-blur-sm shadow-sm">{item.destination}</span>
                                     </td>
                                     <td className="px-6 py-4 text-slate-500 dark:text-slate-400">
                                         <div className="flex items-center gap-2">
-                                            <Clock size={14} className="text-indigo-400" />
+                                            <Clock size={14} className="text-blue-400" />
                                             {new Date(item.sentDate).toLocaleDateString()}
                                         </div>
                                     </td>
@@ -73,11 +73,11 @@ export default function ExternalInventoryTable({
                                         <div className="flex gap-2 justify-end transition-opacity">
                                             <button
                                                 onClick={(e) => { e.stopPropagation(); onViewExternal(item); }}
-                                                className="group/btn relative p-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300"
+                                                className="group/btn relative p-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300"
                                                 title={t("inv.viewDetail")}
                                             >
-                                                <div className="absolute inset-0 bg-indigo-500/5 rounded-xl opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
-                                                <FileText size={18} className="text-slate-400 group-hover/btn:text-indigo-600 transition-colors duration-300 relative z-10" />
+                                                <div className="absolute inset-0 bg-blue-500/5 rounded-xl opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
+                                                <FileText size={18} className="text-slate-400 group-hover/btn:text-blue-600 transition-colors duration-300 relative z-10" />
                                             </button>
                                             {hasPermission('inventory', 'edit') && (
                                                 <button

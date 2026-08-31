@@ -289,7 +289,7 @@ export const AuditTrailModal = ({ open, onClose, target, proformas, formatCurren
                                                         ? <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 animate-pulse">WAITING</span>
                                                         : s.done && <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">SELESAI</span>}
                                                     {s.duration && (
-                                                        <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400" title="Durasi respon tahap ini">
+                                                        <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400" title="Durasi respon tahap ini">
                                                             ⏱ {s.duration}
                                                         </span>
                                                     )}

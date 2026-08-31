@@ -49,7 +49,7 @@ const FIELD_SHORT = {
 const DIVISION_COLORS = {
     EXIM: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-500/20 dark:text-cyan-300',
     Marketing: 'bg-pink-100 text-pink-700 dark:bg-pink-500/20 dark:text-pink-300',
-    Accounting: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300',
+    Accounting: 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300',
     Tax: 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300',
     Warehouse: 'bg-sky-100 text-sky-700 dark:bg-sky-500/20 dark:text-sky-300',
     IT: 'bg-violet-100 text-violet-700 dark:bg-violet-500/20 dark:text-violet-300',
@@ -274,7 +274,7 @@ export default function Forwarder({ isDarkMode, currentUser }) {
         <div className="space-y-5">
             {/* Summary Cards */}
             <SummaryRow cols={4} cards={[
-                { title: isEnglish ? 'Total Rows' : 'Total Baris', value: totalRows, icon: Ship, gradient: 'from-sky-500 to-indigo-600', subtext: isEnglish ? 'All divisions combined' : 'Gabungan semua divisi' },
+                { title: isEnglish ? 'Total Rows' : 'Total Baris', value: totalRows, icon: Ship, gradient: 'from-sky-500 to-blue-600', subtext: isEnglish ? 'All divisions combined' : 'Gabungan semua divisi' },
                 { title: isEnglish ? 'Divisions' : 'Divisi', value: divisionsWithData, icon: Users, gradient: 'from-violet-500 to-purple-600', subtext: isEnglish ? 'Contributing divisions' : 'Divisi pengisi data' },
                 { title: isEnglish ? 'Filled Rows' : 'Baris Terisi', value: filledRows, icon: FileSpreadsheet, gradient: 'from-emerald-500 to-teal-600', subtext: isEnglish ? 'Rows with at least 1 column filled' : 'Baris dengan minimal 1 kolom terisi' },
                 { title: isEnglish ? 'Auto-Save' : 'Auto-Simpan', value: saveState === 'saving' ? (isEnglish ? 'Saving…' : 'Menyimpan…') : (saveState?.savedAt ? new Date(saveState.savedAt).toLocaleTimeString('id-ID') : (isEnglish ? 'Ready' : 'Siap')), icon: Save, gradient: 'from-amber-500 to-orange-600', subtext: isEnglish ? 'Changes saved like Excel' : 'Perubahan tersimpan layaknya Excel' },
@@ -284,7 +284,7 @@ export default function Forwarder({ isDarkMode, currentUser }) {
             <div className="bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 shadow-sm">
                 <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center shadow-md">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center shadow-md">
                             <Ship size={20} className="text-white" />
                         </div>
                         <div>

@@ -645,11 +645,11 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
         }
     };
 
-    const inputCls = `flex-1 min-w-0 px-2.5 py-1.5 rounded-lg text-xs border outline-none transition-colors ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-indigo-500/60' : 'bg-white border-slate-200 text-slate-700 placeholder-slate-300 focus:border-indigo-400'}`;
+    const inputCls = `flex-1 min-w-0 px-2.5 py-1.5 rounded-lg text-xs border outline-none transition-colors ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-blue-500/60' : 'bg-white border-slate-200 text-slate-700 placeholder-slate-300 focus:border-blue-400'}`;
     const cardCls = `rounded-2xl border ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`;
     const labelCls = `text-[10px] font-black uppercase tracking-widest mb-3 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`;
     const chipCls = (active) => active
-        ? 'bg-gradient-to-r from-indigo-600 to-purple-700 text-white shadow-md shadow-indigo-500/25'
+        ? 'bg-gradient-to-r from-blue-600 to-purple-700 text-white shadow-md shadow-blue-500/25'
         : isDarkMode ? 'text-white/50 hover:text-white/90 hover:bg-white/5' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50';
 
     return (
@@ -692,7 +692,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                     value: templates.length,
                     subtext: 'Jenis dokumen (dibagikan)',
                     icon: FolderOpen,
-                    gradient: 'from-indigo-500 to-purple-600',
+                    gradient: 'from-blue-500 to-purple-600',
                 },
                 {
                     title: 'Ekstraksi',
@@ -735,7 +735,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                             key={t.id}
                             onClick={() => openTemplate(t)}
                             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-bold border transition-all ${activeId === t.id
-                                ? isDarkMode ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-300' : 'bg-indigo-50 border-indigo-300 text-indigo-700'
+                                ? isDarkMode ? 'bg-blue-500/20 border-blue-500/40 text-blue-300' : 'bg-blue-50 border-blue-300 text-blue-700'
                                 : isDarkMode ? 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'}`}
                         >
                             <FolderOpen size={12} /> {t.name}
@@ -754,7 +754,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                     <button
                         onClick={createTemplate}
                         disabled={busy}
-                        className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[11px] font-bold transition-all ${busy ? 'opacity-50' : 'hover:scale-[1.02]'} ${isDarkMode ? 'bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30' : 'bg-indigo-100 text-indigo-600 hover:bg-indigo-200'}`}
+                        className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[11px] font-bold transition-all ${busy ? 'opacity-50' : 'hover:scale-[1.02]'} ${isDarkMode ? 'bg-blue-500/20 text-blue-300 hover:bg-blue-500/30' : 'bg-blue-100 text-blue-600 hover:bg-blue-200'}`}
                     >
                         <Plus size={13} /> Template Baru
                     </button>
@@ -782,7 +782,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                             onDragOver={e => e.preventDefault()}
                             onDrop={e => { e.preventDefault(); uploadSamples(e.dataTransfer.files); }}
                             onClick={() => sampleInputRef.current?.click()}
-                            className={`rounded-2xl border-2 border-dashed p-6 text-center cursor-pointer transition-all ${isDarkMode ? 'border-white/15 bg-white/5 hover:border-indigo-500/50' : 'border-slate-300 bg-white hover:border-indigo-400'}`}
+                            className={`rounded-2xl border-2 border-dashed p-6 text-center cursor-pointer transition-all ${isDarkMode ? 'border-white/15 bg-white/5 hover:border-blue-500/50' : 'border-slate-300 bg-white hover:border-blue-400'}`}
                         >
                             <input ref={sampleInputRef} type="file" multiple accept=".pdf,.docx,.txt" className="hidden"
                                 onChange={e => { uploadSamples(e.target.files); e.target.value = ''; }} />
@@ -797,7 +797,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                 <div className="space-y-1.5">
                                     {samples.map((s, i) => (
                                         <div key={i} className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg ${isDarkMode ? 'bg-white/5' : 'bg-slate-50'}`}>
-                                            <FileSpreadsheet size={12} className={`flex-shrink-0 ${isDarkMode ? 'text-indigo-300' : 'text-indigo-500'}`} />
+                                            <FileSpreadsheet size={12} className={`flex-shrink-0 ${isDarkMode ? 'text-blue-300' : 'text-blue-500'}`} />
                                             <span className={`flex-1 min-w-0 truncate text-xs font-semibold ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{s.filename}</span>
                                             <span className={`text-[10px] ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>{formatFileSize(s.size)}</span>
                                             <button
@@ -816,7 +816,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                         {linesData && (
                             <div className={cardCls + ' overflow-hidden'}>
                                 <div className={`flex items-center gap-2 px-3 py-2 border-b ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
-                                    <Table2 size={13} className={`${isDarkMode ? 'text-indigo-300' : 'text-indigo-500'}`} />
+                                    <Table2 size={13} className={`${isDarkMode ? 'text-blue-300' : 'text-blue-500'}`} />
                                     <span className={`text-[11px] font-bold truncate ${isDarkMode ? 'text-white/80' : 'text-slate-600'}`}>Baris: {previewName}</span>
                                 </div>
                                 <div className="max-h-[420px] overflow-y-auto p-2">
@@ -824,12 +824,12 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                         <div key={pg.page} className="mb-2">
                                             <p className={`text-[10px] font-black px-1.5 py-1 ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>Halaman {pg.page}</p>
                                             {pg.lines.map((l, li) => (
-                                                <div key={li} className={`group flex items-center gap-1 rounded-lg px-1.5 py-1 cursor-pointer transition-colors ${isDarkMode ? 'hover:bg-white/10' : 'hover:bg-indigo-50'}`}>
+                                                <div key={li} className={`group flex items-center gap-1 rounded-lg px-1.5 py-1 cursor-pointer transition-colors ${isDarkMode ? 'hover:bg-white/10' : 'hover:bg-blue-50'}`}>
                                                     <span className={`text-[9px] w-8 flex-shrink-0 ${isDarkMode ? 'text-white/20' : 'text-slate-300'}`}>{l.y}</span>
                                                     <span className={`flex-1 min-w-0 text-[11px] truncate ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>{l.text}</span>
                                                     <button
                                                         onClick={() => addHeaderField(l.text)}
-                                                        className={`opacity-0 group-hover:opacity-100 px-1.5 py-0.5 rounded-md text-[9px] font-bold transition-opacity ${isDarkMode ? 'bg-indigo-500/20 text-indigo-300' : 'bg-indigo-100 text-indigo-600'}`}
+                                                        className={`opacity-0 group-hover:opacity-100 px-1.5 py-0.5 rounded-md text-[9px] font-bold transition-opacity ${isDarkMode ? 'bg-blue-500/20 text-blue-300' : 'bg-blue-100 text-blue-600'}`}
                                                         title={t("comp.mapHeader")}
                                                     >
                                                         Map field
@@ -976,7 +976,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                     {valResults.map((vr, vi) => (
                                         <div key={vi} className={`rounded-xl border p-3 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-100'}`}>
                                             <p className={`text-[11px] font-bold mb-2 flex items-center gap-1.5 ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>
-                                                <FileSpreadsheet size={12} className={isDarkMode ? 'text-indigo-300' : 'text-indigo-500'} /> {vr.filename}
+                                                <FileSpreadsheet size={12} className={isDarkMode ? 'text-blue-300' : 'text-blue-500'} /> {vr.filename}
                                             </p>
                                             <div className="grid gap-1">
                                                 {Object.entries(vr.fields || {}).map(([k, r]) => {
@@ -1051,7 +1051,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                     <button
                                         onClick={() => setExtTplId('')}
                                         className={`px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-all ${!extTplId
-                                            ? isDarkMode ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-300' : 'bg-indigo-50 border-indigo-300 text-indigo-700'
+                                            ? isDarkMode ? 'bg-blue-500/20 border-blue-500/40 text-blue-300' : 'bg-blue-50 border-blue-300 text-blue-700'
                                             : isDarkMode ? 'bg-white/5 border-white/10 text-white/50' : 'bg-white border-slate-200 text-slate-500'}`}
                                     >
                                         <Sparkles size={11} className="inline mr-1" /> Deteksi Otomatis
@@ -1308,7 +1308,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                                                     <button
                                                                         onClick={() => downloadArchived(x)}
                                                                         title={t("comp.downloadPdf")}
-                                                                        className={`p-1.5 rounded-lg transition-colors ${isDarkMode ? 'hover:bg-indigo-500/20 text-indigo-300' : 'hover:bg-indigo-50 text-indigo-500'}`}
+                                                                        className={`p-1.5 rounded-lg transition-colors ${isDarkMode ? 'hover:bg-blue-500/20 text-blue-300' : 'hover:bg-blue-50 text-blue-500'}`}
                                                                     >
                                                                         <Download size={13} />
                                                                     </button>

@@ -124,7 +124,7 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
                         {text.version} 1.0.0 • Document OS
                     </div>
                 </div>
-                <span className="ml-auto neo-chip px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-indigo-500 dark:text-indigo-300">
+                <span className="ml-auto neo-chip px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-blue-500 dark:text-blue-300">
                     Enterprise
                 </span>
             </div>
@@ -140,7 +140,7 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div className="glass-card rounded-2xl p-5">
                     <div className="flex items-center gap-2 mb-3">
-                        <div className="p-2 gradient-bg rounded-xl text-white shadow-lg shadow-indigo-500/30">
+                        <div className="p-2 gradient-bg rounded-xl text-white shadow-lg shadow-blue-500/30">
                             <Target size={16} />
                         </div>
                         <h3 className="font-black text-sm text-slate-800 dark:text-white uppercase tracking-wider">
@@ -153,7 +153,7 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
                 </div>
                 <div className="glass-card rounded-2xl p-5">
                     <div className="flex items-center gap-2 mb-3">
-                        <div className="p-2 gradient-bg rounded-xl text-white shadow-lg shadow-indigo-500/30">
+                        <div className="p-2 gradient-bg rounded-xl text-white shadow-lg shadow-blue-500/30">
                             <Rocket size={16} />
                         </div>
                         <h3 className="font-black text-sm text-slate-800 dark:text-white uppercase tracking-wider">
@@ -174,7 +174,7 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
             {/* Ringkasan fitur */}
             <div className="mb-2">
                 <div className="flex items-center gap-2 mb-4">
-                    <div className="p-2 gradient-bg rounded-xl text-white shadow-lg shadow-indigo-500/30">
+                    <div className="p-2 gradient-bg rounded-xl text-white shadow-lg shadow-blue-500/30">
                         <Info size={16} />
                     </div>
                     <div>
@@ -193,7 +193,7 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
                                 className="neo-btn flex items-center gap-2 px-3 py-2.5 text-left"
                                 title={f.label}
                             >
-                                <span className="w-7 h-7 rounded-lg gradient-bg-soft text-indigo-500 dark:text-indigo-300 flex items-center justify-center shrink-0">
+                                <span className="w-7 h-7 rounded-lg gradient-bg-soft text-blue-500 dark:text-blue-300 flex items-center justify-center shrink-0">
                                     <Icon size={14} />
                                 </span>
                                 <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300 leading-tight">

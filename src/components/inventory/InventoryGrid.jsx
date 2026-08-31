@@ -45,7 +45,7 @@ const Cell = React.memo(({ slotId, slot, handleSlotClick, getStatusStyle, isMatc
             disabled={!matched && inventorySearchQuery}
             className={`h-full w-full min-h-[140px] rounded-[2rem] flex flex-col items-center justify-center relative group transition-all duration-500 animate-in zoom-in-90 fade-in fill-mode-both p-4
             ${status === 'EMPTY'
-                    ? 'bg-white/30 dark:bg-slate-800/20 backdrop-blur-sm border-2 border-dashed border-slate-300/60 dark:border-slate-600/60 hover:border-indigo-400 hover:bg-white/60 dark:hover:bg-slate-800/40 hover:shadow-[0_0_30px_rgba(99,102,241,0.2)] hover:scale-105 z-0 hover:z-10'
+                    ? 'bg-white/30 dark:bg-slate-800/20 backdrop-blur-sm border-2 border-dashed border-slate-300/60 dark:border-slate-600/60 hover:border-blue-400 hover:bg-white/60 dark:hover:bg-slate-800/40 hover:shadow-[0_0_30px_rgba(29,78,216,0.2)] hover:scale-105 z-0 hover:z-10'
                     : `border-2 ${statusStyle.color} shadow-xl hover:shadow-2xl hover:scale-110 hover:-rotate-2 z-0 hover:z-10 ring-1 ring-white/10 opacity-100`
                 }
             ${!matched && inventorySearchQuery ? 'opacity-20 grayscale cursor-not-allowed scale-90' : 'opacity-100'}
@@ -55,7 +55,7 @@ const Cell = React.memo(({ slotId, slot, handleSlotClick, getStatusStyle, isMatc
 
             {status !== 'EMPTY' ? (
                 <div className="flex flex-col items-center gap-3 w-full px-2 relative z-10 transition-transform duration-500 group-hover:scale-110">
-                    <div className={`p-4 rounded-[1.5rem] bg-white/40 dark:bg-black/20 backdrop-blur-md shadow-inner group-hover:shadow-indigo-500/50 transition-all ${statusStyle.color.replace('border-', 'text-')}`}>
+                    <div className={`p-4 rounded-[1.5rem] bg-white/40 dark:bg-black/20 backdrop-blur-md shadow-inner group-hover:shadow-blue-500/50 transition-all ${statusStyle.color.replace('border-', 'text-')}`}>
                         <Package size={32} className="opacity-90 group-hover:scale-125 transition-transform duration-500" />
                     </div>
                     {boxData?.id && (
@@ -67,7 +67,7 @@ const Cell = React.memo(({ slotId, slot, handleSlotClick, getStatusStyle, isMatc
                         </div>
                     )}
                     {matched && inventorySearchQuery && (
-                        <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-[10px] px-3 py-1 rounded-full font-black shadow-xl animate-bounce pointer-events-none whitespace-nowrap z-20 ring-4 ring-indigo-500/20">SEARCH MATCH</div>
+                        <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-[10px] px-3 py-1 rounded-full font-black shadow-xl animate-bounce pointer-events-none whitespace-nowrap z-20 ring-4 ring-blue-500/20">SEARCH MATCH</div>
                     )}
                     {isOcrProcessing && (
                         <div className="absolute -top-4 -right-4 bg-amber-500 text-white p-1.5 rounded-full shadow-lg animate-pulse z-30" title="Sedang memproses dokumen (OCR)">
@@ -80,7 +80,7 @@ const Cell = React.memo(({ slotId, slot, handleSlotClick, getStatusStyle, isMatc
                 </div>
             ) : (
                 <div className="flex flex-col items-center gap-2 opacity-40 group-hover:opacity-100 transition-all">
-                    <Plus size={40} className="text-slate-300 dark:text-slate-600 group-hover:text-indigo-400 group-hover:rotate-90 transition-all duration-500" />
+                    <Plus size={40} className="text-slate-300 dark:text-slate-600 group-hover:text-blue-400 group-hover:rotate-90 transition-all duration-500" />
                     <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Kosong</span>
                 </div>
             )}

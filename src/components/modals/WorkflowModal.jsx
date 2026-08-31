@@ -25,7 +25,7 @@ export default function WorkflowModal({
           <div className="space-y-2">
             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nama Alur Persetujuan</label>
             <input
-              className="w-full px-5 py-3 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-indigo-500 rounded-2xl outline-none dark:text-white font-black"
+              className="w-full px-5 py-3 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white font-black"
               placeholder="Contoh: Alur Pengadaan Barang"
               value={flowForm.name}
               onChange={e => setFlowForm({ ...flowForm, name: e.target.value })}
@@ -34,7 +34,7 @@ export default function WorkflowModal({
           <div className="space-y-2">
             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Deskripsi Singkat</label>
             <input
-              className="w-full px-5 py-3 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-indigo-500 rounded-2xl outline-none dark:text-white font-medium"
+              className="w-full px-5 py-3 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white font-medium"
               placeholder="Tujuan dari alur persetujuan ini..."
               value={flowForm.description}
               onChange={e => setFlowForm({ ...flowForm, description: e.target.value })}

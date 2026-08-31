@@ -27,7 +27,7 @@ const NotificationBell = ({ onOpenChannel, variant = 'floating' }) => {
         if (type === 'success') {
             return { icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-500/10' };
         }
-        return { icon: Info, color: 'text-indigo-500', bg: 'bg-indigo-50 dark:bg-indigo-500/10' };
+        return { icon: Info, color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-500/10' };
     };
 
     const fetchNotifications = useCallback(async () => {
@@ -113,11 +113,11 @@ const NotificationBell = ({ onOpenChannel, variant = 'floating' }) => {
                     onClick={() => setIsOpen(!isOpen)}
                     className={
                         isTopbar
-                            ? 'neo-icon-btn relative w-10 h-10 group text-slate-500 dark:text-slate-300 hover:text-indigo-500 dark:hover:text-indigo-400'
+                            ? 'neo-icon-btn relative w-10 h-10 group text-slate-500 dark:text-slate-300 hover:text-blue-500 dark:hover:text-blue-400'
                             : 'relative p-3 bg-white/80 dark:bg-slate-800/90 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-2xl shadow-lg hover:scale-110 transition-all group active:scale-95'
                     }
                 >
-                    <Bell size={isTopbar ? 18 : 24} className={`${unreadCount > 0 ? 'text-indigo-600 dark:text-indigo-400 animate-pulse' : 'text-slate-500 dark:text-slate-400'} group-hover:text-indigo-500 transition-colors`} />
+                    <Bell size={isTopbar ? 18 : 24} className={`${unreadCount > 0 ? 'text-blue-600 dark:text-blue-400 animate-pulse' : 'text-slate-500 dark:text-slate-400'} group-hover:text-blue-500 transition-colors`} />
                     {unreadCount > 0 && (
                         <span className={
                             'absolute flex items-center justify-center rounded-full bg-rose-600 font-black text-white shadow-lg border-2 border-white dark:border-slate-900 ' +

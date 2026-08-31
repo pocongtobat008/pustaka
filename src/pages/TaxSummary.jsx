@@ -216,7 +216,7 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy, isEnglish }) => {
                             <button
                                 key={mode.id}
                                 onClick={() => setCompMode(mode.id)}
-                                className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors whitespace-nowrap ${compMode === mode.id ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-600 dark:text-white shadow-sm' : 'text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700'}`}
+                                className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors whitespace-nowrap ${compMode === mode.id ? 'bg-blue-100 text-blue-700 dark:bg-blue-600 dark:text-white shadow-sm' : 'text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700'}`}
                             >
                                 {mode.label}
                             </button>
@@ -325,7 +325,7 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy, isEnglish }) => {
                         {dataB.data?.pph && (
                             <button
                                 onClick={() => onCopy(Object.values(dataB.data.pph).reduce((a, b) => a + b, 0), "Total PPh Periode B")}
-                                className="p-1.5 text-slate-400 hover:text-indigo-600 transition-all"
+                                className="p-1.5 text-slate-400 hover:text-blue-600 transition-all"
                                 title={t.copyPeriodB}
                             >
                                 <Copy size={16} />
@@ -498,8 +498,8 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                 text: isEnglish
                     ? `Filter Analysis: Showing data for period ${filters.month !== 'All' ? filters.month : ''} ${filters.year !== 'All' ? filters.year : ''}. AI is comparing compliance trends for this period.`
                     : `Analisis Filter: Menampilkan data untuk periode ${filters.month !== 'All' ? filters.month : ''} ${filters.year !== 'All' ? filters.year : ''}. AI membandingkan tren kepatuhan pada periode ini.`,
-                icon: <Search className="text-indigo-500" size={20} />,
-                color: "border-indigo-200 dark:border-indigo-800/50 bg-indigo-50/50 dark:bg-indigo-900/10 text-indigo-800 dark:text-indigo-200"
+                icon: <Search className="text-blue-500" size={20} />,
+                color: "border-blue-200 dark:border-blue-800/50 bg-blue-50/50 dark:bg-blue-900/10 text-blue-800 dark:text-blue-200"
             };
         }
 
@@ -877,11 +877,11 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                         valuePrefix: 'Rp ',
                         valueClass: 'text-lg',
                         icon: Landmark,
-                        gradient: 'from-indigo-600 to-purple-700',
+                        gradient: 'from-blue-600 to-purple-700',
                         action: (
                             <button
                                 onClick={(e) => { e.stopPropagation(); onCopy(grandTotalPPh, "Estimasi PPh Terutang"); }}
-                                className="p-2 rounded-xl text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-white/10 transition-all active:scale-90 flex-shrink-0"
+                                className="p-2 rounded-xl text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-white/10 transition-all active:scale-90 flex-shrink-0"
                                 title={t("taxsum.copyTotal")}
                             >
                                 <Copy size={16} />
@@ -899,7 +899,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                         action: (
                             <button
                                 onClick={(e) => { e.stopPropagation(); onCopy(totalPerType[type], type); }}
-                                className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-white/10 transition-all flex-shrink-0"
+                                className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-white/10 transition-all flex-shrink-0"
                                 title={t("taxsum.copy")}
                             >
                                 <Copy size={12} />
@@ -908,7 +908,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                     })),
                 ]}>
                     {hasPermission('tax-summary', 'edit') && (
-                        <button onClick={() => handleAddType('pphTypes')} className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-2xl text-gray-400 hover:border-indigo-400 hover:text-indigo-500 transition-colors">
+                        <button onClick={() => handleAddType('pphTypes')} className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-2xl text-gray-400 hover:border-blue-400 hover:text-blue-500 transition-colors">
                             <Plus size={20} />
                             <span className="text-xs font-medium mt-1">{isEnglish ? 'Add Tax Type' : 'Tambah Tipe Pajak'}</span>
                         </button>
@@ -922,7 +922,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                         <div className="flex justify-between items-center mb-6">
                             <div>
                                 <h3 className="font-bold text-lg dark:text-white flex items-center gap-2">
-                                    <Percent size={20} className="text-indigo-500" /> Tren PPh (Year to Date)
+                                    <Percent size={20} className="text-blue-500" /> Tren PPh (Year to Date)
                                 </h3>
                                 <p className="text-sm text-gray-500">{isEnglish ? 'Accumulated income tax payments per month.' : 'Akumulasi pembayaran pajak penghasilan per bulan.'}</p>
                             </div>
@@ -944,7 +944,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                                             setModalTab('tax-form-pph');
                                             setIsModalOpen(true);
                                         }}
-                                        className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold gradient-bg text-white rounded-lg hover:opacity-95 transition-opacity shadow-lg shadow-indigo-500/20"
+                                        className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold gradient-bg text-white rounded-lg hover:opacity-95 transition-opacity shadow-lg shadow-blue-500/20"
                                     >
                                         <Plus size={14} /> {isEnglish ? 'Input PPh' : 'Input PPh'}
                                     </button>
@@ -1067,7 +1067,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                                                 rowTotal += val;
                                                 return <td key={t} className="px-6 py-4 text-right">Rp {val.toLocaleString()}</td>
                                             })}
-                                            <td className="px-6 py-4 text-right font-bold text-indigo-600 dark:text-indigo-400">Rp {rowTotal.toLocaleString()}</td>
+                                            <td className="px-6 py-4 text-right font-bold text-blue-600 dark:text-blue-400">Rp {rowTotal.toLocaleString()}</td>
                                             <td className="px-6 py-4 text-right">
                                                 <div className="flex justify-end gap-2">
                                                     {hasPermission('tax-summary', 'edit') && (
@@ -1188,7 +1188,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                                             setModalTab('tax-form-ppn');
                                             setIsModalOpen(true);
                                         }}
-                                        className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold gradient-bg text-white rounded-lg hover:opacity-95 transition-opacity shadow-lg shadow-indigo-500/20"
+                                        className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold gradient-bg text-white rounded-lg hover:opacity-95 transition-opacity shadow-lg shadow-blue-500/20"
                                     >
                                         <Plus size={14} /> Input PPN
                                     </button>
@@ -1431,7 +1431,7 @@ export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, se
                             {(activeTab === 'pph' || activeTab === 'comparison') && (
                                 <button
                                     onClick={() => { setImportMode('pph'); setTimeout(() => fileInputRef.current?.click(), 0); }}
-                                    className="px-3 py-2 bg-indigo-600 hover:opacity-95 text-white rounded-lg text-sm flex items-center gap-2 transition-colors shadow-sm"
+                                    className="px-3 py-2 bg-blue-600 hover:opacity-95 text-white rounded-lg text-sm flex items-center gap-2 transition-colors shadow-sm"
                                 >
                                     <FileSpreadsheet size={16} /> Import PPh
                                 </button>

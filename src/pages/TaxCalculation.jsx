@@ -600,8 +600,8 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
         if (searchTerm) {
             return {
                 text: text.insightSearch(filteredData.length, searchTerm),
-                icon: <Search className="text-indigo-500" size={20} />,
-                color: "border-indigo-200 dark:border-indigo-800/50 bg-indigo-50/50 dark:bg-indigo-900/10 text-indigo-800 dark:text-indigo-200"
+                icon: <Search className="text-blue-500" size={20} />,
+                color: "border-blue-200 dark:border-blue-800/50 bg-blue-50/50 dark:bg-blue-900/10 text-blue-800 dark:text-blue-200"
             };
         }
 
@@ -635,8 +635,8 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
         // 5. Default Tips
         return {
             text: text.tips[new Date().getHours() % text.tips.length],
-            icon: <Sparkles className="text-indigo-500" size={20} />,
-            color: "border-indigo-200 dark:border-indigo-800/50 bg-indigo-50/50 dark:bg-indigo-900/10 text-indigo-800 dark:text-indigo-200"
+            icon: <Sparkles className="text-blue-500" size={20} />,
+            color: "border-blue-200 dark:border-blue-800/50 bg-blue-50/50 dark:bg-blue-900/10 text-blue-800 dark:text-blue-200"
         };
     };
 
@@ -647,23 +647,23 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
             {/* IMPORT LOADING OVERLAY */}
             {isImporting && (
                 <div className="fixed inset-0 z-[200] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center animate-in fade-in duration-300">
-                    <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl p-10 rounded-[3rem] shadow-2xl flex flex-col items-center max-w-sm text-center border border-indigo-100 dark:border-indigo-900/50">
+                    <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl p-10 rounded-[3rem] shadow-2xl flex flex-col items-center max-w-sm text-center border border-blue-100 dark:border-blue-900/50">
                         <div className="relative mb-8">
-                            <div className="w-24 h-24 border-4 border-indigo-100 dark:border-indigo-900/30 rounded-full"></div>
-                            <div className="w-24 h-24 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
-                            <Database className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-indigo-600 animate-pulse" size={32} />
+                            <div className="w-24 h-24 border-4 border-blue-100 dark:border-blue-900/30 rounded-full"></div>
+                            <div className="w-24 h-24 border-4 border-blue-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
+                            <Database className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-blue-600 animate-pulse" size={32} />
                         </div>
                         <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-3 uppercase tracking-tight">{text.importingDatabase}</h3>
                         <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
                             {text.importingMessage} <br />
-                            <span className="font-bold text-indigo-500">{text.importingWarning}</span>
+                            <span className="font-bold text-blue-500">{text.importingWarning}</span>
                         </p>
                     </div>
                 </div>
             )}
 
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <PageHeader className="mb-0" icon={Calculator} iconClass="from-indigo-500 to-purple-600" title={text.title} />
+                <PageHeader className="mb-0" icon={Calculator} iconClass="from-blue-500 to-purple-600" title={text.title} />
 
                 {/* Tabs */}
                 {/* Tabs */}
@@ -692,7 +692,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
             <SummaryRow cards={[
                 { title: isEnglish ? 'WP Database' : 'Database WP', value: savedData.length, icon: Database, gradient: 'from-sky-500 to-blue-600', subtext: isEnglish ? 'Total taxpayer records' : 'Total data wajib pajak', valueClass: 'text-2xl' },
                 { title: isEnglish ? 'Master Object' : 'Objek Pajak Master', value: masterData.length, icon: Book, gradient: 'from-violet-500 to-purple-600', subtext: isEnglish ? 'Tax object codes' : 'Kode objek pajak', valueClass: 'text-2xl' },
-                { title: isEnglish ? 'PPh (Current)' : 'PPh (Simulasi)', value: formatCurrency(calcData.pph || 0), icon: TrendingUp, gradient: 'from-indigo-500 to-blue-600', subtext: isEnglish ? 'Latest simulation result' : 'Hasil simulasi terakhir', valueClass: 'text-2xl' },
+                { title: isEnglish ? 'PPh (Current)' : 'PPh (Simulasi)', value: formatCurrency(calcData.pph || 0), icon: TrendingUp, gradient: 'from-blue-500 to-blue-600', subtext: isEnglish ? 'Latest simulation result' : 'Hasil simulasi terakhir', valueClass: 'text-2xl' },
                 { title: isEnglish ? 'Total Payable' : 'Total Bayar', value: formatCurrency(calcData.totalPayable || 0), icon: Calculator, gradient: 'from-emerald-500 to-teal-600', subtext: isEnglish ? 'Incl. PPN' : 'Termasuk PPN', valueClass: 'text-2xl' },
             ]} />
 
@@ -724,7 +724,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                     />
 
                     {/* Information Card */}
-                    <Card className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white border-none h-full">
+                    <Card className="bg-gradient-to-br from-blue-600 to-purple-700 text-white border-none h-full">
                         <h3 className="text-xl font-bold mb-4">{text.infoTitle}</h3>
                         <p className="text-white/80 mb-6">
                             {text.infoBody}
@@ -753,20 +753,20 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                         <Card className={`relative ${showObjectDropdown ? 'z-30' : 'z-10'}`}>
                             <div className="flex justify-between items-center mb-6 border-b pb-2 dark:border-gray-700">
                                 <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
-                                    <User size={20} className="text-indigo-600" />
+                                    <User size={20} className="text-blue-600" />
                                     {text.subjectObjectData}
                                 </h3>
                                 <div className="flex gap-2">
                                     <button
                                         onClick={handleDownloadMasterTemplate}
-                                        className="text-xs flex items-center gap-1 text-gray-500 hover:text-indigo-600 transition-colors"
+                                        className="text-xs flex items-center gap-1 text-gray-500 hover:text-blue-600 transition-colors"
                                         title={t("taxcalc.downloadTemplateMaster")}
                                     >
                                         <Download size={14} /> {text.templateMaster}
                                     </button>
                                     {canCreate && <button
                                         onClick={() => masterFileInputRef.current.click()}
-                                        className="text-xs flex items-center gap-1 text-gray-500 hover:text-indigo-600 transition-colors"
+                                        className="text-xs flex items-center gap-1 text-gray-500 hover:text-blue-600 transition-colors"
                                         title={t("taxcalc.importMaster")}
                                     >
                                         <Upload size={14} /> {text.importMaster}
@@ -786,7 +786,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         value={formData.idType}
                                         onChange={handleInputChange}
                                         disabled={isReadOnly}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
+                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
                                     >
                                         <option value="NPWP">NPWP</option>
                                         <option value="KTP">KTP (NIK)</option>
@@ -807,7 +807,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         maxLength={16}
                                         inputMode="numeric"
                                         placeholder={text.idPlaceholder}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
+                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
                                     />
                                 </div>
 
@@ -822,7 +822,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         value={formData.name}
                                         onChange={handleInputChange}
                                         disabled={isReadOnly}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
+                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
                                         placeholder={text.taxPayerNamePlaceholder}
                                     />
                                 </div>
@@ -838,7 +838,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         value={formData.email}
                                         onChange={handleInputChange}
                                         disabled={isReadOnly}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
+                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
                                         placeholder="contoh@email.com"
                                     />
                                 </div>
@@ -853,7 +853,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         value={formData.taxType}
                                         onChange={handleInputChange}
                                         disabled={isReadOnly}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
+                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
                                     >
                                         <option value="23" disabled={formData.idType === 'KTP'}>PPh 23 {formData.idType === 'KTP' ? '(Hanya NPWP)' : ''}</option>
                                         <option value="4(2)">PPh 4(2)</option>
@@ -872,7 +872,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         name="taxObjectCode"
                                         value={formData.taxObjectCode}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-gray-300 cursor-not-allowed"
+                                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-gray-300 cursor-not-allowed"
                                         placeholder={text.objectCodePlaceholder}
                                         readOnly
                                     />
@@ -886,7 +886,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         </label>
                                         <label className="relative inline-flex items-center cursor-pointer">
                                             <input type="checkbox" name="usePpn" checked={formData.usePpn} onChange={(e) => handleInputChange({ target: { name: 'usePpn', value: e.target.checked } })} className="sr-only peer" disabled={isReadOnly} />
-                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 dark:peer-focus:ring-indigo-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-600"></div>
+                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                                         </label>
                                     </div>
                                     <div className={`${formData.usePpn ? 'opacity-100' : 'opacity-40 pointer-events-none'} transition-opacity`}>
@@ -898,7 +898,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                             value={ppnRate}
                                             onChange={(e) => setPpnRate(Number(e.target.value))}
                                             disabled={isReadOnly || !formData.usePpn}
-                                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white"
+                                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white"
                                         />
                                     </div>
                                 </div>
@@ -919,7 +919,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         }}
                                         onFocus={() => !isReadOnly && setShowObjectDropdown(true)}
                                         onBlur={() => setTimeout(() => setShowObjectDropdown(false), 200)}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
+                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
                                         placeholder={text.objectNamePlaceholder}
                                         autoComplete="off"
                                     />
@@ -935,7 +935,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                             ).length === 0 ? (
                                                 <div className="px-4 py-3 text-sm text-gray-500 text-center">
                                                     {text.emptyObject} <br />
-                                                    <button onClick={() => masterFileInputRef.current.click()} className="text-indigo-600 hover:underline mt-1">
+                                                    <button onClick={() => masterFileInputRef.current.click()} className="text-blue-600 hover:underline mt-1">
                                                         {text.importMasterNow}
                                                     </button>
                                                 </div>
@@ -950,7 +950,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                                 }).map((item) => (
                                                     <button
                                                         key={item.id}
-                                                        className="w-full text-left px-4 py-3 hover:bg-indigo-50 dark:hover:bg-slate-700 transition-colors border-b border-gray-100 dark:border-slate-700 last:border-0"
+                                                        className="w-full text-left px-4 py-3 hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors border-b border-gray-100 dark:border-slate-700 last:border-0"
                                                         onClick={() => {
                                                             const isPph21 = String(item.taxType) === '21';
                                                             setFormData(prev => ({
@@ -976,9 +976,9 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                                             <span className="bg-gray-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-gray-600 dark:text-gray-400 font-mono">
                                                                 {item.code || item.taxObjectCode}
                                                             </span>
-                                                            <span className="text-indigo-500 font-medium">PPh {item.taxType}</span>
+                                                            <span className="text-blue-500 font-medium">PPh {item.taxType}</span>
                                                             {item.rate !== undefined && item.rate !== null && (
-                                                                <span className="bg-indigo-100 dark:bg-indigo-900/40 px-1.5 py-0.5 rounded text-indigo-700 dark:text-indigo-300 font-bold ml-auto">
+                                                                <span className="bg-blue-100 dark:bg-blue-900/40 px-1.5 py-0.5 rounded text-blue-700 dark:text-blue-300 font-bold ml-auto">
                                                                     {item.rate}%
                                                                 </span>
                                                             )}
@@ -1026,7 +1026,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         });
                                         setCalcData({ dpp: 0, rate: 0, pph: 0, ppn: 0, totalPayable: 0, discount: 0, dppNet: 0, markupMode: 'none', isPph21BukanPegawai: false, usePpn: true });
                                     }}
-                                    className="px-6 py-3 gradient-bg text-white font-bold rounded-xl shadow-lg shadow-indigo-500/25 transition-all hover:opacity-90"
+                                    className="px-6 py-3 gradient-bg text-white font-bold rounded-xl shadow-lg shadow-blue-500/25 transition-all hover:opacity-90"
                                 >
                                     {text.cancelEdit}
                                 </button>
@@ -1034,7 +1034,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                             <button
                                 onClick={handleSave}
                                 disabled={isLoading || !formData.identityNumber || !formData.name}
-                                className="px-6 py-3 bg-indigo-600 hover:opacity-95 text-white font-bold rounded-xl flex items-center gap-2 shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
+                                className="px-6 py-3 bg-blue-600 hover:opacity-95 text-white font-bold rounded-xl flex items-center gap-2 shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
                             >
                                 <Save size={20} />
                                 {isLoading ? text.saving : editingId ? text.updateData : text.saveToDb}
@@ -1067,7 +1067,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-gray-500">{text.summaryGrossUp}:</span>
-                                        <span className={`font-bold uppercase ${calcData.markupMode !== 'none' ? 'text-indigo-600' : 'text-gray-500'}`}>
+                                        <span className={`font-bold uppercase ${calcData.markupMode !== 'none' ? 'text-blue-600' : 'text-gray-500'}`}>
                                             {calcData.markupMode}
                                         </span>
                                     </div>
@@ -1080,7 +1080,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                     {calcData.markupMode !== 'none' && (
                                         <div className="flex justify-between">
                                             <span className="text-gray-500">{text.summaryBooked}:</span>
-                                            <span className="font-bold text-indigo-600">{new Intl.NumberFormat('id-ID').format(Math.round(calcData.totalDibukukan || 0))}</span>
+                                            <span className="font-bold text-blue-600">{new Intl.NumberFormat('id-ID').format(Math.round(calcData.totalDibukukan || 0))}</span>
                                         </div>
                                     )}
                                     <div className="flex justify-between">
@@ -1089,7 +1089,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                     </div>
                                     <div className="flex justify-between border-t border-gray-100 dark:border-slate-700 pt-2 mt-1">
                                     <span className="text-gray-500">DPP + PPN ({ppnRate}%):</span>
-                                        <span className="font-bold text-indigo-600">{formatCurrency((calcData.calculationDpp || 0) + (calcData.ppn || 0))}</span>
+                                        <span className="font-bold text-blue-600">{formatCurrency((calcData.calculationDpp || 0) + (calcData.ppn || 0))}</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-gray-500">DPP - PPh:</span>
@@ -1117,7 +1117,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                                             <span>{formatCurrency(item.value)}</span>
                                                         </div>
                                                         <div className="grid grid-cols-2 gap-2">
-                                                            <div className="flex justify-between text-indigo-600 dark:text-indigo-400 font-bold">
+                                                            <div className="flex justify-between text-blue-600 dark:text-blue-400 font-bold">
                                                         <span>PPN ({ppnRate}%):</span>
                                                                 <span>+{formatCurrency(item.ppn)}</span>
                                                             </div>
@@ -1130,13 +1130,13 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                                 ))}
 
                                                 {/* Total Breakdown Row */}
-                                                <div className="bg-indigo-600 dark:bg-indigo-500 p-3 rounded-xl border border-indigo-400 text-[11px] text-white shadow-lg mt-2 animate-in slide-in-from-bottom-2">
+                                                <div className="bg-blue-600 dark:bg-blue-500 p-3 rounded-xl border border-blue-400 text-[11px] text-white shadow-lg mt-2 animate-in slide-in-from-bottom-2">
                                                     <div className="flex justify-between font-black mb-1.5">
                                                         <span className="uppercase tracking-wider">Total Penjumlahan</span>
                                                         <span>{formatCurrency(calcData.totalBreakdown?.value || 0)}</span>
                                                     </div>
                                                     <div className="grid grid-cols-2 gap-2 border-t border-white/20 pt-1.5">
-                                                        <div className="flex justify-between font-bold text-indigo-100">
+                                                        <div className="flex justify-between font-bold text-blue-100">
                                                     <span>Total PPN ({ppnRate}%):</span>
                                                             <span>+{formatCurrency(calcData.totalBreakdown?.ppn || 0)}</span>
                                                         </div>

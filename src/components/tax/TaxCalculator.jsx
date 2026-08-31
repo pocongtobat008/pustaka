@@ -362,7 +362,7 @@ export default function TaxCalculator({
 
                         <button
                             onClick={() => setUsePpn(!usePpn)}
-                            className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg border transition-all flex items-center gap-1.5 ${usePpn ? 'bg-indigo-600 border-indigo-700 text-white shadow-lg' : 'bg-gray-100 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700'}`}
+                            className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg border transition-all flex items-center gap-1.5 ${usePpn ? 'bg-blue-600 border-blue-700 text-white shadow-lg' : 'bg-gray-100 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700'}`}
                             title={`Aktifkan/Nonaktifkan perhitungan PPN (${ppnRate}%)`}
                         >
                             {usePpn ? 'Gunakan PPN: ON' : 'Gunakan PPN: OFF'}
@@ -384,7 +384,7 @@ export default function TaxCalculator({
                                             setUsePpn(true);
                                         }
                                     }}
-                                    className={`px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider rounded-md transition-all ${markupMode === mode.id ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20 scale-105' : 'text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300'}`}
+                                    className={`px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider rounded-md transition-all ${markupMode === mode.id ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20 scale-105' : 'text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300'}`}
                                 >
                                     {mode.label}
                                 </button>
@@ -392,9 +392,9 @@ export default function TaxCalculator({
                         </div>
 
                         {markupMode !== 'none' && (
-                            <div className="flex items-center gap-1.5 px-2 py-1 bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-800 rounded-lg animate-pulse shadow-sm">
-                                <Sparkles size={10} className="text-indigo-600 dark:text-indigo-400" />
-                                <span className="text-[9px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-tighter">Mode GROSS AKTIF</span>
+                            <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg animate-pulse shadow-sm">
+                                <Sparkles size={10} className="text-blue-600 dark:text-blue-400" />
+                                <span className="text-[9px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-tighter">Mode GROSS AKTIF</span>
                             </div>
                         )}
                     </div>
@@ -410,7 +410,7 @@ export default function TaxCalculator({
                         {!isReadOnly && (
                             <button
                                 onClick={() => setIsCalcMode(!isCalcMode)}
-                                className={`text-xs flex items-center gap-1 px-2 py-1 rounded-md transition-all ${isCalcMode ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+                                className={`text-xs flex items-center gap-1 px-2 py-1 rounded-md transition-all ${isCalcMode ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
                             >
                                 {isCalcMode ? <Keyboard size={14} /> : <Calculator size={14} />}
                                 {isCalcMode ? 'Mode Input' : 'Mode Rumus'}
@@ -425,11 +425,11 @@ export default function TaxCalculator({
                             onChange={handleDppChange}
                             onKeyDown={handleKeyDown}
                             disabled={isReadOnly}
-                            className={`w-full ${isCalcMode ? 'pl-4 font-mono text-indigo-600 dark:text-indigo-400' : 'pl-10'} pr-4 py-3 rounded-xl border ${isCalcMode ? 'border-indigo-300 dark:border-indigo-800 ring-2 ring-indigo-500/20' : 'border-slate-200 dark:border-slate-700'} bg-white dark:bg-slate-800 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed`}
+                            className={`w-full ${isCalcMode ? 'pl-4 font-mono text-blue-600 dark:text-blue-400' : 'pl-10'} pr-4 py-3 rounded-xl border ${isCalcMode ? 'border-blue-300 dark:border-blue-800 ring-2 ring-blue-500/20' : 'border-slate-200 dark:border-slate-700'} bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed`}
                             placeholder={isCalcMode ? "Ketik rumus lalu ENTER" : "0"}
                         />
                         {isCalcMode && !isReadOnly && (
-                            <button onClick={evaluateExpression} className="absolute right-2 top-1/2 -translate-y-1/2 text-xs bg-indigo-600 text-white px-3 py-1.5 rounded-lg font-bold hover:bg-indigo-700 transition-colors">
+                            <button onClick={evaluateExpression} className="absolute right-2 top-1/2 -translate-y-1/2 text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg font-bold hover:bg-blue-700 transition-colors">
                                 HITUNG
                             </button>
                         )}
@@ -541,12 +541,12 @@ export default function TaxCalculator({
 
                 {/* 2. Gross Up Explanations */}
                 {markupMode !== 'none' && (
-                    <div className="mt-2 p-4 bg-indigo-50 dark:bg-indigo-900/10 rounded-2xl border border-indigo-100 dark:border-indigo-800/50 space-y-3 animate-in fade-in slide-in-from-top-2">
-                        <div className="flex items-center gap-2 pb-2 border-b border-indigo-200 dark:border-indigo-800">
-                            <Book size={14} className="text-indigo-600" />
-                            <span className="text-xs font-black text-indigo-800 dark:text-indigo-200 uppercase tracking-widest">Penjelasan Gross Up (Mark-up)</span>
+                    <div className="mt-2 p-4 bg-blue-50 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-800/50 space-y-3 animate-in fade-in slide-in-from-top-2">
+                        <div className="flex items-center gap-2 pb-2 border-b border-blue-200 dark:border-blue-800">
+                            <Book size={14} className="text-blue-600" />
+                            <span className="text-xs font-black text-blue-800 dark:text-blue-200 uppercase tracking-widest">Penjelasan Gross Up (Mark-up)</span>
                         </div>
-                        <div className="text-[10px] space-y-2 text-indigo-700/80 dark:text-indigo-400/80 leading-relaxed font-medium">
+                        <div className="text-[10px] space-y-2 text-blue-700/80 dark:text-blue-400/80 leading-relaxed font-medium">
                             {markupMode === 'pph' && (
                                 <p>Sistem mencari nilai Bruto agar setelah dipotong PPh, vendor menerima angka target secara penuh. <br />
                                     <span className="font-bold">Rumus:</span> Target / (1 - Tarif%)</p>
@@ -557,7 +557,7 @@ export default function TaxCalculator({
                             )}
                             {markupMode === 'both' && (
                                 <p>Sistem melakukan kalkulasi simultan mencari nilai Bruto agar vendor menerima target bersih, sementara PPh & PPN tetap terhitung dari nilai Bruto baru tersebut. <br />
-                                    <span className="font-bold text-indigo-800 dark:text-indigo-200 italic">Note: PPN {ppnRate}% dan PPh {isPph21BukanPegawai ? 'Progresif' : rate + '%'} diterapkan.</span></p>
+                                    <span className="font-bold text-blue-800 dark:text-blue-200 italic">Note: PPN {ppnRate}% dan PPh {isPph21BukanPegawai ? 'Progresif' : rate + '%'} diterapkan.</span></p>
                             )}
                         </div>
                     </div>
@@ -575,7 +575,7 @@ export default function TaxCalculator({
                                 onChange={(e) => setRate(e.target.value)}
                                 readOnly={isReadOnly}
                                 disabled={isReadOnly}
-                                className="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
+                                className="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
                                 placeholder="0"
                             />
                             <span className="absolute right-3 top-1/2 -translate-y-1/2 font-bold text-gray-500">%</span>
@@ -592,7 +592,7 @@ export default function TaxCalculator({
                             value={formatDisplayValue(discount)}
                             onChange={(e) => setDiscount(e.target.value.replace(/\./g, '').replace(/[^0-9]/g, ''))}
                             disabled={isReadOnly}
-                            className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
+                            className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
                             placeholder="0"
                         />
                     </div>
@@ -610,14 +610,14 @@ export default function TaxCalculator({
                             <p className="text-lg font-black text-slate-700 dark:text-slate-300">{formatCurrency(dppNet)}</p>
                         </div>
 
-                        <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-100 dark:border-indigo-800">
+                        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
                             <div className="flex justify-between items-center mb-1">
-                                <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">PPh Terutang</span>
-                                <button onClick={() => copyToClipboard(pph, 'pph')} className="text-indigo-400 hover:text-indigo-600 transition-colors">
+                                <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">PPh Terutang</span>
+                                <button onClick={() => copyToClipboard(pph, 'pph')} className="text-blue-400 hover:text-blue-600 transition-colors">
                                     {copied === 'pph' ? <Check size={14} /> : <Copy size={14} />}
                                 </button>
                             </div>
-                            <p className="text-lg font-black text-indigo-700 dark:text-indigo-300">{formatCurrency(pph)}</p>
+                            <p className="text-lg font-black text-blue-700 dark:text-blue-300">{formatCurrency(pph)}</p>
                         </div>
 
                         <div className="p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-100 dark:border-emerald-800">
@@ -631,7 +631,7 @@ export default function TaxCalculator({
                         </div>
                     </div>
 
-                    <div className={`p-6 rounded-2xl border transition-all ${markupMode !== 'none' ? 'bg-indigo-600 border-indigo-500 shadow-indigo-200/50 shadow-xl' : 'bg-slate-900 border-slate-800 shadow-slate-200/50 shadow-xl'}`}>
+                    <div className={`p-6 rounded-2xl border transition-all ${markupMode !== 'none' ? 'bg-blue-600 border-blue-500 shadow-blue-200/50 shadow-xl' : 'bg-slate-900 border-slate-800 shadow-slate-200/50 shadow-xl'}`}>
                         <div className="flex justify-between items-start mb-4">
                             <div>
                                 <h4 className="text-white/60 text-[10px] font-bold uppercase tracking-widest mb-1">
@@ -669,18 +669,18 @@ export default function TaxCalculator({
                             </div>
                         )}
 
-                        <p className="text-[10px] text-indigo-100/60 mt-4 font-medium italic">
+                        <p className="text-[10px] text-blue-100/60 mt-4 font-medium italic">
                             Rumus: {isPph21BukanPegawai ? '(50% x Bruto) x Progresif Pasal 17' : `(DPP - Potongan) + PPN ${ppnRate}% - PPh Terutang (Rounding Up)`}
                         </p>
                         {markupMode !== 'none' && (
-                            <p className="text-[10px] text-indigo-200 mt-1 font-bold">
+                            <p className="text-[10px] text-blue-200 mt-1 font-bold">
                                 * {markupMode === 'pph' && (isPph21BukanPegawai ? "Vendor menerima target net." : "Vendor menerima Net DPP secara penuh.")}
                                 {markupMode === 'ppn' && "Total Tagihan (DPP+PPN) sesuai target."}
                                 {markupMode === 'both' && "Total Akhir (PPh & PPN) sesuai target secara penuh."}
                             </p>
                         )}
                         {isPph21BukanPegawai && (
-                            <p className="text-[10px] text-indigo-300 mt-1 font-medium bg-white/10 px-2 py-1 rounded inline-block">
+                            <p className="text-[10px] text-blue-300 mt-1 font-medium bg-white/10 px-2 py-1 rounded inline-block">
                                 <span className="font-black">PMK 168/2023:</span> Terdiri dari DPP 50% & Tarif Progresif Pasal 17.
                             </p>
                         )}

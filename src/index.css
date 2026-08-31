@@ -265,8 +265,8 @@
 
   .neo-input:focus {
     outline: none;
-    box-shadow: var(--neo-inset-sm), 0 0 0 3px rgba(99, 102, 241, 0.18);
-    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: var(--neo-inset-sm), 0 0 0 3px rgba(29, 78, 216, 0.18);
+    border-color: rgba(29, 78, 216, 0.5);
   }
 
   .dark .neo-input {

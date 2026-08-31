@@ -33,7 +33,7 @@ const menuLandingConfig = {
     subtitle:
       'Ringkasan performa dokumen, aktivitas tim, status OCR, dan sinyal risiko dalam satu layar agar keputusan bisa dibuat cepat dan akurat.',
     icon: Rocket,
-    accent: 'from-sky-500 to-indigo-600',
+    accent: 'from-sky-500 to-blue-600',
     features: [
       'Snapshot KPI real-time: occupancy, status dokumen, revisi, dan tren produktivitas.',
       'AI semantic search untuk menemukan arsip lintas modul berdasarkan konteks, bukan nama file saja.',
@@ -79,7 +79,7 @@ const menuLandingConfig = {
     subtitle:
       'Kelola folder, metadata, OCR content, versi dokumen, dan akses lintas unit dalam satu alur kerja yang aman dan scalable.',
     icon: FolderOpen,
-    accent: 'from-indigo-500 to-fuchsia-600',
+    accent: 'from-blue-500 to-fuchsia-600',
     features: [
       'Hierarki folder dan navigasi histori untuk pengelolaan arsip yang rapi.',
       'Preview konten OCR untuk mempercepat verifikasi isi tanpa membuka file penuh.',
@@ -171,7 +171,7 @@ const menuLandingConfig = {
     subtitle:
       'Tampilkan insight kepatuhan, histori pembayaran, dan tren performa agar manajemen punya gambaran pajak yang komprehensif.',
     icon: LineChart,
-    accent: 'from-violet-500 to-indigo-600',
+    accent: 'from-violet-500 to-blue-600',
     features: [
       'Visual ringkas untuk status pembayaran dan indikator kepatuhan.',
       'Konsolidasi data dari proses monitoring dan kalkulasi.',
@@ -194,7 +194,7 @@ const menuLandingConfig = {
     subtitle:
       'Kelola role, user, departemen, dan struktur proses agar seluruh modul berjalan sesuai governance organisasi.',
     icon: Users,
-    accent: 'from-slate-600 to-indigo-600',
+    accent: 'from-slate-600 to-blue-600',
     features: [
       'Manajemen user, role, dan permission berbasis kebutuhan bisnis.',
       'Pengaturan master departemen untuk konsistensi data lintas modul.',
@@ -286,7 +286,7 @@ const menuLandingConfig = {
     subtitle:
       'Kelola struktur akun pembukuan secara hierarkis dengan pencarian cerdas dan import Excel untuk efisiensi input data.',
     icon: BookOpen,
-    accent: 'from-indigo-500 to-purple-600',
+    accent: 'from-blue-500 to-purple-600',
     features: [
       'Struktur COA hierarkis: Induk, Sub COA, dan Departemen.',
       'Pencarian semantic berbasis kode, nama, dan keterangan di semua level.',
@@ -606,7 +606,7 @@ export default function MenuLandingSection({
     title: activeTab,
     subtitle: '',
     icon: Brain,
-    accent: 'from-slate-500 to-indigo-600',
+    accent: 'from-slate-500 to-blue-600',
     features: [],
     functions: [],
     useCases: [],
@@ -1176,7 +1176,7 @@ export default function MenuLandingSection({
               <ul className="space-y-2">
                 {displayFunctions.map((item) => (
                   <li key={item} className="text-sm text-slate-700 dark:text-slate-200 flex gap-2 leading-relaxed">
-                    <Building2 size={16} className="mt-0.5 text-indigo-500 shrink-0" />
+                    <Building2 size={16} className="mt-0.5 text-blue-500 shrink-0" />
                     <span>{item}</span>
                   </li>
                 ))}
@@ -1222,7 +1222,7 @@ export default function MenuLandingSection({
                       onClose();
                       onOpenVision();
                     }}
-                    className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl border border-indigo-300 dark:border-indigo-500/40 text-indigo-700 dark:text-indigo-300 bg-indigo-50/70 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors"
+                    className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl border border-blue-300 dark:border-blue-500/40 text-blue-700 dark:text-blue-300 bg-blue-50/70 dark:bg-blue-500/10 hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-colors"
                   >
                     <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide">
                       <Rocket size={14} />

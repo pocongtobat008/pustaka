@@ -3666,7 +3666,7 @@ export default function App() {
     return (
       <div className="h-screen w-screen flex items-center justify-center bg-[#eef1f8] dark:bg-[#0b1437]">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
           <p className="text-gray-500 dark:text-slate-400 font-medium">{commandTextMap.labels.loading}</p>
         </div>
       </div>
@@ -3682,7 +3682,7 @@ export default function App() {
   );
 
   return (
-    <div className="flex h-screen overflow-hidden p-3 gap-3 md:gap-4 md:p-4 selection:bg-indigo-500/30 selection:text-indigo-600">
+    <div className="flex h-screen overflow-hidden p-3 gap-3 md:gap-4 md:p-4 selection:bg-blue-500/30 selection:text-blue-600">
 
       {/* FLOATING SIDEBAR */}
       <Sidebar
@@ -3847,7 +3847,7 @@ export default function App() {
                     <div className="p-1.5">
                       <button
                         onClick={() => { setProfileMenuOpen(false); setActiveTab('profile'); }}
-                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-stone-600 dark:text-white/80 hover:bg-blue-50/80 dark:hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-indigo-300 transition-colors text-left"
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-stone-600 dark:text-white/80 hover:bg-blue-50/80 dark:hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-300 transition-colors text-left"
                       >
                         <User size={15} className="text-stone-400" /> {commandTextMap.items.profile.label}
                       </button>
@@ -4186,20 +4186,20 @@ export default function App() {
                 Kembalikan ke Gudang
               </p>
             </div>
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
               <Truck className="text-white" size={24} />
             </div>
           </div>
 
           {/* Item Summary Card */}
           <div className="bg-white/50 dark:bg-slate-800/50 rounded-2xl p-4 border border-white/40 dark:border-white/5 mb-6 flex gap-4 items-center">
-            <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+            <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
               <Package size={20} />
             </div>
             <div>
               <h4 className="font-bold text-slate-800 dark:text-white text-lg">{selectedExternalItem?.boxId}</h4>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Dari: <span className="font-semibold text-indigo-500">{selectedExternalItem?.destination}</span>
+                Dari: <span className="font-semibold text-blue-500">{selectedExternalItem?.destination}</span>
               </p>
             </div>
           </div>
@@ -4211,7 +4211,7 @@ export default function App() {
               </label>
               <div className="relative">
                 <select
-                  className="w-full appearance-none bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all cursor-pointer hover:bg-white/80 dark:hover:bg-slate-800/80"
+                  className="w-full appearance-none bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all cursor-pointer hover:bg-white/80 dark:hover:bg-slate-800/80"
                   value={restoreTargetSlot}
                   onChange={(e) => setRestoreTargetSlot(e.target.value)}
                 >
@@ -4243,7 +4243,7 @@ export default function App() {
                   flex-[2] px-4 py-3 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 shadow-lg transition-all
                   ${!restoreTargetSlot
                     ? 'bg-slate-300 dark:bg-slate-700 cursor-not-allowed text-slate-400'
-                    : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 hover:shadow-indigo-500/25 hover:scale-[1.02] active:scale-95'
+                    : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-blue-500/25 hover:scale-[1.02] active:scale-95'
                   }
                 `}
               >
@@ -4353,20 +4353,20 @@ export default function App() {
                 Kembalikan ke Gudang
               </p>
             </div>
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
               <Truck className="text-white" size={24} />
             </div>
           </div>
 
           {/* Item Summary Card */}
           <div className="bg-white/50 dark:bg-slate-800/50 rounded-2xl p-4 border border-white/40 dark:border-white/5 mb-6 flex gap-4 items-center">
-            <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+            <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
               <Package size={20} />
             </div>
             <div>
               <h4 className="font-bold text-slate-800 dark:text-white text-lg">{selectedExternalItem?.boxId}</h4>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Dari: <span className="font-semibold text-indigo-500">{selectedExternalItem?.destination}</span>
+                Dari: <span className="font-semibold text-blue-500">{selectedExternalItem?.destination}</span>
               </p>
             </div>
           </div>
@@ -4378,7 +4378,7 @@ export default function App() {
               </label>
               <div className="relative">
                 <select
-                  className="w-full appearance-none bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all cursor-pointer hover:bg-white/80 dark:hover:bg-slate-800/80"
+                  className="w-full appearance-none bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all cursor-pointer hover:bg-white/80 dark:hover:bg-slate-800/80"
                   value={restoreTargetSlot}
                   onChange={(e) => setRestoreTargetSlot(e.target.value)}
                 >
@@ -4410,7 +4410,7 @@ export default function App() {
                   flex-[2] px-4 py-3 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 shadow-lg transition-all
                   ${!restoreTargetSlot
                     ? 'bg-slate-300 dark:bg-slate-700 cursor-not-allowed text-slate-400'
-                    : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 hover:shadow-indigo-500/25 hover:scale-[1.02] active:scale-95'
+                    : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-blue-500/25 hover:scale-[1.02] active:scale-95'
                   }
                 `}
               >
@@ -4430,7 +4430,7 @@ export default function App() {
         size="max-w-sm"
       >
         <div className="pt-4">
-          <div className="w-16 h-16 rounded-[2rem] bg-indigo-600 text-white flex items-center justify-center shadow-2xl shadow-indigo-600/30 mx-auto mb-6">
+          <div className="w-16 h-16 rounded-[2rem] bg-blue-600 text-white flex items-center justify-center shadow-2xl shadow-blue-600/30 mx-auto mb-6">
             <Truck size={32} />
           </div>
 
@@ -4442,14 +4442,14 @@ export default function App() {
                 type="date"
                 value={externalDate}
                 onChange={(e) => setExternalDate(e.target.value)}
-                className="w-full px-6 py-4 text-lg font-black border-2 border-indigo-500/10 bg-slate-50 dark:bg-slate-800/50 rounded-2xl focus:border-indigo-500 transition-all outline-none dark:text-white"
+                className="w-full px-6 py-4 text-lg font-black border-2 border-blue-500/10 bg-slate-50 dark:bg-slate-800/50 rounded-2xl focus:border-blue-500 transition-all outline-none dark:text-white"
               />
             </div>
 
             <div className="flex flex-col gap-3">
               <button
                 onClick={() => handleExternalTransfer('Indoarsip', externalDate)}
-                className="w-full py-4 bg-indigo-600 text-white text-xs font-black rounded-2xl hover:bg-indigo-500 shadow-xl shadow-indigo-500/30 transition-all transform active:scale-95 uppercase tracking-widest"
+                className="w-full py-4 bg-blue-600 text-white text-xs font-black rounded-2xl hover:bg-blue-500 shadow-xl shadow-blue-500/30 transition-all transform active:scale-95 uppercase tracking-widest"
               >
                 Konfirmasi Pengiriman
               </button>
@@ -4478,7 +4478,7 @@ export default function App() {
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nama Alur Persetujuan</label>
               <input
-                className="w-full px-5 py-3 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-indigo-500 rounded-2xl outline-none dark:text-white font-black"
+                className="w-full px-5 py-3 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white font-black"
                 placeholder="Contoh: Alur Pengadaan Barang"
                 value={flowForm.name}
                 onChange={e => setFlowForm({ ...flowForm, name: e.target.value })}
@@ -4487,7 +4487,7 @@ export default function App() {
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Deskripsi Singkat</label>
               <input
-                className="w-full px-5 py-3 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-indigo-500 rounded-2xl outline-none dark:text-white font-medium"
+                className="w-full px-5 py-3 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white font-medium"
                 placeholder="Tujuan dari alur persetujuan ini..."
                 value={flowForm.description}
                 onChange={e => setFlowForm({ ...flowForm, description: e.target.value })}
