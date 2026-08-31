@@ -916,9 +916,9 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
             tgl_transaksi: inv.tgl_transaksi ? String(inv.tgl_transaksi).slice(0, 10) : '',
             uang_masuk: parseCurrency(inv.uang_masuk),
             tgl_uang_masuk: inv.tgl_uang_masuk ? String(inv.tgl_uang_masuk).slice(0, 10) : '',
-            ppn_rate: ppnCustom
-                ? (inv.ppn_rate != null && inv.ppn_rate !== '' ? Number(inv.ppn_rate) : 0.11)
-                : (inv.ppn ? (inv.subtotal > 0 ? Math.round((parseFloat(inv.ppn) / parseFloat(inv.subtotal)) * 10000) / 100 : 0.11) : 0.11),
+            ppn_rate: inv.ppn_rate != null && inv.ppn_rate !== ''
+                ? (parseFloat(inv.ppn_rate) > 1 ? parseFloat(inv.ppn_rate) / 100 : parseFloat(inv.ppn_rate))
+                : 0.11,
             diskon: parseCurrency(inv.diskon),
             materai: parseCurrency(inv.materai),
             pelunasan: inv.total_invoice != null && inv.uang_masuk != null ? parseCurrency(parseFloat(inv.total_invoice) - parseFloat(inv.uang_masuk)) : '',
