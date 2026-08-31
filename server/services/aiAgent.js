@@ -914,6 +914,18 @@ export function sanitizeApiKey(key) {
 }
 
 const LLM_TIMEOUT_MS = 75000; // timeout agar model yang menggantung (silent drop) tidak membekukan agent
+const MAX_429_RETRIES = 3; // maksimal retry saat kena rate limit
+const BASE_429_DELAY_MS = 2000; // delay awal 2 detik, doubling setiap retry
+
+// Helper: extract retry-after header atau fallback ke delayManual
+function getRetryDelayMs(res, attempt) {
+  const ra = res.headers?.get('retry-after');
+  if (ra) {
+    const n = parseInt(ra, 10);
+    if (!isNaN(n) && n > 0 && n <= 60) return n * 1000;
+  }
+  return BASE_429_DELAY_MS * Math.pow(2, attempt); // exponential backoff
+}
 
 export async function callLLM(messages, tools, settings, opts = {}) {
   const { stream = false, onToken = null, onReasoning = null, signal = null, maxTokens = null, timeoutMs = null } = opts;
@@ -943,18 +955,30 @@ export async function callLLM(messages, tools, settings, opts = {}) {
     signal: ac.signal,
   });
   try {
-    res = await doFetch(body);
-    // Gateway berbasis Gemini (mis. antigravity/gemini-*) menolak field 'stream' yang tidak dikenal
-    // → 400 "Invalid JSON payload / Unknown name stream". Retry sekali TANPA field itu;
-    // gateway ini tetap merespons via SSE (text/event-stream) sehingga streaming token tidak hilang.
-    if (res.status === 400 && 'stream' in body) {
-      consumedErr = await res.text().catch(() => '');
-      if (/unknown name.{0,20}stream|cannot find field|invalid json payload/i.test(consumedErr)) {
-        console.warn(`[AI Agent] Gateway menolak field 'stream' (${String(consumedErr).slice(0, 100)}). Retry tanpa stream...`);
-        const { stream: _drop, ...bodyNoStream } = body;
-        res = await doFetch(bodyNoStream);
-        consumedErr = null; // body baru → biarkan blok error membaca ulang
+    // ── Retry loop untuk 429 rate limit ──
+    for (let attempt = 0; attempt <= MAX_429_RETRIES; attempt++) {
+      res = await doFetch(body);
+      // Gateway berbasis Gemini (mis. antigravity/gemini-*) menolak field 'stream' yang tidak dikenal
+      // → 400 "Invalid JSON payload / Unknown name stream". Retry sekali TANPA field itu;
+      // gateway ini tetap merespons via SSE (text/event-stream) sehingga streaming token tidak hilang.
+      if (res.status === 400 && 'stream' in body) {
+        consumedErr = await res.text().catch(() => '');
+        if (/unknown name.{0,20}stream|cannot find field|invalid json payload/i.test(consumedErr)) {
+          console.warn(`[AI Agent] Gateway menolak field 'stream' (${String(consumedErr).slice(0, 100)}). Retry tanpa stream...`);
+          const { stream: _drop, ...bodyNoStream } = body;
+          res = await doFetch(bodyNoStream);
+          consumedErr = null; // body baru → biarkan blok error membaca ulang
+        }
       }
+      // ── 429 rate limit: backoff & retry ──
+      if (res.status === 429 && attempt < MAX_429_RETRIES) {
+        const delayMs = getRetryDelayMs(res, attempt);
+        console.warn(`[AI Agent] 429 rate-limited (attempt ${attempt + 1}/${MAX_429_RETRIES}), retry in ${delayMs}ms...`);
+        consumedErr = null;
+        await new Promise(r => setTimeout(r, delayMs));
+        continue; // retry
+      }
+      break; // success atau 429 tapi sudah max retries
     }
   } catch (e) {
     clearTimeout(timer);
