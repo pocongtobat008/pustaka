@@ -2035,7 +2035,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             )}
                             <td className="px-4 py-3">
                                 <span className={'inline-block whitespace-nowrap px-2.5 py-1 rounded-full text-[10px] font-bold leading-tight ' + (STATUS_MAP[child.status]?.cls || '')}>{STATUS_MAP[child.status]?.label || child.status}</span>
-                                <StatusStepper status={child.status} />
+                                <StatusStepper status={child.status} t={t} />
                             </td>
                             <td className="px-4 py-3">
                                 <div className="font-semibold text-stone-700 dark:text-white/80 truncate max-w-[220px] pl-5" title={child.dealer_name || '-'}>{child.dealer_name || '-'}</div>
