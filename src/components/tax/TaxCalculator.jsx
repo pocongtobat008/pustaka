@@ -345,8 +345,8 @@ export default function TaxCalculator({
 
     return (
         <Card className={className}>
-            <div className="flex justify-between items-center mb-6 border-b pb-2 dark:border-gray-700">
-                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+            <div className="flex justify-between items-center mb-6 border-b pb-2 dark:border-stone-700">
+                <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-200">
                     {title}
                 </h3>
 
@@ -354,7 +354,7 @@ export default function TaxCalculator({
                     <div className="flex flex-wrap items-center gap-3">
                         <button
                             onClick={() => setIsPph21BukanPegawai(!isPph21BukanPegawai)}
-                            className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg border transition-all flex items-center gap-1.5 ${isPph21BukanPegawai ? 'bg-amber-500 border-amber-600 text-white shadow-lg' : 'bg-gray-100 dark:bg-[#0d0d0d] border-gray-200 dark:border-white/[0.06] text-gray-500 dark:text-white/40 hover:bg-gray-200 dark:hover:bg-white/[0.06]'}`}
+                            className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg border transition-all flex items-center gap-1.5 ${isPph21BukanPegawai ? 'bg-amber-500 border-amber-600 text-white shadow-lg' : 'bg-stone-100 dark:bg-[#0d0d0d] border-stone-200 dark:border-white/[0.06] text-stone-500 dark:text-white/40 hover:bg-stone-200 dark:hover:bg-white/[0.06]'}`}
                             title={t("taxcalc.bukanPegawaiTip")}
                         >
                             {isPph21BukanPegawai ? 'Mode: Bukan Pegawai ON' : 'PPH 21 Bukan Pegawai?'}
@@ -362,13 +362,13 @@ export default function TaxCalculator({
 
                         <button
                             onClick={() => setUsePpn(!usePpn)}
-                            className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg border transition-all flex items-center gap-1.5 ${usePpn ? 'bg-blue-600 border-blue-700 text-white shadow-lg' : 'bg-gray-100 dark:bg-[#0d0d0d] border-gray-200 dark:border-white/[0.06] text-gray-500 dark:text-white/40 hover:bg-gray-200 dark:hover:bg-white/[0.06]'}`}
+                            className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg border transition-all flex items-center gap-1.5 ${usePpn ? 'bg-blue-600 border-blue-700 text-white shadow-lg' : 'bg-stone-100 dark:bg-[#0d0d0d] border-stone-200 dark:border-white/[0.06] text-stone-500 dark:text-white/40 hover:bg-stone-200 dark:hover:bg-white/[0.06]'}`}
                             title={`Aktifkan/Nonaktifkan perhitungan PPN (${ppnRate}%)`}
                         >
                             {usePpn ? 'Gunakan PPN: ON' : 'Gunakan PPN: OFF'}
                         </button>
 
-                        <div className="flex bg-gray-100 dark:bg-[#0d0d0d] p-0.5 rounded-lg border dark:border-white/[0.06] shadow-sm overflow-hidden relative">
+                        <div className="flex bg-stone-100 dark:bg-[#0d0d0d] p-0.5 rounded-lg border dark:border-white/[0.06] shadow-sm overflow-hidden relative">
                             {[
                                 { id: 'none', label: 'Normal' },
                                 { id: 'pph', label: 'PPh' },
@@ -384,7 +384,7 @@ export default function TaxCalculator({
                                             setUsePpn(true);
                                         }
                                     }}
-                                    className={`px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider rounded-md transition-all ${markupMode === mode.id ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20 scale-105' : 'text-gray-400 dark:text-white/30 hover:text-gray-600 dark:hover:text-slate-300'}`}
+                                    className={`px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider rounded-md transition-all ${markupMode === mode.id ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20 scale-105' : 'text-stone-400 dark:text-white/30 hover:text-stone-600 dark:hover:text-white/80'}`}
                                 >
                                     {mode.label}
                                 </button>
@@ -404,13 +404,13 @@ export default function TaxCalculator({
             <div className="space-y-6">
                 <div>
                     <div className="flex justify-between items-center mb-1">
-                        <label className="block text-sm font-medium text-slate-700 dark:text-white/70">
+                        <label className="block text-sm font-medium text-stone-700 dark:text-white/70">
                             Dasar Pengenaan Pajak (DPP)
                         </label>
                         {!isReadOnly && (
                             <button
                                 onClick={() => setIsCalcMode(!isCalcMode)}
-                                className={`text-xs flex items-center gap-1 px-2 py-1 rounded-md transition-all ${isCalcMode ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-bold' : 'text-slate-500 dark:text-white/40 hover:bg-slate-100 dark:hover:bg-white/[0.05]'}`}
+                                className={`text-xs flex items-center gap-1 px-2 py-1 rounded-md transition-all ${isCalcMode ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-bold' : 'text-stone-500 dark:text-white/40 hover:bg-stone-100 dark:hover:bg-white/[0.05]'}`}
                             >
                                 {isCalcMode ? <Keyboard size={14} /> : <Calculator size={14} />}
                                 {isCalcMode ? 'Mode Input' : 'Mode Rumus'}
@@ -418,14 +418,14 @@ export default function TaxCalculator({
                         )}
                     </div>
                     <div className="relative">
-                        {!isCalcMode && <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-white/40 font-medium">Rp</span>}
+                        {!isCalcMode && <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 dark:text-white/40 font-medium">Rp</span>}
                         <input
                             type="text"
                             value={isCalcMode ? dpp : formatDisplayValue(dpp)}
                             onChange={handleDppChange}
                             onKeyDown={handleKeyDown}
                             disabled={isReadOnly}
-                            className={`w-full ${isCalcMode ? 'pl-4 font-mono text-blue-600 dark:text-blue-400' : 'pl-10'} pr-4 py-3 rounded-xl border ${isCalcMode ? 'border-blue-300 dark:border-blue-800 ring-2 ring-blue-500/20' : 'border-slate-200 dark:border-white/[0.06]'} bg-white dark:bg-[#0d0d0d] focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed`}
+                            className={`w-full ${isCalcMode ? 'pl-4 font-mono text-blue-600 dark:text-blue-400' : 'pl-10'} pr-4 py-3 rounded-xl border ${isCalcMode ? 'border-blue-300 dark:border-blue-800 ring-2 ring-blue-500/20' : 'border-stone-200 dark:border-white/[0.06]'} bg-white dark:bg-[#0d0d0d] focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-stone-100 dark:disabled:bg-[#0d0d0d] disabled:cursor-not-allowed`}
                             placeholder={isCalcMode ? "Ketik rumus lalu ENTER" : "0"}
                         />
                         {isCalcMode && !isReadOnly && (
@@ -565,7 +565,7 @@ export default function TaxCalculator({
 
                 {!isPph21BukanPegawai && (
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex justify-between">
+                        <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1 flex justify-between">
                             <span>Persentase Tarif (%)</span>
                         </label>
                         <div className="relative">
@@ -575,39 +575,39 @@ export default function TaxCalculator({
                                 onChange={(e) => setRate(e.target.value)}
                                 readOnly={isReadOnly}
                                 disabled={isReadOnly}
-                                className="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-[#0d0d0d] focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
+                                className="w-full pl-4 pr-10 py-3 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white dark:bg-[#0d0d0d] focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-stone-100 dark:disabled:bg-[#0d0d0d] disabled:cursor-not-allowed"
                                 placeholder="0"
                             />
-                            <span className="absolute right-3 top-1/2 -translate-y-1/2 font-bold text-gray-500">%</span>
+                            <span className="absolute right-3 top-1/2 -translate-y-1/2 font-bold text-stone-500">%</span>
                         </div>
                     </div>
                 )}
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Potongan Harga</label>
+                    <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">Potongan Harga</label>
                     <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">Rp</span>
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 font-medium">Rp</span>
                         <input
                             type="text"
                             value={formatDisplayValue(discount)}
                             onChange={(e) => setDiscount(e.target.value.replace(/\./g, '').replace(/[^0-9]/g, ''))}
                             disabled={isReadOnly}
-                            className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-[#0d0d0d] focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
+                            className="w-full pl-10 pr-4 py-3 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white dark:bg-[#0d0d0d] focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-stone-100 dark:disabled:bg-[#0d0d0d] disabled:cursor-not-allowed"
                             placeholder="0"
                         />
                     </div>
                 </div>
 
-                <div className="pt-4 border-t dark:border-gray-700 space-y-4">
+                <div className="pt-4 border-t dark:border-stone-700 space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="p-4 bg-slate-50 dark:bg-[#0d0d0d]/20 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <div className="p-4 bg-stone-50 dark:bg-[#0d0d0d]/20 rounded-xl border border-stone-100 dark:border-white/[0.06]">
                             <div className="flex justify-between items-center mb-1">
-                                <span className="text-[10px] font-bold text-slate-500 dark:text-white/40 uppercase tracking-wider">DPP Net</span>
-                                <button onClick={() => copyToClipboard(dppNet, 'dppNet')} className="text-slate-400 hover:text-slate-600 transition-colors">
+                                <span className="text-[10px] font-bold text-stone-500 dark:text-white/40 uppercase tracking-wider">DPP Net</span>
+                                <button onClick={() => copyToClipboard(dppNet, 'dppNet')} className="text-stone-400 hover:text-stone-600 transition-colors">
                                     {copied === 'dppNet' ? <Check size={14} /> : <Copy size={14} />}
                                 </button>
                             </div>
-                            <p className="text-lg font-black text-slate-700 dark:text-white/70">{formatCurrency(dppNet)}</p>
+                            <p className="text-lg font-black text-stone-700 dark:text-white/70">{formatCurrency(dppNet)}</p>
                         </div>
 
                         <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
@@ -631,7 +631,7 @@ export default function TaxCalculator({
                         </div>
                     </div>
 
-                    <div className={`p-6 rounded-2xl border transition-all ${markupMode !== 'none' ? 'bg-blue-600 border-blue-500 shadow-blue-200/50 shadow-xl' : 'bg-slate-900 border-slate-800 shadow-slate-200/50 shadow-xl'}`}>
+                    <div className={`p-6 rounded-2xl border transition-all ${markupMode !== 'none' ? 'bg-blue-600 border-blue-500 shadow-blue-200/50 shadow-xl' : 'bg-stone-900 border-[#0d0d0d] shadow-slate-200/50 shadow-xl'}`}>
                         <div className="flex justify-between items-start mb-4">
                             <div>
                                 <h4 className="text-white/60 text-[10px] font-bold uppercase tracking-widest mb-1">
@@ -689,7 +689,7 @@ export default function TaxCalculator({
 
                 {!isReadOnly && (
                     <div className="flex justify-end pt-2">
-                        <button onClick={handleReset} className="px-4 py-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                        <button onClick={handleReset} className="px-4 py-2 text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200 flex items-center gap-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors">
                             <RefreshCw size={16} /> Reset
                         </button>
                     </div>

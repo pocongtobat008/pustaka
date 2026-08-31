@@ -988,7 +988,7 @@ export default function MasterData({
         const end = Math.min(page * perPage, total);
         return (
             <div className="flex items-center justify-between px-4 py-2 border-t dark:border-white/10 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl">
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-stone-500">
                     Menampilkan <span className="font-bold">{start}</span>–<span className="font-bold">{end}</span> dari <span className="font-bold">{total}</span>
                 </p>
                 <div className="flex items-center gap-1">
@@ -996,7 +996,7 @@ export default function MasterData({
                         onClick={() => setPage(p => Math.max(p - 1, 1))}
                         disabled={page === 1}
                         aria-label="Previous page" title="Previous"
-                        className="p-1 rounded text-gray-400 hover:bg-gray-200 dark:hover:bg-white/[0.06] disabled:opacity-30"
+                        className="p-1 rounded text-stone-400 hover:bg-stone-200 dark:hover:bg-white/[0.06] disabled:opacity-30"
                     >
                         <ChevronLeft size={16} />
                     </button>
@@ -1009,12 +1009,12 @@ export default function MasterData({
                         }, [])
                         .map((p, i) =>
                             p === '...' ? (
-                                <span key={`e${i}`} className="px-1 text-xs text-gray-400">…</span>
+                                <span key={`e${i}`} className="px-1 text-xs text-stone-400">…</span>
                             ) : (
                                 <button
                                     key={p}
                                     onClick={() => setPage(p)}
-                                    className={`px-2 py-0.5 rounded text-xs font-bold ${page === p ? 'gradient-bg text-white' : 'text-gray-500 hover:bg-gray-200 dark:hover:bg-white/[0.06]'}`}
+                                    className={`px-2 py-0.5 rounded text-xs font-bold ${page === p ? 'gradient-bg text-white' : 'text-stone-500 hover:bg-stone-200 dark:hover:bg-white/[0.06]'}`}
                                 >
                                     {p}
                                 </button>
@@ -1024,7 +1024,7 @@ export default function MasterData({
                         onClick={() => setPage(p => Math.min(p + 1, totalPages))}
                         disabled={page === totalPages}
                         aria-label="Next page" title="Next"
-                        className="p-1 rounded text-gray-400 hover:bg-gray-200 dark:hover:bg-white/[0.06] disabled:opacity-30"
+                        className="p-1 rounded text-stone-400 hover:bg-stone-200 dark:hover:bg-white/[0.06] disabled:opacity-30"
                     >
                         <ChevronRight size={16} />
                     </button>
@@ -1040,7 +1040,7 @@ export default function MasterData({
                     <button
                         key={tab}
                         onClick={() => setMasterTab(tab)}
-                        className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${masterTab === tab ? 'gradient-bg text-white shadow-md' : 'text-gray-500 dark:text-white/30 hover:bg-gray-200 dark:hover:bg-white/[0.06] dark:hover:text-slate-300'}`}
+                        className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${masterTab === tab ? 'gradient-bg text-white shadow-md' : 'text-stone-500 dark:text-white/30 hover:bg-stone-200 dark:hover:bg-white/[0.06] dark:hover:text-white/80'}`}
                     >
                         {text.tabs[tab] || tab}
                     </button>
@@ -1106,7 +1106,7 @@ export default function MasterData({
                     )}
                     <div className="space-y-4">
                         {Object.keys(groupedUsers).length === 0 ? (
-                            <div className="text-center py-10 text-slate-400 italic">{text.userNotFound}</div>
+                            <div className="text-center py-10 text-stone-400 italic">{text.userNotFound}</div>
                         ) : (
                             Object.entries(groupedUsers).map(([deptName, deptUsers]) => (
                                 <div key={deptName} className="space-y-2">
@@ -1119,11 +1119,11 @@ export default function MasterData({
                                                 <Building2 size={18} />
                                             </div>
                                             <div className="text-left">
-                                                <h3 className="font-black text-slate-800 dark:text-white text-sm uppercase tracking-wider">{deptName}</h3>
-                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{deptUsers.length} {text.registeredMembers}</p>
+                                                <h3 className="font-black text-stone-800 dark:text-white text-sm uppercase tracking-wider">{deptName}</h3>
+                                                <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">{deptUsers.length} {text.registeredMembers}</p>
                                             </div>
                                         </div>
-                                        <div className={`p-2 rounded-xl transition-all ${expandedDepts[deptName] ? 'gradient-bg text-white rotate-90' : 'gradient-bg-soft text-slate-400 group-hover:text-blue-600'}`}>
+                                        <div className={`p-2 rounded-xl transition-all ${expandedDepts[deptName] ? 'gradient-bg text-white rotate-90' : 'gradient-bg-soft text-stone-400 group-hover:text-blue-600'}`}>
                                             <ChevronRight size={18} />
                                         </div>
                                     </button>
@@ -1142,19 +1142,19 @@ export default function MasterData({
                                                             </div>
                                                         </div>
                                                         <div>
-                                                            <div className="font-black text-slate-800 dark:text-white text-sm tracking-tight">{u.name}</div>
+                                                            <div className="font-black text-stone-800 dark:text-white text-sm tracking-tight">{u.name}</div>
                                                             <div className="flex items-center gap-2 mt-0.5">
                                                                 <span className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-md">{u.role}</span>
-                                                                <span className="text-[10px] font-bold text-slate-400 uppercase">@{u.username}</span>
+                                                                <span className="text-[10px] font-bold text-stone-400 uppercase">@{u.username}</span>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div className="flex gap-1 opacity-0 group-hover/user:opacity-100 transition-all">
                                                         {hasPermission('master', 'edit') && (
-                                                            <button onClick={() => handleEditUser(u)} className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-colors"><Edit3 size={16} /></button>
+                                                            <button onClick={() => handleEditUser(u)} className="p-2 text-stone-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-colors"><Edit3 size={16} /></button>
                                                         )}
                                                         {hasPermission('master', 'delete') && (
-                                                            <button onClick={() => handleDeleteUser(u.id)} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors"><Trash2 size={16} /></button>
+                                                            <button onClick={() => handleDeleteUser(u.id)} className="p-2 text-stone-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors"><Trash2 size={16} /></button>
                                                         )}
                                                     </div>
                                                 </div>
@@ -1192,7 +1192,7 @@ export default function MasterData({
                                     <div className="flex justify-between items-start mb-4">
                                         <div>
                                             <div className="font-bold text-lg dark:text-white">{r.label || r.name}</div>
-                                            <div className="text-xs text-gray-500 mt-1 uppercase tracking-wider">{text.moduleAccess}</div>
+                                            <div className="text-xs text-stone-500 mt-1 uppercase tracking-wider">{text.moduleAccess}</div>
                                         </div>
                                         <div className="flex gap-1">
                                             {hasPermission('master', 'edit') && (
@@ -1216,14 +1216,14 @@ export default function MasterData({
                                                     title={hasRule ? actions.join(', ') : (hasPermission('master', 'edit') ? text.setNow : text.noPermissionSet)}
                                                     className={`px-2 py-1 rounded text-[10px] flex flex-col text-left border transition-all ${hasPermission('master', 'edit')
                                                         ? (hasRule
-                                                            ? 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border-gray-200 dark:border-white/[0.06] hover:border-blue-300 dark:hover:border-blue-600 cursor-pointer'
+                                                            ? 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border-stone-200 dark:border-white/[0.06] hover:border-blue-300 dark:hover:border-blue-600 cursor-pointer'
                                                             : 'bg-amber-50 dark:bg-amber-500/10 border-dashed border-amber-300 dark:border-amber-500/40 hover:border-amber-400 cursor-pointer')
-                                                        : 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border-gray-200 dark:border-white/[0.06] cursor-default opacity-70'}`}
+                                                        : 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border-stone-200 dark:border-white/[0.06] cursor-default opacity-70'}`}
                                                 >
                                                     <span className={`font-bold uppercase ${hasRule ? 'text-blue-500' : 'text-amber-500 dark:text-amber-400'}`}>
                                                         {mod.label}
                                                     </span>
-                                                    <span className={`${hasRule ? 'text-gray-400' : 'text-amber-400/80 dark:text-amber-500/70 italic'}`}>
+                                                    <span className={`${hasRule ? 'text-stone-400' : 'text-amber-400/80 dark:text-amber-500/70 italic'}`}>
                                                         {hasRule ? actions.join(', ') : text.notSet}
                                                     </span>
                                                 </button>
@@ -1233,9 +1233,9 @@ export default function MasterData({
                                         {Object.keys(perms)
                                             .filter(mod => !APP_MODULES[mod])
                                             .map(mod => (
-                                                <div key={mod} className="px-2 py-1 bg-white/70 dark:bg-[#0d0d0d]/60 border border-gray-200 dark:border-white/[0.06] rounded text-[10px] flex flex-col">
+                                                <div key={mod} className="px-2 py-1 bg-white/70 dark:bg-[#0d0d0d]/60 border border-stone-200 dark:border-white/[0.06] rounded text-[10px] flex flex-col">
                                                     <span className="font-bold text-blue-500 uppercase">{mod}</span>
-                                                    <span className="text-gray-400">{Array.isArray(perms[mod]) ? perms[mod].join(', ') : ''}</span>
+                                                    <span className="text-stone-400">{Array.isArray(perms[mod]) ? perms[mod].join(', ') : ''}</span>
                                                 </div>
                                             ))}
                                     </div>
@@ -1262,7 +1262,7 @@ export default function MasterData({
                                 <div className="flex justify-between items-start mb-4">
                                     <div>
                                         <div className="font-bold text-lg dark:text-white">{f.name}</div>
-                                        <div className="text-xs text-gray-500 mt-1">{f.description}</div>
+                                        <div className="text-xs text-stone-500 mt-1">{f.description}</div>
                                     </div>
                                     <div className="flex gap-1">
                                         {hasPermission('master', 'edit') && (
@@ -1295,28 +1295,28 @@ export default function MasterData({
                                 <History size={20} className="text-blue-500" />
                                 {logSource === 'database' ? text.auditTrailSystem : `${text.systemLogFile}: ${logSource.split('_')[0].toUpperCase()} File`}
                             </h3>
-                            <div className="flex bg-gray-100 dark:bg-[#0d0d0d] p-1 rounded-xl mt-3 w-fit border border-white/60 dark:border-white/10">
+                            <div className="flex bg-stone-100 dark:bg-[#0d0d0d] p-1 rounded-xl mt-3 w-fit border border-white/60 dark:border-white/10">
                                 <button
                                     onClick={() => setLogSource('database')}
-                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'database' ? 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'database' ? 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-blue-600 shadow-sm' : 'text-stone-500 hover:text-stone-700'}`}
                                 >
                                     <History size={12} /> Database
                                 </button>
                                 <button
                                     onClick={() => setLogSource('server_file')}
-                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'server_file' ? 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-teal-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'server_file' ? 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-teal-600 shadow-sm' : 'text-stone-500 hover:text-stone-700'}`}
                                 >
                                     <Activity size={12} /> {text.serverLogs}
                                 </button>
                                 <button
                                     onClick={() => setLogSource('error_file')}
-                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'error_file' ? 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-red-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'error_file' ? 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-red-600 shadow-sm' : 'text-stone-500 hover:text-stone-700'}`}
                                 >
                                     <AlertCircle size={12} /> {text.errors}
                                 </button>
                                 <button
                                     onClick={() => setLogSource('ocr_file')}
-                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'ocr_file' ? 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-orange-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all flex items-center gap-2 ${logSource === 'ocr_file' ? 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-orange-600 shadow-sm' : 'text-stone-500 hover:text-stone-700'}`}
                                 >
                                     <FileText size={12} /> {text.ocrFailures}
                                 </button>
@@ -1324,11 +1324,11 @@ export default function MasterData({
                         </div>
                         {logSource === 'database' && (
                             <div className="relative w-full md:w-72">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" size={16} />
                                 <Input
                                     type="text"
                                     placeholder={text.searchLogs}
-                                    className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-[#0d0d0d] border border-white/60 dark:border-white/10 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
+                                    className="w-full pl-10 pr-4 py-2 bg-stone-50 dark:bg-[#0d0d0d] border border-white/60 dark:border-white/10 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
                                     value={logSearchQuery}
                                     onChange={(e) => setLogSearchQuery(e.target.value)}
                                 />
@@ -1339,7 +1339,7 @@ export default function MasterData({
                         <>
                             <div className="overflow-x-auto rounded-2xl border border-white/60 dark:border-white/10">
                                 <table className="w-full text-sm text-left">
-                                    <thead className="gradient-bg-soft text-slate-500 dark:text-white/40 font-black uppercase tracking-widest text-[10px]">
+                                    <thead className="gradient-bg-soft text-stone-500 dark:text-white/40 font-black uppercase tracking-widest text-[10px]">
                                         <tr>
                                             <th className="px-6 py-4">{text.time}</th>
                                             <th className="px-6 py-4">{text.user}</th>
@@ -1351,25 +1351,25 @@ export default function MasterData({
                                     <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
                                         {paginatedLogs.length === 0 ? (
                                             <tr>
-                                                <td colSpan="5" className="px-6 py-10 text-center text-slate-400 italic">{text.noActivity}</td>
+                                                <td colSpan="5" className="px-6 py-10 text-center text-stone-400 italic">{text.noActivity}</td>
                                             </tr>
                                         ) : (
                                             paginatedLogs.map((log) => (
                                                 <React.Fragment key={log.id}>
-                                                    <tr className="hover:bg-slate-50/50 dark:hover:bg-white/[0.05]/30 transition-colors group">
-                                                        <td className="px-6 py-4 whitespace-nowrap text-slate-500 dark:text-white/40 font-medium">
+                                                    <tr className="hover:bg-stone-50/50 dark:hover:bg-white/[0.05]/30 transition-colors group">
+                                                        <td className="px-6 py-4 whitespace-nowrap text-stone-500 dark:text-white/40 font-medium">
                                                             <div className="flex items-center gap-2">
                                                                 <Clock size={12} />
                                                                 {new Date(log.timestamp).toLocaleString(dateLocale, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
                                                             </div>
                                                         </td>
-                                                        <td className="px-6 py-4 font-bold text-slate-700 dark:text-slate-200">{log.user || text.system}</td>
+                                                        <td className="px-6 py-4 font-bold text-stone-700 dark:text-white/80">{log.user || text.system}</td>
                                                         <td className="px-6 py-4">
                                                             <span className="px-2 py-1 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-300 text-blue-600 dark:text-blue-400 rounded-lg text-[10px] font-black uppercase tracking-wider border border-blue-100 dark:border-blue-800">
                                                                 {log.action}
                                                             </span>
                                                         </td>
-                                                        <td className="px-6 py-4 text-slate-600 dark:text-white/40 max-w-xs truncate" title={log.details}>{log.details}</td>
+                                                        <td className="px-6 py-4 text-stone-600 dark:text-white/40 max-w-xs truncate" title={log.details}>{log.details}</td>
                                                         <td className="px-6 py-4 text-right">
                                                             {(log.oldValue || log.newValue) && (
                                                                 <button
@@ -1384,7 +1384,7 @@ export default function MasterData({
                                                     {expandedLogId === log.id && (
                                                         <tr>
                                                             <td colSpan="5" className="px-6 pb-4 pt-0">
-                                                                <div className="bg-slate-50 dark:bg-[#0d0d0d]/50 rounded-2xl p-4 border border-white/60 dark:border-white/10 grid grid-cols-1 md:grid-cols-2 gap-4 animate-in slide-in-from-top-2">
+                                                                <div className="bg-stone-50 dark:bg-[#0d0d0d]/50 rounded-2xl p-4 border border-white/60 dark:border-white/10 grid grid-cols-1 md:grid-cols-2 gap-4 animate-in slide-in-from-top-2">
                                                                     {log.oldValue && <div className="space-y-1"><p className="text-[9px] font-black text-red-500 uppercase ml-1">{text.beforeOld}</p><pre className="text-[10px] font-mono p-3 bg-red-50/50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 rounded-xl text-red-700 dark:text-red-400 overflow-x-auto">{log.oldValue.startsWith('{') ? JSON.stringify(JSON.parse(log.oldValue), null, 2) : log.oldValue}</pre></div>}
                                                                     {log.newValue && <div className="space-y-1"><p className="text-[9px] font-black text-emerald-500 uppercase ml-1">{text.afterNew}</p><pre className="text-[10px] font-mono p-3 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/20 rounded-xl text-emerald-700 dark:text-emerald-400 overflow-x-auto">{log.newValue.startsWith('{') ? JSON.stringify(JSON.parse(log.newValue), null, 2) : log.newValue}</pre></div>}
                                                                 </div>
@@ -1400,15 +1400,15 @@ export default function MasterData({
 
                             {/* Pagination Controls */}
                             {totalLogPages > 1 && (
-                                <div className="px-6 py-4 flex items-center justify-between border-t border-slate-50 dark:border-slate-800 bg-slate-50/30 dark:bg-[#0d0d0d]/30 rounded-b-2xl">
-                                    <div className="text-xs text-slate-500 dark:text-white/40">
+                                <div className="px-6 py-4 flex items-center justify-between border-t border-stone-50 dark:border-white/[0.06] bg-stone-50/30 dark:bg-[#0d0d0d]/30 rounded-b-2xl">
+                                    <div className="text-xs text-stone-500 dark:text-white/40">
                                         {text.showing} <span className="font-bold text-blue-600">{(logCurrentPage - 1) * logsPerPage + 1}</span> {text.to} <span className="font-bold text-blue-600">{Math.min(logCurrentPage * logsPerPage, filteredLogs.length)}</span> {text.of} <span className="font-bold text-blue-600">{filteredLogs.length}</span> {text.logsWord}
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <button
                                             onClick={() => setLogCurrentPage(prev => Math.max(prev - 1, 1))}
                                             disabled={logCurrentPage === 1}
-                                            className="p-2 rounded-lg text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 disabled:opacity-30 transition-colors"
+                                            className="p-2 rounded-lg text-stone-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 disabled:opacity-30 transition-colors"
                                         >
                                             <ChevronLeft size={18} />
                                         </button>
@@ -1417,14 +1417,14 @@ export default function MasterData({
                                             {[...Array(totalLogPages)].map((_, i) => {
                                                 const page = i + 1;
                                                 if (totalLogPages > 5 && page !== 1 && page !== totalLogPages && (page < logCurrentPage - 1 || page > logCurrentPage + 1)) {
-                                                    if (page === logCurrentPage - 2 || page === logCurrentPage + 2) return <span key={page} className="text-slate-400 px-1">...</span>;
+                                                    if (page === logCurrentPage - 2 || page === logCurrentPage + 2) return <span key={page} className="text-stone-400 px-1">...</span>;
                                                     return null;
                                                 }
                                                 return (
                                                     <button
                                                         key={page}
                                                         onClick={() => setLogCurrentPage(page)}
-                                                        className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${logCurrentPage === page ? 'gradient-bg text-white shadow-md shadow-blue-500/20' : 'text-slate-500 hover:bg-blue-50 dark:hover:bg-blue-900/20'}`}
+                                                        className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${logCurrentPage === page ? 'gradient-bg text-white shadow-md shadow-blue-500/20' : 'text-stone-500 hover:bg-blue-50 dark:hover:bg-blue-900/20'}`}
                                                     >
                                                         {page}
                                                     </button>
@@ -1435,7 +1435,7 @@ export default function MasterData({
                                         <button
                                             onClick={() => setLogCurrentPage(prev => Math.min(prev + 1, totalLogPages))}
                                             disabled={logCurrentPage === totalLogPages}
-                                            className="p-2 rounded-lg text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 disabled:opacity-30 transition-colors"
+                                            className="p-2 rounded-lg text-stone-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 disabled:opacity-30 transition-colors"
                                         >
                                             <ChevronRight size={18} />
                                         </button>
@@ -1444,12 +1444,12 @@ export default function MasterData({
                             )}
                         </>
                     ) : (
-                        <div className="bg-slate-900 rounded-2xl border border-slate-800 p-4 relative min-h-[400px]">
+                        <div className="bg-[#0a0a0a] rounded-2xl border border-[#0d0d0d] p-4 relative min-h-[400px]">
                             {isFileLoading ? (
-                                <div className="absolute inset-0 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm rounded-2xl">
+                                <div className="absolute inset-0 flex items-center justify-center bg-[#0a0a0a]/50 backdrop-blur-sm rounded-2xl">
                                     <div className="flex flex-col items-center gap-3">
                                         <Activity className="w-8 h-8 text-blue-500 animate-spin" />
-                                        <div className="text-sm font-bold text-slate-300">{text.loadingLogFile}</div>
+                                        <div className="text-sm font-bold text-stone-300">{text.loadingLogFile}</div>
                                     </div>
                                 </div>
                             ) : (
@@ -1482,14 +1482,14 @@ export default function MasterData({
                                 <div key={d.id} className="p-4 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-xl flex flex-col items-center justify-center text-center group relative">
                                     <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                         {hasPermission('master', 'edit') && (
-                                            <button onClick={() => handleEditDept(d)} className="p-1 text-gray-400 hover:text-blue-500"><Edit3 size={14} /></button>
+                                            <button onClick={() => handleEditDept(d)} className="p-1 text-stone-400 hover:text-blue-500"><Edit3 size={14} /></button>
                                         )}
                                     </div>
                                     <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 mb-2">
                                         <Building2 size={20} />
                                     </div>
                                     <div className="font-bold dark:text-white text-sm">{d.name}</div>
-                                    <div className="text-[10px] text-gray-400 mt-1 uppercase">ID: {d.id}</div>
+                                    <div className="text-[10px] text-stone-400 mt-1 uppercase">ID: {d.id}</div>
                                     {hasPermission('master', 'delete') && (
                                         <button onClick={() => handleDeleteDept(d.id)} className="mt-2 text-red-500 hover:text-red-700 text-xs"><Trash2 size={14} /></button>
                                     )}
@@ -1508,27 +1508,27 @@ export default function MasterData({
                                 <h3 className="font-bold text-lg dark:text-white flex items-center gap-2">
                                     <Bot size={20} className="text-blue-500" /> {text.aiSettingsTitle}
                                 </h3>
-                                <p className="text-xs text-gray-500 mt-1">{text.aiSettingsDesc}</p>
+                                <p className="text-xs text-stone-500 mt-1">{text.aiSettingsDesc}</p>
                             </div>
-                            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${aiSettings.enabled ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 border-emerald-200 dark:border-emerald-800' : 'bg-gray-100 dark:bg-[#0d0d0d] text-gray-400 border-gray-200 dark:border-white/[0.06]'}`}>
+                            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${aiSettings.enabled ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 border-emerald-200 dark:border-emerald-800' : 'bg-stone-100 dark:bg-[#0d0d0d] text-stone-400 border-stone-200 dark:border-white/[0.06]'}`}>
                                 {text.aiStatus}: {aiSettings.enabled ? (isEnglish ? 'ON' : 'AKTIF') : (isEnglish ? 'OFF' : 'NONAKTIF')}
                             </span>
                         </div>
 
                         <div className="space-y-4 max-w-2xl">
                             <div>
-                                <label className="block text-xs font-bold text-gray-500 dark:text-white/40 mb-1 uppercase tracking-wider">{text.baseUrl}</label>
+                                <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1 uppercase tracking-wider">{text.baseUrl}</label>
                                 <Input
                                     type="text" placeholder={text.baseUrlPh}
-                                    className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-slate-200 dark:border-white/[0.06]"
+                                    className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06]"
                                     value={aiForm.base_url} onChange={(e) => setAiForm({ ...aiForm, base_url: e.target.value })}
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold text-gray-500 dark:text-white/40 mb-1 uppercase tracking-wider">{text.apiKey}</label>
+                                <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1 uppercase tracking-wider">{text.apiKey}</label>
                                 <Input
                                     type="password" placeholder={aiSettings.hasApiKey ? `${text.apiKeyPh} (${aiSettings.apiKeyMasked})` : text.apiKeyPh}
-                                    className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-slate-200 dark:border-white/[0.06]"
+                                    className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06]"
                                     value={aiForm.api_key}
                                     onChange={(e) => {
                                         // Sanitize: remove non-ASCII characters (smart quotes, ellipsis, etc.)
@@ -1548,7 +1548,7 @@ export default function MasterData({
                             </div>
                             <div>
                                 <div className="flex items-center justify-between mb-1">
-                                    <label className="block text-xs font-bold text-gray-500 dark:text-white/40 uppercase tracking-wider">{text.model}</label>
+                                    <label className="block text-xs font-bold text-stone-500 dark:text-white/40 uppercase tracking-wider">{text.model}</label>
                                     {aiForm.model && (
                                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${providerChipClass(providerOf(aiForm.model))}`}>
                                             {providerOf(aiForm.model)}
@@ -1558,7 +1558,7 @@ export default function MasterData({
                                 <Select
                                     value={aiForm.model}
                                     onChange={(e) => setAiForm({ ...aiForm, model: e.target.value })}
-                                    className={`bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-slate-200 dark:border-white/[0.06] ${!currentModelInList ? 'border-amber-400 dark:border-amber-600 ring-1 ring-amber-300/50' : ''}`}
+                                    className={`bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06] ${!currentModelInList ? 'border-amber-400 dark:border-amber-600 ring-1 ring-amber-300/50' : ''}`}
                                 >
                                     {modelsLoading && <option value="">{t("opt.loadingModel")}</option>}
                                     {!modelsLoading && aiModels.length === 0 && <option value="">{t("master.noModel")}</option>}
@@ -1575,17 +1575,17 @@ export default function MasterData({
                                     </div>
                                 )}
                                 {!modelsLoading && aiModels.length > 0 && (
-                                    <p className="text-[10px] text-gray-400 mt-1">{aiModels.length} model tersedia</p>
+                                    <p className="text-[10px] text-stone-400 mt-1">{aiModels.length} model tersedia</p>
                                 )}
                                 {(aiSettings.fallbackModels?.length > 0 || aiVerifyResults?.fallbackSaved?.length > 0) && (
-                                    <div className="mt-2 pt-2 border-t border-slate-100 dark:border-white/[0.06]/50">
-                                        <p className="text-[10px] font-bold text-gray-400 dark:text-white/30 uppercase tracking-wider mb-1">{text.autoFallback}</p>
+                                    <div className="mt-2 pt-2 border-t border-stone-100 dark:border-white/[0.06]/50">
+                                        <p className="text-[10px] font-bold text-stone-400 dark:text-white/30 uppercase tracking-wider mb-1">{text.autoFallback}</p>
                                         <div className="flex flex-wrap gap-1">
                                             {(aiVerifyResults?.fallbackSaved?.length ? aiVerifyResults.fallbackSaved : aiSettings.fallbackModels).map(m => (
                                                 <span key={m} className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${providerChipClass(providerOf(m))}`}>{m}</span>
                                             ))}
                                         </div>
-                                        <p className="text-[10px] text-gray-400 mt-1">{text.fallbackInfo}</p>
+                                        <p className="text-[10px] text-stone-400 mt-1">{text.fallbackInfo}</p>
                                     </div>
                                 )}
                             </div>
@@ -1595,7 +1595,7 @@ export default function MasterData({
                                     onChange={(e) => setAiForm({ ...aiForm, enabled: e.target.checked })}
                                     className="w-4 h-4 rounded text-blue-600"
                                 />
-                                <span className="text-sm font-medium dark:text-slate-200">{text.enabled}</span>
+                                <span className="text-sm font-medium dark:text-white/80">{text.enabled}</span>
                             </label>
 
                             {aiMsg && (
@@ -1616,7 +1616,7 @@ export default function MasterData({
                                 {hasPermission('master', 'edit') && (
                                     <button
                                         onClick={testAiConnection} disabled={aiTesting}
-                                        className="px-4 py-2 bg-slate-100 dark:bg-[#0d0d0d] text-slate-700 dark:text-slate-200 rounded-lg text-sm flex items-center gap-2 hover:bg-slate-200 dark:hover:bg-white/[0.06] transition-colors disabled:opacity-50"
+                                        className="px-4 py-2 bg-stone-100 dark:bg-[#0d0d0d] text-stone-700 dark:text-white/80 rounded-lg text-sm flex items-center gap-2 hover:bg-stone-200 dark:hover:bg-white/[0.06] transition-colors disabled:opacity-50"
                                     >
                                         {aiTesting ? <Loader2 size={16} className="animate-spin" /> : <Zap size={16} />} {text.testConn}
                                     </button>
@@ -1641,13 +1641,13 @@ export default function MasterData({
                             </div>
 
                             {aiVerifyResults && (
-                                <div className="rounded-xl border border-white/60 dark:border-white/10 bg-slate-50 dark:bg-[#0d0d0d]/40 p-3">
+                                <div className="rounded-xl border border-white/60 dark:border-white/10 bg-stone-50 dark:bg-[#0d0d0d]/40 p-3">
                                     <div className="flex items-center justify-between mb-2">
-                                        <p className="text-xs font-bold text-slate-600 dark:text-white/70">
+                                        <p className="text-xs font-bold text-stone-600 dark:text-white/70">
                                             <ShieldCheck size={13} className="inline mr-1 text-emerald-500" />
                                             {aiVerifyResults.worked}/{aiVerifyResults.total} {text.modelsWorking}
                                         </p>
-                                        <button onClick={() => setAiVerifyResults(null)} className="text-gray-400 hover:text-gray-600 dark:hover:text-slate-200"><X size={14} /></button>
+                                        <button onClick={() => setAiVerifyResults(null)} className="text-stone-400 hover:text-stone-600 dark:hover:text-white/80"><X size={14} /></button>
                                     </div>
                                     <div className="flex flex-wrap gap-1.5 max-h-44 overflow-y-auto pr-1">
                                         {aiVerifyResults.results.map(r => (
@@ -1659,7 +1659,7 @@ export default function MasterData({
                                                 {r.ok && (
                                                     <button
                                                         onClick={() => setAiForm(f => ({ ...f, model: r.model }))}
-                                                        className="px-1.5 py-0.5 rounded bg-white/70 dark:bg-[#111]/60 backdrop-blur-xl border border-slate-200 dark:border-white/[0.08] text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors"
+                                                        className="px-1.5 py-0.5 rounded bg-white/70 dark:bg-[#111]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.08] text-stone-600 dark:text-white/80 hover:bg-stone-100 dark:hover:bg-[#1a1a1a] transition-colors"
                                                     >
                                                         {text.useThis}
                                                     </button>
@@ -1682,48 +1682,48 @@ export default function MasterData({
                                 <h3 className="font-bold text-lg dark:text-white flex items-center gap-2">
                                     <FileText size={20} className="text-blue-500" /> {text.trainingTitle}
                                 </h3>
-                                <p className="text-xs text-gray-500 mt-1">{text.trainingDesc}</p>
+                                <p className="text-xs text-stone-500 mt-1">{text.trainingDesc}</p>
                             </div>
-                            <div className="flex gap-1 bg-gray-100 dark:bg-[#0d0d0d] p-1 rounded-lg">
+                            <div className="flex gap-1 bg-stone-100 dark:bg-[#0d0d0d] p-1 rounded-lg">
                                 <button
                                     onClick={() => setTrainingTab('upload')}
-                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'upload' ? 'gradient-bg text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-white/40'}`}
+                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'upload' ? 'gradient-bg text-white shadow-sm' : 'text-stone-500 hover:text-stone-700 dark:text-white/40'}`}
                                 >
                                     {text.uploadFile}
                                 </button>
                                 <button
                                     onClick={() => setTrainingTab('list')}
-                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'list' ? 'gradient-bg text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-white/40'}`}
+                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'list' ? 'gradient-bg text-white shadow-sm' : 'text-stone-500 hover:text-stone-700 dark:text-white/40'}`}
                                 >
                                     {text.addLink}
                                 </button>
                                 <button
                                     onClick={() => { setTrainingTab('learning'); setTopicPage(1); setLogPage(1); fetchLearningData(); }}
-                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'learning' ? 'gradient-bg text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-white/40'}`}
+                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'learning' ? 'gradient-bg text-white shadow-sm' : 'text-stone-500 hover:text-stone-700 dark:text-white/40'}`}
                                 >
                                     Self-Improvement
                                 </button>
                                 <button
                                     onClick={() => { setTrainingTab('corrections'); setCorrectionPage(1); fetchLearningData(); }}
-                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'corrections' ? 'gradient-bg text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-white/40'}`}
+                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'corrections' ? 'gradient-bg text-white shadow-sm' : 'text-stone-500 hover:text-stone-700 dark:text-white/40'}`}
                                 >
                                     Corrections {correctionStats?.unapplied > 0 && <span className="ml-1 px-1 bg-red-500 text-white rounded-full text-[9px]">{correctionStats.unapplied}</span>}
                                 </button>
                                 <button
                                     onClick={() => { setTrainingTab('evolution'); setEvolutionPage(1); fetchLearningData(); }}
-                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'evolution' ? 'gradient-bg text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-white/40'}`}
+                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'evolution' ? 'gradient-bg text-white shadow-sm' : 'text-stone-500 hover:text-stone-700 dark:text-white/40'}`}
                                 >
                                     Evolution
                                 </button>
                                 <button
                                     onClick={() => { setTrainingTab('graph'); fetchGraph(); }}
-                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'graph' ? 'gradient-bg text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-white/40'}`}
+                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'graph' ? 'gradient-bg text-white shadow-sm' : 'text-stone-500 hover:text-stone-700 dark:text-white/40'}`}
                                 >
                                     🧠 Graph
                                 </button>
                                 <button
                                     onClick={() => { setTrainingTab('brain'); fetchBrainData(); }}
-                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'brain' ? 'gradient-bg text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-white/40'}`}
+                                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${trainingTab === 'brain' ? 'gradient-bg text-white shadow-sm' : 'text-stone-500 hover:text-stone-700 dark:text-white/40'}`}
                                 >
                                     1MBrain
                                 </button>
@@ -1740,11 +1740,11 @@ export default function MasterData({
                         {trainingTab === 'upload' && (
                             <form onSubmit={handleTrainingUpload} className="space-y-4 max-w-2xl mb-6">
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 dark:text-white/40 mb-1 uppercase tracking-wider">{text.title}</label>
+                                    <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1 uppercase tracking-wider">{text.title}</label>
                                     <Input
                                         type="text"
                                         placeholder={text.titlePh}
-                                        className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-slate-200 dark:border-white/[0.06]"
+                                        className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06]"
                                         value={trainingForm.title}
                                         onChange={(e) => setTrainingForm({ ...trainingForm, title: e.target.value })}
                                         required
@@ -1752,9 +1752,9 @@ export default function MasterData({
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-xs font-bold text-gray-500 dark:text-white/40 mb-1 uppercase tracking-wider">{text.category}</label>
+                                        <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1 uppercase tracking-wider">{text.category}</label>
                                         <Select
-                                            className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-slate-200 dark:border-white/[0.06]"
+                                            className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06]"
                                             value={trainingForm.category}
                                             onChange={(e) => setTrainingForm({ ...trainingForm, category: e.target.value })}
                                         >
@@ -1764,25 +1764,25 @@ export default function MasterData({
                                         </Select>
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-bold text-gray-500 dark:text-white/40 mb-1 uppercase tracking-wider">{text.tags}</label>
+                                        <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1 uppercase tracking-wider">{text.tags}</label>
                                         <Input
                                             type="text"
                                             placeholder={text.tagsPh}
-                                            className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-slate-200 dark:border-white/[0.06]"
+                                            className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06]"
                                             value={trainingForm.tags}
                                             onChange={(e) => setTrainingForm({ ...trainingForm, tags: e.target.value })}
                                         />
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 dark:text-white/40 mb-1 uppercase tracking-wider">{text.chooseFile}</label>
+                                    <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1 uppercase tracking-wider">{text.chooseFile}</label>
                                     <Input
                                         type="file"
                                         accept=".pdf,.docx,.txt"
-                                        className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-slate-200 dark:border-white/[0.06]"
+                                        className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06]"
                                         onChange={(e) => setTrainingFile(e.target.files[0])}
                                     />
-                                    <p className="text-[10px] text-gray-400 mt-1">PDF, DOCX, TXT</p>
+                                    <p className="text-[10px] text-stone-400 mt-1">PDF, DOCX, TXT</p>
                                 </div>
                                 <button
                                     type="submit"
@@ -1798,22 +1798,22 @@ export default function MasterData({
                         {trainingTab === 'list' && (
                             <form onSubmit={handleTrainingUpload} className="space-y-4 max-w-2xl mb-6">
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 dark:text-white/40 mb-1 uppercase tracking-wider">{text.title}</label>
+                                    <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1 uppercase tracking-wider">{text.title}</label>
                                     <Input
                                         type="text"
                                         placeholder={text.titlePh}
-                                        className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-slate-200 dark:border-white/[0.06]"
+                                        className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06]"
                                         value={trainingForm.title}
                                         onChange={(e) => setTrainingForm({ ...trainingForm, title: e.target.value })}
                                         required
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 dark:text-white/40 mb-1 uppercase tracking-wider">{text.orPasteUrl}</label>
+                                    <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1 uppercase tracking-wider">{text.orPasteUrl}</label>
                                     <Input
                                         type="url"
                                         placeholder={text.urlPh}
-                                        className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-slate-200 dark:border-white/[0.06]"
+                                        className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06]"
                                         value={trainingForm.url}
                                         onChange={(e) => setTrainingForm({ ...trainingForm, url: e.target.value })}
                                         required
@@ -1821,9 +1821,9 @@ export default function MasterData({
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-xs font-bold text-gray-500 dark:text-white/40 mb-1 uppercase tracking-wider">{text.category}</label>
+                                        <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1 uppercase tracking-wider">{text.category}</label>
                                         <Select
-                                            className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-slate-200 dark:border-white/[0.06]"
+                                            className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06]"
                                             value={trainingForm.category}
                                             onChange={(e) => setTrainingForm({ ...trainingForm, category: e.target.value })}
                                         >
@@ -1833,11 +1833,11 @@ export default function MasterData({
                                         </Select>
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-bold text-gray-500 dark:text-white/40 mb-1 uppercase tracking-wider">{text.tags}</label>
+                                        <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1 uppercase tracking-wider">{text.tags}</label>
                                         <Input
                                             type="text"
                                             placeholder={text.tagsPh}
-                                            className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-slate-200 dark:border-white/[0.06]"
+                                            className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06]"
                                             value={trainingForm.tags}
                                             onChange={(e) => setTrainingForm({ ...trainingForm, tags: e.target.value })}
                                         />
@@ -1877,7 +1877,7 @@ export default function MasterData({
                                     <button
                                         onClick={() => fetchLearningData()}
                                         disabled={learningLoading}
-                                        className="px-4 py-2 bg-gray-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-gray-700 transition-colors disabled:opacity-50"
+                                        className="px-4 py-2 bg-stone-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-stone-700 transition-colors disabled:opacity-50"
                                     >
                                         {learningLoading ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
                                         Refresh
@@ -1911,21 +1911,21 @@ export default function MasterData({
                                 {/* Topic Summary */}
                                 {learningTopics.length > 0 && (
                                     <div>
-                                        <h4 className="font-bold text-sm text-gray-700 dark:text-white/70 mb-3">Topik Yang Sering Ditanyakan</h4>
+                                        <h4 className="font-bold text-sm text-stone-700 dark:text-white/70 mb-3">Topik Yang Sering Ditanyakan</h4>
                                         <div className="border dark:border-white/[0.06]/50 rounded-lg overflow-hidden">
                                             <table className="w-full text-sm">
                                                 <thead>
-                                                    <tr className="bg-slate-50/80 dark:bg-[#0d0d0d]/50">
-                                                        <th className="text-left px-4 py-2 font-bold text-gray-500 dark:text-white/40 text-xs">Topik</th>
-                                                        <th className="text-left px-4 py-2 font-bold text-gray-500 dark:text-white/40 text-xs">Kategori</th>
-                                                        <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-white/40 text-xs">Jumlah Tanya</th>
-                                                        <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-white/40 text-xs">Confidence</th>
-                                                        <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-white/40 text-xs">Trained</th>
+                                                    <tr className="bg-stone-50/80 dark:bg-[#0d0d0d]/50">
+                                                        <th className="text-left px-4 py-2 font-bold text-stone-500 dark:text-white/40 text-xs">Topik</th>
+                                                        <th className="text-left px-4 py-2 font-bold text-stone-500 dark:text-white/40 text-xs">Kategori</th>
+                                                        <th className="text-center px-4 py-2 font-bold text-stone-500 dark:text-white/40 text-xs">Jumlah Tanya</th>
+                                                        <th className="text-center px-4 py-2 font-bold text-stone-500 dark:text-white/40 text-xs">Confidence</th>
+                                                        <th className="text-center px-4 py-2 font-bold text-stone-500 dark:text-white/40 text-xs">Trained</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {learningTopics.slice((topicPage - 1) * ROWS_PER_PAGE, topicPage * ROWS_PER_PAGE).map((t, i) => (
-                                                        <tr key={i} className="border-t dark:border-white/[0.06]/50 hover:bg-gray-50 dark:hover:bg-white/[0.05]/50">
+                                                        <tr key={i} className="border-t dark:border-white/[0.06]/50 hover:bg-stone-50 dark:hover:bg-white/[0.05]/50">
                                                             <td className="px-4 py-2 font-medium dark:text-white">{t.topic}</td>
                                                             <td className="px-4 py-2">
                                                                 <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 text-blue-600 dark:text-blue-300">{t.category}</span>
@@ -1961,17 +1961,17 @@ export default function MasterData({
                                 {/* Recent Learning Logs */}
                                 {learningLogs.length > 0 && (
                                     <div>
-                                        <h4 className="font-bold text-sm text-gray-700 dark:text-white/70 mb-3">Recent Knowledge Extracted</h4>
+                                        <h4 className="font-bold text-sm text-stone-700 dark:text-white/70 mb-3">Recent Knowledge Extracted</h4>
                                         <div className="space-y-2">
                                             {learningLogs.slice((logPage - 1) * ROWS_PER_PAGE, logPage * ROWS_PER_PAGE).map((log, i) => (
-                                                <div key={i} className="border dark:border-white/[0.06]/50 rounded-lg p-3 hover:bg-gray-50 dark:hover:bg-white/[0.05]/50 transition-colors">
+                                                <div key={i} className="border dark:border-white/[0.06]/50 rounded-lg p-3 hover:bg-stone-50 dark:hover:bg-white/[0.05]/50 transition-colors">
                                                     <div className="flex items-center gap-2 mb-1">
                                                         <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 text-blue-600 dark:text-blue-300">{log.category}</span>
                                                         <span className="font-bold text-sm dark:text-white">{log.topic}</span>
-                                                        <span className="text-xs text-gray-400 ml-auto">×{log.repeat_count}</span>
+                                                        <span className="text-xs text-stone-400 ml-auto">×{log.repeat_count}</span>
                                                         {log.used_in_training && <span className="text-xs text-emerald-500 font-bold">✓ Trained</span>}
                                                     </div>
-                                                    <p className="text-xs text-gray-500 dark:text-white/40 line-clamp-2">{log.knowledge_extracted}</p>
+                                                    <p className="text-xs text-stone-500 dark:text-white/40 line-clamp-2">{log.knowledge_extracted}</p>
                                                 </div>
                                             ))}
                                         </div>
@@ -1982,7 +1982,7 @@ export default function MasterData({
                                 )}
 
                                 {learningLoading && (
-                                    <div className="text-center py-8 text-gray-400">
+                                    <div className="text-center py-8 text-stone-400">
                                         <Loader2 size={24} className="animate-spin inline-block" />
                                         <p className="mt-2 text-sm">Memuat data learning...</p>
                                     </div>
@@ -2024,7 +2024,7 @@ export default function MasterData({
                                     <button
                                         onClick={() => fetchLearningData()}
                                         disabled={learningLoading}
-                                        className="px-4 py-2 bg-gray-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-gray-700 transition-colors disabled:opacity-50"
+                                        className="px-4 py-2 bg-stone-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-stone-700 transition-colors disabled:opacity-50"
                                     >
                                         {learningLoading ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
                                         Refresh
@@ -2035,27 +2035,27 @@ export default function MasterData({
                                     <div className="border dark:border-white/[0.06]/50 rounded-lg overflow-hidden">
                                         <table className="w-full text-sm">
                                             <thead>
-                                                <tr className="bg-slate-50/80 dark:bg-[#0d0d0d]/50">
-                                                    <th className="text-left px-4 py-2 font-bold text-gray-500 dark:text-white/40 text-xs">Topic</th>
-                                                    <th className="text-left px-4 py-2 font-bold text-gray-500 dark:text-white/40 text-xs">Type</th>
-                                                    <th className="text-left px-4 py-2 font-bold text-gray-500 dark:text-white/40 text-xs">Correct Answer</th>
-                                                    <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-white/40 text-xs">Severity</th>
-                                                    <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-white/40 text-xs">Status</th>
-                                                    <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-white/40 text-xs">Action</th>
+                                                <tr className="bg-stone-50/80 dark:bg-[#0d0d0d]/50">
+                                                    <th className="text-left px-4 py-2 font-bold text-stone-500 dark:text-white/40 text-xs">Topic</th>
+                                                    <th className="text-left px-4 py-2 font-bold text-stone-500 dark:text-white/40 text-xs">Type</th>
+                                                    <th className="text-left px-4 py-2 font-bold text-stone-500 dark:text-white/40 text-xs">Correct Answer</th>
+                                                    <th className="text-center px-4 py-2 font-bold text-stone-500 dark:text-white/40 text-xs">Severity</th>
+                                                    <th className="text-center px-4 py-2 font-bold text-stone-500 dark:text-white/40 text-xs">Status</th>
+                                                    <th className="text-center px-4 py-2 font-bold text-stone-500 dark:text-white/40 text-xs">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {corrections.slice((correctionPage - 1) * ROWS_PER_PAGE, correctionPage * ROWS_PER_PAGE).map((c, i) => (
-                                                    <tr key={i} className="border-t dark:border-white/[0.06]/50 hover:bg-gray-50 dark:hover:bg-white/[0.05]/50">
+                                                    <tr key={i} className="border-t dark:border-white/[0.06]/50 hover:bg-stone-50 dark:hover:bg-white/[0.05]/50">
                                                         <td className="px-4 py-2 font-medium dark:text-white text-xs">{c.topic}</td>
                                                         <td className="px-4 py-2">
                                                             <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${c.correction_type === 'correction' ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-300' : 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-300'}`}>
                                                                 {c.correction_type}
                                                             </span>
                                                         </td>
-                                                        <td className="px-4 py-2 text-xs text-gray-600 dark:text-white/40 max-w-[200px] truncate">{c.correct_answer}</td>
+                                                        <td className="px-4 py-2 text-xs text-stone-600 dark:text-white/40 max-w-[200px] truncate">{c.correct_answer}</td>
                                                         <td className="px-4 py-2 text-center">
-                                                            <span className={`text-xs font-bold ${c.severity >= 0.7 ? 'text-red-600' : c.severity >= 0.4 ? 'text-amber-600' : 'text-gray-400'}`}>
+                                                            <span className={`text-xs font-bold ${c.severity >= 0.7 ? 'text-red-600' : c.severity >= 0.4 ? 'text-amber-600' : 'text-stone-400'}`}>
                                                                 {(c.severity * 100).toFixed(0)}%
                                                             </span>
                                                         </td>
@@ -2083,7 +2083,7 @@ export default function MasterData({
                                         <TablePagination total={corrections.length} page={correctionPage} setPage={setCorrectionPage} />
                                     </div>
                                 ) : (
-                                    <div className="text-center py-8 text-gray-400 dark:text-white/30 text-sm">
+                                    <div className="text-center py-8 text-stone-400 dark:text-white/30 text-sm">
                                         Belum ada koreksi. Ketik "datamu salah" atau "revisi" di chat untuk mengirim koreksi.
                                     </div>
                                 )}
@@ -2126,7 +2126,7 @@ export default function MasterData({
                                     <button
                                         onClick={() => fetchLearningData()}
                                         disabled={learningLoading}
-                                        className="px-4 py-2 bg-gray-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-gray-700 transition-colors disabled:opacity-50"
+                                        className="px-4 py-2 bg-stone-600 text-white rounded-lg text-sm flex items-center gap-2 hover:bg-stone-700 transition-colors disabled:opacity-50"
                                     >
                                         {learningLoading ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
                                         Refresh
@@ -2144,23 +2144,23 @@ export default function MasterData({
                                 {/* Evolution History */}
                                 {evolutionHistory.length > 0 ? (
                                     <div>
-                                        <h4 className="font-bold text-sm text-gray-700 dark:text-white/70 mb-3">Riwayat Evolution Scan</h4>
+                                        <h4 className="font-bold text-sm text-stone-700 dark:text-white/70 mb-3">Riwayat Evolution Scan</h4>
                                         <div className="border dark:border-white/[0.06]/50 rounded-lg overflow-hidden">
                                             <table className="w-full text-sm">
                                                 <thead>
-                                                    <tr className="bg-slate-50/80 dark:bg-[#0d0d0d]/50">
-                                                        <th className="text-left px-4 py-2 font-bold text-gray-500 dark:text-white/40 text-xs">Status</th>
-                                                        <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-white/40 text-xs">Docs Scanned</th>
-                                                        <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-white/40 text-xs">Docs Updated</th>
-                                                        <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-white/40 text-xs">Corrections</th>
-                                                        <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-white/40 text-xs">Pruned</th>
-                                                        <th className="text-center px-4 py-2 font-bold text-gray-500 dark:text-white/40 text-xs">New Topics</th>
-                                                        <th className="text-right px-4 py-2 font-bold text-gray-500 dark:text-white/40 text-xs">Date</th>
+                                                    <tr className="bg-stone-50/80 dark:bg-[#0d0d0d]/50">
+                                                        <th className="text-left px-4 py-2 font-bold text-stone-500 dark:text-white/40 text-xs">Status</th>
+                                                        <th className="text-center px-4 py-2 font-bold text-stone-500 dark:text-white/40 text-xs">Docs Scanned</th>
+                                                        <th className="text-center px-4 py-2 font-bold text-stone-500 dark:text-white/40 text-xs">Docs Updated</th>
+                                                        <th className="text-center px-4 py-2 font-bold text-stone-500 dark:text-white/40 text-xs">Corrections</th>
+                                                        <th className="text-center px-4 py-2 font-bold text-stone-500 dark:text-white/40 text-xs">Pruned</th>
+                                                        <th className="text-center px-4 py-2 font-bold text-stone-500 dark:text-white/40 text-xs">New Topics</th>
+                                                        <th className="text-right px-4 py-2 font-bold text-stone-500 dark:text-white/40 text-xs">Date</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {evolutionHistory.slice((evolutionPage - 1) * ROWS_PER_PAGE, evolutionPage * ROWS_PER_PAGE).map((e, i) => (
-                                                        <tr key={i} className="border-t dark:border-white/[0.06]/50 hover:bg-gray-50 dark:hover:bg-white/[0.05]/50">
+                                                        <tr key={i} className="border-t dark:border-white/[0.06]/50 hover:bg-stone-50 dark:hover:bg-white/[0.05]/50">
                                                             <td className="px-4 py-2">
                                                                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${e.status === 'completed' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-300' : e.status === 'running' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300' : 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-300'}`}>
                                                                     {e.status}
@@ -2171,7 +2171,7 @@ export default function MasterData({
                                                             <td className="px-4 py-2 text-center font-bold dark:text-white">{e.corrections_applied}</td>
                                                             <td className="px-4 py-2 text-center font-bold dark:text-white">{e.knowledge_pruned}</td>
                                                             <td className="px-4 py-2 text-center font-bold dark:text-white">{e.new_topics_found}</td>
-                                                            <td className="px-4 py-2 text-right text-xs text-gray-400">{new Date(e.created_at).toLocaleDateString()}</td>
+                                                            <td className="px-4 py-2 text-right text-xs text-stone-400">{new Date(e.created_at).toLocaleDateString()}</td>
                                                         </tr>
                                                     ))}
                                             </tbody>
@@ -2180,7 +2180,7 @@ export default function MasterData({
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="text-center py-8 text-gray-400 dark:text-white/30 text-sm">
+                                    <div className="text-center py-8 text-stone-400 dark:text-white/30 text-sm">
                                         Belum ada riwayat evolution scan. Klik "Run Evolution Scan" untuk memulai.
                                     </div>
                                 )}
@@ -2192,15 +2192,15 @@ export default function MasterData({
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center">
                                     <div>
-                                        <h4 className="font-bold text-sm text-gray-700 dark:text-white/70 flex items-center gap-2">
+                                        <h4 className="font-bold text-sm text-stone-700 dark:text-white/70 flex items-center gap-2">
                                             <Brain size={16} className="text-amber-500" /> 1MBrain — Semantic Graph Memory
                                         </h4>
-                                        <p className="text-xs text-gray-500 mt-0.5">Status, pencarian, konsolidasi, dan manajemen memori AI.</p>
+                                        <p className="text-xs text-stone-500 mt-0.5">Status, pencarian, konsolidasi, dan manajemen memori AI.</p>
                                     </div>
                                     <button
                                         onClick={fetchBrainData}
                                         disabled={brainLoading}
-                                        className="px-3 py-1.5 bg-gray-600 text-white rounded-lg text-xs flex items-center gap-1.5 hover:bg-gray-700 transition-colors disabled:opacity-50"
+                                        className="px-3 py-1.5 bg-stone-600 text-white rounded-lg text-xs flex items-center gap-1.5 hover:bg-stone-700 transition-colors disabled:opacity-50"
                                     >
                                         {brainLoading ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />} Refresh
                                     </button>
@@ -2211,7 +2211,7 @@ export default function MasterData({
                                     <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3 text-center">
                                         <div className="flex items-center justify-center gap-1 mb-1">
                                             <span className={`w-2 h-2 rounded-full ${brainHealth?.status === 'ok' ? 'bg-emerald-500' : 'bg-red-500'}`} />
-                                            <span className="text-xs text-gray-500 dark:text-white/40">Status</span>
+                                            <span className="text-xs text-stone-500 dark:text-white/40">Status</span>
                                         </div>
                                         <div className="text-sm font-black text-amber-600 dark:text-amber-300">{brainHealth?.status === 'ok' ? 'Connected' : 'Offline'}</div>
                                     </div>
@@ -2231,7 +2231,7 @@ export default function MasterData({
 
                                 {/* Info Row */}
                                 {brainHealth && (
-                                    <div className="flex flex-wrap gap-4 text-[11px] text-gray-500 dark:text-white/40 bg-gray-50 dark:bg-[#0d0d0d]/50 rounded-lg px-3 py-2">
+                                    <div className="flex flex-wrap gap-4 text-[11px] text-stone-500 dark:text-white/40 bg-stone-50 dark:bg-[#0d0d0d]/50 rounded-lg px-3 py-2">
                                         <span>Uptime: <strong>{(brainHealth.uptime / 3600).toFixed(1)}h</strong></span>
                                         <span>Embedding: <strong>{brainHealth.embedding}</strong></span>
                                         <span>DB: <strong>{brainHealth.database}</strong></span>
@@ -2241,7 +2241,7 @@ export default function MasterData({
 
                                 {/* Search */}
                                 <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border dark:border-white/[0.06]/50 rounded-lg p-3">
-                                    <h5 className="font-bold text-xs text-gray-600 dark:text-white/70 mb-2 flex items-center gap-1.5"><Search size={13} /> Cari Memori</h5>
+                                    <h5 className="font-bold text-xs text-stone-600 dark:text-white/70 mb-2 flex items-center gap-1.5"><Search size={13} /> Cari Memori</h5>
                                     <div className="flex gap-2">
                                         <Input
                                             type="text"
@@ -2262,12 +2262,12 @@ export default function MasterData({
                                     {brainSearchResults.length > 0 && (
                                         <div className="mt-2 space-y-1 max-h-48 overflow-y-auto">
                                             {brainSearchResults.map((r, i) => (
-                                                <div key={r.memory?.id || i} className="text-xs bg-gray-50 dark:bg-[#0d0d0d]/50 rounded p-2 border-l-2 border-blue-400">
+                                                <div key={r.memory?.id || i} className="text-xs bg-stone-50 dark:bg-[#0d0d0d]/50 rounded p-2 border-l-2 border-blue-400">
                                                     <div className="flex items-center gap-2 mb-0.5">
                                                         <span className="text-[10px] px-1 rounded bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 text-blue-600 dark:text-blue-400">{r.memory?.type}</span>
-                                                        <span className="text-[10px] text-gray-400">score: {(r.score * 100).toFixed(0)}%</span>
+                                                        <span className="text-[10px] text-stone-400">score: {(r.score * 100).toFixed(0)}%</span>
                                                     </div>
-                                                    <p className="text-gray-700 dark:text-white/70 line-clamp-2">{r.memory?.content}</p>
+                                                    <p className="text-stone-700 dark:text-white/70 line-clamp-2">{r.memory?.content}</p>
                                                 </div>
                                             ))}
                                         </div>
@@ -2276,8 +2276,8 @@ export default function MasterData({
 
                                 {/* Consolidation */}
                                 <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border dark:border-white/[0.06]/50 rounded-lg p-3">
-                                    <h5 className="font-bold text-xs text-gray-600 dark:text-white/70 mb-2 flex items-center gap-1.5"><Zap size={13} /> Konsolidasi Memori</h5>
-                                    <p className="text-[11px] text-gray-500 mb-2">Menjalankan konsolidasi akan mengelompokkan memori serupa, mengekstrak knowledge baru, dan mengarsipkan memori usang.</p>
+                                    <h5 className="font-bold text-xs text-stone-600 dark:text-white/70 mb-2 flex items-center gap-1.5"><Zap size={13} /> Konsolidasi Memori</h5>
+                                    <p className="text-[11px] text-stone-500 mb-2">Menjalankan konsolidasi akan mengelompokkan memori serupa, mengekstrak knowledge baru, dan mengarsipkan memori usang.</p>
                                     <button
                                         onClick={handleBrainConsolidate}
                                         disabled={brainConsolidating}
@@ -2295,8 +2295,8 @@ export default function MasterData({
 
                                 {/* Sync Training Docs to 1MBrain */}
                                 <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border dark:border-white/[0.06]/50 rounded-lg p-3">
-                                    <h5 className="font-bold text-xs text-gray-600 dark:text-white/70 mb-2 flex items-center gap-1.5"><RefreshCw size={13} /> Sinkronisasi Data Training ke 1MBrain</h5>
-                                    <p className="text-[11px] text-gray-500 mb-2">Sinkronkan semua dokumen training yang aktif ke 1MBrain agar pencarian memori lebih terpusat.</p>
+                                    <h5 className="font-bold text-xs text-stone-600 dark:text-white/70 mb-2 flex items-center gap-1.5"><RefreshCw size={13} /> Sinkronisasi Data Training ke 1MBrain</h5>
+                                    <p className="text-[11px] text-stone-500 mb-2">Sinkronkan semua dokumen training yang aktif ke 1MBrain agar pencarian memori lebih terpusat.</p>
                                     <button
                                         onClick={handleBrainSyncTraining}
                                         disabled={brainSyncing}
@@ -2313,7 +2313,7 @@ export default function MasterData({
 
                                 {/* Ingest Knowledge */}
                                 <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border dark:border-white/[0.06]/50 rounded-lg p-3">
-                                    <h5 className="font-bold text-xs text-gray-600 dark:text-white/70 mb-2 flex items-center gap-1.5"><FileText size={13} /> Tambah Pengetahuan ke 1MBrain</h5>
+                                    <h5 className="font-bold text-xs text-stone-600 dark:text-white/70 mb-2 flex items-center gap-1.5"><FileText size={13} /> Tambah Pengetahuan ke 1MBrain</h5>
                                     <form onSubmit={handleBrainIngest} className="space-y-2">
                                         <Input
                                             type="text"
@@ -2342,25 +2342,25 @@ export default function MasterData({
 
                                 {/* Recent Memories */}
                                 <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border dark:border-white/[0.06]/50 rounded-lg p-3">
-                                    <h5 className="font-bold text-xs text-gray-600 dark:text-white/70 mb-2 flex items-center gap-1.5"><Clock size={13} /> Memori Terbaru ({brainMemories.length})</h5>
+                                    <h5 className="font-bold text-xs text-stone-600 dark:text-white/70 mb-2 flex items-center gap-1.5"><Clock size={13} /> Memori Terbaru ({brainMemories.length})</h5>
                                     {brainLoading ? (
-                                        <div className="text-center py-6 text-gray-400"><Loader2 size={20} className="animate-spin inline-block" /></div>
+                                        <div className="text-center py-6 text-stone-400"><Loader2 size={20} className="animate-spin inline-block" /></div>
                                     ) : brainMemories.length === 0 ? (
-                                        <div className="text-center py-6 text-gray-400 dark:text-white/30 text-xs">Belum ada memori.</div>
+                                        <div className="text-center py-6 text-stone-400 dark:text-white/30 text-xs">Belum ada memori.</div>
                                     ) : (
                                         <div className="space-y-1 max-h-64 overflow-y-auto">
                                             {brainMemories.map((m, i) => (
-                                                <div key={m.id || i} className="text-xs bg-gray-50 dark:bg-[#0d0d0d]/50 rounded p-2 border-l-2 border-amber-400">
+                                                <div key={m.id || i} className="text-xs bg-stone-50 dark:bg-[#0d0d0d]/50 rounded p-2 border-l-2 border-amber-400">
                                                     <div className="flex items-center gap-2 mb-0.5">
                                                         <span className="text-[10px] px-1 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">{m.type}</span>
-                                                        {m.importance && <span className="text-[10px] text-gray-400">importance: {(m.importance * 100).toFixed(0)}%</span>}
-                                                        {m.createdAt && <span className="text-[10px] text-gray-400 ml-auto">{new Date(m.createdAt).toLocaleDateString()}</span>}
+                                                        {m.importance && <span className="text-[10px] text-stone-400">importance: {(m.importance * 100).toFixed(0)}%</span>}
+                                                        {m.createdAt && <span className="text-[10px] text-stone-400 ml-auto">{new Date(m.createdAt).toLocaleDateString()}</span>}
                                                     </div>
-                                                    <p className="text-gray-700 dark:text-white/70 line-clamp-2">{m.content}</p>
+                                                    <p className="text-stone-700 dark:text-white/70 line-clamp-2">{m.content}</p>
                                                     {m.tags?.length > 0 && (
                                                         <div className="flex gap-1 mt-1 flex-wrap">
                                                             {m.tags.map((t, ti) => (
-                                                                <span key={ti} className="text-[9px] px-1 rounded bg-gray-200 dark:bg-[#111] text-gray-500 dark:text-white/40">{t}</span>
+                                                                <span key={ti} className="text-[9px] px-1 rounded bg-stone-200 dark:bg-[#111] text-stone-500 dark:text-white/40">{t}</span>
                                                             ))}
                                                         </div>
                                                     )}
@@ -2377,25 +2377,25 @@ export default function MasterData({
                             <div className="space-y-3">
                                 <div className="flex justify-between items-center">
                                     <div>
-                                        <h4 className="font-bold text-sm text-gray-700 dark:text-white/70 flex items-center gap-2">
+                                        <h4 className="font-bold text-sm text-stone-700 dark:text-white/70 flex items-center gap-2">
                                             <Brain size={16} className="text-blue-500" /> Peta Pengetahuan AI (Knowledge Brain)
                                         </h4>
-                                        <p className="text-xs text-gray-500 mt-0.5">Visualisasi hubungan: dokumen training → chunk → knowledge → koreksi, dikelompokkan per kategori.</p>
+                                        <p className="text-xs text-stone-500 mt-0.5">Visualisasi hubungan: dokumen training → chunk → knowledge → koreksi, dikelompokkan per kategori.</p>
                                     </div>
                                     <button
                                         onClick={fetchGraph}
                                         disabled={graphLoading}
-                                        className="px-3 py-1.5 bg-gray-600 text-white rounded-lg text-xs flex items-center gap-1.5 hover:bg-gray-700 transition-colors disabled:opacity-50"
+                                        className="px-3 py-1.5 bg-stone-600 text-white rounded-lg text-xs flex items-center gap-1.5 hover:bg-stone-700 transition-colors disabled:opacity-50"
                                     >
                                         {graphLoading ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />} Refresh
                                     </button>
                                 </div>
                                 {graphLoading && !graphData ? (
-                                    <div className="text-center py-16 text-gray-400 dark:text-white/30"><Loader2 size={28} className="animate-spin inline-block" /></div>
+                                    <div className="text-center py-16 text-stone-400 dark:text-white/30"><Loader2 size={28} className="animate-spin inline-block" /></div>
                                 ) : graphData && graphData.nodes?.length > 0 ? (
                                     <KnowledgeGraph data={graphData} height={540} />
                                 ) : (
-                                    <div className="text-center py-16 text-gray-400 dark:text-white/30 text-sm">Belum ada data pengetahuan untuk ditampilkan.</div>
+                                    <div className="text-center py-16 text-stone-400 dark:text-white/30 text-sm">Belum ada data pengetahuan untuk ditampilkan.</div>
                                 )}
                             </div>
                         )}
@@ -2404,31 +2404,31 @@ export default function MasterData({
                         <div className="border dark:border-white/[0.06]/50 rounded-lg overflow-hidden">
                             <table className="w-full text-sm">
                                 <thead>
-                                    <tr className="bg-slate-50/80 dark:bg-[#0d0d0d]/50">
-                                        <th className="text-left px-4 py-3 font-bold text-gray-500 dark:text-white/40 text-xs uppercase tracking-wider">{text.title}</th>
-                                        <th className="text-left px-4 py-3 font-bold text-gray-500 dark:text-white/40 text-xs uppercase tracking-wider">{text.fileType}</th>
-                                        <th className="text-left px-4 py-3 font-bold text-gray-500 dark:text-white/40 text-xs uppercase tracking-wider">{text.category}</th>
-                                        <th className="text-left px-4 py-3 font-bold text-gray-500 dark:text-white/40 text-xs uppercase tracking-wider">{text.uploadedAt}</th>
-                                        <th className="text-left px-4 py-3 font-bold text-gray-500 dark:text-white/40 text-xs uppercase tracking-wider">Status</th>
-                                        <th className="text-right px-4 py-3 font-bold text-gray-500 dark:text-white/40 text-xs uppercase tracking-wider">Actions</th>
+                                    <tr className="bg-stone-50/80 dark:bg-[#0d0d0d]/50">
+                                        <th className="text-left px-4 py-3 font-bold text-stone-500 dark:text-white/40 text-xs uppercase tracking-wider">{text.title}</th>
+                                        <th className="text-left px-4 py-3 font-bold text-stone-500 dark:text-white/40 text-xs uppercase tracking-wider">{text.fileType}</th>
+                                        <th className="text-left px-4 py-3 font-bold text-stone-500 dark:text-white/40 text-xs uppercase tracking-wider">{text.category}</th>
+                                        <th className="text-left px-4 py-3 font-bold text-stone-500 dark:text-white/40 text-xs uppercase tracking-wider">{text.uploadedAt}</th>
+                                        <th className="text-left px-4 py-3 font-bold text-stone-500 dark:text-white/40 text-xs uppercase tracking-wider">Status</th>
+                                        <th className="text-right px-4 py-3 font-bold text-stone-500 dark:text-white/40 text-xs uppercase tracking-wider">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {trainingLoading ? (
-                                        <tr><td colSpan="6" className="px-4 py-8 text-center text-gray-400 dark:text-white/30"><Loader2 size={20} className="animate-spin inline-block" /></td></tr>
+                                        <tr><td colSpan="6" className="px-4 py-8 text-center text-stone-400 dark:text-white/30"><Loader2 size={20} className="animate-spin inline-block" /></td></tr>
                                     ) : trainingDocs.length === 0 ? (
-                                        <tr><td colSpan="6" className="px-4 py-8 text-center text-gray-400 dark:text-white/30">{text.noTrainingDocs}</td></tr>
+                                        <tr><td colSpan="6" className="px-4 py-8 text-center text-stone-400 dark:text-white/30">{text.noTrainingDocs}</td></tr>
                                     ) : trainingDocs.slice((docPage - 1) * ROWS_PER_PAGE, docPage * ROWS_PER_PAGE).map(doc => (
-                                        <tr key={doc.id} className="border-t dark:border-white/[0.06]/50 hover:bg-gray-50 dark:hover:bg-white/[0.05]/30 transition-colors">
+                                        <tr key={doc.id} className="border-t dark:border-white/[0.06]/50 hover:bg-stone-50 dark:hover:bg-white/[0.05]/30 transition-colors">
                                             <td className="px-4 py-3">
                                                 <span className="font-medium dark:text-white">{doc.title}</span>
-                                                {doc.tags && <p className="text-[10px] text-gray-400 mt-0.5">{doc.tags}</p>}
+                                                {doc.tags && <p className="text-[10px] text-stone-400 mt-0.5">{doc.tags}</p>}
                                             </td>
                                             <td className="px-4 py-3">
                                                 <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 text-blue-600 dark:text-blue-400">{doc.file_type}</span>
                                             </td>
-                                            <td className="px-4 py-3 text-gray-600 dark:text-white/40">{text.categories[doc.category] || doc.category}</td>
-                                            <td className="px-4 py-3 text-gray-600 dark:text-white/40">{new Date(doc.created_at).toLocaleDateString()}</td>
+                                            <td className="px-4 py-3 text-stone-600 dark:text-white/40">{text.categories[doc.category] || doc.category}</td>
+                                            <td className="px-4 py-3 text-stone-600 dark:text-white/40">{new Date(doc.created_at).toLocaleDateString()}</td>
                                             <td className="px-4 py-3">
                                                 <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${doc.status === 'active' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : doc.status === 'processing' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' : 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'}`}>
                                                     {text[doc.status] || doc.status}
@@ -2437,20 +2437,20 @@ export default function MasterData({
                                             <td className="px-4 py-3 text-right">
                                                 <div className="flex gap-1 justify-end">
                                                     {doc.status === 'processing' && (
-                                                        <button onClick={() => handleTrainingRefresh()} className="p-1.5 rounded-lg text-gray-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors" title={text.refreshStatus}>
+                                                        <button onClick={() => handleTrainingRefresh()} className="p-1.5 rounded-lg text-stone-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors" title={text.refreshStatus}>
                                                             <RefreshCw size={14} />
                                                         </button>
                                                     )}
-                                                    <button onClick={() => openTrainingDetail(doc)} className="p-1.5 rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" title={text.detailLearning}>
+                                                    <button onClick={() => openTrainingDetail(doc)} className="p-1.5 rounded-lg text-stone-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" title={text.detailLearning}>
                                                         <Info size={14} />
                                                     </button>
-                                                    <button onClick={() => openTrainingPreview(doc.id)} className="p-1.5 rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" title={text.preview}>
+                                                    <button onClick={() => openTrainingPreview(doc.id)} className="p-1.5 rounded-lg text-stone-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" title={text.preview}>
                                                         <Eye size={14} />
                                                     </button>
-                                                    <button onClick={() => handleTrainingReprocess(doc.id)} className="p-1.5 rounded-lg text-gray-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors" title={text.reprocess}>
+                                                    <button onClick={() => handleTrainingReprocess(doc.id)} className="p-1.5 rounded-lg text-stone-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors" title={text.reprocess}>
                                                         <RefreshCw size={14} />
                                                     </button>
-                                                    <button onClick={() => handleTrainingDelete(doc.id)} className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title={text.delete}>
+                                                    <button onClick={() => handleTrainingDelete(doc.id)} className="p-1.5 rounded-lg text-stone-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title={text.delete}>
                                                         <Trash2 size={14} />
                                                     </button>
                                                 </div>
@@ -2472,10 +2472,10 @@ export default function MasterData({
                         <div className="flex items-center justify-between p-5 border-b dark:border-white/[0.06]/50">
                             <div>
                                 <h3 className="font-bold text-lg dark:text-white">{trainingPreview.title}</h3>
-                                <p className="text-xs text-gray-500 mt-1">{text.categories[trainingPreview.category] || trainingPreview.category}</p>
+                                <p className="text-xs text-stone-500 mt-1">{text.categories[trainingPreview.category] || trainingPreview.category}</p>
                             </div>
-                            <button onClick={() => setTrainingPreview(null)} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/[0.05] transition-colors">
-                                <X size={20} className="text-gray-400" />
+                            <button onClick={() => setTrainingPreview(null)} className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-white/[0.05] transition-colors">
+                                <X size={20} className="text-stone-400" />
                             </button>
                         </div>
                         <div className="p-5 overflow-y-auto">
@@ -2485,10 +2485,10 @@ export default function MasterData({
                                     {text[trainingPreview.status] || trainingPreview.status}
                                 </span>
                             </div>
-                            <pre className="text-sm text-gray-700 dark:text-white/70 whitespace-pre-wrap font-sans">{trainingPreview.content}</pre>
+                            <pre className="text-sm text-stone-700 dark:text-white/70 whitespace-pre-wrap font-sans">{trainingPreview.content}</pre>
                         </div>
                         <div className="p-4 border-t dark:border-white/[0.06]/50 flex justify-end">
-                            <button onClick={() => setTrainingPreview(null)} className="px-4 py-2 bg-gray-100 dark:bg-[#0d0d0d] text-gray-700 dark:text-slate-200 rounded-lg text-sm hover:bg-gray-200 dark:hover:bg-white/[0.06] transition-colors">
+                            <button onClick={() => setTrainingPreview(null)} className="px-4 py-2 bg-stone-100 dark:bg-[#0d0d0d] text-stone-700 dark:text-white/80 rounded-lg text-sm hover:bg-stone-200 dark:hover:bg-white/[0.06] transition-colors">
                                 Close
                             </button>
                         </div>
@@ -2505,52 +2505,52 @@ export default function MasterData({
                                 <Info size={20} className="text-blue-500" />
                                 <h3 className="font-bold text-lg dark:text-white">{text.learningDetail}</h3>
                             </div>
-                            <button onClick={() => setTrainingDetail(null)} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/[0.05] transition-colors">
-                                <X size={20} className="text-gray-400" />
+                            <button onClick={() => setTrainingDetail(null)} className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-white/[0.05] transition-colors">
+                                <X size={20} className="text-stone-400" />
                             </button>
                         </div>
                         <div className="p-5 overflow-y-auto space-y-4">
                             <div className="flex items-center gap-2">
-                                <FileText size={16} className="text-gray-400" />
+                                <FileText size={16} className="text-stone-400" />
                                 <span className="font-medium dark:text-white">{trainingDetail.title}</span>
                             </div>
                             <div className="grid grid-cols-2 gap-3">
-                                <div className="bg-gray-50 dark:bg-[#0d0d0d]/50 rounded-lg p-3">
-                                    <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">{text.fileType}</p>
+                                <div className="bg-stone-50 dark:bg-[#0d0d0d]/50 rounded-lg p-3">
+                                    <p className="text-[10px] text-stone-400 uppercase tracking-wider mb-1">{text.fileType}</p>
                                     <p className="text-sm font-bold dark:text-white">{trainingDetail.file_type}</p>
                                 </div>
-                                <div className="bg-gray-50 dark:bg-[#0d0d0d]/50 rounded-lg p-3">
-                                    <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">{text.embeddingStatus}</p>
+                                <div className="bg-stone-50 dark:bg-[#0d0d0d]/50 rounded-lg p-3">
+                                    <p className="text-[10px] text-stone-400 uppercase tracking-wider mb-1">{text.embeddingStatus}</p>
                                     <span className={`text-sm font-bold ${trainingDetail.status === 'active' ? 'text-emerald-600 dark:text-emerald-400' : trainingDetail.status === 'processing' ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
                                         {text[trainingDetail.status] || trainingDetail.status}
                                     </span>
                                 </div>
-                                <div className="bg-gray-50 dark:bg-[#0d0d0d]/50 rounded-lg p-3">
-                                    <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">{text.chunks}</p>
+                                <div className="bg-stone-50 dark:bg-[#0d0d0d]/50 rounded-lg p-3">
+                                    <p className="text-[10px] text-stone-400 uppercase tracking-wider mb-1">{text.chunks}</p>
                                     <p className="text-sm font-bold dark:text-white">{trainingDetail.chunk_count || 0}</p>
                                 </div>
-                                <div className="bg-gray-50 dark:bg-[#0d0d0d]/50 rounded-lg p-3">
-                                    <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">{text.category}</p>
+                                <div className="bg-stone-50 dark:bg-[#0d0d0d]/50 rounded-lg p-3">
+                                    <p className="text-[10px] text-stone-400 uppercase tracking-wider mb-1">{text.category}</p>
                                     <p className="text-sm font-bold dark:text-white">{text.categories[trainingDetail.category] || trainingDetail.category}</p>
                                 </div>
-                                <div className="bg-gray-50 dark:bg-[#0d0d0d]/50 rounded-lg p-3">
-                                    <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">{text.contentLength}</p>
+                                <div className="bg-stone-50 dark:bg-[#0d0d0d]/50 rounded-lg p-3">
+                                    <p className="text-[10px] text-stone-400 uppercase tracking-wider mb-1">{text.contentLength}</p>
                                     <p className="text-sm font-bold dark:text-white">{trainingDetail.content ? `${trainingDetail.content.length.toLocaleString()} chars` : '-'}</p>
                                 </div>
-                                <div className="bg-gray-50 dark:bg-[#0d0d0d]/50 rounded-lg p-3">
-                                    <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">{text.lastUpdated}</p>
+                                <div className="bg-stone-50 dark:bg-[#0d0d0d]/50 rounded-lg p-3">
+                                    <p className="text-[10px] text-stone-400 uppercase tracking-wider mb-1">{text.lastUpdated}</p>
                                     <p className="text-sm font-bold dark:text-white">{trainingDetail.updated_at ? new Date(trainingDetail.updated_at).toLocaleString() : '-'}</p>
                                 </div>
                             </div>
                             {trainingDetail.tags && (
-                                <div className="bg-gray-50 dark:bg-[#0d0d0d]/50 rounded-lg p-3">
-                                    <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">{text.tags}</p>
+                                <div className="bg-stone-50 dark:bg-[#0d0d0d]/50 rounded-lg p-3">
+                                    <p className="text-[10px] text-stone-400 uppercase tracking-wider mb-1">{text.tags}</p>
                                     <p className="text-sm dark:text-white">{trainingDetail.tags}</p>
                                 </div>
                             )}
                         </div>
                         <div className="p-4 border-t dark:border-white/[0.06]/50 flex justify-end gap-2">
-                            <button onClick={() => setTrainingDetail(null)} className="px-4 py-2 bg-gray-100 dark:bg-[#0d0d0d] text-gray-700 dark:text-slate-200 rounded-lg text-sm hover:bg-gray-200 dark:hover:bg-white/[0.06] transition-colors">
+                            <button onClick={() => setTrainingDetail(null)} className="px-4 py-2 bg-stone-100 dark:bg-[#0d0d0d] text-stone-700 dark:text-white/80 rounded-lg text-sm hover:bg-stone-200 dark:hover:bg-white/[0.06] transition-colors">
                                 Close
                             </button>
                         </div>

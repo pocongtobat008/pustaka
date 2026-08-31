@@ -17,7 +17,7 @@ export default function TaxModals({
         <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-300 pt-4">
             <div className="grid grid-cols-3 gap-6 bg-white/30 dark:bg-[#0d0d0d]/30 p-6 rounded-3xl border border-white/20 dark:border-white/5">
                 <div>
-                    <label className="block text-xs font-bold text-slate-500 dark:text-white/40 mb-1.5 uppercase tracking-wider">Bulan</label>
+                    <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1.5 uppercase tracking-wider">Bulan</label>
                     <div className="relative">
                         <select
                             value={taxForm.month}
@@ -29,13 +29,13 @@ export default function TaxModals({
                                 <option key={m} value={m}>{m}</option>
                             ))}
                         </select>
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-stone-400">
                             <ChevronRight size={16} className="rotate-90" />
                         </div>
                     </div>
                 </div>
                 <div>
-                    <label className="block text-xs font-bold text-slate-500 dark:text-white/40 mb-1.5 uppercase tracking-wider">Tahun</label>
+                    <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1.5 uppercase tracking-wider">Tahun</label>
                     <input
                         type="number"
                         value={taxForm.year}
@@ -44,7 +44,7 @@ export default function TaxModals({
                     />
                 </div>
                 <div>
-                    <label className="block text-xs font-bold text-slate-500 dark:text-white/40 mb-1.5 uppercase tracking-wider">Pembetulan Ke-</label>
+                    <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1.5 uppercase tracking-wider">Pembetulan Ke-</label>
                     <input
                         type="number"
                         min="0"
@@ -58,7 +58,7 @@ export default function TaxModals({
             {(modalTab === 'tax-form' || modalTab === 'tax-form-pph') && (
                 <div className="bg-white/20 dark:bg-[#0d0d0d]/40 p-6 rounded-[2rem] border border-white/20 dark:border-white/5 shadow-inner">
                     <div className="flex justify-between items-center mb-5">
-                        <h4 className="font-black text-slate-800 dark:text-white flex items-center gap-3 text-lg">
+                        <h4 className="font-black text-stone-800 dark:text-white flex items-center gap-3 text-lg">
                             <div className="p-2 bg-blue-500/10 rounded-xl text-blue-500"><Percent size={18} /></div>
                             PPh (Pajak Penghasilan)
                         </h4>
@@ -70,8 +70,8 @@ export default function TaxModals({
                         {Object.keys(taxForm.data?.pph || {}).map(key => (
                             <div key={key} className="group relative">
                                 <div className="flex justify-between items-center mb-1.5 px-1">
-                                    <label className="block text-xs font-bold text-slate-500 dark:text-white/40 uppercase tracking-widest">{key}</label>
-                                    <button tabIndex="-1" onClick={() => handleDeleteTaxField('pphTypes', key)} className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100" title="Hapus Field"><Trash2 size={12} /></button>
+                                    <label className="block text-xs font-bold text-stone-500 dark:text-white/40 uppercase tracking-widest">{key}</label>
+                                    <button tabIndex="-1" onClick={() => handleDeleteTaxField('pphTypes', key)} className="text-stone-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100" title="Hapus Field"><Trash2 size={12} /></button>
                                 </div>
                                 <input
                                     type="text"
@@ -99,7 +99,7 @@ export default function TaxModals({
                 <div className="space-y-8">
                     <div className="bg-emerald-500/[0.03] dark:bg-emerald-500/[0.05] p-6 rounded-[2.5rem] border border-emerald-500/10">
                         <div className="flex justify-between items-center mb-5 px-2">
-                            <h4 className="font-black text-slate-800 dark:text-white flex items-center gap-3 text-lg">
+                            <h4 className="font-black text-stone-800 dark:text-white flex items-center gap-3 text-lg">
                                 <div className="p-2 bg-emerald-500/10 rounded-xl text-emerald-500"><ArrowDownRight size={18} /></div>
                                 PPN Masukan (Input)
                             </h4>
@@ -111,8 +111,8 @@ export default function TaxModals({
                             {Object.keys(taxForm.data?.ppnIn || {}).map(key => (
                                 <div key={key} className="group relative">
                                     <div className="flex justify-between items-center mb-1.5 px-1">
-                                        <label className="block text-xs font-bold text-slate-500 dark:text-white/40 uppercase tracking-widest">{key}</label>
-                                        <button tabIndex="-1" onClick={() => handleDeleteTaxField('ppnInTypes', key)} className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100" title="Hapus Field"><Trash2 size={12} /></button>
+                                        <label className="block text-xs font-bold text-stone-500 dark:text-white/40 uppercase tracking-widest">{key}</label>
+                                        <button tabIndex="-1" onClick={() => handleDeleteTaxField('ppnInTypes', key)} className="text-stone-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100" title="Hapus Field"><Trash2 size={12} /></button>
                                     </div>
                                     <input
                                         type="text"
@@ -137,7 +137,7 @@ export default function TaxModals({
 
                     <div className="bg-amber-500/[0.03] dark:bg-amber-500/[0.05] p-6 rounded-[2.5rem] border border-amber-500/10">
                         <div className="flex justify-between items-center mb-5 px-2">
-                            <h4 className="font-black text-slate-800 dark:text-white flex items-center gap-3 text-lg">
+                            <h4 className="font-black text-stone-800 dark:text-white flex items-center gap-3 text-lg">
                                 <div className="p-2 bg-amber-500/10 rounded-xl text-amber-500"><ArrowUpRight size={18} /></div>
                                 PPN Keluaran (Output)
                             </h4>
@@ -149,8 +149,8 @@ export default function TaxModals({
                             {Object.keys(taxForm.data?.ppnOut || {}).map(key => (
                                 <div key={key} className="group relative">
                                     <div className="flex justify-between items-center mb-1.5 px-1">
-                                        <label className="block text-xs font-bold text-slate-500 dark:text-white/40 uppercase tracking-widest">{key}</label>
-                                        <button tabIndex="-1" onClick={() => handleDeleteTaxField('ppnOutTypes', key)} className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100" title="Hapus Field"><Trash2 size={12} /></button>
+                                        <label className="block text-xs font-bold text-stone-500 dark:text-white/40 uppercase tracking-widest">{key}</label>
+                                        <button tabIndex="-1" onClick={() => handleDeleteTaxField('ppnOutTypes', key)} className="text-stone-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100" title="Hapus Field"><Trash2 size={12} /></button>
                                     </div>
                                     <input
                                         type="text"

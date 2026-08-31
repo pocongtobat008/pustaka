@@ -61,7 +61,7 @@ const WarehouseMap = ({ inventory, onSelectInfo }) => {
                     Denah Gudang Interaktif
                 </h3>
                 <div className="flex gap-2">
-                    <div className="flex items-center gap-2 text-sm text-gray-500 mr-4">
+                    <div className="flex items-center gap-2 text-sm text-stone-500 mr-4">
                         <span className="flex items-center gap-1"><div className="w-3 h-3 bg-green-100 border border-green-300 rounded"></div> Kosong</span>
                         <span className="flex items-center gap-1"><div className="w-3 h-3 bg-blue-100 border border-blue-300 rounded"></div> Isi</span>
                         <span className="flex items-center gap-1"><Flame className="w-3 h-3 text-orange-500" /> Popular</span>
@@ -88,9 +88,9 @@ const WarehouseMap = ({ inventory, onSelectInfo }) => {
                     });
 
                     return (
-                        <div key={rackName} className="border border-gray-200 rounded-xl p-4 bg-gray-50/50">
-                            <h4 className="text-lg font-bold text-gray-700 mb-3 text-center border-b pb-2">
-                                Rak {rackName} <span className="text-xs font-normal text-gray-500">({config.rows} Tingkat x {config.cols} Kolom)</span>
+                        <div key={rackName} className="border border-stone-200 rounded-xl p-4 bg-stone-50/50">
+                            <h4 className="text-lg font-bold text-stone-700 mb-3 text-center border-b pb-2">
+                                Rak {rackName} <span className="text-xs font-normal text-stone-500">({config.rows} Tingkat x {config.cols} Kolom)</span>
                             </h4>
                             <div style={getRackStyle(rackName)}>
                                 {slots.map(slot => {
@@ -109,7 +109,7 @@ const WarehouseMap = ({ inventory, onSelectInfo }) => {
                                                     : 'bg-green-50 border-green-200'}
                                             `}
                                         >
-                                            <span className="text-[10px] font-bold text-gray-400 absolute top-0.5 left-1 opacity-50">
+                                            <span className="text-[10px] font-bold text-stone-400 absolute top-0.5 left-1 opacity-50">
                                                 {index + 1}
                                             </span>
 
@@ -117,7 +117,7 @@ const WarehouseMap = ({ inventory, onSelectInfo }) => {
                                                 active ? (
                                                     <>
                                                         <Box className={`w-4 h-4 ${hot ? 'text-orange-500' : 'text-blue-500'} mb-1`} />
-                                                        <span className="text-[10px] font-medium text-gray-600 truncate w-full text-center leading-none">
+                                                        <span className="text-[10px] font-medium text-stone-600 truncate w-full text-center leading-none">
                                                             {item.boxData?.box_id || item.id}
                                                         </span>
                                                         {hot && (

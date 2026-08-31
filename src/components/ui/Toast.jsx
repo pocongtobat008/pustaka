@@ -158,13 +158,13 @@ export function ToastContainer({ toasts, onRemove }) {
                                 <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${config.labelColor} mb-0.5`}>
                                     {config.label}
                                 </span>
-                                <span className="font-semibold text-slate-800 dark:text-white text-sm leading-tight truncate">
+                                <span className="font-semibold text-stone-800 dark:text-white text-sm leading-tight truncate">
                                     {toast.message}
                                 </span>
 
                                 {/* Progress Bar */}
                                 {toast.progress !== undefined && (
-                                    <div className="mt-2 w-full bg-gray-200 dark:bg-[#111] rounded-full h-1.5 overflow-hidden">
+                                    <div className="mt-2 w-full bg-stone-200 dark:bg-[#111] rounded-full h-1.5 overflow-hidden">
                                         <motion.div
                                             initial={{ width: 0 }}
                                             animate={{ width: `${toast.progress}%` }}
@@ -177,10 +177,10 @@ export function ToastContainer({ toasts, onRemove }) {
                             {/* Close Button */}
                             {!isLoading && (
                                 <button
-                                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-slate-200 dark:hover:bg-white/[0.06] flex-shrink-0"
+                                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-stone-200 dark:hover:bg-white/[0.06] flex-shrink-0"
                                     onClick={(e) => { e.stopPropagation(); onRemove(toast.id); }}
                                 >
-                                    <X size={12} className="text-slate-400" />
+                                    <X size={12} className="text-stone-400" />
                                 </button>
                             )}
                         </motion.div>

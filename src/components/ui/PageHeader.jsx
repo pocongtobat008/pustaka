@@ -17,8 +17,8 @@ export const PageHeader = ({ icon: Icon, iconClass, title, subtitle, meta, actio
             {Icon && <Icon size={20} className="text-white" />}
         </div>
         <div className="min-w-0 flex-1">
-            <h1 className="text-lg font-black tracking-tight text-slate-800 dark:text-white leading-tight">{title}</h1>
-            {subtitle && <p className="text-xs mt-0.5 text-slate-500 dark:text-white/50 leading-relaxed">{subtitle}</p>}
+            <h1 className="text-lg font-black tracking-tight text-stone-800 dark:text-white leading-tight">{title}</h1>
+            {subtitle && <p className="text-xs mt-0.5 text-stone-500 dark:text-white/50 leading-relaxed">{subtitle}</p>}
             {meta && <div className="mt-1.5">{meta}</div>}
         </div>
         {actions && <div className="flex items-center gap-2 shrink-0">{actions}</div>}

@@ -136,7 +136,7 @@ export default function Login({ onLogin }) {
                         <div className="absolute -top-2 xl:-top-4 right-0 flex items-center gap-2">
                             <button
                                 onClick={() => setLanguage(isEnglish ? 'id' : 'en')}
-                                className="neo-btn flex items-center gap-1.5 px-2.5 py-1.5 xl:px-3 xl:py-2 text-slate-600 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 group"
+                                className="neo-btn flex items-center gap-1.5 px-2.5 py-1.5 xl:px-3 xl:py-2 text-stone-600 dark:text-white/80 hover:text-blue-600 dark:hover:text-blue-400 group"
                                 title={isEnglish ? 'Change to Indonesian' : 'Ganti ke Bahasa Inggris'}
                             >
                                 <Globe size={14} className="group-hover:text-blue-500 w-3 h-3 xl:w-3.5 xl:h-3.5" />
@@ -145,7 +145,7 @@ export default function Login({ onLogin }) {
 
                             <button
                                 onClick={() => setIsDarkMode(!isDarkMode)}
-                                className="neo-icon-btn w-9 h-9 xl:w-10 xl:h-10 text-slate-500 dark:text-white/70 hover:text-amber-500 dark:hover:text-amber-400 group"
+                                className="neo-icon-btn w-9 h-9 xl:w-10 xl:h-10 text-stone-500 dark:text-white/70 hover:text-amber-500 dark:hover:text-amber-400 group"
                                 title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
                             >
                                 {isDarkMode ? (
@@ -157,7 +157,7 @@ export default function Login({ onLogin }) {
                         </div>
 
                         <h2 className="text-2xl xl:text-3xl font-black text-[#2B3674] dark:text-white mb-1 xl:mb-2 tracking-tight">{text.welcome}</h2>
-                        <p className="text-xs xl:text-sm text-gray-500 dark:text-white/40 font-bold">{text.credentialHint}</p>
+                        <p className="text-xs xl:text-sm text-stone-500 dark:text-white/40 font-bold">{text.credentialHint}</p>
                     </div>
 
                     {loginForm.error && (
@@ -170,7 +170,7 @@ export default function Login({ onLogin }) {
                         <div className="group">
                             <label className="block text-xs xl:text-sm font-black text-[#2B3674] dark:text-white/70 mb-1.5 xl:mb-2 uppercase tracking-widest ml-1">{text.username}</label>
                             <div className="relative group-focus-within:scale-[1.01] transition-all duration-300">
-                                <User className="absolute left-3 xl:left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors w-4 h-4 xl:w-5 xl:h-5" />
+                                <User className="absolute left-3 xl:left-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-blue-500 transition-colors w-4 h-4 xl:w-5 xl:h-5" />
                                 <input
                                     type="text"
                                     value={loginForm.username}
@@ -183,7 +183,7 @@ export default function Login({ onLogin }) {
                         <div className="group">
                             <label className="block text-xs xl:text-sm font-black text-[#2B3674] dark:text-white/70 mb-1.5 xl:mb-2 uppercase tracking-widest ml-1">{text.password}</label>
                             <div className="relative group-focus-within:scale-[1.01] transition-all duration-300">
-                                <FileKey className="absolute left-3 xl:left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors w-4 h-4 xl:w-5 xl:h-5" />
+                                <FileKey className="absolute left-3 xl:left-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-blue-500 transition-colors w-4 h-4 xl:w-5 xl:h-5" />
                                 <input
                                     type={showPassword ? 'text' : 'password'}
                                     value={loginForm.password}
@@ -194,7 +194,7 @@ export default function Login({ onLogin }) {
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 xl:right-4 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+                                    className="absolute right-3 xl:right-4 top-1/2 -translate-y-1/2 p-1.5 text-stone-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
                                     title={showPassword ? (isEnglish ? 'Hide password' : 'Sembunyikan password') : (isEnglish ? 'Show password' : 'Lihat password')}
                                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                                 >
@@ -208,9 +208,9 @@ export default function Login({ onLogin }) {
                         </button>
 
                         <div className="relative flex items-center py-1 xl:py-2">
-                            <div className="flex-grow border-t border-gray-100 dark:border-slate-800"></div>
-                            <span className="flex-shrink mx-4 text-gray-400 text-[9px] xl:text-[10px] font-black uppercase tracking-[0.2em]">{text.or}</span>
-                            <div className="flex-grow border-t border-gray-100 dark:border-slate-800"></div>
+                            <div className="flex-grow border-t border-stone-100 dark:border-white/[0.06]"></div>
+                            <span className="flex-shrink mx-4 text-stone-400 text-[9px] xl:text-[10px] font-black uppercase tracking-[0.2em]">{text.or}</span>
+                            <div className="flex-grow border-t border-stone-100 dark:border-white/[0.06]"></div>
                         </div>
 
                         <button
@@ -222,7 +222,7 @@ export default function Login({ onLogin }) {
                             {text.guest}
                         </button>
                     </form>
-                    <p className="text-center text-[10px] xl:text-xs text-slate-500 dark:text-white/40 mt-6 xl:mt-10 font-bold uppercase tracking-widest">{text.version}</p>
+                    <p className="text-center text-[10px] xl:text-xs text-stone-500 dark:text-white/40 mt-6 xl:mt-10 font-bold uppercase tracking-widest">{text.version}</p>
                 </div>
             </div>
         </main>

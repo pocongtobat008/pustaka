@@ -71,15 +71,15 @@ const ApproverNode = ({ data }) => {
                     <ShieldCheck size={20} />
                 </div>
                 <div className="flex-1 min-w-0">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Approver</p>
-                    <p className="font-bold text-slate-800 dark:text-white truncate">{data.label || 'Pilih User...'}</p>
+                    <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">Approver</p>
+                    <p className="font-bold text-stone-800 dark:text-white truncate">{data.label || 'Pilih User...'}</p>
                     <p className="text-[9px] text-blue-500 font-bold truncate">{data.username || '-'}</p>
                 </div>
             </div>
 
             {/* Badge indicators */}
             {(hasNotes || hasDocs) && (
-                <div className="flex items-center gap-1.5 mt-3 pt-2 border-t border-slate-100 dark:border-slate-800">
+                <div className="flex items-center gap-1.5 mt-3 pt-2 border-t border-stone-100 dark:border-white/[0.06]">
                     {hasNotes && (
                         <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-blue-50 dark:bg-blue-900/30 text-blue-500 text-[8px] font-bold">
                             <MessageSquareText size={9} /> Instruksi
@@ -264,20 +264,20 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
     const isImage = (url) => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url);
 
     return (
-        <div className="w-full h-full bg-slate-50 dark:bg-slate-950 relative overflow-hidden flex">
+        <div className="w-full h-full bg-stone-50 dark:bg-[#050505] relative overflow-hidden flex">
             {/* Toolbar */}
-            <div className="w-80 bg-white dark:bg-[#0d0d0d] border-r border-slate-200 dark:border-slate-800 p-6 flex flex-col gap-4 z-10 shadow-2xl overflow-hidden">
+            <div className="w-80 bg-white dark:bg-[#0d0d0d] border-r border-stone-200 dark:border-white/[0.06] p-6 flex flex-col gap-4 z-10 shadow-2xl overflow-hidden">
                 <div className="flex justify-between items-center mb-2">
-                    <h2 className="text-lg font-black text-slate-800 dark:text-white flex items-center gap-2">
+                    <h2 className="text-lg font-black text-stone-800 dark:text-white flex items-center gap-2">
                         <Save className="text-blue-500" size={20} /> Workflow
                     </h2>
-                    <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-white/[0.05] rounded-xl transition-all">
-                        <X size={20} className="text-slate-400" />
+                    <button onClick={onClose} className="p-2 hover:bg-stone-100 dark:hover:bg-white/[0.05] rounded-xl transition-all">
+                        <X size={20} className="text-stone-400" />
                     </button>
                 </div>
 
                 <div className="space-y-4">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Aksi</p>
+                    <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">Aksi</p>
                     <button
                         onClick={addApprover}
                         className="w-full py-4 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-blue-500 transition-all shadow-lg shadow-blue-500/20"
@@ -287,15 +287,15 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
                 </div>
 
                 {selectedEdge && (
-                    <div className="space-y-3 p-4 rounded-2xl bg-slate-50 dark:bg-[#0d0d0d] border border-slate-200 dark:border-white/[0.06]">
+                    <div className="space-y-3 p-4 rounded-2xl bg-stone-50 dark:bg-[#0d0d0d] border border-stone-200 dark:border-white/[0.06]">
                         <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest">Edge Properties</p>
-                        <p className="text-[10px] text-slate-500">Pilih warna untuk garis yang sedang dipilih.</p>
+                        <p className="text-[10px] text-stone-500">Pilih warna untuk garis yang sedang dipilih.</p>
                         <div className="flex items-center gap-2">
                             {edgePalette.map((color) => (
                                 <button
                                     key={color}
                                     onClick={() => updateSelectedEdgeColor(color)}
-                                    className={`w-7 h-7 rounded-full border-2 transition-all ${selectedEdgeColor === color ? 'border-white dark:border-slate-900 ring-2 ring-blue-500 scale-110' : 'border-transparent opacity-70 hover:opacity-100'}`}
+                                    className={`w-7 h-7 rounded-full border-2 transition-all ${selectedEdgeColor === color ? 'border-white dark:border-[#0a0a0a] ring-2 ring-blue-500 scale-110' : 'border-transparent opacity-70 hover:opacity-100'}`}
                                     style={{ backgroundColor: color }}
                                     title={`Warna ${color}`}
                                 />
@@ -322,16 +322,16 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
 
                         {/* User Picker */}
                         <div className="space-y-2">
-                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-tight">Pilih User Approver</label>
+                            <label className="block text-[10px] font-black text-stone-400 uppercase tracking-tight">Pilih User Approver</label>
                             <div className="grid grid-cols-1 gap-2 max-h-[160px] overflow-y-auto no-scrollbar">
                                 {users.map(u => (
                                     <button
                                         key={u.username}
                                         onClick={() => selectUser(u.username, u.name)}
-                                        className={`w-full text-left p-3 rounded-xl border-2 transition-all ${selectedNode.data.username === u.username ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-transparent bg-slate-50 dark:bg-[#0d0d0d] hover:border-slate-200'}`}
+                                        className={`w-full text-left p-3 rounded-xl border-2 transition-all ${selectedNode.data.username === u.username ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-transparent bg-stone-50 dark:bg-[#0d0d0d] hover:border-stone-200'}`}
                                     >
                                         <p className="text-sm font-bold dark:text-white">{u.name}</p>
-                                        <p className="text-[10px] text-slate-400">{u.username} - {u.department}</p>
+                                        <p className="text-[10px] text-stone-400">{u.username} - {u.department}</p>
                                     </button>
                                 ))}
                             </div>
@@ -339,7 +339,7 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
 
                         {/* Instruction */}
                         <div className="space-y-2">
-                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-tight flex items-center gap-1">
+                            <label className="block text-[10px] font-black text-stone-400 uppercase tracking-tight flex items-center gap-1">
                                 <MessageSquareText size={10} className="text-blue-500" /> Instruksi Kerja
                             </label>
                             <textarea
@@ -347,13 +347,13 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
                                 onChange={(e) => updateInstruction(e.target.value)}
                                 placeholder="Tuliskan instruksi kerja untuk step ini..."
                                 rows={4}
-                                className="w-full px-4 py-3 bg-slate-50 dark:bg-[#0d0d0d] border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white text-sm resize-none"
+                                className="w-full px-4 py-3 bg-stone-50 dark:bg-[#0d0d0d] border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white text-sm resize-none"
                             />
                         </div>
 
                         {/* File Upload */}
                         <div className="space-y-2">
-                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-tight flex items-center gap-1">
+                            <label className="block text-[10px] font-black text-stone-400 uppercase tracking-tight flex items-center gap-1">
                                 <Paperclip size={10} className="text-amber-500" /> Lampiran
                             </label>
                             <input
@@ -382,13 +382,13 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
                                     {(selectedNode.data.documents || []).map((doc, idx) => {
                                         const url = doc.url || doc;
                                         return (
-                                            <div key={idx} className="relative group/att rounded-xl overflow-hidden border border-slate-200 dark:border-white/[0.06] bg-slate-50 dark:bg-[#0d0d0d]">
+                                            <div key={idx} className="relative group/att rounded-xl overflow-hidden border border-stone-200 dark:border-white/[0.06] bg-stone-50 dark:bg-[#0d0d0d]">
                                                 {isImage(url) ? (
                                                     <img src={getFullUrl(url)} alt={doc.name || `File ${idx + 1}`} className="w-full aspect-video object-cover" />
                                                 ) : (
                                                     <div className="flex items-center gap-2 p-3">
                                                         <FileText size={16} className="text-amber-500 flex-shrink-0" />
-                                                        <span className="text-[9px] font-bold text-slate-600 dark:text-white/70 truncate">
+                                                        <span className="text-[9px] font-bold text-stone-600 dark:text-white/70 truncate">
                                                             {doc.name || (typeof url === 'string' ? url.split('/').pop() : `File ${idx + 1}`)}
                                                         </span>
                                                     </div>
@@ -408,7 +408,7 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
                     </div>
                 )}
 
-                <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
+                <div className="pt-4 border-t border-stone-100 dark:border-white/[0.06]">
                     <button
                         onClick={handleSave}
                         className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-500 transition-all shadow-xl shadow-emerald-500/20"
@@ -436,13 +436,13 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
                     connectionMode="loose"
                     deleteKeyCode="Delete"
                     fitView
-                    className="bg-slate-50 dark:bg-[#0B1437]"
+                    className="bg-stone-50 dark:bg-[#0B1437]"
                 >
                     <Background color="#94a3b8" gap={20} size={1} />
                     <Controls />
                     <Panel position="top-right" className="bg-white/90 dark:bg-[#0d0d0d]/90 backdrop-blur-md p-3 rounded-2xl border border-white/20 shadow-xl">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Status Flow</p>
-                        <p className="text-xs font-bold text-slate-800 dark:text-white">Drafting Master Flow</p>
+                        <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">Status Flow</p>
+                        <p className="text-xs font-bold text-stone-800 dark:text-white">Drafting Master Flow</p>
                     </Panel>
                 </ReactFlow>
             </div>

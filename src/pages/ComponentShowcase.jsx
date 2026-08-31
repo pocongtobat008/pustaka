@@ -22,10 +22,10 @@ export default function ComponentShowcase({ isDarkMode }) {
     const t = (en, id) => (isEnglish ? en : id);
 
     const btnPrimary = 'inline-flex items-center gap-2 px-4 py-2.5 gradient-bg text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-500/25 hover:opacity-90 transition-all';
-    const btnOutline = 'inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 dark:border-white/[0.08] text-slate-600 dark:text-white/70 hover:bg-slate-50 dark:hover:bg-white/[0.06] transition-colors text-sm font-semibold';
+    const btnOutline = 'inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-stone-300 dark:border-white/[0.08] text-stone-600 dark:text-white/70 hover:bg-stone-50 dark:hover:bg-white/[0.06] transition-colors text-sm font-semibold';
     const btnGreen = 'inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-500/25 transition-all';
     const btnRed = 'inline-flex items-center gap-2 px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-rose-500/25 transition-all';
-    const sectionTitle = 'text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-white/40 mb-3';
+    const sectionTitle = 'text-[10px] font-black uppercase tracking-widest text-stone-500 dark:text-white/40 mb-3';
 
     return (
         <div className="max-w-[1400px] mx-auto px-4 lg:px-6 py-6 space-y-8 animate-in fade-in duration-500">
@@ -76,12 +76,12 @@ export default function ComponentShowcase({ isDarkMode }) {
                         <button className={btnOutline}><Save size={15} /> {t('Outline / Secondary', 'Garis / Sekunder')}</button>
                         <button className={btnGreen}><CheckCircle2 size={15} /> {t('Success (green)', 'Sukses (hijau)')}</button>
                         <button className={btnRed}><Trash2 size={15} /> {t('Danger (red)', 'Bahaya (merah)')}</button>
-                        <button className="p-2.5 rounded-xl glass-card text-slate-500 hover:text-blue-600 transition-colors" aria-label={t('Icon button', 'Tombol ikon')} title={t('Icon only — needs aria-label', 'Hanya ikon — perlu aria-label')}>
+                        <button className="p-2.5 rounded-xl glass-card text-stone-500 hover:text-blue-600 transition-colors" aria-label={t('Icon button', 'Tombol ikon')} title={t('Icon only — needs aria-label', 'Hanya ikon — perlu aria-label')}>
                             <Eye size={18} />
                         </button>
                         <button className={`${btnPrimary} opacity-50 cursor-not-allowed`} disabled>{t('Disabled', 'Nonaktif')}</button>
                     </div>
-                    <p className="text-xs text-slate-400 dark:text-white/30">{t('Rule: primary = gradient-bg; semantic colors = green (create/export), red (delete/danger), blue (info). Icon-only buttons must have aria-label/title.', 'Aturan: primer = gradient-bg; warna semantik = hijau (buat/ekspor), merah (hapus/bahaya), biru (info). Tombol ikon wajib punya aria-label/title.')}</p>
+                    <p className="text-xs text-stone-400 dark:text-white/30">{t('Rule: primary = gradient-bg; semantic colors = green (create/export), red (delete/danger), blue (info). Icon-only buttons must have aria-label/title.', 'Aturan: primer = gradient-bg; warna semantik = hijau (buat/ekspor), merah (hapus/bahaya), biru (info). Tombol ikon wajib punya aria-label/title.')}</p>
                 </Card>
             </section>
 
@@ -90,11 +90,11 @@ export default function ComponentShowcase({ isDarkMode }) {
                 <div className={sectionTitle}>{t('4. Form Inputs (Input / Select / Textarea)', '4. Input Form (Input / Select / Textarea)')}</div>
                 <Card className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
-                        <label className="block text-xs font-bold text-slate-500 dark:text-white/40 mb-1.5">{t('Text Input', 'Input Teks')}</label>
+                        <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1.5">{t('Text Input', 'Input Teks')}</label>
                         <Input value={sampleInput} onChange={(e) => setSampleInput(e.target.value)} placeholder={t('Type something…', 'Ketik sesuatu…')} />
                     </div>
                     <div>
-                        <label className="block text-xs font-bold text-slate-500 dark:text-white/40 mb-1.5">{t('Select', 'Pilihan')}</label>
+                        <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1.5">{t('Select', 'Pilihan')}</label>
                         <Select defaultValue="1">
                             <option value="1">{t('Option A', 'Pilihan A')}</option>
                             <option value="2">{t('Option B', 'Pilihan B')}</option>
@@ -102,7 +102,7 @@ export default function ComponentShowcase({ isDarkMode }) {
                         </Select>
                     </div>
                     <div className="md:col-span-2">
-                        <label className="block text-xs font-bold text-slate-500 dark:text-white/40 mb-1.5">{t('Textarea', 'Area Teks')}</label>
+                        <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1.5">{t('Textarea', 'Area Teks')}</label>
                         <Textarea rows={3} placeholder={t('Long description…', 'Deskripsi panjang…')} />
                     </div>
                 </Card>
@@ -116,7 +116,7 @@ export default function ComponentShowcase({ isDarkMode }) {
                     <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">{t('Approved', 'Disetujui')}</Badge>
                     <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300">{t('Pending', 'Tertunda')}</Badge>
                     <Badge className="bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300">{t('Rejected', 'Ditolak')}</Badge>
-                    <Badge variant="outline" className="text-slate-500">{t('Outline', 'Garis')}</Badge>
+                    <Badge variant="outline" className="text-stone-500">{t('Outline', 'Garis')}</Badge>
                 </Card>
             </section>
 
@@ -132,13 +132,13 @@ export default function ComponentShowcase({ isDarkMode }) {
                     ]} />
                     <div className="flex flex-wrap gap-3 items-center">
                         <button className="inline-flex items-center gap-2 px-4 py-2.5 gradient-bg text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-500/25"><Plus size={15} /> {t('Primary', 'Primer')}</button>
-                        <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-600 text-slate-300 hover:bg-slate-700 transition-colors text-sm font-semibold"><Save size={15} /> {t('Outline', 'Garis')}</button>
+                        <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#1a1a1a] text-stone-300 hover:bg-[#111] transition-colors text-sm font-semibold"><Save size={15} /> {t('Outline', 'Garis')}</button>
                         <button className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-500/25"><CheckCircle2 size={15} /> {t('Success', 'Sukses')}</button>
                         <Badge className="bg-emerald-500/15 text-emerald-300">{t('Approved', 'Disetujui')}</Badge>
                         <Badge className="bg-amber-500/15 text-amber-300">{t('Pending', 'Tertunda')}</Badge>
                     </div>
                     <Input placeholder={t('Dark input…', 'Input gelap…')} />
-                    <p className="text-xs text-slate-400">{t('This section forces .dark to preview contrast — same components, dark: variants.', 'Seksi ini memaksa .dark untuk memeriksa kontras — komponen sama, varian dark: yang aktif.')}</p>
+                    <p className="text-xs text-stone-400">{t('This section forces .dark to preview contrast — same components, dark: variants.', 'Seksi ini memaksa .dark untuk memeriksa kontras — komponen sama, varian dark: yang aktif.')}</p>
                 </div>
             </section>
 
@@ -149,13 +149,13 @@ export default function ComponentShowcase({ isDarkMode }) {
                     <button className={btnPrimary} onClick={() => setShowModal(true)}>
                         <Info size={15} /> {t('Open Modal', 'Buka Modal')}
                     </button>
-                    <p className="text-xs text-slate-400 dark:text-white/30">{t('ESC to close • glass header + body • scroll lock', 'ESC untuk tutup • header glass + body • kunci scroll')}</p>
+                    <p className="text-xs text-stone-400 dark:text-white/30">{t('ESC to close • glass header + body • scroll lock', 'ESC untuk tutup • header glass + body • kunci scroll')}</p>
                 </Card>
             </section>
 
             <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={t('Modal Example', 'Contoh Modal')} size="max-w-lg">
                 <div className="space-y-3">
-                    <p className="text-sm text-slate-600 dark:text-white/70">{t('This modal uses the centralized ui/Modal component — glass styling, ESC to close, body scroll lock. Used identically across all menus.', 'Modal ini memakai komponen ui/Modal terpusat — gaya glass, ESC untuk menutup, kunci scroll body. Dipakai identik di semua menu.')}</p>
+                    <p className="text-sm text-stone-600 dark:text-white/70">{t('This modal uses the centralized ui/Modal component — glass styling, ESC to close, body scroll lock. Used identically across all menus.', 'Modal ini memakai komponen ui/Modal terpusat — gaya glass, ESC untuk menutup, kunci scroll body. Dipakai identik di semua menu.')}</p>
                     <div className="flex justify-end gap-2 pt-2">
                         <button className={btnOutline} onClick={() => setShowModal(false)}>{t('Cancel', 'Batal')}</button>
                         <button className={btnPrimary} onClick={() => setShowModal(false)}><CheckCircle2 size={15} /> {t('Confirm', 'Simpan')}</button>
@@ -163,7 +163,7 @@ export default function ComponentShowcase({ isDarkMode }) {
                 </div>
             </Modal>
 
-            <p className="text-center text-[11px] text-slate-400 dark:text-white/30 pt-4">
+            <p className="text-center text-[11px] text-stone-400 dark:text-white/30 pt-4">
                 {t('All components share one source of truth: src/components/ui/* — changes here apply everywhere.', 'Semua komponen berbagi satu sumber kebenaran: src/components/ui/* — perubahan di sini berlaku di semua tempat.')}
             </p>
         </div>

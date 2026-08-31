@@ -10,7 +10,7 @@ export default function CopyNotification({ label }) {
       </div>
       <div className="flex flex-col">
         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600 dark:text-emerald-400 mb-0.5">Copied to Clipboard</span>
-        <span className="font-bold text-slate-800 dark:text-white text-sm">Berhasil menyalin {label}</span>
+        <span className="font-bold text-stone-800 dark:text-white text-sm">Berhasil menyalin {label}</span>
       </div>
     </div>
   );

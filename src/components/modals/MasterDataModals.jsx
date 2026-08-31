@@ -19,27 +19,27 @@ export default function MasterDataModals({
                 <div className="space-y-5 animate-in slide-in-from-bottom-2 duration-300">
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-xs font-bold text-slate-500 dark:text-white/40 mb-1.5 uppercase tracking-wider">Username</label>
+                            <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1.5 uppercase tracking-wider">Username</label>
                             <input
                                 value={userForm.username}
                                 onChange={e => setUserForm({ ...userForm, username: e.target.value })}
-                                className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-[#0d0d0d]/50 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-inner placeholder:text-slate-400 font-bold"
+                                className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-[#0d0d0d]/50 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-inner placeholder:text-stone-400 font-bold"
                                 placeholder="Username untuk login"
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-bold text-slate-500 dark:text-white/40 mb-1.5 uppercase tracking-wider">Password</label>
+                            <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1.5 uppercase tracking-wider">Password</label>
                             <input
                                 type="password"
                                 value={userForm.password}
                                 onChange={e => setUserForm({ ...userForm, password: e.target.value })}
-                                className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-[#0d0d0d]/50 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-inner placeholder:text-slate-400"
+                                className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-[#0d0d0d]/50 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-inner placeholder:text-stone-400"
                                 placeholder={userForm.id ? "••••••••" : "Password login"}
                             />
                         </div>
                     </div>
                     <div>
-                        <label className="block text-xs font-bold text-slate-500 dark:text-white/40 mb-1.5 uppercase tracking-wider">Nama Lengkap</label>
+                        <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1.5 uppercase tracking-wider">Nama Lengkap</label>
                         <input
                             value={userForm.name}
                             onChange={e => setUserForm({ ...userForm, name: e.target.value })}
@@ -49,7 +49,7 @@ export default function MasterDataModals({
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-xs font-bold text-slate-500 dark:text-white/40 mb-1.5 uppercase tracking-wider">Role</label>
+                            <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1.5 uppercase tracking-wider">Role</label>
                             <div className="relative">
                                 <select
                                     value={userForm.role}
@@ -58,13 +58,13 @@ export default function MasterDataModals({
                                 >
                                     {roles.map(r => <option key={r.id} value={r.id}>{r.label || r.id}</option>)}
                                 </select>
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-stone-400">
                                     <ChevronRight size={16} className="rotate-90" />
                                 </div>
                             </div>
                         </div>
                         <div>
-                            <label className="block text-xs font-bold text-slate-500 dark:text-white/40 mb-1.5 uppercase tracking-wider">Departemen</label>
+                            <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1.5 uppercase tracking-wider">Departemen</label>
                             <div className="relative">
                                 <select
                                     value={userForm.department}
@@ -74,7 +74,7 @@ export default function MasterDataModals({
                                     <option value="">{t("opt.selectDept")}</option>
                                     {departments.map(d => <option key={d.id} value={d.name}>{d.name}</option>)}
                                 </select>
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-stone-400">
                                     <ChevronRight size={16} className="rotate-90" />
                                 </div>
                             </div>
@@ -94,9 +94,9 @@ export default function MasterDataModals({
             {modalTab === 'dept-form' && (
                 <div className="space-y-6 animate-in slide-in-from-bottom-2 duration-300">
                     <div className="bg-white/30 dark:bg-[#0d0d0d]/30 p-6 rounded-2xl border border-white/20 dark:border-white/5">
-                        <label className="block text-xs font-bold text-slate-500 dark:text-white/40 mb-2 uppercase tracking-wider">Nama Departemen</label>
+                        <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-2 uppercase tracking-wider">Nama Departemen</label>
                         <div className="relative">
-                            <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                            <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" size={18} />
                             <input
                                 value={deptForm.name}
                                 onChange={e => setDeptForm({ ...deptForm, name: e.target.value })}
@@ -119,9 +119,9 @@ export default function MasterDataModals({
             {(modalTab === 'role-create' || modalTab === 'role-edit') && (
                 <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-300">
                     <div className="bg-white/30 dark:bg-[#0d0d0d]/30 p-6 rounded-2xl border border-white/20 dark:border-white/5">
-                        <label className="block text-xs font-bold text-slate-500 dark:text-white/40 mb-2 uppercase tracking-wider">Nama Role</label>
+                        <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-2 uppercase tracking-wider">Nama Role</label>
                         <div className="relative">
-                            <Shield className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                            <Shield className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" size={18} />
                             <input
                                 value={roleForm.name}
                                 onChange={e => setRoleForm({ ...roleForm, name: e.target.value })}
@@ -134,16 +134,16 @@ export default function MasterDataModals({
                     <div className="border border-white/20 dark:border-white/5 rounded-[2rem] overflow-hidden shadow-xl bg-white/20 dark:bg-[#0d0d0d]/20 backdrop-blur-md">
                         <table className="w-full text-sm">
                             <thead>
-                                <tr className="bg-slate-100/50 dark:bg-[#0d0d0d]/50">
+                                <tr className="bg-stone-100/50 dark:bg-[#0d0d0d]/50">
                                     <th className="px-6 py-4 text-left">
                                         <div className="flex items-center gap-3">
                                             <input
                                                 type="checkbox"
                                                 checked={Object.values(APP_MODULES).every(m => ['view', 'create', 'edit', 'delete'].every(a => (roleForm.permissions[m.id] || []).includes(a)))}
                                                 onChange={() => handleBulkPermission('all')}
-                                                className="w-4 h-4 rounded border-slate-300 dark:border-white/[0.08] text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                className="w-4 h-4 rounded border-stone-300 dark:border-white/[0.08] text-blue-600 focus:ring-blue-500 cursor-pointer"
                                             />
-                                            <span className="text-xs font-black text-slate-500 dark:text-white/40 uppercase tracking-widest">Modul</span>
+                                            <span className="text-xs font-black text-stone-500 dark:text-white/40 uppercase tracking-widest">Modul</span>
                                         </div>
                                     </th>
                                     {['view', 'create', 'edit', 'delete'].map(action => (
@@ -153,9 +153,9 @@ export default function MasterDataModals({
                                                     type="checkbox"
                                                     checked={Object.values(APP_MODULES).every(m => (roleForm.permissions[m.id] || []).includes(action))}
                                                     onChange={() => handleBulkPermission('action', action)}
-                                                    className="w-4 h-4 rounded border-slate-300 dark:border-white/[0.08] text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                    className="w-4 h-4 rounded border-stone-300 dark:border-white/[0.08] text-blue-600 focus:ring-blue-500 cursor-pointer"
                                                 />
-                                                <span className="text-[10px] font-black text-slate-500 dark:text-white/40 uppercase tracking-widest">{action}</span>
+                                                <span className="text-[10px] font-black text-stone-500 dark:text-white/40 uppercase tracking-widest">{action}</span>
                                             </div>
                                         </th>
                                     ))}
@@ -170,9 +170,9 @@ export default function MasterDataModals({
                                                     type="checkbox"
                                                     checked={['view', 'create', 'edit', 'delete'].every(a => (roleForm.permissions[mod.id] || []).includes(a))}
                                                     onChange={() => handleBulkPermission('module', mod.id)}
-                                                    className="w-4 h-4 rounded border-slate-300 dark:border-white/[0.08] text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                    className="w-4 h-4 rounded border-stone-300 dark:border-white/[0.08] text-blue-600 focus:ring-blue-500 cursor-pointer"
                                                 />
-                                                <span className="font-black text-slate-700 dark:text-slate-200">{mod.label}</span>
+                                                <span className="font-black text-stone-700 dark:text-white/80">{mod.label}</span>
                                             </div>
                                         </td>
                                         {['view', 'create', 'edit', 'delete'].map(action => (
@@ -184,7 +184,7 @@ export default function MasterDataModals({
                                                         onChange={() => handleTogglePermission(mod.id, action)}
                                                         className="sr-only peer"
                                                     />
-                                                    <div className="w-10 h-5 bg-slate-200 dark:bg-[#111] peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                                                    <div className="w-10 h-5 bg-stone-200 dark:bg-[#111] peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
                                                 </label>
                                             </td>
                                         ))}

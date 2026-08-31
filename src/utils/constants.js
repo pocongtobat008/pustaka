@@ -49,7 +49,7 @@ export const getStatusStyle = (status) => {
         };
         default: return {
             label: 'Tersedia',
-            color: 'bg-slate-500/5 backdrop-blur-md border-slate-200 dark:border-white/[0.06]/50 text-slate-500 dark:text-white/30 hover:bg-slate-500/10 hover:border-slate-400',
+            color: 'bg-stone-500/5 backdrop-blur-md border-stone-200 dark:border-white/[0.06]/50 text-stone-500 dark:text-white/30 hover:bg-stone-500/10 hover:border-slate-400',
             icon: null
         };
     }

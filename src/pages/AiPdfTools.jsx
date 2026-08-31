@@ -75,7 +75,7 @@ function SigPreviewThumb({ file, page, sigRects, isDarkMode, width = 400 }) {
     }, [file, page, sigRects, width]);
 
     return (
-        <div className={`relative rounded-xl border overflow-hidden ${isDarkMode ? 'border-white/10 bg-slate-900' : 'border-slate-200 bg-white'}`}>
+        <div className={`relative rounded-xl border overflow-hidden ${isDarkMode ? 'border-white/10 bg-[#0a0a0a]' : 'border-stone-200 bg-white'}`}>
             {loading && !error && (
                 <div className="absolute inset-0 flex items-center justify-center">
                     <Loader2 size={20} className="animate-spin text-sky-500" />
@@ -109,7 +109,7 @@ function GalleryThumb({ file, page, sigRects, isDarkMode, width }) {
         <div ref={ref}>
             {visible
                 ? <SigPreviewThumb file={file} page={page} sigRects={sigRects} isDarkMode={isDarkMode} width={width} />
-                : <div className={`w-full ${isDarkMode ? 'bg-white/5' : 'bg-slate-50'}`} style={{ height: 230 }} />}
+                : <div className={`w-full ${isDarkMode ? 'bg-white/5' : 'bg-stone-50'}`} style={{ height: 230 }} />}
         </div>
     );
 }
@@ -174,15 +174,15 @@ const ToolCard = ({ tool, active, onClick, isDarkMode }) => {
         <button
             onClick={onClick}
             className={`group flex items-center gap-3 px-4 h-[68px] rounded-2xl border text-left transition-all w-full ${active
-                ? (isDarkMode ? 'bg-white/10 border-white/20' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-md')
-                : (isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white/50 border-slate-200/70 hover:bg-white hover:shadow-sm')}`}
+                ? (isDarkMode ? 'bg-white/10 border-white/20' : 'bg-white/70 backdrop-blur-xl border-stone-200 shadow-md')
+                : (isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white/50 border-stone-200/70 hover:bg-white hover:shadow-sm')}`}
         >
             <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${tool.gradient} flex items-center justify-center flex-shrink-0 shadow-lg ${tool.shadow}`}>
                 <Icon size={18} className="text-white" />
             </div>
             <div className="min-w-0 flex-1">
-                <p className={`text-xs font-bold truncate ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>{tool.label}</p>
-                <p className={`text-[9px] truncate mt-0.5 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>{tool.desc}</p>
+                <p className={`text-xs font-bold truncate ${isDarkMode ? 'text-white' : 'text-stone-700'}`}>{tool.label}</p>
+                <p className={`text-[9px] truncate mt-0.5 ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>{tool.desc}</p>
             </div>
         </button>
     );
@@ -837,17 +837,17 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
         if (result.type === 'json') {
             const d = result.data;
             return (
-                <div className={`mt-5 rounded-2xl border overflow-hidden ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-sm'}`}>
-                    <div className={`px-4 py-2.5 border-b flex items-center gap-2 ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
+                <div className={`mt-5 rounded-2xl border overflow-hidden ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-stone-200 shadow-sm'}`}>
+                    <div className={`px-4 py-2.5 border-b flex items-center gap-2 ${isDarkMode ? 'border-white/10' : 'border-stone-100'}`}>
                         <ScanText size={13} className="text-cyan-500" />
-                        <span className={`text-[11px] font-black uppercase tracking-wider ${isDarkMode ? 'text-white/60' : 'text-slate-500'}`}>Hasil OCR — {d.page_count || 0} halaman</span>
+                        <span className={`text-[11px] font-black uppercase tracking-wider ${isDarkMode ? 'text-white/60' : 'text-stone-500'}`}>Hasil OCR — {d.page_count || 0} halaman</span>
                         {d.detected && (
                             <span className={`ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${isDarkMode ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-300' : 'bg-cyan-50 border-cyan-200 text-cyan-600'}`}>
                                 <Sparkles size={10} /> Terdeteksi: {d.detected.name} · keyakinan {Math.min(100, d.detected.confidence)}%
                             </span>
                         )}
                         {!d.detected && d.language_name && (
-                            <span className={`ml-2 text-[10px] font-bold ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Bahasa: {d.language_name}</span>
+                            <span className={`ml-2 text-[10px] font-bold ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Bahasa: {d.language_name}</span>
                         )}
                         {d.orientation?.detected && (
                             <span className={`ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${isDarkMode ? 'bg-amber-500/10 border-amber-500/30 text-amber-300' : 'bg-amber-50 border-amber-200 text-amber-600'}`}>
@@ -855,9 +855,9 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                             </span>
                         )}
                         {d.per_page_languages?.length > 0 && (
-                            <span className={`ml-2 inline-flex items-center gap-1 flex-wrap text-[10px] font-bold ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                            <span className={`ml-2 inline-flex items-center gap-1 flex-wrap text-[10px] font-bold ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>
                                 {d.per_page_languages.map(p => (
-                                    <span key={p.page} className={`px-1.5 py-0.5 rounded-md ${isDarkMode ? 'bg-white/10 text-white/60' : 'bg-slate-100 text-slate-500'}`} title={`Halaman ${p.page}`}>
+                                    <span key={p.page} className={`px-1.5 py-0.5 rounded-md ${isDarkMode ? 'bg-white/10 text-white/60' : 'bg-stone-100 text-stone-500'}`} title={`Halaman ${p.page}`}>
                                         Hal {p.page}: {p.name}
                                     </span>
                                 ))}
@@ -867,8 +867,8 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                     <div className="max-h-[320px] overflow-y-auto p-4 space-y-3">
                         {(d.pages || []).map((p, i) => (
                             <div key={i}>
-                                <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>Halaman {p.page}</p>
-                                <pre className={`text-xs whitespace-pre-wrap rounded-xl p-3 ${isDarkMode ? 'bg-black/30 text-white/80' : 'bg-slate-50 text-slate-600'}`}>{p.text || '(kosong)'}</pre>
+                                <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${isDarkMode ? 'text-white/35' : 'text-stone-400'}`}>Halaman {p.page}</p>
+                                <pre className={`text-xs whitespace-pre-wrap rounded-xl p-3 ${isDarkMode ? 'bg-black/30 text-white/80' : 'bg-stone-50 text-stone-600'}`}>{p.text || '(kosong)'}</pre>
                             </div>
                         ))}
                     </div>
@@ -878,14 +878,14 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
         // type 'file'
         const saved = (result.origSize && result.compSize) ? ((1 - result.compSize / result.origSize) * 100) : null;
         return (
-            <div className={`mt-5 rounded-2xl border p-5 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-sm'}`}>
+            <div className={`mt-5 rounded-2xl border p-5 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-stone-200 shadow-sm'}`}>
                 <div className="flex items-center gap-3">
                     <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${tool.gradient} flex items-center justify-center shadow-lg ${tool.shadow}`}>
                         <FileDown size={20} className="text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className={`text-sm font-bold truncate ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>{result.filename}</p>
-                        <p className={`text-[10px] mt-0.5 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                        <p className={`text-sm font-bold truncate ${isDarkMode ? 'text-white' : 'text-stone-700'}`}>{result.filename}</p>
+                        <p className={`text-[10px] mt-0.5 ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>
                             {formatFileSize(result.size)}
                             {saved !== null && saved > 0 && (
                                 <span className="ml-2 text-emerald-500 font-bold">−{saved.toFixed(0)}% lebih kecil</span>
@@ -903,7 +903,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
         );
     };
 
-    const inputCls = `px-2.5 py-1.5 rounded-lg text-xs border outline-none transition-colors ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-blue-500/60' : 'bg-white/70 backdrop-blur-xl border-slate-200 text-slate-700 placeholder-slate-300 focus:border-blue-400'}`;
+    const inputCls = `px-2.5 py-1.5 rounded-lg text-xs border outline-none transition-colors ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-blue-500/60' : 'bg-white/70 backdrop-blur-xl border-stone-200 text-stone-700 placeholder-slate-300 focus:border-blue-400'}`;
 
     return (
         <div className="max-w-[1200px] mx-auto px-4 lg:px-6 py-6">
@@ -913,10 +913,10 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                     <Wand2 size={20} className="text-white" />
                 </div>
                 <div className="flex-1">
-                    <h1 className={`text-lg font-black tracking-tight ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>
+                    <h1 className={`text-lg font-black tracking-tight ${isDarkMode ? 'text-white' : 'text-stone-800'}`}>
                         AI PDF Tools
                     </h1>
-                    <p className={`text-xs mt-0.5 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                    <p className={`text-xs mt-0.5 ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>
                         Konversi, kompres, gabung, pecah, buka proteksi & OCR — diproses lokal di server, file tidak dikirim ke pihak ketiga.
                     </p>
                 </div>
@@ -950,7 +950,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
             <div className="grid lg:grid-cols-5 gap-5 items-start">
                 {/* Kiri: daftar tool */}
                 <div className="lg:col-span-2 space-y-2.5">
-                    <p className={`text-[10px] font-black uppercase tracking-widest mb-2 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Pilih Tool</p>
+                    <p className={`text-[10px] font-black uppercase tracking-widest mb-2 ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Pilih Tool</p>
                     {TOOLS.map(tool => (
                         <ToolCard key={tool.id} tool={tool} active={activeTool === tool.id} onClick={() => switchTool(tool.id)} isDarkMode={isDarkMode} />
                     ))}
@@ -958,14 +958,14 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
 
                 {/* Kanan: panel kerja */}
                 <div className="lg:col-span-3 space-y-4">
-                    <div className={`rounded-2xl border p-5 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-sm'}`}>
+                    <div className={`rounded-2xl border p-5 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-stone-200 shadow-sm'}`}>
                         <div className="flex items-center gap-2 mb-1">
                             <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${tool.gradient} flex items-center justify-center shadow ${tool.shadow}`}>
                                 <tool.icon size={15} className="text-white" />
                             </div>
                             <div>
-                                <p className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>{tool.label}</p>
-                                <p className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>{tool.desc}</p>
+                                <p className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-stone-800'}`}>{tool.label}</p>
+                                <p className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>{tool.desc}</p>
                             </div>
                         </div>
 
@@ -975,26 +975,26 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                             onDragLeave={() => setDragOver(false)}
                             onDrop={e => { e.preventDefault(); setDragOver(false); onFiles(e.dataTransfer.files); }}
                             onClick={() => inputRef.current?.click()}
-                            className={`mt-4 rounded-2xl border-2 border-dashed p-8 text-center cursor-pointer transition-all ${dragOver ? 'border-blue-500 bg-blue-500/5' : (isDarkMode ? 'border-white/15 bg-white/5 hover:border-blue-500/50' : 'border-slate-300 bg-white hover:border-blue-400')}`}
+                            className={`mt-4 rounded-2xl border-2 border-dashed p-8 text-center cursor-pointer transition-all ${dragOver ? 'border-blue-500 bg-blue-500/5' : (isDarkMode ? 'border-white/15 bg-white/5 hover:border-blue-500/50' : 'border-stone-300 bg-white hover:border-blue-400')}`}
                         >
                             <input ref={inputRef} type="file" multiple accept=".pdf" className="hidden"
                                 onChange={e => { onFiles(e.target.files); e.target.value = ''; }} />
-                            <UploadCloud size={26} className={`mx-auto mb-2 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`} />
-                            <p className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>
+                            <UploadCloud size={26} className={`mx-auto mb-2 ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`} />
+                            <p className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-stone-700'}`}>
                                 {tool.multiple ? 'Pilih / seret banyak PDF' : 'Pilih / seret file PDF'}
                             </p>
-                            <p className={`text-[10px] mt-1 ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>Maks 50 MB per file</p>
+                            <p className={`text-[10px] mt-1 ${isDarkMode ? 'text-white/35' : 'text-stone-400'}`}>Maks 50 MB per file</p>
                         </div>
 
                         {/* File terpilih */}
                         {files.length > 0 && (
                             <div className="mt-3 space-y-1.5">
                                 {files.map((f, i) => (
-                                    <div key={i} className={`flex items-center gap-2 px-3 py-2 rounded-xl ${isDarkMode ? 'bg-white/5' : 'bg-slate-50'}`}>
+                                    <div key={i} className={`flex items-center gap-2 px-3 py-2 rounded-xl ${isDarkMode ? 'bg-white/5' : 'bg-stone-50'}`}>
                                         <FileText size={13} className={`flex-shrink-0 ${isDarkMode ? 'text-blue-300' : 'text-blue-500'}`} />
-                                        <span className={`flex-1 min-w-0 truncate text-xs font-semibold ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{f.name}</span>
-                                        <span className={`text-[10px] flex-shrink-0 ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>{formatFileSize(f.size)}</span>
-                                        <button onClick={() => removeFile(i)} className={`p-1 rounded-md ${isDarkMode ? 'hover:bg-white/10 text-white/40' : 'hover:bg-slate-200 text-slate-400'}`}><X size={12} /></button>
+                                        <span className={`flex-1 min-w-0 truncate text-xs font-semibold ${isDarkMode ? 'text-white/80' : 'text-stone-700'}`}>{f.name}</span>
+                                        <span className={`text-[10px] flex-shrink-0 ${isDarkMode ? 'text-white/35' : 'text-stone-400'}`}>{formatFileSize(f.size)}</span>
+                                        <button onClick={() => removeFile(i)} className={`p-1 rounded-md ${isDarkMode ? 'hover:bg-white/10 text-white/40' : 'hover:bg-stone-200 text-stone-400'}`}><X size={12} /></button>
                                     </div>
                                 ))}
                             </div>
@@ -1008,7 +1008,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                     if (hidden) return null;
                                     return (
                                         <label key={f.key} className="block">
-                                            <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>{f.label}</span>
+                                            <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>{f.label}</span>
                                             {f.type === 'select' && f.key === 'language' ? (
                                                 <select
                                                     value={form.language}
@@ -1048,7 +1048,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                         onChange={e => setForm({ ...form, autoRotate: e.target.checked })}
                                         className="accent-blue-500 w-3.5 h-3.5"
                                     />
-                                    <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>Putar otomatis — deteksi orientasi halaman (landscape / miring)</span>
+                                    <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/70' : 'text-stone-600'}`}>Putar otomatis — deteksi orientasi halaman (landscape / miring)</span>
                                 </label>
                                 {form.language === 'auto' && (
                                     <label className="flex items-center gap-2 cursor-pointer select-none">
@@ -1058,7 +1058,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                             onChange={e => setForm({ ...form, perPage: e.target.checked })}
                                             className="accent-blue-500 w-3.5 h-3.5"
                                         />
-                                        <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>Deteksi bahasa per halaman (dokumen campuran bahasa — lebih lambat)</span>
+                                        <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/70' : 'text-stone-600'}`}>Deteksi bahasa per halaman (dokumen campuran bahasa — lebih lambat)</span>
                                     </label>
                                 )}
                             </div>
@@ -1075,7 +1075,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                             onClick={() => switchSigMode(o.v)}
                                             className={`px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-colors ${sigMode === o.v
                                                 ? (isDarkMode ? 'bg-sky-500/20 border-sky-500/50 text-sky-300' : 'bg-sky-50 border-sky-300 text-sky-700')
-                                                : (isDarkMode ? 'border-white/10 text-white/60 hover:bg-white/10' : 'border-slate-200 text-slate-500 hover:bg-slate-50')}`}
+                                                : (isDarkMode ? 'border-white/10 text-white/60 hover:bg-white/10' : 'border-stone-200 text-stone-500 hover:bg-stone-50')}`}
                                         >
                                             {o.l}
                                         </button>
@@ -1094,11 +1094,11 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                 )}
                                 {/* ── Daftar tanda tangan (list sign) ── */}
                                 <div>
-                                    <p className={`text-[10px] font-black uppercase tracking-widest mb-2 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                    <p className={`text-[10px] font-black uppercase tracking-widest mb-2 ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>
                                         Daftar Tanda Tangan ({signatures.length})
                                     </p>
                                     {signatures.length === 0 ? (
-                                        <p className={`text-[11px] italic rounded-xl border border-dashed p-3 ${isDarkMode ? 'text-white/40 border-white/15' : 'text-slate-400 border-slate-300'}`}>
+                                        <p className={`text-[11px] italic rounded-xl border border-dashed p-3 ${isDarkMode ? 'text-white/40 border-white/15' : 'text-stone-400 border-stone-300'}`}>
                                             Belum ada tanda tangan. Tambahkan gambar tanda tangan di bawah (PNG transparan paling baik; JPG berlatar putih otomatis dibuat transparan).
                                         </p>
                                     ) : (
@@ -1109,10 +1109,10 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                     onClick={() => setActiveSigId(s.id)}
                                                     className={`relative rounded-xl border p-2 cursor-pointer transition-all ${activeSigId === s.id
                                                         ? 'ring-2 ring-sky-500 bg-sky-50/60 dark:bg-sky-500/10 border-sky-300 dark:border-sky-500/40'
-                                                        : (isDarkMode ? 'border-white/10 bg-white/5 hover:border-sky-500/40' : 'border-slate-200 bg-white hover:border-sky-300')}`}
+                                                        : (isDarkMode ? 'border-white/10 bg-white/5 hover:border-sky-500/40' : 'border-stone-200 bg-white hover:border-sky-300')}`}
                                                 >
                                                     <img src={s.dataUrl} alt={s.name} className="w-full h-12 object-contain" />
-                                                    <p className={`text-[10px] font-bold truncate mt-1 ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>{s.name}</p>
+                                                    <p className={`text-[10px] font-bold truncate mt-1 ${isDarkMode ? 'text-white/70' : 'text-stone-600'}`}>{s.name}</p>
                                                     {activeSigId === s.id && (
                                                         <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow">
                                                             <Check size={10} />
@@ -1155,7 +1155,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
 
                                 {/* ── Halaman yang ditandatangani ── */}
                                 <div>
-                                    <p className={`text-[10px] font-black uppercase tracking-widest mb-1.5 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Halaman</p>
+                                    <p className={`text-[10px] font-black uppercase tracking-widest mb-1.5 ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Halaman</p>
                                     <div className="flex flex-wrap gap-1.5">
                                         {[
                                             { v: 'all', l: 'Semua halaman' },
@@ -1167,7 +1167,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                 onClick={() => setSigForm(f => ({ ...f, pagesMode: o.v }))}
                                                 className={`px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-colors ${sigForm.pagesMode === o.v
                                                     ? (isDarkMode ? 'bg-sky-500/20 border-sky-500/50 text-sky-300' : 'bg-sky-50 border-sky-300 text-sky-700')
-                                                    : (isDarkMode ? 'border-white/10 text-white/60 hover:bg-white/10' : 'border-slate-200 text-slate-500 hover:bg-slate-50')}`}
+                                                    : (isDarkMode ? 'border-white/10 text-white/60 hover:bg-white/10' : 'border-stone-200 text-stone-500 hover:bg-stone-50')}`}
                                             >
                                                 {o.l}
                                             </button>
@@ -1186,7 +1186,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                 {/* ── Posisi & ukuran ── */}
                                 <div className="grid grid-cols-2 gap-3">
                                     <label className="block">
-                                        <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Posisi</span>
+                                        <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Posisi</span>
                                         <select
                                             value={sigForm.position}
                                             onChange={e => setSigForm(f => ({ ...f, position: e.target.value }))}
@@ -1201,7 +1201,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                         </select>
                                     </label>
                                     <label className="block">
-                                        <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Ukuran — {sigForm.scale}%</span>
+                                        <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Ukuran — {sigForm.scale}%</span>
                                         <input
                                             type="range"
                                             min="10"
@@ -1211,7 +1211,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                             onChange={e => setSigForm(f => ({ ...f, scale: Number(e.target.value) }))}
                                             className="w-full accent-sky-500 mt-1"
                                         />
-                                        <span className={`text-[9px] ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>Lebar tanda tangan relatif terhadap halaman</span>
+                                        <span className={`text-[9px] ${isDarkMode ? 'text-white/30' : 'text-stone-400'}`}>Lebar tanda tangan relatif terhadap halaman</span>
                                     </label>
                                 </div>
 
@@ -1223,7 +1223,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                         onChange={e => setSigForm(f => ({ ...f, showDate: e.target.checked }))}
                                         className="accent-sky-500 w-3.5 h-3.5"
                                     />
-                                    <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>
+                                    <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/70' : 'text-stone-600'}`}>
                                         Tambahkan tanggal hari ini di bawah tanda tangan
                                     </span>
                                 </label>
@@ -1234,10 +1234,10 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                 <div className="space-y-4">
                                     {/* ── Daftar template ── */}
                                     <div>
-                                        <p className={`text-[10px] font-black uppercase tracking-widest mb-1.5 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                        <p className={`text-[10px] font-black uppercase tracking-widest mb-1.5 ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>
                                             Template Tanda Tangan ({templates.length})
                                         </p>
-                                        <p className={`text-[11px] mb-2 ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>
+                                        <p className={`text-[11px] mb-2 ${isDarkMode ? 'text-white/50' : 'text-stone-500'}`}>
                                             {t("aipdf.templateHint")}
                                         </p>
                                         {(activeTmpl?.name === 'NR' || activeTmpl?.name === 'DM') && (
@@ -1248,7 +1248,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                         )}
                                         {templates.length === 0 ? (
                                             <div className="space-y-2">
-                                                <p className={`text-[11px] italic rounded-xl border border-dashed p-3 ${isDarkMode ? 'text-white/40 border-white/15' : 'text-slate-400 border-slate-300'}`}>
+                                                <p className={`text-[11px] italic rounded-xl border border-dashed p-3 ${isDarkMode ? 'text-white/40 border-white/15' : 'text-stone-400 border-stone-300'}`}>
                                                     Belum ada template. Gunakan template bawaan (ttd.png — Kaoru Nomura / General Manager) atau buat sendiri di bawah.
                                                 </p>
                                                 <div className="flex flex-wrap gap-2">
@@ -1263,7 +1263,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                     <button
                                                         onClick={loadDMTemplate}
                                                         disabled={tmplBusy}
-                                                        className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[11px] font-bold border transition-all ${tmplBusy ? 'opacity-50 cursor-not-allowed' : (isDarkMode ? 'border-white/15 text-white/70 hover:bg-white/10' : 'border-slate-300 text-slate-500 hover:bg-slate-100')}`}
+                                                        className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[11px] font-bold border transition-all ${tmplBusy ? 'opacity-50 cursor-not-allowed' : (isDarkMode ? 'border-white/15 text-white/70 hover:bg-white/10' : 'border-stone-300 text-stone-500 hover:bg-stone-100')}`}
                                                     >
                                                         {tmplBusy ? <Loader2 size={13} className="animate-spin" /> : <Users size={13} />}
                                                         {tmplBusy ? 'Memuat...' : 'Pakai Template DM (2 ttd)'}
@@ -1278,16 +1278,16 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                         onClick={() => setActiveTmplId(tpl.id)}
                                                         className={`relative flex items-center gap-3 rounded-xl border p-2.5 cursor-pointer transition-all ${activeTmplId === tpl.id
                                                             ? 'ring-2 ring-sky-500 bg-sky-50/60 dark:bg-sky-500/10 border-sky-300 dark:border-sky-500/40'
-                                                            : (isDarkMode ? 'border-white/10 bg-white/5 hover:border-sky-500/40' : 'border-slate-200 bg-white hover:border-sky-300')}`}
+                                                            : (isDarkMode ? 'border-white/10 bg-white/5 hover:border-sky-500/40' : 'border-stone-200 bg-white hover:border-sky-300')}`}
                                                     >
                                                         <img src={tpl.sig.dataUrl} alt={tpl.name} className="w-16 h-9 object-contain rounded border bg-white/60 dark:bg-white/10 flex-shrink-0" />
                                                         <div className="min-w-0 flex-1">
-                                                            <p className={`text-[12px] font-extrabold truncate ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{tpl.name}
+                                                            <p className={`text-[12px] font-extrabold truncate ${isDarkMode ? 'text-white/80' : 'text-stone-700'}`}>{tpl.name}
                                                                 {(tpl.name === 'NR' || tpl.name === 'DM') && (
                                                                     <span className={`ml-1.5 align-middle inline-block px-1.5 py-0.5 rounded-md text-[9px] font-black tracking-wide ${isDarkMode ? 'bg-emerald-500/20 text-emerald-300' : 'bg-emerald-100 text-emerald-700'}`}>{tpl.name === 'DM' ? '2 TTD' : 'SIAP PAKAI'}</span>
                                                                 )}
                                                             </p>
-                                                            <p className={`text-[10px] truncate ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                                            <p className={`text-[10px] truncate ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>
                                                                 {tpl.rules?.length > 1
                                                                     ? tpl.rules.map(r => `${r.namePattern}${r.placement === 'cover' ? ' (tutup)' : ' (atas)'}`).join(' + ')
                                                                     : `Nama: ${tpl.namePattern}${tpl.titlePattern ? ` • Jabatan: ${tpl.titlePattern}` : ''} • ${tpl.placement === 'cover' ? 'Menimpa nama' : 'Di atas nama'} • ${tpl.anchor === 'center' ? 'Tengah' : tpl.anchor === 'right' ? 'Kanan' : 'Kiri'} • ${tpl.scale}%`}{tpl.groupByNumber ? ' • Grup per nomor' : ''}
@@ -1312,8 +1312,8 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                     </div>
 
                                     {/* ── Form buat template ── */}
-                                    <div className={`rounded-xl border p-3 space-y-3 ${isDarkMode ? 'border-white/10 bg-white/5' : 'border-slate-200 bg-white/60'}`}>
-                                        <p className={`text-[10px] font-black uppercase tracking-widest ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Buat Template</p>
+                                    <div className={`rounded-xl border p-3 space-y-3 ${isDarkMode ? 'border-white/10 bg-white/5' : 'border-stone-200 bg-white/60'}`}>
+                                        <p className={`text-[10px] font-black uppercase tracking-widest ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Buat Template</p>
                                         <input
                                             value={tmplForm.name}
                                             onChange={e => setTmplForm(f => ({ ...f, name: e.target.value }))}
@@ -1322,7 +1322,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                         />
                                         <div className="grid grid-cols-2 gap-2">
                                             <label className="block">
-                                                <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Pola Nama (regex)</span>
+                                                <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Pola Nama (regex)</span>
                                                 <input
                                                     value={tmplForm.namePattern}
                                                     onChange={e => setTmplForm(f => ({ ...f, namePattern: e.target.value }))}
@@ -1331,7 +1331,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                 />
                                             </label>
                                             <label className="block">
-                                                <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Pola Jabatan (opsional)</span>
+                                                <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Pola Jabatan (opsional)</span>
                                                 <input
                                                     value={tmplForm.titlePattern}
                                                     onChange={e => setTmplForm(f => ({ ...f, titlePattern: e.target.value }))}
@@ -1341,7 +1341,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                             </label>
                                         </div>
                                         <label className="block">
-                                            <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Tanda Tangan</span>
+                                            <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Tanda Tangan</span>
                                             <select
                                                 value={tmplForm.sigId}
                                                 onChange={e => setTmplForm(f => ({ ...f, sigId: e.target.value }))}
@@ -1360,7 +1360,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                         </label>
                                         <div className="grid grid-cols-2 gap-2">
                                             <label className="block">
-                                                <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Sejajar nama</span>
+                                                <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Sejajar nama</span>
                                                 <select
                                                     value={tmplForm.anchor}
                                                     onChange={e => setTmplForm(f => ({ ...f, anchor: e.target.value }))}
@@ -1372,7 +1372,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                 </select>
                                             </label>
                                             <label className="block">
-                                                <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Posisi ttd</span>
+                                                <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Posisi ttd</span>
                                                 <select
                                                     value={tmplForm.placement}
                                                     onChange={e => setTmplForm(f => ({ ...f, placement: e.target.value }))}
@@ -1383,7 +1383,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                 </select>
                                             </label>
                                             <label className="block">
-                                                <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Jarak (pt) — mode di atas</span>
+                                                <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Jarak (pt) — mode di atas</span>
                                                 <input
                                                     type="number" min="0" max="60"
                                                     value={tmplForm.offsetY}
@@ -1392,7 +1392,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                 />
                                             </label>
                                             <label className="block">
-                                                <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Ukuran {tmplForm.scale}%</span>
+                                                <span className={`text-[10px] font-bold uppercase tracking-wider mb-1 block ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Ukuran {tmplForm.scale}%</span>
                                                 <input
                                                     type="number" min="8" max="60"
                                                     value={tmplForm.scale}
@@ -1401,7 +1401,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                 />
                                             </label>
                                         </div>
-                                        <div className={`rounded-xl border border-dashed p-3 space-y-2 ${isDarkMode ? 'border-white/15' : 'border-slate-300'}`}>
+                                        <div className={`rounded-xl border border-dashed p-3 space-y-2 ${isDarkMode ? 'border-white/15' : 'border-stone-300'}`}>
                                             <label className="flex items-center gap-2 cursor-pointer select-none">
                                                 <input
                                                     type="checkbox"
@@ -1409,13 +1409,13 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                     onChange={e => setTmplForm(f => ({ ...f, groupByNumber: e.target.checked }))}
                                                     className="accent-sky-500 w-3.5 h-3.5"
                                                 />
-                                                <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>
+                                                <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/70' : 'text-stone-600'}`}>
                                                     Grup per nomor dokumen — ttd hanya di halaman terakhir tiap nota (1 nota multi-halaman = 1 ttd)
                                                 </span>
                                             </label>
                                             {tmplForm.groupByNumber && (
                                                 <div className="space-y-1.5">
-                                                    <span className={`text-[10px] font-bold uppercase tracking-wider block ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                                    <span className={`text-[10px] font-bold uppercase tracking-wider block ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>
                                                         Pola nomor dokumen (regex) — opsional
                                                     </span>
                                                     <div className="flex gap-2">
@@ -1430,7 +1430,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                             disabled={detectBusy || !files.length}
                                                             className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all flex-shrink-0 ${detectBusy || !files.length
                                                                 ? 'opacity-50 cursor-not-allowed'
-                                                                : (isDarkMode ? 'border-white/15 text-white/70 hover:bg-white/10' : 'border-slate-300 text-slate-600 hover:bg-slate-100')}`}
+                                                                : (isDarkMode ? 'border-white/15 text-white/70 hover:bg-white/10' : 'border-stone-300 text-stone-600 hover:bg-stone-100')}`}
                                                         >
                                                             {detectBusy ? <Loader2 size={11} className="animate-spin" /> : <Sparkles size={11} />}
                                                             {detectBusy ? 'Mendeteksi...' : 'Deteksi Otomatis'}
@@ -1441,7 +1441,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                             {detectInfo}
                                                         </p>
                                                     )}
-                                                    <span className={`text-[10px] ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>
+                                                    <span className={`text-[10px] ${isDarkMode ? 'text-white/30' : 'text-stone-400'}`}>
                                                         Contoh: {'\\d{2,4}/[A-Z0-9-]+/NR/[A-Z]{2,4}/\\d{4}'} untuk "0338/YDI/NR/JUN/2026". Kosongkan agar pola dideteksi otomatis saat memproses.
                                                     </span>
                                                 </div>
@@ -1454,7 +1454,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                 onChange={e => setTmplForm(f => ({ ...f, showDate: e.target.checked }))}
                                                 className="accent-sky-500 w-3.5 h-3.5"
                                             />
-                                            <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>
+                                            <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/70' : 'text-stone-600'}`}>
                                                 Tampilkan tanggal hari ini di bawah tanda tangan
                                             </span>
                                         </label>
@@ -1470,7 +1470,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                 disabled={tmplBusy}
                                                 className={`inline-flex items-center gap-1 px-3 py-2 rounded-lg text-[11px] font-bold border transition-all ${tmplBusy
                                                     ? 'opacity-50 cursor-not-allowed'
-                                                    : (isDarkMode ? 'border-white/15 text-white/70 hover:bg-white/10' : 'border-slate-300 text-slate-500 hover:bg-slate-100')}`}
+                                                    : (isDarkMode ? 'border-white/15 text-white/70 hover:bg-white/10' : 'border-stone-300 text-stone-500 hover:bg-stone-100')}`}
                                             >
                                                 {tmplBusy ? <Loader2 size={12} className="animate-spin" /> : <PenTool size={12} />}
                                                 {tmplBusy ? 'Memuat...' : 'Pakai ttd.png (NR)'}
@@ -1480,7 +1480,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                 disabled={tmplBusy}
                                                 className={`inline-flex items-center gap-1 px-3 py-2 rounded-lg text-[11px] font-bold border transition-all ${tmplBusy
                                                     ? 'opacity-50 cursor-not-allowed'
-                                                    : (isDarkMode ? 'border-white/15 text-white/70 hover:bg-white/10' : 'border-slate-300 text-slate-500 hover:bg-slate-100')}`}
+                                                    : (isDarkMode ? 'border-white/15 text-white/70 hover:bg-white/10' : 'border-stone-300 text-stone-500 hover:bg-stone-100')}`}
                                             >
                                                 {tmplBusy ? <Loader2 size={12} className="animate-spin" /> : <Users size={12} />}
                                                 {tmplBusy ? 'Memuat...' : 'Pakai Template DM (2 ttd)'}
@@ -1500,7 +1500,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                         disabled={busy || !files.length || preview?.busy}
                                         className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[11px] font-bold border transition-all ${(busy || !files.length || preview?.busy)
                                             ? 'opacity-50 cursor-not-allowed'
-                                            : (isDarkMode ? 'border-white/15 text-white/80 hover:bg-white/10' : 'border-slate-300 text-slate-600 hover:bg-slate-100')}`}
+                                            : (isDarkMode ? 'border-white/15 text-white/80 hover:bg-white/10' : 'border-stone-300 text-stone-600 hover:bg-stone-100')}`}
                                     >
                                         {preview?.busy ? <Loader2 size={13} className="animate-spin" /> : <Eye size={13} />}
                                         {preview?.busy ? 'Menganalisis...' : 'Pratinjau Deteksi Blok'}
@@ -1533,40 +1533,40 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                     {showPreview && preview?.data && createPortal(
                         <div className="fixed inset-0 z-[130] flex items-center justify-center p-4">
                             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowPreview(false)} />
-                            <div className={`relative w-full max-w-4xl max-h-[88vh] flex flex-col rounded-2xl border shadow-2xl overflow-hidden ${isDarkMode ? 'bg-slate-900/95 border-white/10' : 'bg-white/95 border-slate-200'} backdrop-blur-xl`}>
+                            <div className={`relative w-full max-w-4xl max-h-[88vh] flex flex-col rounded-2xl border shadow-2xl overflow-hidden ${isDarkMode ? 'bg-stone-900/95 border-white/10' : 'bg-white/95 border-stone-200'} backdrop-blur-xl`}>
                                 {/* Header */}
-                                <div className={`flex items-center gap-3 px-5 py-3.5 border-b ${isDarkMode ? 'border-white/10' : 'border-slate-200'}`}>
+                                <div className={`flex items-center gap-3 px-5 py-3.5 border-b ${isDarkMode ? 'border-white/10' : 'border-stone-200'}`}>
                                     <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${isDarkMode ? 'bg-sky-500/15 text-sky-300' : 'bg-sky-100 text-sky-600'}`}>
                                         <Eye size={16} />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className={`text-sm font-extrabold ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>Pratinjau Deteksi Blok Tanda Tangan</p>
-                                        <p className={`text-[11px] ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>
+                                        <p className={`text-sm font-extrabold ${isDarkMode ? 'text-white' : 'text-stone-800'}`}>Pratinjau Deteksi Blok Tanda Tangan</p>
+                                        <p className={`text-[11px] ${isDarkMode ? 'text-white/50' : 'text-stone-500'}`}>
                                             Template: <b>{activeTmpl?.name}</b>
                                             {preview.data.number_pattern_used ? ` • Pola nomor: ${preview.data.number_pattern_used}` : ''}
                                         </p>
                                     </div>
                                     <button
                                         onClick={() => setShowPreview(false)}
-                                        className={`p-2 rounded-lg ${isDarkMode ? 'hover:bg-white/10 text-white/70' : 'hover:bg-slate-100 text-slate-500'}`}
+                                        className={`p-2 rounded-lg ${isDarkMode ? 'hover:bg-white/10 text-white/70' : 'hover:bg-stone-100 text-stone-500'}`}
                                     >
                                         <X size={18} />
                                     </button>
                                 </div>
 
                                 {/* Ringkasan */}
-                                <div className={`flex flex-wrap gap-2 px-5 py-3 border-b ${isDarkMode ? 'border-white/10' : 'border-slate-200'}`}>
+                                <div className={`flex flex-wrap gap-2 px-5 py-3 border-b ${isDarkMode ? 'border-white/10' : 'border-stone-200'}`}>
                                     {[
                                         { l: 'Blok terdeteksi', v: preview.data.blocks_found ?? 0, c: 'text-sky-600 dark:text-sky-300' },
                                         { l: 'Halaman akan ditandatangani', v: preview.data.pages_signed ?? 0, c: 'text-emerald-600 dark:text-emerald-300' },
-                                        { l: 'Total halaman dokumen', v: preview.data.total_pages ?? 0, c: 'text-slate-600 dark:text-white/70' },
+                                        { l: 'Total halaman dokumen', v: preview.data.total_pages ?? 0, c: 'text-stone-600 dark:text-white/70' },
                                         ...(preview.data.grouped
                                             ? [{ l: 'Nota (grup)', v: `${preview.data.groups ?? 0}${preview.data.groups_multi ? ` (${preview.data.groups_multi} multi)` : ''}`, c: 'text-blue-600 dark:text-blue-300' }]
                                             : []),
                                     ].map(s => (
-                                        <div key={s.l} className={`rounded-xl border px-3 py-2 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'}`}>
+                                        <div key={s.l} className={`rounded-xl border px-3 py-2 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-stone-200'}`}>
                                             <p className={`text-lg font-black ${s.c}`}>{s.v}</p>
-                                            <p className={`text-[10px] font-bold uppercase tracking-wider ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>{s.l}</p>
+                                            <p className={`text-[10px] font-bold uppercase tracking-wider ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>{s.l}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -1574,12 +1574,12 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                 {/* Body: galeri SEMUA halaman ber-blok sekaligus */}
                                 <div className="flex-1 min-h-0 overflow-y-auto p-4">
                                     {(preview.data.pages || []).length === 0 ? (
-                                        <p className={`text-[11px] italic ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                        <p className={`text-[11px] italic ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>
                                             Tidak ada blok yang cocok dengan pola "{activeTmpl?.namePattern}"{activeTmpl?.titlePattern ? ` + "${activeTmpl.titlePattern}"` : ''}.
                                         </p>
                                     ) : (
                                         <>
-                                            <p className={`text-[10px] mb-3 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                            <p className={`text-[10px] mb-3 ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>
                                                 {preview.data.pages.length} halaman akan ditandatangani — kotak merah = area ttd. Gulir untuk melihat semua.
                                             </p>
                                             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -1590,7 +1590,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                         return acc;
                                                     }, {})
                                                 ).map(([pg, blocks]) => (
-                                                    <div key={pg} className={`rounded-xl border p-2 transition-shadow hover:shadow-md ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'}`}>
+                                                    <div key={pg} className={`rounded-xl border p-2 transition-shadow hover:shadow-md ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-stone-200'}`}>
                                                         <div className="relative">
                                                             <GalleryThumb
                                                                 file={files[0]}
@@ -1606,7 +1606,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                                 isDarkMode={isDarkMode}
                                                                 width={200}
                                                             />
-                                                            <span className={`absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded text-[9px] font-black ${isDarkMode ? 'bg-slate-900/80 text-white' : 'bg-white/90 text-slate-700'}`}>
+                                                            <span className={`absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded text-[9px] font-black ${isDarkMode ? 'bg-stone-900/80 text-white' : 'bg-white/90 text-stone-700'}`}>
                                                                 Hal {pg}
                                                             </span>
                                                             {(blocks || []).some(b => b.group_last) && (
@@ -1617,7 +1617,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                         </div>
                                                         <div className="mt-1.5 space-y-0.5">
                                                             {(blocks || []).map((b, i) => (
-                                                                <p key={i} className={`text-[10px] font-bold truncate ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>
+                                                                <p key={i} className={`text-[10px] font-bold truncate ${isDarkMode ? 'text-white/80' : 'text-stone-700'}`}>
                                                                     <span className="inline-block w-2 h-2 rounded-full mr-1" style={{ background: b.placement === 'cover' ? '#ef4444' : '#3b82f6' }} />
                                                                     {b.name}{b.doc_number ? ` • ${b.doc_number}` : ''}
                                                                 </p>
@@ -1635,17 +1635,17 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                     )}
 
                     {/* ── Riwayat hasil AI PDF Tools ── */}
-                    <div className={`rounded-2xl border overflow-hidden ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200 shadow-sm'}`}>
+                    <div className={`rounded-2xl border overflow-hidden ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-stone-200 shadow-sm'}`}>
                         <button
                             onClick={() => setShowHistory(s => !s)}
-                            className={`w-full flex items-center gap-2.5 px-4 py-3 text-left transition-colors ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-slate-50'}`}
+                            className={`w-full flex items-center gap-2.5 px-4 py-3 text-left transition-colors ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-stone-50'}`}
                         >
                             <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isDarkMode ? 'bg-blue-500/15 text-blue-300' : 'bg-blue-100 text-blue-600'}`}>
                                 <History size={15} />
                             </div>
                             <div className="flex-1">
-                                <p className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>Riwayat Hasil PDF Tools</p>
-                                <p className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>File yang pernah diproses — unduh ulang tanpa proses ulang</p>
+                                <p className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-stone-700'}`}>Riwayat Hasil PDF Tools</p>
+                                <p className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>File yang pernah diproses — unduh ulang tanpa proses ulang</p>
                             </div>
                             {history.length > 0 && (
                                 <span className={`px-2 py-0.5 rounded-full text-[9px] font-black ${isDarkMode ? 'bg-blue-500/20 text-blue-300' : 'bg-blue-100 text-blue-600'}`}>
@@ -1654,19 +1654,19 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                             )}
                             <button
                                 onClick={e => { e.stopPropagation(); loadHistory(); }}
-                                className={`p-1.5 rounded-lg ${isDarkMode ? 'hover:bg-white/10 text-white/50' : 'hover:bg-slate-200 text-slate-400'}`} title="Muat ulang"
+                                className={`p-1.5 rounded-lg ${isDarkMode ? 'hover:bg-white/10 text-white/50' : 'hover:bg-stone-200 text-stone-400'}`} title="Muat ulang"
                             >
                                 <RefreshCw size={12} className={historyBusy ? 'animate-spin' : ''} />
                             </button>
                             <span className={`transition-transform ${showHistory ? 'rotate-180' : ''}`}>
-                                <ChevronDown size={15} className={isDarkMode ? 'text-white/40' : 'text-slate-400'} />
+                                <ChevronDown size={15} className={isDarkMode ? 'text-white/40' : 'text-stone-400'} />
                             </span>
                         </button>
 
                         {showHistory && (
-                            <div className={`border-t ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
+                            <div className={`border-t ${isDarkMode ? 'border-white/10' : 'border-stone-100'}`}>
                                 {history.length === 0 && (
-                                    <p className={`px-4 py-4 text-[11px] italic ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>
+                                    <p className={`px-4 py-4 text-[11px] italic ${isDarkMode ? 'text-white/30' : 'text-stone-400'}`}>
                                         Belum ada hasil tersimpan. Proses file apa pun — hasil otomatis tersimpan di sini untuk diunduh ulang.
                                     </p>
                                 )}
@@ -1676,12 +1676,12 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                             const t = x.created_at ? new Date(x.created_at) : null;
                                             const dateStr = t && !isNaN(t) ? t.toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : '';
                                             return (
-                                                <div key={x.id} className={`flex items-center gap-2.5 px-4 py-2.5 border-b last:border-b-0 ${isDarkMode ? 'border-white/5 hover:bg-white/5' : 'border-slate-50 hover:bg-slate-50'}`}>
+                                                <div key={x.id} className={`flex items-center gap-2.5 px-4 py-2.5 border-b last:border-b-0 ${isDarkMode ? 'border-white/5 hover:bg-white/5' : 'border-stone-50 hover:bg-stone-50'}`}>
                                                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${isDarkMode ? 'bg-blue-500/10 text-blue-300' : 'bg-blue-50 text-blue-600'}`}>
                                                         <FileText size={14} />
                                                     </div>
                                                     <div className="flex-1 min-w-0">
-                                                        <p className={`text-[11px] font-bold truncate ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>
+                                                        <p className={`text-[11px] font-bold truncate ${isDarkMode ? 'text-white/80' : 'text-stone-700'}`}>
                                                             <span className={`mr-1.5 px-1.5 py-0.5 rounded-md text-[9px] font-black ${isDarkMode ? 'bg-blue-500/15 text-blue-300' : 'bg-blue-100 text-blue-600'}`}>
                                                                 {TOOL_LABEL[x.tool] || x.tool}
                                                             </span>
@@ -1692,7 +1692,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                             )}
                                                             {x.title}
                                                         </p>
-                                                        <p className={`text-[9px] truncate ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>
+                                                        <p className={`text-[9px] truncate ${isDarkMode ? 'text-white/35' : 'text-stone-400'}`}>
                                                             {dateStr}{dateStr ? ' • ' : ''}{formatFileSize(x.file_size)}
                                                             {compressPct(x) !== null && <span className="text-emerald-500 font-bold"> • −{compressPct(x).toFixed(0)}%</span>}
                                                             {x.tool === 'ocr' && x.orientation && <span className="text-amber-500 font-bold"> • rotasi {x.orientation}</span>}
@@ -1743,7 +1743,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                         <button
                                                             onClick={() => setDelHistTarget(x)}
                                                             title={t("aipdf.deleteHistory")}
-                                                            className={`p-1.5 rounded-lg transition-colors ${isDarkMode ? 'text-white/25 hover:text-rose-300 hover:bg-rose-500/15' : 'text-slate-300 hover:text-rose-500 hover:bg-rose-50'}`}
+                                                            className={`p-1.5 rounded-lg transition-colors ${isDarkMode ? 'text-white/25 hover:text-rose-300 hover:bg-rose-500/15' : 'text-stone-300 hover:text-rose-500 hover:bg-rose-50'}`}
                                                         >
                                                             <Trash2 size={12} />
                                                         </button>
@@ -1764,30 +1764,30 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setViewTextTarget(null)}>
                     <div
                         onClick={e => e.stopPropagation()}
-                        className={`w-full max-w-2xl rounded-2xl border shadow-2xl animate-[fadeInUp_.2s_ease] overflow-hidden ${isDarkMode ? 'bg-slate-900 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200'}`}
+                        className={`w-full max-w-2xl rounded-2xl border shadow-2xl animate-[fadeInUp_.2s_ease] overflow-hidden ${isDarkMode ? 'bg-stone-900 border-white/10' : 'bg-white/70 backdrop-blur-xl border-stone-200'}`}
                     >
-                        <div className={`flex items-center gap-2.5 px-4 py-3 border-b ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
+                        <div className={`flex items-center gap-2.5 px-4 py-3 border-b ${isDarkMode ? 'border-white/10' : 'border-stone-100'}`}>
                             <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${isDarkMode ? 'bg-cyan-500/15 text-cyan-300' : 'bg-cyan-50 text-cyan-600'}`}>
                                 <ScanText size={14} />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className={`text-xs font-black truncate ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>{viewTextTarget.title}</p>
-                                <p className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                <p className={`text-xs font-black truncate ${isDarkMode ? 'text-white' : 'text-stone-800'}`}>{viewTextTarget.title}</p>
+                                <p className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>
                                     {viewTextTarget.language_name || viewTextTarget.language || 'Bahasa tidak diketahui'}
                                     {viewTextTarget.orientation ? ` • rotasi ${viewTextTarget.orientation}` : ''}
                                 </p>
                             </div>
                             <button
                                 onClick={() => setViewTextTarget(null)}
-                                className={`p-1.5 rounded-lg ${isDarkMode ? 'hover:bg-white/10 text-white/50' : 'hover:bg-slate-100 text-slate-400'}`}
+                                className={`p-1.5 rounded-lg ${isDarkMode ? 'hover:bg-white/10 text-white/50' : 'hover:bg-stone-100 text-stone-400'}`}
                             >
                                 <X size={14} />
                             </button>
                         </div>
-                        <pre className={`max-h-[420px] overflow-y-auto p-4 text-xs whitespace-pre-wrap leading-relaxed ${isDarkMode ? 'bg-black/30 text-white/80' : 'bg-slate-50 text-slate-600'}`}>
+                        <pre className={`max-h-[420px] overflow-y-auto p-4 text-xs whitespace-pre-wrap leading-relaxed ${isDarkMode ? 'bg-black/30 text-white/80' : 'bg-stone-50 text-stone-600'}`}>
                             {viewTextTarget.text_content || '(kosong)'}
                         </pre>
-                        <div className={`flex justify-end gap-2 px-4 py-3 border-t ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
+                        <div className={`flex justify-end gap-2 px-4 py-3 border-t ${isDarkMode ? 'border-white/10' : 'border-stone-100'}`}>
                             <button
                                 onClick={() => downloadHistFile(viewTextTarget)}
                                 className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[11px] font-bold transition-all hover:scale-[1.02] ${isDarkMode ? 'bg-emerald-500/15 text-emerald-300' : 'bg-emerald-50 text-emerald-600'}`}
@@ -1804,23 +1804,23 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setDelHistTarget(null)}>
                     <div
                         onClick={e => e.stopPropagation()}
-                        className={`w-full max-w-sm rounded-2xl border p-5 shadow-2xl animate-[fadeInUp_.2s_ease] ${isDarkMode ? 'bg-slate-900 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200'}`}
+                        className={`w-full max-w-sm rounded-2xl border p-5 shadow-2xl animate-[fadeInUp_.2s_ease] ${isDarkMode ? 'bg-stone-900 border-white/10' : 'bg-white/70 backdrop-blur-xl border-stone-200'}`}
                     >
                         <div className="flex items-start gap-3">
                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${isDarkMode ? 'bg-rose-500/15 text-rose-300' : 'bg-rose-50 text-rose-500'}`}>
                                 <AlertCircle size={18} />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>Hapus riwayat ini?</p>
-                                <p className={`text-[11px] mt-1 leading-relaxed ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>
-                                    <b className={isDarkMode ? 'text-white/80' : 'text-slate-700'}>{delHistTarget.title}</b> akan dihapus permanen beserta file-nya di server.
+                                <p className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-stone-800'}`}>Hapus riwayat ini?</p>
+                                <p className={`text-[11px] mt-1 leading-relaxed ${isDarkMode ? 'text-white/50' : 'text-stone-500'}`}>
+                                    <b className={isDarkMode ? 'text-white/80' : 'text-stone-700'}>{delHistTarget.title}</b> akan dihapus permanen beserta file-nya di server.
                                 </p>
                             </div>
                         </div>
                         <div className="mt-5 flex justify-end gap-2">
                             <button
                                 onClick={() => setDelHistTarget(null)}
-                                className={`px-3.5 py-2 rounded-xl text-[11px] font-bold transition-colors ${isDarkMode ? 'bg-white/10 text-white/70 hover:bg-white/15' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                                className={`px-3.5 py-2 rounded-xl text-[11px] font-bold transition-colors ${isDarkMode ? 'bg-white/10 text-white/70 hover:bg-white/15' : 'bg-stone-100 text-stone-600 hover:bg-stone-200'}`}
                             >
                                 Batal
                             </button>
@@ -1841,25 +1841,25 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShareTarget(null)}>
                     <div
                         onClick={e => e.stopPropagation()}
-                        className={`w-full max-w-md rounded-2xl border p-5 shadow-2xl animate-[fadeInUp_.2s_ease] ${isDarkMode ? 'bg-slate-900 border-white/10' : 'bg-white/70 backdrop-blur-xl border-slate-200'}`}
+                        className={`w-full max-w-md rounded-2xl border p-5 shadow-2xl animate-[fadeInUp_.2s_ease] ${isDarkMode ? 'bg-stone-900 border-white/10' : 'bg-white/70 backdrop-blur-xl border-stone-200'}`}
                     >
                         <div className="flex items-start gap-3">
                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${isDarkMode ? 'bg-sky-500/15 text-sky-300' : 'bg-sky-50 text-sky-500'}`}>
                                 <Share2 size={18} />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>Bagikan ke Departemen</p>
-                                <p className={`text-[11px] mt-1 leading-relaxed ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>
-                                    <b className={isDarkMode ? 'text-white/80' : 'text-slate-700'}>{shareTarget.title}</b>
+                                <p className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-stone-800'}`}>Bagikan ke Departemen</p>
+                                <p className={`text-[11px] mt-1 leading-relaxed ${isDarkMode ? 'text-white/50' : 'text-stone-500'}`}>
+                                    <b className={isDarkMode ? 'text-white/80' : 'text-stone-700'}>{shareTarget.title}</b>
                                     <br />
                                     Anggota departemen terpilih bisa <b>melihat &amp; mengunduh</b> hasil ini (tidak bisa edit/hapus). Kosongkan semua untuk kembali pribadi.
                                 </p>
                             </div>
                         </div>
 
-                        <div className={`mt-4 rounded-xl border p-3 max-h-[240px] overflow-y-auto ${isDarkMode ? 'border-white/10' : 'border-slate-200'}`}>
+                        <div className={`mt-4 rounded-xl border p-3 max-h-[240px] overflow-y-auto ${isDarkMode ? 'border-white/10' : 'border-stone-200'}`}>
                             {departments.length === 0 ? (
-                                <p className={`text-[11px] italic ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>Belum ada departemen terdaftar.</p>
+                                <p className={`text-[11px] italic ${isDarkMode ? 'text-white/30' : 'text-stone-400'}`}>Belum ada departemen terdaftar.</p>
                             ) : (
                                 <div className="space-y-1.5">
                                     {departments.map(d => {
@@ -1868,7 +1868,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                         return (
                                             <label key={name} className={`flex items-center gap-2.5 px-3 py-2 rounded-xl border cursor-pointer transition-colors ${checked
                                                 ? (isDarkMode ? 'bg-sky-500/10 border-sky-500/40' : 'bg-sky-50 border-sky-300')
-                                                : (isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white border-slate-200 hover:bg-slate-50')}`}>
+                                                : (isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white border-stone-200 hover:bg-stone-50')}`}>
                                                 <input
                                                     type="checkbox"
                                                     checked={checked}
@@ -1879,7 +1879,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                                     }}
                                                     className="accent-sky-500"
                                                 />
-                                                <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{name}</span>
+                                                <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/80' : 'text-stone-700'}`}>{name}</span>
                                             </label>
                                         );
                                     })}
@@ -1890,7 +1890,7 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                         <div className="mt-5 flex justify-end gap-2">
                             <button
                                 onClick={() => setShareTarget(null)}
-                                className={`px-3.5 py-2 rounded-xl text-[11px] font-bold transition-colors ${isDarkMode ? 'bg-white/10 text-white/70 hover:bg-white/15' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                                className={`px-3.5 py-2 rounded-xl text-[11px] font-bold transition-colors ${isDarkMode ? 'bg-white/10 text-white/70 hover:bg-white/15' : 'bg-stone-100 text-stone-600 hover:bg-stone-200'}`}
                             >
                                 Batal
                             </button>

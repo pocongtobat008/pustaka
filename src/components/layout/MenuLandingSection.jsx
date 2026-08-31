@@ -1113,7 +1113,7 @@ export default function MenuLandingSection({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.25 }}
-      className="fixed inset-0 z-[1200] bg-slate-950/45 backdrop-blur-md p-4 md:p-8 overflow-y-auto"
+      className="fixed inset-0 z-[1200] bg-stone-950/45 backdrop-blur-md p-4 md:p-8 overflow-y-auto"
       onClick={onClose}
     >
       <motion.section
@@ -1132,7 +1132,7 @@ export default function MenuLandingSection({
             <button
               type="button"
               onClick={onClose}
-              className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-opacity"
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-[#0a0a0a] text-white text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-opacity"
             >
               <X size={14} />
               {uiText.close}
@@ -1141,14 +1141,14 @@ export default function MenuLandingSection({
 
           <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-5">
             <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 text-white text-[11px] uppercase tracking-[0.18em] font-extrabold mb-3">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0a0a0a] text-white text-[11px] uppercase tracking-[0.18em] font-extrabold mb-3">
                 <Sparkles size={12} />
                 {config.kicker}
               </div>
-              <h2 className="text-2xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white leading-tight mb-3">
+              <h2 className="text-2xl md:text-4xl font-black tracking-tight text-stone-900 dark:text-white leading-tight mb-3">
                 {displayTitle}
               </h2>
-              <p className="text-sm md:text-base text-slate-600 dark:text-white/70 leading-relaxed font-medium">
+              <p className="text-sm md:text-base text-stone-600 dark:text-white/70 leading-relaxed font-medium">
                 {displaySubtitle}
               </p>
             </div>
@@ -1159,11 +1159,11 @@ export default function MenuLandingSection({
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div className="rounded-2xl border border-slate-200/70 dark:border-white/[0.06]/60 bg-white/80 dark:bg-slate-950/50 p-5">
-              <h3 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-white/40 font-bold mb-3">{uiText.mainFeatures}</h3>
+            <div className="rounded-2xl border border-stone-200/70 dark:border-white/[0.06]/60 bg-white/80 dark:bg-[#050505]/50 p-5">
+              <h3 className="text-xs uppercase tracking-[0.16em] text-stone-500 dark:text-white/40 font-bold mb-3">{uiText.mainFeatures}</h3>
               <ul className="space-y-2">
                 {displayFeatures.map((item) => (
-                  <li key={item} className="text-sm text-slate-700 dark:text-slate-200 flex gap-2 leading-relaxed">
+                  <li key={item} className="text-sm text-stone-700 dark:text-white/80 flex gap-2 leading-relaxed">
                     <CheckCircle2 size={16} className="mt-0.5 text-emerald-500 shrink-0" />
                     <span>{item}</span>
                   </li>
@@ -1171,11 +1171,11 @@ export default function MenuLandingSection({
               </ul>
             </div>
 
-            <div className="rounded-2xl border border-slate-200/70 dark:border-white/[0.06]/60 bg-white/80 dark:bg-slate-950/50 p-5">
-              <h3 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-white/40 font-bold mb-3">{uiText.businessFunctions}</h3>
+            <div className="rounded-2xl border border-stone-200/70 dark:border-white/[0.06]/60 bg-white/80 dark:bg-[#050505]/50 p-5">
+              <h3 className="text-xs uppercase tracking-[0.16em] text-stone-500 dark:text-white/40 font-bold mb-3">{uiText.businessFunctions}</h3>
               <ul className="space-y-2">
                 {displayFunctions.map((item) => (
-                  <li key={item} className="text-sm text-slate-700 dark:text-slate-200 flex gap-2 leading-relaxed">
+                  <li key={item} className="text-sm text-stone-700 dark:text-white/80 flex gap-2 leading-relaxed">
                     <Building2 size={16} className="mt-0.5 text-blue-500 shrink-0" />
                     <span>{item}</span>
                   </li>
@@ -1183,17 +1183,17 @@ export default function MenuLandingSection({
               </ul>
             </div>
 
-            <div className="rounded-2xl border border-slate-200/70 dark:border-white/[0.06]/60 bg-white/80 dark:bg-slate-950/50 p-5">
-              <h3 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-white/40 font-bold mb-3">{uiText.useCases}</h3>
+            <div className="rounded-2xl border border-stone-200/70 dark:border-white/[0.06]/60 bg-white/80 dark:bg-[#050505]/50 p-5">
+              <h3 className="text-xs uppercase tracking-[0.16em] text-stone-500 dark:text-white/40 font-bold mb-3">{uiText.useCases}</h3>
               <div className="flex flex-wrap gap-2 mb-4">
                 {displayUseCases.map((item) => (
-                  <span key={item} className="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-[#0d0d0d] text-xs font-bold text-slate-700 dark:text-slate-200">
+                  <span key={item} className="px-3 py-1.5 rounded-full bg-stone-100 dark:bg-[#0d0d0d] text-xs font-bold text-stone-700 dark:text-white/80">
                     {item}
                   </span>
                 ))}
               </div>
 
-              <h4 className="text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-white/40 font-bold mb-2">{uiText.quickNavigation}</h4>
+              <h4 className="text-xs uppercase tracking-[0.16em] text-stone-500 dark:text-white/40 font-bold mb-2">{uiText.quickNavigation}</h4>
               <div className="space-y-2">
                 {config.quickActions.map((action) => {
                   const ActionIcon = action.icon || Briefcase;
@@ -1205,7 +1205,7 @@ export default function MenuLandingSection({
                         setActiveTab(action.tab);
                         onClose();
                       }}
-                      className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-slate-900 text-white hover:opacity-90 transition-opacity"
+                      className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#0a0a0a] text-white hover:opacity-90 transition-opacity"
                     >
                       <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide">
                         <ActionIcon size={14} />
@@ -1241,7 +1241,7 @@ export default function MenuLandingSection({
             </h3>
             <ul className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {displayAdvantages.map((item) => (
-                <li key={item} className="rounded-xl bg-white/80 dark:bg-[#0d0d0d]/60 border border-emerald-200/70 dark:border-emerald-500/30 p-3 text-sm text-slate-700 dark:text-slate-200 leading-relaxed flex gap-2">
+                <li key={item} className="rounded-xl bg-white/80 dark:bg-[#0d0d0d]/60 border border-emerald-200/70 dark:border-emerald-500/30 p-3 text-sm text-stone-700 dark:text-white/80 leading-relaxed flex gap-2">
                   <Zap size={16} className="mt-0.5 text-emerald-500 shrink-0" />
                   <span>{item}</span>
                 </li>

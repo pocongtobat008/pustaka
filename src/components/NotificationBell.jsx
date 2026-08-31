@@ -113,14 +113,14 @@ const NotificationBell = ({ onOpenChannel, variant = 'floating' }) => {
                     onClick={() => setIsOpen(!isOpen)}
                     className={
                         isTopbar
-                            ? 'neo-icon-btn relative w-10 h-10 group text-slate-500 dark:text-white/70 hover:text-blue-500 dark:hover:text-blue-400'
-                            : 'relative p-3 bg-white/80 dark:bg-[#0d0d0d]/90 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-2xl shadow-lg hover:scale-110 transition-all group active:scale-95'
+                            ? 'neo-icon-btn relative w-10 h-10 group text-stone-500 dark:text-white/70 hover:text-blue-500 dark:hover:text-blue-400'
+                            : 'relative p-3 bg-white/80 dark:bg-[#0d0d0d]/90 backdrop-blur-xl border border-stone-200 dark:border-white/10 rounded-2xl shadow-lg hover:scale-110 transition-all group active:scale-95'
                     }
                 >
-                    <Bell size={isTopbar ? 18 : 24} className={`${unreadCount > 0 ? 'text-blue-600 dark:text-blue-400 animate-pulse' : 'text-slate-500 dark:text-white/40'} group-hover:text-blue-500 transition-colors`} />
+                    <Bell size={isTopbar ? 18 : 24} className={`${unreadCount > 0 ? 'text-blue-600 dark:text-blue-400 animate-pulse' : 'text-stone-500 dark:text-white/40'} group-hover:text-blue-500 transition-colors`} />
                     {unreadCount > 0 && (
                         <span className={
-                            'absolute flex items-center justify-center rounded-full bg-rose-600 font-black text-white shadow-lg border-2 border-white dark:border-slate-900 ' +
+                            'absolute flex items-center justify-center rounded-full bg-rose-600 font-black text-white shadow-lg border-2 border-white dark:border-[#0a0a0a] ' +
                             (isTopbar
                                 ? '-top-0.5 -right-0.5 h-4 w-4 text-[9px]'
                                 : '-top-1 -right-1 h-5 w-5 text-[10px]')
@@ -137,10 +137,10 @@ const NotificationBell = ({ onOpenChannel, variant = 'floating' }) => {
                             initial={{ opacity: 0, y: 10, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                            className="absolute right-0 mt-4 w-80 bg-white/90 dark:bg-[#0d0d0d]/95 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-slate-100 dark:border-white/5 overflow-hidden z-50"
+                            className="absolute right-0 mt-4 w-80 bg-white/90 dark:bg-[#0d0d0d]/95 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-stone-100 dark:border-white/5 overflow-hidden z-50"
                         >
-                            <div className="p-6 border-b border-slate-50 dark:border-white/5 flex justify-between items-center">
-                                <h3 className="font-black text-slate-800 dark:text-white uppercase tracking-tight text-sm">Pusat Notifikasi</h3>
+                            <div className="p-6 border-b border-stone-50 dark:border-white/5 flex justify-between items-center">
+                                <h3 className="font-black text-stone-800 dark:text-white uppercase tracking-tight text-sm">Pusat Notifikasi</h3>
                                 <div className="flex items-center gap-2">
                                     {unreadNotifications.length > 0 && (
                                         <button 
@@ -150,20 +150,20 @@ const NotificationBell = ({ onOpenChannel, variant = 'floating' }) => {
                                             Hapus Semua
                                         </button>
                                     )}
-                                    <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors text-slate-400"><X size={16} /></button>
+                                    <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-stone-100 dark:hover:bg-white/5 rounded-full transition-colors text-stone-400"><X size={16} /></button>
                                 </div>
                             </div>
                             
                             <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
                                 {isLoading ? (
-                                    <div className="p-10 text-center text-xs text-slate-400">Memuat notifikasi...</div>
+                                    <div className="p-10 text-center text-xs text-stone-400">Memuat notifikasi...</div>
                                 ) : unreadNotifications.length === 0 ? (
                                     <div className="p-12 text-center">
-                                        <div className="w-16 h-16 bg-slate-50 dark:bg-[#0d0d0d]/50 rounded-full flex items-center justify-center mx-auto mb-4">
-                                            <CheckCircle2 size={32} className="text-slate-200 dark:text-slate-700" />
+                                        <div className="w-16 h-16 bg-stone-50 dark:bg-[#0d0d0d]/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <CheckCircle2 size={32} className="text-stone-200 dark:text-stone-700" />
                                         </div>
-                                        <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">Semua Beres!</p>
-                                        <p className="text-[10px] text-slate-400 mt-1">Tidak ada hal mendesak saat ini.</p>
+                                        <p className="text-xs text-stone-400 font-bold uppercase tracking-widest">Semua Beres!</p>
+                                        <p className="text-[10px] text-stone-400 mt-1">Tidak ada hal mendesak saat ini.</p>
                                     </div>
                                 ) : (
                                     <div className="divide-y divide-slate-50 dark:divide-white/5">
@@ -171,10 +171,10 @@ const NotificationBell = ({ onOpenChannel, variant = 'floating' }) => {
                                             const style = getTypeStyle(n.type);
                                             const Icon = style.icon;
                                             return (
-                                            <div key={n.id} className="p-5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors cursor-pointer group relative" onClick={(e) => handleOpenNotification(e, n)}>
+                                            <div key={n.id} className="p-5 hover:bg-stone-50 dark:hover:bg-white/5 transition-colors cursor-pointer group relative" onClick={(e) => handleOpenNotification(e, n)}>
                                                 <button 
                                                     onClick={(e) => handleDismiss(e, n.id)}
-                                                    className="absolute top-4 right-4 p-1.5 text-slate-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all rounded-lg hover:bg-rose-50 dark:hover:bg-rose-500/10"
+                                                    className="absolute top-4 right-4 p-1.5 text-stone-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all rounded-lg hover:bg-rose-50 dark:hover:bg-rose-500/10"
                                                     title="Hapus"
                                                 >
                                                     <X size={14} />
@@ -184,9 +184,9 @@ const NotificationBell = ({ onOpenChannel, variant = 'floating' }) => {
                                                         <Icon size={20} />
                                                     </div>
                                                     <div className="flex-1 min-w-0">
-                                                        <p className="text-sm font-black text-slate-800 dark:text-white leading-tight">{n.title}</p>
-                                                        <p className="text-[11px] text-slate-500 dark:text-white/40 leading-relaxed mt-1">{n.message}</p>
-                                                        <p className="text-[10px] text-slate-400 mt-2 flex items-center gap-1">
+                                                        <p className="text-sm font-black text-stone-800 dark:text-white leading-tight">{n.title}</p>
+                                                        <p className="text-[11px] text-stone-500 dark:text-white/40 leading-relaxed mt-1">{n.message}</p>
+                                                        <p className="text-[10px] text-stone-400 mt-2 flex items-center gap-1">
                                                             <Clock size={11} />
                                                             {new Date(n.created_at || n.createdAt).toLocaleString('id-ID')}
                                                         </p>
@@ -198,8 +198,8 @@ const NotificationBell = ({ onOpenChannel, variant = 'floating' }) => {
                                 )}
                             </div>
                             
-                            <div className="p-4 bg-slate-50/50 dark:bg-white/5 text-center">
-                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Sistem Monitoring Real-time</p>
+                            <div className="p-4 bg-stone-50/50 dark:bg-white/5 text-center">
+                                <p className="text-[9px] font-black text-stone-400 uppercase tracking-[0.2em]">Sistem Monitoring Real-time</p>
                             </div>
                         </motion.div>
                     )}

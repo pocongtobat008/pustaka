@@ -63,13 +63,13 @@ export default function SystemLogs({ isDarkMode }) {
                 <div className="flex bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-white/40 dark:border-white/10 p-1 rounded-xl shadow-sm">
                     <button
                         onClick={() => setLogType('error')}
-                        className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${logType === 'error' ? 'gradient-bg text-white shadow-md' : 'text-gray-500 dark:text-white/30 hover:text-gray-700 dark:hover:text-slate-300'}`}
+                        className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${logType === 'error' ? 'gradient-bg text-white shadow-md' : 'text-stone-500 dark:text-white/30 hover:text-stone-700 dark:hover:text-white/80'}`}
                     >
                         <AlertCircle size={16} /> {text.systemErrors}
                     </button>
                     <button
                         onClick={() => setLogType('ocr')}
-                        className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all ${logType === 'ocr' ? 'bg-white/70 dark:bg-[#111]/60 backdrop-blur-xl text-amber-600 shadow-sm' : 'text-gray-500'}`}
+                        className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all ${logType === 'ocr' ? 'bg-white/70 dark:bg-[#111]/60 backdrop-blur-xl text-amber-600 shadow-sm' : 'text-stone-500'}`}
                     >
                         <FileWarning size={16} /> {text.ocrFailures}
                     </button>
@@ -77,17 +77,17 @@ export default function SystemLogs({ isDarkMode }) {
 
                 <div className="flex gap-2 w-full md:w-auto">
                     <div className="relative flex-1 md:w-64">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" size={16} />
                         <input
                             type="text"
                             placeholder={text.searchPlaceholder}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-gray-200 dark:border-white/[0.06] rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full pl-10 pr-4 py-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06] rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
-                    <button onClick={fetchLogs} className="p-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-gray-200 dark:border-white/[0.06] rounded-xl hover:bg-gray-50">
-                        <RefreshCw size={20} className={`text-gray-500 ${isLoading ? 'animate-spin' : ''}`} />
+                    <button onClick={fetchLogs} className="p-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06] rounded-xl hover:bg-stone-50">
+                        <RefreshCw size={20} className={`text-stone-500 ${isLoading ? 'animate-spin' : ''}`} />
                     </button>
                 </div>
             </div>
@@ -125,27 +125,27 @@ export default function SystemLogs({ isDarkMode }) {
             ]} />
 
             <Card className="p-0 sm:p-0 overflow-hidden border-0 shadow-2xl">
-                <div className="bg-slate-900 p-4 flex items-center justify-between border-b border-white/10">
+                <div className="bg-[#0a0a0a] p-4 flex items-center justify-between border-b border-white/10">
                     <div className="flex items-center gap-2">
                         <div className="flex gap-1.5">
                             <div className="w-3 h-3 rounded-full bg-red-500"></div>
                             <div className="w-3 h-3 rounded-full bg-amber-500"></div>
                             <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
                         </div>
-                        <span className="ml-4 text-xs font-mono text-slate-400 flex items-center gap-2">
+                        <span className="ml-4 text-xs font-mono text-stone-400 flex items-center gap-2">
                             <Terminal size={14} /> {logType === 'error' ? 'error.log' : 'ocr-failures.log'} — {filteredLogs.length} {text.entries}
                         </span>
                     </div>
                 </div>
                 <div className="bg-[#0d1117] p-6 font-mono text-sm h-[60vh] overflow-y-auto custom-scrollbar">
                     {isLoading ? (
-                        <div className="flex items-center justify-center h-full text-slate-500">{text.loading}</div>
+                        <div className="flex items-center justify-center h-full text-stone-500">{text.loading}</div>
                     ) : filteredLogs.length === 0 ? (
-                        <div className="flex items-center justify-center h-full text-slate-600 italic">{text.empty}</div>
+                        <div className="flex items-center justify-center h-full text-stone-600 italic">{text.empty}</div>
                     ) : (
                         <div className="space-y-1">
                             {filteredLogs.map((line, i) => {
-                                let color = "text-slate-300";
+                                let color = "text-stone-300";
                                 if (line.includes('"level":"error"')) color = "text-red-400";
                                 if (line.includes('"level":"warn"')) color = "text-amber-400";
 
@@ -160,7 +160,7 @@ export default function SystemLogs({ isDarkMode }) {
                     )}
                 </div>
             </Card>
-            <p className="text-[10px] text-center text-slate-500 uppercase tracking-widest font-bold">
+            <p className="text-[10px] text-center text-stone-500 uppercase tracking-widest font-bold">
                 {text.footer}
             </p>
         </div>

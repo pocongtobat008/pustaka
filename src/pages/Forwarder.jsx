@@ -53,7 +53,7 @@ const DIVISION_COLORS = {
     Tax: 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300',
     Warehouse: 'bg-sky-100 text-sky-700 dark:bg-sky-500/20 dark:text-sky-300',
     IT: 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300',
-    General: 'bg-slate-100 text-slate-700 dark:bg-slate-500/20 dark:text-white/70',
+    General: 'bg-stone-100 text-stone-700 dark:bg-stone-500/20 dark:text-white/70',
 };
 
 const divColor = (d) => DIVISION_COLORS[d] || 'bg-teal-100 text-teal-700 dark:bg-teal-500/20 dark:text-teal-300';
@@ -235,7 +235,7 @@ export default function Forwarder({ isDarkMode, currentUser }) {
                 <button
                     onClick={() => setDeleteTarget(p.data)}
                     title={isEnglish ? 'Delete row' : 'Hapus baris'}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors">
+                    className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors">
                     <Trash2 size={15} />
                 </button>
             ),
@@ -282,16 +282,16 @@ export default function Forwarder({ isDarkMode, currentUser }) {
 
             {/* Toolbar */}
             <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 shadow-sm">
-                <div className="px-5 py-4 border-b border-slate-200 dark:border-white/[0.06] flex flex-wrap items-center justify-between gap-3">
+                <div className="px-5 py-4 border-b border-stone-200 dark:border-white/[0.06] flex flex-wrap items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center shadow-md">
                             <Ship size={20} className="text-white" />
                         </div>
                         <div>
-                            <h2 className="font-bold text-slate-800 dark:text-white text-base leading-tight">
+                            <h2 className="font-bold text-stone-800 dark:text-white text-base leading-tight">
                                 {isEnglish ? 'Forwarder Report' : 'Laporan Forwarder'}
                             </h2>
-                            <p className="text-xs text-slate-500 dark:text-white/40">
+                            <p className="text-xs text-stone-500 dark:text-white/40">
                                 {isEnglish
                                     ? 'Unified report from all divisions — input per division, one full report'
                                     : 'Laporan gabungan semua divisi — input per divisi, satu laporan penuh'}
@@ -300,11 +300,11 @@ export default function Forwarder({ isDarkMode, currentUser }) {
                     </div>
                     <div className="flex items-center gap-2">
                         <button onClick={() => { dirtyMap.current.clear(); fetchData(); }}
-                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 dark:border-white/[0.08] text-slate-600 dark:text-white/70 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-white/[0.06] transition-colors">
+                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-stone-200 dark:border-white/[0.08] text-stone-600 dark:text-white/70 text-xs font-semibold hover:bg-stone-50 dark:hover:bg-white/[0.06] transition-colors">
                             <RefreshCw size={14} /> {isEnglish ? 'Refresh' : 'Muat Ulang'}
                         </button>
                         <button onClick={exportCsv}
-                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 dark:border-white/[0.08] text-slate-600 dark:text-white/70 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-white/[0.06] transition-colors">
+                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-stone-200 dark:border-white/[0.08] text-stone-600 dark:text-white/70 text-xs font-semibold hover:bg-stone-50 dark:hover:bg-white/[0.06] transition-colors">
                             <Download size={14} /> CSV
                         </button>
                     </div>
@@ -313,22 +313,22 @@ export default function Forwarder({ isDarkMode, currentUser }) {
                 {/* Filter bar */}
                 <div className="px-5 py-3 flex flex-wrap items-center gap-3">
                     <div className="flex items-center gap-2">
-                        <label className="text-xs font-semibold text-slate-500 dark:text-white/40">
+                        <label className="text-xs font-semibold text-stone-500 dark:text-white/40">
                             {isEnglish ? 'Division' : 'Divisi'}:
                         </label>
                         <select value={divisionFilter} onChange={e => { setDivisionFilter(e.target.value); dirtyMap.current.clear(); }}
-                            className="px-3 py-2 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-sky-500">
+                            className="px-3 py-2 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm text-stone-700 dark:text-white/80 focus:ring-2 focus:ring-sky-500">
                             <option value="all">{isEnglish ? 'All Divisions (Full Report)' : 'Semua Divisi (Laporan Penuh)'}</option>
                             {divisions.map(d => <option key={d} value={d}>{d}</option>)}
                         </select>
                     </div>
                     <div className="flex-1 min-w-[200px] relative">
-                        <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
                         <input value={search} onChange={e => setSearch(e.target.value)}
                             placeholder={isEnglish ? 'Search all columns…' : 'Cari di semua kolom…'}
-                            className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-sky-500" />
+                            className="w-full pl-9 pr-3 py-2 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-sky-500" />
                     </div>
-                    <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-white/40">
+                    <div className="flex items-center gap-1.5 text-[11px] text-stone-500 dark:text-white/40">
                         <Info size={13} />
                         {isEnglish
                             ? 'Edit any cell — saved automatically like Excel'
@@ -337,8 +337,8 @@ export default function Forwarder({ isDarkMode, currentUser }) {
                 </div>
 
                 {/* Legend: kolom yang diisi tiap divisi (digabung jadi 1 laporan) */}
-                <div className="px-5 pb-4 flex flex-wrap items-center gap-2 border-b border-slate-200 dark:border-white/[0.06]">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                <div className="px-5 pb-4 flex flex-wrap items-center gap-2 border-b border-stone-200 dark:border-white/[0.06]">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-stone-400">
                         {isEnglish ? 'Division columns:' : 'Kolom per divisi:'}
                     </span>
                     {Object.entries(DIVISION_PRESETS).filter(([d]) => d !== 'all').map(([d, cols]) => (
@@ -357,7 +357,7 @@ export default function Forwarder({ isDarkMode, currentUser }) {
                     {adding ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
                     {isEnglish ? 'Add Row' : 'Tambah Baris'}
                 </button>
-                <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-white/40">
+                <div className="flex items-center gap-1.5 text-[11px] text-stone-500 dark:text-white/40">
                     <Info size={13} />
                     {isEnglish
                         ? 'Press Enter on the last row to add a new row'
@@ -366,10 +366,10 @@ export default function Forwarder({ isDarkMode, currentUser }) {
             </div>
 
             {/* AG Grid */}
-            <div className={`${gridTheme} relative rounded-2xl overflow-hidden border border-slate-200 dark:border-white/[0.06] shadow-sm`} style={{ height: 'calc(100vh - 360px)', minHeight: 380 }}>
+            <div className={`${gridTheme} relative rounded-2xl overflow-hidden border border-stone-200 dark:border-white/[0.06] shadow-sm`} style={{ height: 'calc(100vh - 360px)', minHeight: 380 }}>
                 {loading && (
-                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm">
-                        <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/80 dark:bg-[#0d0d0d]/80 backdrop-blur-xl shadow-lg border border-white/40 dark:border-white/10 text-sm text-slate-600 dark:text-white/70 font-semibold">
+                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60 dark:bg-[#0a0a0a]/60 backdrop-blur-sm">
+                        <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/80 dark:bg-[#0d0d0d]/80 backdrop-blur-xl shadow-lg border border-white/40 dark:border-white/10 text-sm text-stone-600 dark:text-white/70 font-semibold">
                             <Loader2 size={18} className="animate-spin text-sky-500" />
                             {isEnglish ? 'Loading…' : 'Memuat…'}
                         </div>
@@ -414,15 +414,15 @@ export default function Forwarder({ isDarkMode, currentUser }) {
 
             {/* Footer: ringkasan + status simpan */}
             <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 shadow-sm text-xs">
-                <div className="flex items-center gap-4 text-slate-600 dark:text-white/70">
+                <div className="flex items-center gap-4 text-stone-600 dark:text-white/70">
                     <span className="font-semibold">
                         {totalRows} {isEnglish ? 'rows' : 'baris'}
                     </span>
-                    <span className="text-slate-400">•</span>
+                    <span className="text-stone-400">•</span>
                     <span className="font-semibold">
                         {filledRows} {isEnglish ? 'filled' : 'terisi'}
                     </span>
-                    <span className="text-slate-400">•</span>
+                    <span className="text-stone-400">•</span>
                     <span className="font-semibold">
                         {divisionsWithData} {isEnglish ? 'divisions' : 'divisi'}
                     </span>
@@ -444,10 +444,10 @@ export default function Forwarder({ isDarkMode, currentUser }) {
                             <div className="w-14 h-14 rounded-2xl bg-red-100 dark:bg-red-900/40 flex items-center justify-center mb-4">
                                 <Trash2 size={24} className="text-red-600 dark:text-red-400" />
                             </div>
-                            <h3 className="text-lg font-bold text-slate-800 dark:text-white">
+                            <h3 className="text-lg font-bold text-stone-800 dark:text-white">
                                 {isEnglish ? 'Delete Row?' : 'Hapus Baris?'}
                             </h3>
-                            <p className="mt-1.5 text-sm text-slate-500 dark:text-white/40 leading-relaxed">
+                            <p className="mt-1.5 text-sm text-stone-500 dark:text-white/40 leading-relaxed">
                                 {isEnglish
                                     ? `Row ${deleteTarget.forwarder_name || '#' + deleteTarget.id} will be permanently removed.`
                                     : `Baris ${deleteTarget.forwarder_name || '#' + deleteTarget.id} akan dihapus permanen.`}
@@ -455,7 +455,7 @@ export default function Forwarder({ isDarkMode, currentUser }) {
                         </div>
                         <div className="mt-5 px-8 pb-7 flex gap-3">
                             <button onClick={() => setDeleteTarget(null)} disabled={deleting}
-                                className="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 dark:border-white/[0.08] text-slate-600 dark:text-white/70 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-white/[0.06] transition-colors">
+                                className="flex-1 px-4 py-2.5 rounded-xl border border-stone-300 dark:border-white/[0.08] text-stone-600 dark:text-white/70 text-sm font-semibold hover:bg-stone-50 dark:hover:bg-white/[0.06] transition-colors">
                                 {isEnglish ? 'Cancel' : 'Batal'}
                             </button>
                             <button onClick={handleDelete} disabled={deleting}

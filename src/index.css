@@ -358,7 +358,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-400/30 rounded-full hover:bg-gray-400/50 backdrop-blur-sm;
+  @apply bg-stone-400/30 rounded-full hover:bg-stone-400/50 backdrop-blur-sm;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

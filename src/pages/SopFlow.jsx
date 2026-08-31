@@ -20,10 +20,10 @@ const SopViewer = ({ flow, onClose, text, getFullUrl }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] bg-slate-950 flex flex-col"
+            className="fixed inset-0 z-[9999] bg-stone-950 flex flex-col"
         >
             {/* Full Screen Header */}
-            <div className="bg-slate-900/50 backdrop-blur-xl border-b border-white/5 p-6 flex justify-between items-center shrink-0">
+            <div className="bg-[#0a0a0a]/50 backdrop-blur-xl border-b border-white/5 p-6 flex justify-between items-center shrink-0">
                 <div className="flex items-center gap-4">
                     <div className="p-3 bg-blue-500 rounded-2xl text-white shadow-lg shadow-blue-500/20">
                         <GitBranch size={24} />
@@ -32,8 +32,8 @@ const SopViewer = ({ flow, onClose, text, getFullUrl }) => {
                         <h2 className="text-xl font-black text-white leading-tight">{flow.title}</h2>
                         <div className="flex items-center gap-3 mt-1">
                             <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest">{flow.category || 'Standard'}</span>
-                            <span className="w-1 h-1 rounded-full bg-slate-700" />
-                            <span className="text-[10px] font-bold text-slate-500 uppercase">{flow.steps?.length || 0} {text.steps}</span>
+                            <span className="w-1 h-1 rounded-full bg-[#111]" />
+                            <span className="text-[10px] font-bold text-stone-500 uppercase">{flow.steps?.length || 0} {text.steps}</span>
                         </div>
                     </div>
                 </div>
@@ -46,7 +46,7 @@ const SopViewer = ({ flow, onClose, text, getFullUrl }) => {
             </div>
 
             {/* Full Canvas Area */}
-            <div className="flex-1 relative overflow-hidden bg-slate-950">
+            <div className="flex-1 relative overflow-hidden bg-stone-950">
                 {flow.visual_config ? (() => {
                     try {
                         const config = typeof flow.visual_config === 'string'
@@ -99,7 +99,7 @@ const SopViewer = ({ flow, onClose, text, getFullUrl }) => {
                         );
                     }
                 })() : (
-                    <div className="flex flex-col items-center justify-center h-full text-slate-500">
+                    <div className="flex flex-col items-center justify-center h-full text-stone-500">
                         <Info size={48} className="mb-4 opacity-20" />
                         <p className="text-sm font-bold uppercase tracking-widest">{text.noVisualization}</p>
                     </div>
@@ -107,7 +107,7 @@ const SopViewer = ({ flow, onClose, text, getFullUrl }) => {
             </div>
 
             <div className="absolute bottom-6 left-6 z-10">
-                <div className="bg-slate-900/60 backdrop-blur-md px-4 py-2 rounded-xl border border-white/5 text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                <div className="bg-[#0a0a0a]/60 backdrop-blur-md px-4 py-2 rounded-xl border border-white/5 text-[10px] font-bold text-stone-400 uppercase tracking-widest flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                     Presentation Mode (Read-Only)
                 </div>
@@ -330,9 +330,9 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
         <div className="space-y-6 animate-in fade-in duration-500">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                 <div className="relative flex-1 w-full md:w-auto">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" size={18} />
                     <input
-                        className="w-full pl-10 pr-4 py-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
+                        className="w-full pl-10 pr-4 py-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06] rounded-xl outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
                         placeholder={text.searchPlaceholder}
                         value={searchQuery}
                         onChange={e => setSearchQuery(e.target.value)}
@@ -395,12 +395,12 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                                     </span>
                                 </div>
                             </div>
-                            <h3 className="font-black text-slate-800 dark:text-white text-lg mb-1">{flow.title}</h3>
-                            <p className="text-xs text-slate-500 line-clamp-2 mb-4">{flow.description}</p>
+                            <h3 className="font-black text-stone-800 dark:text-white text-lg mb-1">{flow.title}</h3>
+                            <p className="text-xs text-stone-500 line-clamp-2 mb-4">{flow.description}</p>
                             <div className="space-y-2 mb-4">
                                 {(flow.steps || []).slice(0, 3).map((step, idx) => (
-                                    <div key={idx} className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                                        <div className="w-4 h-4 rounded bg-slate-100 dark:bg-[#0d0d0d] flex items-center justify-center text-slate-500">{idx + 1}</div>
+                                    <div key={idx} className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-stone-400">
+                                        <div className="w-4 h-4 rounded bg-stone-100 dark:bg-[#0d0d0d] flex items-center justify-center text-stone-500">{idx + 1}</div>
                                         <span className="truncate">{step.title}</span>
                                     </div>
                                 ))}
@@ -408,7 +408,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                         </div>
 
                         {/* AREA TOMBOL AKSI (BAWAH) - TERISOLASI */}
-                        <div className="mt-auto pt-4 border-t border-slate-50 dark:border-slate-800 flex gap-2" onClick={(e) => e.stopPropagation()}>
+                        <div className="mt-auto pt-4 border-t border-stone-50 dark:border-white/[0.06] flex gap-2" onClick={(e) => e.stopPropagation()}>
                             {hasPermission('flow', 'edit') && (
                                 <button
                                     type="button"
@@ -448,9 +448,9 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                 noPadding
             >
                 <div className="flex h-full min-h-[80vh] flex-col">
-                    <div className="p-6 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="p-6 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border-b border-stone-100 dark:border-white/[0.06] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div className="space-y-2 lg:col-span-1">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.sopTitle}</label>
+                            <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">{text.sopTitle}</label>
                             <input
                                 className="w-full px-5 py-3 gradient-bg-soft border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white font-black"
                                 placeholder={text.sopTitlePlaceholder}
@@ -459,7 +459,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.category}</label>
+                            <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">{text.category}</label>
                             <select
                                 className="w-full px-5 py-3 gradient-bg-soft border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white font-bold appearance-none"
                                 value={form.category}
@@ -469,7 +469,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                             </select>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.privacy}</label>
+                            <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">{text.privacy}</label>
                             <select
                                 className="w-full px-5 py-3 gradient-bg-soft border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white font-bold appearance-none"
                                 value={form.privacy_type}
@@ -483,7 +483,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.edgeColor}</label>
+                            <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">{text.edgeColor}</label>
                             <div className="flex gap-2 p-1.5 gradient-bg-soft rounded-2xl border-2 border-transparent h-[52px] items-center justify-around">
                                 {[
                                     { name: 'Indigo', hex: '#6366f1' },
@@ -495,18 +495,18 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                                     <button
                                         key={color.hex}
                                         onClick={() => setForm({ ...form, accent_color: color.hex })}
-                                        className={`w-7 h-7 rounded-full border-2 transition-all ${form.accent_color === color.hex ? 'border-white dark:border-slate-900 ring-2 ring-blue-500 scale-110 shadow-lg' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                                        className={`w-7 h-7 rounded-full border-2 transition-all ${form.accent_color === color.hex ? 'border-white dark:border-[#0a0a0a] ring-2 ring-blue-500 scale-110 shadow-lg' : 'border-transparent opacity-60 hover:opacity-100'}`}
                                         style={{ backgroundColor: color.hex }}
                                         title={color.name}
                                     />
                                 ))}
                             </div>
-                            <p className="text-[10px] text-slate-400 ml-1">{text.edgeHint}</p>
+                            <p className="text-[10px] text-stone-400 ml-1">{text.edgeHint}</p>
                         </div>
 
                         {form.privacy_type === 'department' && (
                             <div className="lg:col-span-4 space-y-2 animate-in fade-in slide-in-from-top-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.allowedDepartments}</label>
+                                <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">{text.allowedDepartments}</label>
                                 <div className="flex flex-wrap gap-2 p-4 gradient-bg-soft rounded-2xl border-2 border-transparent">
                                     {(departments || []).map(dept => {
                                         const isSelected = (form.allowed_departments || []).includes(dept.name);
@@ -522,7 +522,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                                                 }}
                                                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${isSelected
                                                     ? 'gradient-bg text-white shadow-md'
-                                                    : 'bg-white/70 dark:bg-[#111]/60 backdrop-blur-xl text-slate-600 dark:text-white/70 border border-slate-200 dark:border-white/[0.08] hover:border-blue-300'
+                                                    : 'bg-white/70 dark:bg-[#111]/60 backdrop-blur-xl text-stone-600 dark:text-white/70 border border-stone-200 dark:border-white/[0.08] hover:border-blue-300'
                                                     }`}
                                             >
                                                 {dept.name}
@@ -535,7 +535,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
 
                         {form.privacy_type === 'specific_users' && (
                             <div className="lg:col-span-4 space-y-2 animate-in fade-in slide-in-from-top-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{text.allowedUsers}</label>
+                                <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">{text.allowedUsers}</label>
                                 <div className="flex flex-wrap gap-2 p-4 gradient-bg-soft rounded-2xl border-2 border-transparent">
                                     {(users || []).map(user => {
                                         const isSelected = (form.allowed_users || []).includes(user.username);
@@ -551,7 +551,7 @@ export default function SopFlow({ currentUser, hasPermission, users = [], depart
                                                 }}
                                                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${isSelected
                                                     ? 'gradient-bg text-white shadow-md'
-                                                    : 'bg-white/70 dark:bg-[#111]/60 backdrop-blur-xl text-slate-600 dark:text-white/70 border border-slate-200 dark:border-white/[0.08] hover:border-blue-300'
+                                                    : 'bg-white/70 dark:bg-[#111]/60 backdrop-blur-xl text-stone-600 dark:text-white/70 border border-stone-200 dark:border-white/[0.08] hover:border-blue-300'
                                                     }`}
                                             >
                                                 {user.name || user.username}

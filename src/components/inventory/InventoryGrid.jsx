@@ -45,13 +45,13 @@ const Cell = React.memo(({ slotId, slot, handleSlotClick, getStatusStyle, isMatc
             disabled={!matched && inventorySearchQuery}
             className={`h-full w-full min-h-[140px] rounded-[2rem] flex flex-col items-center justify-center relative group transition-all duration-500 animate-in zoom-in-90 fade-in fill-mode-both p-4
             ${status === 'EMPTY'
-                    ? 'bg-white/30 dark:bg-[#0d0d0d]/20 backdrop-blur-sm border-2 border-dashed border-slate-300/60 dark:border-white/[0.08]/60 hover:border-blue-400 hover:bg-white/60 dark:hover:bg-white/[0.05]/40 hover:shadow-[0_0_30px_rgba(29,78,216,0.2)] hover:scale-105 z-0 hover:z-10'
+                    ? 'bg-white/30 dark:bg-[#0d0d0d]/20 backdrop-blur-sm border-2 border-dashed border-stone-300/60 dark:border-white/[0.08]/60 hover:border-blue-400 hover:bg-white/60 dark:hover:bg-white/[0.05]/40 hover:shadow-[0_0_30px_rgba(29,78,216,0.2)] hover:scale-105 z-0 hover:z-10'
                     : `border-2 ${statusStyle.color} shadow-xl hover:shadow-2xl hover:scale-110 hover:-rotate-2 z-0 hover:z-10 ring-1 ring-white/10 opacity-100`
                 }
             ${!matched && inventorySearchQuery ? 'opacity-20 grayscale cursor-not-allowed scale-90' : 'opacity-100'}
         `}
         >
-            <span className="text-[12px] font-black font-mono mb-1 text-slate-400/50 absolute top-4 right-6 z-10 mix-blend-multiply dark:mix-blend-screen opacity-40 group-hover:opacity-100 transition-opacity">#{String(slotId).padStart(3, '0')}</span>
+            <span className="text-[12px] font-black font-mono mb-1 text-stone-400/50 absolute top-4 right-6 z-10 mix-blend-multiply dark:mix-blend-screen opacity-40 group-hover:opacity-100 transition-opacity">#{String(slotId).padStart(3, '0')}</span>
 
             {status !== 'EMPTY' ? (
                 <div className="flex flex-col items-center gap-3 w-full px-2 relative z-10 transition-transform duration-500 group-hover:scale-110">
@@ -60,7 +60,7 @@ const Cell = React.memo(({ slotId, slot, handleSlotClick, getStatusStyle, isMatc
                     </div>
                     {boxData?.id && (
                         <div className="space-y-1 w-full flex flex-col items-center">
-                            <p className="text-[11px] font-black uppercase tracking-tighter truncate max-w-full text-center bg-white/80 dark:bg-black/60 backdrop-blur-md rounded-xl px-3 py-1 shadow-sm text-slate-800 dark:text-white border border-white/20">
+                            <p className="text-[11px] font-black uppercase tracking-tighter truncate max-w-full text-center bg-white/80 dark:bg-black/60 backdrop-blur-md rounded-xl px-3 py-1 shadow-sm text-stone-800 dark:text-white border border-white/20">
                                 {boxData.id}
                             </p>
                             <p className="text-[9px] font-bold opacity-40 uppercase tracking-widest">{status}</p>
@@ -80,8 +80,8 @@ const Cell = React.memo(({ slotId, slot, handleSlotClick, getStatusStyle, isMatc
                 </div>
             ) : (
                 <div className="flex flex-col items-center gap-2 opacity-40 group-hover:opacity-100 transition-all">
-                    <Plus size={40} className="text-slate-300 dark:text-slate-600 group-hover:text-blue-400 group-hover:rotate-90 transition-all duration-500" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-white/30">Kosong</span>
+                    <Plus size={40} className="text-stone-300 dark:text-stone-600 group-hover:text-blue-400 group-hover:rotate-90 transition-all duration-500" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-stone-400 dark:text-white/30">Kosong</span>
                 </div>
             )}
         </button>
@@ -141,7 +141,7 @@ export default function InventoryGrid({
                     })}
                 </div>
             ) : (
-                <div className="w-full h-[300px] flex items-center justify-center text-gray-400 font-medium">
+                <div className="w-full h-[300px] flex items-center justify-center text-stone-400 font-medium">
                     Tidak ada slot yang ditemukan.
                 </div>
             )}

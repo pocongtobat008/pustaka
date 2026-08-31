@@ -77,21 +77,21 @@ const OcrLanes = ({ variant = 'floating' }) => {
               {lane.status === 'active' ? (
                 <Activity size={12} className="text-emerald-500 animate-pulse shrink-0" />
               ) : lane.status === 'idle' ? (
-                <CheckCircle2 size={12} className="text-slate-300 dark:text-slate-600 shrink-0" />
+                <CheckCircle2 size={12} className="text-stone-300 dark:text-stone-600 shrink-0" />
               ) : (
                 <Clock size={12} className="text-amber-400 shrink-0" />
               )}
-              <span className="text-[10px] font-bold text-slate-400 dark:text-white/30 group-hover:text-emerald-600 transition-colors uppercase tracking-wider truncate">
+              <span className="text-[10px] font-bold text-stone-400 dark:text-white/30 group-hover:text-emerald-600 transition-colors uppercase tracking-wider truncate">
                 {lane.status !== 'idle' ? lane.filename : lane.name}
               </span>
             </div>
-            <span className="text-[11px] font-mono font-bold text-slate-500 dark:text-white/40 shrink-0">
+            <span className="text-[11px] font-mono font-bold text-stone-500 dark:text-white/40 shrink-0">
               {lane.status !== 'idle' ? `${lane.current}%` : '-'}
             </span>
           </div>
           <div className="w-full bg-emerald-100/30 dark:bg-[#0d0d0d] rounded-full h-1.5 overflow-hidden border border-emerald-100/50 dark:border-white/[0.06]">
             <div
-              className={`h-full rounded-full transition-all duration-500 ease-out ${lane.status === 'active' ? 'bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.4)]' : 'bg-slate-200 dark:bg-[#111]'}`}
+              className={`h-full rounded-full transition-all duration-500 ease-out ${lane.status === 'active' ? 'bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.4)]' : 'bg-stone-200 dark:bg-[#111]'}`}
               style={{ width: `${lane.current}%` }}
             ></div>
           </div>
@@ -106,7 +106,7 @@ const OcrLanes = ({ variant = 'floating' }) => {
       <div className="relative font-sans" ref={wrapRef}>
         <button
           onClick={() => setIsExpanded(o => !o)}
-          className={'neo-icon-btn relative w-10 h-10 group ' + (totalActive > 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-slate-500 dark:text-white/70 hover:text-emerald-500 dark:hover:text-emerald-400')}
+          className={'neo-icon-btn relative w-10 h-10 group ' + (totalActive > 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-stone-500 dark:text-white/70 hover:text-emerald-500 dark:hover:text-emerald-400')}
           title={totalActive > 0 ? `OCR Monitor — ${totalActive} proses aktif` : 'OCR Monitor'}
         >
           <ScanLine size={18} />
@@ -114,7 +114,7 @@ const OcrLanes = ({ variant = 'floating' }) => {
             <>
               {/* Ping ring — indikator proses aktif */}
               <span className="absolute inset-0 rounded-xl bg-emerald-400/30 animate-ping pointer-events-none"></span>
-              <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[9px] font-black text-white shadow-lg border-2 border-white dark:border-slate-900">
+              <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[9px] font-black text-white shadow-lg border-2 border-white dark:border-[#0a0a0a]">
                 {totalActive > 9 ? '9+' : totalActive}
               </span>
             </>
@@ -123,8 +123,8 @@ const OcrLanes = ({ variant = 'floating' }) => {
 
         {isExpanded && (
           <div className="absolute right-0 top-[calc(100%+10px)] w-72 bg-white/95 dark:bg-[#0d1440]/95 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-2xl overflow-hidden shadow-2xl shadow-emerald-500/10 dark:shadow-black/40 animate-in fade-in zoom-in-95 duration-150 z-[60]">
-            <div className="px-4 py-3 border-b border-slate-100 dark:border-white/10 flex items-center justify-between">
-              <span className="text-xs font-black text-slate-700 dark:text-white uppercase tracking-wider flex items-center gap-2">
+            <div className="px-4 py-3 border-b border-stone-100 dark:border-white/10 flex items-center justify-between">
+              <span className="text-xs font-black text-stone-700 dark:text-white uppercase tracking-wider flex items-center gap-2">
                 <ScanLine size={14} className="text-emerald-500" /> OCR Monitor
               </span>
               {totalActive > 0 && (
@@ -164,11 +164,11 @@ const OcrLanes = ({ variant = 'floating' }) => {
             {isExpanded && (
               <div className="flex items-center gap-2">
                 <ScanLine size={18} className="text-emerald-600" />
-                <span className="text-sm font-bold text-slate-800 dark:text-slate-100 tracking-tight">OCR Monitor</span>
+                <span className="text-sm font-bold text-stone-800 dark:text-white/80 tracking-tight">OCR Monitor</span>
               </div>
             )}
             {!isExpanded && (
-              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-black text-white shadow-lg border-2 border-white/50 dark:border-slate-900/50">
+              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-black text-white shadow-lg border-2 border-white/50 dark:border-[#0a0a0a]/50">
                 {totalActive}
               </span>
             )}
@@ -177,7 +177,7 @@ const OcrLanes = ({ variant = 'floating' }) => {
           {isExpanded && (
             <ChevronDown
               size={18}
-              className={`text-slate-400 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+              className={`text-stone-400 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
             />
           )}
         </button>
@@ -188,7 +188,7 @@ const OcrLanes = ({ variant = 'floating' }) => {
           }`}
         >
           <div className="p-4 pt-0 space-y-4">
-            <div className="h-px bg-slate-200/60 dark:bg-[#111]/50 mb-4"></div>
+            <div className="h-px bg-stone-200/60 dark:bg-[#111]/50 mb-4"></div>
             {lanesContent}
           </div>
         </div>

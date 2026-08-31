@@ -438,12 +438,12 @@ export default function Book({ hasPermission }) {
         for (let i = 0; i < total; i++) pages.push(i);
         const visible = pages.filter(p => p === 0 || p === total - 1 || Math.abs(p - current) <= 1);
         return (
-            <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100 dark:border-slate-800">
-                <p className="text-xs text-slate-400 dark:text-white/30">
+            <div className="flex items-center justify-between px-6 py-4 border-t border-stone-100 dark:border-white/[0.06]">
+                <p className="text-xs text-stone-400 dark:text-white/30">
                     {text.showing} {current * pageSize + 1}-{Math.min((current + 1) * pageSize, rowCount || total * pageSize)} {text.of} {rowCount || total * pageSize}
                 </p>
                 <div className="flex items-center gap-1">
-                    <button onClick={() => onChange(current - 1)} disabled={current === 0} className="p-2 rounded-xl text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 disabled:opacity-30 disabled:pointer-events-none transition-all">
+                    <button onClick={() => onChange(current - 1)} disabled={current === 0} className="p-2 rounded-xl text-stone-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 disabled:opacity-30 disabled:pointer-events-none transition-all">
                         <ChevronLeft size={16} />
                     </button>
                     {visible.map((p, i) => {
@@ -451,14 +451,14 @@ export default function Book({ hasPermission }) {
                         const showEllipsis = prev !== undefined && p - prev > 1;
                         return (
                             <React.Fragment key={p}>
-                                {showEllipsis && <span className="px-1 text-slate-300 dark:text-slate-600">...</span>}
-                                <button onClick={() => onChange(p)} className={`min-w-[36px] h-9 rounded-xl text-xs font-bold transition-all ${p === current ? 'gradient-bg text-white shadow-lg shadow-blue-500/30' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-white/[0.05]'}`}>
+                                {showEllipsis && <span className="px-1 text-stone-300 dark:text-stone-600">...</span>}
+                                <button onClick={() => onChange(p)} className={`min-w-[36px] h-9 rounded-xl text-xs font-bold transition-all ${p === current ? 'gradient-bg text-white shadow-lg shadow-blue-500/30' : 'text-stone-500 hover:bg-stone-100 dark:hover:bg-white/[0.05]'}`}>
                                     {p + 1}
                                 </button>
                             </React.Fragment>
                         );
                     })}
-                    <button onClick={() => onChange(current + 1)} disabled={current >= total - 1} className="p-2 rounded-xl text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 disabled:opacity-30 disabled:pointer-events-none transition-all">
+                    <button onClick={() => onChange(current + 1)} disabled={current >= total - 1} className="p-2 rounded-xl text-stone-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 disabled:opacity-30 disabled:pointer-events-none transition-all">
                         <ChevronRight size={16} />
                     </button>
                 </div>
@@ -475,34 +475,34 @@ export default function Book({ hasPermission }) {
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm text-left">
                         <thead>
-                            <tr className="border-b border-slate-100 dark:border-white/[0.06]/50">
+                            <tr className="border-b border-stone-100 dark:border-white/[0.06]/50">
                                 {columns.map((col, i) => (
-                                    <th key={i} className="px-6 py-4 text-[10px] font-black text-slate-400 dark:text-white/30 uppercase tracking-widest">{col}</th>
+                                    <th key={i} className="px-6 py-4 text-[10px] font-black text-stone-400 dark:text-white/30 uppercase tracking-widest">{col}</th>
                                 ))}
-                                <th className="px-6 py-4 text-[10px] font-black text-slate-400 dark:text-white/30 uppercase tracking-widest text-right">{text.actions}</th>
+                                <th className="px-6 py-4 text-[10px] font-black text-stone-400 dark:text-white/30 uppercase tracking-widest text-right">{text.actions}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50 dark:divide-slate-800/50">
                             {paged.length === 0 ? (
-                                <tr><td colSpan={columns.length + 1} className="px-6 py-12 text-center text-slate-400 dark:text-white/30">{emptyMsg || text.noData}</td></tr>
+                                <tr><td colSpan={columns.length + 1} className="px-6 py-12 text-center text-stone-400 dark:text-white/30">{emptyMsg || text.noData}</td></tr>
                             ) : paged.map((row, idx) => (
-                                <tr key={row.id || idx} className="hover:bg-slate-50/50 dark:hover:bg-white/[0.05]/30 transition-colors">
+                                <tr key={row.id || idx} className="hover:bg-stone-50/50 dark:hover:bg-white/[0.05]/30 transition-colors">
                                     {columns.map((_, ci) => {
                                         const key = _ === text.code ? 'code' : _ === text.name ? 'name' : _ === text.description ? 'description' : _ === text.status ? 'is_active' : _ === text.parent ? (level === 'sub_account' ? 'account_name' : 'sub_name') : _ === text.parent + ' ' + text.code ? (level === 'sub_account' ? 'account_code' : 'sub_code') : null;
                                         if (key === 'is_active') return <td key={ci} className="px-6 py-4"><span className={`px-2 py-1 text-[10px] font-bold rounded-full ${row.is_active ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400' : 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400'}`}>{row.is_active ? text.active : text.inactive}</span></td>;
-                                        if (key === 'account_name' || key === 'sub_name') return <td key={ci} className="px-6 py-4 text-xs text-slate-500 dark:text-white/40">{row[key]}</td>;
+                                        if (key === 'account_name' || key === 'sub_name') return <td key={ci} className="px-6 py-4 text-xs text-stone-500 dark:text-white/40">{row[key]}</td>;
                                         if (key === 'account_code' || key === 'sub_code') return <td key={ci} className="px-6 py-4 font-mono text-xs text-blue-500 dark:text-blue-400">{row[key]}</td>;
-                                        return <td key={ci} className="px-6 py-4 font-medium text-slate-800 dark:text-white">{key ? row[key] : ''}</td>;
+                                        return <td key={ci} className="px-6 py-4 font-medium text-stone-800 dark:text-white">{key ? row[key] : ''}</td>;
                                     })}
                                     <td className="px-6 py-4 text-right">
                                         <div className="flex items-center justify-end gap-1">
                                             {hasPermission('book', 'edit') && (
-                                                <button onClick={() => openEditForm(level, row)} className="p-1.5 rounded-lg text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all" title="Edit">
+                                                <button onClick={() => openEditForm(level, row)} className="p-1.5 rounded-lg text-stone-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all" title="Edit">
                                                     <Edit3 size={14} />
                                                 </button>
                                             )}
                                             {hasPermission('book', 'delete') && (
-                                                <button onClick={() => handleDelete(level, row)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all" title="Hapus">
+                                                <button onClick={() => handleDelete(level, row)} className="p-1.5 rounded-lg text-stone-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all" title="Hapus">
                                                     <Trash2 size={14} />
                                                 </button>
                                             )}
@@ -535,7 +535,7 @@ export default function Book({ hasPermission }) {
                     title={text.overviewTitle}
                     subtitle={text.overviewSubtitle}
                     actions={(
-                        <div className="flex items-center gap-2 text-xs text-slate-400">
+                        <div className="flex items-center gap-2 text-xs text-stone-400">
                             <Layers size={14} />
                             <span className="font-mono font-bold">{overviewData.length}</span>
                             <span>{text.tabs.accounts}</span>
@@ -552,41 +552,41 @@ export default function Book({ hasPermission }) {
                 {/* COA Filter Dropdown */}
                 <div className="flex items-center gap-3">
                     <div className="relative">
-                        <Filter size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                        <Filter size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none" />
                         <Select
                             value={filterCoa}
                             onChange={(e) => { setFilterCoa(e.target.value); setPage(0); }}
-                            className="pl-9 pr-8 py-2 text-xs font-bold text-slate-600 dark:text-white/70 appearance-none cursor-pointer min-w-[180px]"
+                            className="pl-9 pr-8 py-2 text-xs font-bold text-stone-600 dark:text-white/70 appearance-none cursor-pointer min-w-[180px]"
                         >
                             <option value="all">{text.filterCoaAll}</option>
                             {data.map(acc => (
                                 <option key={acc.id} value={acc.id}>{acc.code} - {acc.name}</option>
                             ))}
                         </Select>
-                        <ChevronDown size={12} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                        <ChevronDown size={12} className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none" />
                     </div>
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    <span className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">
                         {overviewData.length} {text.tabs.accounts}
                     </span>
                 </div>
 
                 {overviewData.length === 0 && (
-                    <div className="py-20 text-center text-slate-400 dark:text-white/30">{text.noData}</div>
+                    <div className="py-20 text-center text-stone-400 dark:text-white/30">{text.noData}</div>
                 )}
 
                 {/* COA Table with Expand/Collapse */}
                 {overviewData.length > 0 && (
                     <div>
-                        <div className="overflow-x-auto rounded-2xl border border-slate-100 dark:border-slate-800">
+                        <div className="overflow-x-auto rounded-2xl border border-stone-100 dark:border-white/[0.06]">
                             <table className="w-full text-sm text-left">
                                 <thead>
-                                    <tr className="border-b border-slate-200 dark:border-white/[0.06]/50 bg-slate-50/80 dark:bg-[#0d0d0d]/50">
-                                        <th className="px-4 py-3 text-[10px] font-black text-slate-400 dark:text-white/30 uppercase tracking-widest w-10">#</th>
+                                    <tr className="border-b border-stone-200 dark:border-white/[0.06]/50 bg-stone-50/80 dark:bg-[#0d0d0d]/50">
+                                        <th className="px-4 py-3 text-[10px] font-black text-stone-400 dark:text-white/30 uppercase tracking-widest w-10">#</th>
                                         <th className="px-4 py-3 w-8" />
-                                        <th className="px-4 py-3 text-[10px] font-black text-slate-400 dark:text-white/30 uppercase tracking-widest">COA</th>
-                                        <th className="px-4 py-3 text-[10px] font-black text-slate-400 dark:text-white/30 uppercase tracking-widest">{isEnglish ? 'Description' : 'Deskripsi'}</th>
-                                        <th className="px-4 py-3 text-[10px] font-black text-slate-400 dark:text-white/30 uppercase tracking-widest text-center">{text.subCount}</th>
-                                        <th className="px-4 py-3 text-[10px] font-black text-slate-400 dark:text-white/30 uppercase tracking-widest text-center">{text.depCount}</th>
+                                        <th className="px-4 py-3 text-[10px] font-black text-stone-400 dark:text-white/30 uppercase tracking-widest">COA</th>
+                                        <th className="px-4 py-3 text-[10px] font-black text-stone-400 dark:text-white/30 uppercase tracking-widest">{isEnglish ? 'Description' : 'Deskripsi'}</th>
+                                        <th className="px-4 py-3 text-[10px] font-black text-stone-400 dark:text-white/30 uppercase tracking-widest text-center">{text.subCount}</th>
+                                        <th className="px-4 py-3 text-[10px] font-black text-stone-400 dark:text-white/30 uppercase tracking-widest text-center">{text.depCount}</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-50 dark:divide-slate-800/50">
@@ -603,19 +603,19 @@ export default function Book({ hasPermission }) {
                                                     className="hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-colors cursor-pointer"
                                                     onClick={() => toggleExpand(acc.id)}
                                                 >
-                                                    <td className="px-4 py-3 text-xs text-slate-400 font-mono">{globalIdx + 1}</td>
+                                                    <td className="px-4 py-3 text-xs text-stone-400 font-mono">{globalIdx + 1}</td>
                                                     <td className="px-4 py-3">
-                                                        <button className="p-1 rounded text-slate-400 hover:text-blue-500 transition-all">
+                                                        <button className="p-1 rounded text-stone-400 hover:text-blue-500 transition-all">
                                                             {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                                                         </button>
                                                     </td>
                                                     <td className="px-4 py-3">
                                                         <div className="flex items-center gap-2">
                                                             <span className="font-mono text-xs font-black text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2 py-0.5 rounded-md">{acc.code}</span>
-                                                            <span className="text-xs font-bold text-slate-800 dark:text-white">{acc.name}</span>
+                                                            <span className="text-xs font-bold text-stone-800 dark:text-white">{acc.name}</span>
                                                         </div>
                                                     </td>
-                                                    <td className="px-4 py-3 text-[11px] text-slate-400 dark:text-white/30 truncate max-w-[200px]">{acc.description || '-'}</td>
+                                                    <td className="px-4 py-3 text-[11px] text-stone-400 dark:text-white/30 truncate max-w-[200px]">{acc.description || '-'}</td>
                                                     <td className="px-4 py-3 text-center">
                                                         <span className="inline-flex items-center justify-center min-w-[28px] h-6 px-2 text-[10px] font-black rounded-full bg-cyan-50 text-cyan-600 dark:bg-cyan-900/20 dark:text-cyan-400">{subCount}</span>
                                                     </td>
@@ -634,14 +634,14 @@ export default function Book({ hasPermission }) {
                                                             <td className="px-4 py-2 pl-8">
                                                                 <div className="flex items-center gap-2 border-l-2 border-cyan-200 dark:border-cyan-800 pl-3">
                                                                     <span className="font-mono text-[11px] font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-900/20 px-1.5 py-0.5 rounded">{sub.code}</span>
-                                                                    <span className="text-[11px] font-medium text-slate-700 dark:text-white/70">{sub.name}</span>
+                                                                    <span className="text-[11px] font-medium text-stone-700 dark:text-white/70">{sub.name}</span>
                                                                 </div>
                                                             </td>
                                                             <td className="px-4 py-2 pl-8">
-                                                                <span className="text-[11px] text-slate-400 dark:text-white/30 truncate max-w-[180px] block border-l-2 border-cyan-200 dark:border-cyan-800 pl-3">{sub.description || '-'}</span>
+                                                                <span className="text-[11px] text-stone-400 dark:text-white/30 truncate max-w-[180px] block border-l-2 border-cyan-200 dark:border-cyan-800 pl-3">{sub.description || '-'}</span>
                                                             </td>
                                                             <td className="px-4 py-2 text-center">
-                                                                <span className="text-[10px] font-bold text-slate-400">{(sub.departments || []).length}</span>
+                                                                <span className="text-[10px] font-bold text-stone-400">{(sub.departments || []).length}</span>
                                                             </td>
                                                             <td className="px-4 py-2" />
                                                         </tr>
@@ -654,11 +654,11 @@ export default function Book({ hasPermission }) {
                                                                 <td className="px-4 py-1.5 pl-14">
                                                                     <div className="flex items-center gap-2 border-l-2 border-amber-200 dark:border-amber-800 pl-3">
                                                                         <span className="font-mono text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-1.5 py-0.5 rounded">{dep.code}</span>
-                                                                        <span className="text-[11px] text-slate-600 dark:text-white/40">{dep.name}</span>
+                                                                        <span className="text-[11px] text-stone-600 dark:text-white/40">{dep.name}</span>
                                                                     </div>
                                                                 </td>
                                                                 <td className="px-4 py-1.5 pl-14">
-                                                                    <span className="text-[10px] text-slate-400 dark:text-white/30 truncate max-w-[160px] block border-l-2 border-amber-200 dark:border-amber-800 pl-3">{dep.description || '-'}</span>
+                                                                    <span className="text-[10px] text-stone-400 dark:text-white/30 truncate max-w-[160px] block border-l-2 border-amber-200 dark:border-amber-800 pl-3">{dep.description || '-'}</span>
                                                                 </td>
                                                                 <td className="px-4 py-1.5" />
                                                                 <td className="px-4 py-1.5" />
@@ -669,10 +669,10 @@ export default function Book({ hasPermission }) {
 
                                                 {/* Expanded but no sub-accounts */}
                                                 {isExpanded && (!acc.sub_accounts || acc.sub_accounts.length === 0) && (
-                                                    <tr className="bg-slate-50/30 dark:bg-[#0d0d0d]/20">
+                                                    <tr className="bg-stone-50/30 dark:bg-[#0d0d0d]/20">
                                                         <td className="px-4 py-3" />
                                                         <td className="px-4 py-3" />
-                                                        <td colSpan={4} className="px-4 py-3 pl-10 text-[11px] text-slate-400 italic">{text.noData}</td>
+                                                        <td colSpan={4} className="px-4 py-3 pl-10 text-[11px] text-stone-400 italic">{text.noData}</td>
                                                     </tr>
                                                 )}
                                             </React.Fragment>
@@ -694,13 +694,13 @@ export default function Book({ hasPermission }) {
                 <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-xl">
                     <FileSpreadsheet size={28} className="text-white" />
                 </div>
-                <h3 className="text-lg font-extrabold text-slate-800 dark:text-white">{text.importTitle}</h3>
-                <p className="text-xs text-slate-400 mt-2 max-w-sm mx-auto">{text.importDesc}</p>
+                <h3 className="text-lg font-extrabold text-stone-800 dark:text-white">{text.importTitle}</h3>
+                <p className="text-xs text-stone-400 mt-2 max-w-sm mx-auto">{text.importDesc}</p>
             </div>
 
             {importing ? (
                 <div className="space-y-5">
-                    <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl border border-slate-100 dark:border-slate-800 p-6 shadow-sm">
+                    <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl border border-stone-100 dark:border-white/[0.06] p-6 shadow-sm">
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
                                 {importProgress === 100 ? (
@@ -710,29 +710,29 @@ export default function Book({ hasPermission }) {
                                 )}
                             </div>
                             <div>
-                                <p className="text-sm font-bold text-slate-800 dark:text-white">{importStage}</p>
-                                <p className="text-[11px] text-slate-400">
+                                <p className="text-sm font-bold text-stone-800 dark:text-white">{importStage}</p>
+                                <p className="text-[11px] text-stone-400">
                                     {importProcessed}/{importTotal} baris
                                     {importSuccess > 0 && <span className="text-emerald-600 dark:text-emerald-400 ml-2">{importSuccess} berhasil</span>}
                                     {importFailed > 0 && <span className="text-red-600 dark:text-red-400 ml-2">{importFailed} gagal</span>}
                                 </p>
                             </div>
                         </div>
-                        <div className="w-full bg-slate-100 dark:bg-[#0d0d0d] rounded-full h-2.5 overflow-hidden">
+                        <div className="w-full bg-stone-100 dark:bg-[#0d0d0d] rounded-full h-2.5 overflow-hidden">
                             <div
                                 className={`h-full rounded-full transition-all duration-300 ease-out ${importProgress === 100 ? 'bg-gradient-to-r from-emerald-500 to-teal-500' : 'bg-gradient-to-r from-blue-500 to-blue-600'}`}
                                 style={{ width: `${importProgress}%` }}
                             />
                         </div>
                         <div className="flex items-center justify-between mt-3 text-[10px] font-bold">
-                            <span className="text-slate-400">{importProcessed}/{importTotal} baris diproses</span>
+                            <span className="text-stone-400">{importProcessed}/{importTotal} baris diproses</span>
                             <span className="text-blue-600 dark:text-blue-300">{importProgress}%</span>
                         </div>
                     </div>
                 </div>
             ) : (
                 <>
-                    <div className="border-2 border-dashed border-slate-200 dark:border-white/[0.06] rounded-2xl p-8 text-center hover:border-blue-400 transition-colors">
+                    <div className="border-2 border-dashed border-stone-200 dark:border-white/[0.06] rounded-2xl p-8 text-center hover:border-blue-400 transition-colors">
                         <input
                             ref={fileInputRef}
                             type="file"
@@ -742,16 +742,16 @@ export default function Book({ hasPermission }) {
                             id="coa-import-input"
                         />
                         <label htmlFor="coa-import-input" className="cursor-pointer">
-                            <Upload size={32} className="mx-auto mb-3 text-slate-300 dark:text-slate-600" />
-                            <p className="text-sm font-bold text-slate-500 dark:text-white/40">{importFile ? importFile.name : text.chooseFile}</p>
-                            <p className="text-[10px] text-slate-400 mt-1">.xlsx, .xls, .csv</p>
+                            <Upload size={32} className="mx-auto mb-3 text-stone-300 dark:text-stone-600" />
+                            <p className="text-sm font-bold text-stone-500 dark:text-white/40">{importFile ? importFile.name : text.chooseFile}</p>
+                            <p className="text-[10px] text-stone-400 mt-1">.xlsx, .xls, .csv</p>
                         </label>
                     </div>
 
                     <div className="flex gap-3 mt-4">
                         <button
                             onClick={handleDownloadTemplate}
-                            className="flex-1 flex items-center justify-center gap-2 py-3 bg-slate-100 dark:bg-[#0d0d0d] text-slate-600 dark:text-white/70 text-xs font-bold rounded-2xl hover:bg-slate-200 dark:hover:bg-white/[0.06] transition-all"
+                            className="flex-1 flex items-center justify-center gap-2 py-3 bg-stone-100 dark:bg-[#0d0d0d] text-stone-600 dark:text-white/70 text-xs font-bold rounded-2xl hover:bg-stone-200 dark:hover:bg-white/[0.06] transition-all"
                         >
                             <Download size={14} /> {text.downloadTemplate}
                         </button>
@@ -767,18 +767,18 @@ export default function Book({ hasPermission }) {
                     </div>
 
                     <div className="mt-8 gradient-bg-soft rounded-2xl p-4">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Format Kolom Excel</p>
+                        <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-3">Format Kolom Excel</p>
                         <div className="overflow-x-auto">
                             <table className="w-full text-xs">
                                 <thead>
-                                    <tr className="border-b border-slate-200 dark:border-white/[0.06]">
+                                    <tr className="border-b border-stone-200 dark:border-white/[0.06]">
                                         {['No COA', 'Keterangan', 'Sub COA', 'Keterangan Sub', 'No Dep', 'Keterangan Dep'].map(h => (
-                                            <th key={h} className="px-3 py-2 text-left font-bold text-slate-500 dark:text-white/40">{h}</th>
+                                            <th key={h} className="px-3 py-2 text-left font-bold text-stone-500 dark:text-white/40">{h}</th>
                                         ))}
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr className="border-b border-slate-100 dark:border-slate-800">
+                                    <tr className="border-b border-stone-100 dark:border-white/[0.06]">
                                         <td className="px-3 py-2 font-mono text-blue-500">1</td>
                                         <td className="px-3 py-2">Aktiva</td>
                                         <td className="px-3 py-2 font-mono text-blue-500">1-1</td>
@@ -811,38 +811,38 @@ export default function Book({ hasPermission }) {
 
         return (
             <div>
-                {accData.length === 0 && <div className="py-20 text-center text-slate-400 dark:text-white/30">{text.noData}</div>}
+                {accData.length === 0 && <div className="py-20 text-center text-stone-400 dark:text-white/30">{text.noData}</div>}
                 <div className="divide-y divide-slate-50 dark:divide-slate-800/50">
                     {pagedData.map(acc => (
                         <div key={acc.id} className="group">
-                            <div className="flex items-center px-6 py-4 hover:bg-slate-50/50 dark:hover:bg-white/[0.05]/30 transition-colors cursor-pointer" onClick={() => toggleExpand(acc.id)}>
-                                <button className="mr-3 text-slate-400 group-hover:text-blue-500 transition-colors">
+                            <div className="flex items-center px-6 py-4 hover:bg-stone-50/50 dark:hover:bg-white/[0.05]/30 transition-colors cursor-pointer" onClick={() => toggleExpand(acc.id)}>
+                                <button className="mr-3 text-stone-400 group-hover:text-blue-500 transition-colors">
                                     {expandedAccounts.has(acc.id) ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                                 </button>
                                 <div className="flex-1 grid grid-cols-12 gap-4 items-center">
                                     <div className="col-span-2 font-mono text-sm font-bold text-blue-600 dark:text-blue-400">{acc.code}</div>
-                                    <div className="col-span-4 font-bold text-slate-800 dark:text-white">{acc.name}</div>
-                                    <div className="col-span-3 text-xs text-slate-400 truncate">{acc.description || '-'}</div>
+                                    <div className="col-span-4 font-bold text-stone-800 dark:text-white">{acc.name}</div>
+                                    <div className="col-span-3 text-xs text-stone-400 truncate">{acc.description || '-'}</div>
                                     <div className="col-span-2">
                                         <span className={`px-2 py-1 text-[10px] font-bold rounded-full ${acc.is_active !== false ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400' : 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400'}`}>{acc.is_active !== false ? text.active : text.inactive}</span>
                                     </div>
                                     <div className="col-span-1 text-right">
-                                        <span className="text-[10px] font-bold text-slate-400 bg-slate-100 dark:bg-[#0d0d0d] px-2 py-0.5 rounded-full">{(acc.sub_accounts || []).length}</span>
+                                        <span className="text-[10px] font-bold text-stone-400 bg-stone-100 dark:bg-[#0d0d0d] px-2 py-0.5 rounded-full">{(acc.sub_accounts || []).length}</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-1 ml-4 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
                                     {hasPermission('book', 'edit') && (
                                         <>
-                                            <button onClick={() => openAddForm('sub_account', acc.id)} className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all" title="Tambah Sub COA">
+                                            <button onClick={() => openAddForm('sub_account', acc.id)} className="p-1.5 rounded-lg text-stone-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all" title="Tambah Sub COA">
                                                 <Plus size={12} />
                                             </button>
-                                            <button onClick={() => openEditForm('account', acc)} className="p-1.5 rounded-lg text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all" title="Edit">
+                                            <button onClick={() => openEditForm('account', acc)} className="p-1.5 rounded-lg text-stone-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all" title="Edit">
                                                 <Edit3 size={12} />
                                             </button>
                                         </>
                                     )}
                                     {hasPermission('book', 'delete') && (
-                                        <button onClick={() => handleDelete('account', acc)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all" title="Hapus">
+                                        <button onClick={() => handleDelete('account', acc)} className="p-1.5 rounded-lg text-stone-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all" title="Hapus">
                                             <Trash2 size={12} />
                                         </button>
                                     )}
@@ -850,31 +850,31 @@ export default function Book({ hasPermission }) {
                             </div>
                             {expandedAccounts.has(acc.id) && (acc.sub_accounts || []).map(sub => (
                                 <div key={sub.id} className="ml-10">
-                                    <div className="flex items-center px-6 py-3 hover:bg-slate-50/50 dark:hover:bg-white/[0.05]/30 transition-colors border-l-2 border-blue-100 dark:border-blue-900/30">
+                                    <div className="flex items-center px-6 py-3 hover:bg-stone-50/50 dark:hover:bg-white/[0.05]/30 transition-colors border-l-2 border-blue-100 dark:border-blue-900/30">
                                         <div className="flex-1 grid grid-cols-12 gap-4 items-center">
                                             <div className="col-span-2 font-mono text-xs font-bold text-cyan-600 dark:text-cyan-400">{sub.code}</div>
-                                            <div className="col-span-4 font-medium text-sm text-slate-700 dark:text-white/70">{sub.name}</div>
-                                            <div className="col-span-3 text-xs text-slate-400 truncate">{sub.description || '-'}</div>
+                                            <div className="col-span-4 font-medium text-sm text-stone-700 dark:text-white/70">{sub.name}</div>
+                                            <div className="col-span-3 text-xs text-stone-400 truncate">{sub.description || '-'}</div>
                                             <div className="col-span-2">
                                                 <span className={`px-2 py-1 text-[10px] font-bold rounded-full ${sub.is_active !== false ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400' : 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400'}`}>{sub.is_active !== false ? text.active : text.inactive}</span>
                                             </div>
                                             <div className="col-span-1 text-right">
-                                                <span className="text-[10px] font-bold text-slate-400 bg-slate-100 dark:bg-[#0d0d0d] px-2 py-0.5 rounded-full">{(sub.departments || []).length}</span>
+                                                <span className="text-[10px] font-bold text-stone-400 bg-stone-100 dark:bg-[#0d0d0d] px-2 py-0.5 rounded-full">{(sub.departments || []).length}</span>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-1 ml-4 opacity-0 group-hover:opacity-100 transition-opacity">
                                             {hasPermission('book', 'edit') && (
                                                 <>
-                                                    <button onClick={() => openAddForm('department', sub.id)} className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all" title="Tambah Departemen">
+                                                    <button onClick={() => openAddForm('department', sub.id)} className="p-1.5 rounded-lg text-stone-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all" title="Tambah Departemen">
                                                         <Plus size={12} />
                                                     </button>
-                                                    <button onClick={() => openEditForm('sub_account', sub)} className="p-1.5 rounded-lg text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all" title="Edit">
+                                                    <button onClick={() => openEditForm('sub_account', sub)} className="p-1.5 rounded-lg text-stone-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all" title="Edit">
                                                         <Edit3 size={12} />
                                                     </button>
                                                 </>
                                             )}
                                             {hasPermission('book', 'delete') && (
-                                                <button onClick={() => handleDelete('sub_account', sub)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all" title="Hapus">
+                                                <button onClick={() => handleDelete('sub_account', sub)} className="p-1.5 rounded-lg text-stone-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all" title="Hapus">
                                                     <Trash2 size={12} />
                                                 </button>
                                             )}
@@ -882,11 +882,11 @@ export default function Book({ hasPermission }) {
                                     </div>
                                     {(sub.departments || []).map(dep => (
                                         <div key={dep.id} className="ml-10">
-                                            <div className="flex items-center px-6 py-2.5 hover:bg-slate-50/50 dark:hover:bg-white/[0.05]/30 transition-colors border-l-2 border-cyan-100 dark:border-cyan-900/30">
+                                            <div className="flex items-center px-6 py-2.5 hover:bg-stone-50/50 dark:hover:bg-white/[0.05]/30 transition-colors border-l-2 border-cyan-100 dark:border-cyan-900/30">
                                                 <div className="flex-1 grid grid-cols-12 gap-4 items-center">
                                                     <div className="col-span-2 font-mono text-xs text-amber-600 dark:text-amber-400">{dep.code}</div>
-                                                    <div className="col-span-4 text-sm text-slate-600 dark:text-white/40">{dep.name}</div>
-                                                    <div className="col-span-3 text-xs text-slate-400 truncate">{dep.description || '-'}</div>
+                                                    <div className="col-span-4 text-sm text-stone-600 dark:text-white/40">{dep.name}</div>
+                                                    <div className="col-span-3 text-xs text-stone-400 truncate">{dep.description || '-'}</div>
                                                     <div className="col-span-2">
                                                         <span className={`px-2 py-1 text-[10px] font-bold rounded-full ${dep.is_active !== false ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400' : 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400'}`}>{dep.is_active !== false ? text.active : text.inactive}</span>
                                                     </div>
@@ -894,12 +894,12 @@ export default function Book({ hasPermission }) {
                                                 </div>
                                                 <div className="flex items-center gap-1 ml-4 opacity-0 group-hover:opacity-100 transition-opacity">
                                                     {hasPermission('book', 'edit') && (
-                                                        <button onClick={() => openEditForm('department', dep)} className="p-1.5 rounded-lg text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all" title="Edit">
+                                                        <button onClick={() => openEditForm('department', dep)} className="p-1.5 rounded-lg text-stone-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all" title="Edit">
                                                             <Edit3 size={12} />
                                                         </button>
                                                     )}
                                                     {hasPermission('book', 'delete') && (
-                                                        <button onClick={() => handleDelete('department', dep)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all" title="Hapus">
+                                                        <button onClick={() => handleDelete('department', dep)} className="p-1.5 rounded-lg text-stone-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all" title="Hapus">
                                                             <Trash2 size={12} />
                                                         </button>
                                                     )}
@@ -934,10 +934,10 @@ export default function Book({ hasPermission }) {
             <Card noPadding>
                 {/* Toolbar: Search + Filter + Actions */}
                 {activeTab !== 'import' && (
-                    <div className="p-3 border-b border-slate-100 dark:border-slate-800">
+                    <div className="p-3 border-b border-stone-100 dark:border-white/[0.06]">
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                             <div className="relative flex-1 sm:flex-none">
-                                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
                                 <Input
                                     type="text"
                                     placeholder={text.search}
@@ -946,7 +946,7 @@ export default function Book({ hasPermission }) {
                                     className="sm:w-56 pl-9 pr-4 py-2 text-sm transition-all"
                                 />
                             </div>
-                            <div className="flex bg-gray-100 dark:bg-[#0d0d0d] p-1 rounded-xl">
+                            <div className="flex bg-stone-100 dark:bg-[#0d0d0d] p-1 rounded-xl">
                                 {filterStatusOptions.map(opt => (
                                     <button
                                         key={opt.id}
@@ -954,14 +954,14 @@ export default function Book({ hasPermission }) {
                                         className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all whitespace-nowrap ${
                                             filterStatus === opt.id
                                                 ? 'gradient-bg text-white shadow-sm'
-                                                : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
+                                                : 'text-stone-400 hover:text-stone-600 dark:hover:text-white/80'
                                         }`}
                                     >
                                         {opt.label}
                                     </button>
                                 ))}
                             </div>
-                            <div className="flex items-center gap-1 bg-gray-100 dark:bg-[#0d0d0d] p-1 rounded-xl">
+                            <div className="flex items-center gap-1 bg-stone-100 dark:bg-[#0d0d0d] p-1 rounded-xl">
                                 {[0, 10, 15, 25, 50].map(size => (
                                     <button
                                         key={size}
@@ -969,7 +969,7 @@ export default function Book({ hasPermission }) {
                                         className={`px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all whitespace-nowrap ${
                                             pageSize === size
                                                 ? 'gradient-bg text-white shadow-sm'
-                                                : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
+                                                : 'text-stone-400 hover:text-stone-600 dark:hover:text-white/80'
                                         }`}
                                     >
                                         {size === 0 ? text.pageAll : size}
@@ -990,7 +990,7 @@ export default function Book({ hasPermission }) {
                                         <Trash size={13} /> <span className="hidden sm:inline">{text.deleteAll}</span>
                                     </button>
                                 )}
-                                <button onClick={fetchData} className="p-2 rounded-xl text-slate-400 hover:text-blue-500 hover:bg-slate-50 dark:hover:bg-white/[0.05] transition-all" title="Refresh">
+                                <button onClick={fetchData} className="p-2 rounded-xl text-stone-400 hover:text-blue-500 hover:bg-stone-50 dark:hover:bg-white/[0.05] transition-all" title="Refresh">
                                     <RefreshCw size={16} />
                                 </button>
                             </div>
@@ -1000,10 +1000,10 @@ export default function Book({ hasPermission }) {
 
                 {/* Import Progress Bar (compact, inline) */}
                 {importing && importTotal > 0 && (
-                    <div className="px-4 py-2.5 border-b border-slate-100 dark:border-slate-800 bg-blue-50/50 dark:bg-blue-950/20">
+                    <div className="px-4 py-2.5 border-b border-stone-100 dark:border-white/[0.06] bg-blue-50/50 dark:bg-blue-950/20">
                         <div className="flex items-center justify-between mb-1.5">
                             <span className="text-xs font-bold text-blue-700 dark:text-blue-300">{importStage}</span>
-                            <span className="text-[10px] font-black text-slate-500 dark:text-white/40">
+                            <span className="text-[10px] font-black text-stone-500 dark:text-white/40">
                                 {importProcessed}/{importTotal}
                                 {importSuccess > 0 && <span className="text-emerald-600 dark:text-emerald-400 ml-2">{importSuccess} ✓</span>}
                                 {importFailed > 0 && <span className="text-red-600 dark:text-red-400 ml-2">{importFailed} ✗</span>}
@@ -1020,7 +1020,7 @@ export default function Book({ hasPermission }) {
 
                 {/* Tab Navigation */}
                 <div className="px-4 pt-3 pb-0">
-                    <div className="flex bg-gray-100 dark:bg-[#0d0d0d] p-1 rounded-xl overflow-x-auto w-full sm:w-auto">
+                    <div className="flex bg-stone-100 dark:bg-[#0d0d0d] p-1 rounded-xl overflow-x-auto w-full sm:w-auto">
                         {tabs.map(tab => (
                             <button
                                 key={tab.id}
@@ -1028,12 +1028,12 @@ export default function Book({ hasPermission }) {
                                 className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all whitespace-nowrap ${
                                     activeTab === tab.id
                                         ? 'gradient-bg text-white shadow-md transform scale-105 z-10'
-                                        : 'text-gray-500 dark:text-white/40 hover:bg-gray-200 dark:hover:bg-white/[0.06]'
+                                        : 'text-stone-500 dark:text-white/40 hover:bg-stone-200 dark:hover:bg-white/[0.06]'
                                 }`}
                             >
                                 {tab.label}
                                 {tab.count !== undefined && (
-                                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-black ${activeTab === tab.id ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40' : 'bg-gray-200 dark:bg-slate-600 text-gray-500 dark:text-white/40'}`}>{tab.count}</span>
+                                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-black ${activeTab === tab.id ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40' : 'bg-stone-200 dark:bg-[#1a1a1a] text-stone-500 dark:text-white/40'}`}>{tab.count}</span>
                                 )}
                             </button>
                         ))}
@@ -1044,7 +1044,7 @@ export default function Book({ hasPermission }) {
                     {loading ? (
                         <div className="flex items-center justify-center py-20">
                             <Loader2 size={24} className="animate-spin text-blue-500" />
-                            <span className="ml-3 text-sm text-slate-400">{text.loading}</span>
+                            <span className="ml-3 text-sm text-stone-400">{text.loading}</span>
                         </div>
                     ) : activeTab === 'overview' ? (
                         renderOverview()
@@ -1073,7 +1073,7 @@ export default function Book({ hasPermission }) {
                 size="max-w-md"
                 footer={
                     <div className="flex gap-3">
-                        <button onClick={() => setShowForm(false)} className="flex-1 py-3 bg-slate-100 dark:bg-[#0d0d0d] text-slate-500 hover:text-slate-800 dark:hover:text-white text-xs font-black rounded-2xl transition-all uppercase tracking-widest">{text.cancel}</button>
+                        <button onClick={() => setShowForm(false)} className="flex-1 py-3 bg-stone-100 dark:bg-[#0d0d0d] text-stone-500 hover:text-stone-800 dark:hover:text-white text-xs font-black rounded-2xl transition-all uppercase tracking-widest">{text.cancel}</button>
                         <button onClick={handleSave} className="flex-1 py-3 gradient-bg text-white text-xs font-black rounded-2xl hover:bg-blue-500 shadow-xl shadow-blue-500/30 transition-all uppercase tracking-widest">{text.save}</button>
                     </div>
                 }
@@ -1081,7 +1081,7 @@ export default function Book({ hasPermission }) {
                 <div className="space-y-4">
                             {(formLevel === 'sub_account' || formLevel === 'department') && (
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{text.selectParent}</label>
+                                    <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest">{text.selectParent}</label>
                                     <Select
                                         value={form.parent_id}
                                         onChange={(e) => setForm({ ...form, parent_id: e.target.value })}
@@ -1095,7 +1095,7 @@ export default function Book({ hasPermission }) {
                             )}
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{text.code}</label>
+                                <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest">{text.code}</label>
                                 <Input
                                     type="text"
                                     value={form.code}
@@ -1106,7 +1106,7 @@ export default function Book({ hasPermission }) {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{text.name}</label>
+                                <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest">{text.name}</label>
                                 <Input
                                     type="text"
                                     value={form.name}
@@ -1116,7 +1116,7 @@ export default function Book({ hasPermission }) {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{text.description}</label>
+                                <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest">{text.description}</label>
                                 <Textarea
                                     value={form.description}
                                     onChange={(e) => setForm({ ...form, description: e.target.value })}
@@ -1138,8 +1138,8 @@ export default function Book({ hasPermission }) {
                                     <AlertTriangle size={32} className="text-red-600 dark:text-red-400" />
                                 </div>
                             </div>
-                            <h3 className="text-xl font-extrabold text-slate-800 dark:text-white">{text.deleteAllTitle}</h3>
-                            <p className="text-sm text-slate-500 dark:text-white/40 mt-2">{text.deleteAllWarning}</p>
+                            <h3 className="text-xl font-extrabold text-stone-800 dark:text-white">{text.deleteAllTitle}</h3>
+                            <p className="text-sm text-stone-500 dark:text-white/40 mt-2">{text.deleteAllWarning}</p>
                         </div>
 
                         {/* Content */}
@@ -1147,25 +1147,25 @@ export default function Book({ hasPermission }) {
                             {/* Stats being deleted */}
                             <div className="flex items-center justify-center gap-6 py-4 mb-5 gradient-bg-soft rounded-2xl">
                                 <div className="text-center">
-                                    <p className="text-2xl font-extrabold text-slate-800 dark:text-white">{stats.accounts}</p>
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{text.stats.accounts}</p>
+                                    <p className="text-2xl font-extrabold text-stone-800 dark:text-white">{stats.accounts}</p>
+                                    <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">{text.stats.accounts}</p>
                                 </div>
-                                <div className="w-px h-8 bg-slate-200 dark:bg-[#111]" />
+                                <div className="w-px h-8 bg-stone-200 dark:bg-[#111]" />
                                 <div className="text-center">
-                                    <p className="text-2xl font-extrabold text-slate-800 dark:text-white">{stats.sub_accounts}</p>
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{text.stats.subs}</p>
+                                    <p className="text-2xl font-extrabold text-stone-800 dark:text-white">{stats.sub_accounts}</p>
+                                    <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">{text.stats.subs}</p>
                                 </div>
-                                <div className="w-px h-8 bg-slate-200 dark:bg-[#111]" />
+                                <div className="w-px h-8 bg-stone-200 dark:bg-[#111]" />
                                 <div className="text-center">
-                                    <p className="text-2xl font-extrabold text-slate-800 dark:text-white">{stats.departments}</p>
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{text.stats.deps}</p>
+                                    <p className="text-2xl font-extrabold text-stone-800 dark:text-white">{stats.departments}</p>
+                                    <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">{text.stats.deps}</p>
                                 </div>
                             </div>
 
                             {/* Consequences list */}
                             <ul className="space-y-2.5 mb-6">
                                 {text.deleteAllConsequences.map((item, i) => (
-                                    <li key={i} className="flex items-start gap-3 text-sm text-slate-600 dark:text-white/40">
+                                    <li key={i} className="flex items-start gap-3 text-sm text-stone-600 dark:text-white/40">
                                         <div className="w-5 h-5 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
                                             <X size={10} className="text-red-500" />
                                         </div>
@@ -1176,7 +1176,7 @@ export default function Book({ hasPermission }) {
 
                             {/* Type-to-confirm input */}
                             <div className="space-y-2 mb-6">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{text.deleteAllInputLabel}</label>
+                                <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest">{text.deleteAllInputLabel}</label>
                                 <input
                                     type="text"
                                     value={deleteConfirmText}
@@ -1191,7 +1191,7 @@ export default function Book({ hasPermission }) {
                             <div className="flex gap-3">
                                 <button
                                     onClick={() => { setShowDeleteAllModal(false); setDeleteConfirmText(''); }}
-                                    className="flex-1 py-3 bg-slate-100 dark:bg-[#0d0d0d] text-slate-500 hover:text-slate-800 dark:hover:text-white text-xs font-black rounded-2xl transition-all uppercase tracking-widest"
+                                    className="flex-1 py-3 bg-stone-100 dark:bg-[#0d0d0d] text-stone-500 hover:text-stone-800 dark:hover:text-white text-xs font-black rounded-2xl transition-all uppercase tracking-widest"
                                 >
                                     {text.cancel}
                                 </button>
@@ -1201,7 +1201,7 @@ export default function Book({ hasPermission }) {
                                     className={`flex-1 py-3 text-xs font-black rounded-2xl transition-all uppercase tracking-widest ${
                                         deleteConfirmText === (isEnglish ? 'DELETE' : 'HAPUS')
                                             ? 'bg-gradient-to-r from-red-500 to-rose-600 text-white shadow-xl shadow-red-500/30 hover:from-red-400 hover:to-rose-500 cursor-pointer'
-                                            : 'bg-slate-200 dark:bg-[#111] text-slate-400 dark:text-white/30 cursor-not-allowed'
+                                            : 'bg-stone-200 dark:bg-[#111] text-stone-400 dark:text-white/30 cursor-not-allowed'
                                     }`}
                                 >
                                     {text.deleteAll}

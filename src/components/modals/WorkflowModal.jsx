@@ -21,20 +21,20 @@ export default function WorkflowModal({
     >
       <div className="flex h-full min-h-0 flex-col">
         {/* Header Controls (Name & Description) */}
-        <div className="p-6 bg-white dark:bg-[#0d0d0d] border-b border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-6">
+        <div className="p-6 bg-white dark:bg-[#0d0d0d] border-b border-stone-100 dark:border-white/[0.06] grid grid-cols-2 gap-6">
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nama Alur Persetujuan</label>
+            <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Nama Alur Persetujuan</label>
             <input
-              className="w-full px-5 py-3 bg-slate-50 dark:bg-[#0d0d0d] border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white font-black"
+              className="w-full px-5 py-3 bg-stone-50 dark:bg-[#0d0d0d] border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white font-black"
               placeholder="Contoh: Alur Pengadaan Barang"
               value={flowForm.name}
               onChange={e => setFlowForm({ ...flowForm, name: e.target.value })}
             />
           </div>
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Deskripsi Singkat</label>
+            <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">Deskripsi Singkat</label>
             <input
-              className="w-full px-5 py-3 bg-slate-50 dark:bg-[#0d0d0d] border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white font-medium"
+              className="w-full px-5 py-3 bg-stone-50 dark:bg-[#0d0d0d] border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white font-medium"
               placeholder="Tujuan dari alur persetujuan ini..."
               value={flowForm.description}
               onChange={e => setFlowForm({ ...flowForm, description: e.target.value })}

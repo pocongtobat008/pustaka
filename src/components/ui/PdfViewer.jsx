@@ -120,7 +120,7 @@ export default function PdfViewer({ src, className = '' }) {
         return (
             <div className={`flex flex-col items-center justify-center gap-3 ${className}`}>
                 <Loader2 size={32} className="text-blue-500 animate-spin" />
-                <p className="text-sm font-bold text-slate-500 animate-pulse">Memuat PDF...</p>
+                <p className="text-sm font-bold text-stone-500 animate-pulse">Memuat PDF...</p>
             </div>
         );
     }
@@ -132,7 +132,7 @@ export default function PdfViewer({ src, className = '' }) {
                     <span className="text-2xl">📄</span>
                 </div>
                 <p className="text-sm font-bold text-red-500">Gagal memuat PDF</p>
-                <p className="text-xs text-slate-400 max-w-xs">{error}</p>
+                <p className="text-xs text-stone-400 max-w-xs">{error}</p>
             </div>
         );
     }
@@ -140,22 +140,22 @@ export default function PdfViewer({ src, className = '' }) {
     return (
         <div ref={containerRef} className={`flex flex-col h-full ${className}`}>
             {/* Toolbar */}
-            <div className="flex items-center justify-between px-4 py-2 bg-white/80 dark:bg-[#0d0d0d]/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/[0.06] rounded-t-2xl shrink-0">
+            <div className="flex items-center justify-between px-4 py-2 bg-white/80 dark:bg-[#0d0d0d]/80 backdrop-blur-xl border-b border-stone-200 dark:border-white/[0.06] rounded-t-2xl shrink-0">
                 <div className="flex items-center gap-1">
                     <button
                         onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                         disabled={currentPage <= 1}
-                        className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-white/[0.05] disabled:opacity-30 transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-white/[0.05] disabled:opacity-30 transition-colors"
                     >
                         <ChevronLeft size={16} />
                     </button>
-                    <span className="text-xs font-bold text-slate-600 dark:text-white/70 min-w-[80px] text-center">
+                    <span className="text-xs font-bold text-stone-600 dark:text-white/70 min-w-[80px] text-center">
                         {currentPage} / {totalPages}
                     </span>
                     <button
                         onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                         disabled={currentPage >= totalPages}
-                        className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-white/[0.05] disabled:opacity-30 transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-white/[0.05] disabled:opacity-30 transition-colors"
                     >
                         <ChevronRight size={16} />
                     </button>
@@ -163,16 +163,16 @@ export default function PdfViewer({ src, className = '' }) {
                 <div className="flex items-center gap-1">
                     <button
                         onClick={() => setScale(s => Math.max(0.3, s - 0.2))}
-                        className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-white/[0.05] transition-colors"
                     >
                         <ZoomOut size={16} />
                     </button>
-                    <span className="text-[10px] font-bold text-slate-400 min-w-[40px] text-center">
+                    <span className="text-[10px] font-bold text-stone-400 min-w-[40px] text-center">
                         {Math.round(scale * 100)}%
                     </span>
                     <button
                         onClick={() => setScale(s => Math.min(3, s + 0.2))}
-                        className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-white/[0.05] transition-colors"
                     >
                         <ZoomIn size={16} />
                     </button>
@@ -180,7 +180,7 @@ export default function PdfViewer({ src, className = '' }) {
             </div>
 
             {/* Canvas Area */}
-            <div className="flex-1 overflow-auto bg-slate-200 dark:bg-slate-950 flex justify-center p-4 rounded-b-2xl">
+            <div className="flex-1 overflow-auto bg-stone-200 dark:bg-[#050505] flex justify-center p-4 rounded-b-2xl">
                 <canvas ref={canvasRef} className="shadow-2xl rounded-lg" />
             </div>
         </div>

@@ -331,7 +331,7 @@ export default function Inventory({
                         <div className="flex bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-white/40 dark:border-white/10 p-1.5 rounded-2xl shadow-sm">
                             <button
                                 onClick={() => setActiveInvTab('internal')}
-                                className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all duration-300 ${activeInvTab === 'internal' ? 'gradient-bg text-white shadow-lg scale-105 ring-1 ring-black/5' : 'text-gray-500 dark:text-white/30 hover:text-gray-700 dark:hover:text-slate-300 hover:bg-white/50 dark:hover:bg-white/[0.05]/50'}`}
+                                className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all duration-300 ${activeInvTab === 'internal' ? 'gradient-bg text-white shadow-lg scale-105 ring-1 ring-black/5' : 'text-stone-500 dark:text-white/30 hover:text-stone-700 dark:hover:text-white/80 hover:bg-white/50 dark:hover:bg-white/[0.05]/50'}`}
                             >
                                 <Grid3x3 size={18} /> {text.tabWarehouse}
                                 {inventorySearchQuery && internalMatchCount > 0 && (
@@ -340,7 +340,7 @@ export default function Inventory({
                             </button>
                             <button
                                 onClick={() => setActiveInvTab('external')}
-                                className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all duration-300 ${activeInvTab === 'external' ? 'gradient-bg text-white shadow-lg scale-105 ring-1 ring-black/5' : 'text-gray-500 dark:text-white/30 hover:text-gray-700 dark:hover:text-slate-300 hover:bg-white/50 dark:hover:bg-white/[0.05]/50'}`}
+                                className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all duration-300 ${activeInvTab === 'external' ? 'gradient-bg text-white shadow-lg scale-105 ring-1 ring-black/5' : 'text-stone-500 dark:text-white/30 hover:text-stone-700 dark:hover:text-white/80 hover:bg-white/50 dark:hover:bg-white/[0.05]/50'}`}
                             >
                                 <Truck size={18} /> {text.tabIndoarsip}
                                 {inventorySearchQuery && externalMatchCount > 0 && (
@@ -358,7 +358,7 @@ export default function Inventory({
                                 value={inventorySearchQuery}
                                 onChange={(e) => setInventorySearchQuery(e.target.value)}
                                 placeholder={text.searchPlaceholder}
-                                className="w-full pl-12 pr-4 py-3 border border-white/40 dark:border-white/10 rounded-2xl bg-white/50 dark:bg-[#0d0d0d]/50 backdrop-blur-md focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500/50 dark:text-white transition-all text-sm font-medium shadow-inner placeholder:text-slate-400"
+                                className="w-full pl-12 pr-4 py-3 border border-white/40 dark:border-white/10 rounded-2xl bg-white/50 dark:bg-[#0d0d0d]/50 backdrop-blur-md focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500/50 dark:text-white transition-all text-sm font-medium shadow-inner placeholder:text-stone-400"
                             />
                         </div>
                     </div>
@@ -376,7 +376,7 @@ export default function Inventory({
                                 />
                                 <button
                                     onClick={downloadTemplate}
-                                    className="px-4 py-2 bg-white/50 hover:bg-white/80 dark:bg-[#0d0d0d]/50 dark:hover:bg-white/[0.05] text-slate-600 dark:text-white/70 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all border border-white/40 shadow-sm hover:shadow-md backdrop-blur-sm"
+                                    className="px-4 py-2 bg-white/50 hover:bg-white/80 dark:bg-[#0d0d0d]/50 dark:hover:bg-white/[0.05] text-stone-600 dark:text-white/70 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all border border-white/40 shadow-sm hover:shadow-md backdrop-blur-sm"
                                     title={text.templateTitle}
                                 >
                                     <Download size={18} /> {text.template}
@@ -418,31 +418,31 @@ export default function Inventory({
 
                         {/* Pagination UI */}
                         {!inventorySearchQuery && TOTAL_SLOTS > itemsPerPage && (
-                            <div className="flex justify-between items-center py-4 px-2 border-t border-slate-200 dark:border-slate-800 flex-wrap gap-4">
-                                <span className="text-sm text-slate-500 dark:text-white/40 font-medium bg-white/50 dark:bg-[#0d0d0d]/50 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-white/[0.06]">
+                            <div className="flex justify-between items-center py-4 px-2 border-t border-stone-200 dark:border-white/[0.06] flex-wrap gap-4">
+                                <span className="text-sm text-stone-500 dark:text-white/40 font-medium bg-white/50 dark:bg-[#0d0d0d]/50 px-3 py-1.5 rounded-lg border border-stone-200 dark:border-white/[0.06]">
                                     {text.totalSlot || "Total Slot"}: <strong className="text-blue-600 dark:text-blue-400">{TOTAL_SLOTS}</strong>
                                 </span>
                                 <div className="flex items-center gap-3">
                                     <button
                                         onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                                         disabled={currentPage === 1}
-                                        className="p-2 rounded-xl bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-slate-700 dark:text-slate-200 shadow-sm border border-slate-200 dark:border-white/[0.06] hover:bg-slate-50 dark:hover:bg-white/[0.06] hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                        className="p-2 rounded-xl bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-stone-700 dark:text-white/80 shadow-sm border border-stone-200 dark:border-white/[0.06] hover:bg-stone-50 dark:hover:bg-white/[0.06] hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                                         aria-label="Previous Page"
                                     >
                                         <ChevronLeft size={20} />
                                     </button>
                                     <div className="flex items-center gap-1.5 px-2">
-                                        <span className="text-sm font-bold text-slate-700 dark:text-slate-200">
+                                        <span className="text-sm font-bold text-stone-700 dark:text-white/80">
                                             {currentPage}
                                         </span>
-                                        <span className="text-sm font-medium text-slate-400 dark:text-white/30">
+                                        <span className="text-sm font-medium text-stone-400 dark:text-white/30">
                                             / {Math.ceil(TOTAL_SLOTS / itemsPerPage)}
                                         </span>
                                     </div>
                                     <button
                                         onClick={() => setCurrentPage(p => Math.min(Math.ceil(TOTAL_SLOTS / itemsPerPage), p + 1))}
                                         disabled={currentPage >= Math.ceil(TOTAL_SLOTS / itemsPerPage)}
-                                        className="p-2 rounded-xl bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-slate-700 dark:text-slate-200 shadow-sm border border-slate-200 dark:border-white/[0.06] hover:bg-slate-50 dark:hover:bg-white/[0.06] hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                        className="p-2 rounded-xl bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-stone-700 dark:text-white/80 shadow-sm border border-stone-200 dark:border-white/[0.06] hover:bg-stone-50 dark:hover:bg-white/[0.06] hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                                         aria-label="Next Page"
                                     >
                                         <ChevronRight size={20} />
@@ -467,7 +467,7 @@ export default function Inventory({
             </div>
 
             {activeInvTab === 'internal' && inventory.filter(isMatch).length === 0 && (
-                <div className="text-center py-12 text-gray-500">
+                <div className="text-center py-12 text-stone-500">
                     <p>{text.noMatch} "{inventorySearchQuery}".</p>
                 </div>
             )}
@@ -481,8 +481,8 @@ export default function Inventory({
                             <div className="w-24 h-24 border-4 border-blue-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
                             <Package className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-blue-600 animate-bounce" size={32} />
                         </div>
-                        <h3 className="text-2xl font-black text-gray-800 dark:text-white mb-3 uppercase tracking-tight">{text.movingBox}</h3>
-                        <p className="text-sm text-gray-500 dark:text-white/40 leading-relaxed font-medium">
+                        <h3 className="text-2xl font-black text-stone-800 dark:text-white mb-3 uppercase tracking-tight">{text.movingBox}</h3>
+                        <p className="text-sm text-stone-500 dark:text-white/40 leading-relaxed font-medium">
                             {text.movingHint}
                         </p>
                         <div className="mt-6 flex items-center gap-2 text-blue-500 font-bold text-xs uppercase tracking-widest">

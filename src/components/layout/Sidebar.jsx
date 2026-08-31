@@ -268,7 +268,7 @@ const Sidebar = ({
                         }
                     >
                         <div className="font-extrabold text-sm text-stone-800 dark:text-white leading-tight">Pustaka</div>
-                        <div className="text-[10px] text-slate-400 dark:text-white/30 leading-tight">v1.0.0</div>
+                        <div className="text-[10px] text-stone-400 dark:text-white/30 leading-tight">v1.0.0</div>
                     </div>
                 </div>
 
@@ -276,7 +276,7 @@ const Sidebar = ({
                 <button
                     onClick={handleLockToggle}
                     className={
-                        'cf-lock-btn absolute top-1/2 -translate-y-1/2 right-2 w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-stone-700 dark:hover:text-white/90 hover:bg-stone-100 dark:hover:bg-white/5 transition-all duration-300 ' +
+                        'cf-lock-btn absolute top-1/2 -translate-y-1/2 right-2 w-8 h-8 rounded-lg flex items-center justify-center text-stone-400 hover:text-stone-700 dark:hover:text-white/90 hover:bg-stone-100 dark:hover:bg-white/5 transition-all duration-300 ' +
                         (showLabels ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none')
                     }
                     title={isRail ? 'Kunci sidebar (perluas permanen)' : 'Buka kunci sidebar (auto collapse)'}
@@ -294,7 +294,7 @@ const Sidebar = ({
                 >
                     <Search size={15} className="shrink-0" />
                     <span className="flex-1 text-left truncate">{t('sidebar.search.placeholder')}</span>
-                    <kbd className="shrink-0 text-[9px] px-1.5 py-0.5 rounded bg-stone-100/80 dark:bg-white/10 text-slate-400 font-semibold">{shortcutKey}</kbd>
+                    <kbd className="shrink-0 text-[9px] px-1.5 py-0.5 rounded bg-stone-100/80 dark:bg-white/10 text-stone-400 font-semibold">{shortcutKey}</kbd>
                 </button>
             </div>
 
@@ -311,7 +311,7 @@ const Sidebar = ({
                                     key={item.id}
                                     onClick={() => navigate(item.id)}
                                     className={
-                                        'cf-rail-item relative flex items-center justify-center w-8 h-8 rounded-lg text-slate-400 dark:text-white/40 hover:text-blue-600 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors ' +
+                                        'cf-rail-item relative flex items-center justify-center w-8 h-8 rounded-lg text-stone-400 dark:text-white/40 hover:text-blue-600 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors ' +
                                         (isActive ? 'cf-active text-blue-600 dark:text-blue-300 bg-blue-50 dark:bg-blue-500/10' : '')
                                     }
                                     title={t(item.labelKey)}
@@ -342,7 +342,7 @@ const Sidebar = ({
                                             'cf-group-header flex items-center gap-2 w-full px-2.5 h-8 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ' +
                                             (isActiveGroup
                                                 ? 'cf-header-active'
-                                                : 'text-slate-400 dark:text-white/30 hover:text-stone-700 dark:hover:text-white/80')
+                                                : 'text-stone-400 dark:text-white/30 hover:text-stone-700 dark:hover:text-white/80')
                                         }
                                     >
                                         <ChevronDown
@@ -448,14 +448,14 @@ const Sidebar = ({
                         </button>
                         <button
                             onClick={(e) => { e.stopPropagation(); setLanguage(language === 'id' ? 'en' : 'id'); }}
-                            className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-stone-100 dark:hover:bg-white/5 transition-colors md:hidden"
+                            className="w-7 h-7 rounded-lg flex items-center justify-center text-stone-400 hover:text-blue-600 hover:bg-stone-100 dark:hover:bg-white/5 transition-colors md:hidden"
                             title={t('settings.language.title')}
                         >
                             <Languages size={13} />
                         </button>
                         <button
                             onClick={handleLogout}
-                            className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors md:hidden"
+                            className="w-7 h-7 rounded-lg flex items-center justify-center text-stone-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors md:hidden"
                             title={t("tooltip.logout")}
                         >
                             <LogOut size={13} />
@@ -475,7 +475,7 @@ const Sidebar = ({
                                     <span className="block text-xs font-bold text-stone-700 dark:text-white/90 truncate">
                                         {currentUser && currentUser.name ? currentUser.name : t('sidebar.user.guest')}
                                     </span>
-                                    <span className="block text-[10px] font-semibold text-slate-400 dark:text-white/30 truncate capitalize">
+                                    <span className="block text-[10px] font-semibold text-stone-400 dark:text-white/30 truncate capitalize">
                                         {currentUser && currentUser.role ? currentUser.role : 'user'}
                                     </span>
                                 </span>
@@ -485,7 +485,7 @@ const Sidebar = ({
                         <div className="grid grid-cols-2 gap-1.5 md:hidden">
                             <button
                                 onClick={(e) => { e.stopPropagation(); setLanguage(language === 'id' ? 'en' : 'id'); }}
-                                className="neo-btn flex items-center justify-center gap-1.5 h-9 text-slate-500 dark:text-white/70 hover:text-blue-500 dark:hover:text-blue-300 text-xs font-semibold"
+                                className="neo-btn flex items-center justify-center gap-1.5 h-9 text-stone-500 dark:text-white/70 hover:text-blue-500 dark:hover:text-blue-300 text-xs font-semibold"
                                 title={t('settings.language.title')}
                             >
                                 <Languages size={13} />
@@ -493,7 +493,7 @@ const Sidebar = ({
                             </button>
                             <button
                                 onClick={handleLogout}
-                                className="neo-btn flex items-center justify-center gap-1.5 h-9 text-slate-500 dark:text-white/70 hover:text-red-500 dark:hover:text-red-400 text-xs font-semibold"
+                                className="neo-btn flex items-center justify-center gap-1.5 h-9 text-stone-500 dark:text-white/70 hover:text-red-500 dark:hover:text-red-400 text-xs font-semibold"
                                 title={t("tooltip.logout")}
                             >
                                 <LogOut size={13} />
@@ -514,8 +514,8 @@ const Sidebar = ({
                         onClick={e => e.stopPropagation()}
                         className="cf-palette-panel w-full max-w-md rounded-2xl overflow-hidden"
                     >
-                        <div className="flex items-center gap-2 px-4 h-12 border-b border-slate-100 dark:border-white/[0.06]">
-                            <Search size={16} className="text-slate-400" />
+                        <div className="flex items-center gap-2 px-4 h-12 border-b border-stone-100 dark:border-white/[0.06]">
+                            <Search size={16} className="text-stone-400" />
                             <input
                                 ref={paletteRef}
                                 value={paletteQuery}
@@ -523,15 +523,15 @@ const Sidebar = ({
                                 placeholder={t('sidebar.search.placeholder')}
                                 className="flex-1 bg-transparent outline-none text-sm text-stone-700 dark:text-white/90 placeholder:text-stone-400"
                             />
-                            <kbd className="text-[9px] text-slate-400 border border-slate-200 dark:border-white/[0.08] rounded px-1.5 py-0.5">ESC</kbd>
+                            <kbd className="text-[9px] text-stone-400 border border-stone-200 dark:border-white/[0.08] rounded px-1.5 py-0.5">ESC</kbd>
                         </div>
                         <div className="max-h-[55vh] overflow-y-auto p-2 saas-search-results">
                             {!paletteQuery.trim() ? (
-                                <div className="px-3 py-6 text-center text-xs text-slate-400">
+                                <div className="px-3 py-6 text-center text-xs text-stone-400">
                                     {t('sidebar.search.placeholder')}
                                 </div>
                             ) : paletteResults.length === 0 ? (
-                                <div className="px-3 py-6 text-center text-xs text-slate-400">
+                                <div className="px-3 py-6 text-center text-xs text-stone-400">
                                     {t('sidebar.search.empty')}
                                 </div>
                             ) : (
@@ -547,7 +547,7 @@ const Sidebar = ({
                                         <span className="text-sm font-medium text-stone-700 dark:text-white/90">
                                             {t(item.labelKey)}
                                         </span>
-                                        <ChevronRight size={14} className="ml-auto text-slate-300" />
+                                        <ChevronRight size={14} className="ml-auto text-stone-300" />
                                     </button>
                                 ))
                             )}

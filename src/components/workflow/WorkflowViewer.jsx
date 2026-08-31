@@ -32,7 +32,7 @@ const StartNode = () => (
 );
 
 const EndNode = ({ data }) => (
-    <div className={`px-6 py-3 rounded-2xl text-white shadow-xl border-2 flex items-center gap-3 min-w-[150px] relative ${data.status === 'Completed' ? 'bg-blue-600 border-blue-400' : 'bg-slate-400 border-slate-300'}`}>
+    <div className={`px-6 py-3 rounded-2xl text-white shadow-xl border-2 flex items-center gap-3 min-w-[150px] relative ${data.status === 'Completed' ? 'bg-blue-600 border-blue-400' : 'bg-stone-400 border-stone-300'}`}>
         <Handle id="top" type="source" position={Position.Top} className="opacity-0" />
         <Handle id="right" type="source" position={Position.Right} className="opacity-0" />
         <Handle id="bottom" type="source" position={Position.Bottom} className="opacity-0" />
@@ -60,7 +60,7 @@ const ApproverNode = ({ data }) => {
         <div className={`rounded-3xl bg-white dark:bg-[#0d0d0d] shadow-2xl border-2 min-w-[220px] max-w-[280px] transition-all cursor-pointer hover:shadow-blue-500/10 hover:shadow-3xl relative ${isDone || isDefined ? 'border-blue-500' :
             isRejected ? 'border-red-500' :
                 isActive ? 'border-amber-500 ring-4 ring-amber-500/20 scale-105 z-50' :
-                    'border-slate-100 dark:border-slate-800'
+                    'border-stone-100 dark:border-white/[0.06]'
             }`}>
             {/* One handle per side */}
             <Handle id="top" type="source" position={Position.Top} className="opacity-0" />
@@ -73,21 +73,21 @@ const ApproverNode = ({ data }) => {
                     <div className={`w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center ${isDone || isDefined ? 'bg-blue-50 text-blue-600' :
                         isRejected ? 'bg-red-50 text-red-600' :
                             isActive ? 'bg-amber-50 text-amber-600 animate-pulse' :
-                                'bg-slate-50 dark:bg-[#0d0d0d] text-slate-400'
+                                'bg-stone-50 dark:bg-[#0d0d0d] text-stone-400'
                         }`}>
                         {isDone || isDefined ? <ShieldCheck size={20} /> :
                             isRejected ? <XCircle size={20} /> :
                                 isActive ? <Clock size={20} /> : <ShieldCheck size={20} />}
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{data.role || 'Approver'}</p>
-                        <p className="font-bold text-slate-800 dark:text-white truncate">{data.label}</p>
+                        <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">{data.role || 'Approver'}</p>
+                        <p className="font-bold text-stone-800 dark:text-white truncate">{data.label}</p>
                         {!isDefined && (
                             <div className="flex items-center gap-1 mt-1">
                                 <span className={`text-[8px] font-black px-1.5 py-0.5 rounded-md uppercase tracking-tighter ${isDone ? 'bg-emerald-500/10 text-emerald-600' :
                                     isRejected ? 'bg-red-500/10 text-red-600' :
                                         isActive ? 'bg-amber-500/10 text-amber-600' :
-                                            'bg-slate-100 dark:bg-[#0d0d0d] text-slate-500'
+                                            'bg-stone-100 dark:bg-[#0d0d0d] text-stone-500'
                                     }`}>
                                     {data.status || 'Waiting'}
                                 </span>
@@ -97,12 +97,12 @@ const ApproverNode = ({ data }) => {
                 </div>
 
                 {data.action_date && (
-                    <p className="text-[8px] text-slate-400 mt-2 font-bold italic">Done: {new Date(data.action_date).toLocaleDateString()}</p>
+                    <p className="text-[8px] text-stone-400 mt-2 font-bold italic">Done: {new Date(data.action_date).toLocaleDateString()}</p>
                 )}
 
                 {/* Badge indicators */}
                 {(hasNotes || hasDocs) && (
-                    <div className="flex items-center gap-1.5 mt-3 pt-2 border-t border-slate-100 dark:border-slate-800">
+                    <div className="flex items-center gap-1.5 mt-3 pt-2 border-t border-stone-100 dark:border-white/[0.06]">
                         {hasNotes && (
                             <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-blue-50 dark:bg-blue-900/30 text-blue-500 text-[8px] font-bold">
                                 <MessageSquareText size={9} /> Instruksi
@@ -113,15 +113,15 @@ const ApproverNode = ({ data }) => {
                                 <Paperclip size={9} /> {data.documents.length}
                             </span>
                         )}
-                        <span className="ml-auto flex items-center gap-0.5 text-[7px] text-slate-400 font-bold uppercase">
+                        <span className="ml-auto flex items-center gap-0.5 text-[7px] text-stone-400 font-bold uppercase">
                             <Eye size={8} /> Detail
                         </span>
                     </div>
                 )}
 
                 {!hasNotes && !hasDocs && (
-                    <div className="flex items-center justify-center gap-1 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                        <span className="text-[7px] text-slate-400 font-bold uppercase flex items-center gap-0.5">
+                    <div className="flex items-center justify-center gap-1 mt-2 pt-2 border-t border-stone-100 dark:border-white/[0.06]">
+                        <span className="text-[7px] text-stone-400 font-bold uppercase flex items-center gap-0.5">
                             <Eye size={8} /> Klik untuk detail
                         </span>
                     </div>
@@ -159,12 +159,12 @@ function NodeDetailPopup({ node, onClose }) {
             <div className="fixed inset-0 z-[10020] bg-black/60 backdrop-blur-md animate-in fade-in duration-200" onClick={onClose} />
 
             {/* Popup */}
-            <div className="fixed left-1/2 top-1/2 z-[10030] w-[420px] max-w-[92vw] max-h-[92vh] -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-[#0d0d0d] rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+            <div className="fixed left-1/2 top-1/2 z-[10030] w-[420px] max-w-[92vw] max-h-[92vh] -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-[#0d0d0d] rounded-3xl shadow-2xl border border-stone-200 dark:border-white/[0.06] overflow-hidden animate-in fade-in zoom-in-95 duration-300">
                 {/* Header */}
-                <div className={`p-5 border-b border-slate-100 dark:border-slate-800 ${isDone ? 'bg-emerald-50 dark:bg-emerald-900/10' :
+                <div className={`p-5 border-b border-stone-100 dark:border-white/[0.06] ${isDone ? 'bg-emerald-50 dark:bg-emerald-900/10' :
                     isRejected ? 'bg-red-50 dark:bg-red-900/10' :
                         isActive ? 'bg-amber-50 dark:bg-amber-900/10' :
-                            'bg-slate-50 dark:bg-[#0d0d0d]/50'
+                            'bg-stone-50 dark:bg-[#0d0d0d]/50'
                     }`}>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -176,30 +176,30 @@ function NodeDetailPopup({ node, onClose }) {
                                 <ShieldCheck size={24} />
                             </div>
                             <div>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{data.role || 'Approver'}</p>
-                                <p className="text-lg font-black text-slate-800 dark:text-white">{data.label}</p>
+                                <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">{data.role || 'Approver'}</p>
+                                <p className="text-lg font-black text-stone-800 dark:text-white">{data.label}</p>
                             </div>
                         </div>
                         <button onClick={onClose} className="p-2 hover:bg-white/50 dark:hover:bg-white/[0.06] rounded-xl transition-all">
-                            <X size={18} className="text-slate-400" />
+                            <X size={18} className="text-stone-400" />
                         </button>
                     </div>
 
                     <div className="flex items-center gap-2 mt-3">
                         {data.username && (
-                            <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-white/60 dark:bg-[#0d0d0d] text-[10px] font-bold text-slate-600 dark:text-white/70">
+                            <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-white/60 dark:bg-[#0d0d0d] text-[10px] font-bold text-stone-600 dark:text-white/70">
                                 <User size={10} /> {data.username}
                             </span>
                         )}
                         <span className={`px-2 py-1 rounded-lg text-[10px] font-black uppercase ${isDone ? 'bg-emerald-500/20 text-emerald-700' :
                             isRejected ? 'bg-red-500/20 text-red-700' :
                                 isActive ? 'bg-amber-500/20 text-amber-700' :
-                                    'bg-slate-200 dark:bg-[#111] text-slate-500'
+                                    'bg-stone-200 dark:bg-[#111] text-stone-500'
                             }`}>
                             {data.status || 'Waiting'}
                         </span>
                         {data.action_date && (
-                            <span className="text-[10px] text-slate-400 font-bold italic ml-auto">
+                            <span className="text-[10px] text-stone-400 font-bold italic ml-auto">
                                 {new Date(data.action_date).toLocaleDateString()}
                             </span>
                         )}
@@ -210,7 +210,7 @@ function NodeDetailPopup({ node, onClose }) {
                 <div className="p-5 overflow-y-auto max-h-[calc(92vh-9rem)] custom-scrollbar space-y-5">
                     {/* Instruction */}
                     <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1 mb-2">
+                        <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest flex items-center gap-1 mb-2">
                             <MessageSquareText size={10} className="text-blue-500" /> Instruksi Kerja
                         </p>
                         {notes ? (
@@ -218,13 +218,13 @@ function NodeDetailPopup({ node, onClose }) {
                                 <p className="text-sm text-blue-700 dark:text-blue-300 leading-relaxed whitespace-pre-wrap">{notes}</p>
                             </div>
                         ) : (
-                            <p className="text-xs text-slate-400 italic px-1">Tidak ada instruksi khusus untuk step ini.</p>
+                            <p className="text-xs text-stone-400 italic px-1">Tidak ada instruksi khusus untuk step ini.</p>
                         )}
                     </div>
 
                     {/* Attachments */}
                     <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1 mb-2">
+                        <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest flex items-center gap-1 mb-2">
                             <Paperclip size={10} className="text-amber-500" /> Lampiran ({docs.length})
                         </p>
                         {docs.length > 0 ? (
@@ -255,7 +255,7 @@ function NodeDetailPopup({ node, onClose }) {
                                             className="flex items-center gap-2 p-3 rounded-xl bg-white dark:bg-[#0d0d0d] border border-amber-200/50 dark:border-amber-800/50 hover:bg-amber-50 transition-all"
                                         >
                                             <FileText size={16} className="text-amber-500 flex-shrink-0" />
-                                            <span className="text-xs font-bold text-slate-600 dark:text-white/70 truncate">
+                                            <span className="text-xs font-bold text-stone-600 dark:text-white/70 truncate">
                                                 {doc.name || (typeof url === 'string' ? url.split('/').pop() : `File ${dIdx + 1}`)}
                                             </span>
                                         </a>
@@ -263,7 +263,7 @@ function NodeDetailPopup({ node, onClose }) {
                                 })}
                             </div>
                         ) : (
-                            <p className="text-xs text-slate-400 italic px-1">Tidak ada lampiran.</p>
+                            <p className="text-xs text-stone-400 italic px-1">Tidak ada lampiran.</p>
                         )}
                     </div>
                 </div>
@@ -351,7 +351,7 @@ export default function WorkflowViewer({ nodes = [], edges = [], accentColor, cu
     };
 
     return (
-        <div className="w-full h-full bg-slate-50 dark:bg-[#0B1437] relative">
+        <div className="w-full h-full bg-stone-50 dark:bg-[#0B1437] relative">
             <ReactFlow
                 nodes={processedNodes}
                 edges={processedEdges}

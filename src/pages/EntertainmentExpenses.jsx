@@ -1048,7 +1048,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                     className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all ${
                         tab === 'pending'
                             ? 'gradient-bg text-white shadow-md'
-                            : 'text-slate-500 dark:text-white/40 hover:bg-slate-100 dark:hover:bg-white/[0.06]'
+                            : 'text-stone-500 dark:text-white/40 hover:bg-stone-100 dark:hover:bg-white/[0.06]'
                     }`}
                 >
                     {isEnglish ? 'Entertainment List' : 'Daftar Entertainment'}
@@ -1058,7 +1058,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                     className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all ${
                         tab === 'settled'
                             ? 'bg-emerald-600 text-white shadow-md'
-                            : 'text-slate-500 dark:text-white/40 hover:bg-slate-100 dark:hover:bg-white/[0.06]'
+                            : 'text-stone-500 dark:text-white/40 hover:bg-stone-100 dark:hover:bg-white/[0.06]'
                     }`}
                 >
                     {isEnglish ? 'Settlement' : 'Penyelesaian / Settle'}
@@ -1069,7 +1069,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                         className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all ${
                             tab === 'rules'
                                 ? 'bg-amber-600 text-white shadow-md'
-                                : 'text-slate-500 dark:text-white/40 hover:bg-slate-100 dark:hover:bg-white/[0.06]'
+                                : 'text-stone-500 dark:text-white/40 hover:bg-stone-100 dark:hover:bg-white/[0.06]'
                         }`}
                     >
                         Rules
@@ -1092,9 +1092,9 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                 settleFilter === f.key
                                     ? f.key === 'over' ? 'bg-green-600 text-white shadow-md'
                                       : f.key === 'shortage' ? 'bg-red-600 text-white shadow-md'
-                                      : f.key === 'draw' ? 'bg-slate-600 text-white shadow-md'
+                                      : f.key === 'draw' ? 'bg-[#1a1a1a] text-white shadow-md'
                                       : 'gradient-bg text-white shadow-md'
-                                    : 'text-slate-500 dark:text-white/40 hover:bg-slate-100 dark:hover:bg-white/[0.06]'
+                                    : 'text-stone-500 dark:text-white/40 hover:bg-stone-100 dark:hover:bg-white/[0.06]'
                             }`}
                         >
                             {f.label}
@@ -1107,51 +1107,51 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
             <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-4 border border-white/40 dark:border-white/10">
             <div className="flex flex-wrap items-end gap-3">
                 <div className="flex-1 min-w-[130px]">
-                    <label className="block text-xs font-semibold text-slate-500 dark:text-white/40 mb-1">{text.filterTanggalFrom}</label>
+                    <label className="block text-xs font-semibold text-stone-500 dark:text-white/40 mb-1">{text.filterTanggalFrom}</label>
                     <input type="date" aria-label={text.filterTanggalFrom} value={searchParams.tanggal_from}
                         onChange={e => setSearchParams(p => ({ ...p, tanggal_from: e.target.value }))}
-                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500" />
+                        className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500" />
                 </div>
                 <div className="flex-1 min-w-[130px]">
-                    <label className="block text-xs font-semibold text-slate-500 dark:text-white/40 mb-1">{text.filterTanggalTo}</label>
+                    <label className="block text-xs font-semibold text-stone-500 dark:text-white/40 mb-1">{text.filterTanggalTo}</label>
                     <input type="date" aria-label={text.filterTanggalTo} value={searchParams.tanggal_to}
                         onChange={e => setSearchParams(p => ({ ...p, tanggal_to: e.target.value }))}
-                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500" />
+                        className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500" />
                 </div>
                     <div className="flex-1 min-w-[150px]">
-                        <label className="block text-xs font-semibold text-slate-500 dark:text-white/40 mb-1">{text.filterJenis}</label>
+                        <label className="block text-xs font-semibold text-stone-500 dark:text-white/40 mb-1">{text.filterJenis}</label>
                         <select aria-label={text.filterJenis} value={searchParams.jenis}
                             onChange={e => setSearchParams(p => ({ ...p, jenis: e.target.value }))}
-                            className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500">
+                            className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500">
                             <option value="">{text.filterAllSettle}</option>
                             {JENIS_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
                         </select>
                     </div>
                     <div className="flex-1 min-w-[150px]">
-                        <label className="block text-xs font-semibold text-slate-500 dark:text-white/40 mb-1">{isEnglish ? 'Entry Type' : 'Tipe Entry'}</label>
+                        <label className="block text-xs font-semibold text-stone-500 dark:text-white/40 mb-1">{isEnglish ? 'Entry Type' : 'Tipe Entry'}</label>
                         <select aria-label={isEnglish ? 'Entry Type' : 'Tipe Entry'} value={searchParams.entry_type}
                             onChange={e => setSearchParams(p => ({ ...p, entry_type: e.target.value }))}
-                            className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500">
+                            className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500">
                             <option value="">{text.filterAllSettle}</option>
                             <option value="reimburse">{t("opt.reimburse")}</option>
                             <option value="plan">{t("opt.plan")}</option>
                         </select>
                     </div>
                     <div className="flex-1 min-w-[150px]">
-                        <label className="block text-xs font-semibold text-slate-500 dark:text-white/40 mb-1">{text.filterNoAf}</label>
+                        <label className="block text-xs font-semibold text-stone-500 dark:text-white/40 mb-1">{text.filterNoAf}</label>
                         <input type="text" placeholder={text.filterNoAf + ' (Enter)'} value={searchParams.no_gl}
                             onChange={e => setSearchParams(p => ({ ...p, no_gl: e.target.value }))}
                             onKeyDown={handleSearchKeyDown}
-                            className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm font-mono focus:ring-2 focus:ring-blue-500" />
+                            className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm font-mono focus:ring-2 focus:ring-blue-500" />
                     </div>
                     <div className="flex-[2] min-w-[200px]">
-                        <label className="block text-xs font-semibold text-slate-500 dark:text-white/40 mb-1">{text.filterSearch}</label>
+                        <label className="block text-xs font-semibold text-stone-500 dark:text-white/40 mb-1">{text.filterSearch}</label>
                         <div className="relative">
-                            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
                             <input type="text" placeholder={text.searchPlaceholder + ' (Enter)'} value={searchParams.search}
                                 onChange={e => setSearchParams(p => ({ ...p, search: e.target.value }))}
                                 onKeyDown={handleSearchKeyDown}
-                                className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500" />
+                                className="w-full pl-10 pr-4 py-2 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500" />
                         </div>
                     </div>
                     <button onClick={() => { setPage(1); }}
@@ -1160,7 +1160,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                         {text.filterBtn}
                     </button>
                     <button onClick={() => { setSearchParams({ tanggal_from: '', tanggal_to: '', jenis: '', search: '', entry_type: '', no_gl: '' }); setPage(1); }}
-                        className="px-4 py-2 border border-slate-300 dark:border-white/[0.08] text-slate-600 dark:text-white/70 rounded-xl hover:bg-slate-50 dark:hover:bg-white/[0.06] transition-colors text-sm font-semibold">
+                        className="px-4 py-2 border border-stone-300 dark:border-white/[0.08] text-stone-600 dark:text-white/70 rounded-xl hover:bg-stone-50 dark:hover:bg-white/[0.06] transition-colors text-sm font-semibold">
                         <X size={16} className="inline-block mr-1" />
                         {text.filterReset}
                     </button>
@@ -1170,8 +1170,8 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
             {/* Rules Tab Content */}
             {tab === 'rules' && isAdmin && (
                 <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl border border-white/40 dark:border-white/10 overflow-hidden">
-                    <div className="px-6 py-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-b border-slate-200 dark:border-white/[0.06] flex items-center justify-between">
-                        <h2 className="font-bold text-slate-700 dark:text-slate-200">
+                    <div className="px-6 py-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-b border-stone-200 dark:border-white/[0.06] flex items-center justify-between">
+                        <h2 className="font-bold text-stone-700 dark:text-white/80">
                             <ClipboardList size={18} className="inline-block mr-2" />
                             {text.rulesTitle}
                         </h2>
@@ -1185,34 +1185,34 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                     <AnimatePresence>
                         {showRuleForm && (
                             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-                                className="border-b border-slate-200 dark:border-white/[0.06] overflow-hidden">
+                                className="border-b border-stone-200 dark:border-white/[0.06] overflow-hidden">
                                 <div className="p-6 space-y-4">
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                         <div>
-                                            <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">Rule Name *</label>
+                                            <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">Rule Name *</label>
                                             <input type="text" value={ruleForm.rule_name}
                                                 onChange={e => setRuleForm(p => ({ ...p, rule_name: e.target.value }))}
                                                 placeholder="Contoh: Allow finance view all"
-                                                className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm" />
+                                                className="w-full px-3 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm" />
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">Target Type *</label>
+                                            <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">Target Type *</label>
                                             <select value={ruleForm.target_type}
                                                 onChange={e => setRuleForm(p => ({ ...p, target_type: e.target.value, target_value: '' }))}
-                                                className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm">
+                                                className="w-full px-3 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm">
                                                 <option value="user">{t("opt.user")}</option>
                                                 <option value="division">{t("opt.division")}</option>
                                                 <option value="role">{t("opt.role")}</option>
                                             </select>
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">
+                                            <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">
                                                 {ruleForm.target_type === 'user' ? 'Username' : ruleForm.target_type === 'division' ? 'Nama Divisi' : 'Role ID'} *
                                             </label>
                                             {ruleForm.target_type === 'user' ? (
                                                 <select value={ruleForm.target_value}
                                                     onChange={e => setRuleForm(p => ({ ...p, target_value: e.target.value }))}
-                                                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm">
+                                                    className="w-full px-3 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm">
                                                     <option value="">{text.targetUser}</option>
                                                     {usersList.map(u => (
                                                         <option key={u.username || u.id} value={u.username}>{u.name || u.username}</option>
@@ -1221,7 +1221,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                             ) : ruleForm.target_type === 'division' ? (
                                                 <select value={ruleForm.target_value}
                                                     onChange={e => setRuleForm(p => ({ ...p, target_value: e.target.value }))}
-                                                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm">
+                                                    className="w-full px-3 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm">
                                                     <option value="">{text.targetDivision}</option>
                                                     {departmentsList.map(d => (
                                                         <option key={d.id || d.name} value={d.name}>{d.name || d.label}</option>
@@ -1230,7 +1230,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                             ) : (
                                                 <select value={ruleForm.target_value}
                                                     onChange={e => setRuleForm(p => ({ ...p, target_value: e.target.value }))}
-                                                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm">
+                                                    className="w-full px-3 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm">
                                                     <option value="">{text.targetRole}</option>
                                                     {rolesList.map(r => (
                                                         <option key={r.id} value={r.id}>{r.label || r.id}</option>
@@ -1240,7 +1240,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-2">Permissions</label>
+                                        <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-2">Permissions</label>
                                         <div className="flex flex-wrap gap-3">
                                                     {[
                                                         { key: 'view_all', label: text.permViewAll },
@@ -1251,11 +1251,11 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                                         { key: 'can_settle', label: text.permSettle },
                                                         { key: 'can_export', label: text.permExport }
                                                     ].map(p => (
-                                                <label key={p.key} className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-600 text-sm">
+                                                <label key={p.key} className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] cursor-pointer hover:bg-stone-50 dark:hover:bg-[#1a1a1a] text-sm">
                                                     <input type="checkbox" checked={!!ruleForm[p.key]}
                                                         onChange={e => setRuleForm(prev => ({ ...prev, [p.key]: e.target.checked }))}
-                                                        className="rounded border-slate-300 text-amber-600 focus:ring-amber-500" />
-                                                    <span className="text-slate-700 dark:text-white/70">{p.label}</span>
+                                                        className="rounded border-stone-300 text-amber-600 focus:ring-amber-500" />
+                                                    <span className="text-stone-700 dark:text-white/70">{p.label}</span>
                                                 </label>
                                             ))}
                                         </div>
@@ -1267,7 +1267,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                             {editingRule ? text.btnUpdateRule : text.btnSaveRule}
                                         </button>
                                         <button onClick={() => { setShowRuleForm(false); setEditingRule(null); }}
-                                            className="px-5 py-2.5 border border-slate-300 dark:border-white/[0.08] rounded-xl text-slate-600 dark:text-white/70 hover:bg-slate-50 dark:hover:bg-white/[0.06] text-sm">
+                                            className="px-5 py-2.5 border border-stone-300 dark:border-white/[0.08] rounded-xl text-stone-600 dark:text-white/70 hover:bg-stone-50 dark:hover:bg-white/[0.06] text-sm">
                                             {text.btnCancelRule}
                                         </button>
                                     </div>
@@ -1280,7 +1280,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead>
-                                <tr className="bg-slate-50 dark:bg-[#111]/50 text-xs font-semibold text-slate-500 dark:text-white/70 uppercase tracking-wider">
+                                <tr className="bg-stone-50 dark:bg-[#111]/50 text-xs font-semibold text-stone-500 dark:text-white/70 uppercase tracking-wider">
                                     <th className="px-4 py-3 text-left">{text.ruleName}</th>
                                     <th className="px-4 py-3 text-center">{text.targetType}</th>
                                     <th className="px-4 py-3 text-left">{text.targetValue}</th>
@@ -1297,9 +1297,9 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                             </thead>
                             <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                                 {rules.length === 0 ? (
-                                    <tr><td colSpan={12} className="px-4 py-8 text-center text-slate-400">{text.noRules}</td></tr>
+                                    <tr><td colSpan={12} className="px-4 py-8 text-center text-stone-400">{text.noRules}</td></tr>
                                 ) : rules.map(rule => (
-                                    <tr key={rule.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.06]/30">
+                                    <tr key={rule.id} className="hover:bg-stone-50 dark:hover:bg-white/[0.06]/30">
                                         <td className="px-4 py-3 font-semibold">{rule.rule_name}</td>
                                         <td className="px-4 py-3 text-center">
                                             <span className={`px-2 py-1 rounded-lg text-xs font-semibold ${
@@ -1309,15 +1309,15 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                             }`}>{rule.target_type}</span>
                                         </td>
                                         <td className="px-4 py-3">{rule.target_value}</td>
-                                        <td className="px-4 py-3 text-center">{rule.view_all ? <CheckCircle2 size={16} className="inline text-green-500" /> : <X size={16} className="inline text-slate-300" />}</td>
-                                        <td className="px-4 py-3 text-center">{rule.export_all ? <CheckCircle2 size={16} className="inline text-green-500" /> : <X size={16} className="inline text-slate-300" />}</td>
+                                        <td className="px-4 py-3 text-center">{rule.view_all ? <CheckCircle2 size={16} className="inline text-green-500" /> : <X size={16} className="inline text-stone-300" />}</td>
+                                        <td className="px-4 py-3 text-center">{rule.export_all ? <CheckCircle2 size={16} className="inline text-green-500" /> : <X size={16} className="inline text-stone-300" />}</td>
                                         <td className="px-4 py-3 text-center">{rule.can_create ? <CheckCircle2 size={16} className="inline text-green-500" /> : <X size={16} className="inline text-red-400" />}</td>
                                         <td className="px-4 py-3 text-center">{rule.can_edit ? <CheckCircle2 size={16} className="inline text-green-500" /> : <X size={16} className="inline text-red-400" />}</td>
                                         <td className="px-4 py-3 text-center">{rule.can_delete ? <CheckCircle2 size={16} className="inline text-green-500" /> : <X size={16} className="inline text-red-400" />}</td>
                                         <td className="px-4 py-3 text-center">{rule.can_settle ? <CheckCircle2 size={16} className="inline text-green-500" /> : <X size={16} className="inline text-red-400" />}</td>
                                         <td className="px-4 py-3 text-center">{rule.can_export ? <CheckCircle2 size={16} className="inline text-green-500" /> : <X size={16} className="inline text-red-400" />}</td>
                                         <td className="px-4 py-3 text-center">
-                                            <span className={`px-2 py-1 rounded-lg text-xs font-semibold ${rule.is_active ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
+                                            <span className={`px-2 py-1 rounded-lg text-xs font-semibold ${rule.is_active ? 'bg-green-100 text-green-700' : 'bg-stone-100 text-stone-500'}`}>
                                                 {rule.is_active ? 'Active' : 'Inactive'}
                                             </span>
                                         </td>
@@ -1348,7 +1348,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                 {showForm && (
                     <>
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[70] bg-slate-900/50 backdrop-blur-sm"
+                        className="fixed inset-0 z-[70] bg-[#0a0a0a]/50 backdrop-blur-sm"
                         onClick={() => { resetForm(); setShowForm(false); }} />
                     <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
                         transition={{ type: 'spring', damping: 28, stiffness: 300 }}
@@ -1363,13 +1363,13 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                         <div className="flex-1 overflow-y-auto">
                         <form onSubmit={handleSubmit} className="p-6 space-y-5">
                             {/* Entry Type (Plan / Reimburse) */}
-                            <div className="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-slate-100 dark:bg-[#111]/40">
+                            <div className="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-stone-100 dark:bg-[#111]/40">
                                 <button type="button" onClick={() => setEntryType('plan')}
-                                    className={`py-2.5 rounded-xl text-sm font-bold transition-all ${entryType === 'plan' ? 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-blue-600 shadow' : 'text-slate-500 dark:text-white/40 hover:text-slate-700'}`}>
+                                    className={`py-2.5 rounded-xl text-sm font-bold transition-all ${entryType === 'plan' ? 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-blue-600 shadow' : 'text-stone-500 dark:text-white/40 hover:text-stone-700'}`}>
                                     Plan
                                 </button>
                                 <button type="button" onClick={() => setEntryType('reimburse')}
-                                    className={`py-2.5 rounded-xl text-sm font-bold transition-all ${entryType === 'reimburse' ? 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-emerald-600 shadow' : 'text-slate-500 dark:text-white/40 hover:text-slate-700'}`}>
+                                    className={`py-2.5 rounded-xl text-sm font-bold transition-all ${entryType === 'reimburse' ? 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-emerald-600 shadow' : 'text-stone-500 dark:text-white/40 hover:text-stone-700'}`}>
                                     Reimburse
                                 </button>
                             </div>
@@ -1384,18 +1384,18 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {/* Tanggal */}
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.lblTanggal}</label>
+                                    <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.lblTanggal}</label>
                                     <input type="date" value={form.tanggal}
                                         onChange={e => setForm(p => ({ ...p, tanggal: e.target.value }))}
-                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.tanggal ? 'border-red-500' : 'border-slate-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500`} />
+                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.tanggal ? 'border-red-500' : 'border-stone-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500`} />
                                     {errors.tanggal && <p className="text-red-500 text-xs mt-1">{errors.tanggal}</p>}
                                 </div>
                                 {/* Jenis */}
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.lblJenis}</label>
+                                    <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.lblJenis}</label>
                                     <select value={form.jenis}
                                         onChange={e => setForm(p => ({ ...p, jenis: e.target.value }))}
-                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.jenis ? 'border-red-500' : 'border-slate-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500`}>
+                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.jenis ? 'border-red-500' : 'border-stone-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500`}>
                                         <option value="">{text.pilihJenis}</option>
                                         {JENIS_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
                                     </select>
@@ -1403,7 +1403,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                     {form.jenis === 'Custom' && (
                                         <input type="text" placeholder={text.customJenisPlaceholder} value={form.custom_jenis}
                                             onChange={e => setForm(p => ({ ...p, custom_jenis: e.target.value }))}
-                                            className={`mt-2 w-full px-3 py-2 rounded-xl border ${errors.custom_jenis ? 'border-red-500' : 'border-slate-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm`} />
+                                            className={`mt-2 w-full px-3 py-2 rounded-xl border ${errors.custom_jenis ? 'border-red-500' : 'border-stone-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm`} />
                                     )}
                                     {errors.custom_jenis && <p className="text-red-500 text-xs mt-1">{errors.custom_jenis}</p>}
                                 </div>
@@ -1413,19 +1413,19 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     {/* Venue */}
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.lblTempat} *</label>
+                                        <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.lblTempat} *</label>
                                         <input type="text" value={form.tempat}
                                             onChange={e => setForm(p => ({ ...p, tempat: e.target.value }))}
-                                            className={`w-full px-3 py-2.5 rounded-xl border ${errors.tempat ? 'border-red-500' : 'border-slate-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500`} />
+                                            className={`w-full px-3 py-2.5 rounded-xl border ${errors.tempat ? 'border-red-500' : 'border-stone-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500`} />
                                         {errors.tempat && <p className="text-red-500 text-xs mt-1">{errors.tempat}</p>}
                                     </div>
                                     {/* Address Venue */}
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.lblAlamat}</label>
+                                        <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.lblAlamat}</label>
                                         <textarea value={form.alamat}
                                             onChange={e => setForm(p => ({ ...p, alamat: e.target.value }))}
                                             rows={2}
-                                            className={`w-full px-3 py-2.5 rounded-xl border ${errors.alamat ? 'border-red-500' : 'border-slate-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500`} />
+                                            className={`w-full px-3 py-2.5 rounded-xl border ${errors.alamat ? 'border-red-500' : 'border-stone-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500`} />
                                         {errors.alamat && <p className="text-red-500 text-xs mt-1">{errors.alamat}</p>}
                                     </div>
                                 </div>
@@ -1433,39 +1433,39 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {/* Nilai */}
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.lblNilai}</label>
+                                    <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.lblNilai}</label>
                                     <div className="relative">
-                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">Rp</span>
+                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400">Rp</span>
                                         <input type="text" value={form.nilai ? formatCurrency(form.nilai) : ''}
                                             onChange={handleNilaiChange}
-                                            className={`w-full pl-10 pr-3 py-2.5 rounded-xl border ${errors.nilai ? 'border-red-500' : 'border-slate-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500`} />
+                                            className={`w-full pl-10 pr-3 py-2.5 rounded-xl border ${errors.nilai ? 'border-red-500' : 'border-stone-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500`} />
                                     </div>
                                     {errors.nilai && <p className="text-red-500 text-xs mt-1">{errors.nilai}</p>}
                                 </div>
                                 {/* No AF */}
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.lblNoGl}</label>
+                                    <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.lblNoGl}</label>
                                     <input type="text" value={form.no_gl}
                                         onChange={e => setForm(p => ({ ...p, no_gl: formatAf(e.target.value) }))}
                                         placeholder="PR000001"
-                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.no_gl ? 'border-red-500' : 'border-slate-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500`} />
+                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.no_gl ? 'border-red-500' : 'border-stone-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500`} />
                                     {errors.no_gl && <p className="text-red-500 text-xs mt-1">{errors.no_gl}</p>}
                                 </div>
                                 {/* No GL */}
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.lblGl}</label>
+                                    <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.lblGl}</label>
                                     <input type="text" value={form.gl_number}
                                         onChange={e => setForm(p => ({ ...p, gl_number: e.target.value }))}
                                         placeholder={isEnglish ? 'Enter GL number' : 'Isi No GL'}
-                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.gl_number ? 'border-red-500' : 'border-slate-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500`} />
+                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.gl_number ? 'border-red-500' : 'border-stone-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500`} />
                                     {errors.gl_number && <p className="text-red-500 text-xs mt-1">{errors.gl_number}</p>}
                                 </div>
                                 {/* Jenis Usaha */}
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.lblJenisUsaha}</label>
+                                    <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.lblJenisUsaha}</label>
                                     <select value={form.jenis_usaha}
                                         onChange={e => setForm(p => ({ ...p, jenis_usaha: e.target.value, custom_jenis_usaha: '' }))}
-                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.jenis_usaha ? 'border-red-500' : 'border-slate-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500`}>
+                                        className={`w-full px-3 py-2.5 rounded-xl border ${errors.jenis_usaha ? 'border-red-500' : 'border-stone-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500`}>
                                         <option value="">t('entertain.selectBusinessType')</option>
                                         {JENIS_USAHA_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
                                     </select>
@@ -1473,37 +1473,37 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                     {form.jenis_usaha === 'Custom' && (
                                         <input type="text" placeholder={text.customJenisUsahaPlaceholder} value={form.custom_jenis_usaha}
                                             onChange={e => setForm(p => ({ ...p, custom_jenis_usaha: e.target.value }))}
-                                            className={`mt-2 w-full px-3 py-2 rounded-xl border ${errors.custom_jenis_usaha ? 'border-red-500' : 'border-slate-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm`} />
+                                            className={`mt-2 w-full px-3 py-2 rounded-xl border ${errors.custom_jenis_usaha ? 'border-red-500' : 'border-stone-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm`} />
                                     )}
                                     {errors.custom_jenis_usaha && <p className="text-red-500 text-xs mt-1">{errors.custom_jenis_usaha}</p>}
                                 </div>
                             </div>
                             {/* Relasi + Jabatan + Perusahaan Group */}
                             <div>
-                                <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-2">{text.lblGroupRelasi}</label>
+                                <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-2">{text.lblGroupRelasi}</label>
                                 {form.groups.map((grp, idx) => (
-                                    <div key={idx} className="bg-slate-50 dark:bg-[#111]/30 rounded-xl p-3 mb-3 border border-slate-200 dark:border-white/[0.08]">
+                                    <div key={idx} className="bg-stone-50 dark:bg-[#111]/30 rounded-xl p-3 mb-3 border border-stone-200 dark:border-white/[0.08]">
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                                             <div>
-                                                <label className="block text-[10px] font-semibold text-slate-500 uppercase mb-1">{text.lblGroupNamaRelasi}</label>
+                                                <label className="block text-[10px] font-semibold text-stone-500 uppercase mb-1">{text.lblGroupNamaRelasi}</label>
                                                 <input type="text" value={grp.relasi}
                                                     onChange={e => updateGroup(idx, 'relasi', e.target.value)}
                                                     placeholder={text.lblGroupRelasiPlaceholder.replace('{n}', idx + 1)}
-                                                    className={`w-full px-3 py-2 rounded-lg border ${errors.groups ? 'border-red-500' : 'border-slate-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm`} />
+                                                    className={`w-full px-3 py-2 rounded-lg border ${errors.groups ? 'border-red-500' : 'border-stone-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm`} />
                                             </div>
                                             <div>
-                                                <label className="block text-[10px] font-semibold text-slate-500 uppercase mb-1">{text.lblGroupJabatan}</label>
+                                                <label className="block text-[10px] font-semibold text-stone-500 uppercase mb-1">{text.lblGroupJabatan}</label>
                                                 <input type="text" value={grp.jabatan}
                                                     onChange={e => updateGroup(idx, 'jabatan', e.target.value)}
                                                     placeholder={text.lblGroupJabatanPlaceholder.replace('{n}', idx + 1)}
-                                                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm" />
+                                                    className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm" />
                                             </div>
                                             <div>
-                                                <label className="block text-[10px] font-semibold text-slate-500 uppercase mb-1">{text.lblGroupPerusahaan}</label>
+                                                <label className="block text-[10px] font-semibold text-stone-500 uppercase mb-1">{text.lblGroupPerusahaan}</label>
                                                 <input type="text" value={grp.nama_perusahaan}
                                                     onChange={e => updateGroup(idx, 'nama_perusahaan', e.target.value)}
                                                     placeholder={text.lblGroupPerusahaanPlaceholder.replace('{n}', idx + 1)}
-                                                    className={`w-full px-3 py-2 rounded-lg border ${errors.groups ? 'border-red-500' : 'border-slate-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm`} />
+                                                    className={`w-full px-3 py-2 rounded-lg border ${errors.groups ? 'border-red-500' : 'border-stone-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm`} />
                                             </div>
                                         </div>
                                         {form.groups.length > 1 && (
@@ -1524,7 +1524,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                         <span className="inline-flex items-center justify-center min-w-[28px] h-7 px-2 rounded-lg gradient-bg text-white text-sm font-bold">
                                             {jumlahRelasi}
                                         </span>
-                                        <span className="text-xs text-slate-500 dark:text-white/40">
+                                        <span className="text-xs text-stone-500 dark:text-white/40">
                                             {text.fromJumlahGroup.replace('{n}', form.groups.length)}
                                         </span>
                                     </div>
@@ -1534,17 +1534,17 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
 
                             {/* Plan */}
                             <div>
-                                <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.lblPlan}</label>
+                                <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.lblPlan}</label>
                                 <textarea value={form.catatan_kode}
                                     onChange={e => setForm(p => ({ ...p, catatan_kode: e.target.value }))}
                                     rows={2}
-                                    className={`w-full px-3 py-2.5 rounded-xl border ${errors.catatan_kode ? 'border-red-500' : 'border-slate-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500`} />
+                                    className={`w-full px-3 py-2.5 rounded-xl border ${errors.catatan_kode ? 'border-red-500' : 'border-stone-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500`} />
                                 {errors.catatan_kode && <p className="text-red-500 text-xs mt-1">{errors.catatan_kode}</p>}
                             </div>
 
                             {/* Attachments */}
                             <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">
+                                    <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">
                                     {text.lblLampiran} {errors.attachments && <span className="text-red-500">- {errors.attachments}</span>}
                                 </label>
                                 <div
@@ -1553,12 +1553,12 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                     onPaste={handlePaste}
                                     onFocus={e => e.currentTarget?.classList?.add('ring-2', 'ring-emerald-500')}
                                     onBlur={e => e.currentTarget?.classList?.remove('ring-2', 'ring-emerald-500')}
-                                    className="border-2 border-dashed border-slate-300 dark:border-white/[0.08] rounded-xl p-6 text-center hover:border-emerald-500 transition-colors cursor-pointer outline-none"
+                                    className="border-2 border-dashed border-stone-300 dark:border-white/[0.08] rounded-xl p-6 text-center hover:border-emerald-500 transition-colors cursor-pointer outline-none"
                                     onClick={() => fileInputRef.current?.click()}
                                 >
-                                    <Upload size={32} className="mx-auto text-slate-400 mb-2" />
-                                    <p className="text-sm text-slate-500 dark:text-white/40" dangerouslySetInnerHTML={{ __html: text.uploadPaste }} />
-                                    <p className="text-xs text-slate-400 mt-1">{text.uploadSupport}</p>
+                                    <Upload size={32} className="mx-auto text-stone-400 mb-2" />
+                                    <p className="text-sm text-stone-500 dark:text-white/40" dangerouslySetInnerHTML={{ __html: text.uploadPaste }} />
+                                    <p className="text-xs text-stone-400 mt-1">{text.uploadSupport}</p>
                                     <input ref={fileInputRef} type="file" multiple
                                         onChange={handleFileChange}
                                         accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx,.txt,.csv"
@@ -1568,15 +1568,15 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                 {/* Preview existing attachments */}
                                 {existingAttachments.length > 0 && (
                                     <div className="mt-3">
-                                        <p className="text-xs font-semibold text-slate-500 mb-2">{text.savedAttachments} ({existingAttachments.length}):</p>
+                                        <p className="text-xs font-semibold text-stone-500 mb-2">{text.savedAttachments} ({existingAttachments.length}):</p>
                                         <div className="flex flex-wrap gap-2">
                                             {existingAttachments.map((att, idx) => (
-                                                <div key={idx} className="relative group bg-slate-100 dark:bg-[#111] rounded-lg p-2 flex items-center gap-2">
+                                                <div key={idx} className="relative group bg-stone-100 dark:bg-[#111] rounded-lg p-2 flex items-center gap-2">
                                                     {att.mimetype?.startsWith('image/') ? (
                                                         <img src={att.url} alt={att.name} className="w-10 h-10 object-cover rounded" />
                                                     ) : (
-                                                        <div className="w-10 h-10 flex items-center justify-center bg-slate-200 dark:bg-slate-600 rounded">
-                                                            <FileText size={20} className="text-slate-500" />
+                                                        <div className="w-10 h-10 flex items-center justify-center bg-stone-200 dark:bg-[#1a1a1a] rounded">
+                                                            <FileText size={20} className="text-stone-500" />
                                                         </div>
                                                     )}
                                                     <span className="text-xs truncate max-w-[120px]">{att.name}</span>
@@ -1593,15 +1593,15 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                 {/* Preview new attachments */}
                                 {attachments.length > 0 && (
                                     <div className="mt-3">
-                                        <p className="text-xs font-semibold text-slate-500 mb-2">{text.newAttachments} ({attachments.length}):</p>
+                                        <p className="text-xs font-semibold text-stone-500 mb-2">{text.newAttachments} ({attachments.length}):</p>
                                         <div className="flex flex-wrap gap-2">
                                             {attachments.map((file, idx) => (
-                                                <div key={idx} className="relative group bg-slate-100 dark:bg-[#111] rounded-lg p-2 flex items-center gap-2">
+                                                <div key={idx} className="relative group bg-stone-100 dark:bg-[#111] rounded-lg p-2 flex items-center gap-2">
                                                     {file.type?.startsWith('image/') ? (
                                                         <img src={URL.createObjectURL(file)} alt={file.name} className="w-10 h-10 object-cover rounded" />
                                                     ) : (
-                                                        <div className="w-10 h-10 flex items-center justify-center bg-slate-200 dark:bg-slate-600 rounded">
-                                                            <FileText size={20} className="text-slate-500" />
+                                                        <div className="w-10 h-10 flex items-center justify-center bg-stone-200 dark:bg-[#1a1a1a] rounded">
+                                                            <FileText size={20} className="text-stone-500" />
                                                         </div>
                                                     )}
                                                     <span className="text-xs truncate max-w-[120px]">{file.name}</span>
@@ -1653,7 +1653,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                     </button>
                                 )}
                                 <button type="button" onClick={() => { resetForm(); setShowForm(false); }}
-                                    className="px-6 py-3 border border-slate-300 dark:border-white/[0.08] rounded-xl text-slate-600 dark:text-white/70 hover:bg-slate-50 dark:hover:bg-white/[0.06] transition-colors">
+                                    className="px-6 py-3 border border-stone-300 dark:border-white/[0.08] rounded-xl text-stone-600 dark:text-white/70 hover:bg-stone-50 dark:hover:bg-white/[0.06] transition-colors">
                                     {text.btnCancel}
                                 </button>
                             </div>
@@ -1666,17 +1666,17 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
             , document.body)}
             {/* Table */}
             <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl border border-white/40 dark:border-white/10 overflow-hidden">
-                <div className="px-6 py-4 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-[#0d0d0d] dark:to-[#111] border-b border-slate-200 dark:border-white/[0.06]">
-                    <h2 className="font-bold text-slate-700 dark:text-slate-200">
+                <div className="px-6 py-4 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-[#0d0d0d] dark:to-[#111] border-b border-stone-200 dark:border-white/[0.06]">
+                    <h2 className="font-bold text-stone-700 dark:text-white/80">
                         <ClipboardList size={18} className="inline-block mr-2" />
                         {isEnglish ? 'Entertainment Expenses List' : 'Daftar Entertainment Expenses'}
-                        <span className="ml-2 text-sm font-normal text-slate-400">({totalEntries} {isEnglish ? 'entries' : 'data'})</span>
+                        <span className="ml-2 text-sm font-normal text-stone-400">({totalEntries} {isEnglish ? 'entries' : 'data'})</span>
                     </h2>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead>
-                            <tr className="bg-slate-50 dark:bg-[#111]/50 text-xs font-semibold text-slate-500 dark:text-white/70 uppercase tracking-wider">
+                            <tr className="bg-stone-50 dark:bg-[#111]/50 text-xs font-semibold text-stone-500 dark:text-white/70 uppercase tracking-wider">
                                 <th className="px-4 py-3 text-center w-32">{text.thAksi}</th>
                                 <th className="px-4 py-3 text-left">{text.thTanggal}</th>
                                 <th className="px-4 py-3 text-left">{text.thNoAf}</th>
@@ -1690,18 +1690,18 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                             {loading ? (
-                                <tr><td colSpan={9} className="px-4 py-8 text-center text-slate-400">{text.loading}</td></tr>
+                                <tr><td colSpan={9} className="px-4 py-8 text-center text-stone-400">{text.loading}</td></tr>
                             ) : data.length === 0 ? (
-                                <tr><td colSpan={9} className="px-4 py-8 text-center text-slate-400">{text.empty}</td></tr>
+                                <tr><td colSpan={9} className="px-4 py-8 text-center text-stone-400">{text.empty}</td></tr>
                             ) : data.map(item => (
-                                <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.06]/30 transition-colors">
+                                <tr key={item.id} className="hover:bg-stone-50 dark:hover:bg-white/[0.06]/30 transition-colors">
                                     <td className="px-4 py-3 text-center">
                                         <button
                                             onClick={(e) => {
                                                 const r = e.currentTarget.getBoundingClientRect();
                                                 setActionMenu(prev => prev && prev.item?.id === item.id ? null : openRowMenu(item, r));
                                             }}
-                                            className={`p-1.5 rounded-lg transition-colors ${actionMenu?.item?.id === item.id ? 'bg-blue-50 text-blue-600 dark:bg-[#0d0d0d]' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.05] hover:text-slate-600 dark:hover:text-slate-200'}`}
+                                            className={`p-1.5 rounded-lg transition-colors ${actionMenu?.item?.id === item.id ? 'bg-blue-50 text-blue-600 dark:bg-[#0d0d0d]' : 'text-stone-400 hover:bg-stone-100 dark:hover:bg-white/[0.05] hover:text-stone-600 dark:hover:text-white/80'}`}
                                             title={text.aksi}
                                         >
                                             <MoreVertical size={16} />
@@ -1763,14 +1763,14 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
             {/* Pagination */}
             {totalPages > 1 && (
                 <div className="flex items-center justify-between px-6 py-3 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl border border-white/40 dark:border-white/10">
-                    <div className="text-sm text-slate-500 dark:text-white/40">
+                    <div className="text-sm text-stone-500 dark:text-white/40">
                         {text.pagination.replace('{page}', page).replace('{totalPages}', totalPages).replace('{totalEntries}', totalEntries)}
                     </div>
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => setPage(p => Math.max(1, p - 1))}
                             disabled={page <= 1 || loading}
-                            className="px-3 py-1.5 text-sm font-semibold rounded-lg border border-slate-200 dark:border-white/[0.08] text-slate-600 dark:text-white/70 hover:bg-slate-50 dark:hover:bg-white/[0.06] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            className="px-3 py-1.5 text-sm font-semibold rounded-lg border border-stone-200 dark:border-white/[0.08] text-stone-600 dark:text-white/70 hover:bg-stone-50 dark:hover:bg-white/[0.06] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
                             Previous
                         </button>
@@ -1779,7 +1779,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                             .map((p, idx, arr) => (
                                 <React.Fragment key={p}>
                                     {idx > 0 && arr[idx - 1] !== p - 1 && (
-                                        <span className="px-1 text-slate-400">...</span>
+                                        <span className="px-1 text-stone-400">...</span>
                                     )}
                                     <button
                                         onClick={() => setPage(p)}
@@ -1787,7 +1787,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                         className={`min-w-[36px] h-9 text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                                             p === page
                                                 ? 'gradient-bg text-white shadow-md'
-                                                : 'border border-slate-200 dark:border-white/[0.08] text-slate-600 dark:text-white/70 hover:bg-slate-50 dark:hover:bg-white/[0.06]'
+                                                : 'border border-stone-200 dark:border-white/[0.08] text-stone-600 dark:text-white/70 hover:bg-stone-50 dark:hover:bg-white/[0.06]'
                                         }`}
                                     >
                                         {p}
@@ -1797,7 +1797,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                         <button
                             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                             disabled={page >= totalPages || loading}
-                            className="px-3 py-1.5 text-sm font-semibold rounded-lg border border-slate-200 dark:border-white/[0.08] text-slate-600 dark:text-white/70 hover:bg-slate-50 dark:hover:bg-white/[0.06] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            className="px-3 py-1.5 text-sm font-semibold rounded-lg border border-stone-200 dark:border-white/[0.08] text-stone-600 dark:text-white/70 hover:bg-stone-50 dark:hover:bg-white/[0.06] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
                             Next
                         </button>
@@ -1810,7 +1810,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                 {showSettleModal && settleItem && (
                     <>
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[74] bg-slate-900/50 backdrop-blur-sm"
+                        className="fixed inset-0 z-[74] bg-[#0a0a0a]/50 backdrop-blur-sm"
                         onClick={() => { setShowSettleModal(false); setSettleAttachments([]); setSettleExistingAttachments([]); }} />
                     <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
                         transition={{ type: 'spring', damping: 28, stiffness: 300 }}
@@ -1830,77 +1830,77 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                         <div className="flex-1 overflow-y-auto p-6 space-y-5">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.detailTanggal}</label>
+                                        <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.detailTanggal}</label>
                                         <input type="date" value={settleForm.tanggal || ''}
                                             onChange={e => setSettleForm(p => ({ ...p, tanggal: e.target.value }))}
-                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500" />
+                                            className="w-full px-3 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500" />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.detailTempat}</label>
+                                        <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.detailTempat}</label>
                                         <input type="text" value={settleForm.tempat || ''}
                                             onChange={e => setSettleForm(p => ({ ...p, tempat: e.target.value }))}
-                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500" />
+                                            className="w-full px-3 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500" />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.detailJenis}</label>
+                                        <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.detailJenis}</label>
                                         <select value={settleForm.jenis || ''}
                                             onChange={e => setSettleForm(p => ({ ...p, jenis: e.target.value }))}
-                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500">
+                                            className="w-full px-3 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500">
                                             <option value="">{text.selectOption}</option>
                                             {JENIS_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
                                         </select>
                                         {settleForm.jenis === 'Custom' && (
                                             <input type="text" placeholder={isEnglish ? 'Custom type' : 'Custom jenis'} value={settleForm.custom_jenis || ''}
                                                 onChange={e => setSettleForm(p => ({ ...p, custom_jenis: e.target.value }))}
-                                                className="mt-2 w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm" />
+                                                className="mt-2 w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm" />
                                         )}
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.detailAlamat}</label>
+                                    <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.detailAlamat}</label>
                                     <textarea value={settleForm.alamat || ''}
                                         onChange={e => setSettleForm(p => ({ ...p, alamat: e.target.value }))}
                                         rows={2}
-                                        className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500" />
+                                        className="w-full px-3 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500" />
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.lblNilai}</label>
+                                        <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.lblNilai}</label>
                                         <input type="text" value={settleForm.nilai ? formatCurrency(settleForm.nilai) : ''}
                                             onChange={e => setSettleForm(p => ({ ...p, nilai: parseCurrency(e.target.value) }))}
-                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500" />
+                                            className="w-full px-3 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500" />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.lblNoGl}</label>
+                                        <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.lblNoGl}</label>
                                         <input type="text" value={settleForm.no_gl || ''}
                                             onChange={e => setSettleForm(p => ({ ...p, no_gl: formatAf(e.target.value) }))}
                                             placeholder="PR000001"
-                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500" />
+                                            className="w-full px-3 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500" />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.lblGl}</label>
+                                        <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.lblGl}</label>
                                         <input type="text" value={settleForm.gl_number || ''}
                                             onChange={e => setSettleForm(p => ({ ...p, gl_number: e.target.value }))}
                                             placeholder={isEnglish ? 'Enter GL number' : 'Isi No GL'}
-                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500" />
+                                            className="w-full px-3 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500" />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.lblJenisUsaha}</label>
+                                        <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.lblJenisUsaha}</label>
                                         <select value={settleForm.jenis_usaha || ''}
                                             onChange={e => setSettleForm(p => ({ ...p, jenis_usaha: e.target.value, custom_jenis_usaha: '' }))}
-                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500">
+                                            className="w-full px-3 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500">
                                             <option value="">{text.selectOption}</option>
                                             {JENIS_USAHA_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
                                         </select>
                                         {settleForm.jenis_usaha === 'Custom' && (
                                             <input type="text" placeholder={text.customJenisUsahaPlaceholder} value={settleForm.custom_jenis_usaha || ''}
                                                 onChange={e => setSettleForm(p => ({ ...p, custom_jenis_usaha: e.target.value }))}
-                                                className="mt-2 w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm" />
+                                                className="mt-2 w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm" />
                                         )}
                                     </div>
                                 </div>
                                 {/* Settle Amount */}
-                                <div className="gradient-bg-soft rounded-xl p-4 border border-slate-200 dark:border-white/[0.06]">
+                                <div className="gradient-bg-soft rounded-xl p-4 border border-stone-200 dark:border-white/[0.06]">
                                     <div className="flex items-center gap-4 mb-3">
                                         <label className="flex items-center gap-2 cursor-pointer">
                                             <input type="checkbox" checked={settleForm.is_draw || false}
@@ -1909,18 +1909,18 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                                     is_draw: e.target.checked,
                                                     settle_amount: e.target.checked ? p.nilai : ''
                                                 }))}
-                                                className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
-                                            <span className="text-sm font-semibold text-slate-700 dark:text-white/70">{text.lblDraw}</span>
+                                                className="w-4 h-4 rounded border-stone-300 text-emerald-600 focus:ring-emerald-500" />
+                                            <span className="text-sm font-semibold text-stone-700 dark:text-white/70">{text.lblDraw}</span>
                                         </label>
                                     </div>
                                     {!settleForm.is_draw && (
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div>
-                                                <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.lblSettleAmount} *</label>
+                                                <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.lblSettleAmount} *</label>
                                                 <input type="text" value={settleForm.settle_amount ? formatCurrency(settleForm.settle_amount) : ''}
                                                     onChange={e => setSettleForm(p => ({ ...p, settle_amount: parseCurrency(e.target.value) }))}
                                                     placeholder={isEnglish ? 'Enter settle amount' : 'Masukkan jumlah settle'}
-                                                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500" />
+                                                    className="w-full px-3 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500" />
                                             </div>
                                             <div className="flex flex-col gap-2 justify-end">
                                                 {settleForm.settle_amount && (
@@ -1933,15 +1933,15 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                                             <>
                                                                 {isShortage && (
                                                                     <div>
-                                                                        <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.lblAfShortage}</label>
+                                                                        <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.lblAfShortage}</label>
                                                                         <input type="text" value={settleForm.no_gl_shortage || ''}
                                                                             onChange={e => setSettleForm(p => ({ ...p, no_gl_shortage: e.target.value }))}
                                                                             placeholder={isEnglish ? 'Enter AF for shortage' : 'Masukkan AF untuk shortage'}
-                                                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500" />
+                                                                            className="w-full px-3 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500" />
                                                                     </div>
                                                                 )}
                                                                 <div className="flex items-center">
-                                                                    {diff === 0 ? <span className="px-4 py-2 rounded-xl text-sm font-bold bg-slate-100 text-slate-600 dark:bg-[#111] dark:text-white/70">{text.lblSame}</span>
+                                                                    {diff === 0 ? <span className="px-4 py-2 rounded-xl text-sm font-bold bg-stone-100 text-stone-600 dark:bg-[#111] dark:text-white/70">{text.lblSame}</span>
                                                                         : diff > 0 ? <span className="px-4 py-2 rounded-xl text-sm font-bold bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300">{text.lblOver} +{diff.toLocaleString('id-ID')}</span>
                                                                         : <span className="px-4 py-2 rounded-xl text-sm font-bold bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300">{text.lblShortage} {diff.toLocaleString('id-ID')}</span>}
                                                                 </div>
@@ -1954,9 +1954,9 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                     )}
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-2">{text.lblRelasiPerusahaan}</label>
+                                    <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-2">{text.lblRelasiPerusahaan}</label>
                                     {settleForm.groups && settleForm.groups.map((grp, idx) => (
-                                        <div key={idx} className="bg-slate-50 dark:bg-[#111]/30 rounded-xl p-3 mb-3 border border-slate-200 dark:border-white/[0.08]">
+                                        <div key={idx} className="bg-stone-50 dark:bg-[#111]/30 rounded-xl p-3 mb-3 border border-stone-200 dark:border-white/[0.08]">
                                             <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                                                 <input type="text" value={grp.relasi || ''}
                                                     onChange={e => {
@@ -1965,7 +1965,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                                         setSettleForm(p => ({ ...p, groups: g }));
                                                     }}
                                                     placeholder={text.placeholdRelasi}
-                                                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm" />
+                                                    className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm" />
                                                 <input type="text" value={grp.jabatan || ''}
                                                     onChange={e => {
                                                         const g = [...settleForm.groups];
@@ -1973,7 +1973,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                                         setSettleForm(p => ({ ...p, groups: g }));
                                                     }}
                                                     placeholder={text.placeholdJabatan}
-                                                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm" />
+                                                    className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm" />
                                                 <div className="flex gap-1">
                                                     <input type="text" value={grp.nama_perusahaan || ''}
                                                         onChange={e => {
@@ -1982,7 +1982,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                                             setSettleForm(p => ({ ...p, groups: g }));
                                                         }}
                                                         placeholder={text.placeholdPerusahaan}
-                                                        className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm" />
+                                                        className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm" />
                                                     {settleForm.groups.length > 1 && (
                                                         <button type="button" onClick={() => {
                                                             const g = settleForm.groups.filter((_, i) => i !== idx);
@@ -2003,15 +2003,15 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                     </button>
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.lblMomResult}</label>
+                                    <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.lblMomResult}</label>
                                     <textarea value={settleForm.catatan_kode || ''}
                                         onChange={e => setSettleForm(p => ({ ...p, catatan_kode: e.target.value }))}
                                         rows={2}
-                                        className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500" />
+                                        className="w-full px-3 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-emerald-500" />
                                 </div>
                                 {/* Tanggal Settle (required) */}
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">
+                                    <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">
                                         {text.lblSettleDate}
                                     </label>
                                     <input type="date" value={settleForm.settle_date || ''}
@@ -2020,11 +2020,11 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                 </div>
                                 {/* Lampiran */}
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.lblLampiran}</label>
-                                    <div className="border-2 border-dashed border-slate-300 dark:border-white/[0.08] rounded-xl p-6 text-center hover:border-emerald-500 transition-colors cursor-pointer"
+                                    <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.lblLampiran}</label>
+                                    <div className="border-2 border-dashed border-stone-300 dark:border-white/[0.08] rounded-xl p-6 text-center hover:border-emerald-500 transition-colors cursor-pointer"
                                         onClick={() => settleFileInputRef.current?.click()}>
-                                        <Upload size={24} className="mx-auto text-slate-400 mb-2" />
-                                        <p className="text-sm text-slate-500 dark:text-white/40">{text.uploadAttachments}</p>
+                                        <Upload size={24} className="mx-auto text-stone-400 mb-2" />
+                                        <p className="text-sm text-stone-500 dark:text-white/40">{text.uploadAttachments}</p>
                                         <input ref={settleFileInputRef} type="file" multiple
                                             onChange={(e) => {
                                                 const files = Array.from(e.target.files || []);
@@ -2035,15 +2035,15 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                     </div>
                                     {settleExistingAttachments.length > 0 && (
                                         <div className="mt-3">
-                                            <p className="text-xs font-semibold text-slate-500 mb-2">{text.savedAttachments} ({settleExistingAttachments.length}):</p>
+                                            <p className="text-xs font-semibold text-stone-500 mb-2">{text.savedAttachments} ({settleExistingAttachments.length}):</p>
                                             <div className="flex flex-wrap gap-2">
                                                 {settleExistingAttachments.map((att, idx) => (
-                                                    <div key={idx} className="relative group bg-slate-100 dark:bg-[#111] rounded-lg p-2 flex items-center gap-2">
+                                                    <div key={idx} className="relative group bg-stone-100 dark:bg-[#111] rounded-lg p-2 flex items-center gap-2">
                                                         {att.mimetype?.startsWith('image/') ? (
                                                             <img src={att.url} alt={att.name} className="w-10 h-10 object-cover rounded" />
                                                         ) : (
-                                                            <div className="w-10 h-10 flex items-center justify-center bg-slate-200 dark:bg-slate-600 rounded">
-                                                                <FileText size={20} className="text-slate-500" />
+                                                            <div className="w-10 h-10 flex items-center justify-center bg-stone-200 dark:bg-[#1a1a1a] rounded">
+                                                                <FileText size={20} className="text-stone-500" />
                                                             </div>
                                                         )}
                                                         <span className="text-xs truncate max-w-[120px]">{att.name}</span>
@@ -2058,15 +2058,15 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                     )}
                                     {settleAttachments.length > 0 && (
                                         <div className="mt-3">
-                                            <p className="text-xs font-semibold text-slate-500 mb-2">{text.newAttachments} ({settleAttachments.length}):</p>
+                                            <p className="text-xs font-semibold text-stone-500 mb-2">{text.newAttachments} ({settleAttachments.length}):</p>
                                             <div className="flex flex-wrap gap-2">
                                                 {settleAttachments.map((file, idx) => (
-                                                    <div key={idx} className="relative group bg-slate-100 dark:bg-[#111] rounded-lg p-2 flex items-center gap-2">
+                                                    <div key={idx} className="relative group bg-stone-100 dark:bg-[#111] rounded-lg p-2 flex items-center gap-2">
                                                         {file.type?.startsWith('image/') ? (
                                                             <img src={URL.createObjectURL(file)} alt={file.name} className="w-10 h-10 object-cover rounded" />
                                                         ) : (
-                                                            <div className="w-10 h-10 flex items-center justify-center bg-slate-200 dark:bg-slate-600 rounded">
-                                                                <FileText size={20} className="text-slate-500" />
+                                                            <div className="w-10 h-10 flex items-center justify-center bg-stone-200 dark:bg-[#1a1a1a] rounded">
+                                                                <FileText size={20} className="text-stone-500" />
                                                             </div>
                                                         )}
                                                         <span className="text-xs truncate max-w-[120px]">{file.name}</span>
@@ -2080,7 +2080,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                         </div>
                                     )}
                                 </div>
-                                <div className="flex items-center gap-3 pt-2 border-t border-slate-200 dark:border-white/[0.06]">
+                                <div className="flex items-center gap-3 pt-2 border-t border-stone-200 dark:border-white/[0.06]">
                                     <button type="button" disabled={settleSubmitting}
                                         onClick={handleSettleSubmit}
                                         className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl hover:from-emerald-500 hover:to-teal-500 transition-all shadow-lg font-semibold disabled:opacity-50">
@@ -2092,7 +2092,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                         {settleSubmitting ? text.processing : text.btnSettle}
                                     </button>
                                     <button type="button" onClick={() => { setShowSettleModal(false); setSettleAttachments([]); setSettleExistingAttachments([]); }}
-                                        className="px-6 py-3 border border-slate-300 dark:border-white/[0.08] rounded-xl text-slate-600 dark:text-white/70 hover:bg-slate-50 dark:hover:bg-white/[0.06] transition-colors">
+                                        className="px-6 py-3 border border-stone-300 dark:border-white/[0.08] rounded-xl text-stone-600 dark:text-white/70 hover:bg-stone-50 dark:hover:bg-white/[0.06] transition-colors">
                                         {text.btnBatal}
                                     </button>
                                 </div>
@@ -2121,12 +2121,12 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                             </div>
                             <div className="p-5 md:p-6 space-y-4">
                                 {/* Info header: ref + status + tipe entry */}
-                                <div className="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-[#111]/40 rounded-2xl px-4 py-3.5 border border-slate-200 dark:border-white/[0.08] shadow-sm">
+                                <div className="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-[#111]/40 rounded-2xl px-4 py-3.5 border border-stone-200 dark:border-white/[0.08] shadow-sm">
                                     <div className="min-w-0">
-                                        <p className="font-mono text-sm font-bold text-slate-800 dark:text-white truncate">
+                                        <p className="font-mono text-sm font-bold text-stone-800 dark:text-white truncate">
                                             {previewData.no_ref || `ENT-${String(previewData.id).padStart(5, '0')}`}
                                         </p>
-                                        <p className="text-xs text-slate-500 dark:text-white/40 truncate">
+                                        <p className="text-xs text-stone-500 dark:text-white/40 truncate">
                                             {previewData.requester_name || previewData.requester_username}
                                         </p>
                                     </div>
@@ -2143,7 +2143,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                                 ? 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-300'
                                                 : previewData.status === 'draft'
                                                 ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300'
-                                                : 'bg-slate-100 text-slate-600 dark:bg-slate-600 dark:text-slate-200'
+                                                : 'bg-stone-100 text-stone-600 dark:bg-[#1a1a1a] dark:text-white/80'
                                         }`}>
                                             {previewData.status === 'settled' ? (isEnglish ? 'Settled' : 'Settled')
                                                 : previewData.status === 'draft' ? 'Draft'
@@ -2153,7 +2153,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                 </div>
 
                                 {/* Informasi Umum */}
-                                <div className="bg-white dark:bg-[#111]/40 rounded-2xl p-4 border border-slate-200 dark:border-white/[0.08] shadow-sm">
+                                <div className="bg-white dark:bg-[#111]/40 rounded-2xl p-4 border border-stone-200 dark:border-white/[0.08] shadow-sm">
                                     <h4 className="text-[11px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-300 mb-3">
                                         {isEnglish ? 'General Information' : 'Informasi Umum'}
                                     </h4>
@@ -2169,7 +2169,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                 </div>
 
                                 {/* Keuangan */}
-                                <div className="bg-white dark:bg-[#111]/40 rounded-2xl p-4 border border-slate-200 dark:border-white/[0.08] shadow-sm">
+                                <div className="bg-white dark:bg-[#111]/40 rounded-2xl p-4 border border-stone-200 dark:border-white/[0.08] shadow-sm">
                                     <h4 className="text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-300 mb-3">
                                         {isEnglish ? 'Financial' : 'Keuangan'}
                                     </h4>
@@ -2178,11 +2178,11 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                         {previewData.status === 'settled' && previewData.settle_amount && (
                                             <>
                                                 <div>
-                                                    <label className="block text-xs font-semibold text-slate-500 dark:text-white/40 mb-1">
+                                                    <label className="block text-xs font-semibold text-stone-500 dark:text-white/40 mb-1">
                                                         {isEnglish ? 'Settle Amount' : 'Jumlah Settle'}
                                                     </label>
                                                     <div className="flex items-center gap-2">
-                                                        <p className="text-sm font-semibold text-slate-800 dark:text-white">
+                                                        <p className="text-sm font-semibold text-stone-800 dark:text-white">
                                                             {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(previewData.settle_amount)}
                                                         </p>
                                                         {parseFloat(previewData.settle_amount) !== parseFloat(previewData.nilai) && (
@@ -2208,7 +2208,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                 </div>
 
                                 {/* Relasi / Perusahaan */}
-                                <div className="bg-white dark:bg-[#111]/40 rounded-2xl p-4 border border-slate-200 dark:border-white/[0.08] shadow-sm">
+                                <div className="bg-white dark:bg-[#111]/40 rounded-2xl p-4 border border-stone-200 dark:border-white/[0.08] shadow-sm">
                                     <h4 className="text-[11px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-300 mb-3">
                                         {isEnglish ? 'Relations / Company' : 'Relasi / Perusahaan'}
                                     </h4>
@@ -2222,20 +2222,20 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                 </div>
 
                                 {/* Lampiran */}
-                                <div className="bg-white dark:bg-[#111]/40 rounded-2xl p-4 border border-slate-200 dark:border-white/[0.08] shadow-sm">
+                                <div className="bg-white dark:bg-[#111]/40 rounded-2xl p-4 border border-stone-200 dark:border-white/[0.08] shadow-sm">
                                     <h4 className="text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-300 mb-3">{text.detailLampiran}</h4>
                                     <div className="flex flex-wrap gap-3">
                                         {(previewData.attachments || []).length === 0 ? (
-                                            <p className="text-sm text-slate-500 dark:text-white/40">{text.noAttachment}</p>
+                                            <p className="text-sm text-stone-500 dark:text-white/40">{text.noAttachment}</p>
                                         ) : previewData.attachments.map((att, idx) => (
                                             <a key={idx} href={att.url} target="_blank" rel="noopener noreferrer"
-                                                className="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-[#0d0d0d]/60 rounded-lg border border-slate-200 dark:border-white/[0.08] hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors">
+                                                className="flex items-center gap-2 px-3 py-2 bg-stone-50 dark:bg-[#0d0d0d]/60 rounded-lg border border-stone-200 dark:border-white/[0.08] hover:bg-stone-100 dark:hover:bg-white/[0.06] transition-colors">
                                                 {att.mimetype?.startsWith('image/') ? (
                                                     <img src={att.url} alt={att.name} className="w-8 h-8 object-cover rounded" />
                                                 ) : (
-                                                    <FileText size={20} className="text-slate-500 dark:text-white/40" />
+                                                    <FileText size={20} className="text-stone-500 dark:text-white/40" />
                                                 )}
-                                                <span className="text-xs text-slate-700 dark:text-slate-200 truncate max-w-[150px]">{att.name}</span>
+                                                <span className="text-xs text-stone-700 dark:text-white/80 truncate max-w-[150px]">{att.name}</span>
                                             </a>
                                         ))}
                                     </div>
@@ -2286,29 +2286,29 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/40 dark:to-teal-900/30 flex items-center justify-center mb-4">
                                     <CheckCircle2 size={28} className="text-emerald-600 dark:text-emerald-400" />
                                 </div>
-                                <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">
+                                <h3 className="text-lg font-bold text-stone-800 dark:text-white/80">
                                     {isEnglish ? 'Settle This Entry?' : 'Settle Entry Ini?'}
                                 </h3>
-                                <p className="mt-1.5 text-sm text-slate-500 dark:text-white/40 leading-relaxed">
+                                <p className="mt-1.5 text-sm text-stone-500 dark:text-white/40 leading-relaxed">
                                     {isEnglish
                                         ? 'This reimburse entry will be directly marked as Settled with the summary below.'
                                         : 'Entry reimburse ini akan langsung berstatus Settled dengan ringkasan berikut.'}
                                 </p>
                             </div>
                             <div className="mt-4 px-8 space-y-2">
-                                <div className="rounded-2xl bg-slate-50 dark:bg-[#0d0d0d]/60 border border-white/60 dark:border-white/10 p-4 text-sm">
-                                    <div className="flex justify-between py-1"><span className="text-slate-500 dark:text-white/40">{isEnglish ? 'Date' : 'Tanggal'}</span><span className="font-semibold text-slate-700 dark:text-slate-200 tabular-nums">{form.tanggal || '-'}</span></div>
-                                    <div className="flex justify-between py-1"><span className="text-slate-500 dark:text-white/40">{isEnglish ? 'Place' : 'Tempat'}</span><span className="font-semibold text-slate-700 dark:text-slate-200 truncate max-w-[60%]">{form.tempat || '-'}</span></div>
-                                    <div className="flex justify-between py-1"><span className="text-slate-500 dark:text-white/40">{isEnglish ? 'Amount' : 'Nilai'}</span><span className="font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">Rp {formatCurrency(form.nilai)}</span></div>
-                                    <div className="flex justify-between py-1"><span className="text-slate-500 dark:text-white/40">{isEnglish ? 'Relasi' : 'Relasi'}</span><span className="font-semibold text-slate-700 dark:text-slate-200 tabular-nums">{jumlahRelasi} {isEnglish ? 'person(s)' : 'orang'}</span></div>
-                                    <div className="flex justify-between py-1"><span className="text-slate-500 dark:text-white/40">{isEnglish ? 'Attachments' : 'Lampiran'}</span><span className="font-semibold text-slate-700 dark:text-slate-200 tabular-nums">{existingAttachments.length + attachments.length}</span></div>
-                                    <div className="flex justify-between py-1 border-t border-slate-200 dark:border-white/[0.06] mt-1"><span className="text-slate-500 dark:text-white/40">No. AF</span><span className="font-semibold text-slate-700 dark:text-slate-200">{form.no_gl || '-'}</span></div>
+                                <div className="rounded-2xl bg-stone-50 dark:bg-[#0d0d0d]/60 border border-white/60 dark:border-white/10 p-4 text-sm">
+                                    <div className="flex justify-between py-1"><span className="text-stone-500 dark:text-white/40">{isEnglish ? 'Date' : 'Tanggal'}</span><span className="font-semibold text-stone-700 dark:text-white/80 tabular-nums">{form.tanggal || '-'}</span></div>
+                                    <div className="flex justify-between py-1"><span className="text-stone-500 dark:text-white/40">{isEnglish ? 'Place' : 'Tempat'}</span><span className="font-semibold text-stone-700 dark:text-white/80 truncate max-w-[60%]">{form.tempat || '-'}</span></div>
+                                    <div className="flex justify-between py-1"><span className="text-stone-500 dark:text-white/40">{isEnglish ? 'Amount' : 'Nilai'}</span><span className="font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">Rp {formatCurrency(form.nilai)}</span></div>
+                                    <div className="flex justify-between py-1"><span className="text-stone-500 dark:text-white/40">{isEnglish ? 'Relasi' : 'Relasi'}</span><span className="font-semibold text-stone-700 dark:text-white/80 tabular-nums">{jumlahRelasi} {isEnglish ? 'person(s)' : 'orang'}</span></div>
+                                    <div className="flex justify-between py-1"><span className="text-stone-500 dark:text-white/40">{isEnglish ? 'Attachments' : 'Lampiran'}</span><span className="font-semibold text-stone-700 dark:text-white/80 tabular-nums">{existingAttachments.length + attachments.length}</span></div>
+                                    <div className="flex justify-between py-1 border-t border-stone-200 dark:border-white/[0.06] mt-1"><span className="text-stone-500 dark:text-white/40">No. AF</span><span className="font-semibold text-stone-700 dark:text-white/80">{form.no_gl || '-'}</span></div>
                                 </div>
                             </div>
                             <div className="mt-6 px-8 pb-8 flex items-center gap-3">
                                 <button type="button" onClick={() => setSettleConfirmOpen(false)}
                                     disabled={submitting}
-                                    className="flex-1 px-4 py-3 rounded-2xl border border-slate-300 dark:border-white/[0.08] text-slate-600 dark:text-white/70 hover:bg-slate-50 dark:hover:bg-white/[0.06] transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
+                                    className="flex-1 px-4 py-3 rounded-2xl border border-stone-300 dark:border-white/[0.08] text-stone-600 dark:text-white/70 hover:bg-stone-50 dark:hover:bg-white/[0.06] transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
                                     {isEnglish ? 'Cancel' : 'Batal'}
                                 </button>
                                 <button type="button" onClick={() => { setSettleConfirmOpen(false); handleSubmit(null, 'settled'); }}
@@ -2338,12 +2338,12 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-100 to-rose-100 dark:from-red-900/40 dark:to-rose-900/30 flex items-center justify-center mb-4">
                                     <Trash2 size={28} className="text-red-500 dark:text-red-400" />
                                 </div>
-                                <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">
+                                <h3 className="text-lg font-bold text-stone-800 dark:text-white/80">
                                     {deleteTarget.type === 'rule'
                                         ? (isEnglish ? 'Delete Rule?' : 'Hapus Rule?')
                                         : (isEnglish ? 'Delete Data?' : 'Hapus Data?')}
                                 </h3>
-                                <p className="mt-2 text-sm text-slate-500 dark:text-white/40 leading-relaxed">
+                                <p className="mt-2 text-sm text-stone-500 dark:text-white/40 leading-relaxed">
                                     {deleteTarget.type === 'rule'
                                         ? (isEnglish
                                             ? `Are you sure you want to delete the rule "${deleteTarget.label}"? This action cannot be undone.`
@@ -2356,7 +2356,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                             <div className="mt-6 px-8 pb-8 flex items-center gap-3">
                                 <button type="button" onClick={() => setDeleteTarget(null)}
                                     disabled={!!deletingId || !!deletingRuleId}
-                                    className="flex-1 px-4 py-3 rounded-2xl border border-slate-300 dark:border-white/[0.08] text-slate-600 dark:text-white/70 hover:bg-slate-50 dark:hover:bg-white/[0.06] transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
+                                    className="flex-1 px-4 py-3 rounded-2xl border border-stone-300 dark:border-white/[0.08] text-stone-600 dark:text-white/70 hover:bg-stone-50 dark:hover:bg-white/[0.06] transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
                                     {isEnglish ? 'Cancel' : 'Batal'}
                                 </button>
                                 <button type="button" onClick={confirmDelete}
@@ -2391,9 +2391,9 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                             const itemCls = 'w-full flex items-center gap-2.5 px-3 py-2 text-sm text-left rounded-xl transition-colors disabled:opacity-40 disabled:cursor-not-allowed';
                             return (
                                 <div className="py-0.5 space-y-0.5">
-                                    <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">{label} • {item.tempat || '-'}</div>
+                                    <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-stone-400">{label} • {item.tempat || '-'}</div>
 
-                                    <button type="button" onClick={() => { setActionMenu(null); handlePreview(item); }} className={`${itemCls} text-slate-600 dark:text-white/70 hover:bg-slate-100 dark:hover:bg-white/[0.06]`}>
+                                    <button type="button" onClick={() => { setActionMenu(null); handlePreview(item); }} className={`${itemCls} text-stone-600 dark:text-white/70 hover:bg-stone-100 dark:hover:bg-white/[0.06]`}>
                                         <Eye size={15} /> {text.preview}
                                     </button>
 
@@ -2465,12 +2465,12 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                     </button>
                                 </div>
                                 <div className="p-6 space-y-4">
-                                    <div className="flex items-center justify-between gap-3 bg-slate-50 dark:bg-[#111]/40 rounded-xl px-4 py-3 border border-slate-200 dark:border-white/[0.08]">
+                                    <div className="flex items-center justify-between gap-3 bg-stone-50 dark:bg-[#111]/40 rounded-xl px-4 py-3 border border-stone-200 dark:border-white/[0.08]">
                                         <div className="min-w-0">
-                                            <p className="font-mono text-sm font-bold text-slate-800 dark:text-slate-100 truncate">
+                                            <p className="font-mono text-sm font-bold text-stone-800 dark:text-white/80 truncate">
                                                 {glTarget.no_ref || `ENT-${String(glTarget.id).padStart(5, '0')}`}
                                             </p>
-                                            <p className="text-xs text-slate-500 dark:text-white/40 truncate">{glTarget.tempat || '-'}</p>
+                                            <p className="text-xs text-stone-500 dark:text-white/40 truncate">{glTarget.tempat || '-'}</p>
                                         </div>
                                         <span className={`px-2.5 py-1 rounded-lg text-[11px] font-bold shrink-0 ${
                                             glTarget.status === 'settled'
@@ -2485,23 +2485,23 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                         </span>
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-500 dark:text-white/40 mb-1">{text.glCurrent}</label>
-                                        <p className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-[#111]/60 font-mono text-sm text-slate-700 dark:text-slate-200">
+                                        <label className="block text-xs font-semibold text-stone-500 dark:text-white/40 mb-1">{text.glCurrent}</label>
+                                        <p className="px-4 py-2.5 rounded-xl bg-stone-100 dark:bg-[#111]/60 font-mono text-sm text-stone-700 dark:text-white/80">
                                             {glTarget.gl_number || '-'}
                                         </p>
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-600 dark:text-white/70 mb-1">{text.glNew} *</label>
+                                        <label className="block text-xs font-semibold text-stone-600 dark:text-white/70 mb-1">{text.glNew} *</label>
                                         <input type="text" value={glValue}
                                             autoFocus
                                             onChange={e => setGlValue(e.target.value)}
                                             onKeyDown={e => { if (e.key === 'Enter') document.getElementById('gl-save-btn')?.click(); }}
                                             placeholder={isEnglish ? 'Enter GL number' : 'Isi GL number'}
-                                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm font-mono focus:ring-2 focus:ring-sky-500" />
+                                            className="w-full px-4 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.08] bg-white dark:bg-[#111] text-sm font-mono focus:ring-2 focus:ring-sky-500" />
                                     </div>
                                     <div className="flex items-center justify-end gap-3 pt-1">
                                         <button type="button" onClick={() => setGlTarget(null)}
-                                            className="px-4 py-2 border border-slate-300 dark:border-white/[0.08] text-slate-600 dark:text-white/70 rounded-xl hover:bg-slate-50 dark:hover:bg-white/[0.06] transition-colors text-sm font-semibold">
+                                            className="px-4 py-2 border border-stone-300 dark:border-white/[0.08] text-stone-600 dark:text-white/70 rounded-xl hover:bg-stone-50 dark:hover:bg-white/[0.06] transition-colors text-sm font-semibold">
                                             Cancel
                                         </button>
                                         <button id="gl-save-btn" type="button" disabled={glSaving}
@@ -2537,8 +2537,8 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
 function DetailField({ label, value }) {
     return (
         <div>
-            <label className="block text-xs font-semibold text-slate-500 dark:text-white/40 mb-1">{label}</label>
-            <p className="px-3 py-2 rounded-lg bg-slate-50 dark:bg-[#0d0d0d]/60 border border-slate-100 dark:border-white/[0.08]/60 text-sm font-medium text-slate-800 dark:text-white min-h-[38px] break-words">{value || '-'}</p>
+            <label className="block text-xs font-semibold text-stone-500 dark:text-white/40 mb-1">{label}</label>
+            <p className="px-3 py-2 rounded-lg bg-stone-50 dark:bg-[#0d0d0d]/60 border border-stone-100 dark:border-white/[0.08]/60 text-sm font-medium text-stone-800 dark:text-white min-h-[38px] break-words">{value || '-'}</p>
         </div>
     );
 }

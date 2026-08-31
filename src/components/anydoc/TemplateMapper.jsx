@@ -645,12 +645,12 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
         }
     };
 
-    const inputCls = `flex-1 min-w-0 px-2.5 py-1.5 rounded-lg text-xs border outline-none transition-colors ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-blue-500/60' : 'bg-white border-slate-200 text-slate-700 placeholder-slate-300 focus:border-blue-400'}`;
-    const cardCls = `rounded-2xl border ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`;
-    const labelCls = `text-[10px] font-black uppercase tracking-widest mb-3 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`;
+    const inputCls = `flex-1 min-w-0 px-2.5 py-1.5 rounded-lg text-xs border outline-none transition-colors ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder-white/30 focus:border-blue-500/60' : 'bg-white border-stone-200 text-stone-700 placeholder-slate-300 focus:border-blue-400'}`;
+    const cardCls = `rounded-2xl border ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-stone-200 shadow-sm'}`;
+    const labelCls = `text-[10px] font-black uppercase tracking-widest mb-3 ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`;
     const chipCls = (active) => active
         ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md shadow-blue-500/25'
-        : isDarkMode ? 'text-white/50 hover:text-white/90 hover:bg-white/5' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50';
+        : isDarkMode ? 'text-white/50 hover:text-white/90 hover:bg-white/5' : 'text-stone-500 hover:text-stone-800 hover:bg-stone-50';
 
     return (
         <div>
@@ -720,12 +720,12 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
             {/* ── Pilih template / daftar ── */}
             <div className={`${cardCls} p-4 mb-5`}>
                 <p className={labelCls}>Template (Jenis Dokumen)</p>
-                <p className={`text-[10px] -mt-2 mb-3 flex items-center gap-1.5 ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>
+                <p className={`text-[10px] -mt-2 mb-3 flex items-center gap-1.5 ${isDarkMode ? 'text-white/35' : 'text-stone-400'}`}>
                     <Lock size={11} />
                     Template dipakai bersama, tetapi hasil ekstraksi, arsip &amp; export hanya terlihat oleh pembuatnya (admin melihat semua).
                 </p>
                 {templates.length === 0 && (
-                    <p className={`text-xs mb-3 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                    <p className={`text-xs mb-3 ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>
                         Belum ada template. Buat template baru, upload sampel (1 atau banyak), lalu mapping data satu per satu.
                     </p>
                 )}
@@ -736,12 +736,12 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                             onClick={() => openTemplate(t)}
                             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-bold border transition-all ${activeId === t.id
                                 ? isDarkMode ? 'bg-blue-500/20 border-blue-500/40 text-blue-300' : 'bg-blue-50 border-blue-300 text-blue-700'
-                                : isDarkMode ? 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                                : isDarkMode ? 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10' : 'bg-white border-stone-200 text-stone-600 hover:bg-stone-50'}`}
                         >
                             <FolderOpen size={12} /> {t.name}
-                            {t.doc_type && <span className={`opacity-50 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>• {t.doc_type}</span>}
+                            {t.doc_type && <span className={`opacity-50 ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>• {t.doc_type}</span>}
                             {t.created_by && (
-                                <span className={`text-[9px] font-semibold ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>
+                                <span className={`text-[9px] font-semibold ${isDarkMode ? 'text-white/30' : 'text-stone-400'}`}>
                                     • oleh {t.created_by}
                                 </span>
                             )}
@@ -763,7 +763,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
 
             {/* ── Sub view tabs (disembunyikan jika lockView) ── */}
             {activeId && !lockView && (
-                <div className={`inline-flex p-1 rounded-xl border gap-1 mb-5 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`}>
+                <div className={`inline-flex p-1 rounded-xl border gap-1 mb-5 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-stone-200 shadow-sm'}`}>
                     <button onClick={() => setView('train')} className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${view === 'train' ? chipCls(true) : chipCls(false)}`}>
                         <FlaskConical size={14} /> Training Mapping
                     </button>
@@ -782,28 +782,28 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                             onDragOver={e => e.preventDefault()}
                             onDrop={e => { e.preventDefault(); uploadSamples(e.dataTransfer.files); }}
                             onClick={() => sampleInputRef.current?.click()}
-                            className={`rounded-2xl border-2 border-dashed p-6 text-center cursor-pointer transition-all ${isDarkMode ? 'border-white/15 bg-white/5 hover:border-blue-500/50' : 'border-slate-300 bg-white hover:border-blue-400'}`}
+                            className={`rounded-2xl border-2 border-dashed p-6 text-center cursor-pointer transition-all ${isDarkMode ? 'border-white/15 bg-white/5 hover:border-blue-500/50' : 'border-stone-300 bg-white hover:border-blue-400'}`}
                         >
                             <input ref={sampleInputRef} type="file" multiple accept=".pdf,.docx,.txt" className="hidden"
                                 onChange={e => { uploadSamples(e.target.files); e.target.value = ''; }} />
-                            <UploadCloud size={22} className={`mx-auto mb-2 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`} />
-                            <p className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>Upload Sampel Dokumen</p>
-                            <p className={`text-xs mt-1 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Bisa banyak (berbagai variasi layout jenis dokumen ini)</p>
+                            <UploadCloud size={22} className={`mx-auto mb-2 ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`} />
+                            <p className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-stone-700'}`}>Upload Sampel Dokumen</p>
+                            <p className={`text-xs mt-1 ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Bisa banyak (berbagai variasi layout jenis dokumen ini)</p>
                         </div>
 
                         {samples.length > 0 && (
                             <div className={cardCls + ' p-3'}>
-                                <p className={`text-[10px] font-black uppercase tracking-widest mb-2 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Sampel ({samples.length})</p>
+                                <p className={`text-[10px] font-black uppercase tracking-widest mb-2 ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Sampel ({samples.length})</p>
                                 <div className="space-y-1.5">
                                     {samples.map((s, i) => (
-                                        <div key={i} className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg ${isDarkMode ? 'bg-white/5' : 'bg-slate-50'}`}>
+                                        <div key={i} className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg ${isDarkMode ? 'bg-white/5' : 'bg-stone-50'}`}>
                                             <FileSpreadsheet size={12} className={`flex-shrink-0 ${isDarkMode ? 'text-blue-300' : 'text-blue-500'}`} />
-                                            <span className={`flex-1 min-w-0 truncate text-xs font-semibold ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{s.filename}</span>
-                                            <span className={`text-[10px] ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>{formatFileSize(s.size)}</span>
+                                            <span className={`flex-1 min-w-0 truncate text-xs font-semibold ${isDarkMode ? 'text-white/80' : 'text-stone-700'}`}>{s.filename}</span>
+                                            <span className={`text-[10px] ${isDarkMode ? 'text-white/35' : 'text-stone-400'}`}>{formatFileSize(s.size)}</span>
                                             <button
                                                 onClick={() => loadLines(s)}
                                                 disabled={busy === 'lines'}
-                                                className={`p-1 rounded-md ${isDarkMode ? 'hover:bg-white/10 text-white/40' : 'hover:bg-slate-200 text-slate-400'}`} title="Lihat baris"
+                                                className={`p-1 rounded-md ${isDarkMode ? 'hover:bg-white/10 text-white/40' : 'hover:bg-stone-200 text-stone-400'}`} title="Lihat baris"
                                             >
                                                 <Layers size={12} />
                                             </button>
@@ -815,18 +815,18 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
 
                         {linesData && (
                             <div className={cardCls + ' overflow-hidden'}>
-                                <div className={`flex items-center gap-2 px-3 py-2 border-b ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
+                                <div className={`flex items-center gap-2 px-3 py-2 border-b ${isDarkMode ? 'border-white/10' : 'border-stone-100'}`}>
                                     <Table2 size={13} className={`${isDarkMode ? 'text-blue-300' : 'text-blue-500'}`} />
-                                    <span className={`text-[11px] font-bold truncate ${isDarkMode ? 'text-white/80' : 'text-slate-600'}`}>Baris: {previewName}</span>
+                                    <span className={`text-[11px] font-bold truncate ${isDarkMode ? 'text-white/80' : 'text-stone-600'}`}>Baris: {previewName}</span>
                                 </div>
                                 <div className="max-h-[420px] overflow-y-auto p-2">
                                     {linesData.pages.map(pg => (
                                         <div key={pg.page} className="mb-2">
-                                            <p className={`text-[10px] font-black px-1.5 py-1 ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>Halaman {pg.page}</p>
+                                            <p className={`text-[10px] font-black px-1.5 py-1 ${isDarkMode ? 'text-white/30' : 'text-stone-400'}`}>Halaman {pg.page}</p>
                                             {pg.lines.map((l, li) => (
                                                 <div key={li} className={`group flex items-center gap-1 rounded-lg px-1.5 py-1 cursor-pointer transition-colors ${isDarkMode ? 'hover:bg-white/10' : 'hover:bg-blue-50'}`}>
-                                                    <span className={`text-[9px] w-8 flex-shrink-0 ${isDarkMode ? 'text-white/20' : 'text-slate-300'}`}>{l.y}</span>
-                                                    <span className={`flex-1 min-w-0 text-[11px] truncate ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>{l.text}</span>
+                                                    <span className={`text-[9px] w-8 flex-shrink-0 ${isDarkMode ? 'text-white/20' : 'text-stone-300'}`}>{l.y}</span>
+                                                    <span className={`flex-1 min-w-0 text-[11px] truncate ${isDarkMode ? 'text-white/70' : 'text-stone-600'}`}>{l.text}</span>
                                                     <button
                                                         onClick={() => addHeaderField(l.text)}
                                                         className={`opacity-0 group-hover:opacity-100 px-1.5 py-0.5 rounded-md text-[9px] font-bold transition-opacity ${isDarkMode ? 'bg-blue-500/20 text-blue-300' : 'bg-blue-100 text-blue-600'}`}
@@ -854,7 +854,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                     <div className="space-y-4">
                         <div className={cardCls + ' p-4'}>
                             <p className={labelCls}>Pemisah Dokumen (PDF Bulk)</p>
-                            <p className={`text-[10px] mb-3 ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>
+                            <p className={`text-[10px] mb-3 ${isDarkMode ? 'text-white/35' : 'text-stone-400'}`}>
                                 Isi jika <b>satu PDF berisi banyak dokumen</b> (mis. banyak nota retur).
                                 Label yang menandai <b>awal tiap dokumen</b> (mis. <code className="font-mono">NOMOR</code>) — setiap nilai berbeda = dokumen baru;
                                 nilai sama di halaman berikutnya = lembar lanjutan dokumen yang sama (3 lembar 1 nomor otomatis digabung).
@@ -873,21 +873,21 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                         <div className={cardCls + ' p-4'}>
                             <div className="flex items-center justify-between mb-3">
                                 <p className={labelCls + ' mb-0'}>Mapping Field Header</p>
-                                <span className={`text-[10px] ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>{headerFields.length} field</span>
+                                <span className={`text-[10px] ${isDarkMode ? 'text-white/30' : 'text-stone-400'}`}>{headerFields.length} field</span>
                             </div>
-                            <p className={`text-[10px] mb-3 ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>
+                            <p className={`text-[10px] mb-3 ${isDarkMode ? 'text-white/35' : 'text-stone-400'}`}>
                                 Klik <b>Map field</b> di baris sampel (kiri). Nilai diambil: baris sama setelah label / baris berikutnya / regex.
                             </p>
                             {headerFields.length === 0 && (
-                                <p className={`text-[11px] italic ${isDarkMode ? 'text-white/30' : 'text-slate-300'}`}>Belum ada mapping. Arahkan kursor ke baris di sampel lalu klik "Map field".</p>
+                                <p className={`text-[11px] italic ${isDarkMode ? 'text-white/30' : 'text-stone-300'}`}>Belum ada mapping. Arahkan kursor ke baris di sampel lalu klik "Map field".</p>
                             )}
                             <div className="space-y-2">
                                 {headerFields.map(f => (
-                                    <div key={f.uid} className={`p-2.5 rounded-xl border ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-100'}`}>
+                                    <div key={f.uid} className={`p-2.5 rounded-xl border ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-stone-50 border-stone-100'}`}>
                                         <div className="flex gap-1.5 items-center">
                                             <input value={f.label} onChange={e => updateHeaderField(f.uid, { label: e.target.value })} className={inputCls} placeholder="Nama field (mis. No. Invoice)" />
                                             <input value={f.key} onChange={e => updateHeaderField(f.uid, { key: slugify(e.target.value) })} className={`${inputCls} max-w-[130px]`} placeholder="ID" />
-                                            <button onClick={() => removeHeaderField(f.uid)} className={`p-1.5 rounded-lg ${isDarkMode ? 'hover:bg-rose-500/20 text-white/40' : 'hover:bg-rose-50 text-slate-400'}`}><Trash2 size={13} /></button>
+                                            <button onClick={() => removeHeaderField(f.uid)} className={`p-1.5 rounded-lg ${isDarkMode ? 'hover:bg-rose-500/20 text-white/40' : 'hover:bg-rose-50 text-stone-400'}`}><Trash2 size={13} /></button>
                                         </div>
                                         <div className="flex gap-1.5 mt-1.5 items-center">
                                             <select value={f.matchType} onChange={e => updateHeaderField(f.uid, { matchType: e.target.value })} className={`${inputCls} max-w-[190px] ${isDarkMode ? 'bg-[#161a2e]' : 'bg-white'}`}>
@@ -901,7 +901,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                         {f.matchType === 'label_after_anchor' && (
                                             <div className="flex gap-1.5 mt-1.5 items-center">
                                                 <input value={f.anchor} onChange={e => updateHeaderField(f.uid, { anchor: e.target.value })} className={inputCls} placeholder="Bagian (anchor) mis. KEPADA PENJUAL" />
-                                                <span className={`text-[9px] ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>label dicari di bawah bagian ini</span>
+                                                <span className={`text-[9px] ${isDarkMode ? 'text-white/30' : 'text-stone-400'}`}>label dicari di bawah bagian ini</span>
                                             </div>
                                         )}
                                     </div>
@@ -912,14 +912,14 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                         <div className={cardCls + ' p-4'}>
                             <div className="flex items-center justify-between mb-3">
                                 <p className={labelCls + ' mb-0'}>Tabel Barang (Dinamis)</p>
-                                <span className={`text-[10px] ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>{tableCols.length} kolom</span>
+                                <span className={`text-[10px] ${isDarkMode ? 'text-white/30' : 'text-stone-400'}`}>{tableCols.length} kolom</span>
                             </div>
-                            <p className={`text-[10px] mb-3 ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>
+                            <p className={`text-[10px] mb-3 ${isDarkMode ? 'text-white/35' : 'text-stone-400'}`}>
                                 Klik <b>Tabel</b> di baris header item (mis. "No Model Deskripsi Qty..."). Kolom terdeteksi otomatis dari posisi — atur nama & ID tiap kolom.
                                 Kolom <b className="text-blue-500">Grup</b> untuk nilai di baris ATAS data (mis. No Faktur) — diwariskan ke semua baris di bawahnya.
                             </p>
                             {tableCols.length === 0 && (
-                                <p className={`text-[11px] italic ${isDarkMode ? 'text-white/30' : 'text-slate-300'}`}>Belum ada tabel. Klik "Tabel" pada baris header item di sampel.</p>
+                                <p className={`text-[11px] italic ${isDarkMode ? 'text-white/30' : 'text-stone-300'}`}>Belum ada tabel. Klik "Tabel" pada baris header item di sampel.</p>
                             )}
                             <div className="flex flex-wrap gap-1.5">
                                 {tableCols.map(c => (
@@ -927,7 +927,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                         ? isDarkMode ? 'bg-blue-500/15 border-blue-500/40' : 'bg-blue-50 border-blue-300'
                                         : isDarkMode ? 'bg-emerald-500/10 border-emerald-500/25' : 'bg-emerald-50 border-emerald-200'}`}>
                                         <input value={c.label} onChange={e => updateCol(c.uid, { label: e.target.value })} className={`w-[80px] px-1 py-0.5 rounded text-[10px] border-none bg-transparent outline-none ${c.isGroup ? (isDarkMode ? 'text-blue-200' : 'text-blue-700') : (isDarkMode ? 'text-emerald-200' : 'text-emerald-700')}`} />
-                                        <input value={c.key} onChange={e => updateCol(c.uid, { key: slugify(e.target.value) })} className={`w-[70px] px-1 py-0.5 rounded text-[10px] border ${isDarkMode ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-slate-200 text-slate-500'}`} placeholder="id" />
+                                        <input value={c.key} onChange={e => updateCol(c.uid, { key: slugify(e.target.value) })} className={`w-[70px] px-1 py-0.5 rounded text-[10px] border ${isDarkMode ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-stone-200 text-stone-500'}`} placeholder="id" />
                                         {c.isGroup && (
                                             <input value={c.pattern} onChange={e => updateCol(c.uid, { pattern: e.target.value })} title="Pola regex nilai grup (baris di atas)" className={`w-[110px] px-1 py-0.5 rounded text-[9px] font-mono border ${isDarkMode ? 'bg-white/5 border-blue-500/40 text-blue-200' : 'bg-white border-blue-300 text-blue-700'}`} placeholder="^['’]?\d{15,}$" />
                                         )}
@@ -936,7 +936,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                             title={t("comp.groupCol")}
                                             className={`px-1 py-0.5 rounded text-[9px] font-bold border transition-all ${c.isGroup
                                                 ? isDarkMode ? 'bg-blue-500/30 text-blue-200 border-blue-500/50' : 'bg-blue-200 text-blue-700 border-blue-400'
-                                                : isDarkMode ? 'bg-white/5 text-white/40 border-white/10' : 'bg-white text-slate-400 border-slate-200'}`}
+                                                : isDarkMode ? 'bg-white/5 text-white/40 border-white/10' : 'bg-white text-stone-400 border-stone-200'}`}
                                         >
                                             Grup
                                         </button>
@@ -974,30 +974,30 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                 <p className={labelCls}>Hasil Uji (per sampel)</p>
                                 <div className="space-y-3">
                                     {valResults.map((vr, vi) => (
-                                        <div key={vi} className={`rounded-xl border p-3 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-100'}`}>
-                                            <p className={`text-[11px] font-bold mb-2 flex items-center gap-1.5 ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>
+                                        <div key={vi} className={`rounded-xl border p-3 ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-stone-50 border-stone-100'}`}>
+                                            <p className={`text-[11px] font-bold mb-2 flex items-center gap-1.5 ${isDarkMode ? 'text-white/80' : 'text-stone-700'}`}>
                                                 <FileSpreadsheet size={12} className={isDarkMode ? 'text-blue-300' : 'text-blue-500'} /> {vr.filename}
                                             </p>
                                             <div className="grid gap-1">
                                                 {Object.entries(vr.fields || {}).map(([k, r]) => {
                                                     if (k === '__doc_count__') return (
-                                                        <div key={k} className={`flex items-center gap-2 text-[11px] ${r > 1 ? (isDarkMode ? 'text-cyan-300' : 'text-cyan-700') : (isDarkMode ? 'text-white/50' : 'text-slate-500')}`}>
+                                                        <div key={k} className={`flex items-center gap-2 text-[11px] ${r > 1 ? (isDarkMode ? 'text-cyan-300' : 'text-cyan-700') : (isDarkMode ? 'text-white/50' : 'text-stone-500')}`}>
                                                             {r > 1 ? <Layers size={12} /> : <CheckCircle2 size={12} />}
                                                             <b>{r} dokumen</b>
-                                                            <span className={isDarkMode ? 'text-white/40' : 'text-slate-400'}>{r > 1 ? 'terdeteksi (bulk) — dipecah otomatis' : 'dalam file ini'}</span>
+                                                            <span className={isDarkMode ? 'text-white/40' : 'text-stone-400'}>{r > 1 ? 'terdeteksi (bulk) — dipecah otomatis' : 'dalam file ini'}</span>
                                                         </div>
                                                     );
                                                     if (k === '__table__') return (
                                                         <div key={k} className={`flex items-center gap-2 text-[11px] ${r.found ? (isDarkMode ? 'text-emerald-300' : 'text-emerald-600') : (isDarkMode ? 'text-rose-300' : 'text-rose-500')}`}>
                                                             {r.found ? <CheckCircle2 size={12} /> : <AlertCircle size={12} />}
                                                             <b>Tabel item</b>
-                                                            <span className={isDarkMode ? 'text-white/40' : 'text-slate-400'}>header {r.found ? 'ditemukan' : 'TIDAK'} • {r.rows} baris</span>
+                                                            <span className={isDarkMode ? 'text-white/40' : 'text-stone-400'}>header {r.found ? 'ditemukan' : 'TIDAK'} • {r.rows} baris</span>
                                                         </div>
                                                     );
                                                     return (
                                                         <div key={k} className={`flex items-center gap-2 text-[11px] ${r.found ? (isDarkMode ? 'text-emerald-300' : 'text-emerald-600') : (isDarkMode ? 'text-rose-300' : 'text-rose-500')}`}>
                                                             {r.found ? <CheckCircle2 size={12} /> : <AlertCircle size={12} />}
-                                                            <span className={`w-24 truncate font-bold ${isDarkMode ? 'text-white/60' : 'text-slate-500'}`}>{r.label}</span>
+                                                            <span className={`w-24 truncate font-bold ${isDarkMode ? 'text-white/60' : 'text-stone-500'}`}>{r.label}</span>
                                                             {r.found ? <span className="truncate">{r.value}</span> : <span>TIDAK DITEMUKAN</span>}
                                                         </div>
                                                     );
@@ -1021,24 +1021,24 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                 onDragOver={e => e.preventDefault()}
                                 onDrop={e => { e.preventDefault(); addExtFiles(e.dataTransfer.files); }}
                                 onClick={() => extInputRef.current?.click()}
-                                className={`rounded-2xl border-2 border-dashed p-7 text-center cursor-pointer transition-all ${isDarkMode ? 'border-white/15 bg-white/5 hover:border-emerald-500/50' : 'border-slate-300 bg-white hover:border-emerald-400'}`}
+                                className={`rounded-2xl border-2 border-dashed p-7 text-center cursor-pointer transition-all ${isDarkMode ? 'border-white/15 bg-white/5 hover:border-emerald-500/50' : 'border-stone-300 bg-white hover:border-emerald-400'}`}
                             >
                                 <input ref={extInputRef} type="file" multiple accept=".pdf,.docx,.txt" className="hidden"
                                     onChange={e => { addExtFiles(e.target.files); e.target.value = ''; }} />
-                                <FileSpreadsheet size={24} className={`mx-auto mb-2 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`} />
-                                <p className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>Upload PDF Asli</p>
-                                <p className={`text-xs mt-1 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Banyak file sekaligus — template terdeteksi otomatis dari label/judul</p>
+                                <FileSpreadsheet size={24} className={`mx-auto mb-2 ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`} />
+                                <p className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-stone-700'}`}>Upload PDF Asli</p>
+                                <p className={`text-xs mt-1 ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Banyak file sekaligus — template terdeteksi otomatis dari label/judul</p>
                             </div>
 
                             {extFiles.length > 0 && (
                                 <div className={cardCls + ' p-3'}>
                                     <div className="space-y-1.5">
                                         {extFiles.map((f, i) => (
-                                            <div key={i} className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg ${isDarkMode ? 'bg-white/5' : 'bg-slate-50'}`}>
+                                            <div key={i} className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg ${isDarkMode ? 'bg-white/5' : 'bg-stone-50'}`}>
                                                 <FileSpreadsheet size={12} className={`flex-shrink-0 ${isDarkMode ? 'text-emerald-300' : 'text-emerald-600'}`} />
-                                                <span className={`flex-1 min-w-0 truncate text-xs font-semibold ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{f.name}</span>
-                                                <span className={`text-[10px] flex-shrink-0 ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>{formatFileSize(f.size)}</span>
-                                                <button onClick={() => setExtFiles(prev => prev.filter((_, x) => x !== i))} className={`p-1 rounded-md ${isDarkMode ? 'hover:bg-white/10 text-white/40' : 'hover:bg-slate-200 text-slate-400'}`}><X size={12} /></button>
+                                                <span className={`flex-1 min-w-0 truncate text-xs font-semibold ${isDarkMode ? 'text-white/80' : 'text-stone-700'}`}>{f.name}</span>
+                                                <span className={`text-[10px] flex-shrink-0 ${isDarkMode ? 'text-white/35' : 'text-stone-400'}`}>{formatFileSize(f.size)}</span>
+                                                <button onClick={() => setExtFiles(prev => prev.filter((_, x) => x !== i))} className={`p-1 rounded-md ${isDarkMode ? 'hover:bg-white/10 text-white/40' : 'hover:bg-stone-200 text-stone-400'}`}><X size={12} /></button>
                                             </div>
                                         ))}
                                     </div>
@@ -1052,7 +1052,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                         onClick={() => setExtTplId('')}
                                         className={`px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-all ${!extTplId
                                             ? isDarkMode ? 'bg-blue-500/20 border-blue-500/40 text-blue-300' : 'bg-blue-50 border-blue-300 text-blue-700'
-                                            : isDarkMode ? 'bg-white/5 border-white/10 text-white/50' : 'bg-white border-slate-200 text-slate-500'}`}
+                                            : isDarkMode ? 'bg-white/5 border-white/10 text-white/50' : 'bg-white border-stone-200 text-stone-500'}`}
                                     >
                                         <Sparkles size={11} className="inline mr-1" /> Deteksi Otomatis
                                     </button>
@@ -1062,7 +1062,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                             onClick={() => setExtTplId(String(t.id))}
                                             className={`px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-all ${String(extTplId) === String(t.id)
                                                 ? isDarkMode ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300' : 'bg-emerald-50 border-emerald-300 text-emerald-700'
-                                                : isDarkMode ? 'bg-white/5 border-white/10 text-white/50' : 'bg-white border-slate-200 text-slate-500'}`}
+                                                : isDarkMode ? 'bg-white/5 border-white/10 text-white/50' : 'bg-white border-stone-200 text-stone-500'}`}
                                         >
                                             {t.name}
                                         </button>
@@ -1074,7 +1074,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                 onClick={runExtract}
                                 disabled={!extFiles.length || busy}
                                 className={`w-full py-3.5 rounded-xl font-extrabold text-sm flex items-center justify-center gap-2 transition-all ${!extFiles.length || busy
-                                    ? isDarkMode ? 'bg-white/5 text-white/30 cursor-not-allowed' : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                                    ? isDarkMode ? 'bg-white/5 text-white/30 cursor-not-allowed' : 'bg-stone-100 text-stone-400 cursor-not-allowed'
                                     : 'bg-gradient-to-r from-emerald-600 to-teal-700 text-white shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:scale-[1.01] active:scale-[0.99]'}`}
                             >
                                 {busy === 'extract' ? <><Loader2 size={17} className="animate-spin" /> Mengekstrak {extFiles.length} file...</> : <><Sparkles size={17} /> Ekstrak dengan Template</>}
@@ -1083,10 +1083,10 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
 
                         <div className="lg:col-span-2 space-y-4">
                             {results.length === 0 ? (
-                                <div className={`rounded-2xl border-2 border-dashed p-10 text-center min-h-[300px] flex flex-col items-center justify-center ${isDarkMode ? 'border-white/10 bg-white/2' : 'border-slate-200 bg-white/50'}`}>
+                                <div className={`rounded-2xl border-2 border-dashed p-10 text-center min-h-[300px] flex flex-col items-center justify-center ${isDarkMode ? 'border-white/10 bg-white/2' : 'border-stone-200 bg-white/50'}`}>
                                     <div className={`text-5xl mb-4 ${isDarkMode ? 'opacity-30' : 'opacity-20'}`}>🗂️ → 🔍</div>
-                                    <p className={`text-sm font-bold ${isDarkMode ? 'text-white/60' : 'text-slate-500'}`}>AI Document Intelligence</p>
-                                    <p className={`text-xs mt-1 max-w-xs ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>
+                                    <p className={`text-sm font-bold ${isDarkMode ? 'text-white/60' : 'text-stone-500'}`}>AI Document Intelligence</p>
+                                    <p className={`text-xs mt-1 max-w-xs ${isDarkMode ? 'text-white/30' : 'text-stone-400'}`}>
                                         Upload PDF asli di kiri lalu klik Ekstrak. Hasil tampil di dokumen dengan kotak deteksi + confidence — ala Azure Document Intelligence Studio.
                                     </p>
                                 </div>
@@ -1106,34 +1106,34 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                     <div className={cardCls + ' overflow-hidden'}>
                         <button
                             onClick={() => setShowMonitor(s => !s)}
-                            className={`w-full flex items-center gap-2.5 px-4 py-3 text-left transition-colors ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-slate-50'}`}
+                            className={`w-full flex items-center gap-2.5 px-4 py-3 text-left transition-colors ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-stone-50'}`}
                         >
                             <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isDarkMode ? 'bg-cyan-500/15 text-cyan-300' : 'bg-cyan-100 text-cyan-600'}`}>
                                 <BarChart3 size={15} />
                             </div>
                             <div className="flex-1">
-                                <p className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>Monitoring Hasil Bulanan</p>
-                                <p className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Riwayat ekstraksi per periode — deteksi perubahan layout dokumen</p>
+                                <p className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-stone-700'}`}>Monitoring Hasil Bulanan</p>
+                                <p className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Riwayat ekstraksi per periode — deteksi perubahan layout dokumen</p>
                             </div>
                             <button
                                 onClick={e => { e.stopPropagation(); loadMonitoring(activeId); }}
-                                className={`p-1.5 rounded-lg ${isDarkMode ? 'hover:bg-white/10 text-white/50' : 'hover:bg-slate-200 text-slate-400'}`} title="Muat ulang"
+                                className={`p-1.5 rounded-lg ${isDarkMode ? 'hover:bg-white/10 text-white/50' : 'hover:bg-stone-200 text-stone-400'}`} title="Muat ulang"
                             >
                                 <RefreshCw size={12} className={monitorBusy ? 'animate-spin' : ''} />
                             </button>
                             <span className={`transition-transform ${showMonitor ? 'rotate-180' : ''}`}>
-                                <ChevronDown size={15} className={isDarkMode ? 'text-white/40' : 'text-slate-400'} />
+                                <ChevronDown size={15} className={isDarkMode ? 'text-white/40' : 'text-stone-400'} />
                             </span>
                         </button>
 
                         {showMonitor && (
-                            <div className={`border-t ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
+                            <div className={`border-t ${isDarkMode ? 'border-white/10' : 'border-stone-100'}`}>
                                 {extractionSummary.length === 0 && (
-                                    <div className={`px-6 py-8 text-center ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
-                                        <div className={`w-12 h-12 mx-auto mb-3 rounded-2xl flex items-center justify-center ${isDarkMode ? 'bg-white/5 text-white/30' : 'bg-slate-100 text-slate-300'}`}>
+                                    <div className={`px-6 py-8 text-center ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>
+                                        <div className={`w-12 h-12 mx-auto mb-3 rounded-2xl flex items-center justify-center ${isDarkMode ? 'bg-white/5 text-white/30' : 'bg-stone-100 text-stone-300'}`}>
                                             <BarChart3 size={22} />
                                         </div>
-                                        <p className={`text-xs font-bold ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>Belum ada riwayat ekstraksi</p>
+                                        <p className={`text-xs font-bold ${isDarkMode ? 'text-white/70' : 'text-stone-600'}`}>Belum ada riwayat ekstraksi</p>
                                         <p className="text-[10px] mt-1 max-w-[280px] mx-auto leading-relaxed">
                                             Lakukan ekstraksi — hasil terekam otomatis per periode dokumen (bulan dari nomor nota / tanggal).
                                         </p>
@@ -1141,7 +1141,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                 )}
                                 {extractionSummary.length > 0 && (
                                     <>
-                                        <div className={`grid grid-cols-3 gap-2 px-4 py-3 border-b ${isDarkMode ? 'border-white/5 bg-white/5' : 'border-slate-100 bg-slate-50/50'}`}>
+                                        <div className={`grid grid-cols-3 gap-2 px-4 py-3 border-b ${isDarkMode ? 'border-white/5 bg-white/5' : 'border-stone-100 bg-stone-50/50'}`}>
                                             {[
                                                 { label: 'Periode', value: extractionSummary.length, icon: BarChart3 },
                                                 { label: 'Dokumen', value: extractionSummary.reduce((a, s) => a + (Number(s.doc_count) || 0), 0), icon: FileSpreadsheet },
@@ -1149,11 +1149,11 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                             ].map(st => {
                                                 const Icon = st.icon;
                                                 return (
-                                                    <div key={st.label} className={`rounded-xl px-3 py-2 border ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'}`}>
-                                                        <div className={`flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>
+                                                    <div key={st.label} className={`rounded-xl px-3 py-2 border ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-stone-200'}`}>
+                                                        <div className={`flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider ${isDarkMode ? 'text-white/35' : 'text-stone-400'}`}>
                                                             <Icon size={10} className={isDarkMode ? 'text-cyan-300' : 'text-cyan-600'} /> {st.label}
                                                         </div>
-                                                        <p className={`mt-0.5 text-sm font-black tabular-nums ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>{st.value.toLocaleString('id-ID')}</p>
+                                                        <p className={`mt-0.5 text-sm font-black tabular-nums ${isDarkMode ? 'text-white' : 'text-stone-800'}`}>{st.value.toLocaleString('id-ID')}</p>
                                                     </div>
                                                 );
                                             })}
@@ -1161,13 +1161,13 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                         <div className="overflow-x-auto">
                                         <table className="w-full text-left text-[11px]">
                                             <thead>
-                                                <tr className={`border-b ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
-                                                    <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Periode</th>
-                                                    <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>File</th>
-                                                    <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Dokumen</th>
-                                                    <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Baris</th>
-                                                    <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Confidence</th>
-                                                    <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Masalah Layout</th>
+                                                <tr className={`border-b ${isDarkMode ? 'border-white/10' : 'border-stone-100'}`}>
+                                                    <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Periode</th>
+                                                    <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>File</th>
+                                                    <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Dokumen</th>
+                                                    <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Baris</th>
+                                                    <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Confidence</th>
+                                                    <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Masalah Layout</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -1175,11 +1175,11 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                                     const conf = Number(s.avg_confidence || 0);
                                                     const issues = Number(s.layout_issues || 0);
                                                     return (
-                                                        <tr key={i} className={`border-b ${isDarkMode ? 'border-white/5' : 'border-slate-50'}`}>
-                                                            <td className={`px-3 py-2 font-bold ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{s.period}</td>
-                                                            <td className={`px-3 py-2 ${isDarkMode ? 'text-white/60' : 'text-slate-500'}`}>{s.file_count}</td>
-                                                            <td className={`px-3 py-2 ${isDarkMode ? 'text-white/60' : 'text-slate-500'}`}>{s.doc_count}</td>
-                                                            <td className={`px-3 py-2 ${isDarkMode ? 'text-white/60' : 'text-slate-500'}`}>{s.total_rows}</td>
+                                                        <tr key={i} className={`border-b ${isDarkMode ? 'border-white/5' : 'border-stone-50'}`}>
+                                                            <td className={`px-3 py-2 font-bold ${isDarkMode ? 'text-white/80' : 'text-stone-700'}`}>{s.period}</td>
+                                                            <td className={`px-3 py-2 ${isDarkMode ? 'text-white/60' : 'text-stone-500'}`}>{s.file_count}</td>
+                                                            <td className={`px-3 py-2 ${isDarkMode ? 'text-white/60' : 'text-stone-500'}`}>{s.doc_count}</td>
+                                                            <td className={`px-3 py-2 ${isDarkMode ? 'text-white/60' : 'text-stone-500'}`}>{s.total_rows}</td>
                                                             <td className={`px-3 py-2`}>
                                                                 <span className={`font-bold ${conf >= 0.9 ? 'text-emerald-500' : conf >= 0.7 ? 'text-amber-500' : 'text-rose-500'}`}>
                                                                     {Math.round(conf * 100)}%
@@ -1200,18 +1200,18 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                 )}
 
                                 {extractions.length > 0 && (
-                                    <div className={`border-t ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
-                                        <div className={`px-4 py-2.5 flex items-center gap-1.5 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                                    <div className={`border-t ${isDarkMode ? 'border-white/10' : 'border-stone-100'}`}>
+                                        <div className={`px-4 py-2.5 flex items-center gap-1.5 ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>
                                             <History size={11} />
                                             <span className="text-[9px] font-black uppercase tracking-widest">Riwayat Ekstraksi Terakhir</span>
                                         </div>
                                         <div className="max-h-[220px] overflow-y-auto pb-1">
                                             {extractions.map((x, i) => (
-                                                <div key={i} className={`flex items-center gap-2 px-4 py-1.5 ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-slate-50'}`}>
+                                                <div key={i} className={`flex items-center gap-2 px-4 py-1.5 ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-stone-50'}`}>
                                                     <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${x.layout_changed ? 'bg-amber-500' : 'bg-emerald-500'}`} />
-                                                    <span className={`text-[11px] font-semibold flex-1 min-w-0 truncate ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>{x.filename}</span>
-                                                    <span className={`text-[10px] ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>{x.period}</span>
-                                                    <span className={`text-[10px] ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>{x.doc_count} dok • {x.total_rows} baris</span>
+                                                    <span className={`text-[11px] font-semibold flex-1 min-w-0 truncate ${isDarkMode ? 'text-white/70' : 'text-stone-600'}`}>{x.filename}</span>
+                                                    <span className={`text-[10px] ${isDarkMode ? 'text-white/35' : 'text-stone-400'}`}>{x.period}</span>
+                                                    <span className={`text-[10px] ${isDarkMode ? 'text-white/35' : 'text-stone-400'}`}>{x.doc_count} dok • {x.total_rows} baris</span>
                                                     {x.layout_changed
                                                         ? <span title={x.warning || ''} className={`text-[9px] font-bold ${isDarkMode ? 'text-amber-300' : 'text-amber-600'}`}>⚠ layout</span>
                                                         : <CheckCircle2 size={11} className={isDarkMode ? 'text-emerald-400' : 'text-emerald-500'} />}
@@ -1228,31 +1228,31 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                     <div className={cardCls + ' overflow-hidden'}>
                         <button
                             onClick={() => setShowArchive(s => !s)}
-                            className={`w-full flex items-center gap-2.5 px-4 py-3 text-left transition-colors ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-slate-50'}`}
+                            className={`w-full flex items-center gap-2.5 px-4 py-3 text-left transition-colors ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-stone-50'}`}
                         >
                             <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isDarkMode ? 'bg-amber-500/15 text-amber-300' : 'bg-amber-100 text-amber-600'}`}>
                                 <FolderOpen size={15} />
                             </div>
                             <div className="flex-1">
-                                <p className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>Arsip Dokumen (Penyimpanan)</p>
-                                <p className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>PDF asli tersimpan otomatis setelah ekstraksi — unduh atau ekstrak ulang tanpa upload</p>
+                                <p className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-stone-700'}`}>Arsip Dokumen (Penyimpanan)</p>
+                                <p className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>PDF asli tersimpan otomatis setelah ekstraksi — unduh atau ekstrak ulang tanpa upload</p>
                                 <p className={`text-[9px] mt-0.5 flex items-center gap-1 ${isDarkMode ? 'text-amber-300/60' : 'text-amber-600/70'}`}><Lock size={9} /> Pribadi: hanya pembuat (atau admin) — bisa dibagikan ke departemen lain via ikon <Share2 size={9} className="inline" /></p>
                             </div>
                             <button
                                 onClick={e => { e.stopPropagation(); loadArchive(activeId); }}
-                                className={`p-1.5 rounded-lg ${isDarkMode ? 'hover:bg-white/10 text-white/50' : 'hover:bg-slate-200 text-slate-400'}`} title="Muat ulang"
+                                className={`p-1.5 rounded-lg ${isDarkMode ? 'hover:bg-white/10 text-white/50' : 'hover:bg-stone-200 text-stone-400'}`} title="Muat ulang"
                             >
                                 <RefreshCw size={12} className={archiveBusy ? 'animate-spin' : ''} />
                             </button>
                             <span className={`transition-transform ${showArchive ? 'rotate-180' : ''}`}>
-                                <ChevronDown size={15} className={isDarkMode ? 'text-white/40' : 'text-slate-400'} />
+                                <ChevronDown size={15} className={isDarkMode ? 'text-white/40' : 'text-stone-400'} />
                             </span>
                         </button>
 
                         {showArchive && (
-                            <div className={`border-t ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
+                            <div className={`border-t ${isDarkMode ? 'border-white/10' : 'border-stone-100'}`}>
                                 {archiveFiles.length === 0 && (
-                                    <p className={`px-4 py-4 text-[11px] italic ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>
+                                    <p className={`px-4 py-4 text-[11px] italic ${isDarkMode ? 'text-white/30' : 'text-stone-400'}`}>
                                         Belum ada arsip. Lakukan ekstraksi — file PDF asli otomatis tersimpan di sini untuk periode berikutnya (tanpa upload ulang).
                                     </p>
                                 )}
@@ -1261,34 +1261,34 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                         <div className="overflow-x-auto">
                                             <table className="w-full text-left text-[11px]">
                                                 <thead>
-                                                    <tr className={`border-b ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
-                                                        <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Pilih</th>
-                                                        <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>File</th>
-                                                        <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Periode</th>
-                                                        <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Dokumen</th>
-                                                        <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Baris</th>
-                                                        <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Privasi</th>
-                                                        <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Ukuran</th>
-                                                        <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>Aksi</th>
+                                                    <tr className={`border-b ${isDarkMode ? 'border-white/10' : 'border-stone-100'}`}>
+                                                        <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Pilih</th>
+                                                        <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>File</th>
+                                                        <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Periode</th>
+                                                        <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Dokumen</th>
+                                                        <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Baris</th>
+                                                        <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Privasi</th>
+                                                        <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Ukuran</th>
+                                                        <th className={`px-3 py-2 text-[9px] font-black uppercase ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>Aksi</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {archiveFiles.map(x => (
-                                                        <tr key={x.id} className={`border-b ${isDarkMode ? 'border-white/5' : 'border-slate-50'} ${archiveSel.has(Number(x.id)) ? (isDarkMode ? 'bg-amber-500/10' : 'bg-amber-50/60') : ''}`}>
+                                                        <tr key={x.id} className={`border-b ${isDarkMode ? 'border-white/5' : 'border-stone-50'} ${archiveSel.has(Number(x.id)) ? (isDarkMode ? 'bg-amber-500/10' : 'bg-amber-50/60') : ''}`}>
                                                             <td className="px-3 py-2">
                                                                 <input type="checkbox" checked={archiveSel.has(Number(x.id))}
                                                                     onChange={() => toggleArchiveSel(Number(x.id))}
                                                                     className="accent-amber-500" />
                                                             </td>
-                                                            <td className={`px-3 py-2 min-w-[160px] truncate max-w-[220px] ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>
+                                                            <td className={`px-3 py-2 min-w-[160px] truncate max-w-[220px] ${isDarkMode ? 'text-white/80' : 'text-stone-700'}`}>
                                                                 <span className="font-semibold">{x.filename}</span>
                                                                 {x.created_by && (
-                                                                    <span className={`block text-[9px] font-normal ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>oleh {x.created_by}</span>
+                                                                    <span className={`block text-[9px] font-normal ${isDarkMode ? 'text-white/30' : 'text-stone-400'}`}>oleh {x.created_by}</span>
                                                                 )}
                                                             </td>
-                                                            <td className={`px-3 py-2 ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>{x.period}</td>
-                                                            <td className={`px-3 py-2 ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>{x.doc_count}</td>
-                                                            <td className={`px-3 py-2 ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>{x.total_rows}</td>
+                                                            <td className={`px-3 py-2 ${isDarkMode ? 'text-white/50' : 'text-stone-500'}`}>{x.period}</td>
+                                                            <td className={`px-3 py-2 ${isDarkMode ? 'text-white/50' : 'text-stone-500'}`}>{x.doc_count}</td>
+                                                            <td className={`px-3 py-2 ${isDarkMode ? 'text-white/50' : 'text-stone-500'}`}>{x.total_rows}</td>
                                                             <td className="px-3 py-2">
                                                                 {sharedDeptsOf(x).length > 0 ? (
                                                                     <span title={`Dibagikan ke: ${sharedDeptsOf(x).join(', ')}`}
@@ -1302,7 +1302,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                                                     </span>
                                                                 )}
                                                             </td>
-                                                            <td className={`px-3 py-2 ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>{formatFileSize(x.size)}</td>
+                                                            <td className={`px-3 py-2 ${isDarkMode ? 'text-white/50' : 'text-stone-500'}`}>{formatFileSize(x.size)}</td>
                                                             <td className="px-3 py-2">
                                                                 <div className="flex items-center gap-1">
                                                                     <button
@@ -1333,7 +1333,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                                                         <button
                                                                             onClick={() => deleteArchived(x)}
                                                                             title={t("comp.deleteFromArsip")}
-                                                                            className={`p-1.5 rounded-lg transition-colors ${isDarkMode ? 'hover:bg-rose-500/20 text-white/40' : 'hover:bg-rose-50 text-slate-400'}`}
+                                                                            className={`p-1.5 rounded-lg transition-colors ${isDarkMode ? 'hover:bg-rose-500/20 text-white/40' : 'hover:bg-rose-50 text-stone-400'}`}
                                                                         >
                                                                             <Trash2 size={12} />
                                                                         </button>
@@ -1346,7 +1346,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                             </table>
                                         </div>
                                         {archiveSel.size > 0 && (
-                                            <div className={`px-3 py-2.5 border-t flex items-center gap-2 ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
+                                            <div className={`px-3 py-2.5 border-t flex items-center gap-2 ${isDarkMode ? 'border-white/10' : 'border-stone-100'}`}>
                                                 <button
                                                     onClick={reExtractBatch}
                                                     disabled={busy === 'extract'}
@@ -1356,7 +1356,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                                 </button>
                                                 <button
                                                     onClick={() => setArchiveSel(new Set())}
-                                                    className={`px-2.5 py-1.5 rounded-xl text-[10px] font-bold ${isDarkMode ? 'text-white/40 hover:bg-white/5' : 'text-slate-400 hover:bg-slate-100'}`}
+                                                    className={`px-2.5 py-1.5 rounded-xl text-[10px] font-bold ${isDarkMode ? 'text-white/40 hover:bg-white/5' : 'text-stone-400 hover:bg-stone-100'}`}
                                                 >
                                                     Batal
                                                 </button>
@@ -1372,14 +1372,14 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                     <div className={cardCls + ' overflow-hidden'}>
                         <button
                             onClick={() => setShowExportHistory(s => !s)}
-                            className={`w-full flex items-center gap-2.5 px-4 py-3 text-left transition-colors ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-slate-50'}`}
+                            className={`w-full flex items-center gap-2.5 px-4 py-3 text-left transition-colors ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-stone-50'}`}
                         >
                             <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isDarkMode ? 'bg-emerald-500/15 text-emerald-300' : 'bg-emerald-100 text-emerald-600'}`}>
                                 <Download size={15} />
                             </div>
                             <div className="flex-1">
-                                <p className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>History Export Excel</p>
-                                <p className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>File Excel yang pernah di-export — unduh ulang kapan saja tanpa extract ulang</p>
+                                <p className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-stone-700'}`}>History Export Excel</p>
+                                <p className={`text-[10px] ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>File Excel yang pernah di-export — unduh ulang kapan saja tanpa extract ulang</p>
                                 <p className={`text-[9px] mt-0.5 flex items-center gap-1 ${isDarkMode ? 'text-emerald-300/60' : 'text-emerald-600/70'}`}><Lock size={9} /> Pribadi: hanya pembuat (atau admin) — bisa dibagikan ke departemen lain via ikon <Share2 size={9} className="inline" /></p>
                             </div>
                             {exportHistory.length > 0 && (
@@ -1389,23 +1389,23 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                             )}
                             <button
                                 onClick={e => { e.stopPropagation(); loadExportHistory(activeId); }}
-                                className={`p-1.5 rounded-lg ${isDarkMode ? 'hover:bg-white/10 text-white/50' : 'hover:bg-slate-200 text-slate-400'}`} title="Muat ulang"
+                                className={`p-1.5 rounded-lg ${isDarkMode ? 'hover:bg-white/10 text-white/50' : 'hover:bg-stone-200 text-stone-400'}`} title="Muat ulang"
                             >
                                 <RefreshCw size={12} className={exportBusy ? 'animate-spin' : ''} />
                             </button>
                             <span className={`transition-transform ${showExportHistory ? 'rotate-180' : ''}`}>
-                                <ChevronDown size={15} className={isDarkMode ? 'text-white/40' : 'text-slate-400'} />
+                                <ChevronDown size={15} className={isDarkMode ? 'text-white/40' : 'text-stone-400'} />
                             </span>
                         </button>
 
                         {showExportHistory && (
-                            <div className={`border-t ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
+                            <div className={`border-t ${isDarkMode ? 'border-white/10' : 'border-stone-100'}`}>
                                 {exportHistory.length === 0 && (
-                                    <div className={`px-6 py-8 text-center ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
-                                        <div className={`w-12 h-12 mx-auto mb-3 rounded-2xl flex items-center justify-center ${isDarkMode ? 'bg-white/5 text-white/30' : 'bg-slate-100 text-slate-300'}`}>
+                                    <div className={`px-6 py-8 text-center ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>
+                                        <div className={`w-12 h-12 mx-auto mb-3 rounded-2xl flex items-center justify-center ${isDarkMode ? 'bg-white/5 text-white/30' : 'bg-stone-100 text-stone-300'}`}>
                                             <History size={22} />
                                         </div>
-                                        <p className={`text-xs font-bold ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>Belum ada export tersimpan</p>
+                                        <p className={`text-xs font-bold ${isDarkMode ? 'text-white/70' : 'text-stone-600'}`}>Belum ada export tersimpan</p>
                                         <p className="text-[10px] mt-1 max-w-[260px] mx-auto leading-relaxed">
                                             Lakukan ekstraksi lalu klik "Export Excel" — file otomatis tersimpan di sini untuk diunduh ulang kapan saja tanpa extract ulang.
                                         </p>
@@ -1413,7 +1413,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                 )}
                                 {exportHistory.length > 0 && (
                                     <>
-                                        <div className={`grid grid-cols-3 gap-2 px-4 py-3 border-b ${isDarkMode ? 'border-white/5 bg-white/5' : 'border-slate-100 bg-slate-50/50'}`}>
+                                        <div className={`grid grid-cols-3 gap-2 px-4 py-3 border-b ${isDarkMode ? 'border-white/5 bg-white/5' : 'border-stone-100 bg-stone-50/50'}`}>
                                             {[
                                                 { label: 'Total Export', value: exportHistory.length, icon: Download },
                                                 { label: 'Dokumen', value: exportHistory.reduce((a, x) => a + (x.doc_count || 0), 0), icon: FileSpreadsheet },
@@ -1421,11 +1421,11 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                             ].map(st => {
                                                 const Icon = st.icon;
                                                 return (
-                                                    <div key={st.label} className={`rounded-xl px-3 py-2 border ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200'}`}>
-                                                        <div className={`flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>
+                                                    <div key={st.label} className={`rounded-xl px-3 py-2 border ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white border-stone-200'}`}>
+                                                        <div className={`flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider ${isDarkMode ? 'text-white/35' : 'text-stone-400'}`}>
                                                             <Icon size={10} className={isDarkMode ? 'text-emerald-300' : 'text-emerald-600'} /> {st.label}
                                                         </div>
-                                                        <p className={`mt-0.5 text-sm font-black tabular-nums ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>{st.value.toLocaleString('id-ID')}</p>
+                                                        <p className={`mt-0.5 text-sm font-black tabular-nums ${isDarkMode ? 'text-white' : 'text-stone-800'}`}>{st.value.toLocaleString('id-ID')}</p>
                                                     </div>
                                                 );
                                             })}
@@ -1435,13 +1435,13 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                             const t = x.created_at ? new Date(x.created_at) : null;
                                             const dateStr = t && !isNaN(t) ? t.toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : '';
                                             return (
-                                                <div key={x.id} className={`group flex items-center gap-2.5 px-4 py-2.5 border-b last:border-b-0 ${isDarkMode ? 'border-white/5 hover:bg-white/5' : 'border-slate-50 hover:bg-slate-50'}`}>
+                                                <div key={x.id} className={`group flex items-center gap-2.5 px-4 py-2.5 border-b last:border-b-0 ${isDarkMode ? 'border-white/5 hover:bg-white/5' : 'border-stone-50 hover:bg-stone-50'}`}>
                                                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${isDarkMode ? 'bg-emerald-500/10 text-emerald-300' : 'bg-emerald-50 text-emerald-600'}`}>
                                                         <FileSpreadsheet size={14} />
                                                     </div>
                                                     <div className="flex-1 min-w-0">
-                                                        <p className={`text-[11px] font-bold truncate ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{x.title}</p>
-                                                        <p title={dateStr} className={`text-[9px] truncate ${isDarkMode ? 'text-white/35' : 'text-slate-400'}`}>
+                                                        <p className={`text-[11px] font-bold truncate ${isDarkMode ? 'text-white/80' : 'text-stone-700'}`}>{x.title}</p>
+                                                        <p title={dateStr} className={`text-[9px] truncate ${isDarkMode ? 'text-white/35' : 'text-stone-400'}`}>
                                                             {formatRelativeTime(x.created_at)}{formatRelativeTime(x.created_at) ? ' • ' : ''}{x.file_count ?? 0} file • {x.doc_count ?? 0} dok • {x.total_rows ?? 0} baris • {formatFileSize(x.file_size)}
                                                             {x.created_by ? ` • oleh ${x.created_by}` : ''}
                                                         </p>
@@ -1481,7 +1481,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                                         <button
                                                             onClick={() => setDelExportTarget(x)}
                                                             title={t("comp.deleteHistory")}
-                                                            className={`p-1.5 rounded-lg transition-colors ${isDarkMode ? 'text-white/25 hover:text-rose-300 hover:bg-rose-500/15' : 'text-slate-300 hover:text-rose-500 hover:bg-rose-50'}`}
+                                                            className={`p-1.5 rounded-lg transition-colors ${isDarkMode ? 'text-white/25 hover:text-rose-300 hover:bg-rose-500/15' : 'text-stone-300 hover:text-rose-500 hover:bg-rose-50'}`}
                                                         >
                                                             <Trash2 size={12} />
                                                         </button>
@@ -1503,23 +1503,23 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setDelExportTarget(null)}>
                     <div
                         onClick={e => e.stopPropagation()}
-                        className={`w-full max-w-sm rounded-2xl border p-5 shadow-2xl animate-[fadeInUp_.2s_ease] ${isDarkMode ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-200'}`}
+                        className={`w-full max-w-sm rounded-2xl border p-5 shadow-2xl animate-[fadeInUp_.2s_ease] ${isDarkMode ? 'bg-stone-900 border-white/10' : 'bg-white border-stone-200'}`}
                     >
                         <div className="flex items-start gap-3">
                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${isDarkMode ? 'bg-rose-500/15 text-rose-300' : 'bg-rose-50 text-rose-500'}`}>
                                 <AlertTriangle size={18} />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>Hapus history export?</p>
-                                <p className={`text-[11px] mt-1 leading-relaxed ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>
-                                    <b className={isDarkMode ? 'text-white/80' : 'text-slate-700'}>{delExportTarget.title}</b> akan dihapus permanen dari riwayat beserta file Excel-nya di server. Tindakan ini tidak dapat dibatalkan.
+                                <p className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-stone-800'}`}>Hapus history export?</p>
+                                <p className={`text-[11px] mt-1 leading-relaxed ${isDarkMode ? 'text-white/50' : 'text-stone-500'}`}>
+                                    <b className={isDarkMode ? 'text-white/80' : 'text-stone-700'}>{delExportTarget.title}</b> akan dihapus permanen dari riwayat beserta file Excel-nya di server. Tindakan ini tidak dapat dibatalkan.
                                 </p>
                             </div>
                         </div>
                         <div className="mt-5 flex justify-end gap-2">
                             <button
                                 onClick={() => setDelExportTarget(null)}
-                                className={`px-3.5 py-2 rounded-xl text-[11px] font-bold transition-colors ${isDarkMode ? 'bg-white/10 text-white/70 hover:bg-white/15' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                                className={`px-3.5 py-2 rounded-xl text-[11px] font-bold transition-colors ${isDarkMode ? 'bg-white/10 text-white/70 hover:bg-white/15' : 'bg-stone-100 text-stone-600 hover:bg-stone-200'}`}
                             >
                                 Batal
                             </button>
@@ -1540,25 +1540,25 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShareTarget(null)}>
                     <div
                         onClick={e => e.stopPropagation()}
-                        className={`w-full max-w-md rounded-2xl border p-5 shadow-2xl animate-[fadeInUp_.2s_ease] ${isDarkMode ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-200'}`}
+                        className={`w-full max-w-md rounded-2xl border p-5 shadow-2xl animate-[fadeInUp_.2s_ease] ${isDarkMode ? 'bg-stone-900 border-white/10' : 'bg-white border-stone-200'}`}
                     >
                         <div className="flex items-start gap-3">
                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${isDarkMode ? 'bg-sky-500/15 text-sky-300' : 'bg-sky-50 text-sky-500'}`}>
                                 <Share2 size={18} />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>Bagikan ke Departemen</p>
-                                <p className={`text-[11px] mt-1 leading-relaxed ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>
-                                    <b className={isDarkMode ? 'text-white/80' : 'text-slate-700'}>{shareTarget.row.filename || shareTarget.row.title}</b>
+                                <p className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-stone-800'}`}>Bagikan ke Departemen</p>
+                                <p className={`text-[11px] mt-1 leading-relaxed ${isDarkMode ? 'text-white/50' : 'text-stone-500'}`}>
+                                    <b className={isDarkMode ? 'text-white/80' : 'text-stone-700'}>{shareTarget.row.filename || shareTarget.row.title}</b>
                                     <br />
                                     Anggota departemen terpilih bisa <b>melihat &amp; mengunduh</b> dokumen ini (tidak bisa edit/hapus). Kosongkan semua untuk kembali pribadi.
                                 </p>
                             </div>
                         </div>
 
-                        <div className={`mt-4 rounded-xl border p-3 max-h-[240px] overflow-y-auto ${isDarkMode ? 'border-white/10' : 'border-slate-200'}`}>
+                        <div className={`mt-4 rounded-xl border p-3 max-h-[240px] overflow-y-auto ${isDarkMode ? 'border-white/10' : 'border-stone-200'}`}>
                             {departments.length === 0 ? (
-                                <p className={`text-[11px] italic ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>Belum ada departemen terdaftar.</p>
+                                <p className={`text-[11px] italic ${isDarkMode ? 'text-white/30' : 'text-stone-400'}`}>Belum ada departemen terdaftar.</p>
                             ) : (
                                 <div className="space-y-1.5">
                                     {departments.map(d => {
@@ -1567,7 +1567,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                         return (
                                             <label key={name} className={`flex items-center gap-2.5 px-3 py-2 rounded-xl border cursor-pointer transition-colors ${checked
                                                 ? (isDarkMode ? 'bg-sky-500/10 border-sky-500/40' : 'bg-sky-50 border-sky-300')
-                                                : (isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white border-slate-200 hover:bg-slate-50')}`}>
+                                                : (isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white border-stone-200 hover:bg-stone-50')}`}>
                                                 <input
                                                     type="checkbox"
                                                     checked={checked}
@@ -1578,7 +1578,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                                     }}
                                                     className="accent-sky-500"
                                                 />
-                                                <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/80' : 'text-slate-700'}`}>{name}</span>
+                                                <span className={`text-[11px] font-bold ${isDarkMode ? 'text-white/80' : 'text-stone-700'}`}>{name}</span>
                                             </label>
                                         );
                                     })}
@@ -1589,7 +1589,7 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                         <div className="mt-5 flex justify-end gap-2">
                             <button
                                 onClick={() => setShareTarget(null)}
-                                className={`px-3.5 py-2 rounded-xl text-[11px] font-bold transition-colors ${isDarkMode ? 'bg-white/10 text-white/70 hover:bg-white/15' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                                className={`px-3.5 py-2 rounded-xl text-[11px] font-bold transition-colors ${isDarkMode ? 'bg-white/10 text-white/70 hover:bg-white/15' : 'bg-stone-100 text-stone-600 hover:bg-stone-200'}`}
                             >
                                 Batal
                             </button>

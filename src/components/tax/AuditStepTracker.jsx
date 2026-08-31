@@ -4,7 +4,7 @@ import { CheckCircle2 } from 'lucide-react';
 export default function AuditStepTracker({ AUDIT_STEPS, selectedAudit, activeStep, setActiveStep }) {
     return (
         <div className="hidden md:flex items-center justify-between relative px-4">
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-gray-200 dark:bg-[#111] -z-10" />
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-stone-200 dark:bg-[#111] -z-10" />
             {AUDIT_STEPS.map((step, index) => {
                 const sData = selectedAudit.steps?.[step.id - 1] || {};
                 const isDone = sData.status === 'Done';
@@ -25,16 +25,16 @@ export default function AuditStepTracker({ AUDIT_STEPS, selectedAudit, activeSte
                                     ? 'bg-emerald-500 border-emerald-100 dark:border-emerald-900/50 text-white scale-100 shadow-md shadow-emerald-500/20'
                                     : isActive
                                         ? 'bg-blue-600 border-blue-100 dark:border-blue-900/50 text-white scale-110 shadow-lg shadow-blue-500/30'
-                                        : 'bg-white dark:bg-[#0d0d0d] border-gray-200 dark:border-white/[0.06] text-gray-400 dark:text-gray-500'}`}
+                                        : 'bg-white dark:bg-[#0d0d0d] border-stone-200 dark:border-white/[0.06] text-stone-400 dark:text-stone-500'}`}
                         >
                             {isDone ? <CheckCircle2 size={18} /> : <span className="text-sm font-bold">{step.id}</span>}
                         </div>
 
                         <div className="absolute top-12 w-32 text-center transition-all duration-300">
-                            <p className={`text-xs font-bold mb-0.5 ${isActive ? 'text-blue-600 scale-105' : isDone ? 'text-emerald-600' : 'text-gray-400'}`}>
+                            <p className={`text-xs font-bold mb-0.5 ${isActive ? 'text-blue-600 scale-105' : isDone ? 'text-emerald-600' : 'text-stone-400'}`}>
                                 {step.title}
                             </p>
-                            <p className={`text-[10px] ${isActive ? 'text-blue-400' : 'text-gray-400 hidden group-hover:block'}`}>
+                            <p className={`text-[10px] ${isActive ? 'text-blue-400' : 'text-stone-400 hidden group-hover:block'}`}>
                                 {sData.status || 'Pending'}
                             </p>
                         </div>

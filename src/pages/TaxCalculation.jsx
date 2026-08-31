@@ -646,15 +646,15 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
         <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
             {/* IMPORT LOADING OVERLAY */}
             {isImporting && (
-                <div className="fixed inset-0 z-[200] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center animate-in fade-in duration-300">
+                <div className="fixed inset-0 z-[200] bg-[#0a0a0a]/60 backdrop-blur-sm flex items-center justify-center animate-in fade-in duration-300">
                     <div className="bg-white/95 dark:bg-[#0d0d0d]/95 backdrop-blur-xl p-10 rounded-[3rem] shadow-2xl flex flex-col items-center max-w-sm text-center border border-blue-100 dark:border-blue-900/50">
                         <div className="relative mb-8">
                             <div className="w-24 h-24 border-4 border-blue-100 dark:border-blue-900/30 rounded-full"></div>
                             <div className="w-24 h-24 border-4 border-blue-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
                             <Database className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-blue-600 animate-pulse" size={32} />
                         </div>
-                        <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-3 uppercase tracking-tight">{text.importingDatabase}</h3>
-                        <p className="text-sm text-slate-500 dark:text-white/40 leading-relaxed">
+                        <h3 className="text-2xl font-black text-stone-800 dark:text-white mb-3 uppercase tracking-tight">{text.importingDatabase}</h3>
+                        <p className="text-sm text-stone-500 dark:text-white/40 leading-relaxed">
                             {text.importingMessage} <br />
                             <span className="font-bold text-blue-500">{text.importingWarning}</span>
                         </p>
@@ -678,7 +678,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
-                                className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all whitespace-nowrap ${activeTab === tab.id ? 'gradient-bg text-white shadow-md transform scale-105 z-10' : 'text-gray-500 dark:text-white/40 hover:bg-gray-200 dark:hover:bg-white/[0.06]'}`}
+                                className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all whitespace-nowrap ${activeTab === tab.id ? 'gradient-bg text-white shadow-md transform scale-105 z-10' : 'text-stone-500 dark:text-white/40 hover:bg-stone-200 dark:hover:bg-white/[0.06]'}`}
                             >
                                 <tab.icon size={16} />
                                 {tab.label}
@@ -751,22 +751,22 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                     {/* Form Section */}
                     <div className="lg:col-span-2 space-y-6">
                         <Card className={`relative ${showObjectDropdown ? 'z-30' : 'z-10'}`}>
-                            <div className="flex justify-between items-center mb-6 border-b pb-2 dark:border-gray-700">
-                                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                            <div className="flex justify-between items-center mb-6 border-b pb-2 dark:border-stone-700">
+                                <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-200 flex items-center gap-2">
                                     <User size={20} className="text-blue-600" />
                                     {text.subjectObjectData}
                                 </h3>
                                 <div className="flex gap-2">
                                     <button
                                         onClick={handleDownloadMasterTemplate}
-                                        className="text-xs flex items-center gap-1 text-gray-500 hover:text-blue-600 transition-colors"
+                                        className="text-xs flex items-center gap-1 text-stone-500 hover:text-blue-600 transition-colors"
                                         title={t("taxcalc.downloadTemplateMaster")}
                                     >
                                         <Download size={14} /> {text.templateMaster}
                                     </button>
                                     {canCreate && <button
                                         onClick={() => masterFileInputRef.current.click()}
-                                        className="text-xs flex items-center gap-1 text-gray-500 hover:text-blue-600 transition-colors"
+                                        className="text-xs flex items-center gap-1 text-stone-500 hover:text-blue-600 transition-colors"
                                         title={t("taxcalc.importMaster")}
                                     >
                                         <Upload size={14} /> {text.importMaster}
@@ -778,7 +778,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Identity Type */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
                                         {text.idType}
                                     </label>
                                     <select
@@ -786,7 +786,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         value={formData.idType}
                                         onChange={handleInputChange}
                                         disabled={isReadOnly}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
+                                        className="w-full px-4 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-stone-100 dark:disabled:bg-[#0d0d0d] disabled:cursor-not-allowed"
                                     >
                                         <option value="NPWP">NPWP</option>
                                         <option value="KTP">KTP (NIK)</option>
@@ -795,7 +795,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
 
                                 {/* Identity Number */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
                                         {text.idNumber}
                                     </label>
                                     <input
@@ -807,13 +807,13 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         maxLength={16}
                                         inputMode="numeric"
                                         placeholder={text.idPlaceholder}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
+                                        className="w-full px-4 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-stone-100 dark:disabled:bg-[#0d0d0d] disabled:cursor-not-allowed"
                                     />
                                 </div>
 
                                 {/* Name */}
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
                                         {text.taxPayerName}
                                     </label>
                                     <input
@@ -822,14 +822,14 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         value={formData.name}
                                         onChange={handleInputChange}
                                         disabled={isReadOnly}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
+                                        className="w-full px-4 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-stone-100 dark:disabled:bg-[#0d0d0d] disabled:cursor-not-allowed"
                                         placeholder={text.taxPayerNamePlaceholder}
                                     />
                                 </div>
 
                                 {/* Email */}
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
                                         {text.taxPayerEmail}
                                     </label>
                                     <input
@@ -838,14 +838,14 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         value={formData.email}
                                         onChange={handleInputChange}
                                         disabled={isReadOnly}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
+                                        className="w-full px-4 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-stone-100 dark:disabled:bg-[#0d0d0d] disabled:cursor-not-allowed"
                                         placeholder="contoh@email.com"
                                     />
                                 </div>
 
                                 {/* Tax Type */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
                                         {text.taxType}
                                     </label>
                                     <select
@@ -853,7 +853,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         value={formData.taxType}
                                         onChange={handleInputChange}
                                         disabled={isReadOnly}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
+                                        className="w-full px-4 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-stone-100 dark:disabled:bg-[#0d0d0d] disabled:cursor-not-allowed"
                                     >
                                         <option value="23" disabled={formData.idType === 'KTP'}>PPh 23 {formData.idType === 'KTP' ? '(Hanya NPWP)' : ''}</option>
                                         <option value="4(2)">PPh 4(2)</option>
@@ -864,7 +864,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
 
                                 {/* Tax Object Code */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
                                         {text.objectCode}
                                     </label>
                                     <input
@@ -872,7 +872,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         name="taxObjectCode"
                                         value={formData.taxObjectCode}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-gray-300 cursor-not-allowed"
+                                        className="w-full px-4 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-stone-300 cursor-not-allowed"
                                         placeholder={text.objectCodePlaceholder}
                                         readOnly
                                     />
@@ -881,16 +881,16 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                 {/* PPN Rate & Toggle */}
                                 <div className="md:col-span-2 grid grid-cols-2 gap-4 items-end">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
                                             Gunakan PPN
                                         </label>
                                         <label className="relative inline-flex items-center cursor-pointer">
                                             <input type="checkbox" name="usePpn" checked={formData.usePpn} onChange={(e) => handleInputChange({ target: { name: 'usePpn', value: e.target.checked } })} className="sr-only peer" disabled={isReadOnly} />
-                                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                            <div className="w-11 h-6 bg-stone-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-stone-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-stone-600 peer-checked:bg-blue-600"></div>
                                         </label>
                                     </div>
                                     <div className={`${formData.usePpn ? 'opacity-100' : 'opacity-40 pointer-events-none'} transition-opacity`}>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
                                             Tarif PPN (%)
                                         </label>
                                         <input
@@ -898,14 +898,14 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                             value={ppnRate}
                                             onChange={(e) => setPpnRate(Number(e.target.value))}
                                             disabled={isReadOnly || !formData.usePpn}
-                                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white"
+                                            className="w-full px-4 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white"
                                         />
                                     </div>
                                 </div>
 
                                 {/* Tax Object Name (Searchable Dropdown) */}
                                 <div className="md:col-span-2 relative">
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
                                         {text.objectNameSearch}
                                     </label>
                                     <input
@@ -919,21 +919,21 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         }}
                                         onFocus={() => !isReadOnly && setShowObjectDropdown(true)}
                                         onBlur={() => setTimeout(() => setShowObjectDropdown(false), 200)}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed"
+                                        className="w-full px-4 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-stone-100 dark:disabled:bg-[#0d0d0d] disabled:cursor-not-allowed"
                                         placeholder={text.objectNamePlaceholder}
                                         autoComplete="off"
                                     />
 
                                     {/* Dropdown List */}
                                     {showObjectDropdown && (
-                                        <div className="absolute z-50 w-full mt-1 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-gray-200 dark:border-white/[0.06] rounded-xl shadow-xl max-h-60 overflow-y-auto">
+                                        <div className="absolute z-50 w-full mt-1 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06] rounded-xl shadow-xl max-h-60 overflow-y-auto">
                                             {masterData.filter(item =>
                                                 String(item.taxType) === String(formData.taxType) && (
                                                     (item.name || '').toLowerCase().includes((formData.taxObjectName || '').toLowerCase()) ||
                                                     (item.code || '').toLowerCase().includes((formData.taxObjectName || '').toLowerCase())
                                                 ) && !(formData.idType === 'KTP' && String(item.taxType) === '23')
                                             ).length === 0 ? (
-                                                <div className="px-4 py-3 text-sm text-gray-500 text-center">
+                                                <div className="px-4 py-3 text-sm text-stone-500 text-center">
                                                     {text.emptyObject} <br />
                                                     <button onClick={() => masterFileInputRef.current.click()} className="text-blue-600 hover:underline mt-1">
                                                         {text.importMasterNow}
@@ -950,7 +950,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                                 }).map((item) => (
                                                     <button
                                                         key={item.id}
-                                                        className="w-full text-left px-4 py-3 hover:bg-blue-50 dark:hover:bg-white/[0.06] transition-colors border-b border-gray-100 dark:border-white/[0.06] last:border-0"
+                                                        className="w-full text-left px-4 py-3 hover:bg-blue-50 dark:hover:bg-white/[0.06] transition-colors border-b border-stone-100 dark:border-white/[0.06] last:border-0"
                                                         onClick={() => {
                                                             const isPph21 = String(item.taxType) === '21';
                                                             setFormData(prev => ({
@@ -971,9 +971,9 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                                             setShowObjectDropdown(false);
                                                         }}
                                                     >
-                                                        <div className="font-medium text-gray-800 dark:text-gray-200">{item.name}</div>
-                                                        <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
-                                                            <span className="bg-gray-100 dark:bg-[#0d0d0d] px-1.5 py-0.5 rounded text-gray-600 dark:text-gray-400 font-mono">
+                                                        <div className="font-medium text-stone-800 dark:text-stone-200">{item.name}</div>
+                                                        <div className="flex items-center gap-2 text-xs text-stone-500 mt-1">
+                                                            <span className="bg-stone-100 dark:bg-[#0d0d0d] px-1.5 py-0.5 rounded text-stone-600 dark:text-stone-400 font-mono">
                                                                 {item.code || item.taxObjectCode}
                                                             </span>
                                                             <span className="text-blue-500 font-medium">PPh {item.taxType}</span>
@@ -1044,75 +1044,75 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
 
                     {/* Summary / Info Sidebar */}
                     <div className="space-y-6">
-                        <Card className="bg-slate-50 dark:bg-[#0d0d0d] border-dashed border-2 border-slate-200 dark:border-white/[0.06] h-full flex flex-col justify-center items-center text-center p-8 text-gray-500">
-                            <FileText size={48} className="mb-4 text-slate-300" />
+                        <Card className="bg-stone-50 dark:bg-[#0d0d0d] border-dashed border-2 border-stone-200 dark:border-white/[0.06] h-full flex flex-col justify-center items-center text-center p-8 text-stone-500">
+                            <FileText size={48} className="mb-4 text-stone-300" />
                             <p className="font-medium">{text.summaryTitle}</p>
                             <p className="text-sm mt-2 mb-4">
                                 {text.summaryHint}
                             </p>
 
                             {(calcData.dpp > 0 || formData.name) && (
-                                <div className="w-full text-left bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl p-4 rounded-lg shadow-sm border border-gray-100 dark:border-white/[0.06] text-sm space-y-2">
+                                <div className="w-full text-left bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl p-4 rounded-lg shadow-sm border border-stone-100 dark:border-white/[0.06] text-sm space-y-2">
                                     <div className="flex justify-between">
-                                        <span className="text-gray-500">{text.summaryName}:</span>
+                                        <span className="text-stone-500">{text.summaryName}:</span>
                                         <span className="font-medium">{formData.name || '-'}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-gray-500">{text.summaryType}:</span>
+                                        <span className="text-stone-500">{text.summaryType}:</span>
                                         <span className="font-medium">PPh {formData.taxType}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-gray-500">{text.summaryRate}:</span>
+                                        <span className="text-stone-500">{text.summaryRate}:</span>
                                         <span className="font-medium">{calcData.rate}%</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-gray-500">{text.summaryGrossUp}:</span>
-                                        <span className={`font-bold uppercase ${calcData.markupMode !== 'none' ? 'text-blue-600' : 'text-gray-500'}`}>
+                                        <span className="text-stone-500">{text.summaryGrossUp}:</span>
+                                        <span className={`font-bold uppercase ${calcData.markupMode !== 'none' ? 'text-blue-600' : 'text-stone-500'}`}>
                                             {calcData.markupMode}
                                         </span>
                                     </div>
                                     {calcData.isPph21BukanPegawai && (
                                         <div className="flex justify-between">
-                                            <span className="text-gray-500">{text.summaryCategory}:</span>
+                                            <span className="text-stone-500">{text.summaryCategory}:</span>
                                             <span className="font-black text-amber-600 text-[10px] uppercase">{text.nonEmployee}</span>
                                         </div>
                                     )}
                                     {calcData.markupMode !== 'none' && (
                                         <div className="flex justify-between">
-                                            <span className="text-gray-500">{text.summaryBooked}:</span>
+                                            <span className="text-stone-500">{text.summaryBooked}:</span>
                                             <span className="font-bold text-blue-600">{new Intl.NumberFormat('id-ID').format(Math.round(calcData.totalDibukukan || 0))}</span>
                                         </div>
                                     )}
                                     <div className="flex justify-between">
-                                        <span className="text-gray-500">{text.summaryReceived}:</span>
+                                        <span className="text-stone-500">{text.summaryReceived}:</span>
                                         <span className="font-bold text-emerald-600">{formatCurrency(calcData.totalPayable)}</span>
                                     </div>
-                                    <div className="flex justify-between border-t border-gray-100 dark:border-white/[0.06] pt-2 mt-1">
-                                    <span className="text-gray-500">DPP + PPN ({ppnRate}%):</span>
+                                    <div className="flex justify-between border-t border-stone-100 dark:border-white/[0.06] pt-2 mt-1">
+                                    <span className="text-stone-500">DPP + PPN ({ppnRate}%):</span>
                                         <span className="font-bold text-blue-600">{formatCurrency((calcData.calculationDpp || 0) + (calcData.ppn || 0))}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-gray-500">DPP - PPh:</span>
+                                        <span className="text-stone-500">DPP - PPh:</span>
                                         <span className="font-bold text-rose-600">{formatCurrency((calcData.calculationDpp || 0) - (calcData.pph || 0))}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-gray-500">Gunakan PPN:</span>
+                                        <span className="text-stone-500">Gunakan PPN:</span>
                                         <span className={`font-bold ${calcData.usePpn ? 'text-green-600' : 'text-red-500'}`}>
                                             {calcData.usePpn ? `Ya (${ppnRate}%)` : 'Tidak'}
                                         </span>
                                     </div>
-                                    <p className="text-[10px] text-slate-400 italic mt-4">
+                                    <p className="text-[10px] text-stone-400 italic mt-4">
                                         Hasil perhitungan otomatis muncul di panel kalkulator di sebelah kiri.
                                     </p>
 
                                     {/* Breakdown Section for Formula */}
                                     {calcData.breakdown && calcData.breakdown.length > 0 && (
-                                        <div className="mt-4 pt-3 border-t border-dashed border-gray-200 dark:border-white/[0.06]">
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Detail Penjumlah:</p>
+                                        <div className="mt-4 pt-3 border-t border-dashed border-stone-200 dark:border-white/[0.06]">
+                                            <p className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] mb-3">Detail Penjumlah:</p>
                                             <div className="space-y-2.5">
                                                 {calcData.breakdown.map((item, i) => (
-                                                    <div key={i} className="bg-slate-50 dark:bg-[#0d0d0d]/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800 text-[11px] animate-in slide-in-from-left-2" style={{ animationDelay: `${i * 50}ms` }}>
-                                                        <div className="flex justify-between font-black text-slate-700 dark:text-slate-200 mb-1.5">
+                                                    <div key={i} className="bg-stone-50 dark:bg-[#0d0d0d]/50 p-3 rounded-xl border border-stone-100 dark:border-white/[0.06] text-[11px] animate-in slide-in-from-left-2" style={{ animationDelay: `${i * 50}ms` }}>
+                                                        <div className="flex justify-between font-black text-stone-700 dark:text-white/80 mb-1.5">
                                                             <span className="opacity-60">Item {i + 1}: {item.label}</span>
                                                             <span>{formatCurrency(item.value)}</span>
                                                         </div>

@@ -600,42 +600,42 @@ export default function Documents({
                 <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-white/80 dark:bg-[#0d0d0d]/80 backdrop-blur-xl p-4 rounded-2xl border border-white/40 dark:border-white/10 shadow-xl ring-1 ring-black/5">
                     <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto">
                         <div className="flex gap-1 mr-2 bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-lg p-1 shadow-sm">
-                            <button onClick={navigateBack} disabled={historyIndex <= 0} aria-label="Back" title="Back" className={`p-1 rounded hover:bg-white dark:hover:bg-white/[0.06] transition-colors ${historyIndex <= 0 ? 'text-gray-300 dark:text-slate-600' : 'text-gray-600 dark:text-white/70'}`}>
+                            <button onClick={navigateBack} disabled={historyIndex <= 0} aria-label="Back" title="Back" className={`p-1 rounded hover:bg-white dark:hover:bg-white/[0.06] transition-colors ${historyIndex <= 0 ? 'text-stone-300 dark:text-stone-600' : 'text-stone-600 dark:text-white/70'}`}>
                                 <ChevronLeft size={18} />
                             </button>
-                            <button onClick={navigateForward} disabled={!folderHistory || historyIndex >= folderHistory.length - 1} aria-label="Forward" title="Forward" className={`p-1 rounded hover:bg-white dark:hover:bg-white/[0.06] transition-colors ${!folderHistory || historyIndex >= folderHistory.length - 1 ? 'text-gray-300 dark:text-slate-600' : 'text-gray-600 dark:text-white/70'}`}>
+                            <button onClick={navigateForward} disabled={!folderHistory || historyIndex >= folderHistory.length - 1} aria-label="Forward" title="Forward" className={`p-1 rounded hover:bg-white dark:hover:bg-white/[0.06] transition-colors ${!folderHistory || historyIndex >= folderHistory.length - 1 ? 'text-stone-300 dark:text-stone-600' : 'text-stone-600 dark:text-white/70'}`}>
                                 <ChevronRight size={18} />
                             </button>
                         </div>
-                        <button onClick={() => navigateFolder(null)} aria-label="All folders (root)" title="All folders" className={`p-2 rounded-lg transition-all ${currentFolderId === null ? 'bg-blue-100 text-blue-600 dark:bg-blue-600 dark:text-white shadow-sm' : 'hover:bg-gray-100 dark:hover:bg-white/[0.06] text-gray-500 dark:text-white/40'}`}>
+                        <button onClick={() => navigateFolder(null)} aria-label="All folders (root)" title="All folders" className={`p-2 rounded-lg transition-all ${currentFolderId === null ? 'bg-blue-100 text-blue-600 dark:bg-blue-600 dark:text-white shadow-sm' : 'hover:bg-stone-100 dark:hover:bg-white/[0.06] text-stone-500 dark:text-white/40'}`}>
                             <HardDrive size={20} />
                         </button>
                         {currentFolderId && (
                             <>
-                                <ChevronRight size={16} className="text-gray-400" />
-                                <span className="font-bold text-gray-700 dark:text-white">{folders.find(f => String(f.id) === String(currentFolderId))?.name || (isEnglish ? 'Unknown' : 'Unknown')}</span>
+                                <ChevronRight size={16} className="text-stone-400" />
+                                <span className="font-bold text-stone-700 dark:text-white">{folders.find(f => String(f.id) === String(currentFolderId))?.name || (isEnglish ? 'Unknown' : 'Unknown')}</span>
                             </>
                         )}
                     </div>
 
                     <div className="flex gap-2 w-full md:w-auto">
                         <div className="relative flex-1 md:w-64">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" size={18} />
                             <input
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder={isEnglish ? 'Search documents...' : 'Cari dokumen...'}
-                                className="w-full pl-10 pr-4 py-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-slate-200 dark:border-white/[0.06] rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none dark:text-white"
+                                className="w-full pl-10 pr-4 py-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06] rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none dark:text-white"
                             />
                         </div>
                         {isViewingDataBox && (
-                            <div className="flex items-center gap-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-gray-200 dark:border-white/[0.06] rounded-lg px-3 shadow-sm">
+                            <div className="flex items-center gap-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06] rounded-lg px-3 shadow-sm">
                                 <AlertCircle size={14} className="text-blue-500" />
                                 <select
                                     value={statusFilter}
                                     onChange={(e) => setStatusFilter(e.target.value)}
-                                    className="bg-transparent py-2 text-xs font-bold text-gray-600 dark:text-white/70 focus:outline-none cursor-pointer"
+                                    className="bg-transparent py-2 text-xs font-bold text-stone-600 dark:text-white/70 focus:outline-none cursor-pointer"
                                 >
                                     <option value="all">{isEnglish ? 'All Statuses' : 'Semua Status'}</option>
                                     <option value="active">{isEnglish ? 'Normal (Warehouse)' : 'Normal (Gudang)'}</option>
@@ -648,10 +648,10 @@ export default function Documents({
                                 </select>
                             </div>
                         )}
-                        <button onClick={onRefresh} aria-label={isEnglish ? 'Refresh Data' : 'Refresh Data'} className="group px-3 py-2 rounded-lg border bg-white text-gray-600 border-gray-200 hover:bg-gray-50 flex items-center gap-2" title={isEnglish ? 'Refresh Data' : 'Refresh Data'}>
+                        <button onClick={onRefresh} aria-label={isEnglish ? 'Refresh Data' : 'Refresh Data'} className="group px-3 py-2 rounded-lg border bg-white text-stone-600 border-stone-200 hover:bg-stone-50 flex items-center gap-2" title={isEnglish ? 'Refresh Data' : 'Refresh Data'}>
                             <RefreshCw size={18} className="group-hover:rotate-180 transition-transform duration-500" />
                         </button>
-                        <div className="flex bg-white rounded-lg border border-gray-200 p-1">
+                        <div className="flex bg-white rounded-lg border border-stone-200 p-1">
                             <button
                                 onClick={() => {
                                     const { visibleFolders, visibleDocs } = getSmartVisibleItems();
@@ -665,29 +665,29 @@ export default function Documents({
                                         handleSelectAll();
                                     }
                                 }}
-                                className={`group p-1.5 rounded-md transition-all ${(selectedDocIds.size > 0 || selectedFolderIds.size > 0) ? 'bg-blue-100 text-blue-600 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`group p-1.5 rounded-md transition-all ${(selectedDocIds.size > 0 || selectedFolderIds.size > 0) ? 'bg-blue-100 text-blue-600 shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
                                 title={isEnglish ? 'Select All' : 'Pilih Semua (Select All)'}
                             >
                                 <Check size={18} className="group-hover:scale-110 transition-transform" />
                             </button>
                         </div>
-                        <div className="flex bg-white rounded-lg border border-gray-200 p-1">
+                        <div className="flex bg-white rounded-lg border border-stone-200 p-1">
                             <button
                                 onClick={() => setViewMode('grid')}
-                                className={`group p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-blue-100 text-blue-600 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`group p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-blue-100 text-blue-600 shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
                                 title={isEnglish ? 'Grid View' : 'Grid View'}
                             >
                                 <LayoutGrid size={18} className="group-hover:scale-110 transition-transform" />
                             </button>
                             <button
                                 onClick={() => setViewMode('list')}
-                                className={`group p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-blue-100 text-blue-600 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`group p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-blue-100 text-blue-600 shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
                                 title={isEnglish ? 'List View' : 'List View'}
                             >
                                 <List size={18} className="group-hover:scale-110 transition-transform" />
                             </button>
                         </div>
-                        <button onClick={() => setShowHistory(!showHistory)} aria-label={isEnglish ? 'History' : 'Riwayat'} className={`px-3 py-2 rounded-lg border flex items-center gap-2 ${showHistory ? 'bg-blue-100 text-blue-600 border-blue-200' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'}`}>
+                        <button onClick={() => setShowHistory(!showHistory)} aria-label={isEnglish ? 'History' : 'Riwayat'} className={`px-3 py-2 rounded-lg border flex items-center gap-2 ${showHistory ? 'bg-blue-100 text-blue-600 border-blue-200' : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'}`}>
                             <History size={18} />
                         </button>
                         {hasPermission('documents', 'create') && (
@@ -736,8 +736,8 @@ export default function Documents({
 
                 {/* HISTORY PANEL */}
                 {showHistory && (
-                    <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-gray-200 dark:border-slate-800 rounded-xl p-4 animate-in slide-in-from-top-2">
-                        <h3 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2"><History size={18} /> {isEnglish ? 'Document Activity History' : 'Riwayat Aktivitas Dokumen'}</h3>
+                    <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06] rounded-xl p-4 animate-in slide-in-from-top-2">
+                        <h3 className="font-bold text-stone-900 dark:text-white mb-3 flex items-center gap-2"><History size={18} /> {isEnglish ? 'Document Activity History' : 'Riwayat Aktivitas Dokumen'}</h3>
                         <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
                             {docLogs.slice(0, 20).map(log => (
                                 <div key={log.id} className="flex items-start gap-3 p-3 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-lg border border-white/40 dark:border-white/10">
@@ -747,14 +747,14 @@ export default function Documents({
                                     <div className="flex-1">
                                         <div className="flex justify-between">
                                             <span className="font-bold text-sm dark:text-white">{log.user}</span>
-                                            <span className="text-xs text-gray-400 flex items-center gap-1"><Clock size={12} /> {new Date(log.timestamp).toLocaleString()}</span>
+                                            <span className="text-xs text-stone-400 flex items-center gap-1"><Clock size={12} /> {new Date(log.timestamp).toLocaleString()}</span>
                                         </div>
                                         <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mt-0.5">{log.action}</p>
-                                        <p className="text-sm text-gray-600 dark:text-white/70">{log.details}</p>
+                                        <p className="text-sm text-stone-600 dark:text-white/70">{log.details}</p>
                                     </div>
                                 </div>
                             ))}
-                            {docLogs.length === 0 && <p className="text-center text-gray-400 italic py-4">{isEnglish ? 'No activity history yet.' : 'Belum ada riwayat aktivitas.'}</p>}
+                            {docLogs.length === 0 && <p className="text-center text-stone-400 italic py-4">{isEnglish ? 'No activity history yet.' : 'Belum ada riwayat aktivitas.'}</p>}
                         </div>
                     </div>
                 )}
@@ -770,7 +770,7 @@ export default function Documents({
                         return String(f.parentId) === String(currentFolderId);
                     }) && (
                             <div className="flex items-center justify-between mb-3">
-                                <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">{isEnglish ? 'Folders' : 'Folders'}</h2>
+                                <h2 className="text-sm font-semibold text-stone-500 uppercase tracking-wider">{isEnglish ? 'Folders' : 'Folders'}</h2>
                                 <span className="text-xs text-red-500 font-mono">
 
                                 </span>
@@ -863,7 +863,7 @@ export default function Documents({
                                 <div key={folder.id}
                                     onClick={() => navigateFolder(folder.id)}
                                     style={{ animationDelay: `${idx * 20}ms` }}
-                                    className={`group relative flex flex-col items-center p-4 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-gray-200 dark:border-white/[0.06] rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/10 hover:border-blue-200 dark:hover:border-blue-800 cursor-pointer transition-all duration-500 animate-in zoom-in-90 fade-in fill-mode-both shadow-sm aspect-[1/1.1] hover:scale-110 hover:-rotate-1 ${selectedFolderIds.has(folder.id) ? 'ring-2 ring-blue-500 bg-blue-50/50 dark:bg-blue-900/20 shadow-md' : ''} ${activeFolderMenuId === folder.id ? 'z-[120] ring-2 ring-blue-500 shadow-2xl scale-[1.02]' : 'z-10'} ${isSyncFolder ? 'opacity-80 grayscale-[0.3]' : ''}`}
+                                    className={`group relative flex flex-col items-center p-4 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06] rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/10 hover:border-blue-200 dark:hover:border-blue-800 cursor-pointer transition-all duration-500 animate-in zoom-in-90 fade-in fill-mode-both shadow-sm aspect-[1/1.1] hover:scale-110 hover:-rotate-1 ${selectedFolderIds.has(folder.id) ? 'ring-2 ring-blue-500 bg-blue-50/50 dark:bg-blue-900/20 shadow-md' : ''} ${activeFolderMenuId === folder.id ? 'z-[120] ring-2 ring-blue-500 shadow-2xl scale-[1.02]' : 'z-10'} ${isSyncFolder ? 'opacity-80 grayscale-[0.3]' : ''}`}
                                 >
                                     {/* Folder Selection Checkbox */}
                                     {hasPermission('documents', 'delete') && !(['DataBox', 'TaxAudit', 'PUSTAKA', 'ApprovalDoc', 'SOP'].includes(folder.name)) && (
@@ -873,7 +873,7 @@ export default function Documents({
                                                 checked={selectedFolderIds.has(folder.id)}
                                                 aria-label={isEnglish ? `Select folder ${folder.name}` : `Pilih folder ${folder.name}`}
                                                         onChange={(e) => { e.stopPropagation(); toggleFolderSelection(folder.id, folder.name); }}
-                                                className="w-5 h-5 rounded-md border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer shadow-sm"
+                                                className="w-5 h-5 rounded-md border-stone-300 text-blue-600 focus:ring-blue-500 cursor-pointer shadow-sm"
                                             />
                                         </div>
                                     )}
@@ -886,7 +886,7 @@ export default function Documents({
                                         </div>
                                         {/* Privacy Indicator Badge */}
                                         {folder.privacy !== 'public' && (
-                                            <div className="absolute -top-1 -right-1 w-6 h-6 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-full flex items-center justify-center border border-gray-200 dark:border-white/[0.06] shadow-sm" title={folder.privacy === 'private' ? 'Private' : folder.privacy === 'dept' ? 'Department' : 'Specific Users'}>
+                                            <div className="absolute -top-1 -right-1 w-6 h-6 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-full flex items-center justify-center border border-stone-200 dark:border-white/[0.06] shadow-sm" title={folder.privacy === 'private' ? 'Private' : folder.privacy === 'dept' ? 'Department' : 'Specific Users'}>
                                                 {folder.privacy === 'private' && <Lock size={12} className="text-red-500" />}
                                                 {folder.privacy === 'dept' && <Building size={12} className="text-blue-500" />}
                                                 {folder.privacy === 'user' && <User size={12} className="text-blue-500" />}
@@ -894,23 +894,23 @@ export default function Documents({
                                         )}
                                         {/* Sync/History Badge */}
                                         {isSyncFolder && (
-                                            <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center border-2 border-white dark:border-slate-800 shadow-sm ${badgeColor}`} title={badgeTitle}>
+                                            <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center border-2 border-white dark:border-white/[0.06] shadow-sm ${badgeColor}`} title={badgeTitle}>
                                                 <BadgeIcon size={10} className="text-white" />
                                             </div>
                                         )}
                                         {/* System Lock Badge */}
                                         {(['DataBox', 'TaxAudit', 'PUSTAKA', 'ApprovalDoc'].includes(folder.name)) && (
-                                            <div className="absolute -top-1 -left-1 w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center border-2 border-white dark:border-slate-800 shadow-sm" title={isEnglish ? 'System Folder' : 'Folder Sistem'}>
+                                            <div className="absolute -top-1 -left-1 w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center border-2 border-white dark:border-white/[0.06] shadow-sm" title={isEnglish ? 'System Folder' : 'Folder Sistem'}>
                                                 <Lock size={10} className="text-white" />
                                             </div>
                                         )}
                                     </div>
                                     <div className="w-full text-center mt-3">
-                                        <span className="font-medium text-gray-700 dark:text-gray-200 text-sm line-clamp-2 break-words leading-tight px-1">
+                                        <span className="font-medium text-stone-700 dark:text-stone-200 text-sm line-clamp-2 break-words leading-tight px-1">
                                             {folder.name}
                                         </span>
                                         {/* Creator Info Tooltip/Text */}
-                                        <div className="text-[10px] text-gray-400 mt-1 truncate">
+                                        <div className="text-[10px] text-stone-400 mt-1 truncate">
                                             {isEnglish ? 'Author' : 'Author'}: {folder.owner || (isEnglish ? 'Unknown' : 'Unknown')}
                                         </div>
                                     </div>
@@ -923,14 +923,14 @@ export default function Documents({
                                                 setActiveFolderMenuId(activeFolderMenuId === folder.id ? null : folder.id);
                                             }}
                                             aria-label={isEnglish ? 'Folder options' : 'Opsi folder'}
-                                            className="p-1.5 bg-white/50 dark:bg-[#0d0d0d]/50 hover:bg-white dark:hover:bg-white/[0.06] text-gray-500 hover:text-blue-600 rounded-full transition-all opacity-0 group-hover:opacity-100"
+                                            className="p-1.5 bg-white/50 dark:bg-[#0d0d0d]/50 hover:bg-white dark:hover:bg-white/[0.06] text-stone-500 hover:text-blue-600 rounded-full transition-all opacity-0 group-hover:opacity-100"
                                         >
                                             <MoreVertical size={16} />
                                         </button>
 
                                         {activeFolderMenuId === folder.id && (
                                             <div
-                                                className={`absolute right-0 top-full mt-2 w-48 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100 dark:border-white/[0.06] z-[130] overflow-hidden animate-in zoom-in-95 slide-in-from-top-2 duration-200 origin-top-right`}
+                                                className={`absolute right-0 top-full mt-2 w-48 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl shadow-2xl border border-stone-100 dark:border-white/[0.06] z-[130] overflow-hidden animate-in zoom-in-95 slide-in-from-top-2 duration-200 origin-top-right`}
                                             >
                                                 <div className="py-1">
                                                     {hasPermission('documents', 'edit') && (
@@ -947,7 +947,7 @@ export default function Documents({
                                                                 setIsFolderModalOpen(true);
                                                                 setActiveFolderMenuId(null);
                                                             }}
-                                                            className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2"
+                                                            className="group w-full text-left px-4 py-2 text-sm text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-white/[0.05] flex items-center gap-2"
                                                         >
                                                             {(['DataBox', 'TaxAudit', 'PUSTAKA', 'ApprovalDoc'].includes(folder.name)) ? (
                                                                 <Shield size={14} className="text-amber-500 group-hover:scale-110 transition-transform" />
@@ -961,18 +961,18 @@ export default function Documents({
                                                     {!(['DataBox', 'TaxAudit', 'PUSTAKA', 'ApprovalDoc'].includes(folder.name)) && (
                                                         <>
                                                             {hasPermission('documents', 'create') && (
-                                                                <button onClick={(e) => { e.stopPropagation(); startMgmtOp('copy', 'folder', folder); setActiveFolderMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
+                                                                <button onClick={(e) => { e.stopPropagation(); startMgmtOp('copy', 'folder', folder); setActiveFolderMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                     <Copy size={14} className="group-hover:scale-110 group-hover:text-blue-500 transition-all" /> {isEnglish ? 'Copy' : 'Salin'}
                                                                 </button>
                                                             )}
                                                             {hasPermission('documents', 'edit') && (
-                                                                <button onClick={(e) => { e.stopPropagation(); startMgmtOp('move', 'folder', folder); setActiveFolderMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
+                                                                <button onClick={(e) => { e.stopPropagation(); startMgmtOp('move', 'folder', folder); setActiveFolderMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                     <Move size={14} className="group-hover:translate-x-1 transition-transform" /> {isEnglish ? 'Move' : 'Pindah'}
                                                                 </button>
                                                             )}
                                                             {hasPermission('documents', 'delete') && (
                                                                 <>
-                                                                    <div className="h-px bg-gray-100 dark:bg-[#0d0d0d] my-1" />
+                                                                    <div className="h-px bg-stone-100 dark:bg-[#0d0d0d] my-1" />
                                                                     <button
                                                                         onClick={(e) => { handleDeleteFolder(e, folder.id); setActiveFolderMenuId(null); }}
                                                                         className="group w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-2"
@@ -1000,7 +1000,7 @@ export default function Documents({
                         if (searchQuery) return matchesSearch;
                         return (String(d.folderId) === String(currentFolderId) || ((!d.folderId || d.folderId === 'null') && (currentFolderId === null || currentFolderId === 'null')));
                     }) && (
-                            <h3 className="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wider mt-6">{isEnglish ? 'Files' : 'Files'}</h3>
+                            <h3 className="text-sm font-semibold text-stone-500 mb-3 uppercase tracking-wider mt-6">{isEnglish ? 'Files' : 'Files'}</h3>
                         )}
                     {viewMode === 'grid' ? (
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -1029,7 +1029,7 @@ export default function Documents({
 
                                             if (activeJob) {
                                                 return (
-                                                    <div className="absolute inset-x-0 top-0 h-1 bg-gray-100 dark:bg-gray-700 overflow-hidden rounded-t-2xl z-20">
+                                                    <div className="absolute inset-x-0 top-0 h-1 bg-stone-100 dark:bg-stone-700 overflow-hidden rounded-t-2xl z-20">
                                                         <div
                                                             className="h-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-500 ease-out"
                                                             style={{ width: `${activeJob.progress || 5}%` }}
@@ -1039,7 +1039,7 @@ export default function Documents({
                                             }
                                             if (isWaiting) {
                                                 return (
-                                                    <div className="absolute inset-x-0 top-0 h-1 bg-gray-100 dark:bg-gray-700 overflow-hidden rounded-t-2xl z-20">
+                                                    <div className="absolute inset-x-0 top-0 h-1 bg-stone-100 dark:bg-stone-700 overflow-hidden rounded-t-2xl z-20">
                                                         <div className="h-full bg-amber-400 w-full animate-pulse" />
                                                     </div>
                                                 );
@@ -1055,7 +1055,7 @@ export default function Documents({
                                                     checked={selectedDocIds.has(doc.id)}
                                                     aria-label={isEnglish ? `Select ${doc.title}` : `Pilih ${doc.title}`}
                                                     onChange={(e) => { e.stopPropagation(); toggleDocSelection(doc.id); }}
-                                                    className="w-5 h-5 rounded-md border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer shadow-sm"
+                                                    className="w-5 h-5 rounded-md border-stone-300 text-blue-600 focus:ring-blue-500 cursor-pointer shadow-sm"
                                                 />
                                             </div>
                                         )}
@@ -1068,7 +1068,7 @@ export default function Documents({
                                                     setActiveMenuId(activeMenuId === doc.id ? null : doc.id);
                                                 }}
                                                 aria-label={isEnglish ? 'Document options' : 'Opsi dokumen'}
-                                                className="p-1.5 text-gray-400 hover:text-gray-600 dark:text-white/30 dark:hover:text-slate-300 hover:bg-gray-100 dark:hover:bg-white/[0.05] rounded-full transition-colors"
+                                                className="p-1.5 text-stone-400 hover:text-stone-600 dark:text-white/30 dark:hover:text-white/80 hover:bg-stone-100 dark:hover:bg-white/[0.05] rounded-full transition-colors"
                                             >
                                                 <MoreVertical size={16} />
                                             </button>
@@ -1076,13 +1076,13 @@ export default function Documents({
                                             { /* Dropdown Menu */}
                                             {activeMenuId === doc.id && (
                                                 <div
-                                                    className={`absolute right-0 top-full mt-2 w-48 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100 dark:border-white/[0.06] z-[130] overflow-hidden animate-in zoom-in-95 slide-in-from-top-2 duration-200 origin-top-right`}
+                                                    className={`absolute right-0 top-full mt-2 w-48 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl shadow-2xl border border-stone-100 dark:border-white/[0.06] z-[130] overflow-hidden animate-in zoom-in-95 slide-in-from-top-2 duration-200 origin-top-right`}
                                                 >
                                                     <div className="py-1">
-                                                        <button onClick={(e) => { e.stopPropagation(); handlePreview(doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
+                                                        <button onClick={(e) => { e.stopPropagation(); handlePreview(doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                             <Eye size={14} className="text-blue-500 group-hover:scale-110 transition-transform" /> {isEnglish ? 'View Detail' : 'Lihat Detail'}
                                                         </button>
-                                                        <button onClick={(e) => { e.stopPropagation(); handleDownload(doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
+                                                        <button onClick={(e) => { e.stopPropagation(); handleDownload(doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                             <Download size={14} className="text-green-500 group-hover:translate-y-0.5 transition-transform" /> Download
                                                         </button>
                                                         <button
@@ -1092,33 +1092,33 @@ export default function Documents({
                                                                 setIsRevisionModalOpen(true);
                                                                 setActiveMenuId(null);
                                                             }}
-                                                            className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2"
+                                                            className="group w-full text-left px-4 py-2 text-sm text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-white/[0.05] flex items-center gap-2"
                                                         >
                                                             <History size={14} className="text-blue-500 group-hover:rotate-[-20deg] transition-transform" /> {isEnglish ? 'Revision History' : 'Riwayat Revisi'}
                                                         </button>
-                                                        <div className="h-px bg-gray-100 dark:bg-[#0d0d0d] my-1" />
+                                                        <div className="h-px bg-stone-100 dark:bg-[#0d0d0d] my-1" />
 
                                                         {hasPermission('documents', 'create') && (
-                                                            <button onClick={(e) => { e.stopPropagation(); startMgmtOp('copy', 'file', doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
+                                                            <button onClick={(e) => { e.stopPropagation(); startMgmtOp('copy', 'file', doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                 <Copy size={14} className="group-hover:scale-110 transition-transform" /> {isEnglish ? 'Copy' : 'Salin'}
                                                             </button>
                                                         )}
                                                         {hasPermission('documents', 'edit') && (
                                                             <>
-                                                                <button onClick={(e) => { e.stopPropagation(); startMgmtOp('move', 'file', doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
+                                                                <button onClick={(e) => { e.stopPropagation(); startMgmtOp('move', 'file', doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                     <Move size={14} className="group-hover:translate-x-1 transition-transform" /> {isEnglish ? 'Move' : 'Pindah'}
                                                                 </button>
-                                                                <button onClick={(e) => { handleRenameDoc(e, doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
+                                                                <button onClick={(e) => { handleRenameDoc(e, doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                     <PenLine size={14} className="group-hover:rotate-12 transition-transform" /> {isEnglish ? 'Rename' : 'Ganti Nama'}
                                                                 </button>
-                                                                <button onClick={(e) => { handleEditDoc(e, doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
+                                                                <button onClick={(e) => { handleEditDoc(e, doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                     <UploadCloud size={14} className="group-hover:-translate-y-1 transition-transform" /> {isEnglish ? 'Update File' : 'Update File'}
                                                                 </button>
                                                             </>
                                                         )}
                                                         {hasPermission('documents', 'delete') && (
                                                             <>
-                                                                <div className="h-px bg-gray-100 dark:bg-[#0d0d0d] my-1" />
+                                                                <div className="h-px bg-stone-100 dark:bg-[#0d0d0d] my-1" />
                                                                 <button onClick={(e) => { handleDeleteDoc(e, doc.id); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-2">
                                                                     <Trash2 size={14} className="group-hover:scale-110 transition-transform" /> {isEnglish ? 'Delete' : 'Hapus'}
                                                                 </button>
@@ -1131,18 +1131,18 @@ export default function Documents({
 
                                         {/* Quick Actions (Hover Only) */}
                                         <div className="absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-10">
-                                            <button onClick={(e) => { e.stopPropagation(); handlePreview(doc); }} className="p-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-gray-500 hover:text-blue-600 rounded-full shadow-md border border-gray-100 dark:border-white/[0.06]" title={isEnglish ? 'View' : 'Lihat'}>
+                                            <button onClick={(e) => { e.stopPropagation(); handlePreview(doc); }} className="p-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-stone-500 hover:text-blue-600 rounded-full shadow-md border border-stone-100 dark:border-white/[0.06]" title={isEnglish ? 'View' : 'Lihat'}>
                                                 <Eye size={16} />
                                             </button>
-                                            <button onClick={(e) => { e.stopPropagation(); handleDownload(doc); }} className="p-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-gray-500 hover:text-green-600 rounded-full shadow-md border border-gray-100 dark:border-white/[0.06]" title="Download">
+                                            <button onClick={(e) => { e.stopPropagation(); handleDownload(doc); }} className="p-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-stone-500 hover:text-green-600 rounded-full shadow-md border border-stone-100 dark:border-white/[0.06]" title="Download">
                                                 <Download size={16} />
                                             </button>
-                                            <button onClick={(e) => { e.stopPropagation(); setSelectedDocForRevision(doc); setIsRevisionModalOpen(true); }} className="p-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-gray-500 hover:text-blue-600 rounded-full shadow-md border border-gray-100 dark:border-white/[0.06]" title={isEnglish ? 'Revision History' : 'Riwayat Revisi'}>
+                                            <button onClick={(e) => { e.stopPropagation(); setSelectedDocForRevision(doc); setIsRevisionModalOpen(true); }} className="p-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-stone-500 hover:text-blue-600 rounded-full shadow-md border border-stone-100 dark:border-white/[0.06]" title={isEnglish ? 'Revision History' : 'Riwayat Revisi'}>
                                                 <History size={16} />
                                             </button>
                                         </div>
 
-                                        <div className="flex items-center justify-center py-4 mb-2 gradient-bg-soft rounded-lg border border-slate-100 dark:border-slate-800">
+                                        <div className="flex items-center justify-center py-4 mb-2 gradient-bg-soft rounded-lg border border-stone-100 dark:border-white/[0.06]">
                                             {doc.type && doc.type.includes('pdf') ?
                                                 <FileDigit size={40} className="text-red-500 drop-shadow-sm" strokeWidth={1.5} /> :
                                                 doc.type && doc.type.includes('image') ?
@@ -1152,12 +1152,12 @@ export default function Documents({
                                         </div>
 
                                         <div className="flex-1 w-full">
-                                            <h3 className="font-semibold text-gray-800 dark:text-gray-100 text-sm line-clamp-2 leading-snug mb-2 break-words" title={doc.title}>
+                                            <h3 className="font-semibold text-stone-800 dark:text-stone-100 text-sm line-clamp-2 leading-snug mb-2 break-words" title={doc.title}>
                                                 {doc.title}
                                             </h3>
 
-                                            <div className="flex items-center justify-between text-[10px] text-gray-500 dark:text-white/40 mt-auto">
-                                                <span className="font-mono bg-gray-100 dark:bg-[#0d0d0d] text-gray-600 dark:text-white/70 px-1.5 py-0.5 rounded">{doc.size}</span>
+                                            <div className="flex items-center justify-between text-[10px] text-stone-500 dark:text-white/40 mt-auto">
+                                                <span className="font-mono bg-stone-100 dark:bg-[#0d0d0d] text-stone-600 dark:text-white/70 px-1.5 py-0.5 rounded">{doc.size}</span>
                                                 {(doc.status === 'processing' || doc.status === 'waiting') && !(doc.ocrContent && doc.ocrContent.trim().length > 50) ? (
                                                     <span className="text-amber-500 font-bold animate-pulse">{isEnglish ? 'OCR PROCESSING...' : 'PROSES OCR...'}</span>
                                                 ) : doc.status === 'failed' ? (
@@ -1166,21 +1166,21 @@ export default function Documents({
                                                     <div className="flex flex-col items-end">
                                                         <span className="font-bold text-blue-500">v{doc.version}</span>
                                                         {doc.versionsHistory?.length > 0 && (
-                                                            <span className="text-[8px] text-slate-400 font-medium">({doc.versionsHistory.length} Revisi)</span>
+                                                            <span className="text-[8px] text-stone-400 font-medium">({doc.versionsHistory.length} Revisi)</span>
                                                         )}
                                                     </div>
                                                 )}
                                             </div>
 
                                             {searchQuery && (
-                                                <div className="mt-1 text-[10px] text-gray-400 flex items-center gap-1">
+                                                <div className="mt-1 text-[10px] text-stone-400 flex items-center gap-1">
                                                     <FolderOpen size={10} />
                                                     <span className="truncate max-w-[100px]">{(folders || []).find(f => f.id === doc.folderId)?.name || (isEnglish ? 'Root' : 'Root')}</span>
                                                 </div>
                                             )}
 
                                             {isContentMatch && (
-                                                <div className="mt-2 p-1.5 bg-yellow-50 dark:bg-yellow-900/10 rounded border border-yellow-100 dark:border-yellow-900/20 text-[10px] text-gray-600 dark:text-white/70">
+                                                <div className="mt-2 p-1.5 bg-yellow-50 dark:bg-yellow-900/10 rounded border border-yellow-100 dark:border-yellow-900/20 text-[10px] text-stone-600 dark:text-white/70">
                                                     <span className="flex items-center gap-1 font-bold text-yellow-700 dark:text-yellow-500 mb-0.5"><Highlighter size={10} /> {isEnglish ? 'Match:' : 'Match:'}</span>
                                                     <p className="line-clamp-2 italic leading-tight opacity-90">"{getSearchSnippet(doc.ocrContent, searchQuery)}"</p>
                                                 </div>
@@ -1192,14 +1192,14 @@ export default function Documents({
                         </div>
                     ) : (
                         // --- LIST VIEW ---
-                        <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-xl border border-gray-200 dark:border-slate-800 shadow-sm">
-                            <div className="grid grid-cols-12 gap-4 px-6 py-4 bg-slate-50/80 dark:bg-[#0d0d0d]/50 border-b border-white/60 dark:border-white/10 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                        <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-xl border border-stone-200 dark:border-white/[0.06] shadow-sm">
+                            <div className="grid grid-cols-12 gap-4 px-6 py-4 bg-stone-50/80 dark:bg-[#0d0d0d]/50 border-b border-white/60 dark:border-white/10 text-xs font-bold text-stone-500 uppercase tracking-wider">
                                 <div className="col-span-6 md:col-span-5">{isEnglish ? 'Document Name' : 'Nama Dokumen'}</div>
                                 <div className="col-span-2 hidden md:block">{isEnglish ? 'Size' : 'Ukuran'}</div>
                                 <div className="col-span-2 hidden md:block">{isEnglish ? 'Version' : 'Versi'}</div>
                                 <div className="col-span-2 md:col-span-3 text-right">{isEnglish ? 'Actions' : 'Aksi'}</div>
                             </div>
-                            <div className="divide-y divide-gray-100 dark:divide-slate-800">
+                            <div className="divide-y divide-stone-100 dark:divide-slate-800">
                                 {/* Documents in List View - VIRTUALIZED */}
                                 {(() => {
                                     const { visibleFolders, visibleDocs } = getSmartVisibleItems();
@@ -1210,7 +1210,7 @@ export default function Documents({
 
                                     if (allItems.length === 0) {
                                         return (
-                                            <div className="p-8 text-center text-gray-400 italic">
+                                            <div className="p-8 text-center text-stone-400 italic">
                                                 {isEnglish ? 'This folder is empty.' : 'Folder ini kosong.'}
                                             </div>
                                         );
@@ -1223,7 +1223,7 @@ export default function Documents({
                                             const folder = item;
                                             return (
                                                 <div style={style}>
-                                                    <div className={`group grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-colors cursor-pointer border-b border-gray-100 dark:border-slate-800 h-full ${selectedFolderIds.has(folder.id) ? 'bg-blue-50/40 dark:bg-blue-900/10' : ''}`}
+                                                    <div className={`group grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-colors cursor-pointer border-b border-stone-100 dark:border-white/[0.06] h-full ${selectedFolderIds.has(folder.id) ? 'bg-blue-50/40 dark:bg-blue-900/10' : ''}`}
                                                         onClick={() => navigateFolder(folder.id)}
                                                     >
                                                         <div className="col-span-6 md:col-span-12 flex items-center gap-4 overflow-hidden">
@@ -1234,7 +1234,7 @@ export default function Documents({
                                                                         checked={selectedFolderIds.has(folder.id)}
                                                                         aria-label={isEnglish ? `Select folder ${folder.name}` : `Pilih folder ${folder.name}`}
                                                                         onChange={() => toggleFolderSelection(folder.id, folder.name)}
-                                                                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                                        className="w-4 h-4 rounded border-stone-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                                                                     />
                                                                 </div>
                                                             )}
@@ -1242,8 +1242,8 @@ export default function Documents({
                                                                 <FolderOpen size={18} fill="currentColor" className="opacity-70" />
                                                             </div>
                                                             <div className="min-w-0">
-                                                                <div className="font-bold text-gray-800 dark:text-gray-200 text-sm truncate" title={folder.name}>{folder.name}</div>
-                                                                <div className="text-[10px] text-gray-400">Folder • {folder.owner || 'System'}</div>
+                                                                <div className="font-bold text-stone-800 dark:text-stone-200 text-sm truncate" title={folder.name}>{folder.name}</div>
+                                                                <div className="text-[10px] text-stone-400">Folder • {folder.owner || 'System'}</div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1256,7 +1256,7 @@ export default function Documents({
 
                                         return (
                                             <div style={style}>
-                                                <div className={`group grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-gray-50 dark:hover:bg-white/[0.05]/50 transition-colors cursor-pointer border-b border-gray-100 dark:border-slate-800 h-full ${selectedDocIds.has(doc.id) ? 'bg-blue-50/40 dark:bg-blue-900/10' : ''}`}
+                                                <div className={`group grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-stone-50 dark:hover:bg-white/[0.05]/50 transition-colors cursor-pointer border-b border-stone-100 dark:border-white/[0.06] h-full ${selectedDocIds.has(doc.id) ? 'bg-blue-50/40 dark:bg-blue-900/10' : ''}`}
                                                     onClick={(e) => {
                                                         if (e.ctrlKey || e.metaKey) toggleDocSelection(doc.id);
                                                         else handlePreview(doc);
@@ -1270,11 +1270,11 @@ export default function Documents({
                                                                     checked={selectedDocIds.has(doc.id)}
                                                                     aria-label={isEnglish ? `Select ${doc.title}` : `Pilih ${doc.title}`}
                                                                     onChange={() => toggleDocSelection(doc.id)}
-                                                                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                                    className="w-4 h-4 rounded border-stone-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                                                                 />
                                                             </div>
                                                         )}
-                                                        <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-slate-100 dark:bg-[#0d0d0d] rounded-lg">
+                                                        <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-stone-100 dark:bg-[#0d0d0d] rounded-lg">
                                                             {doc.type && doc.type.includes('pdf') ?
                                                                 <FileDigit size={18} className="text-red-500" /> :
                                                                 doc.type && doc.type.includes('image') ?
@@ -1283,79 +1283,79 @@ export default function Documents({
                                                             }
                                                         </div>
                                                         <div className="min-w-0">
-                                                            <div className="font-semibold text-gray-800 dark:text-gray-200 text-sm truncate" title={doc.title}>{doc.title}</div>
+                                                            <div className="font-semibold text-stone-800 dark:text-stone-200 text-sm truncate" title={doc.title}>{doc.title}</div>
                                                             {isContentMatch && (
-                                                                <div className="text-[10px] text-gray-500 mt-1 flex items-center gap-1">
+                                                                <div className="text-[10px] text-stone-500 mt-1 flex items-center gap-1">
                                                                     <Highlighter size={10} className="text-yellow-500" />
                                                                     <span className="truncate italic">"{getSearchSnippet(doc.ocrContent, searchQuery)}"</span>
                                                                 </div>
                                                             )}
                                                         </div>
                                                     </div>
-                                                    <div className="col-span-2 hidden md:flex items-center text-sm text-gray-500 dark:text-white/40 font-mono">
+                                                    <div className="col-span-2 hidden md:flex items-center text-sm text-stone-500 dark:text-white/40 font-mono">
                                                         {doc.size}
                                                     </div>
                                                     <div className="col-span-2 hidden md:flex items-center">
                                                         <div className="flex flex-col">
                                                             <span className="px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold rounded-md">v{doc.version}</span>
                                                             {doc.versionsHistory && (Array.isArray(doc.versionsHistory) ? doc.versionsHistory.length > 0 : (typeof doc.versionsHistory === 'string' && doc.versionsHistory !== '[]')) && (
-                                                                <span className="text-[9px] text-slate-400 font-medium ml-1">({Array.isArray(doc.versionsHistory) ? doc.versionsHistory.length : JSON.parse(doc.versionsHistory).length} Revisi)</span>
+                                                                <span className="text-[9px] text-stone-400 font-medium ml-1">({Array.isArray(doc.versionsHistory) ? doc.versionsHistory.length : JSON.parse(doc.versionsHistory).length} Revisi)</span>
                                                             )}
                                                         </div>
                                                     </div>
                                                     <div className="col-span-2 md:col-span-3 flex items-center justify-end gap-2">
                                                         <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 mr-2 px-6">
-                                                            <button onClick={(e) => { e.stopPropagation(); handlePreview(doc) }} className="group/btn p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg" title="Lihat">
+                                                            <button onClick={(e) => { e.stopPropagation(); handlePreview(doc) }} className="group/btn p-1.5 text-stone-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg" title="Lihat">
                                                                 <Eye size={16} />
                                                             </button>
-                                                            <button onClick={(e) => { e.stopPropagation(); handleDownload(doc) }} className="group/btn p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg" title="Download">
+                                                            <button onClick={(e) => { e.stopPropagation(); handleDownload(doc) }} className="group/btn p-1.5 text-stone-400 hover:text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg" title="Download">
                                                                 <Download size={16} />
                                                             </button>
-                                                            <button onClick={(e) => { e.stopPropagation(); setSelectedDocForRevision(doc); setIsRevisionModalOpen(true); }} className="group/btn p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg" title="Riwayat Revisi">
+                                                            <button onClick={(e) => { e.stopPropagation(); setSelectedDocForRevision(doc); setIsRevisionModalOpen(true); }} className="group/btn p-1.5 text-stone-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg" title="Riwayat Revisi">
                                                                 <History size={16} />
                                                             </button>
                                                         </div>
                                                         <div className="relative">
                                                             <button
                                                                 onClick={(e) => { e.stopPropagation(); setActiveMenuId(activeMenuId === doc.id ? null : doc.id); }}
-                                                                className="p-1.5 text-gray-400 hover:text-blue-600 rounded-lg transition-colors"
+                                                                className="p-1.5 text-stone-400 hover:text-blue-600 rounded-lg transition-colors"
                                                             >
                                                                 <MoreVertical size={16} />
                                                             </button>
                                                             {activeMenuId === doc.id && (
-                                                                <div className={`absolute right-0 top-full mt-2 w-48 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-xl shadow-xl border border-gray-100 dark:border-white/[0.06] z-[130] overflow-hidden`} onClick={(e) => e.stopPropagation()}>
+                                                                <div className={`absolute right-0 top-full mt-2 w-48 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-xl shadow-xl border border-stone-100 dark:border-white/[0.06] z-[130] overflow-hidden`} onClick={(e) => e.stopPropagation()}>
                                                                     <div className="py-1">
-                                                                        <button onClick={() => { handlePreview(doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
+                                                                        <button onClick={() => { handlePreview(doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                             <Eye size={14} className="text-blue-500" /> {isEnglish ? 'View Detail' : 'Lihat Detail'}
                                                                         </button>
-                                                                        <button onClick={() => { handleDownload(doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
+                                                                        <button onClick={() => { handleDownload(doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                             <Download size={14} className="text-green-500" /> Download
                                                                         </button>
-                                                                        <button onClick={(e) => { e.stopPropagation(); setSelectedDocForRevision(doc); setIsRevisionModalOpen(true); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
+                                                                        <button onClick={(e) => { e.stopPropagation(); setSelectedDocForRevision(doc); setIsRevisionModalOpen(true); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                             <History size={14} className="text-blue-500" /> {isEnglish ? 'Revision History' : 'Riwayat Revisi'}
                                                                         </button>
-                                                                        <div className="h-px bg-gray-100 dark:bg-[#0d0d0d] my-1" />
+                                                                        <div className="h-px bg-stone-100 dark:bg-[#0d0d0d] my-1" />
                                                                         {hasPermission('documents', 'create') && (
-                                                                            <button onClick={() => { startMgmtOp('copy', 'file', doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
+                                                                            <button onClick={() => { startMgmtOp('copy', 'file', doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                                 <Copy size={14} /> {isEnglish ? 'Copy' : 'Salin'}
                                                                             </button>
                                                                         )}
                                                                         {hasPermission('documents', 'edit') && (
                                                                             <>
-                                                                                <button onClick={() => { startMgmtOp('move', 'file', doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
+                                                                                <button onClick={() => { startMgmtOp('move', 'file', doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                                     <Move size={14} /> {isEnglish ? 'Move' : 'Pindah'}
                                                                                 </button>
-                                                                                <button onClick={(e) => { handleRenameDoc(e, doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
+                                                                                <button onClick={(e) => { handleRenameDoc(e, doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                                     <PenLine size={14} /> {isEnglish ? 'Rename' : 'Ganti Nama'}
                                                                                 </button>
-                                                                                <button onClick={(e) => { handleEditDoc(e, doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
+                                                                                <button onClick={(e) => { handleEditDoc(e, doc); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-white/[0.05] flex items-center gap-2">
                                                                                     <UploadCloud size={14} /> {isEnglish ? 'Update File' : 'Update File'}
                                                                                 </button>
                                                                             </>
                                                                         )}
                                                                         {hasPermission('documents', 'delete') && (
                                                                             <>
-                                                                                <div className="h-px bg-gray-100 dark:bg-[#0d0d0d] my-1" />
+                                                                                <div className="h-px bg-stone-100 dark:bg-[#0d0d0d] my-1" />
                                                                                 <button onClick={(e) => { handleDeleteDoc(e, doc.id); setActiveMenuId(null); }} className="group w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-2">
                                                                                     <Trash2 size={14} /> {isEnglish ? 'Delete' : 'Hapus'}
                                                                                 </button>
@@ -1424,14 +1424,14 @@ export default function Documents({
                                 {mgmtOp?.type === 'copy' ? <Copy size={20} /> : <Move size={20} />}
                             </div>
                             <div>
-                                <h4 className="font-black text-slate-800 dark:text-white uppercase tracking-tight">
+                                <h4 className="font-black text-stone-800 dark:text-white uppercase tracking-tight">
                                     {mgmtOp?.type === 'copy' ? (isEnglish ? 'Copy' : 'Salin') : (isEnglish ? 'Move' : 'Pindah')} <span className="opacity-50">{mgmtOp?.itemType === 'file' ? (isEnglish ? 'File' : 'File') : (isEnglish ? 'Folder' : 'Folder')}</span>
                                 </h4>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{isEnglish ? 'Choose Destination Folder' : 'Pilih Folder Tujuan'}</p>
+                                <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">{isEnglish ? 'Choose Destination Folder' : 'Pilih Folder Tujuan'}</p>
                             </div>
                         </div>
-                        <div className="p-3 gradient-bg-soft rounded-2xl border border-slate-100 dark:border-slate-800">
-                            <p className="text-xs font-bold text-slate-600 dark:text-white/70 truncate">
+                        <div className="p-3 gradient-bg-soft rounded-2xl border border-stone-100 dark:border-white/[0.06]">
+                            <p className="text-xs font-bold text-stone-600 dark:text-white/70 truncate">
                                 "{mgmtOp?.item?.title || mgmtOp?.item?.name}"
                             </p>
                         </div>
@@ -1442,10 +1442,10 @@ export default function Documents({
                             onClick={() => performCopyMove(null)}
                             className="w-full flex items-center gap-3 px-4 py-3 bg-white/40 dark:bg-[#0d0d0d]/40 hover:bg-white/80 dark:hover:bg-white/[0.05] hover:shadow-lg hover:scale-[1.02] border border-transparent hover:border-blue-200 transition-all rounded-2xl group"
                         >
-                            <div className="p-2.5 bg-slate-100 dark:bg-[#111]/50 rounded-xl group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 text-slate-500 group-hover:text-blue-600 transition-colors">
+                            <div className="p-2.5 bg-stone-100 dark:bg-[#111]/50 rounded-xl group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 text-stone-500 group-hover:text-blue-600 transition-colors">
                                 <HardDrive size={20} />
                             </div>
-                            <span className="font-bold text-slate-700 dark:text-slate-200">{isEnglish ? 'All Documents (Root)' : 'Semua Dokumen (Root)'}</span>
+                            <span className="font-bold text-stone-700 dark:text-white/80">{isEnglish ? 'All Documents (Root)' : 'Semua Dokumen (Root)'}</span>
                         </button>
 
                         {folders.filter(f => mgmtOp?.item && String(f.id) !== String(mgmtOp.item.id)).map(folder => (
@@ -1458,8 +1458,8 @@ export default function Documents({
                                     <FolderOpen size={20} fill="currentColor" className="opacity-80" />
                                 </div>
                                 <div className="text-left">
-                                    <span className="font-bold text-slate-700 dark:text-slate-200 block">{folder.name}</span>
-                                    <span className="text-[10px] text-slate-400 font-mono">ID: {folder.id}</span>
+                                    <span className="font-bold text-stone-700 dark:text-white/80 block">{folder.name}</span>
+                                    <span className="text-[10px] text-stone-400 font-mono">ID: {folder.id}</span>
                                 </div>
                             </button>
                         ))}
@@ -1469,9 +1469,9 @@ export default function Documents({
                         <div className="pt-4 border-t border-white/20 dark:border-white/5">
                             <div className="flex justify-between text-[10px] font-black uppercase tracking-widest mb-2 px-1">
                                 <span className="text-blue-600 animate-pulse">{isEnglish ? 'Connecting...' : 'Menghubungkan...'}</span>
-                                <span className="text-slate-500">{opProgress}%</span>
+                                <span className="text-stone-500">{opProgress}%</span>
                             </div>
-                            <div className="w-full bg-slate-100 dark:bg-[#0d0d0d] rounded-full h-1.5 overflow-hidden">
+                            <div className="w-full bg-stone-100 dark:bg-[#0d0d0d] rounded-full h-1.5 overflow-hidden">
                                 <div
                                     className="bg-blue-600 h-full transition-all duration-300 ease-out shadow-[0_0_15px_rgba(79,70,229,0.5)]"
                                     style={{ width: `${opProgress}%` }}
@@ -1491,19 +1491,19 @@ export default function Documents({
             >
                 <div className="space-y-6 px-1 pt-4 custom-scrollbar">
                     <div>
-                        <label className="block text-[10px] font-black text-slate-500 dark:text-white/40 mb-2 uppercase tracking-widest ml-1">{isEnglish ? 'Folder Name' : 'Nama Folder'}</label>
+                        <label className="block text-[10px] font-black text-stone-500 dark:text-white/40 mb-2 uppercase tracking-widest ml-1">{isEnglish ? 'Folder Name' : 'Nama Folder'}</label>
                         <input
                             value={folderForm.name}
                             onChange={(e) => setFolderForm({ ...folderForm, name: e.target.value })}
                             disabled={['DataBox', 'TaxAudit', 'PUSTAKA', 'ApprovalDoc'].includes(folderForm.name)}
-                            className={`w-full px-6 py-4 gradient-bg-soft border-2 border-slate-100 dark:border-slate-800 rounded-2xl focus:border-blue-500 transition-all outline-none dark:text-white font-black ${folderForm.name === 'DataBox' || folderForm.name === 'TaxAudit' || folderForm.name === 'ApprovalDoc' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`w-full px-6 py-4 gradient-bg-soft border-2 border-stone-100 dark:border-white/[0.06] rounded-2xl focus:border-blue-500 transition-all outline-none dark:text-white font-black ${folderForm.name === 'DataBox' || folderForm.name === 'TaxAudit' || folderForm.name === 'ApprovalDoc' ? 'opacity-50 cursor-not-allowed' : ''}`}
                             placeholder={isEnglish ? 'Example: Financial Report' : 'Contoh: Laporan Keuangan'}
                             autoFocus
                         />
                     </div>
 
                     <div>
-                        <label className="block text-[10px] font-black text-slate-500 dark:text-white/40 mb-2 uppercase tracking-widest ml-1">{isEnglish ? 'Privacy & Access Control' : 'Privasi & Akses Kontrol'}</label>
+                        <label className="block text-[10px] font-black text-stone-500 dark:text-white/40 mb-2 uppercase tracking-widest ml-1">{isEnglish ? 'Privacy & Access Control' : 'Privasi & Akses Kontrol'}</label>
                         <div className="grid grid-cols-2 gap-3">
                             {[
                                 { id: 'public', label: isEnglish ? 'Public' : 'Umum', icon: Users, desc: isEnglish ? 'Public Access' : 'Akses Publik' },
@@ -1516,14 +1516,14 @@ export default function Documents({
                                     onClick={() => setFolderForm({ ...folderForm, privacy: type.id })}
                                     className={`p-4 rounded-3xl border-2 text-left transition-all relative overflow-hidden group/btn ${folderForm.privacy === type.id
                                         ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20 shadow-lg scale-[1.02]'
-                                        : 'border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-[#0d0d0d]/30 hover:border-blue-300'
+                                        : 'border-stone-100 dark:border-white/[0.06] bg-white/50 dark:bg-[#0d0d0d]/30 hover:border-blue-300'
                                         }`}
                                 >
                                     <div className="flex items-center gap-2 mb-1 relative z-10">
-                                        <type.icon size={18} className={`${folderForm.privacy === type.id ? 'text-blue-600' : 'text-slate-400'} group-hover/btn:scale-110 transition-transform duration-300`} />
-                                        <span className={`text-xs font-black uppercase tracking-tight ${folderForm.privacy === type.id ? 'text-blue-950 dark:text-blue-100' : 'text-slate-600 dark:text-white/70'}`}>{type.label}</span>
+                                        <type.icon size={18} className={`${folderForm.privacy === type.id ? 'text-blue-600' : 'text-stone-400'} group-hover/btn:scale-110 transition-transform duration-300`} />
+                                        <span className={`text-xs font-black uppercase tracking-tight ${folderForm.privacy === type.id ? 'text-blue-950 dark:text-blue-100' : 'text-stone-600 dark:text-white/70'}`}>{type.label}</span>
                                     </div>
-                                    <p className={`text-[9px] font-bold uppercase tracking-widest relative z-10 ${folderForm.privacy === type.id ? 'text-blue-600/70 dark:text-blue-400/80' : 'text-slate-400'}`}>{type.desc}</p>
+                                    <p className={`text-[9px] font-bold uppercase tracking-widest relative z-10 ${folderForm.privacy === type.id ? 'text-blue-600/70 dark:text-blue-400/80' : 'text-stone-400'}`}>{type.desc}</p>
 
                                     {folderForm.privacy === type.id && (
                                         <div className="absolute top-0 right-0 w-12 h-12 bg-blue-500/10 rounded-full -mr-6 -mt-6 blur-xl"></div>
@@ -1551,7 +1551,7 @@ export default function Documents({
                                             }}
                                             className="w-5 h-5 rounded-lg text-blue-600 focus:ring-blue-500 border-blue-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl"
                                         />
-                                        <span className="text-sm font-black text-slate-700 dark:text-slate-200 uppercase tracking-tight">{dept.name}</span>
+                                        <span className="text-sm font-black text-stone-700 dark:text-white/80 uppercase tracking-tight">{dept.name}</span>
                                     </label>
                                 ))}
                             </div>
@@ -1576,7 +1576,7 @@ export default function Documents({
                                             className="w-5 h-5 rounded-lg text-blue-600 focus:ring-blue-500 border-blue-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl"
                                         />
                                         <div className="text-left leading-tight">
-                                            <span className="text-sm font-black text-slate-700 dark:text-slate-200 uppercase tracking-tight block">{user.name}</span>
+                                            <span className="text-sm font-black text-stone-700 dark:text-white/80 uppercase tracking-tight block">{user.name}</span>
                                             <span className="text-[10px] text-blue-600/70 font-bold">{user.department}</span>
                                         </div>
                                     </label>
@@ -1585,8 +1585,8 @@ export default function Documents({
                         </div>
                     )}
 
-                    <div className="flex gap-3 pt-6 border-t border-slate-100 dark:border-slate-800 mt-2">
-                        <button onClick={() => setIsFolderModalOpen(false)} className="flex-1 py-4 text-slate-500 hover:text-slate-800 dark:text-white/40 dark:hover:text-white text-xs font-black uppercase tracking-widest transition-all">{isEnglish ? 'Cancel' : 'Batalkan'}</button>
+                    <div className="flex gap-3 pt-6 border-t border-stone-100 dark:border-white/[0.06] mt-2">
+                        <button onClick={() => setIsFolderModalOpen(false)} className="flex-1 py-4 text-stone-500 hover:text-stone-800 dark:text-white/40 dark:hover:text-white text-xs font-black uppercase tracking-widest transition-all">{isEnglish ? 'Cancel' : 'Batalkan'}</button>
                         <button
                             onClick={() => {
                                 if (folderForm.id) {
@@ -1608,13 +1608,13 @@ export default function Documents({
             {
                 (selectedDocIds.size > 0 || selectedFolderIds.size > 0) && (
                     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white/70 dark:bg-[#0d0d0d]/80 backdrop-blur-3xl shadow-2xl rounded-full px-6 py-3 flex items-center gap-4 z-50 border border-white/40 dark:border-white/10 animate-in slide-in-from-bottom-4 duration-300 ring-1 ring-black/5">
-                        <span className="text-sm font-bold text-slate-700 dark:text-gray-200 pl-2 border-r border-slate-200 dark:border-white/[0.06] pr-5">
+                        <span className="text-sm font-bold text-stone-700 dark:text-stone-200 pl-2 border-r border-stone-200 dark:border-white/[0.06] pr-5">
                             {selectedDocIds.size + selectedFolderIds.size} {isEnglish ? 'items selected' : 'item dipilih'}
                         </span>
 
                         <button
                             onClick={handleDeselectAll}
-                            className="text-slate-500 hover:text-slate-800 dark:text-white/40 dark:hover:text-white text-sm font-medium transition-colors"
+                            className="text-stone-500 hover:text-stone-800 dark:text-white/40 dark:hover:text-white text-sm font-medium transition-colors"
                         >
                             {isEnglish ? 'Cancel' : 'Batal'}
                         </button>
@@ -1653,8 +1653,8 @@ export default function Documents({
                             <FileText size={24} className="text-blue-600" />
                         </div>
                         <div>
-                            <h4 className="font-bold text-slate-800 dark:text-white truncate max-w-[300px]">{selectedDocForRevision?.title}</h4>
-                            <p className="text-[10px] text-slate-500 dark:text-white/40 font-bold uppercase tracking-widest">ID: {selectedDocForRevision?.id} • {isEnglish ? 'Current Version' : 'Versi Saat Ini'}: v{selectedDocForRevision?.version}</p>
+                            <h4 className="font-bold text-stone-800 dark:text-white truncate max-w-[300px]">{selectedDocForRevision?.title}</h4>
+                            <p className="text-[10px] text-stone-500 dark:text-white/40 font-bold uppercase tracking-widest">ID: {selectedDocForRevision?.id} • {isEnglish ? 'Current Version' : 'Versi Saat Ini'}: v{selectedDocForRevision?.version}</p>
                         </div>
                     </div>
 
@@ -1669,7 +1669,7 @@ export default function Documents({
 
                             if (history.length === 0) {
                                 return (
-                                    <div className="py-12 text-center text-slate-400 italic gradient-bg-soft rounded-2xl border border-dashed border-slate-200 dark:border-white/[0.06]">
+                                    <div className="py-12 text-center text-stone-400 italic gradient-bg-soft rounded-2xl border border-dashed border-stone-200 dark:border-white/[0.06]">
                                         {isEnglish ? 'No revision history for this document yet.' : 'Belum ada riwayat revisi untuk dokumen ini.'}
                                     </div>
                                 );
@@ -1679,17 +1679,17 @@ export default function Documents({
                                 <div key={idx} className="group flex items-center gap-4 p-4 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-2xl hover:border-blue-300 dark:hover:border-blue-700 transition-all">
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 mb-1">
-                                            <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-[#0d0d0d] text-slate-500 dark:text-white/40 text-[10px] font-bold rounded uppercase">{isEnglish ? 'Revision' : 'Revisi'}</span>
-                                            <span className="text-xs font-bold text-slate-700 dark:text-slate-200">{new Date(rev.timestamp).toLocaleString()}</span>
+                                            <span className="px-1.5 py-0.5 bg-stone-100 dark:bg-[#0d0d0d] text-stone-500 dark:text-white/40 text-[10px] font-bold rounded uppercase">{isEnglish ? 'Revision' : 'Revisi'}</span>
+                                            <span className="text-xs font-bold text-stone-700 dark:text-white/80">{new Date(rev.timestamp).toLocaleString()}</span>
                                         </div>
-                                        <p className="text-[10px] text-slate-400 font-medium truncate">{isEnglish ? 'Uploaded by' : 'Diunggah oleh'}: <span className="text-blue-600 dark:text-blue-400">{rev.user}</span> • {isEnglish ? 'Size' : 'Ukuran'}: {rev.size}</p>
+                                        <p className="text-[10px] text-stone-400 font-medium truncate">{isEnglish ? 'Uploaded by' : 'Diunggah oleh'}: <span className="text-blue-600 dark:text-blue-400">{rev.user}</span> • {isEnglish ? 'Size' : 'Ukuran'}: {rev.size}</p>
                                     </div>
                                     <div className="flex gap-2">
                                         <a
                                             href={rev.url}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="p-2 bg-slate-100 dark:bg-[#0d0d0d] text-slate-500 hover:text-blue-600 rounded-xl transition-colors"
+                                            className="p-2 bg-stone-100 dark:bg-[#0d0d0d] text-stone-500 hover:text-blue-600 rounded-xl transition-colors"
                                             title={isEnglish ? 'View This Version' : 'Lihat Versi Ini'}
                                         >
                                             <Eye size={16} />
@@ -1723,11 +1723,11 @@ export default function Documents({
             >
                 <div className="flex min-h-0 flex-col gap-6 p-8 lg:p-10 lg:flex-row lg:h-[82vh] w-full relative">
                     {/* COLUMN 1: FILE PREVIEW */}
-                    <div className="flex-[3] bg-slate-100 dark:bg-slate-950 rounded-3xl overflow-hidden flex items-center justify-center border border-slate-200 dark:border-slate-800 relative shadow-inner min-w-0 min-h-[500px] lg:min-h-0 lg:h-full">
+                    <div className="flex-[3] bg-stone-100 dark:bg-[#050505] rounded-3xl overflow-hidden flex items-center justify-center border border-stone-200 dark:border-white/[0.06] relative shadow-inner min-w-0 min-h-[500px] lg:min-h-0 lg:h-full">
                         {isGeneratingPreview ? (
                             <div className="flex flex-col items-center gap-3">
                                 <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                                <p className="text-sm font-bold text-slate-500 animate-pulse">{isEnglish ? 'Preparing Preview...' : 'Menyiapkan Preview...'}</p>
+                                <p className="text-sm font-bold text-stone-500 animate-pulse">{isEnglish ? 'Preparing Preview...' : 'Menyiapkan Preview...'}</p>
                             </div>
                         ) : previewFile?.type?.toLowerCase()?.startsWith('image/') ? (
                             <div className="relative w-full h-full group/preview">
@@ -1747,16 +1747,16 @@ export default function Documents({
                                 <PdfViewer src={pdfBlobUrl} className="w-full h-full" />
                             ) : (
                                 <div className="flex flex-col items-center gap-3">
-                                    <FileText size={64} className="text-slate-300" />
-                                    <p className="text-sm font-bold text-slate-500">{isEnglish ? 'PDF data unavailable' : 'Data PDF tidak tersedia'}</p>
-                                    <p className="text-[10px] text-slate-400">{isEnglish ? 'File may not have been re-uploaded to the server.' : 'File mungkin belum diunggah ulang ke server.'}</p>
+                                    <FileText size={64} className="text-stone-300" />
+                                    <p className="text-sm font-bold text-stone-500">{isEnglish ? 'PDF data unavailable' : 'Data PDF tidak tersedia'}</p>
+                                    <p className="text-[10px] text-stone-400">{isEnglish ? 'File may not have been re-uploaded to the server.' : 'File mungkin belum diunggah ulang ke server.'}</p>
                                     <button onClick={() => handleDownload(selectedDocPreview)} className="px-6 py-2 gradient-bg text-white rounded-xl text-xs font-black shadow-lg hover:scale-105 transition-all">{isEnglish ? 'DOWNLOAD PDF' : 'DOWNLOAD PDF'}</button>
                                 </div>
                             )
                         ) : previewHtml ? (
                             <div className="w-full h-full p-8 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl overflow-auto prose dark:prose-invert max-w-none shadow-inner" dangerouslySetInnerHTML={{ __html: previewHtml }} />
                         ) : (
-                            <div className="text-center p-10 text-slate-400">
+                            <div className="text-center p-10 text-stone-400">
                                 <FileText size={64} className="mx-auto mb-4 opacity-20" />
                                 <p className="font-bold uppercase tracking-widest text-xs">{isEnglish ? 'Limited Preview' : 'Preview Terbatas'}</p>
                                 <p className="text-[10px] mt-2 opacity-60">{isEnglish ? 'This format does not support direct preview.' : 'Format ini tidak mendukung preview langsung.'}<br />{isEnglish ? 'Use Download button to view the file.' : 'Gunakan tombol Download untuk melihat file.'}</p>
@@ -1781,10 +1781,10 @@ export default function Documents({
 
                         {/* Chat Messages */}
                         <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 flex items-center gap-2 shrink-0">
+                            <h4 className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] mb-2 flex items-center gap-2 shrink-0">
                                 <MoreVertical size={12} className="text-blue-500" /> {isEnglish ? 'Coordination History' : 'Riwayat Koordinasi'}
                             </h4>
-                            <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-1 bg-slate-50/30 dark:bg-[#0d0d0d]/30 rounded-2xl p-2">
+                            <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-1 bg-stone-50/30 dark:bg-[#0d0d0d]/30 rounded-2xl p-2">
                                 <div className="space-y-4 flex flex-col">
                                     {Array.isArray(comments) && comments.map(c => {
                                         const isMe = c.user === currentUser?.name || c.user === currentUser?.username;
@@ -1793,16 +1793,16 @@ export default function Documents({
 
                                         return (
                                             <div key={c.id} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} w-full animate-in slide-in-from-bottom-2`}>
-                                                <div className={`max-w-[85%] p-3 rounded-2xl shadow-sm ${isMe ? 'gradient-bg text-white rounded-tr-none' : 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-gray-100 dark:border-slate-800 rounded-tl-none'}`}>
+                                                <div className={`max-w-[85%] p-3 rounded-2xl shadow-sm ${isMe ? 'gradient-bg text-white rounded-tr-none' : 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-100 dark:border-white/[0.06] rounded-tl-none'}`}>
                                                     <div className="flex justify-between items-center gap-4 text-[9px] mb-1 opacity-80 font-black uppercase tracking-wider">
                                                         {!isMe && <span className="text-blue-600 dark:text-blue-400">{c.user}</span>}
-                                                        <span className={isMe ? 'text-blue-100 ml-auto' : 'text-slate-400'}>
+                                                        <span className={isMe ? 'text-blue-100 ml-auto' : 'text-stone-400'}>
                                                             {isValidDate ? timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-'}
                                                         </span>
                                                     </div>
                                                     <p className="text-xs leading-relaxed break-words">{c.text}</p>
                                                     {c.attachmentUrl && (
-                                                        <div className={`mt-2 flex items-center justify-between p-2 rounded-lg border border-dashed ${isMe ? 'bg-white/10 border-white/20' : 'gradient-bg-soft border-slate-200 dark:border-white/[0.06]'}`}>
+                                                        <div className={`mt-2 flex items-center justify-between p-2 rounded-lg border border-dashed ${isMe ? 'bg-white/10 border-white/20' : 'gradient-bg-soft border-stone-200 dark:border-white/[0.06]'}`}>
                                                             <div className="flex items-center gap-2 overflow-hidden">
                                                                 <Paperclip size={10} className={isMe ? 'text-blue-200' : 'text-blue-500'} />
                                                                 <span className="text-[9px] font-bold truncate max-w-[100px]">{c.attachmentName}</span>
@@ -1841,15 +1841,15 @@ export default function Documents({
                             <textarea
                                 value={newComment} onChange={e => setNewComment(e.target.value)}
                                 placeholder={isEnglish ? 'Write a comment...' : 'Tulis komentar...'}
-                                className="w-full p-3 text-xs bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none dark:text-white resize-none"
+                                className="w-full p-3 text-xs bg-stone-50 dark:bg-[#050505] border border-stone-200 dark:border-white/[0.06] rounded-xl focus:ring-2 focus:ring-blue-500 outline-none dark:text-white resize-none"
                                 rows="2"
                             />
                             <div className="flex justify-between items-center">
                                 <label className="flex items-center gap-2 cursor-pointer">
-                                    <div className={`p-2 rounded-lg ${commentAttachment ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 dark:bg-[#0d0d0d] text-slate-400'}`}>
+                                    <div className={`p-2 rounded-lg ${commentAttachment ? 'bg-emerald-100 text-emerald-600' : 'bg-stone-100 dark:bg-[#0d0d0d] text-stone-400'}`}>
                                         <Paperclip size={14} />
                                     </div>
-                                    <span className="text-[10px] font-bold text-slate-500 truncate max-w-[100px]">{commentAttachment ? commentAttachment.name : (isEnglish ? 'Attachment' : 'Lampiran')}</span>
+                                    <span className="text-[10px] font-bold text-stone-500 truncate max-w-[100px]">{commentAttachment ? commentAttachment.name : (isEnglish ? 'Attachment' : 'Lampiran')}</span>
                                     <input type="file" className="hidden" onChange={e => setCommentAttachment(e.target.files[0])} />
                                 </label>
                                 <button onClick={handlePostComment} disabled={isPostingComment || (!newComment.trim() && !commentAttachment)} className="px-4 py-2 gradient-bg text-white text-[10px] font-black uppercase rounded-lg disabled:opacity-50">{isEnglish ? 'Send' : 'Kirim'}</button>
@@ -1858,7 +1858,7 @@ export default function Documents({
 
                         {/* Action Buttons */}
                         <div className="flex gap-3 shrink-0">
-                            <button onClick={() => setSelectedDocPreview(null)} className="flex-1 py-2.5 bg-slate-100 dark:bg-[#0d0d0d] text-slate-500 dark:text-white/40 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all">{isEnglish ? 'Close' : 'Tutup'}</button>
+                            <button onClick={() => setSelectedDocPreview(null)} className="flex-1 py-2.5 bg-stone-100 dark:bg-[#0d0d0d] text-stone-500 dark:text-white/40 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-stone-200 transition-all">{isEnglish ? 'Close' : 'Tutup'}</button>
                             <button onClick={() => handleDownload(selectedDocPreview)} className="flex-[2] py-2.5 gradient-bg text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-500/20 hover:bg-blue-500 transition-all flex items-center justify-center gap-2"><Download size={14} /> {isEnglish ? 'Download' : 'Download'}</button>
                         </div>
                     </div>
@@ -1867,9 +1867,9 @@ export default function Documents({
                     <div className="flex-1 flex flex-col h-full min-w-[280px] overflow-hidden">
                         <div className="flex items-center gap-2 mb-2 shrink-0">
                             <Sparkles size={14} className="text-blue-500" />
-                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{isEnglish ? 'Text Extraction Result (OCR)' : 'Hasil Ekstraksi Teks (OCR)'}</h4>
+                            <h4 className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em]">{isEnglish ? 'Text Extraction Result (OCR)' : 'Hasil Ekstraksi Teks (OCR)'}</h4>
                         </div>
-                        <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar w-full bg-slate-50 dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-4 text-xs font-mono text-slate-600 dark:text-white/40 leading-relaxed whitespace-pre-wrap shadow-inner">
+                        <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar w-full bg-stone-50 dark:bg-[#050505] border-2 border-stone-200 dark:border-white/[0.06] rounded-2xl p-4 text-xs font-mono text-stone-600 dark:text-white/40 leading-relaxed whitespace-pre-wrap shadow-inner">
                             {selectedDocPreview?.ocrContent || (isEnglish ? 'No detected text data.' : 'Tidak ada data teks yang terdeteksi.')}
                         </div>
                     </div>

@@ -29,7 +29,7 @@ const GuideAssistant = ({ message, isExplaining, onClick }) => (
                     exit={{ opacity: 0, scale: 0.8, x: 20 }}
                     className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl p-4 rounded-3xl shadow-2xl border border-blue-100 dark:border-blue-900 max-w-xs pointer-events-auto"
                 >
-                    <p className="text-xs font-bold text-slate-700 dark:text-slate-200 leading-relaxed">
+                    <p className="text-xs font-bold text-stone-700 dark:text-white/80 leading-relaxed">
                         {message}
                     </p>
                     <div className="absolute -bottom-2 right-8 w-4 h-4 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rotate-45 border-r border-b border-blue-100 dark:border-blue-900"></div>
@@ -44,7 +44,7 @@ const GuideAssistant = ({ message, isExplaining, onClick }) => (
             } : { y: [0, -5, 0] }}
             transition={{ duration: 3, repeat: Infinity }}
             onClick={onClick}
-            className="w-20 h-20 bg-gradient-to-tr from-blue-600 to-blue-600 rounded-full shadow-2xl flex items-center justify-center border-4 border-white dark:border-slate-900 pointer-events-auto cursor-pointer"
+            className="w-20 h-20 bg-gradient-to-tr from-blue-600 to-blue-600 rounded-full shadow-2xl flex items-center justify-center border-4 border-white dark:border-[#0a0a0a] pointer-events-auto cursor-pointer"
         >
             <Sparkles className="text-white animate-pulse" size={32} />
         </motion.div>
@@ -59,13 +59,13 @@ const PustakaLandingPage = ({ onClose }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] bg-slate-50/80 dark:bg-[#0B1437]/90 backdrop-blur-xl overflow-y-auto custom-scrollbar p-6 md:p-12 text-slate-900 dark:text-white"
+            className="fixed inset-0 z-[9999] bg-stone-50/80 dark:bg-[#0B1437]/90 backdrop-blur-xl overflow-y-auto custom-scrollbar p-6 md:p-12 text-stone-900 dark:text-white"
         >
             <div className="max-w-5xl mx-auto">
                 <div className="flex justify-end mb-8">
                     <button
                         onClick={onClose}
-                        className="p-3 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl shadow-lg text-slate-400 hover:text-red-500 transition-all hover:scale-110"
+                        className="p-3 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl shadow-lg text-stone-400 hover:text-red-500 transition-all hover:scale-110"
                     >
                         <X size={24} />
                     </button>
@@ -94,7 +94,7 @@ const PustakaLandingPage = ({ onClose }) => {
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ delay: 0.3 }}
-                        className="text-xl text-slate-500 dark:text-white/40 max-w-3xl mx-auto leading-relaxed font-medium"
+                        className="text-xl text-stone-500 dark:text-white/40 max-w-3xl mx-auto leading-relaxed font-medium"
                     >
                         Membangun fondasi pengetahuan yang kuat, terstruktur, dan siap menghadapi perkembangan di masa depan.
                     </motion.p>
@@ -105,7 +105,7 @@ const PustakaLandingPage = ({ onClose }) => {
                         initial={{ x: -50, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         transition={{ delay: 0.4 }}
-                        className="p-8 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-[3rem] shadow-xl border border-slate-100 dark:border-white/[0.06] relative overflow-hidden group"
+                        className="p-8 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-[3rem] shadow-xl border border-stone-100 dark:border-white/[0.06] relative overflow-hidden group"
                     >
                         <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                             <AlertCircle size={120} />
@@ -113,8 +113,8 @@ const PustakaLandingPage = ({ onClose }) => {
                         <div className="w-14 h-14 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-2xl flex items-center justify-center mb-6 shadow-inner">
                             <HelpCircle size={28} />
                         </div>
-                        <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-4 uppercase tracking-tight">Tantangan Operasional</h3>
-                        <p className="text-slate-600 dark:text-white/40 leading-relaxed font-medium">
+                        <h3 className="text-2xl font-black text-stone-800 dark:text-white mb-4 uppercase tracking-tight">Tantangan Operasional</h3>
+                        <p className="text-stone-600 dark:text-white/40 leading-relaxed font-medium">
                             Dalam lingkungan kerja yang dinamis, keberlangsungan operasional sangat bergantung pada ketersediaan informasi. Namun, banyak pengetahuan penting masih tersimpan secara personal pada masing-masing karyawan.
                         </p>
                         <div className="mt-6 p-4 bg-red-50/50 dark:bg-red-900/10 rounded-2xl border border-red-100 dark:border-red-900/20">
@@ -162,13 +162,13 @@ const PustakaLandingPage = ({ onClose }) => {
                             initial={{ y: 30, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ delay: 0.6 + (i * 0.1) }}
-                            className="p-6 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-[2.5rem] border border-slate-100 dark:border-white/[0.06] shadow-sm hover:shadow-xl transition-all hover:-translate-y-2"
+                            className="p-6 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-[2.5rem] border border-stone-100 dark:border-white/[0.06] shadow-sm hover:shadow-xl transition-all hover:-translate-y-2"
                         >
                             <div className={`w-12 h-12 ${feature.color} rounded-2xl flex items-center justify-center mb-4 shadow-inner`}>
                                 <feature.icon size={24} />
                             </div>
-                            <h4 className="font-black text-slate-800 dark:text-white mb-2 uppercase tracking-tight text-sm">{feature.title}</h4>
-                            <p className="text-xs text-slate-500 dark:text-white/40 leading-relaxed font-medium">{feature.desc}</p>
+                            <h4 className="font-black text-stone-800 dark:text-white mb-2 uppercase tracking-tight text-sm">{feature.title}</h4>
+                            <p className="text-xs text-stone-500 dark:text-white/40 leading-relaxed font-medium">{feature.desc}</p>
                         </motion.div>
                     ))}
                 </div>
@@ -203,10 +203,10 @@ const SlideViewer = ({ guide, slides, currentIdx, onNext, onPrev, onClose, setZo
         <motion.div
             key="slide-viewer-overlay"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center p-0"
+            className="fixed inset-0 z-[9999] bg-stone-950/95 backdrop-blur-2xl flex items-center justify-center p-0"
         >
             {/* Top Progress Bar */}
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-slate-800">
+            <div className="absolute top-0 left-0 w-full h-1.5 bg-[#0d0d0d]">
                 <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${progress}%` }}
@@ -250,7 +250,7 @@ const SlideViewer = ({ guide, slides, currentIdx, onNext, onPrev, onClose, setZo
                         <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tighter">
                             {currentSlide?.title}
                         </h1>
-                        <p className="text-xl md:text-2xl text-slate-400 leading-relaxed font-medium">
+                        <p className="text-xl md:text-2xl text-stone-400 leading-relaxed font-medium">
                             {currentSlide?.content}
                         </p>
                     </motion.div>
@@ -264,7 +264,7 @@ const SlideViewer = ({ guide, slides, currentIdx, onNext, onPrev, onClose, setZo
                         <div className="absolute inset-0 bg-blue-500/20 blur-[120px] rounded-full opacity-20 group-hover:opacity-40 transition-opacity"></div>
                         <div
                             onClick={() => currentSlide?.image && setZoomedImage(getFullUrl(currentSlide.image))}
-                            className="relative h-full w-full rounded-[2rem] md:rounded-[4rem] overflow-hidden border-4 border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] cursor-zoom-in group bg-slate-900/50"
+                            className="relative h-full w-full rounded-[2rem] md:rounded-[4rem] overflow-hidden border-4 border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] cursor-zoom-in group bg-[#0a0a0a]/50"
                         >
                             <img
                                 src={getFullUrl(currentSlide?.image) || undefined}
@@ -800,18 +800,18 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                     <div className="relative">
                         <button
                             onClick={() => setIsFilterOpen(!isFilterOpen)}
-                            className="w-full flex items-center justify-between px-5 py-4 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-[2rem] shadow-sm hover:border-blue-500 transition-all group"
+                            className="w-full flex items-center justify-between px-5 py-4 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06] rounded-[2rem] shadow-sm hover:border-blue-500 transition-all group"
                         >
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-xl text-blue-600">
                                     <Layout size={18} />
                                 </div>
                                 <div className="text-left">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{i18n.filterCategory}</p>
-                                    <p className="text-sm font-bold text-slate-700 dark:text-white">{selectedCategory === 'All' ? i18n.allGuides : selectedCategory}</p>
+                                    <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">{i18n.filterCategory}</p>
+                                    <p className="text-sm font-bold text-stone-700 dark:text-white">{selectedCategory === 'All' ? i18n.allGuides : selectedCategory}</p>
                                 </div>
                             </div>
-                            <ChevronRight size={18} className={`text-slate-400 transition-transform duration-300 ${isFilterOpen ? 'rotate-90' : ''}`} />
+                            <ChevronRight size={18} className={`text-stone-400 transition-transform duration-300 ${isFilterOpen ? 'rotate-90' : ''}`} />
                         </button>
 
                         <AnimatePresence>
@@ -822,17 +822,17 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
                                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        className="absolute top-full left-0 right-0 mt-2 bg-white/70 dark:bg-[#0d0d0d]/60 border border-slate-100 dark:border-slate-800 rounded-[2.5rem] shadow-2xl z-[120] overflow-hidden p-2 backdrop-blur-xl"
+                                        className="absolute top-full left-0 right-0 mt-2 bg-white/70 dark:bg-[#0d0d0d]/60 border border-stone-100 dark:border-white/[0.06] rounded-[2.5rem] shadow-2xl z-[120] overflow-hidden p-2 backdrop-blur-xl"
                                     >
                                         <button
                                             onClick={() => { setSelectedCategory('All'); setIsFilterOpen(false); }}
-                                            className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all ${selectedCategory === 'All' ? 'gradient-bg text-white shadow-lg shadow-blue-500/20' : 'hover:bg-slate-50 dark:hover:bg-white/[0.05] text-slate-600 dark:text-white/70'}`}
+                                            className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all ${selectedCategory === 'All' ? 'gradient-bg text-white shadow-lg shadow-blue-500/20' : 'hover:bg-stone-50 dark:hover:bg-white/[0.05] text-stone-600 dark:text-white/70'}`}
                                         >
                                             <div className="flex items-center gap-3">
                                                 <Globe size={16} className={selectedCategory === 'All' ? 'text-white' : 'text-blue-500'} />
                                                 <span className="font-bold text-sm">{i18n.allGuides}</span>
                                             </div>
-                                            <span className={`text-[10px] font-black px-2 py-0.5 rounded-lg ${selectedCategory === 'All' ? 'bg-white/20' : 'bg-slate-100 dark:bg-[#0d0d0d]'}`}>{guides.length}</span>
+                                            <span className={`text-[10px] font-black px-2 py-0.5 rounded-lg ${selectedCategory === 'All' ? 'bg-white/20' : 'bg-stone-100 dark:bg-[#0d0d0d]'}`}>{guides.length}</span>
                                         </button>
                                         {categories.map(cat => {
                                             const count = guides.filter(g => g.category === cat.name).length;
@@ -840,13 +840,13 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                                 <button
                                                     key={cat.id}
                                                     onClick={() => { setSelectedCategory(cat.name); setIsFilterOpen(false); }}
-                                                    className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all mt-1 ${selectedCategory === cat.name ? 'gradient-bg text-white shadow-lg shadow-blue-500/20' : 'hover:bg-slate-50 dark:hover:bg-white/[0.05] text-slate-600 dark:text-white/70'}`}
+                                                    className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all mt-1 ${selectedCategory === cat.name ? 'gradient-bg text-white shadow-lg shadow-blue-500/20' : 'hover:bg-stone-50 dark:hover:bg-white/[0.05] text-stone-600 dark:text-white/70'}`}
                                                 >
                                                     <div className="flex items-center gap-3">
                                                         <div className={`w-2 h-2 rounded-full ${selectedCategory === cat.name ? 'bg-white' : 'bg-blue-500'}`} />
                                                         <span className="font-bold text-sm">{cat.name}</span>
                                                     </div>
-                                                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-lg ${selectedCategory === cat.name ? 'bg-white/20' : 'bg-slate-100 dark:bg-[#0d0d0d]'}`}>{count}</span>
+                                                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-lg ${selectedCategory === cat.name ? 'bg-white/20' : 'bg-stone-100 dark:bg-[#0d0d0d]'}`}>{count}</span>
                                                 </button>
                                             );
                                         })}
@@ -877,10 +877,10 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                             }}
                             className={`w-full p-5 rounded-[2rem] border-2 border-dashed transition-all flex items-center gap-4 group ${isCreating
                                 ? 'bg-blue-600 border-blue-600 text-white shadow-xl'
-                                : 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border-slate-200 dark:border-white/[0.06] text-slate-500 hover:border-blue-400 hover:text-blue-500'
+                                : 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border-stone-200 dark:border-white/[0.06] text-stone-500 hover:border-blue-400 hover:text-blue-500'
                                 }`}
                         >
-                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 ${isCreating ? 'gradient-bg text-white' : 'bg-slate-100 dark:bg-[#0d0d0d]'
+                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 ${isCreating ? 'gradient-bg text-white' : 'bg-stone-100 dark:bg-[#0d0d0d]'
                                 }`}>
                                 <Plus size={24} />
                             </div>
@@ -896,7 +896,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                             onClick={() => startGuide(guide)}
                             className={`p-5 rounded-[2rem] border cursor-pointer transition-all group ${selectedGuide?.id === guide.id
                                 ? 'bg-blue-600 border-blue-500 shadow-xl text-white'
-                                : 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-slate-100 dark:border-slate-800 hover:border-blue-300 text-slate-800 dark:text-white shadow-sm hover:shadow-md'
+                                : 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-100 dark:border-white/[0.06] hover:border-blue-300 text-stone-800 dark:text-white shadow-sm hover:shadow-md'
                                 }`}
                         >
                             <div className="flex items-center gap-4">
@@ -911,22 +911,22 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                     <div className="flex items-center gap-2">
                                         <h4 className="font-bold truncate">{guide.title}</h4>
                                         {guide.privacy !== 'public' && (
-                                            <Lock size={10} className={selectedGuide?.id === guide.id ? 'text-blue-200' : 'text-slate-400'} />
+                                            <Lock size={10} className={selectedGuide?.id === guide.id ? 'text-blue-200' : 'text-stone-400'} />
                                         )}
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                     {hasPermission('pustaka', 'edit') && (
-                                        <button onClick={(e) => handleEditGuide(guide, e)} className={`p-1.5 rounded-lg transition-colors ${selectedGuide?.id === guide.id ? 'hover:bg-white/20 text-white' : 'hover:bg-blue-50 text-slate-400 hover:text-blue-600'}`}>
+                                        <button onClick={(e) => handleEditGuide(guide, e)} className={`p-1.5 rounded-lg transition-colors ${selectedGuide?.id === guide.id ? 'hover:bg-white/20 text-white' : 'hover:bg-blue-50 text-stone-400 hover:text-blue-600'}`}>
                                             <Edit3 size={14} />
                                         </button>
                                     )}
                                     {hasPermission('pustaka', 'delete') && (
-                                        <button onClick={(e) => handleDeleteGuide(guide.id, e)} className={`p-1.5 rounded-lg transition-colors ${selectedGuide?.id === guide.id ? 'hover:bg-white/20 text-white' : 'hover:bg-red-50 text-slate-400 hover:text-red-600'}`}>
+                                        <button onClick={(e) => handleDeleteGuide(guide.id, e)} className={`p-1.5 rounded-lg transition-colors ${selectedGuide?.id === guide.id ? 'hover:bg-white/20 text-white' : 'hover:bg-red-50 text-stone-400 hover:text-red-600'}`}>
                                             <Trash2 size={14} />
                                         </button>
                                     )}
-                                    <ChevronRight size={18} className={selectedGuide?.id === guide.id ? 'text-white' : 'text-slate-300'} />
+                                    <ChevronRight size={18} className={selectedGuide?.id === guide.id ? 'text-white' : 'text-stone-300'} />
                                 </div>
                             </div>
                         </motion.div>
@@ -940,19 +940,19 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                             <motion.div
                                 key="form"
                                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-                                className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-[3rem] shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col h-full"
+                                className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-[3rem] shadow-2xl border border-stone-100 dark:border-white/[0.06] overflow-hidden flex flex-col h-full"
                             >
-                                <div className="p-8 border-b border-slate-50 dark:border-slate-800 flex justify-between items-center bg-blue-50/30 dark:bg-blue-900/10">
+                                <div className="p-8 border-b border-stone-50 dark:border-white/[0.06] flex justify-between items-center bg-blue-50/30 dark:bg-blue-900/10">
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
                                             <Layout size={24} />
                                         </div>
                                         <div>
-                                            <h3 className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tight">{editingGuideId ? i18n.editGuideTitle : i18n.newGuideEditor}</h3>
+                                            <h3 className="text-xl font-black text-stone-800 dark:text-white uppercase tracking-tight">{editingGuideId ? i18n.editGuideTitle : i18n.newGuideEditor}</h3>
                                             <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">{editingGuideId ? i18n.editGuideDesc : i18n.newGuideDesc}</p>
                                         </div>
                                     </div>
-                                    <button onClick={() => setIsCreating(false)} className="p-3 hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-2xl transition-all">
+                                    <button onClick={() => setIsCreating(false)} className="p-3 hover:bg-red-50 text-stone-400 hover:text-red-500 rounded-2xl transition-all">
                                         <X size={20} />
                                     </button>
                                 </div>
@@ -961,7 +961,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                     {/* Guide Metadata */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{i18n.guideTitle}</label>
+                                            <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">{i18n.guideTitle}</label>
                                             <input
                                                 className="w-full px-6 py-4 gradient-bg-soft border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white font-bold"
                                                 placeholder={i18n.guideTitlePlaceholder}
@@ -970,7 +970,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{i18n.category}</label>
+                                            <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">{i18n.category}</label>
                                             <div className="flex gap-2">
                                                 <select
                                                     className="flex-1 px-6 py-4 gradient-bg-soft border-2 border-transparent focus:border-blue-500 rounded-2xl outline-none dark:text-white font-bold appearance-none"
@@ -989,8 +989,8 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                     </div>
 
                                     {/* Privacy Settings */}
-                                    <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{i18n.privacyAccess}</label>
+                                    <div className="space-y-3 pt-4 border-t border-stone-100 dark:border-white/[0.06]">
+                                        <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">{i18n.privacyAccess}</label>
                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                                             {[
                                                 { id: 'public', label: i18n.privacyPublic, icon: Users },
@@ -1003,7 +1003,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                                     onClick={() => setNewGuide({ ...newGuide, privacy: type.id })}
                                                     className={`p-3 rounded-xl border flex flex-col items-center gap-2 transition-all ${newGuide.privacy === type.id
                                                         ? 'bg-blue-50 border-blue-500 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
-                                                        : 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border-slate-200 dark:border-white/[0.06] text-slate-500 hover:border-blue-300'
+                                                        : 'bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border-stone-200 dark:border-white/[0.06] text-stone-500 hover:border-blue-300'
                                                         }`}
                                                 >
                                                     <type.icon size={16} />
@@ -1013,7 +1013,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                         </div>
 
                                         {newGuide.privacy === 'dept' && (
-                                            <div className="p-4 gradient-bg-soft rounded-2xl border border-slate-200 dark:border-white/[0.06] max-h-32 overflow-y-auto custom-scrollbar">
+                                            <div className="p-4 gradient-bg-soft rounded-2xl border border-stone-200 dark:border-white/[0.06] max-h-32 overflow-y-auto custom-scrollbar">
                                                 {departments.map(dept => (
                                                     <label key={dept.id} className="flex items-center gap-2 p-2 hover:bg-white dark:hover:bg-white/[0.05] rounded-lg cursor-pointer">
                                                         <input
@@ -1027,14 +1027,14 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                                             }}
                                                             className="rounded text-blue-600 focus:ring-blue-500"
                                                         />
-                                                        <span className="text-xs font-bold text-slate-700 dark:text-white/70">{dept.name}</span>
+                                                        <span className="text-xs font-bold text-stone-700 dark:text-white/70">{dept.name}</span>
                                                     </label>
                                                 ))}
                                             </div>
                                         )}
 
                                         {newGuide.privacy === 'user' && (
-                                            <div className="p-4 gradient-bg-soft rounded-2xl border border-slate-200 dark:border-white/[0.06] max-h-32 overflow-y-auto custom-scrollbar">
+                                            <div className="p-4 gradient-bg-soft rounded-2xl border border-stone-200 dark:border-white/[0.06] max-h-32 overflow-y-auto custom-scrollbar">
                                                 {users.filter(u => u.username !== currentUser?.username).map(user => (
                                                     <label key={user.id} className="flex items-center gap-2 p-2 hover:bg-white dark:hover:bg-white/[0.05] rounded-lg cursor-pointer">
                                                         <input
@@ -1049,8 +1049,8 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                                             className="rounded text-blue-600 focus:ring-blue-500"
                                                         />
                                                         <div className="flex flex-col">
-                                                            <span className="text-xs font-bold text-slate-700 dark:text-white/70">{user.name}</span>
-                                                            <span className="text-[9px] text-slate-400">{user.department}</span>
+                                                            <span className="text-xs font-bold text-stone-700 dark:text-white/70">{user.name}</span>
+                                                            <span className="text-[9px] text-stone-400">{user.department}</span>
                                                         </div>
                                                     </label>
                                                 ))}
@@ -1061,7 +1061,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                     {/* Slides Editor */}
                                     <div className="space-y-4">
                                         <div className="flex justify-between items-center">
-                                            <h4 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-widest">{i18n.slidesSteps}</h4>
+                                            <h4 className="text-sm font-black text-stone-800 dark:text-white uppercase tracking-widest">{i18n.slidesSteps}</h4>
                                             <button onClick={handleAddSlide} className="flex items-center gap-2 text-xs font-black text-blue-600 hover:text-blue-700">
                                                 <Plus size={16} /> {i18n.addSlide}
                                             </button>
@@ -1069,7 +1069,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
 
                                         <div className="space-y-6">
                                             {newGuide.slides.map((slide, idx) => (
-                                                <div key={idx} onPaste={(e) => handlePaste(e, idx)} className="p-6 gradient-bg-soft rounded-[2rem] border border-slate-100 dark:border-slate-800 relative group/slide">
+                                                <div key={idx} onPaste={(e) => handlePaste(e, idx)} className="p-6 gradient-bg-soft rounded-[2rem] border border-stone-100 dark:border-white/[0.06] relative group/slide">
                                                     <div className="absolute -left-3 top-6 w-8 h-8 gradient-bg text-white rounded-xl flex items-center justify-center text-xs font-black shadow-lg">{idx + 1}</div>
                                                     <div className="absolute -right-2 -top-2 flex gap-1.5 opacity-0 group-hover/slide:opacity-100 transition-opacity">
                                                         <button onClick={() => handleCopySlide(idx)} className="p-2 bg-white/70 dark:bg-[#111]/60 backdrop-blur-xl text-blue-500 rounded-full shadow-md" title={i18n.duplicateSlide}>
@@ -1084,7 +1084,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                                         <div className="md:col-span-2 space-y-4">
                                                             <input
-                                                                className="w-full px-4 py-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-slate-200 dark:border-white/[0.06] rounded-xl outline-none dark:text-white font-bold text-sm"
+                                                                className="w-full px-4 py-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06] rounded-xl outline-none dark:text-white font-bold text-sm"
                                                                 placeholder={i18n.slideTitlePlaceholder}
                                                                 value={slide.title}
                                                                 onChange={e => {
@@ -1094,7 +1094,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                                                 }}
                                                             />
                                                             <textarea
-                                                                className="w-full px-4 py-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-slate-200 dark:border-white/[0.06] rounded-xl outline-none dark:text-white text-xs min-h-[80px] resize-none"
+                                                                className="w-full px-4 py-2 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06] rounded-xl outline-none dark:text-white text-xs min-h-[80px] resize-none"
                                                                 placeholder={i18n.slideContentPlaceholder}
                                                                 value={slide.content}
                                                                 onChange={e => {
@@ -1105,7 +1105,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                                             />
                                                         </div>
                                                         <div className="space-y-2">
-                                                            <label className="w-full h-24 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border-2 border-dashed border-slate-200 dark:border-white/[0.06] rounded-2xl flex flex-col items-center justify-center text-slate-400 group cursor-pointer hover:border-blue-400 transition-colors relative overflow-hidden">
+                                                            <label className="w-full h-24 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border-2 border-dashed border-stone-200 dark:border-white/[0.06] rounded-2xl flex flex-col items-center justify-center text-stone-400 group cursor-pointer hover:border-blue-400 transition-colors relative overflow-hidden">
                                                                 {isUploading === idx ? (
                                                                     <RefreshCw size={24} className="animate-spin text-blue-500" />
                                                                 ) : slide.image ? (
@@ -1139,7 +1139,7 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                                                 />
                                                             </label>
                                                             <input
-                                                                className="w-full px-3 py-1.5 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-slate-200 dark:border-white/[0.06] rounded-lg outline-none dark:text-white text-[10px]"
+                                                                className="w-full px-3 py-1.5 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06] rounded-lg outline-none dark:text-white text-[10px]"
                                                                 placeholder="https://..."
                                                                 value={slide.image}
                                                                 onChange={e => {
@@ -1156,10 +1156,10 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                                     </div>
                                 </div>
 
-                                <div className="p-8 gradient-bg-soft border-t border-slate-100 dark:border-slate-800 flex justify-end gap-4">
+                                <div className="p-8 gradient-bg-soft border-t border-stone-100 dark:border-white/[0.06] flex justify-end gap-4">
                                     <button
                                         onClick={() => setIsCreating(false)}
-                                        className="px-8 py-4 text-slate-500 font-black uppercase text-xs tracking-widest hover:text-slate-800 transition-colors"
+                                        className="px-8 py-4 text-stone-500 font-black uppercase text-xs tracking-widest hover:text-stone-800 transition-colors"
                                     >
                                         {i18n.cancel}
                                     </button>
@@ -1177,13 +1177,13 @@ export default function Pustaka({ currentUser, hasPermission, users = [], depart
                             <motion.div
                                 key="empty"
                                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                                className="h-full flex flex-col items-center justify-center text-center p-12 bg-white/40 dark:bg-[#0d0d0d]/40 backdrop-blur-xl rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-800"
+                                className="h-full flex flex-col items-center justify-center text-center p-12 bg-white/40 dark:bg-[#0d0d0d]/40 backdrop-blur-xl rounded-[3rem] border-2 border-dashed border-stone-200 dark:border-white/[0.06]"
                             >
                                 <div className="w-20 h-20 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mb-6">
                                     <Lightbulb size={40} className="text-blue-500 animate-pulse" />
                                 </div>
-                                <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-2">{i18n.knowledgeCenter}</h3>
-                                <p className="text-slate-500 max-w-xs">{i18n.knowledgeCenterDesc}</p>
+                                <h3 className="text-2xl font-black text-stone-800 dark:text-white mb-2">{i18n.knowledgeCenter}</h3>
+                                <p className="text-stone-500 max-w-xs">{i18n.knowledgeCenterDesc}</p>
                             </motion.div>
                         ) : null}
                     </AnimatePresence>

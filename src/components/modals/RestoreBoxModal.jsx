@@ -23,7 +23,7 @@ export default function RestoreBoxModal({
       <div className="relative z-10 pt-4">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <p className="text-xs text-slate-500 dark:text-white/40 font-medium tracking-wide uppercase mt-1">
+            <p className="text-xs text-stone-500 dark:text-white/40 font-medium tracking-wide uppercase mt-1">
               Kembalikan ke Gudang
             </p>
           </div>
@@ -37,8 +37,8 @@ export default function RestoreBoxModal({
             <Package size={20} />
           </div>
           <div>
-            <h4 className="font-bold text-slate-800 dark:text-white text-lg">{selectedExternalItem?.boxId}</h4>
-            <p className="text-xs text-slate-500 dark:text-white/40">
+            <h4 className="font-bold text-stone-800 dark:text-white text-lg">{selectedExternalItem?.boxId}</h4>
+            <p className="text-xs text-stone-500 dark:text-white/40">
               Dari: <span className="font-semibold text-blue-500">{selectedExternalItem?.destination}</span>
             </p>
           </div>
@@ -46,12 +46,12 @@ export default function RestoreBoxModal({
 
         <div className="space-y-4">
           <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-500 dark:text-white/40 uppercase tracking-wider ml-1">
+            <label className="text-xs font-bold text-stone-500 dark:text-white/40 uppercase tracking-wider ml-1">
               Pilih Slot Tujuan (Kosong)
             </label>
             <div className="relative">
               <select
-                className="w-full appearance-none bg-white/50 dark:bg-[#0d0d0d]/50 border border-slate-200 dark:border-white/[0.06] rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all cursor-pointer hover:bg-white/80 dark:hover:bg-white/[0.05]/80"
+                className="w-full appearance-none bg-white/50 dark:bg-[#0d0d0d]/50 border border-stone-200 dark:border-white/[0.06] rounded-xl px-4 py-3 text-sm font-semibold text-stone-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all cursor-pointer hover:bg-white/80 dark:hover:bg-white/[0.05]/80"
                 value={restoreTargetSlot}
                 onChange={(e) => setRestoreTargetSlot(e.target.value)}
               >
@@ -60,7 +60,7 @@ export default function RestoreBoxModal({
                   <option key={s.id} value={s.id}>Slot #{String(s.id).padStart(3, '0')}</option>
                 ))}
               </select>
-              <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 rotate-90 pointer-events-none" size={16} />
+              <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 rotate-90 pointer-events-none" size={16} />
             </div>
             {restoreTargetSlot && (
               <p className="text-[10px] text-green-500 font-bold ml-1 flex items-center gap-1 animate-in fade-in slide-in-from-left-2">
@@ -70,11 +70,11 @@ export default function RestoreBoxModal({
           </div>
 
           <div className="flex gap-3 pt-4">
-            <button onClick={onClose} className="flex-1 px-4 py-3 rounded-xl text-sm font-bold text-slate-500 hover:text-slate-700 dark:text-white/40 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-all">Batal</button>
+            <button onClick={onClose} className="flex-1 px-4 py-3 rounded-xl text-sm font-bold text-stone-500 hover:text-stone-700 dark:text-white/40 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-white/5 transition-all">Batal</button>
             <button
               onClick={handleRestoreExternal}
               disabled={!restoreTargetSlot}
-              className={`flex-[2] px-4 py-3 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 shadow-lg transition-all ${!restoreTargetSlot ? 'bg-slate-300 dark:bg-[#111] cursor-not-allowed text-slate-400' : 'bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-blue-500 hover:shadow-blue-500/25 hover:scale-[1.02] active:scale-95'}`}
+              className={`flex-[2] px-4 py-3 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 shadow-lg transition-all ${!restoreTargetSlot ? 'bg-stone-300 dark:bg-[#111] cursor-not-allowed text-stone-400' : 'bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-blue-500 hover:shadow-blue-500/25 hover:scale-[1.02] active:scale-95'}`}
             >
               <ArrowRight size={18} /> Konfirmasi
             </button>

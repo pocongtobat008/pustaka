@@ -22,13 +22,13 @@ export default function TaxFileDetailModal({
         >
             <div className="flex h-full min-h-0 flex-col gap-6 pt-4 md:flex-row">
                 {/* LEFT: PREVIEW */}
-                <div className="flex-1 bg-slate-100 dark:bg-[#0d0d0d] rounded-xl overflow-hidden flex items-center justify-center border border-slate-200 dark:border-white/[0.06] relative">
+                <div className="flex-1 bg-stone-100 dark:bg-[#0d0d0d] rounded-xl overflow-hidden flex items-center justify-center border border-stone-200 dark:border-white/[0.06] relative">
                     {String(selectedFileDetail?.type || '').toLowerCase().startsWith('image/') ? (
                         <img src={selectedFileDetail?.fileData || getFullUrl(selectedFileDetail?.url)} alt="Preview" className="max-w-full max-h-full object-contain" onError={(e) => { e.target.style.display = 'none'; }} />
                     ) : String(selectedFileDetail?.type || '').toLowerCase().includes('pdf') ? (
                         <iframe src={selectedFileDetail?.fileData?.startsWith('data:') ? selectedFileDetail.fileData : getFullUrl(selectedFileDetail?.url)} className="w-full h-full" title="PDF Preview"></iframe>
                     ) : (
-                        <div className="text-center p-6 text-slate-500">
+                        <div className="text-center p-6 text-stone-500">
                             <FileText size={48} className="mx-auto mb-2 opacity-50" />
                             <p>Preview tidak tersedia untuk format ini.</p>
                             <button onClick={() => handleSecureDownload(selectedFileDetail)} className="mt-4 text-blue-600 hover:underline">Download File</button>
@@ -39,7 +39,7 @@ export default function TaxFileDetailModal({
                 {/* RIGHT: OCR CONTENT */}
                 <div className="flex-1 flex flex-col h-full">
                     <div className="flex justify-between items-center mb-2">
-                        <h4 className="font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                        <h4 className="font-bold text-stone-700 dark:text-white/80 flex items-center gap-2">
                             <FileText size={16} className="text-blue-500" /> Extracted Text (OCR)
                         </h4>
                         {selectedFileDetail?.ocrContent ? (
@@ -53,7 +53,7 @@ export default function TaxFileDetailModal({
                         )}
                     </div>
                     <textarea
-                        className="flex-1 w-full bg-slate-50 dark:bg-[#0d0d0d] border-2 border-slate-200 dark:border-white/[0.06] rounded-xl p-4 text-sm font-mono text-slate-700 dark:text-white/70 focus:border-blue-500 focus:ring-0 resize-none outline-none leading-relaxed"
+                        className="flex-1 w-full bg-stone-50 dark:bg-[#0d0d0d] border-2 border-stone-200 dark:border-white/[0.06] rounded-xl p-4 text-sm font-mono text-stone-700 dark:text-white/70 focus:border-blue-500 focus:ring-0 resize-none outline-none leading-relaxed"
                         value={selectedFileDetail?.ocrContent || ''}
                         onChange={(e) => setSelectedFileDetail({ ...selectedFileDetail, ocrContent: e.target.value })}
                         placeholder={selectedFileDetail?.ocrContent ? "Teks hasil scan..." : "Teks belum tersedia. Mohon tunggu proses OCR selesai atau klik tombol 'Regenerate/Refresh' di bawah."}
@@ -61,7 +61,7 @@ export default function TaxFileDetailModal({
                     <div className="mt-4 flex justify-end gap-3">
                         <button
                             onClick={onClose}
-                            className="px-5 py-2.5 rounded-xl text-slate-500 font-bold hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-colors"
+                            className="px-5 py-2.5 rounded-xl text-stone-500 font-bold hover:bg-stone-100 dark:hover:bg-white/[0.05] transition-colors"
                         >
                             Tutup
                         </button>

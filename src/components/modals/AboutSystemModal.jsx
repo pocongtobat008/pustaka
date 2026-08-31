@@ -119,8 +119,8 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
                     <BookOpen size={24} className="text-white" strokeWidth={2.4} />
                 </div>
                 <div>
-                    <div className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">Pustaka</div>
-                    <div className="text-xs font-bold text-slate-400 dark:text-white/30">
+                    <div className="text-2xl font-black text-stone-800 dark:text-white tracking-tight">Pustaka</div>
+                    <div className="text-xs font-bold text-stone-400 dark:text-white/30">
                         {text.version} 1.0.0 • Document OS
                     </div>
                 </div>
@@ -131,7 +131,7 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
 
             {/* Deskripsi */}
             <div className="glass-card rounded-2xl p-5 mb-6">
-                <p className="text-sm leading-relaxed text-slate-600 dark:text-white/70">
+                <p className="text-sm leading-relaxed text-stone-600 dark:text-white/70">
                     {text.aboutDesc}
                 </p>
             </div>
@@ -143,11 +143,11 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
                         <div className="p-2 gradient-bg rounded-xl text-white shadow-lg shadow-blue-500/30">
                             <Target size={16} />
                         </div>
-                        <h3 className="font-black text-sm text-slate-800 dark:text-white uppercase tracking-wider">
+                        <h3 className="font-black text-sm text-stone-800 dark:text-white uppercase tracking-wider">
                             {text.visionTitle}
                         </h3>
                     </div>
-                    <p className="text-[13px] leading-relaxed text-slate-600 dark:text-white/70">
+                    <p className="text-[13px] leading-relaxed text-stone-600 dark:text-white/70">
                         {text.visionDesc}
                     </p>
                 </div>
@@ -156,13 +156,13 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
                         <div className="p-2 gradient-bg rounded-xl text-white shadow-lg shadow-blue-500/30">
                             <Rocket size={16} />
                         </div>
-                        <h3 className="font-black text-sm text-slate-800 dark:text-white uppercase tracking-wider">
+                        <h3 className="font-black text-sm text-stone-800 dark:text-white uppercase tracking-wider">
                             {text.missionTitle}
                         </h3>
                     </div>
                     <ul className="space-y-2">
                         {text.mission.map((m, i) => (
-                            <li key={i} className="flex items-start gap-2 text-[13px] leading-relaxed text-slate-600 dark:text-white/70">
+                            <li key={i} className="flex items-start gap-2 text-[13px] leading-relaxed text-stone-600 dark:text-white/70">
                                 <span className="mt-1.5 w-1.5 h-1.5 rounded-full gradient-bg shrink-0"></span>
                                 {m}
                             </li>
@@ -178,10 +178,10 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
                         <Info size={16} />
                     </div>
                     <div>
-                        <h3 className="font-black text-sm text-slate-800 dark:text-white uppercase tracking-wider">
+                        <h3 className="font-black text-sm text-stone-800 dark:text-white uppercase tracking-wider">
                             {text.featuresTitle}
                         </h3>
-                        <p className="text-[11px] font-semibold text-slate-400">{text.featuresSubtitle}</p>
+                        <p className="text-[11px] font-semibold text-stone-400">{text.featuresSubtitle}</p>
                     </div>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
@@ -196,14 +196,14 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
                                 <span className="w-7 h-7 rounded-lg gradient-bg-soft text-blue-500 dark:text-blue-300 flex items-center justify-center shrink-0">
                                     <Icon size={14} />
                                 </span>
-                                <span className="text-[11px] font-bold text-slate-600 dark:text-white/70 leading-tight">
+                                <span className="text-[11px] font-bold text-stone-600 dark:text-white/70 leading-tight">
                                     {f.label}
                                 </span>
                             </div>
                         );
                     })}
                 </div>
-                <p className="text-[11px] font-semibold text-slate-400 dark:text-white/30 mt-4 text-center">
+                <p className="text-[11px] font-semibold text-stone-400 dark:text-white/30 mt-4 text-center">
                     {text.updated}
                 </p>
             </div>

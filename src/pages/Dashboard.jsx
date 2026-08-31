@@ -400,7 +400,7 @@ export default function Dashboard({
                         <h1 className="text-4xl md:text-5xl font-black text-[#2B3674] dark:text-white tracking-tight">
                             {getGreeting()}, <span className="text-blue-600">{currentUser?.name?.split(' ')[0] || 'User'}</span>
                         </h1>
-                        <p className="text-lg text-slate-500 dark:text-white/40 font-medium max-w-xl leading-relaxed">
+                        <p className="text-lg text-stone-500 dark:text-white/40 font-medium max-w-xl leading-relaxed">
                             {text.welcome}<span className="font-bold text-blue-500">Pustaka</span>. {text.makeProductive}
                         </p>
                     </div>
@@ -410,7 +410,7 @@ export default function Dashboard({
                         <button
                             type="button"
                             onClick={handleRefreshQuote}
-                            className="absolute top-4 right-4 w-8 h-8 neo-icon-btn text-slate-400 hover:text-blue-500 dark:hover:text-blue-400"
+                            className="absolute top-4 right-4 w-8 h-8 neo-icon-btn text-stone-400 hover:text-blue-500 dark:hover:text-blue-400"
                             title={isEnglish ? 'New quote' : 'Kutipan baru'}
                         >
                             <RefreshCw key={'spin' + quoteAnimKey} size={14} className="animate-spin-once" />
@@ -422,7 +422,7 @@ export default function Dashboard({
                             </div>
                             <span className="font-black text-[10px] uppercase tracking-widest text-blue-600 dark:text-blue-400">{text.workLabel}</span>
                         </div>
-                        <p key={'quote' + quoteAnimKey} className="text-sm font-bold text-slate-700 dark:text-slate-200 leading-snug italic animate-in fade-in slide-in-from-bottom-1 duration-300">
+                        <p key={'quote' + quoteAnimKey} className="text-sm font-bold text-stone-700 dark:text-white/80 leading-snug italic animate-in fade-in slide-in-from-bottom-1 duration-300">
                             <span className="text-blue-400 select-none">“</span>
                             {getWorkSuggestion()}
                             <span className="text-blue-400 select-none">”</span>
@@ -446,13 +446,13 @@ export default function Dashboard({
                             value={semanticQuery}
                             onChange={(e) => setSemanticQuery(e.target.value)}
                             placeholder={text.searchPlaceholder}
-                            className="glass-input w-full pl-5 pr-24 py-4 rounded-2xl transition-all font-medium text-slate-700 dark:text-slate-200"
+                            className="glass-input w-full pl-5 pr-24 py-4 rounded-2xl transition-all font-medium text-stone-700 dark:text-white/80"
                         />
                         {semanticQuery && (
                             <button
                                 type="button"
                                 onClick={handleResetSearch}
-                                className="absolute right-14 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-red-500 transition-colors"
+                                className="absolute right-14 top-1/2 -translate-y-1/2 p-2 text-stone-400 hover:text-red-500 transition-colors"
                                 title={text.resetSearch}
                             >
                                 <X size={20} />
@@ -477,7 +477,7 @@ export default function Dashboard({
                 {/* SEARCH RESULTS */}
                 {(searchResults.length > 0 || isSearching) && (
                     <div className="mt-6 space-y-3 animate-in fade-in slide-in-from-top-4 relative z-10">
-                        <h3 className="text-sm font-bold text-slate-500 dark:text-white/40 uppercase tracking-wider flex items-center gap-2">
+                        <h3 className="text-sm font-bold text-stone-500 dark:text-white/40 uppercase tracking-wider flex items-center gap-2">
                             {text.semanticAnalysis}
                             <span className="text-[10px] bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full">{text.beta}</span>
                         </h3>
@@ -513,21 +513,21 @@ export default function Dashboard({
                                                                 doc.matchType === 'inventory' ? <Grid3x3 size={20} /> :
                                                                     (doc.type?.includes('pdf') ? <FileDigit size={20} /> : <FileText size={20} />)}
                                         </div>
-                                        <span className={`text-xs font-bold px-2 py-1 rounded-full ${doc.score > 0.3 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-slate-100 text-slate-600 dark:bg-[#0d0d0d] dark:text-white/40'}`}>
+                                        <span className={`text-xs font-bold px-2 py-1 rounded-full ${doc.score > 0.3 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-stone-100 text-stone-600 dark:bg-[#0d0d0d] dark:text-white/40'}`}>
                                             {(doc.score * 100).toFixed(0)}% Match
                                         </span>
                                     </div>
 
-                                    <h4 className="font-bold text-slate-800 dark:text-white mb-1 line-clamp-1 group-hover/card:text-blue-600 dark:group-hover/card:text-blue-400 transition-colors relative z-10 cursor-pointer" onClick={() => handleViewDoc(doc)}>
+                                    <h4 className="font-bold text-stone-800 dark:text-white mb-1 line-clamp-1 group-hover/card:text-blue-600 dark:group-hover/card:text-blue-400 transition-colors relative z-10 cursor-pointer" onClick={() => handleViewDoc(doc)}>
                                         {doc.title}
                                     </h4>
-                                    <p className="text-xs text-slate-500 dark:text-white/40 relative z-10 mb-3 block truncate">
+                                    <p className="text-xs text-stone-500 dark:text-white/40 relative z-10 mb-3 block truncate">
                                         {doc.uploadDate ? new Date(doc.uploadDate).toLocaleDateString() : text.systemData} • {doc.size || doc.category || text.metadata}
                                     </p>
 
                                     {/* OCR Snippet Result */}
                                     {(doc.ocrContent || doc.content || doc.text) && (
-                                        <div className="relative z-10 mb-3 text-[10px] text-slate-500 dark:text-white/40 bg-slate-50 dark:bg-[#0d0d0d]/50 p-2 rounded border border-slate-100 dark:border-slate-800 line-clamp-2 italic leading-relaxed">
+                                        <div className="relative z-10 mb-3 text-[10px] text-stone-500 dark:text-white/40 bg-stone-50 dark:bg-[#0d0d0d]/50 p-2 rounded border border-stone-100 dark:border-white/[0.06] line-clamp-2 italic leading-relaxed">
                                             "{(doc.ocrContent || doc.content || doc.text).substring(0, 120).replace(/\n/g, ' ')}..."
                                         </div>
                                     )}
@@ -597,7 +597,7 @@ export default function Dashboard({
                                                                 doc.matchType === 'approval' ? 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 hover:bg-rose-100' :
                                                                     doc.matchType === 'pustaka' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 hover:bg-blue-100' :
                                                                         doc.matchType === 'tax_object' ? 'bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400' :
-                                                                            doc.matchType === 'inventory' ? 'bg-slate-50 dark:bg-[#0d0d0d]/30 hover:bg-slate-100 dark:hover:bg-slate-900/50 text-slate-600 dark:text-white/40' :
+                                                                            doc.matchType === 'inventory' ? 'bg-stone-50 dark:bg-[#0d0d0d]/30 hover:bg-stone-100 dark:hover:bg-[#0a0a0a]/50 text-stone-600 dark:text-white/40' :
                                                                                 'bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400'}`}
                                         >
                                             {doc.matchType === 'invoice' ? `📦 ${doc.folderName}` :
@@ -624,7 +624,7 @@ export default function Dashboard({
                                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                                     disabled={currentPage === 1}
                                     aria-label="Previous page" title={t("tooltip.previous")}
-                                    className="p-2 rounded-xl bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-white/40 dark:border-white/10 text-slate-500 disabled:opacity-30 transition-all hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                                    className="p-2 rounded-xl bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-white/40 dark:border-white/10 text-stone-500 disabled:opacity-30 transition-all hover:bg-blue-50 dark:hover:bg-blue-900/20"
                                 >
                                     <ChevronLeft size={20} />
                                 </button>
@@ -634,7 +634,7 @@ export default function Dashboard({
                                         const page = i + 1;
                                         const totalPages = Math.ceil(searchResults.length / resultsPerPage);
                                         if (totalPages > 5 && page !== 1 && page !== totalPages && (page < currentPage - 1 || page > currentPage + 1)) {
-                                            if (page === currentPage - 2 || page === currentPage + 2) return <span key={page} className="text-slate-400">...</span>;
+                                            if (page === currentPage - 2 || page === currentPage + 2) return <span key={page} className="text-stone-400">...</span>;
                                             return null;
                                         }
                                         return (
@@ -642,7 +642,7 @@ export default function Dashboard({
                                                 type="button"
                                                 key={page}
                                                 onClick={() => setCurrentPage(page)}
-                                                className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${currentPage === page ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'bg-white/70 dark:bg-[#0d0d0d]/60 text-slate-500 hover:bg-blue-50 dark:hover:bg-blue-900/20'}`}
+                                                className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${currentPage === page ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'bg-white/70 dark:bg-[#0d0d0d]/60 text-stone-500 hover:bg-blue-50 dark:hover:bg-blue-900/20'}`}
                                             >
                                                 {page}
                                             </button>
@@ -655,7 +655,7 @@ export default function Dashboard({
                                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(searchResults.length / resultsPerPage)))}
                                     disabled={currentPage === Math.ceil(searchResults.length / resultsPerPage)}
                                     aria-label="Next page" title={t("tooltip.next")}
-                                    className="p-2 rounded-xl bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-white/40 dark:border-white/10 text-slate-500 disabled:opacity-30 transition-all hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                                    className="p-2 rounded-xl bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-white/40 dark:border-white/10 text-stone-500 disabled:opacity-30 transition-all hover:bg-blue-50 dark:hover:bg-blue-900/20"
                                 >
                                     <ChevronRight size={20} />
                                 </button>
@@ -670,7 +670,7 @@ export default function Dashboard({
 
                 {/* 1. Main Storage Command Center - Jumbo Bento Card */}
                 <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }} viewport={{ once: true }} className="md:col-span-4 lg:col-span-4 lg:row-span-2 group">
-                    <ShadCard className="h-full relative overflow-hidden border-slate-200/50 bg-white/60 dark:bg-[#0d0d0d]/40 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-500 flex flex-col justify-between">
+                    <ShadCard className="h-full relative overflow-hidden border-stone-200/50 bg-white/60 dark:bg-[#0d0d0d]/40 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-500 flex flex-col justify-between">
                         <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-[80px] group-hover:bg-blue-500/20 transition-all duration-700" />
                         <CardHeader className="pb-2">
                             <div className="flex items-start justify-between gap-3">
@@ -698,10 +698,10 @@ export default function Dashboard({
                                 <button onClick={() => setActiveTab('inventory')} className="flex items-center gap-2 rounded-xl gradient-bg px-4 py-2.5 text-xs font-bold text-white transition-all hover:shadow-lg hover:shadow-blue-500/40 active:scale-95">
                                     {text.openInventory} <ArrowRight size={14} />
                                 </button>
-                                <button onClick={() => setActiveTab('documents')} className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 transition-all hover:bg-slate-50 dark:border-white/[0.06] dark:bg-[#0d0d0d] dark:text-slate-200 dark:hover:bg-white/[0.06] active:scale-95">
+                                <button onClick={() => setActiveTab('documents')} className="flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-xs font-bold text-stone-700 transition-all hover:bg-stone-50 dark:border-white/[0.06] dark:bg-[#0d0d0d] dark:text-white/80 dark:hover:bg-white/[0.06] active:scale-95">
                                     {text.viewDocuments}
                                 </button>
-                                <button onClick={() => setActiveTab('tax-summary')} className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 transition-all hover:bg-slate-50 dark:border-white/[0.06] dark:bg-[#0d0d0d] dark:text-slate-200 dark:hover:bg-white/[0.06] active:scale-95">
+                                <button onClick={() => setActiveTab('tax-summary')} className="flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-xs font-bold text-stone-700 transition-all hover:bg-stone-50 dark:border-white/[0.06] dark:bg-[#0d0d0d] dark:text-white/80 dark:hover:bg-white/[0.06] active:scale-95">
                                     {text.taxSummaryTab}
                                 </button>
                             </div>
@@ -717,16 +717,16 @@ export default function Dashboard({
                                 <CardTitle className="flex items-center gap-2 text-lg font-bold"><ScanLine className="text-blue-400" size={20} /> Pipeline OCR</CardTitle>
                                 {bentoStats.active > 0 && <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>}
                             </div>
-                            <CardDescription className="text-slate-400 font-medium">{text.ocrDesc}</CardDescription>
+                            <CardDescription className="text-stone-400 font-medium">{text.ocrDesc}</CardDescription>
                         </CardHeader>
                         <CardContent className="mt-6 flex-1 flex flex-col justify-end space-y-3">
                             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 flex items-center justify-between border border-white/5">
-                                <span className="text-sm font-semibold text-slate-300">{text.ocrActive}</span>
+                                <span className="text-sm font-semibold text-stone-300">{text.ocrActive}</span>
                                 <span className="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-400">{bentoStats.active}</span>
                             </div>
                             <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 flex items-center justify-between border border-white/5">
-                                <span className="text-sm font-semibold text-slate-400">{text.ocrWaiting}</span>
-                                <span className="text-lg font-bold text-slate-300">{bentoStats.waiting}</span>
+                                <span className="text-sm font-semibold text-stone-400">{text.ocrWaiting}</span>
+                                <span className="text-lg font-bold text-stone-300">{bentoStats.waiting}</span>
                             </div>
                             <div className="grid grid-cols-2 gap-3 mt-2">
                                 <div className="bg-emerald-500/10 rounded-2xl p-3 border border-emerald-500/20">
@@ -744,7 +744,7 @@ export default function Dashboard({
 
                 {/* 3. Tax Control - Wide Bento Card */}
                 <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }} viewport={{ once: true }} className="md:col-span-2 lg:col-span-3">
-                    <ShadCard className="h-full border-slate-200/60 bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-md hover:shadow-lg transition-shadow">
+                    <ShadCard className="h-full border-stone-200/60 bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-md hover:shadow-lg transition-shadow">
                         <CardHeader className="pb-4">
                             <CardTitle className="flex items-center gap-2 text-base font-bold"><FileSearch className="text-amber-500" size={18} /> {text.taxControl}</CardTitle>
                         </CardHeader>
@@ -771,24 +771,24 @@ export default function Dashboard({
 
                 {/* 4. Recent Docs - Compact List */}
                 <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} viewport={{ once: true }} className="md:col-span-2 lg:col-span-3">
-                    <ShadCard className="h-full border-slate-200/60 bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-md hover:shadow-lg transition-shadow">
+                    <ShadCard className="h-full border-stone-200/60 bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-md hover:shadow-lg transition-shadow">
                         <CardHeader className="pb-3 flex flex-row items-center justify-between">
                             <CardTitle className="flex items-center gap-2 text-base font-bold"><FileText className="text-blue-500" size={18} /> {text.recentDocs}</CardTitle>
                             <button onClick={() => setActiveTab('documents')} className="text-xs font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 transition-colors">Lihat Semua</button>
                         </CardHeader>
                         <CardContent className="space-y-3 pb-6">
                             {docList.slice(0, 3).map((doc) => (
-                                <button key={doc.id} onClick={() => handleViewDoc(doc)} className="group flex w-full items-center gap-3 rounded-2xl border border-transparent hover:border-slate-200 bg-transparent hover:bg-white p-2 text-left transition-all dark:hover:border-slate-700 dark:hover:bg-white/[0.05] shadow-none hover:shadow-sm">
-                                    <div className="rounded-xl bg-slate-100 p-2.5 text-slate-500 group-hover:bg-blue-50 group-hover:text-blue-600 dark:bg-[#0d0d0d] dark:text-white/40 dark:group-hover:bg-blue-900/30 dark:group-hover:text-blue-400 transition-colors">
+                                <button key={doc.id} onClick={() => handleViewDoc(doc)} className="group flex w-full items-center gap-3 rounded-2xl border border-transparent hover:border-stone-200 bg-transparent hover:bg-white p-2 text-left transition-all dark:hover:border-white/[0.1] dark:hover:bg-white/[0.05] shadow-none hover:shadow-sm">
+                                    <div className="rounded-xl bg-stone-100 p-2.5 text-stone-500 group-hover:bg-blue-50 group-hover:text-blue-600 dark:bg-[#0d0d0d] dark:text-white/40 dark:group-hover:bg-blue-900/30 dark:group-hover:text-blue-400 transition-colors">
                                         {doc.type?.includes('pdf') ? <FileDigit size={18} /> : <FileText size={18} />}
                                     </div>
                                     <div className="min-w-0 flex-1">
-                                        <p className="truncate text-sm font-bold text-slate-700 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">{doc.title}</p>
-                                        <p className="text-xs font-medium text-slate-500/80 dark:text-white/30 mt-0.5">{new Date(doc.uploadDate).toLocaleDateString()} • {doc.size}</p>
+                                        <p className="truncate text-sm font-bold text-stone-700 dark:text-white/80 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">{doc.title}</p>
+                                        <p className="text-xs font-medium text-stone-500/80 dark:text-white/30 mt-0.5">{new Date(doc.uploadDate).toLocaleDateString()} • {doc.size}</p>
                                     </div>
                                 </button>
                             ))}
-                            {docList.length === 0 && <p className="text-sm font-medium text-slate-400 italic p-4 text-center">{text.noRecentDocs}</p>}
+                            {docList.length === 0 && <p className="text-sm font-medium text-stone-400 italic p-4 text-center">{text.noRecentDocs}</p>}
                         </CardContent>
                     </ShadCard>
                 </motion.div>
@@ -805,56 +805,56 @@ export default function Dashboard({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
-                    <h3 className="font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
+                    <h3 className="font-bold mb-4 text-stone-900 dark:text-white flex items-center gap-2">
                         <PieChart size={20} className="text-blue-500" /> {text.storageDistribution}
                     </h3>
                     <div className="space-y-4">
-                        <div className="w-full bg-gray-100 dark:bg-[#0d0d0d] rounded-full h-6 overflow-hidden flex shadow-inner">
+                        <div className="w-full bg-stone-100 dark:bg-[#0d0d0d] rounded-full h-6 overflow-hidden flex shadow-inner">
                             <div className="bg-emerald-500 h-full transition-all duration-500" style={{ width: `${((stats?.stored || 0) / (TOTAL_SLOTS || 1)) * 100}%` }} title={`Tersimpan: ${stats?.stored || 0}`}></div>
                             <div className="bg-amber-500 h-full transition-all duration-500" style={{ width: `${((stats?.borrowed || 0) / (TOTAL_SLOTS || 1)) * 100}%` }} title={`Dipinjam: ${stats?.borrowed || 0}`}></div>
                             <div className="bg-blue-500 h-full transition-all duration-500" style={{ width: `${((stats?.audit || 0) / (TOTAL_SLOTS || 1)) * 100}%` }} title={`Audit: ${stats?.audit || 0}`}></div>
                         </div>
                         <div className="grid grid-cols-2 gap-4 text-sm">
-                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500"></div><span className="text-gray-600 dark:text-white/40">{text.stored} ({stats?.stored || 0})</span></div>
-                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-amber-500"></div><span className="text-gray-600 dark:text-white/40">{text.borrowed} ({stats?.borrowed || 0})</span></div>
-                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-blue-500"></div><span className="text-gray-600 dark:text-white/40">{text.audit} ({stats?.audit || 0})</span></div>
-                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-gray-200 dark:bg-[#111]"></div><span className="text-gray-600 dark:text-white/40">{text.empty} ({stats?.empty || 0})</span></div>
+                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500"></div><span className="text-stone-600 dark:text-white/40">{text.stored} ({stats?.stored || 0})</span></div>
+                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-amber-500"></div><span className="text-stone-600 dark:text-white/40">{text.borrowed} ({stats?.borrowed || 0})</span></div>
+                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-blue-500"></div><span className="text-stone-600 dark:text-white/40">{text.audit} ({stats?.audit || 0})</span></div>
+                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-stone-200 dark:bg-[#111]"></div><span className="text-stone-600 dark:text-white/40">{text.empty} ({stats?.empty || 0})</span></div>
                         </div>
                     </div>
                 </Card>
 
                 <Card>
-                    <h3 className="font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
+                    <h3 className="font-bold mb-4 text-stone-900 dark:text-white flex items-center gap-2">
                         <FileText size={20} className="text-blue-500" /> {text.recentDocs}
                     </h3>
                     <div className="space-y-3">
                         {docList.slice(0, 3).map(doc => (
-                            <div key={doc.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-white/[0.05] rounded-lg transition-colors cursor-pointer" onClick={() => handleViewDoc(doc)}>
+                            <div key={doc.id} className="flex items-center gap-3 p-2 hover:bg-stone-50 dark:hover:bg-white/[0.05] rounded-lg transition-colors cursor-pointer" onClick={() => handleViewDoc(doc)}>
                                 <div className="w-10 h-10 rounded bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-500">
                                     {doc.type?.includes('pdf') ? <FileDigit size={20} /> : <FileText size={20} />}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <div className="font-medium text-gray-900 dark:text-white truncate text-sm">{doc.title}</div>
-                                    <div className="text-xs text-gray-500 dark:text-white/40">{new Date(doc.uploadDate).toLocaleDateString()} • {doc.size}</div>
+                                    <div className="font-medium text-stone-900 dark:text-white truncate text-sm">{doc.title}</div>
+                                    <div className="text-xs text-stone-500 dark:text-white/40">{new Date(doc.uploadDate).toLocaleDateString()} • {doc.size}</div>
                                 </div>
                             </div>
                         ))}
-                        {docList.length === 0 && <p className="text-sm text-gray-500 italic">{text.noDocuments}</p>}
+                        {docList.length === 0 && <p className="text-sm text-stone-500 italic">{text.noDocuments}</p>}
                     </div>
                 </Card>
             </div>
 
             <Card className="max-h-[400px] overflow-y-auto relative p-0 sm:p-0" tabIndex={0} aria-label={text.auditLog}>
                 <div className="sticky top-0 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl z-10 p-6 pb-2 border-b border-white/20 dark:border-white/10">
-                    <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <h3 className="font-bold text-stone-900 dark:text-white flex items-center gap-2">
                         <History size={20} className="text-blue-500" /> {text.auditLog}
                     </h3>
                 </div>
                 <div className="p-6 pt-2 space-y-3">
                     {logs.map(log => (
-                        <div key={log.id} className="border-b border-slate-100 dark:border-slate-800 pb-2">
+                        <div key={log.id} className="border-b border-stone-100 dark:border-white/[0.06] pb-2">
                             <div
-                                className="flex justify-between text-sm cursor-pointer hover:bg-slate-50 dark:hover:bg-white/[0.05]/50 p-2 rounded-lg transition-colors"
+                                className="flex justify-between text-sm cursor-pointer hover:bg-stone-50 dark:hover:bg-white/[0.05]/50 p-2 rounded-lg transition-colors"
                                 onClick={() => toggleLog(log.id)}
                             >
                                 <div>
@@ -862,18 +862,18 @@ export default function Dashboard({
                                         <span className="font-semibold text-blue-600 dark:text-blue-400">{log.action}</span>
                                         {log.oldValue && <span className="text-[10px] bg-amber-100 text-amber-600 px-1.5 py-0.5 rounded border border-amber-200">{text.auditBadge}</span>}
                                     </div>
-                                    <p className="text-gray-500">{log.details}</p>
-                                    <div className="text-[10px] text-gray-400 flex items-center gap-1 mt-1">
+                                    <p className="text-stone-500">{log.details}</p>
+                                    <div className="text-[10px] text-stone-400 flex items-center gap-1 mt-1">
                                         <span>{log.user || text.system}</span> • <span>{new Date(log.timestamp).toLocaleString()}</span>
                                     </div>
                                 </div>
-                                <div className="text-gray-400 flex items-center">
+                                <div className="text-stone-400 flex items-center">
                                     {expandedLogId === log.id ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                                 </div>
                             </div>
 
                             {expandedLogId === log.id && (log.oldValue || log.newValue) && (
-                                <div className="mt-2 text-xs bg-slate-50 dark:bg-[#0d0d0d]/50 p-3 rounded-lg border border-slate-200 dark:border-white/[0.06] font-mono animate-in slide-in-from-top-1">
+                                <div className="mt-2 text-xs bg-stone-50 dark:bg-[#0d0d0d]/50 p-3 rounded-lg border border-stone-200 dark:border-white/[0.06] font-mono animate-in slide-in-from-top-1">
                                     <div className="grid grid-cols-1 gap-2">
                                         {log.oldValue && (
                                             <div className="bg-red-50 dark:bg-red-900/10 p-2 rounded border border-red-100 dark:border-red-900/20 text-red-700 dark:text-red-400 overflow-x-auto">

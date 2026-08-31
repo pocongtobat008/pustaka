@@ -28,13 +28,13 @@ const InitialLandingPage = ({ onClose, language = 'id' }) => {
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
-    className="fixed inset-0 z-[1000] bg-slate-50/80 dark:bg-[#0B1437]/90 backdrop-blur-2xl overflow-y-auto custom-scrollbar p-6 md:p-12"
+    className="fixed inset-0 z-[1000] bg-stone-50/80 dark:bg-[#0B1437]/90 backdrop-blur-2xl overflow-y-auto custom-scrollbar p-6 md:p-12"
   >
     <div className="max-w-6xl mx-auto">
       <div className="flex justify-end mb-8">
         <button
           onClick={onClose}
-          className="p-3 bg-white dark:bg-[#0d0d0d] rounded-2xl shadow-lg text-slate-400 hover:text-red-500 transition-all hover:scale-110"
+          className="p-3 bg-white dark:bg-[#0d0d0d] rounded-2xl shadow-lg text-stone-400 hover:text-red-500 transition-all hover:scale-110"
         >
           <X size={24} />
         </button>
@@ -63,7 +63,7 @@ const InitialLandingPage = ({ onClose, language = 'id' }) => {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="text-lg text-slate-500 dark:text-white/40 max-w-3xl mx-auto leading-relaxed font-medium"
+          className="text-lg text-stone-500 dark:text-white/40 max-w-3xl mx-auto leading-relaxed font-medium"
         >
           {t.subtitle}
         </motion.p>
@@ -74,7 +74,7 @@ const InitialLandingPage = ({ onClose, language = 'id' }) => {
           initial={{ x: -50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="p-8 bg-white dark:bg-[#0d0d0d] rounded-[3rem] shadow-xl border border-slate-100 dark:border-white/[0.06] relative overflow-hidden group"
+          className="p-8 bg-white dark:bg-[#0d0d0d] rounded-[3rem] shadow-xl border border-stone-100 dark:border-white/[0.06] relative overflow-hidden group"
         >
           <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
             <AlertCircle size={120} />
@@ -82,8 +82,8 @@ const InitialLandingPage = ({ onClose, language = 'id' }) => {
           <div className="w-14 h-14 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-2xl flex items-center justify-center mb-6 shadow-inner">
             <Target size={28} />
           </div>
-          <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-4 uppercase tracking-tight">{t.backgroundTitle}</h3>
-          <p className="text-slate-600 dark:text-white/40 leading-relaxed font-medium">
+          <h3 className="text-2xl font-black text-stone-800 dark:text-white mb-4 uppercase tracking-tight">{t.backgroundTitle}</h3>
+          <p className="text-stone-600 dark:text-white/40 leading-relaxed font-medium">
             {t.background}
           </p>
         </motion.div>

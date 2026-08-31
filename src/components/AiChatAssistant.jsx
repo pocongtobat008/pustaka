@@ -55,7 +55,7 @@ const ResultCard = ({ result, isDarkMode, onNavigate, onLocationClick }) => {
             animate={{ opacity: 1, y: 0 }}
             className={`p-3 rounded-xl border transition-all group hover:scale-[1.02] ${isDarkMode
                 ? 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20'
-                : 'bg-white border-slate-200 hover:bg-slate-50 hover:border-blue-300 shadow-sm'
+                : 'bg-white border-stone-200 hover:bg-stone-50 hover:border-blue-300 shadow-sm'
                 }`}
         >
             <div className="flex flex-col gap-3">
@@ -68,27 +68,27 @@ const ResultCard = ({ result, isDarkMode, onNavigate, onLocationClick }) => {
                     </div>
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">
-                            <span className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${config.bg} ${isDarkMode ? 'text-white/70' : 'text-slate-600'
+                            <span className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${config.bg} ${isDarkMode ? 'text-white/70' : 'text-stone-600'
                                 }`}>{config.label}</span>
                             {result.semantic && <Sparkles size={10} className="text-amber-400" />}
                         </div>
-                        <p className={`text-sm font-semibold truncate ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>
+                        <p className={`text-sm font-semibold truncate ${isDarkMode ? 'text-white' : 'text-stone-800'}`}>
                             {result.title}
                         </p>
                         {result.vendor && (
-                            <p className={`text-xs ${isDarkMode ? 'text-white/50' : 'text-slate-500'}`}>
+                            <p className={`text-xs ${isDarkMode ? 'text-white/50' : 'text-stone-500'}`}>
                                 {result.vendor} {result.amount ? `• ${formatRupiah(result.amount)}` : ''}
                             </p>
                         )}
                         {result.snippet && (
-                            <p className={`text-xs mt-1 line-clamp-2 ${isDarkMode ? 'text-white/40' : 'text-slate-400'}`}>
+                            <p className={`text-xs mt-1 line-clamp-2 ${isDarkMode ? 'text-white/40' : 'text-stone-400'}`}>
                                 {result.snippet}
                             </p>
                         )}
                     </div>
                 </div>
 
-                <div className="flex gap-2 relative z-10 pt-2 border-t border-slate-100 dark:border-white/5">
+                <div className="flex gap-2 relative z-10 pt-2 border-t border-stone-100 dark:border-white/5">
                     <button
                         onClick={(e) => { e.stopPropagation(); onNavigate?.(result); }}
                         className="flex-1 text-xs bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 py-2 rounded-lg transition-all font-bold flex items-center justify-center gap-1.5 border border-blue-100 dark:border-blue-800 hover:bg-blue-100"
@@ -133,7 +133,7 @@ const TypingIndicator = ({ isDarkMode, status }) => (
         <div className={`w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg text-xs flex-shrink-0`}>
             🤖
         </div>
-        <div className={`px-4 py-3 rounded-2xl rounded-bl-lg ${isDarkMode ? 'bg-white/8 border border-white/5' : 'bg-slate-100'}`}>
+        <div className={`px-4 py-3 rounded-2xl rounded-bl-lg ${isDarkMode ? 'bg-white/8 border border-white/5' : 'bg-stone-100'}`}>
             <div className="flex items-center gap-2">
                 <div className="flex gap-1">
                     {[0, 1, 2].map(i => (
@@ -146,7 +146,7 @@ const TypingIndicator = ({ isDarkMode, status }) => (
                     ))}
                 </div>
                 {status && (
-                    <span className={`text-[11px] font-medium ${isDarkMode ? 'text-white/50' : 'text-slate-400'}`}>
+                    <span className={`text-[11px] font-medium ${isDarkMode ? 'text-white/50' : 'text-stone-400'}`}>
                         {status}
                     </span>
                 )}
@@ -178,7 +178,7 @@ function formatInline(text) {
     // inline code `text`
     const codeMatch = remaining.match(/^(`)(.+?)\1(.*)$/s);
     if (codeMatch) {
-      parts.push(<code key={key++} className="px-1 py-0.5 rounded text-[11px] font-mono bg-slate-200 dark:bg-[#111] text-pink-600 dark:text-pink-300">{codeMatch[2]}</code>);
+      parts.push(<code key={key++} className="px-1 py-0.5 rounded text-[11px] font-mono bg-stone-200 dark:bg-[#111] text-pink-600 dark:text-pink-300">{codeMatch[2]}</code>);
       remaining = codeMatch[3];
       continue;
     }
@@ -253,7 +253,7 @@ const MarkdownRenderer = ({ content, isDarkMode }) => {
             const cells = line.split('|').filter(c => c.trim() !== '').map(c => c.trim());
             if (cells.length > 0 && !line.includes('---')) {
                 return (
-                    <div key={index} className={`grid grid-cols-${cells.length} gap-2 py-1 px-2 text-[10px] border-b ${isDarkMode ? 'border-white/5' : 'border-slate-100'}`}>
+                    <div key={index} className={`grid grid-cols-${cells.length} gap-2 py-1 px-2 text-[10px] border-b ${isDarkMode ? 'border-white/5' : 'border-stone-100'}`}>
                         {cells.map((c, i) => <div key={i} className={index === 0 ? "font-bold text-blue-400" : ""}>{c}</div>)}
                     </div>
                 );
@@ -1220,18 +1220,18 @@ export default function AiChatAssistant({
                                 : 'bottom-6 right-6 w-[400px] max-w-[calc(100vw-2rem)] h-[600px] max-h-[calc(100vh-3rem)] rounded-3xl z-[200]'
                         } ${isDarkMode
                             ? 'bg-[#0d1230]/95 border border-white/10 shadow-black/50'
-                            : 'bg-white/95 border-slate-200 shadow-slate-300/50'
+                            : 'bg-white/95 border-stone-200 shadow-slate-300/50'
                         }`}
                         style={{ backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)' }}
                     >
                         {/* Header */}
-                        <div className={`p-4 flex items-center gap-3 border-b flex-shrink-0 ${isDarkMode ? 'border-white/10' : 'border-slate-100'
+                        <div className={`p-4 flex items-center gap-3 border-b flex-shrink-0 ${isDarkMode ? 'border-white/10' : 'border-stone-100'
                             }`}>
                             <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/30 text-lg">
                                 🤖
                             </div>
                             <div className="flex-1">
-                                <h3 className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>
+                                <h3 className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-stone-800'}`}>
                                     AI Assistant
                                 </h3>
                                 <p className={`text-[10px] ${isDarkMode ? 'text-emerald-400' : 'text-emerald-600'} font-semibold flex items-center gap-1`}>
@@ -1241,21 +1241,21 @@ export default function AiChatAssistant({
                             </div>
                             <button
                                 onClick={() => setAgentMode(!agentMode)}
-                                className={`px-2.5 py-1.5 rounded-xl transition-all text-[10px] font-black uppercase tracking-wider flex items-center gap-1 ${agentMode ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30' : isDarkMode ? 'hover:bg-white/10 text-white/50' : 'hover:bg-slate-100 text-slate-400'}`}
+                                className={`px-2.5 py-1.5 rounded-xl transition-all text-[10px] font-black uppercase tracking-wider flex items-center gap-1 ${agentMode ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30' : isDarkMode ? 'hover:bg-white/10 text-white/50' : 'hover:bg-stone-100 text-stone-400'}`}
                                 title="Mode Agent: gunakan LLM eksternal (function-calling) untuk mencari database & membuat laporan"
                             >
                                 <Bot size={14} /> Agent
                             </button>
                             <button
                                 onClick={() => { setShowSidebar(!showSidebar); if (!showSidebar) loadSessions(); }}
-                                className={`p-2 rounded-xl transition-all ${isDarkMode ? 'hover:bg-white/10 text-white/50 hover:text-white/80' : 'hover:bg-slate-100 text-slate-400 hover:text-slate-600'}`}
+                                className={`p-2 rounded-xl transition-all ${isDarkMode ? 'hover:bg-white/10 text-white/50 hover:text-white/80' : 'hover:bg-stone-100 text-stone-400 hover:text-stone-600'}`}
                                 title="Riwayat Chat"
                             >
                                 <History size={16} />
                             </button>
                             <button
                                 onClick={clearChat}
-                                className={`p-2 rounded-xl transition-all text-xs font-semibold ${isDarkMode ? 'hover:bg-white/10 text-white/50 hover:text-white/80' : 'hover:bg-slate-100 text-slate-400 hover:text-slate-600'
+                                className={`p-2 rounded-xl transition-all text-xs font-semibold ${isDarkMode ? 'hover:bg-white/10 text-white/50 hover:text-white/80' : 'hover:bg-stone-100 text-stone-400 hover:text-stone-600'
                                     }`}
                                 title="Reset Chat"
                             >
@@ -1263,7 +1263,7 @@ export default function AiChatAssistant({
                             </button>
                             <button
                                 onClick={() => setIsFullScreen(!isFullScreen)}
-                                className={`p-2 rounded-xl transition-all ${isDarkMode ? 'hover:bg-white/10 text-white/50 hover:text-white/80' : 'hover:bg-slate-100 text-slate-400 hover:text-slate-600'
+                                className={`p-2 rounded-xl transition-all ${isDarkMode ? 'hover:bg-white/10 text-white/50 hover:text-white/80' : 'hover:bg-stone-100 text-stone-400 hover:text-stone-600'
                                     }`}
                                 title={isFullScreen ? "Kembali ke Ukuran Normal" : "Layar Penuh"}
                             >
@@ -1271,7 +1271,7 @@ export default function AiChatAssistant({
                             </button>
                             <button
                                 onClick={() => setIsOpen(false)}
-                                className={`p-2 rounded-xl transition-all ${isDarkMode ? 'hover:bg-white/10 text-white/50 hover:text-red-400' : 'hover:bg-red-50 text-slate-400 hover:text-red-500'
+                                className={`p-2 rounded-xl transition-all ${isDarkMode ? 'hover:bg-white/10 text-white/50 hover:text-red-400' : 'hover:bg-red-50 text-stone-400 hover:text-red-500'
                                     }`}
                             >
                                 <X size={18} />
@@ -1285,11 +1285,11 @@ export default function AiChatAssistant({
                                     initial={{ height: 0, opacity: 0 }}
                                     animate={{ height: 'auto', opacity: 1 }}
                                     exit={{ height: 0, opacity: 0 }}
-                                    className={`border-b overflow-hidden flex-shrink-0 ${isDarkMode ? 'border-white/10 bg-white/5' : 'border-slate-100 bg-slate-50'}`}
+                                    className={`border-b overflow-hidden flex-shrink-0 ${isDarkMode ? 'border-white/10 bg-white/5' : 'border-stone-100 bg-stone-50'}`}
                                 >
                                     <div className="p-3">
                                         <div className="flex items-center justify-between mb-2">
-                                            <span className={`text-xs font-bold ${isDarkMode ? 'text-white/70' : 'text-slate-500'}`}>Riwayat Chat</span>
+                                            <span className={`text-xs font-bold ${isDarkMode ? 'text-white/70' : 'text-stone-500'}`}>Riwayat Chat</span>
                                             <button
                                                 onClick={createNewSession}
                                                 className="flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
@@ -1299,7 +1299,7 @@ export default function AiChatAssistant({
                                         </div>
                                         <div className="max-h-[200px] overflow-y-auto space-y-1 custom-scrollbar">
                                             {sessions.length === 0 ? (
-                                                <p className={`text-[10px] text-center py-3 ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>
+                                                <p className={`text-[10px] text-center py-3 ${isDarkMode ? 'text-white/30' : 'text-stone-400'}`}>
                                                     Belum ada riwayat
                                                 </p>
                                             ) : sessions.map(s => (
@@ -1312,12 +1312,12 @@ export default function AiChatAssistant({
                                                             : isDarkMode ? 'hover:bg-white/5' : 'hover:bg-white'
                                                     }`}
                                                 >
-                                                    <MessageCircle size={12} className={`flex-shrink-0 ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`} />
+                                                    <MessageCircle size={12} className={`flex-shrink-0 ${isDarkMode ? 'text-white/30' : 'text-stone-400'}`} />
                                                     <div className="flex-1 min-w-0">
-                                                        <span className={`block text-[11px] truncate ${isDarkMode ? 'text-white/70' : 'text-slate-600'}`}>
+                                                        <span className={`block text-[11px] truncate ${isDarkMode ? 'text-white/70' : 'text-stone-600'}`}>
                                                             {s.title || 'Percakapan baru'}
                                                         </span>
-                                                        <span className={`block text-[9px] ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>
+                                                        <span className={`block text-[9px] ${isDarkMode ? 'text-white/30' : 'text-stone-400'}`}>
                                                             {s.messageCount ? `${s.messageCount} pesan` : 'kosong'} • {formatRelativeTime(s.updated_at)}
                                                         </span>
                                                     </div>
@@ -1352,20 +1352,20 @@ export default function AiChatAssistant({
                                             ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-br-lg shadow-lg shadow-blue-500/20'
                                             : isDarkMode
                                                 ? 'bg-white/8 text-white/90 rounded-bl-lg border border-white/5'
-                                                : 'bg-slate-100 text-slate-700 rounded-bl-lg'
+                                                : 'bg-stone-100 text-stone-700 rounded-bl-lg'
                                             }`}>
                                             {/* Thinking (reasoning) panel — collapsible */}
                                             {(msg.reasoning || (msg.thinkingSteps && msg.thinkingSteps.length > 0)) && (
-                                                <details className={`mb-2 rounded-xl overflow-hidden group ${isDarkMode ? 'bg-white/5 border border-white/10' : 'bg-slate-50 border border-slate-200'}`}>
+                                                <details className={`mb-2 rounded-xl overflow-hidden group ${isDarkMode ? 'bg-white/5 border border-white/10' : 'bg-stone-50 border border-stone-200'}`}>
                                                     <summary className={`cursor-pointer select-none px-2.5 py-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide ${isDarkMode ? 'text-blue-300 hover:text-blue-200' : 'text-blue-600 hover:text-blue-500'}`}>
                                                         <Brain size={12} className={msg.streaming ? 'animate-pulse' : ''} />
                                                         Thinking
                                                         {msg.streaming && <span className={`w-1 h-1 rounded-full ${isDarkMode ? 'bg-blue-400' : 'bg-blue-500'} animate-ping`} />}
                                                     </summary>
-                                                    <div className={`px-3 py-2 border-t ${isDarkMode ? 'border-white/10' : 'border-slate-200'}`}>
+                                                    <div className={`px-3 py-2 border-t ${isDarkMode ? 'border-white/10' : 'border-stone-200'}`}>
                                                         {/* Step trail: status + tool calls */}
                                                         {msg.thinkingSteps && msg.thinkingSteps.length > 0 && (
-                                                            <ul className={`space-y-1 mb-1.5 ${isDarkMode ? 'text-white/60' : 'text-slate-500'}`}>
+                                                            <ul className={`space-y-1 mb-1.5 ${isDarkMode ? 'text-white/60' : 'text-stone-500'}`}>
                                                                 {msg.thinkingSteps.map((s, si) => (
                                                                     <li key={si} className="flex items-start gap-1.5 text-[11px]">
                                                                         <span className="mt-0.5">{s.type === 'tool' ? '🔧' : '🔍'}</span>
@@ -1376,7 +1376,7 @@ export default function AiChatAssistant({
                                                         )}
                                                         {/* Raw reasoning text from the model */}
                                                         {msg.reasoning && (
-                                                            <p className={`text-[11px] leading-relaxed whitespace-pre-wrap border-t pt-1.5 ${isDarkMode ? 'text-white/50 border-white/10' : 'text-slate-500 border-slate-200'}`}>
+                                                            <p className={`text-[11px] leading-relaxed whitespace-pre-wrap border-t pt-1.5 ${isDarkMode ? 'text-white/50 border-white/10' : 'text-stone-500 border-stone-200'}`}>
                                                                 {msg.reasoning}
                                                             </p>
                                                         )}
@@ -1422,8 +1422,8 @@ export default function AiChatAssistant({
                                                         <button
                                                             onClick={() => handleCopyAnswer(msg)}
                                                             className={`text-[9px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wide transition-all flex items-center gap-1 ${isDarkMode
-                                                                ? 'bg-slate-500/20 text-slate-300 border border-slate-500/30 hover:bg-slate-500/35'
-                                                                : 'bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200'
+                                                                ? 'bg-stone-500/20 text-stone-300 border border-stone-500/30 hover:bg-stone-500/35'
+                                                                : 'bg-stone-100 text-stone-600 border border-stone-200 hover:bg-stone-200'
                                                                 }`}
                                                             title="Salin jawaban"
                                                         >
@@ -1507,7 +1507,7 @@ export default function AiChatAssistant({
                                                     />
                                                 ))}
                                                 {msg.results.length > 5 && (
-                                                    <p className={`text-xs text-center py-1 ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`}>
+                                                    <p className={`text-xs text-center py-1 ${isDarkMode ? 'text-white/30' : 'text-stone-400'}`}>
                                                         +{msg.results.length - 5} hasil lainnya
                                                     </p>
                                                 )}
@@ -1515,9 +1515,9 @@ export default function AiChatAssistant({
                                         )}
                                     </div>
                                     {msg.role === 'user' && (
-                                        <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${isDarkMode ? 'bg-white/10' : 'bg-slate-200'
+                                        <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${isDarkMode ? 'bg-white/10' : 'bg-stone-200'
                                             }`}>
-                                            <User size={14} className={isDarkMode ? 'text-white/70' : 'text-slate-500'} />
+                                            <User size={14} className={isDarkMode ? 'text-white/70' : 'text-stone-500'} />
                                         </div>
                                     )}
                                 </div>
@@ -1529,7 +1529,7 @@ export default function AiChatAssistant({
 
                         {/* Quick Actions (only show if few messages) */}
                         {!isLoading && (
-                            <div className={`px-4 pb-2 flex flex-wrap gap-1.5 border-t pt-2 ${isDarkMode ? 'border-white/5' : 'border-slate-100'}`}>
+                            <div className={`px-4 pb-2 flex flex-wrap gap-1.5 border-t pt-2 ${isDarkMode ? 'border-white/5' : 'border-stone-100'}`}>
                                 <button
                                     onClick={clearChat}
                                     className={`text-[11px] px-3 py-1.5 rounded-full font-medium transition-all flex items-center gap-1.5 ${isDarkMode
@@ -1546,7 +1546,7 @@ export default function AiChatAssistant({
                                         onClick={() => handleSend(qa.text || qa)}
                                         className={`text-[11px] px-3 py-1.5 rounded-full font-medium transition-all flex items-center gap-1.5 ${isDarkMode
                                             ? 'bg-white/5 text-white/60 hover:bg-blue-500/20 hover:text-blue-300 border border-white/5'
-                                            : 'bg-slate-100 text-slate-500 hover:bg-blue-100 hover:text-blue-700'
+                                            : 'bg-stone-100 text-stone-500 hover:bg-blue-100 hover:text-blue-700'
                                             }`}
                                     >
                                         <span>{qa.icon || '💬'}</span>
@@ -1557,12 +1557,12 @@ export default function AiChatAssistant({
                         )}
 
                         {/* Input */}
-                        <div className={`p-3 border-t flex-shrink-0 ${isDarkMode ? 'border-white/10' : 'border-slate-100'}`}>
+                        <div className={`p-3 border-t flex-shrink-0 ${isDarkMode ? 'border-white/10' : 'border-stone-100'}`}>
                             <div className={`flex items-center gap-2 rounded-2xl px-4 py-2 ${isDarkMode
                                 ? 'bg-white/5 border border-white/10 focus-within:border-blue-500/50'
-                                : 'bg-slate-100 border border-transparent focus-within:border-blue-300 focus-within:bg-white'
+                                : 'bg-stone-100 border border-transparent focus-within:border-blue-300 focus-within:bg-white'
                                 } transition-all`}>
-                                <Search size={16} className={`flex-shrink-0 ${isDarkMode ? 'text-white/30' : 'text-slate-400'}`} />
+                                <Search size={16} className={`flex-shrink-0 ${isDarkMode ? 'text-white/30' : 'text-stone-400'}`} />
                                 <input
                                     ref={inputRef}
                                     type="text"
@@ -1573,7 +1573,7 @@ export default function AiChatAssistant({
                                     disabled={isLoading}
                                     className={`flex-1 bg-transparent text-sm outline-none placeholder-opacity-50 ${isDarkMode
                                         ? 'text-white placeholder-white/30'
-                                        : 'text-slate-800 placeholder-slate-400'
+                                        : 'text-stone-800 placeholder-slate-400'
                                         }`}
                                 />
                                 {/* semantic search button removed per request */}
@@ -1585,7 +1585,7 @@ export default function AiChatAssistant({
                                         ? 'bg-red-500/15 text-red-400 hover:bg-red-500/25 hover:scale-105 active:scale-95'
                                         : input.trim() && !isLoading
                                             ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30 hover:scale-105 active:scale-95'
-                                            : isDarkMode ? 'text-white/20' : 'text-slate-300'
+                                            : isDarkMode ? 'text-white/20' : 'text-stone-300'
                                         }`}
                                 >
                                     {isStreaming
@@ -1593,7 +1593,7 @@ export default function AiChatAssistant({
                                         : isLoading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
                                 </button>
                             </div>
-                            <p className={`text-[9px] text-center mt-1.5 ${isDarkMode ? 'text-white/20' : 'text-slate-300'}`}>
+                            <p className={`text-[9px] text-center mt-1.5 ${isDarkMode ? 'text-white/20' : 'text-stone-300'}`}>
                                 Hybrid Search • Semantic + Keyword • parseIntent NLP
                             </p>
                         </div>

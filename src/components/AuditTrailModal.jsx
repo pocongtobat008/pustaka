@@ -51,7 +51,7 @@ export const AuditTrailModal = ({ open, onClose, target, proformas, formatCurren
         by: fmtBy(target.created_by),
         note: null,
         icon: <Receipt size={14} />,
-        color: 'bg-slate-100 text-slate-600 dark:bg-[#0d0d0d] dark:text-white/40',
+        color: 'bg-stone-100 text-stone-600 dark:bg-[#0d0d0d] dark:text-white/40',
         done: true,
         waiting: false,
         duration: null,
@@ -265,11 +265,11 @@ export const AuditTrailModal = ({ open, onClose, target, proformas, formatCurren
                         <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-5">
                             {/* Status saat ini */}
                             <div className="flex items-center gap-2 mb-5">
-                                <span className="text-xs font-bold text-slate-500 dark:text-white/40">Status Saat Ini:</span>
+                                <span className="text-xs font-bold text-stone-500 dark:text-white/40">Status Saat Ini:</span>
                                 <span className={`inline-block px-2.5 py-1 rounded-full text-[10px] font-bold ${STATUS_MAP[target.status]?.cls || ''}`}>
                                     {STATUS_MAP[target.status]?.label || target.status}
                                 </span>
-                                {prof?.proforma_no && <span className="text-[11px] text-slate-400 ml-auto">Proforma: {prof.proforma_no}</span>}
+                                {prof?.proforma_no && <span className="text-[11px] text-stone-400 ml-auto">Proforma: {prof.proforma_no}</span>}
                             </div>
 
                             {/* Timeline */}
@@ -278,13 +278,13 @@ export const AuditTrailModal = ({ open, onClose, target, proformas, formatCurren
                                     const isLast = i === steps.length - 1;
                                     return (
                                         <div key={s.key} className="flex items-start gap-3 relative pb-5">
-                                            {!isLast && <div className="absolute left-4 top-8 bottom-0 w-px bg-slate-200 dark:bg-[#111]" />}
+                                            {!isLast && <div className="absolute left-4 top-8 bottom-0 w-px bg-stone-200 dark:bg-[#111]" />}
                                             <div className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center ${s.color}`}>
                                                 {s.icon}
                                             </div>
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-2 flex-wrap">
-                                                    <div className="text-sm font-bold text-slate-700 dark:text-slate-200">{s.title}</div>
+                                                    <div className="text-sm font-bold text-stone-700 dark:text-white/80">{s.title}</div>
                                                     {s.waiting
                                                         ? <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 animate-pulse">WAITING</span>
                                                         : s.done && <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">SELESAI</span>}
@@ -294,11 +294,11 @@ export const AuditTrailModal = ({ open, onClose, target, proformas, formatCurren
                                                         </span>
                                                     )}
                                                 </div>
-                                                <div className="text-[10px] text-slate-400">
+                                                <div className="text-[10px] text-stone-400">
                                                     {s.by} • {s.time}
                                                 </div>
                                                 {s.note && (
-                                                    <div className="mt-1 px-2.5 py-1.5 rounded-lg bg-slate-50 dark:bg-[#0d0d0d] text-[11px] text-slate-600 dark:text-white/70 inline-block">
+                                                    <div className="mt-1 px-2.5 py-1.5 rounded-lg bg-stone-50 dark:bg-[#0d0d0d] text-[11px] text-stone-600 dark:text-white/70 inline-block">
                                                         {s.note}
                                                     </div>
                                                 )}
@@ -310,8 +310,8 @@ export const AuditTrailModal = ({ open, onClose, target, proformas, formatCurren
                         </div>
 
                         {/* Footer */}
-                        <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-[#0d0d0d]/60 flex items-center justify-start shrink-0 backdrop-blur">
-                            <button onClick={onClose} className="px-5 py-2.5 rounded-xl bg-white dark:bg-[#0d0d0d] border border-slate-200 dark:border-white/[0.06] text-slate-600 dark:text-white/70 text-sm font-bold hover:bg-slate-50 dark:hover:bg-white/[0.06] transition-colors">Tutup</button>
+                        <div className="px-6 py-4 border-t border-stone-100 dark:border-white/[0.06] bg-stone-50/80 dark:bg-[#0d0d0d]/60 flex items-center justify-start shrink-0 backdrop-blur">
+                            <button onClick={onClose} className="px-5 py-2.5 rounded-xl bg-white dark:bg-[#0d0d0d] border border-stone-200 dark:border-white/[0.06] text-stone-600 dark:text-white/70 text-sm font-bold hover:bg-stone-50 dark:hover:bg-white/[0.06] transition-colors">Tutup</button>
                         </div>
                     </motion.div>
                 </>

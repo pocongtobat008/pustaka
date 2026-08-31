@@ -39,7 +39,7 @@ export default function QueueStatus() {
         return (
             <div className="flex items-center justify-center p-8 bg-white/50 dark:bg-[#0d0d0d]/50 backdrop-blur-md rounded-3xl border border-white/20 shadow-xl">
                 <Loader2 className="w-6 h-6 animate-spin text-blue-500 mr-3" />
-                <span className="text-sm font-bold text-slate-500">Memuat Antrian OCR...</span>
+                <span className="text-sm font-bold text-stone-500">Memuat Antrian OCR...</span>
             </div>
         );
     }
@@ -96,20 +96,20 @@ export default function QueueStatus() {
 
                 {/* WAITING JOBS */}
                 {queue.waiting.map((job, idx) => (
-                    <div key={job.id} className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-white/[0.05]/50 rounded-2xl transition-all group/item border border-transparent hover:border-slate-100 dark:hover:border-slate-800">
-                        <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] flex items-center justify-center text-slate-400 group-hover/item:bg-blue-50 dark:group-hover/item:bg-blue-900/30 group-hover/item:text-blue-500 transition-all font-black text-xs">
+                    <div key={job.id} className="flex items-center gap-4 p-4 hover:bg-stone-50 dark:hover:bg-white/[0.05]/50 rounded-2xl transition-all group/item border border-transparent hover:border-stone-100 dark:hover:border-[#0d0d0d]">
+                        <div className="w-10 h-10 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] flex items-center justify-center text-stone-400 group-hover/item:bg-blue-50 dark:group-hover/item:bg-blue-900/30 group-hover/item:text-blue-500 transition-all font-black text-xs">
                             {idx + 1}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 truncate group-hover/item:text-blue-600 transition-colors">
+                            <h4 className="text-sm font-bold text-stone-700 dark:text-white/80 truncate group-hover/item:text-blue-600 transition-colors">
                                 {job.data.originalName}
                             </h4>
                             <div className="flex items-center gap-2 mt-0.5">
-                                <Clock size={12} className="text-slate-400" />
-                                <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Menunggu Antrian</span>
+                                <Clock size={12} className="text-stone-400" />
+                                <span className="text-[10px] font-medium text-stone-400 uppercase tracking-wider">Menunggu Antrian</span>
                             </div>
                         </div>
-                        <div className="p-2 rounded-lg bg-slate-50 dark:bg-[#0d0d0d] group-hover/item:bg-blue-50 dark:group-hover/item:bg-blue-900/30 transition-all opacity-0 group-hover/item:opacity-100 scale-90 group-hover/item:scale-100">
+                        <div className="p-2 rounded-lg bg-stone-50 dark:bg-[#0d0d0d] group-hover/item:bg-blue-50 dark:group-hover/item:bg-blue-900/30 transition-all opacity-0 group-hover/item:opacity-100 scale-90 group-hover/item:scale-100">
                             <CheckCircle2 size={16} className="text-blue-500/50" />
                         </div>
                     </div>
@@ -117,11 +117,11 @@ export default function QueueStatus() {
 
                 {queue.total === 0 && !loading && (
                     <div className="flex flex-col items-center justify-center py-12 text-center">
-                        <div className="p-4 bg-slate-50 dark:bg-[#0d0d0d]/50 rounded-full mb-4 text-slate-300">
+                        <div className="p-4 bg-stone-50 dark:bg-[#0d0d0d]/50 rounded-full mb-4 text-stone-300">
                             <CheckCircle2 size={40} />
                         </div>
-                        <p className="text-sm font-bold text-slate-600 dark:text-white/40">Semua Beres!</p>
-                        <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-widest font-medium">Tidak ada antrian OCR aktif</p>
+                        <p className="text-sm font-bold text-stone-600 dark:text-white/40">Semua Beres!</p>
+                        <p className="text-[10px] text-stone-400 mt-1 uppercase tracking-widest font-medium">Tidak ada antrian OCR aktif</p>
                     </div>
                 )}
             </div>

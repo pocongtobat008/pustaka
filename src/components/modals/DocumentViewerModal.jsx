@@ -21,12 +21,12 @@ export default function DocumentViewerModal({
     return (
         <div className="space-y-6 pt-4 pb-10">
             <div className="flex gap-4">
-                <div className="w-24 h-24 bg-slate-100 dark:bg-[#0d0d0d] rounded-xl flex items-center justify-center">
+                <div className="w-24 h-24 bg-stone-100 dark:bg-[#0d0d0d] rounded-xl flex items-center justify-center">
                     {String(viewDocData?.type || '').toLowerCase().includes('pdf') ? <FileDigit size={40} className="text-red-500" /> : <ImageIcon size={40} />}
                 </div>
                 <div className="flex-1">
                     <h3 className="text-2xl font-bold dark:text-white">{viewDocData.title}</h3>
-                    <div className="flex gap-4 text-sm text-gray-500 mt-2">
+                    <div className="flex gap-4 text-sm text-stone-500 mt-2">
                         <span className="flex items-center gap-1"><User size={14} /> {viewDocData.uploader || viewDocData.owner || 'Unknown'}</span>
                         <span className="flex items-center gap-1"><Clock size={14} /> {viewDocData.uploadDate ? new Date(viewDocData.uploadDate).toLocaleDateString() : '-'}</span>
                         <span className="flex items-center gap-1"><FileJson size={14} /> {viewDocData.size}</span>
@@ -36,13 +36,13 @@ export default function DocumentViewerModal({
             </div>
 
             {/* FILE PREVIEW SECTION */}
-            <div className="border-t border-gray-200 dark:border-white/[0.06] pt-4">
+            <div className="border-t border-stone-200 dark:border-white/[0.06] pt-4">
                 <h4 className="font-bold mb-2 dark:text-white flex items-center gap-2"><Eye size={16} /> Preview Dokumen</h4>
-                <div className="bg-white dark:bg-[#0d0d0d] rounded-xl border border-gray-200 dark:border-white/[0.06] overflow-hidden min-h-[300px] max-h-[600px] overflow-y-auto shadow-inner flex items-center justify-center relative">
+                <div className="bg-white dark:bg-[#0d0d0d] rounded-xl border border-stone-200 dark:border-white/[0.06] overflow-hidden min-h-[300px] max-h-[600px] overflow-y-auto shadow-inner flex items-center justify-center relative">
                     {isGeneratingPreview ? (
                         <div className="flex flex-col items-center gap-3">
                             <RefreshCw size={32} className="text-blue-500 animate-spin" />
-                            <p className="text-[10px] font-bold text-slate-500 animate-pulse uppercase tracking-widest text-center">Menyiapkan Preview...</p>
+                            <p className="text-[10px] font-bold text-stone-500 animate-pulse uppercase tracking-widest text-center">Menyiapkan Preview...</p>
                         </div>
                     ) : String(viewDocData?.type || '').toLowerCase().includes('image') ? (
                         <img src={viewDocData?.fileData || viewDocData?.file_data || viewDocData?.filedata || getFullUrl(viewDocData?.url) || undefined} alt="Preview" className="max-w-full mx-auto" onError={(e) => { e.target.style.display = 'none'; }} />
@@ -53,7 +53,7 @@ export default function DocumentViewerModal({
                     ) : previewHtml ? (
                         <div className="p-6 prose dark:prose-invert max-w-none overflow-x-auto preview-content w-full" dangerouslySetInnerHTML={{ __html: previewHtml }} />
                     ) : (
-                        <div className="flex flex-col items-center justify-center h-[300px] text-gray-400">
+                        <div className="flex flex-col items-center justify-center h-[300px] text-stone-400">
                             <FileText size={48} className="mb-2 opacity-20" />
                             <p className="text-sm font-medium">Preview tidak tersedia untuk format ini.</p>
                             <p className="text-xs opacity-60 mt-1">Gunakan tombol Download untuk melihat file secara penuh.</p>
@@ -62,9 +62,9 @@ export default function DocumentViewerModal({
                 </div>
             </div>
 
-            <div className="border-t border-gray-200 dark:border-white/[0.06] pt-4">
+            <div className="border-t border-stone-200 dark:border-white/[0.06] pt-4">
                 <h4 className="font-bold mb-2 dark:text-white flex items-center gap-2"><FileText size={16} /> Isi Dokumen (OCR & Analisis)</h4>
-                <div className="bg-gray-50 dark:bg-[#0d0d0d] p-4 rounded-lg font-mono text-sm max-h-60 overflow-y-auto border border-gray-200 dark:border-white/[0.06] dark:text-white/70 whitespace-pre-wrap">{viewDocData.ocrContent || 'Tidak ada konten OCR.'}</div>
+                <div className="bg-stone-50 dark:bg-[#0d0d0d] p-4 rounded-lg font-mono text-sm max-h-60 overflow-y-auto border border-stone-200 dark:border-white/[0.06] dark:text-white/70 whitespace-pre-wrap">{viewDocData.ocrContent || 'Tidak ada konten OCR.'}</div>
             </div>
 
             {/* Version History Section - Safe Render */}
@@ -80,14 +80,14 @@ export default function DocumentViewerModal({
 
                 if (Array.isArray(history) && history.length > 0) {
                     return (
-                        <div className="border-t border-gray-200 dark:border-white/[0.06] pt-4">
+                        <div className="border-t border-stone-200 dark:border-white/[0.06] pt-4">
                             <h4 className="font-bold mb-3 dark:text-white flex items-center gap-2"><History size={16} /> Riwayat Versi & Revisi</h4>
                             <div className="space-y-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                                 {history.slice().reverse().map((ver, idx) => (
-                                    <div key={idx} className="flex justify-between items-center bg-slate-50 dark:bg-[#0d0d0d] p-3 rounded-lg border border-slate-100 dark:border-white/[0.06]">
+                                    <div key={idx} className="flex justify-between items-center bg-stone-50 dark:bg-[#0d0d0d] p-3 rounded-lg border border-stone-100 dark:border-white/[0.06]">
                                         <div>
-                                            <div className="text-xs font-bold text-slate-700 dark:text-white/70">Versi {new Date(ver.timestamp).toLocaleString()}</div>
-                                            <div className="text-[10px] text-slate-500">Oleh: {ver.user} • {ver.size} • {ver.title}</div>
+                                            <div className="text-xs font-bold text-stone-700 dark:text-white/70">Versi {new Date(ver.timestamp).toLocaleString()}</div>
+                                            <div className="text-[10px] text-stone-500">Oleh: {ver.user} • {ver.size} • {ver.title}</div>
                                         </div>
                                         <button
                                             onClick={() => handleRestoreVersion(viewDocData.id, ver.timestamp)}

@@ -75,7 +75,7 @@ export const STATUS_MAP = {
     sent_back_tax: { label: 'Tax Sent Back', cls: 'bg-rose-100 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400' },
     tax: { label: 'Faktur Pajak', cls: 'bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400' },
     settled: { label: 'Settled', cls: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400' },
-    cancelled: { label: 'Dibatalkan', cls: 'bg-slate-200 text-slate-600 dark:bg-slate-500/10 dark:text-white/40 line-through' },
+    cancelled: { label: 'Dibatalkan', cls: 'bg-stone-200 text-stone-600 dark:bg-stone-500/10 dark:text-white/40 line-through' },
 };
 
 export const TIPE_MAP = {
@@ -210,15 +210,15 @@ const Pagination = ({ page, totalPages, setPage }) => {
     const btnCls = "min-w-8 h-8 px-2 flex items-center justify-center rounded-lg text-xs font-bold transition-all";
     return (
         <div className="flex items-center justify-between px-4 py-3 border-t border-white/60 dark:border-white/10 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl">
-            <div className="text-xs text-slate-500 dark:text-white/40 font-medium">Page <span className="font-bold text-slate-800 dark:text-white">{page}</span> of {totalPages}</div>
+            <div className="text-xs text-stone-500 dark:text-white/40 font-medium">Page <span className="font-bold text-stone-800 dark:text-white">{page}</span> of {totalPages}</div>
             <div className="flex items-center gap-1">
-                <button disabled={page <= 1} onClick={() => setPage(page - 1)} aria-label="Previous page" title="Previous" className={`${btnCls} text-slate-500 dark:text-white/70 hover:bg-slate-100 dark:hover:bg-white/[0.05] disabled:opacity-30 disabled:cursor-not-allowed`}>«</button>
+                <button disabled={page <= 1} onClick={() => setPage(page - 1)} aria-label="Previous page" title="Previous" className={`${btnCls} text-stone-500 dark:text-white/70 hover:bg-stone-100 dark:hover:bg-white/[0.05] disabled:opacity-30 disabled:cursor-not-allowed`}>«</button>
                 {pages.map((p, i) => p === '...' ? (
-                    <span key={`e${i}`} className="px-1 text-xs text-slate-400">…</span>
+                    <span key={`e${i}`} className="px-1 text-xs text-stone-400">…</span>
                 ) : (
-                    <button key={p} onClick={() => setPage(p)} className={`${btnCls} ${p === page ? 'gradient-bg text-white shadow-lg shadow-blue-500/25' : 'text-slate-500 dark:text-white/70 hover:bg-slate-100 dark:hover:bg-white/[0.05]'}`}>{p}</button>
+                    <button key={p} onClick={() => setPage(p)} className={`${btnCls} ${p === page ? 'gradient-bg text-white shadow-lg shadow-blue-500/25' : 'text-stone-500 dark:text-white/70 hover:bg-stone-100 dark:hover:bg-white/[0.05]'}`}>{p}</button>
                 ))}
-                <button disabled={page >= totalPages} onClick={() => setPage(page + 1)} aria-label="Next page" title="Next" className={`${btnCls} text-slate-500 dark:text-white/70 hover:bg-slate-100 dark:hover:bg-white/[0.05] disabled:opacity-30 disabled:cursor-not-allowed`}>»</button>
+                <button disabled={page >= totalPages} onClick={() => setPage(page + 1)} aria-label="Next page" title="Next" className={`${btnCls} text-stone-500 dark:text-white/70 hover:bg-stone-100 dark:hover:bg-white/[0.05] disabled:opacity-30 disabled:cursor-not-allowed`}>»</button>
             </div>
         </div>
     );
@@ -240,8 +240,8 @@ const StatusStepper = ({ status, t }) => {
         <div className="flex items-center mt-1.5 group relative w-fit">
             {[0, 1, 2, 3].map(i => (
                 <React.Fragment key={i}>
-                    <div className={`relative w-2 h-2 rounded-full transition-colors ${i <= step ? 'bg-blue-500 shadow-[0_0_5px_rgba(29,78,216,0.5)]' : 'bg-slate-200 dark:bg-[#111]'}`} title={titles[i]} />
-                    {i < 3 && <div className={`h-[2px] w-3 transition-colors ${i < step ? 'bg-blue-500' : 'bg-slate-200 dark:bg-[#111]'}`} />}
+                    <div className={`relative w-2 h-2 rounded-full transition-colors ${i <= step ? 'bg-blue-500 shadow-[0_0_5px_rgba(29,78,216,0.5)]' : 'bg-stone-200 dark:bg-[#111]'}`} title={titles[i]} />
+                    {i < 3 && <div className={`h-[2px] w-3 transition-colors ${i < step ? 'bg-blue-500' : 'bg-stone-200 dark:bg-[#111]'}`} />}
                 </React.Fragment>
             ))}
         </div>
@@ -249,10 +249,10 @@ const StatusStepper = ({ status, t }) => {
 };
 
 // ── Gaya tabel profesional (dipakai dashboard & invoice) ──
-const TH_CLS = "px-4 py-3.5 text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-white/60 dark:border-white/10 bg-slate-50/80 dark:bg-[#0d0d0d]/50 sticky top-0 z-10 backdrop-blur";
-const TH_SORT_CLS = "px-4 py-3.5 text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-white/60 dark:border-white/10 bg-slate-50/80 dark:bg-[#0d0d0d]/50 sticky top-0 z-10 backdrop-blur cursor-pointer select-none hover:text-blue-600 transition-colors";
-const TD_CLS = "px-4 py-3 text-sm text-slate-600 dark:text-white/70";
-const TROW_CLS = "border-b border-slate-100 dark:border-slate-800/60 transition-colors hover:bg-blue-50/70 dark:hover:bg-white/[0.05]/50";
+const TH_CLS = "px-4 py-3.5 text-[10px] font-black uppercase tracking-wider text-stone-400 border-b border-white/60 dark:border-white/10 bg-stone-50/80 dark:bg-[#0d0d0d]/50 sticky top-0 z-10 backdrop-blur";
+const TH_SORT_CLS = "px-4 py-3.5 text-[10px] font-black uppercase tracking-wider text-stone-400 border-b border-white/60 dark:border-white/10 bg-stone-50/80 dark:bg-[#0d0d0d]/50 sticky top-0 z-10 backdrop-blur cursor-pointer select-none hover:text-blue-600 transition-colors";
+const TD_CLS = "px-4 py-3 text-sm text-stone-600 dark:text-white/70";
+const TROW_CLS = "border-b border-stone-100 dark:border-white/[0.06]/60 transition-colors hover:bg-blue-50/70 dark:hover:bg-white/[0.05]/50";
 const NUM_RIGHT = "px-4 py-3 text-right tabular-nums whitespace-nowrap";
 
 const SearchAutocomplete = ({ value, options, labelKey, subKey, onSelect, className, placeholder }) => {
@@ -283,10 +283,10 @@ const SearchAutocomplete = ({ value, options, labelKey, subKey, onSelect, classN
                         else if (e.key === 'Escape') setOpen(false);
                     }}
                 />
-                <Search size={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                <Search size={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none" />
             </div>
             {open && matches.length > 0 && (
-                <div className="absolute z-30 mt-1 w-full max-h-52 overflow-y-auto rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl shadow-xl">
+                <div className="absolute z-30 mt-1 w-full max-h-52 overflow-y-auto rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl shadow-xl">
                     {matches.slice(0, 50).map(o => (
                         <button
                             key={o.id}
@@ -294,8 +294,8 @@ const SearchAutocomplete = ({ value, options, labelKey, subKey, onSelect, classN
                             onMouseDown={e => { e.preventDefault(); select(o); }}
                             className="block w-full text-left px-3 py-2 hover:bg-blue-50 dark:hover:bg-white/[0.05]"
                         >
-                            <div className="font-semibold text-xs text-slate-800 dark:text-white">{o[labelKey]}</div>
-                            {o[subKey] && <div className="text-[10px] text-slate-400 truncate">{o[subKey]}</div>}
+                            <div className="font-semibold text-xs text-stone-800 dark:text-white">{o[labelKey]}</div>
+                            {o[subKey] && <div className="text-[10px] text-stone-400 truncate">{o[subKey]}</div>}
                         </button>
                     ))}
                 </div>
@@ -1938,42 +1938,42 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
             return Array.from({ length: 5 }).map((_, i) => (
                 <tr key={`skel-${i}`} className="border-b border-white/60 dark:border-white/10">
                     <td className="w-8 px-1 py-3"></td>
-                    <td className="px-4 py-3"><div className="h-4 w-6 bg-slate-200 dark:bg-[#111] rounded animate-pulse"></div></td>
-                    {withActions && <td className="px-4 py-3"><div className="h-6 w-6 bg-slate-200 dark:bg-[#111] rounded-lg animate-pulse"></div></td>}
-                    <td className="px-4 py-3"><div className="h-5 w-20 bg-slate-200 dark:bg-[#111] rounded-full animate-pulse"></div></td>
-                    <td className="px-4 py-3"><div className="h-4 w-32 bg-slate-200 dark:bg-[#111] rounded animate-pulse mb-1"></div><div className="h-3 w-20 bg-slate-200 dark:bg-[#111] rounded animate-pulse"></div></td>
-                    <td className="px-4 py-3"><div className="h-4 w-20 bg-slate-200 dark:bg-[#111] rounded animate-pulse"></div></td>
-                    <td className="px-4 py-3"><div className="h-5 w-10 bg-slate-200 dark:bg-[#111] rounded-full animate-pulse"></div></td>
-                    <td className="px-4 py-3"><div className="h-4 w-24 bg-slate-200 dark:bg-[#111] rounded animate-pulse"></div></td>
-                    <td className="px-4 py-3 text-right"><div className="h-4 w-24 bg-slate-200 dark:bg-[#111] rounded animate-pulse ml-auto"></div></td>
-                    <td className="px-4 py-3 text-right"><div className="h-4 w-24 bg-slate-200 dark:bg-[#111] rounded animate-pulse ml-auto"></div></td>
-                    <td className="px-4 py-3"><div className="h-4 w-20 bg-slate-200 dark:bg-[#111] rounded animate-pulse"></div></td>
+                    <td className="px-4 py-3"><div className="h-4 w-6 bg-stone-200 dark:bg-[#111] rounded animate-pulse"></div></td>
+                    {withActions && <td className="px-4 py-3"><div className="h-6 w-6 bg-stone-200 dark:bg-[#111] rounded-lg animate-pulse"></div></td>}
+                    <td className="px-4 py-3"><div className="h-5 w-20 bg-stone-200 dark:bg-[#111] rounded-full animate-pulse"></div></td>
+                    <td className="px-4 py-3"><div className="h-4 w-32 bg-stone-200 dark:bg-[#111] rounded animate-pulse mb-1"></div><div className="h-3 w-20 bg-stone-200 dark:bg-[#111] rounded animate-pulse"></div></td>
+                    <td className="px-4 py-3"><div className="h-4 w-20 bg-stone-200 dark:bg-[#111] rounded animate-pulse"></div></td>
+                    <td className="px-4 py-3"><div className="h-5 w-10 bg-stone-200 dark:bg-[#111] rounded-full animate-pulse"></div></td>
+                    <td className="px-4 py-3"><div className="h-4 w-24 bg-stone-200 dark:bg-[#111] rounded animate-pulse"></div></td>
+                    <td className="px-4 py-3 text-right"><div className="h-4 w-24 bg-stone-200 dark:bg-[#111] rounded animate-pulse ml-auto"></div></td>
+                    <td className="px-4 py-3 text-right"><div className="h-4 w-24 bg-stone-200 dark:bg-[#111] rounded animate-pulse ml-auto"></div></td>
+                    <td className="px-4 py-3"><div className="h-4 w-20 bg-stone-200 dark:bg-[#111] rounded animate-pulse"></div></td>
                 </tr>
             ));
         }
         if (rootRows.length === 0) {
-            return <tr><td colSpan={colSpan} className="px-4 py-10 text-center text-slate-400">{emptyText}</td></tr>;
+            return <tr><td colSpan={colSpan} className="px-4 py-10 text-center text-stone-400">{emptyText}</td></tr>;
         }
         return pager.slice(rootRows).flatMap((inv, rowIdx) => {
             const isDp = inv.tipe === 'PP' && (inv.pp_type === 'dp' || !inv.pelunasan_of_id);
             const kids = isDp ? childrenOf(inv.id) : [];
             const hasKids = kids.length > 0;
             const expanded = expandedDps.has(inv.id);
-            const rowBg = rowIdx % 2 === 0 ? 'bg-white/60 dark:bg-[#0d0d0d]/50' : 'bg-slate-50/70 dark:bg-[#0d0d0d]/30';
+            const rowBg = rowIdx % 2 === 0 ? 'bg-white/60 dark:bg-[#0d0d0d]/50' : 'bg-stone-50/70 dark:bg-[#0d0d0d]/30';
             const rows = [];
             rows.push(
                 <tr key={inv.id} onClick={() => openDetail(inv)} className={TROW_CLS + ' ' + rowBg + ' cursor-pointer'}>
                     <td className="w-8 px-1 py-3 text-center">
                         {hasKids && (
-                            <button onClick={(e) => { e.stopPropagation(); toggleExpandDp(inv.id); }} className="inline-flex items-center justify-center w-6 h-6 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-slate-200/70 dark:hover:bg-white/[0.06] transition-colors" title={expanded ? 'Sembunyikan pelunasan' : 'Tampilkan pelunasan'}>
+                            <button onClick={(e) => { e.stopPropagation(); toggleExpandDp(inv.id); }} className="inline-flex items-center justify-center w-6 h-6 rounded-lg text-stone-500 hover:text-blue-600 hover:bg-stone-200/70 dark:hover:bg-white/[0.06] transition-colors" title={expanded ? 'Sembunyikan pelunasan' : 'Tampilkan pelunasan'}>
                                 {expanded ? <ChevronDown size={15} /> : <ChevronRight size={15} />}
                             </button>
                         )}
                     </td>
-                    <td className="px-4 py-3 font-bold text-slate-500 dark:text-white/40 tabular-nums text-center">{pager.start + rowIdx + 1}</td>
+                    <td className="px-4 py-3 font-bold text-stone-500 dark:text-white/40 tabular-nums text-center">{pager.start + rowIdx + 1}</td>
                     {withActions && (
                         <td className="px-4 py-3" onClick={e => e.stopPropagation()}>
-                            <button onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setActionMenu(prev => prev && prev.inv?.id === inv.id ? null : openRowMenu(inv, r, 'invoice')); }} className={'p-1.5 rounded-lg transition-colors ' + (actionMenu?.inv?.id === inv.id ? 'bg-blue-50 text-blue-600 dark:bg-[#0d0d0d]' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.05] hover:text-slate-600 dark:hover:text-slate-200')} title="Aksi">
+                            <button onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setActionMenu(prev => prev && prev.inv?.id === inv.id ? null : openRowMenu(inv, r, 'invoice')); }} className={'p-1.5 rounded-lg transition-colors ' + (actionMenu?.inv?.id === inv.id ? 'bg-blue-50 text-blue-600 dark:bg-[#0d0d0d]' : 'text-stone-400 hover:bg-stone-100 dark:hover:bg-white/[0.05] hover:text-stone-600 dark:hover:text-white/80')} title="Aksi">
                                 <MoreVertical size={15} />
                             </button>
                         </td>
@@ -1983,32 +1983,32 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         <StatusStepper status={inv.status} t={t} />
                     </td>
                     <td className="px-4 py-3">
-                        <div className="font-semibold text-slate-800 dark:text-white truncate max-w-[220px]" title={inv.dealer_name || '-'}>{inv.dealer_name || '-'}</div>
-                        <div className="text-[10px] text-slate-400 truncate max-w-[220px]" title={'NPWP: ' + (inv.dealer_npwp || '-')}>NPWP: {inv.dealer_npwp || '-'}</div>
+                        <div className="font-semibold text-stone-800 dark:text-white truncate max-w-[220px]" title={inv.dealer_name || '-'}>{inv.dealer_name || '-'}</div>
+                        <div className="text-[10px] text-stone-400 truncate max-w-[220px]" title={'NPWP: ' + (inv.dealer_npwp || '-')}>NPWP: {inv.dealer_npwp || '-'}</div>
                     </td>
                     <td className={TD_CLS + ' whitespace-nowrap'}>{inv.no_po || '-'}</td>
                     <td className="px-4 py-3 whitespace-nowrap">
-                        <span className="px-2 py-1 rounded-lg text-[10px] font-bold bg-slate-100 dark:bg-[#0d0d0d] text-slate-700 dark:text-slate-200">{inv.tipe}</span>
+                        <span className="px-2 py-1 rounded-lg text-[10px] font-bold bg-stone-100 dark:bg-[#0d0d0d] text-stone-700 dark:text-white/80">{inv.tipe}</span>
                         {isDp && <span className="ml-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300">DP</span>}
                         {hasKids && <span className="ml-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300" title={kids.length + ' pelunasan'}>{kids.length}x PLN</span>}
                     </td>
                     <td className={TD_CLS + ' whitespace-nowrap'}>{inv.tgl_transaksi || '-'}</td>
-                    <td className={NUM_RIGHT + ' font-bold text-slate-800 dark:text-white'}>{formatCurrency(inv.total_invoice)}</td>
-                    <td className={NUM_RIGHT + ' text-slate-600 dark:text-white/70'}>{formatCurrency(inv.uang_masuk)}</td>
+                    <td className={NUM_RIGHT + ' font-bold text-stone-800 dark:text-white'}>{formatCurrency(inv.total_invoice)}</td>
+                    <td className={NUM_RIGHT + ' text-stone-600 dark:text-white/70'}>{formatCurrency(inv.uang_masuk)}</td>
                     <td className="px-4 py-3 text-blue-600 dark:text-blue-400 font-semibold text-xs whitespace-nowrap">
                         {inv.proforma_no || '-'}
-                        {inv.no_invoice && <div className="text-[9px] text-slate-400 font-medium mt-0.5">No: {inv.no_invoice}</div>}
+                        {inv.no_invoice && <div className="text-[9px] text-stone-400 font-medium mt-0.5">No: {inv.no_invoice}</div>}
                         {(() => {
                             const chain = (inv.rejected_from_id || inv.replacement_id) ? buildRejectChain(inv, invoices) : [];
                             if (chain.length < 2) return null;
                             return (
                                 <div className="flex flex-wrap items-center gap-0.5 mt-0.5" title={`Riwayat reject: ${chain.map(c => `#${c.id}${c.no_invoice ? ' (' + c.no_invoice + ')' : ''}`).join(' → ')}`}>
-                                    <span className="text-[8px] font-bold uppercase tracking-wider text-slate-400 mr-0.5">Rwy:</span>
+                                    <span className="text-[8px] font-bold uppercase tracking-wider text-stone-400 mr-0.5">Rwy:</span>
                                     {chain.map((c, idx) => {
                                         const isCur = Number(c.id) === Number(inv.id);
                                         return (
                                             <React.Fragment key={c.id}>
-                                                {idx > 0 && <span className="text-[8px] text-slate-300 dark:text-slate-600">→</span>}
+                                                {idx > 0 && <span className="text-[8px] text-stone-300 dark:text-stone-600">→</span>}
                                                 <span className={`px-1 py-px rounded text-[8px] font-bold leading-tight ${isCur ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/25 dark:text-blue-300' : c.status === 'rejected' ? 'bg-red-50 text-rose-500 dark:bg-red-500/10' : 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10'}`}>
                                                     #{c.id}{c.no_invoice ? ` ${c.no_invoice}` : ''}
                                                 </span>
@@ -2029,7 +2029,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <td className="px-4 py-3"></td>
                             {withActions && (
                                 <td className="px-4 py-3" onClick={e => e.stopPropagation()}>
-                                    <button onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setActionMenu(prev => prev && prev.inv?.id === child.id ? null : openRowMenu(child, r, 'invoice')); }} className={'p-1.5 rounded-lg transition-colors ' + (actionMenu?.inv?.id === child.id ? 'bg-blue-50 text-blue-600 dark:bg-[#0d0d0d]' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.05] hover:text-slate-600 dark:hover:text-slate-200')} title="Aksi">
+                                    <button onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setActionMenu(prev => prev && prev.inv?.id === child.id ? null : openRowMenu(child, r, 'invoice')); }} className={'p-1.5 rounded-lg transition-colors ' + (actionMenu?.inv?.id === child.id ? 'bg-blue-50 text-blue-600 dark:bg-[#0d0d0d]' : 'text-stone-400 hover:bg-stone-100 dark:hover:bg-white/[0.05] hover:text-stone-600 dark:hover:text-white/80')} title="Aksi">
                                         <MoreVertical size={15} />
                                     </button>
                                 </td>
@@ -2039,16 +2039,16 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 <StatusStepper status={child.status} />
                             </td>
                             <td className="px-4 py-3">
-                                <div className="font-semibold text-slate-700 dark:text-slate-200 truncate max-w-[220px] pl-5" title={child.dealer_name || '-'}>{child.dealer_name || '-'}</div>
-                                <div className="text-[10px] text-slate-400 truncate max-w-[220px]" title={'NPWP: ' + (child.dealer_npwp || '-')}>NPWP: {child.dealer_npwp || '-'}</div>
+                                <div className="font-semibold text-stone-700 dark:text-white/80 truncate max-w-[220px] pl-5" title={child.dealer_name || '-'}>{child.dealer_name || '-'}</div>
+                                <div className="text-[10px] text-stone-400 truncate max-w-[220px]" title={'NPWP: ' + (child.dealer_npwp || '-')}>NPWP: {child.dealer_npwp || '-'}</div>
                             </td>
                             <td className={TD_CLS + ' whitespace-nowrap'}>{child.no_po || '-'}</td>
                             <td className="px-4 py-3 whitespace-nowrap">
-                                <span className="px-2 py-1 rounded-lg text-[10px] font-bold bg-slate-100 dark:bg-[#0d0d0d] text-slate-700 dark:text-slate-200">{child.tipe}</span>
+                                <span className="px-2 py-1 rounded-lg text-[10px] font-bold bg-stone-100 dark:bg-[#0d0d0d] text-stone-700 dark:text-white/80">{child.tipe}</span>
                                 <span className="ml-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300">PELUNASAN</span>
                             </td>
                             <td className={TD_CLS + ' whitespace-nowrap'}>{child.tgl_transaksi || '-'}</td>
-                            <td className={NUM_RIGHT + ' font-bold text-slate-700 dark:text-slate-200'}>{formatCurrency(child.total_invoice)}</td>
+                            <td className={NUM_RIGHT + ' font-bold text-stone-700 dark:text-white/80'}>{formatCurrency(child.total_invoice)}</td>
                             <td className={NUM_RIGHT + ' text-blue-600 dark:text-blue-400 font-semibold'}>{formatCurrency(child.uang_masuk)}</td>
                             <td className="px-4 py-3 text-blue-600 dark:text-blue-400 font-semibold text-xs whitespace-nowrap">{child.proforma_no || '-'}</td>
                         </tr>
@@ -2112,13 +2112,13 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
             onClick={() => setTab(id)}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${tab === id
                 ? 'gradient-bg text-white shadow-lg shadow-blue-500/25'
-                : 'text-slate-600 dark:text-white/70 hover:bg-slate-100 dark:hover:bg-white/[0.05]'}`}
+                : 'text-stone-600 dark:text-white/70 hover:bg-stone-100 dark:hover:bg-white/[0.05]'}`}
         >
             {icon}{label}
         </button>
     );
 
-    const inputCls = "w-full rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500";
+    const inputCls = "w-full rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-stone-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500";
 
     return (
         <div className="p-4 md:p-6 space-y-4">
@@ -2169,22 +2169,22 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                 <div className="flex items-center gap-2 flex-wrap">
                     {tab !== 'dashboard' && (
                         <div className="relative">
-                            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
                             <input
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
                                 placeholder={t("invoice.searchPlaceholder")}
-                                className="pl-9 rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-48"
+                                className="pl-9 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-stone-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-48"
                             />
                         </div>
                     )}
                     {tab !== 'dashboard' && (
                         <>
-                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-2.5 py-2 text-sm text-slate-600 dark:text-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500" title="Dari Tanggal" />
-                            <span className="text-xs text-slate-400">s/d</span>
-                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-2.5 py-2 text-sm text-slate-600 dark:text-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500" title="Sampai Tanggal" />
+                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-2.5 py-2 text-sm text-stone-600 dark:text-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500" title="Dari Tanggal" />
+                            <span className="text-xs text-stone-400">s/d</span>
+                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-2.5 py-2 text-sm text-stone-600 dark:text-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500" title="Sampai Tanggal" />
                             {(search || dateFrom || dateTo) && (
-                                <button onClick={() => { setSearch(''); setDateFrom(''); setDateTo(''); }} className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-500 hover:text-red-600 text-sm font-semibold" title="Reset filter">Reset</button>
+                                <button onClick={() => { setSearch(''); setDateFrom(''); setDateTo(''); }} className="px-3 py-2 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-500 hover:text-red-600 text-sm font-semibold" title="Reset filter">Reset</button>
                             )}
                         </>
                     )}
@@ -2196,7 +2196,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <Plus size={16} /> New Invoice
                         </button>
                     )}
-                    <button onClick={loadAll} className="p-2 rounded-xl text-slate-500 hover:text-blue-600 hover:bg-slate-100 dark:hover:bg-white/[0.05] transition-all" title="Refresh">
+                    <button onClick={loadAll} className="p-2 rounded-xl text-stone-500 hover:text-blue-600 hover:bg-stone-100 dark:hover:bg-white/[0.05] transition-all" title="Refresh">
                         <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
                     </button>
                 </div>
@@ -2210,14 +2210,14 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         {/* Status distribution */}
                         <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 p-5 shadow-sm">
                             <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-sm font-bold text-slate-700 dark:text-white/70 flex items-center gap-2">
+                                <h2 className="text-sm font-bold text-stone-700 dark:text-white/70 flex items-center gap-2">
                                     <span className="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400"><PieChart size={14} /></span>
                                     Distribusi Status
                                 </h2>
-                                <span className="text-[11px] font-semibold text-slate-400 tabular-nums">{dashStatusDist.reduce((s, e) => s + e.value, 0)} invoice</span>
+                                <span className="text-[11px] font-semibold text-stone-400 tabular-nums">{dashStatusDist.reduce((s, e) => s + e.value, 0)} invoice</span>
                             </div>
                             {dashStatusDist.length === 0 ? (
-                                <div className="py-10 text-center text-sm text-slate-400">Belum ada data</div>
+                                <div className="py-10 text-center text-sm text-stone-400">Belum ada data</div>
                             ) : (
                                 <>
                                     <ResponsiveContainer width="100%" height={230}>
@@ -2233,9 +2233,9 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             <div key={e.name} className="flex items-center justify-between gap-2 text-xs">
                                                 <span className="flex items-center gap-1.5 min-w-0">
                                                     <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: CHART_COLORS[i % CHART_COLORS.length] }} />
-                                                    <span className="truncate text-slate-600 dark:text-white/70 font-medium">{e.name}</span>
+                                                    <span className="truncate text-stone-600 dark:text-white/70 font-medium">{e.name}</span>
                                                 </span>
-                                                <span className="font-bold text-slate-800 dark:text-slate-100 tabular-nums">{e.value}</span>
+                                                <span className="font-bold text-stone-800 dark:text-white/80 tabular-nums">{e.value}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -2246,14 +2246,14 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         {/* Monthly trend */}
                         <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 p-5 lg:col-span-2 shadow-sm">
                             <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-sm font-bold text-slate-700 dark:text-white/70 flex items-center gap-2">
+                                <h2 className="text-sm font-bold text-stone-700 dark:text-white/70 flex items-center gap-2">
                                     <span className="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"><TrendingUp size={14} /></span>
                                     Tren Nominal (6 Bulan Terakhir)
                                 </h2>
-                                <span className="text-[11px] font-semibold text-slate-400">Total {formatCurrency(dashMonthly.reduce((s, d) => s + (d.invoice || 0), 0))}</span>
+                                <span className="text-[11px] font-semibold text-stone-400">Total {formatCurrency(dashMonthly.reduce((s, d) => s + (d.invoice || 0), 0))}</span>
                             </div>
                             {dashMonthly.length === 0 ? (
-                                <div className="py-10 text-center text-sm text-slate-400">Belum ada data</div>
+                                <div className="py-10 text-center text-sm text-stone-400">Belum ada data</div>
                             ) : (
                                 <ResponsiveContainer width="100%" height={220}>
                                     <BarChart data={dashMonthly}>
@@ -2275,28 +2275,28 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                         <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 p-5 shadow-sm">
                             <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-sm font-bold text-slate-700 dark:text-white/70 flex items-center gap-2">
+                                <h2 className="text-sm font-bold text-stone-700 dark:text-white/70 flex items-center gap-2">
                                     <span className="p-1.5 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400"><Trophy size={14} /></span>
                                     Top Dealer
                                 </h2>
-                                <span className="text-[11px] font-semibold text-slate-400">by nominal invoice</span>
+                                <span className="text-[11px] font-semibold text-stone-400">by nominal invoice</span>
                             </div>
                             {dashDealerTop.length === 0 ? (
-                                <div className="py-10 text-center text-sm text-slate-400">Belum ada data</div>
+                                <div className="py-10 text-center text-sm text-stone-400">Belum ada data</div>
                             ) : (
                                 <div className="space-y-3">
                                     {dashDealerTop.map((d, i) => {
                                         const max = dashDealerTop[0]?.value || 1;
-                                        const rankCls = i === 0 ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300' : i === 1 ? 'bg-slate-200 text-slate-600 dark:bg-[#111] dark:text-white/70' : i === 2 ? 'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300' : 'bg-slate-100 text-slate-400 dark:bg-[#0d0d0d] dark:text-white/30';
+                                        const rankCls = i === 0 ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300' : i === 1 ? 'bg-stone-200 text-stone-600 dark:bg-[#111] dark:text-white/70' : i === 2 ? 'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300' : 'bg-stone-100 text-stone-400 dark:bg-[#0d0d0d] dark:text-white/30';
                                         return (
                                             <div key={d.name} className="group">
                                                 <div className="flex items-center gap-2 text-xs mb-1">
                                                     <span className={`w-5 h-5 shrink-0 rounded-md flex items-center justify-center text-[10px] font-black ${rankCls}`}>{i + 1}</span>
-                                                    <span className="font-semibold text-slate-600 dark:text-white/70 truncate flex-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{d.name}</span>
-                                                    <span className="font-bold text-slate-700 dark:text-slate-200 tabular-nums">{formatCurrency(d.value)}</span>
-                                                    <span className="text-[10px] font-semibold text-slate-400 tabular-nums w-9 text-right">{Math.round((d.value / max) * 100)}%</span>
+                                                    <span className="font-semibold text-stone-600 dark:text-white/70 truncate flex-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{d.name}</span>
+                                                    <span className="font-bold text-stone-700 dark:text-white/80 tabular-nums">{formatCurrency(d.value)}</span>
+                                                    <span className="text-[10px] font-semibold text-stone-400 tabular-nums w-9 text-right">{Math.round((d.value / max) * 100)}%</span>
                                                 </div>
-                                                <div className="h-1.5 rounded-full bg-slate-100 dark:bg-[#0d0d0d] overflow-hidden ml-7">
+                                                <div className="h-1.5 rounded-full bg-stone-100 dark:bg-[#0d0d0d] overflow-hidden ml-7">
                                                     <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-500" style={{ width: `${(d.value / max) * 100}%` }} />
                                                 </div>
                                             </div>
@@ -2330,32 +2330,32 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <div className="flex items-center gap-2">
                                 <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600"><LayoutDashboard size={16} /></div>
                                 <div>
-                                    <h3 className="font-bold text-slate-800 dark:text-white">Daftar Invoice</h3>
-                                    <div className="text-[11px] text-slate-400">{dashFiltered.length} data</div>
+                                    <h3 className="font-bold text-stone-800 dark:text-white">Daftar Invoice</h3>
+                                    <div className="text-[11px] text-stone-400">{dashFiltered.length} data</div>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2 flex-wrap">
                                 <div className="relative">
-                                    <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                                    <input value={dashSearch} onChange={e => setDashSearch(e.target.value)} placeholder={t("invoice.searchData")} className="pl-9 rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                    <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+                                    <input value={dashSearch} onChange={e => setDashSearch(e.target.value)} placeholder={t("invoice.searchData")} className="pl-9 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                                 </div>
-                                <select aria-label="Dealer" value={dashDealer} onChange={e => setDashDealer(e.target.value)} className="rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500 max-w-[160px]">
+                                <select aria-label="Dealer" value={dashDealer} onChange={e => setDashDealer(e.target.value)} className="rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-stone-600 dark:text-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500 max-w-[160px]">
                                     <option value="">{t("opt.allDealer")}</option>
                                     {dashDealerOptions.map(d => <option key={d} value={d}>{d}</option>)}
                                 </select>
-                                <select aria-label="Status" value={dashStatus} onChange={e => setDashStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <select aria-label="Status" value={dashStatus} onChange={e => setDashStatus(e.target.value)} className="rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-stone-600 dark:text-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     <option value="">{t("opt.allStatus")}</option>
                                     {dashStatusOptions.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                                 </select>
                                 {(dashSearch || dashDealer || dashStatus) && (
-                                    <button onClick={() => { setDashSearch(''); setDashDealer(''); setDashStatus(''); }} className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-500 hover:text-red-600 text-sm font-semibold">Reset</button>
+                                    <button onClick={() => { setDashSearch(''); setDashDealer(''); setDashStatus(''); }} className="px-3 py-2 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-500 hover:text-red-600 text-sm font-semibold">Reset</button>
                                 )}
                                 {(perms.can_view_invoice || perms.can_view_dashboard) && (
                                     <button
                                         onClick={handleExportExcel}
                                         disabled={exporting}
                                         title={t("invoice.exportAll")}
-                                        className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold transition-all ${exporting ? 'bg-slate-100 dark:bg-[#0d0d0d] text-slate-400 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/25'}`}
+                                        className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold transition-all ${exporting ? 'bg-stone-100 dark:bg-[#0d0d0d] text-stone-400 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/25'}`}
                                     >
                                         <FileSpreadsheet size={15} className={exporting ? 'animate-pulse' : ''} />
                                         {exporting ? 'Exporting...' : 'Export Excel'}
@@ -2374,21 +2374,21 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 </tbody>
                             </table>
                         </div>
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 px-4 py-3 border-t border-slate-200 dark:border-white/[0.06] bg-slate-50/60 dark:bg-[#0d0d0d]/40">
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 px-4 py-3 border-t border-stone-200 dark:border-white/[0.06] bg-stone-50/60 dark:bg-[#0d0d0d]/40">
                             <div className="flex flex-col gap-0.5 rounded-xl bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-white/60 dark:border-white/10 px-3 py-2">
-                                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Jumlah Data</span>
-                                <span className="text-sm font-bold text-slate-700 dark:text-slate-200 tabular-nums">{dashFiltered.length} invoice</span>
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400">Jumlah Data</span>
+                                <span className="text-sm font-bold text-stone-700 dark:text-white/80 tabular-nums">{dashFiltered.length} invoice</span>
                             </div>
                             <div className="flex flex-col gap-0.5 rounded-xl bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border-l-4 border-l-teal-500 border border-white/60 dark:border-white/10 px-3 py-2">
-                                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Invoice</span>
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400">Total Invoice</span>
                                 <span className="text-sm font-black text-teal-600 dark:text-teal-400 tabular-nums whitespace-nowrap">{formatCurrency(dashFiltered.filter(r => !(r.pp_type === 'pelunasan')).reduce((s, r) => s + (parseFloat(r.total_invoice) || 0), 0))}</span>
                             </div>
                             <div className="flex flex-col gap-0.5 rounded-xl bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border-l-4 border-l-blue-500 border border-white/60 dark:border-white/10 px-3 py-2">
-                                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Uang Masuk</span>
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400">Uang Masuk</span>
                                 <span className="text-sm font-black text-blue-600 dark:text-blue-400 tabular-nums whitespace-nowrap">{formatCurrency(dashFiltered.reduce((s, r) => s + (parseFloat(r.uang_masuk) || 0), 0))}</span>
                             </div>
                             <div className="flex flex-col gap-0.5 rounded-xl bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border-l-4 border-l-amber-500 border border-white/60 dark:border-white/10 px-3 py-2">
-                                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Sisa (Total − Uang Masuk)</span>
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400">Sisa (Total − Uang Masuk)</span>
                                 <span className="text-sm font-black text-amber-600 dark:text-amber-400 tabular-nums whitespace-nowrap">{formatCurrency(dashFiltered.filter(r => !(r.pp_type === 'pelunasan')).reduce((s, r) => s + (parseFloat(r.total_invoice) || 0), 0) - dashFiltered.reduce((s, r) => s + (parseFloat(r.uang_masuk) || 0), 0))}</span>
                             </div>
                         </div>
@@ -2411,16 +2411,16 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         <div className="flex items-center gap-2">
                             <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600"><Receipt size={16} /></div>
                             <div>
-                                <h3 className="font-bold text-slate-800 dark:text-white">Daftar Invoice</h3>
-                                <div className="text-[11px] text-slate-400">{filteredInvoices.length} data</div>
+                                <h3 className="font-bold text-stone-800 dark:text-white">Daftar Invoice</h3>
+                                <div className="text-[11px] text-stone-400">{filteredInvoices.length} data</div>
                             </div>
                         </div>
                         <div className="flex items-center gap-2 flex-wrap">
-                            <select aria-label="Status Invoice" value={invStatus} onChange={e => setInvStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <select aria-label="Status Invoice" value={invStatus} onChange={e => setInvStatus(e.target.value)} className="rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-stone-600 dark:text-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="">{t("opt.allStatus")}</option>
                                 {dashStatusOptions.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                             </select>
-                            {invStatus && <button onClick={() => setInvStatus('')} className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-500 hover:text-red-600 text-sm font-semibold">Reset</button>}
+                            {invStatus && <button onClick={() => setInvStatus('')} className="px-3 py-2 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-500 hover:text-red-600 text-sm font-semibold">Reset</button>}
                         </div>
                     </div>
                         <div className="overflow-auto max-h-[600px] custom-scrollbar" onScroll={() => setActionMenu(null)}>
@@ -2433,21 +2433,21 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 </tbody>
                             </table>
                         </div>
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 px-4 py-3 border-t border-slate-200 dark:border-white/[0.06]">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 px-4 py-3 border-t border-stone-200 dark:border-white/[0.06]">
                         <div className="flex flex-col gap-0.5">
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Jumlah Data</span>
-                            <span className="text-sm font-bold text-slate-700 dark:text-slate-200 tabular-nums">{filteredInvoices.length} invoice</span>
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400">Jumlah Data</span>
+                            <span className="text-sm font-bold text-stone-700 dark:text-white/80 tabular-nums">{filteredInvoices.length} invoice</span>
                         </div>
                         <div className="flex flex-col gap-0.5">
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Invoice</span>
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400">Total Invoice</span>
                             <span className="text-sm font-bold text-teal-600 dark:text-teal-400 tabular-nums whitespace-nowrap">{formatCurrency(filteredInvoices.filter(r => !(r.pp_type === 'pelunasan')).reduce((s, r) => s + (parseFloat(r.total_invoice) || 0), 0))}</span>
                         </div>
                         <div className="flex flex-col gap-0.5">
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Uang Masuk</span>
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400">Uang Masuk</span>
                             <span className="text-sm font-bold text-blue-600 dark:text-blue-400 tabular-nums whitespace-nowrap">{formatCurrency(filteredInvoices.reduce((s, r) => s + (parseFloat(r.uang_masuk) || 0), 0))}</span>
                         </div>
                         <div className="flex flex-col gap-0.5">
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Sisa (Total − Uang Masuk)</span>
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400">Sisa (Total − Uang Masuk)</span>
                             <span className="text-sm font-bold text-amber-600 dark:text-amber-400 tabular-nums whitespace-nowrap">{formatCurrency(filteredInvoices.filter(r => !(r.pp_type === 'pelunasan')).reduce((s, r) => s + (parseFloat(r.total_invoice) || 0), 0) - filteredInvoices.reduce((s, r) => s + (parseFloat(r.uang_masuk) || 0), 0))}</span>
                         </div>
                     </div>
@@ -2459,22 +2459,22 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
             {tab === 'proforma' && (
                 <div className="space-y-4">
                     <div className="flex flex-wrap items-center justify-between gap-3">
-                        <h3 className="font-bold text-slate-800 dark:text-white">Daftar Pengajuan Proforma</h3>
+                        <h3 className="font-bold text-stone-800 dark:text-white">Daftar Pengajuan Proforma</h3>
                         <div className="flex items-center gap-2">
-                            <select aria-label="Status Proforma" value={profStatus} onChange={e => setProfStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <select aria-label="Status Proforma" value={profStatus} onChange={e => setProfStatus(e.target.value)} className="rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-stone-600 dark:text-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 {PROFORMA_STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                             </select>
-                            {profStatus && <button onClick={() => setProfStatus('')} className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-500 hover:text-red-600 text-sm font-semibold" title="Reset filter">Reset</button>}
+                            {profStatus && <button onClick={() => setProfStatus('')} className="px-3 py-2 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-500 hover:text-red-600 text-sm font-semibold" title="Reset filter">Reset</button>}
                         </div>
                     </div>
                     <div className="grid grid-cols-1 gap-4">
                     {filteredProformas.length === 0 && (
-                        <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-10 text-center text-slate-400 border border-white/60 dark:border-white/10">
+                        <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-10 text-center text-stone-400 border border-white/60 dark:border-white/10">
                             Belum ada pengajuan proforma
                         </div>
                     )}
                     {pagedProformas.slice(filteredProformas).map((p, pi) => (
-                        <div key={p.id} className={`${pi % 2 === 0 ? 'bg-white/60 dark:bg-[#0d0d0d]/50' : 'bg-slate-50/70 dark:bg-[#0d0d0d]/30'} rounded-2xl border border-white/60 dark:border-white/10 p-5 space-y-3 hover:border-blue-200 dark:hover:border-blue-500/40 transition-colors`}>
+                        <div key={p.id} className={`${pi % 2 === 0 ? 'bg-white/60 dark:bg-[#0d0d0d]/50' : 'bg-stone-50/70 dark:bg-[#0d0d0d]/30'} rounded-2xl border border-white/60 dark:border-white/10 p-5 space-y-3 hover:border-blue-200 dark:hover:border-blue-500/40 transition-colors`}>
                             <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
                                 <div className="flex items-center gap-3 min-w-0">
                                     <div className={`p-3 rounded-2xl shrink-0 ${p.status === 'approved' ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
@@ -2485,10 +2485,10 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         {p.status === 'approved' ? <CheckCircle2 size={20} /> : p.status === 'rejected' ? <XCircle size={20} /> : p.status === 'settled' ? <HandCoins size={20} /> : p.status === 'sent_back' ? <RefreshCw size={20} /> : <Clock size={20} />}
                                     </div>
                                     <div className="min-w-0">
-                                        <div className="font-bold text-slate-800 dark:text-white truncate">
+                                        <div className="font-bold text-stone-800 dark:text-white truncate">
                                             {p.proforma_no || 'Menunggu No Proforma'}
                                         </div>
-                                        <div className="text-xs text-slate-400">
+                                        <div className="text-xs text-stone-400">
                                             Diajukan: {p.requested_by || '-'} • {p.requested_at ? new Date(p.requested_at).toLocaleString('id-ID') : '-'}
                                         </div>
                                     </div>
@@ -2509,7 +2509,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             <Clock size={11} /> DRAFT
                                         </span>
                                     )}
-                                    <div className="hidden sm:block w-px h-8 bg-slate-100 dark:bg-[#111] mx-0.5" />
+                                    <div className="hidden sm:block w-px h-8 bg-stone-100 dark:bg-[#111] mx-0.5" />
                                     <button onClick={() => openDetail(p.invoices?.[0] || { id: p.id })} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20 font-semibold transition-colors" title="Lihat Detail Invoice">
                                         <FileText size={15} /> Detail
                                     </button>
@@ -2523,8 +2523,8 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     )}
                                     {/* Total amount — terpisah, tidak wrap */}
                                     <div className="text-right pl-3 sm:pl-4 border-l-2 border-white/60 dark:border-white/10 max-w-full">
-                                        <div className="text-[10px] text-slate-400 uppercase tracking-wider whitespace-nowrap">Total Proforma</div>
-                                        <div className="text-lg font-black text-slate-800 dark:text-white tabular-nums whitespace-nowrap leading-tight max-w-full overflow-hidden" title={formatCurrency(p.total_nominal)}>{formatCurrency(p.total_nominal)}</div>
+                                        <div className="text-[10px] text-stone-400 uppercase tracking-wider whitespace-nowrap">Total Proforma</div>
+                                        <div className="text-lg font-black text-stone-800 dark:text-white tabular-nums whitespace-nowrap leading-tight max-w-full overflow-hidden" title={formatCurrency(p.total_nominal)}>{formatCurrency(p.total_nominal)}</div>
                                     </div>
                                 </div>
                             </div>
@@ -2538,9 +2538,9 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             <div className="min-w-0 flex-1">
                                                 <div className="flex items-center gap-1.5">
                                                     <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold whitespace-nowrap ${paymentBadge(inv).cls}`}>{paymentBadge(inv).label}</span>
-                                                    <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 truncate" title={inv.dealer_name}>#{inv.id} • {inv.dealer_name}</span>
+                                                    <span className="text-xs font-semibold text-stone-700 dark:text-white/80 truncate" title={inv.dealer_name}>#{inv.id} • {inv.dealer_name}</span>
                                                 </div>
-                                                <div className="text-[10px] text-slate-400 truncate mt-0.5" title={inv.no_po || '-'}>{inv.no_po || '-'}</div>
+                                                <div className="text-[10px] text-stone-400 truncate mt-0.5" title={inv.no_po || '-'}>{inv.no_po || '-'}</div>
                                                 <div className="flex items-center gap-1.5 mt-1">
                                                     <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-medium whitespace-nowrap ${isTaxDone ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400'}`}>
                                                         {isTaxDone ? '✓ Faktur Pajak' : 'Faktur Pajak'}
@@ -2551,8 +2551,8 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                 </div>
                                             </div>
                                             <div className="text-right shrink-0">
-                                                <div className="text-[9px] text-slate-400 uppercase tracking-wider whitespace-nowrap">Total</div>
-                                                <div className="text-sm font-black text-slate-800 dark:text-white tabular-nums whitespace-nowrap">{formatCurrency(inv.total_invoice)}</div>
+                                                <div className="text-[9px] text-stone-400 uppercase tracking-wider whitespace-nowrap">Total</div>
+                                                <div className="text-sm font-black text-stone-800 dark:text-white tabular-nums whitespace-nowrap">{formatCurrency(inv.total_invoice)}</div>
                                             </div>
                                         </div>
                                     );
@@ -2590,7 +2590,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 </div>
                             )}
                             {p.status !== 'pending' && (
-                                <div className="text-xs text-slate-400 space-y-0.5">
+                                <div className="text-xs text-stone-400 space-y-0.5">
                                     {p.approved_by && <div>Disetujui oleh: {p.approved_by} • {p.approved_at ? new Date(p.approved_at).toLocaleString('id-ID') : ''}</div>}
                                     {p.status === 'settled' && p.settled_by && <div className="text-teal-600 dark:text-teal-400">Settled oleh: {p.settled_by} • {p.settled_at ? new Date(p.settled_at).toLocaleString('id-ID') : ''} • Nominal: {formatCurrency(p.settled_amount)}</div>}
                                     {p.sendback_notes && <div className="text-amber-600 dark:text-amber-400">Sendback: {p.sendback_notes}</div>}
@@ -2608,31 +2608,31 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
             {tab === 'tax' && (
                 <div className="space-y-4">
                     <div className="flex flex-wrap items-center justify-between gap-3">
-                        <h3 className="font-bold text-slate-800 dark:text-white">Daftar Faktur Pajak</h3>
+                        <h3 className="font-bold text-stone-800 dark:text-white">Daftar Faktur Pajak</h3>
                         <div className="flex items-center gap-2">
-                            <select aria-label="Status Pajak" value={taxStatus} onChange={e => setTaxStatus(e.target.value)} className="rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <select aria-label="Status Pajak" value={taxStatus} onChange={e => setTaxStatus(e.target.value)} className="rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-stone-600 dark:text-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 {TAX_STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                             </select>
-                            {taxStatus && <button onClick={() => setTaxStatus('')} className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-500 hover:text-red-600 text-sm font-semibold" title="Reset filter">Reset</button>}
+                            {taxStatus && <button onClick={() => setTaxStatus('')} className="px-3 py-2 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-500 hover:text-red-600 text-sm font-semibold" title="Reset filter">Reset</button>}
                         </div>
                     </div>
                     {taxItems.length === 0 && (
-                        <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-10 text-center text-slate-400 border border-white/60 dark:border-white/10">
+                        <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-10 text-center text-stone-400 border border-white/60 dark:border-white/10">
                             Belum ada data proforma
                         </div>
                     )}
                     {pagedTax.slice(taxItems).map((p, ti) => (
-                        <div key={p.id} className={`${ti % 2 === 0 ? 'bg-white/60 dark:bg-[#0d0d0d]/50' : 'bg-slate-50/70 dark:bg-[#0d0d0d]/30'} rounded-2xl border border-white/60 dark:border-white/10 p-5 space-y-3 hover:border-blue-200 dark:hover:border-blue-500/40 transition-colors`}>
+                        <div key={p.id} className={`${ti % 2 === 0 ? 'bg-white/60 dark:bg-[#0d0d0d]/50' : 'bg-stone-50/70 dark:bg-[#0d0d0d]/30'} rounded-2xl border border-white/60 dark:border-white/10 p-5 space-y-3 hover:border-blue-200 dark:hover:border-blue-500/40 transition-colors`}>
                             <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
                                 <div className="flex items-center gap-3 min-w-0">
                                     <div className="p-3 rounded-2xl shrink-0 bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
                                         <FileText size={20} />
                                     </div>
                                     <div className="min-w-0">
-                                        <div className="font-bold text-slate-800 dark:text-white truncate">
+                                        <div className="font-bold text-stone-800 dark:text-white truncate">
                                             {p.proforma_no || 'Proforma #' + p.id}
                                         </div>
-                                        <div className="text-xs text-slate-400">
+                                        <div className="text-xs text-stone-400">
                                             Diajukan: {p.requested_by || '-'} • {p.requested_at ? new Date(p.requested_at).toLocaleString('id-ID') : '-'}
                                         </div>
                                     </div>
@@ -2648,7 +2648,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             </span>
                                         );
                                     })()}
-                                    <div className="hidden sm:block w-px h-8 bg-slate-100 dark:bg-[#111] mx-0.5" />
+                                    <div className="hidden sm:block w-px h-8 bg-stone-100 dark:bg-[#111] mx-0.5" />
                                     <button onClick={() => openDetail(p.invoices?.[0] || { id: p.id })} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20 font-semibold transition-colors" title="Lihat Detail Invoice">
                                         <FileText size={15} /> Detail
                                     </button>
@@ -2662,8 +2662,8 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     )}
                                     {/* Total amount — terpisah, tidak wrap */}
                                     <div className="text-right pl-3 sm:pl-4 border-l-2 border-white/60 dark:border-white/10 max-w-full">
-                                        <div className="text-[10px] text-slate-400 uppercase tracking-wider whitespace-nowrap">Total Proforma</div>
-                                        <div className="text-lg font-black text-slate-800 dark:text-white tabular-nums whitespace-nowrap leading-tight max-w-full overflow-hidden" title={formatCurrency(p.total_nominal)}>{formatCurrency(p.total_nominal)}</div>
+                                        <div className="text-[10px] text-stone-400 uppercase tracking-wider whitespace-nowrap">Total Proforma</div>
+                                        <div className="text-lg font-black text-stone-800 dark:text-white tabular-nums whitespace-nowrap leading-tight max-w-full overflow-hidden" title={formatCurrency(p.total_nominal)}>{formatCurrency(p.total_nominal)}</div>
                                     </div>
                                 </div>
                             </div>
@@ -2680,9 +2680,9 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             <div className="min-w-0 flex-1">
                                                 <div className="flex items-center gap-1.5">
                                                     <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold whitespace-nowrap ${paymentBadge(inv).cls}`}>{paymentBadge(inv).label}</span>
-                                                    <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 truncate" title={inv.dealer_name}>#{inv.id} • {inv.dealer_name}</span>
+                                                    <span className="text-xs font-semibold text-stone-700 dark:text-white/80 truncate" title={inv.dealer_name}>#{inv.id} • {inv.dealer_name}</span>
                                                 </div>
-                                                <div className="text-[10px] text-slate-400 truncate mt-0.5" title={inv.no_po || '-'}>{inv.no_po || '-'}</div>
+                                                <div className="text-[10px] text-stone-400 truncate mt-0.5" title={inv.no_po || '-'}>{inv.no_po || '-'}</div>
                                                 <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
                                                     <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-medium whitespace-nowrap ${isTaxDone ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400' : isWaitingUpdate ? 'bg-rose-100 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400'}`}>
                                                         {isTaxDone ? '✓ Faktur Pajak' : isWaitingUpdate ? 'Menunggu Update' : 'Belum Faktur Pajak'}
@@ -2717,8 +2717,8 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                 )}
                                             </div>
                                             <div className="text-right shrink-0">
-                                                <div className="text-[9px] text-slate-400 uppercase tracking-wider whitespace-nowrap">Total</div>
-                                                <div className="text-sm font-black text-slate-800 dark:text-white tabular-nums whitespace-nowrap">{formatCurrency(inv.total_invoice)}</div>
+                                                <div className="text-[9px] text-stone-400 uppercase tracking-wider whitespace-nowrap">Total</div>
+                                                <div className="text-sm font-black text-stone-800 dark:text-white tabular-nums whitespace-nowrap">{formatCurrency(inv.total_invoice)}</div>
                                             </div>
                                         </div>
                                     );
@@ -2728,10 +2728,10 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             {/* Tax info & attachments */}
                             {(p.invoices || []).filter(inv => parseJsonArray(inv.tax_request_attachments).length > 0 || inv.tax_request_notes).length > 0 && (
                                 <div className="border-t border-white/60 dark:border-white/10 pt-3 space-y-2">
-                                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Lampiran Tax Request</div>
+                                    <div className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Lampiran Tax Request</div>
                                     {(p.invoices || []).filter(inv => parseJsonArray(inv.tax_request_attachments).length > 0 || inv.tax_request_notes).map(inv => (
-                                        <div key={inv.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-slate-50/70 dark:bg-[#0d0d0d]/40 px-3 py-2">
-                                            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">#{inv.id}</span>
+                                        <div key={inv.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-stone-50/70 dark:bg-[#0d0d0d]/40 px-3 py-2">
+                                            <span className="text-[10px] font-bold text-stone-500 uppercase tracking-wider">#{inv.id}</span>
                                             {parseJsonArray(inv.tax_request_attachments).map(f => (
                                                 <a key={f} href={`${API_URL}/invoices/files/${f}`} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-50 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 text-xs hover:bg-orange-100 transition-colors">
                                                     <ImagePlus size={14} /> {f.length > 30 ? f.slice(0, 30) + '…' : f}
@@ -2758,27 +2758,27 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         <div className="flex items-center gap-2">
                             <div className="p-2 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-600"><Trash2 size={16} /></div>
                             <div>
-                                <h3 className="font-bold text-slate-800 dark:text-white">Sampah</h3>
-                                <div className="text-[11px] text-slate-400">Data yang dihapus bisa dipulihkan. Penghapusan permanen tidak bisa dibatalkan.</div>
+                                <h3 className="font-bold text-stone-800 dark:text-white">Sampah</h3>
+                                <div className="text-[11px] text-stone-400">Data yang dihapus bisa dipulihkan. Penghapusan permanen tidak bisa dibatalkan.</div>
                             </div>
                         </div>
                         <div className="flex flex-wrap items-center gap-2">
                             <div className="relative">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={15} />
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" size={15} />
                                 <input
                                     type="text"
                                     value={trashSearch}
                                     onChange={e => setTrashSearch(e.target.value)}
                                     placeholder={t("invoice.searchInvoice")}
-                                    className="w-56 pl-9 pr-3 py-2 rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-56 pl-9 pr-3 py-2 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-sm text-stone-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
-                            <select aria-label="Filter Sampah" value={trashFilter} onChange={e => setTrashFilter(e.target.value)} className="rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-600 dark:text-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <select aria-label="Filter Sampah" value={trashFilter} onChange={e => setTrashFilter(e.target.value)} className="rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-stone-600 dark:text-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="all">{t("opt.all")}</option>
                                 <option value="invoice">{t("opt.invoice")}</option>
                                 <option value="proforma">{t("opt.proforma")}</option>
                             </select>
-                            <button onClick={loadTrash} className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-500 hover:text-blue-600 text-sm font-semibold" title="Muat ulang Sampah">
+                            <button onClick={loadTrash} className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-500 hover:text-blue-600 text-sm font-semibold" title="Muat ulang Sampah">
                                 <RefreshCw size={15} className={trashLoading ? 'animate-spin' : ''} /> Muat Ulang
                             </button>
                         </div>
@@ -2799,18 +2799,18 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         const filteredCount = (showInv ? fInv.length : 0) + (showProf ? fProf.length : 0);
 
                         if (trashLoading) return (
-                            <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-10 text-center text-slate-400 border border-white/60 dark:border-white/10">
+                            <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-10 text-center text-stone-400 border border-white/60 dark:border-white/10">
                                 Memuat Sampah...
                             </div>
                         );
                         if (!trashData || (trashData.invoices?.length === 0 && trashData.proformas?.length === 0)) return (
-                            <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-10 text-center text-slate-400 border border-white/60 dark:border-white/10">
+                            <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-10 text-center text-stone-400 border border-white/60 dark:border-white/10">
                                 <Trash2 size={32} className="mx-auto mb-2 opacity-40" />
                                 Sampah kosong
                             </div>
                         );
                         if (filteredCount === 0) return (
-                            <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-10 text-center text-slate-400 border border-white/60 dark:border-white/10">
+                            <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-10 text-center text-stone-400 border border-white/60 dark:border-white/10">
                                 <Search size={28} className="mx-auto mb-2 opacity-40" />
                                 Tidak ada hasil untuk "{trashSearch}"
                             </div>
@@ -2822,15 +2822,15 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     {showInv && fInv.length > 0 && (
                         <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl shadow-sm border border-white/60 dark:border-white/10 overflow-hidden">
                             <div className="p-4 border-b border-white/60 dark:border-white/10 flex items-center gap-2">
-                                <Receipt size={16} className="text-slate-400" />
-                                <span className="font-bold text-slate-800 dark:text-white">Invoice Terhapus ({fInv.length})</span>
+                                <Receipt size={16} className="text-stone-400" />
+                                <span className="font-bold text-stone-800 dark:text-white">Invoice Terhapus ({fInv.length})</span>
                             </div>
                             <div className="divide-y divide-white/60 dark:divide-white/10">
                                 {fInv.map(inv => (
                                     <div key={inv.id} className="flex flex-wrap items-center gap-3 p-4">
                                         <div className="min-w-0 flex-1">
-                                            <div className="font-bold text-slate-800 dark:text-white truncate">#{inv.id} • {inv.dealer_name || '-'}</div>
-                                            <div className="text-[11px] text-slate-400 truncate">
+                                            <div className="font-bold text-stone-800 dark:text-white truncate">#{inv.id} • {inv.dealer_name || '-'}</div>
+                                            <div className="text-[11px] text-stone-400 truncate">
                                                 {inv.no_invoice || inv.no_po || '-'} • {inv.status || '-'} • {formatCurrency(inv.total_invoice)}
                                             </div>
                                             <div className="text-[10px] text-red-400 mt-0.5">Dihapus oleh: {inv.deleted_by || '-'} • {inv.deleted_at ? new Date(inv.deleted_at).toLocaleString('id-ID') : '-'}</div>
@@ -2851,15 +2851,15 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     {showProf && fProf.length > 0 && (
                         <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl shadow-sm border border-white/60 dark:border-white/10 overflow-hidden">
                             <div className="p-4 border-b border-white/60 dark:border-white/10 flex items-center gap-2">
-                                <FileSignature size={16} className="text-slate-400" />
-                                <span className="font-bold text-slate-800 dark:text-white">Proforma Terhapus ({fProf.length})</span>
+                                <FileSignature size={16} className="text-stone-400" />
+                                <span className="font-bold text-stone-800 dark:text-white">Proforma Terhapus ({fProf.length})</span>
                             </div>
                             <div className="divide-y divide-white/60 dark:divide-white/10">
                                 {fProf.map(p => (
                                     <div key={p.id} className="flex flex-wrap items-center gap-3 p-4">
                                         <div className="min-w-0 flex-1">
-                                            <div className="font-bold text-slate-800 dark:text-white truncate">Proforma #{p.id} • {p.proforma_no || 'Tanpa No'}</div>
-                                            <div className="text-[11px] text-slate-400 truncate">{(p.invoices || []).length} invoice • {formatCurrency(p.total_nominal)}</div>
+                                            <div className="font-bold text-stone-800 dark:text-white truncate">Proforma #{p.id} • {p.proforma_no || 'Tanpa No'}</div>
+                                            <div className="text-[11px] text-stone-400 truncate">{(p.invoices || []).length} invoice • {formatCurrency(p.total_nominal)}</div>
                                             <div className="text-[10px] text-red-400 mt-0.5">Dihapus oleh: {p.deleted_by || '-'} • {p.deleted_at ? new Date(p.deleted_at).toLocaleString('id-ID') : '-'}</div>
                                         </div>
                                         <button onClick={() => doRestore('proforma', p)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 font-semibold text-xs transition-colors" title="Kembalikan proforma beserta invoice-nya">
@@ -2885,9 +2885,9 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     {perms.can_manage_master && (
                     <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 p-5 space-y-3 h-fit">
                         <div className="flex items-center justify-between gap-2">
-                            <h3 className="font-bold text-slate-800 dark:text-white">{dealerEditId ? 'Edit Dealer' : 'Tambah Dealer'}</h3>
+                            <h3 className="font-bold text-stone-800 dark:text-white">{dealerEditId ? 'Edit Dealer' : 'Tambah Dealer'}</h3>
                             <div className="flex items-center gap-1">
-                                <button onClick={() => { if (pdfBusyId) return; setPdfBusyId('dtpl'); invoiceService.downloadDealerTemplate().catch(e => toast?.error?.(e.message)).finally(() => setPdfBusyId(null)); }} disabled={!!pdfBusyId} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-[#0d0d0d] text-slate-600 dark:text-white/70 text-[10px] font-bold hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-white/[0.06] disabled:opacity-40 disabled:cursor-not-allowed" title="Download Template">
+                                <button onClick={() => { if (pdfBusyId) return; setPdfBusyId('dtpl'); invoiceService.downloadDealerTemplate().catch(e => toast?.error?.(e.message)).finally(() => setPdfBusyId(null)); }} disabled={!!pdfBusyId} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-stone-100 dark:bg-[#0d0d0d] text-stone-600 dark:text-white/70 text-[10px] font-bold hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-white/[0.06] disabled:opacity-40 disabled:cursor-not-allowed" title="Download Template">
                                     <FileText size={12} /> Template
                                 </button>
                                 <input ref={dealerImportRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={e => { if (e.target.files[0]) handleDealerImport(e.target.files[0]); e.target.value = ''; }} />
@@ -2904,7 +2904,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 <Plus size={15} /> {savingDealer ? 'Menyimpan...' : (dealerEditId ? 'Update' : 'Simpan')}
                             </button>
                             {dealerEditId && (
-                                <button onClick={() => { setDealerEditId(null); setDealerForm({ npwp: '', nama: '', alamat: '' }); }} className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-600 dark:text-white/70 text-sm font-semibold">
+                                <button onClick={() => { setDealerEditId(null); setDealerForm({ npwp: '', nama: '', alamat: '' }); }} className="px-4 py-2 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-600 dark:text-white/70 text-sm font-semibold">
                                     Batal
                                 </button>
                             )}
@@ -2925,19 +2925,19 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 </thead>
                                 <tbody>
                                     {pagedDealers.slice(filteredDealers).map((d, di) => (
-                                        <tr key={d.id} className={`${TROW_CLS} ${di % 2 === 0 ? 'bg-white/60 dark:bg-[#0d0d0d]/50' : 'bg-slate-50/70 dark:bg-[#0d0d0d]/30'}`}>
-                                            <td className="px-4 py-3 font-mono text-xs text-slate-600 dark:text-white/70 whitespace-nowrap">{d.npwp}</td>
-                                            <td className="px-4 py-3 font-semibold text-slate-800 dark:text-white">{d.nama}</td>
-                                            <td className="px-4 py-3 text-slate-500 dark:text-white/40 text-xs">{d.alamat}</td>
+                                        <tr key={d.id} className={`${TROW_CLS} ${di % 2 === 0 ? 'bg-white/60 dark:bg-[#0d0d0d]/50' : 'bg-stone-50/70 dark:bg-[#0d0d0d]/30'}`}>
+                                            <td className="px-4 py-3 font-mono text-xs text-stone-600 dark:text-white/70 whitespace-nowrap">{d.npwp}</td>
+                                            <td className="px-4 py-3 font-semibold text-stone-800 dark:text-white">{d.nama}</td>
+                                            <td className="px-4 py-3 text-stone-500 dark:text-white/40 text-xs">{d.alamat}</td>
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center justify-end gap-1">
-                                                    {perms.can_manage_master && <button onClick={() => editDealer(d)} className="p-1.5 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-white/[0.05]" title="Edit"><Pencil size={15} /></button>}
-                                                    {perms.can_manage_master && <button onClick={() => deleteDealer(d)} className="p-1.5 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-white/[0.05]" title="Hapus"><Trash2 size={15} /></button>}
+                                                    {perms.can_manage_master && <button onClick={() => editDealer(d)} className="p-1.5 rounded-lg text-stone-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-white/[0.05]" title="Edit"><Pencil size={15} /></button>}
+                                                    {perms.can_manage_master && <button onClick={() => deleteDealer(d)} className="p-1.5 rounded-lg text-stone-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-white/[0.05]" title="Hapus"><Trash2 size={15} /></button>}
                                                 </div>
                                             </td>
                                         </tr>
                                     ))}
-                                    {filteredDealers.length === 0 && <tr><td colSpan={4} className="px-4 py-10 text-center text-slate-400">Belum ada dealer</td></tr>}
+                                    {filteredDealers.length === 0 && <tr><td colSpan={4} className="px-4 py-10 text-center text-stone-400">Belum ada dealer</td></tr>}
                                 </tbody>
                             </table>
                         </div>
@@ -2952,9 +2952,9 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     {perms.can_manage_master && (
                     <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 p-5 space-y-3 h-fit">
                         <div className="flex items-center justify-between gap-2">
-                            <h3 className="font-bold text-slate-800 dark:text-white">{barangEditId ? 'Edit Barang' : 'Tambah Barang'}</h3>
+                            <h3 className="font-bold text-stone-800 dark:text-white">{barangEditId ? 'Edit Barang' : 'Tambah Barang'}</h3>
                             <div className="flex items-center gap-1">
-                                <button onClick={() => { if (pdfBusyId) return; setPdfBusyId('btpl'); invoiceService.downloadBarangTemplate().catch(e => toast?.error?.(e.message)).finally(() => setPdfBusyId(null)); }} disabled={!!pdfBusyId} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-[#0d0d0d] text-slate-600 dark:text-white/70 text-[10px] font-bold hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-white/[0.06] disabled:opacity-40 disabled:cursor-not-allowed" title="Download Template">
+                                <button onClick={() => { if (pdfBusyId) return; setPdfBusyId('btpl'); invoiceService.downloadBarangTemplate().catch(e => toast?.error?.(e.message)).finally(() => setPdfBusyId(null)); }} disabled={!!pdfBusyId} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-stone-100 dark:bg-[#0d0d0d] text-stone-600 dark:text-white/70 text-[10px] font-bold hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-white/[0.06] disabled:opacity-40 disabled:cursor-not-allowed" title="Download Template">
                                     <FileText size={12} /> Template
                                 </button>
                                 <input ref={barangImportRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={e => { if (e.target.files[0]) handleBarangImport(e.target.files[0]); e.target.value = ''; }} />
@@ -2971,7 +2971,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 <Plus size={15} /> {savingBarang ? 'Menyimpan...' : (barangEditId ? 'Update' : 'Simpan')}
                             </button>
                             {barangEditId && (
-                                <button onClick={() => { setBarangEditId(null); setBarangForm({ model: '', item_description: '', harga: '' }); }} className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-600 dark:text-white/70 text-sm font-semibold">
+                                <button onClick={() => { setBarangEditId(null); setBarangForm({ model: '', item_description: '', harga: '' }); }} className="px-4 py-2 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-600 dark:text-white/70 text-sm font-semibold">
                                     Batal
                                 </button>
                             )}
@@ -2992,19 +2992,19 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 </thead>
                                 <tbody>
                                     {pagedBarang.slice(filteredBarang).map((b, bi) => (
-                                        <tr key={b.id} className={`${TROW_CLS} ${bi % 2 === 0 ? 'bg-white/60 dark:bg-[#0d0d0d]/50' : 'bg-slate-50/70 dark:bg-[#0d0d0d]/30'}`}>
+                                        <tr key={b.id} className={`${TROW_CLS} ${bi % 2 === 0 ? 'bg-white/60 dark:bg-[#0d0d0d]/50' : 'bg-stone-50/70 dark:bg-[#0d0d0d]/30'}`}>
                                             <td className="px-4 py-3 font-mono text-xs font-bold text-blue-600 dark:text-blue-400 whitespace-nowrap">{b.model}</td>
-                                            <td className="px-4 py-3 text-slate-600 dark:text-white/70 text-xs">{b.item_description}</td>
-                                            <td className="px-4 py-3 text-right font-semibold text-slate-800 dark:text-white whitespace-nowrap tabular-nums">{formatCurrency(b.harga)}</td>
+                                            <td className="px-4 py-3 text-stone-600 dark:text-white/70 text-xs">{b.item_description}</td>
+                                            <td className="px-4 py-3 text-right font-semibold text-stone-800 dark:text-white whitespace-nowrap tabular-nums">{formatCurrency(b.harga)}</td>
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center justify-end gap-1">
-                                                    {perms.can_manage_master && <button onClick={() => editBarang(b)} className="p-1.5 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-white/[0.05]" title="Edit"><Pencil size={15} /></button>}
-                                                    {perms.can_manage_master && <button onClick={() => deleteBarang(b)} className="p-1.5 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-white/[0.05]" title="Hapus"><Trash2 size={15} /></button>}
+                                                    {perms.can_manage_master && <button onClick={() => editBarang(b)} className="p-1.5 rounded-lg text-stone-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-white/[0.05]" title="Edit"><Pencil size={15} /></button>}
+                                                    {perms.can_manage_master && <button onClick={() => deleteBarang(b)} className="p-1.5 rounded-lg text-stone-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-white/[0.05]" title="Hapus"><Trash2 size={15} /></button>}
                                                 </div>
                                             </td>
                                         </tr>
                                     ))}
-                                    {filteredBarang.length === 0 && <tr><td colSpan={4} className="px-4 py-10 text-center text-slate-400">Belum ada barang</td></tr>}
+                                    {filteredBarang.length === 0 && <tr><td colSpan={4} className="px-4 py-10 text-center text-stone-400">Belum ada barang</td></tr>}
                                 </tbody>
                             </table>
                         </div>
@@ -3018,9 +3018,9 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                     {perms.can_manage_rule && (
                     <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl border border-white/60 dark:border-white/10 p-5 space-y-3 h-fit">
-                        <h3 className="font-bold text-slate-800 dark:text-white">{ruleEditId ? 'Edit Rule' : 'Tambah Rule'}</h3>
+                        <h3 className="font-bold text-stone-800 dark:text-white">{ruleEditId ? 'Edit Rule' : 'Tambah Rule'}</h3>
                         <div>
-                            <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">Tipe Target</label>
+                            <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">Tipe Target</label>
                             <select className={inputCls} value={ruleForm.target_type} onChange={e => setRuleForm({ ...ruleForm, target_type: e.target.value, target_value: '' })}>
                                 <option value="user">{t("opt.user")}</option>
                                 <option value="role">{t("opt.role")}</option>
@@ -3029,7 +3029,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         </div>
                         {ruleForm.target_type === 'user' && (
                             <div>
-                                <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">Pilih User (Master Data)</label>
+                                <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">Pilih User (Master Data)</label>
                                 <select className={inputCls} value={ruleForm.target_value} onChange={e => setRuleForm({ ...ruleForm, target_value: e.target.value })}>
                                     <option value="">{t("opt.selectUser")}</option>
                                     {masterUsers.map(u => (
@@ -3040,7 +3040,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         )}
                         {ruleForm.target_type === 'role' && (
                             <div>
-                                <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">Pilih Role (Master Data)</label>
+                                <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">Pilih Role (Master Data)</label>
                                 <select className={inputCls} value={ruleForm.target_value} onChange={e => setRuleForm({ ...ruleForm, target_value: e.target.value })}>
                                     <option value="">{t("opt.selectRole")}</option>
                                     {masterRoles.map(r => (
@@ -3051,7 +3051,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         )}
                         {ruleForm.target_type === 'division' && (
                             <div>
-                                <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">Pilih Divisi (Master Data)</label>
+                                <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">Pilih Divisi (Master Data)</label>
                                 <select className={inputCls} value={ruleForm.target_value} onChange={e => setRuleForm({ ...ruleForm, target_value: e.target.value })}>
                                     <option value="">{t("opt.selectDivision")}</option>
                                     {masterDivisions.map(d => (
@@ -3063,10 +3063,10 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         {ruleForm.target_value && (
                             <div className="space-y-3">
                                 <div>
-                                    <div className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1">Akses Tab</div>
+                                    <div className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1">Akses Tab</div>
                                     <div className="space-y-1.5">
                                         {PERM_VIEW_FIELDS.map(([key, label]) => (
-                                            <label key={key} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
+                                            <label key={key} className="flex items-center gap-2 text-sm text-stone-700 dark:text-white/80">
                                                 <input type="checkbox" checked={!!ruleForm[key]} onChange={e => setRuleForm({ ...ruleForm, [key]: e.target.checked })} className="w-4 h-4 accent-blue-600" />
                                                 {label}
                                             </label>
@@ -3074,10 +3074,10 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     </div>
                                 </div>
                                 <div>
-                                    <div className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1">Aksi</div>
+                                    <div className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1">Aksi</div>
                                     <div className="space-y-1.5">
                                         {PERM_ACTION_FIELDS.map(([key, label]) => (
-                                            <label key={key} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
+                                            <label key={key} className="flex items-center gap-2 text-sm text-stone-700 dark:text-white/80">
                                                 <input type="checkbox" checked={!!ruleForm[key]} onChange={e => setRuleForm({ ...ruleForm, [key]: e.target.checked })} className="w-4 h-4 accent-blue-600" />
                                                 {label}
                                             </label>
@@ -3087,9 +3087,9 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             </div>
                         )}
                         {!ruleForm.target_value && (
-                            <p className="text-xs text-slate-400 italic">Pilih target terlebih dahulu untuk mengatur akses tab & tombol.</p>
+                            <p className="text-xs text-stone-400 italic">Pilih target terlebih dahulu untuk mengatur akses tab & tombol.</p>
                         )}
-                        <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200 pt-1">
+                        <label className="flex items-center gap-2 text-sm text-stone-700 dark:text-white/80 pt-1">
                             <input type="checkbox" checked={!!ruleForm.is_active} onChange={e => setRuleForm({ ...ruleForm, is_active: e.target.checked })} className="w-4 h-4 accent-blue-600" />
                             Rule Aktif (matikan untuk nonaktifkan sementara)
                         </label>
@@ -3098,12 +3098,12 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 <Plus size={15} /> {savingRule ? 'Menyimpan...' : (ruleEditId ? 'Update' : 'Simpan')}
                             </button>
                             {ruleEditId && (
-                                <button onClick={() => { setRuleEditId(null); setRuleForm(EMPTY_RULE_FORM()); }} className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-600 dark:text-white/70 text-sm font-semibold">
+                                <button onClick={() => { setRuleEditId(null); setRuleForm(EMPTY_RULE_FORM()); }} className="px-4 py-2 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-600 dark:text-white/70 text-sm font-semibold">
                                     Batal
                                 </button>
                             )}
                         </div>
-                        <p className="text-[10px] text-slate-400">Default semua akses aktif untuk semua user. Buat rule untuk membatasi akses user/role/divisi tertentu (flag rule akan menimpa default). Target dipilih dari master data.</p>
+                        <p className="text-[10px] text-stone-400">Default semua akses aktif untuk semua user. Buat rule untuk membatasi akses user/role/divisi tertentu (flag rule akan menimpa default). Target dipilih dari master data.</p>
                     </div>
                     )}
 
@@ -3125,33 +3125,33 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 </thead>
                                 <tbody>
                                     {pagedRules.slice(filteredRules).map((r, ri) => (
-                                        <tr key={r.id} className={`${TROW_CLS} ${ri % 2 === 0 ? 'bg-white/60 dark:bg-[#0d0d0d]/50' : 'bg-slate-50/70 dark:bg-[#0d0d0d]/30'}`}>
+                                        <tr key={r.id} className={`${TROW_CLS} ${ri % 2 === 0 ? 'bg-white/60 dark:bg-[#0d0d0d]/50' : 'bg-stone-50/70 dark:bg-[#0d0d0d]/30'}`}>
                                             <td className="px-4 py-3 whitespace-nowrap">
-                                                <div className="font-semibold text-slate-800 dark:text-white">{r.target_value}</div>
-                                                <div className="text-[10px] text-slate-400 uppercase font-medium">{r.target_type}</div>
+                                                <div className="font-semibold text-stone-800 dark:text-white">{r.target_value}</div>
+                                                <div className="text-[10px] text-stone-400 uppercase font-medium">{r.target_type}</div>
                                             </td>
                                             {PERM_VIEW_FIELDS.map(([key]) => (
                                                 <td key={key} className="px-4 py-3 text-center">
-                                                    {r[key] ? <CheckCircle2 size={15} className="inline text-emerald-500" /> : <XCircle size={15} className="inline text-slate-300 dark:text-slate-600" />}
+                                                    {r[key] ? <CheckCircle2 size={15} className="inline text-emerald-500" /> : <XCircle size={15} className="inline text-stone-300 dark:text-stone-600" />}
                                                 </td>
                                             ))}
                                             {PERM_ACTION_FIELDS.map(([key]) => (
                                                 <td key={key} className="px-4 py-3 text-center">
-                                                    {r[key] ? <CheckCircle2 size={15} className="inline text-emerald-500" /> : <XCircle size={15} className="inline text-slate-300 dark:text-slate-600" />}
+                                                    {r[key] ? <CheckCircle2 size={15} className="inline text-emerald-500" /> : <XCircle size={15} className="inline text-stone-300 dark:text-stone-600" />}
                                                 </td>
                                             ))}
                                             <td className="px-4 py-3 text-center">
-                                                {r.is_active ? <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">ON</span> : <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-500 dark:bg-[#0d0d0d]">OFF</span>}
+                                                {r.is_active ? <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">ON</span> : <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-stone-100 text-stone-500 dark:bg-[#0d0d0d]">OFF</span>}
                                             </td>
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center justify-end gap-1">
-                                                    {perms.can_manage_rule && <button onClick={() => editRule(r)} className="p-1.5 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-white/[0.05]" title="Edit"><Pencil size={15} /></button>}
-                                                    {perms.can_manage_rule && <button onClick={() => deleteRule(r)} className="p-1.5 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-white/[0.05]" title="Hapus"><Trash2 size={15} /></button>}
+                                                    {perms.can_manage_rule && <button onClick={() => editRule(r)} className="p-1.5 rounded-lg text-stone-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-white/[0.05]" title="Edit"><Pencil size={15} /></button>}
+                                                    {perms.can_manage_rule && <button onClick={() => deleteRule(r)} className="p-1.5 rounded-lg text-stone-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-white/[0.05]" title="Hapus"><Trash2 size={15} /></button>}
                                                 </div>
                                             </td>
                                         </tr>
                                     ))}
-                                    {filteredRules.length === 0 && <tr><td colSpan={ALL_PERM_FIELDS.length + 3} className="px-4 py-10 text-center text-slate-400">Belum ada rule</td></tr>}
+                                    {filteredRules.length === 0 && <tr><td colSpan={ALL_PERM_FIELDS.length + 3} className="px-4 py-10 text-center text-stone-400">Belum ada rule</td></tr>}
                                 </tbody>
                             </table>
                         </div>
@@ -3170,8 +3170,8 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 <Workflow size={20} />
                             </div>
                             <div>
-                                <h3 className="font-bold text-slate-800 dark:text-white">Alur Approval & Notifikasi Invoice</h3>
-                                <p className="text-xs text-slate-400">Konfigurasi urutan tahap, penanggung jawab, dan notifikasi email per tahap alur</p>
+                                <h3 className="font-bold text-stone-800 dark:text-white">Alur Approval & Notifikasi Invoice</h3>
+                                <p className="text-xs text-stone-400">Konfigurasi urutan tahap, penanggung jawab, dan notifikasi email per tahap alur</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
@@ -3207,31 +3207,31 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     {flowOpen && (
                         <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-5 border-2 border-blue-500/30 dark:border-blue-500/40 space-y-4 shadow-xl">
                             <div className="flex items-center justify-between border-b border-white/60 dark:border-white/10 pb-3">
-                                <h4 className="font-bold text-sm text-slate-800 dark:text-white">
+                                <h4 className="font-bold text-sm text-stone-800 dark:text-white">
                                     {flowForm.id ? 'Edit Step Alur' : 'Tambah Step Alur Baru'}
                                 </h4>
-                                <button onClick={() => setFlowOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                                <button onClick={() => setFlowOpen(false)} className="text-stone-400 hover:text-stone-600 dark:hover:text-white/80">
                                     <X size={16} />
                                 </button>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                                 <div>
-                                    <label className="block text-xs font-bold text-slate-600 dark:text-white/40 mb-1">Nama Step / Tahap *</label>
+                                    <label className="block text-xs font-bold text-stone-600 dark:text-white/40 mb-1">Nama Step / Tahap *</label>
                                     <input
                                         type="text"
                                         value={flowForm.name}
                                         onChange={e => setFlowForm({ ...flowForm, name: e.target.value })}
                                         placeholder={t("invoice.placeExample")}
-                                        className="w-full rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-stone-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-bold text-slate-600 dark:text-white/40 mb-1">Event Pemicu *</label>
+                                    <label className="block text-xs font-bold text-stone-600 dark:text-white/40 mb-1">Event Pemicu *</label>
                                     <select
                                         value={flowForm.event}
                                         onChange={e => setFlowForm({ ...flowForm, event: e.target.value })}
-                                        className="w-full rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-stone-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     >
                                         {Object.entries(flowEvents).map(([k, v]) => (
                                             <option key={k} value={k}>{v}</option>
@@ -3239,12 +3239,12 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-bold text-slate-600 dark:text-white/40 mb-1">Penanggung Jawab</label>
+                                    <label className="block text-xs font-bold text-stone-600 dark:text-white/40 mb-1">Penanggung Jawab</label>
                                     <div className="flex gap-2">
                                         <select
                                             value={flowForm.assignee_type}
                                             onChange={e => setFlowForm({ ...flowForm, assignee_type: e.target.value, assignee_value: '' })}
-                                            className="w-1/3 rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-2 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-1/3 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-2 py-2 text-sm text-stone-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         >
                                             <option value="all">{t("opt.all")}</option>
                                             <option value="role">{t("opt.role")}</option>
@@ -3255,7 +3255,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             <select
                                                 value={flowForm.assignee_value}
                                                 onChange={e => setFlowForm({ ...flowForm, assignee_value: e.target.value })}
-                                                className="w-2/3 rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-2 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                className="w-2/3 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-2 py-2 text-sm text-stone-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                             >
                                                 <option value="">{t("opt.selectSomething")} {flowForm.assignee_type}</option>
                                                 {flowForm.assignee_type === 'role' && flowAssigneeOptions.roles.map(r => <option key={r} value={r}>{r}</option>)}
@@ -3268,7 +3268,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             </div>
 
                             <div>
-                                <label className="block text-xs font-bold text-slate-600 dark:text-white/40 mb-1">
+                                <label className="block text-xs font-bold text-stone-600 dark:text-white/40 mb-1">
                                     Penerima Email Tambahan (Custom)
                                 </label>
                                 <Textarea
@@ -3276,28 +3276,28 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     onChange={e => setFlowForm({ ...flowForm, custom_emails: e.target.value })}
                                     rows={2}
                                     placeholder={t("invoice.placeEmail")}
-                                    className="w-full rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-stone-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
-                                <p className="text-[11px] text-slate-400 mt-1">Email custom ikut menerima notifikasi selain penanggung jawab di atas. Bisa lebih dari satu.</p>
+                                <p className="text-[11px] text-stone-400 mt-1">Email custom ikut menerima notifikasi selain penanggung jawab di atas. Bisa lebih dari satu.</p>
                             </div>
 
                             <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
                                 <div className="flex items-center gap-4">
-                                    <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700 dark:text-white/70">
+                                    <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-stone-700 dark:text-white/70">
                                         <input
                                             type="checkbox"
                                             checked={flowForm.notify_email}
                                             onChange={e => setFlowForm({ ...flowForm, notify_email: e.target.checked })}
-                                            className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                            className="rounded border-stone-300 text-blue-600 focus:ring-blue-500"
                                         />
                                         Kirim Notifikasi Email & In-App
                                     </label>
-                                    <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700 dark:text-white/70">
+                                    <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-stone-700 dark:text-white/70">
                                         <input
                                             type="checkbox"
                                             checked={flowForm.is_active}
                                             onChange={e => setFlowForm({ ...flowForm, is_active: e.target.checked })}
-                                            className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                            className="rounded border-stone-300 text-blue-600 focus:ring-blue-500"
                                         />
                                         Aktif
                                     </label>
@@ -3311,7 +3311,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     <button onClick={previewFormRecipients} className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-blue-200 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 text-xs font-semibold hover:bg-blue-50 dark:hover:bg-blue-500/10" title="Lihat daftar penerima email untuk konfigurasi ini (tanpa mengirim)">
                                         <Eye size={13} /> Preview Penerima
                                     </button>
-                                    <button onClick={() => setFlowOpen(false)} className="px-4 py-2 rounded-xl border border-slate-200 dark:border-white/[0.06] text-slate-600 dark:text-white/70 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-white/[0.05]">
+                                    <button onClick={() => setFlowOpen(false)} className="px-4 py-2 rounded-xl border border-stone-200 dark:border-white/[0.06] text-stone-600 dark:text-white/70 text-xs font-semibold hover:bg-stone-100 dark:hover:bg-white/[0.05]">
                                         Batal
                                     </button>
                                     <button onClick={saveFlowStep} disabled={flowSaving} className="flex items-center gap-1.5 px-4 py-2 rounded-xl gradient-bg hover:opacity-95 text-white text-xs font-semibold shadow-lg shadow-blue-500/25">
@@ -3324,9 +3324,9 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
 
                     {/* Pipeline Visual Flow */}
                     <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-6 border border-white/60 dark:border-white/10 shadow-sm space-y-4">
-                        <div className="text-xs font-bold uppercase tracking-wider text-slate-400">Visualisasi Alur Kerja (Pipeline)</div>
+                        <div className="text-xs font-bold uppercase tracking-wider text-stone-400">Visualisasi Alur Kerja (Pipeline)</div>
                         {flowSteps.length === 0 ? (
-                            <div className="py-12 text-center text-slate-400 text-sm space-y-3">
+                            <div className="py-12 text-center text-stone-400 text-sm space-y-3">
                                 <div>Belum ada alur yang dikonfigurasi.</div>
                                 {perms.can_manage_rule && (
                                     <button onClick={seedDefaultFlow} disabled={seeding} className="px-4 py-2 rounded-xl gradient-bg text-white text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
@@ -3338,7 +3338,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <div className="flex items-center gap-2 overflow-x-auto pb-4 custom-scrollbar">
                                 {[...flowSteps].sort((a, b) => a.step_no - b.step_no).map((s, idx, arr) => (
                                     <div key={s.id} className="flex items-center gap-2 shrink-0">
-                                        <div className={`p-4 rounded-2xl border ${s.is_active ? 'bg-slate-50 dark:bg-[#0d0d0d]/80 border-blue-200 dark:border-blue-500/30' : 'bg-slate-100/50 dark:bg-[#0d0d0d]/50 border-slate-200 dark:border-slate-800 opacity-60'} min-w-[200px] space-y-2 relative group`}>
+                                        <div className={`p-4 rounded-2xl border ${s.is_active ? 'bg-stone-50 dark:bg-[#0d0d0d]/80 border-blue-200 dark:border-blue-500/30' : 'bg-stone-100/50 dark:bg-[#0d0d0d]/50 border-stone-200 dark:border-white/[0.06] opacity-60'} min-w-[200px] space-y-2 relative group`}>
                                             <div className="flex items-center justify-between">
                                                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300">
                                                     Step {s.step_no}
@@ -3353,11 +3353,11 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                 )}
                                             </div>
                                             <div>
-                                                <div className="font-bold text-sm text-slate-800 dark:text-white truncate">{s.name}</div>
-                                                <div className="text-[11px] text-slate-400 truncate">{flowEvents[s.event] || s.event}</div>
+                                                <div className="font-bold text-sm text-stone-800 dark:text-white truncate">{s.name}</div>
+                                                <div className="text-[11px] text-stone-400 truncate">{flowEvents[s.event] || s.event}</div>
                                             </div>
                                             <div className="pt-1 flex flex-wrap items-center gap-1.5 text-[10px]">
-                                                <span className="px-2 py-0.5 rounded bg-slate-200 dark:bg-[#111] text-slate-700 dark:text-white/70 font-semibold">
+                                                <span className="px-2 py-0.5 rounded bg-stone-200 dark:bg-[#111] text-stone-700 dark:text-white/70 font-semibold">
                                                     {s.assignee_type === 'all' ? 'Semua User' : `${s.assignee_type}: ${s.assignee_value}`}
                                                 </span>
                                                 {Array.isArray(s.custom_emails) && s.custom_emails.length > 0 && (
@@ -3376,7 +3376,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             </div>
                                         </div>
                                         {idx < arr.length - 1 && (
-                                            <ArrowRight size={18} className="text-slate-300 dark:text-slate-700 shrink-0" />
+                                            <ArrowRight size={18} className="text-stone-300 dark:text-stone-700 shrink-0" />
                                         )}
                                                                     </div>
                                                                 ))}
@@ -3392,12 +3392,12 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                                     <Mail size={20} />
                                                                 </div>
                                                                 <div>
-                                                                    <h3 className="font-bold text-slate-800 dark:text-white">Template Email Notifikasi</h3>
-                                                                    <p className="text-xs text-slate-400">Kustomisasi subjek & isi email per event. Gunakan token agar data terisi otomatis.</p>
+                                                                    <h3 className="font-bold text-stone-800 dark:text-white">Template Email Notifikasi</h3>
+                                                                    <p className="text-xs text-stone-400">Kustomisasi subjek & isi email per event. Gunakan token agar data terisi otomatis.</p>
                                                                 </div>
                                                             </div>
                                                             {emailTpl.loaded && (
-                                                                <span className="text-[10px] font-bold px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-500 dark:text-white/40">
+                                                                <span className="text-[10px] font-bold px-2.5 py-1.5 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-500 dark:text-white/40">
                                                                     {emailTpl.items.filter(i => i.custom).length} template dikustomisasi
                                                                 </span>
                                                             )}
@@ -3405,22 +3405,22 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
 
                                                         {emailTpl.tokens.length > 0 && (
                                                             <div className="flex flex-wrap items-center gap-1.5">
-                                                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Token:</span>
+                                                                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Token:</span>
                                                                 {emailTpl.tokens.map(([tk, desc]) => (
-                                                                    <span key={tk} title={desc} className="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-[#0d0d0d] text-[10px] font-mono text-blue-600 dark:text-blue-400 cursor-help">{tk}</span>
+                                                                    <span key={tk} title={desc} className="px-2 py-0.5 rounded-lg bg-stone-100 dark:bg-[#0d0d0d] text-[10px] font-mono text-blue-600 dark:text-blue-400 cursor-help">{tk}</span>
                                                                 ))}
                                                             </div>
                                                         )}
 
                                                         {!emailTpl.loaded ? (
-                                                            <div className="text-center text-sm text-slate-400 py-6">Memuat template...</div>
+                                                            <div className="text-center text-sm text-stone-400 py-6">Memuat template...</div>
                                                         ) : (
                                                             <div className="space-y-2">
                                                                 {emailTpl.items.map(item => (
-                                                                    <div key={item.event} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-slate-50 dark:bg-[#0d0d0d]/50 border border-white/60 dark:border-white/10">
+                                                                    <div key={item.event} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-stone-50 dark:bg-[#0d0d0d]/50 border border-white/60 dark:border-white/10">
                                                                         <div className="min-w-0">
-                                                                            <div className="text-sm font-semibold text-slate-800 dark:text-white truncate">{item.label}</div>
-                                                                            <div className="text-[11px] text-slate-400 font-mono truncate">{item.custom ? item.subject : '(default) ' + item.subject}</div>
+                                                                            <div className="text-sm font-semibold text-stone-800 dark:text-white truncate">{item.label}</div>
+                                                                            <div className="text-[11px] text-stone-400 font-mono truncate">{item.custom ? item.subject : '(default) ' + item.subject}</div>
                                                                         </div>
                                                                         <div className="flex items-center gap-1.5 shrink-0">
                                                                             {item.custom && (
@@ -3436,37 +3436,37 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                         )}
 
                                                         {emailTplEditing && (
-                                                            <div className="rounded-2xl border-2 border-emerald-500/30 dark:border-emerald-500/40 p-4 space-y-4 bg-slate-50/60 dark:bg-[#0d0d0d]/30">
+                                                            <div className="rounded-2xl border-2 border-emerald-500/30 dark:border-emerald-500/40 p-4 space-y-4 bg-stone-50/60 dark:bg-[#0d0d0d]/30">
                                                                 <div className="flex items-center justify-between">
-                                                                    <h4 className="font-bold text-sm text-slate-800 dark:text-white">Template: {emailTplEditing.label}</h4>
-                                                                    <button onClick={() => { setEmailTplEditing(null); setEmailTplPreview(null); }} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><X size={16} /></button>
+                                                                    <h4 className="font-bold text-sm text-stone-800 dark:text-white">Template: {emailTplEditing.label}</h4>
+                                                                    <button onClick={() => { setEmailTplEditing(null); setEmailTplPreview(null); }} className="text-stone-400 hover:text-stone-600 dark:hover:text-white/80"><X size={16} /></button>
                                                                 </div>
                                                                 <div className="text-sm space-y-1">
-                                                                    <label className="block text-xs font-bold text-slate-600 dark:text-white/40 mb-1">Subjek Email</label>
+                                                                    <label className="block text-xs font-bold text-stone-600 dark:text-white/40 mb-1">Subjek Email</label>
                                                                     <input
                                                                         type="text"
                                                                         value={emailTplEditing.subject}
                                                                         onChange={e => setEmailTplEditing({ ...emailTplEditing, subject: e.target.value })}
-                                                                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+                                                                        className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-sm text-stone-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
                                                                     />
                                                                 </div>
                                                                 <div className="text-sm space-y-1">
-                                                                    <label className="block text-xs font-bold text-slate-600 dark:text-white/40 mb-1">Isi Email (HTML)</label>
+                                                                    <label className="block text-xs font-bold text-stone-600 dark:text-white/40 mb-1">Isi Email (HTML)</label>
                                                                     <Textarea
                                                                         value={emailTplEditing.body_html}
                                                                         onChange={e => setEmailTplEditing({ ...emailTplEditing, body_html: e.target.value })}
                                                                         rows={8}
-                                                                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-sm font-mono text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 resize-y"
+                                                                        className="w-full px-3 py-2 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-sm font-mono text-stone-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 resize-y"
                                                                     />
                                                                 </div>
                                                                 {emailTplPreview && (
-                                                                    <div className="rounded-xl bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-slate-200 dark:border-white/[0.06] overflow-hidden">
-                                                                        <div className="px-3 py-2 border-b border-white/60 dark:border-white/10 text-xs font-bold text-slate-500">Preview — {emailTplPreview.subject}</div>
-                                                                        <div className="p-3 text-sm text-slate-700 dark:text-slate-200" dangerouslySetInnerHTML={{ __html: emailTplPreview.body_html }} />
+                                                                    <div className="rounded-xl bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06] overflow-hidden">
+                                                                        <div className="px-3 py-2 border-b border-white/60 dark:border-white/10 text-xs font-bold text-stone-500">Preview — {emailTplPreview.subject}</div>
+                                                                        <div className="p-3 text-sm text-stone-700 dark:text-white/80" dangerouslySetInnerHTML={{ __html: emailTplPreview.body_html }} />
                                                                     </div>
                                                                 )}
                                                                 <div className="flex items-center gap-2">
-                                                                    <button onClick={previewEmailTpl} className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-600 dark:text-white/70 text-sm font-semibold hover:bg-slate-200 dark:hover:bg-white/[0.06]">Preview</button>
+                                                                    <button onClick={previewEmailTpl} className="px-4 py-2 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-600 dark:text-white/70 text-sm font-semibold hover:bg-stone-200 dark:hover:bg-white/[0.06]">Preview</button>
                                                                     <button onClick={saveEmailTpl} disabled={emailTplSaving} className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold shadow-lg shadow-emerald-600/20 disabled:opacity-50 disabled:cursor-not-allowed">
                                                                         {emailTplSaving ? <RefreshCw size={14} className="animate-spin" /> : <CheckCircle2 size={14} />} Simpan Template
                                                                     </button>
@@ -3482,31 +3482,31 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 <div className="flex items-center justify-between p-5 border-b border-white/60 dark:border-white/10">
                                     <div className="flex items-center gap-2">
                                         <Users size={18} className="text-blue-600" />
-                                        <h3 className="font-bold text-slate-800 dark:text-white">{recipTitle}</h3>
+                                        <h3 className="font-bold text-stone-800 dark:text-white">{recipTitle}</h3>
                                     </div>
-                                    <button onClick={() => setRecipOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><X size={18} /></button>
+                                    <button onClick={() => setRecipOpen(false)} className="text-stone-400 hover:text-stone-600 dark:hover:text-white/80"><X size={18} /></button>
                                 </div>
                                 <div className="p-5 overflow-y-auto custom-scrollbar flex-1">
                                     {recipLoading ? (
-                                        <div className="text-center text-sm text-slate-400 py-8">Memuat penerima...</div>
+                                        <div className="text-center text-sm text-stone-400 py-8">Memuat penerima...</div>
                                     ) : recipList.length === 0 ? (
-                                        <div className="text-center text-sm text-slate-400 py-8 space-y-1">
+                                        <div className="text-center text-sm text-stone-400 py-8 space-y-1">
                                             <div>Tidak ada penerima yang cocok.</div>
                                             <div className="text-[11px]">Pastikan ada user dengan role/divisi/email yang sesuai pada konfigurasi step ini.</div>
                                         </div>
                                     ) : (
                                         <>
-                                            <div className="text-xs text-slate-500 dark:text-white/40 mb-3">{recipList.length} penerima (sudah di-dedup berdasarkan email)</div>
+                                            <div className="text-xs text-stone-500 dark:text-white/40 mb-3">{recipList.length} penerima (sudah di-dedup berdasarkan email)</div>
                                             <div className="space-y-2">
                                                 {recipList.map((r, i) => (
-                                                    <div key={i} className="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-slate-50 dark:bg-[#0d0d0d]/50 border border-white/60 dark:border-white/10">
+                                                    <div key={i} className="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-stone-50 dark:bg-[#0d0d0d]/50 border border-white/60 dark:border-white/10">
                                                         <div className="min-w-0">
-                                                            <div className="text-sm font-semibold text-slate-800 dark:text-white truncate">{r.custom ? r.email : r.name} {!r.custom && <span className="text-[10px] text-slate-400 font-normal">@{r.username}</span>}</div>
+                                                            <div className="text-sm font-semibold text-stone-800 dark:text-white truncate">{r.custom ? r.email : r.name} {!r.custom && <span className="text-[10px] text-stone-400 font-normal">@{r.username}</span>}</div>
                                                             <div className={`text-[11px] truncate ${r.has_email ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500'}`}>{r.custom ? 'Email Custom' : r.email}</div>
                                                         </div>
                                                         <div className="text-right shrink-0">
-                                                            <div className="text-[10px] text-slate-400">{r.step_name || `Step ${r.step_no}`}</div>
-                                                            <div className="text-[10px] font-semibold text-slate-500 dark:text-white/40">{r.custom ? 'Penerima Custom' : (r.assignee_type === 'all' ? 'Semua' : `${r.assignee_type}: ${r.assignee_value}`)}</div>
+                                                            <div className="text-[10px] text-stone-400">{r.step_name || `Step ${r.step_no}`}</div>
+                                                            <div className="text-[10px] font-semibold text-stone-500 dark:text-white/40">{r.custom ? 'Penerima Custom' : (r.assignee_type === 'all' ? 'Semua' : `${r.assignee_type}: ${r.assignee_value}`)}</div>
                                                         </div>
                                                     </div>
                                                 ))}
@@ -3526,10 +3526,10 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-5xl my-8 p-6 space-y-5" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center justify-between">
                             <div>
-                                <h3 className="text-xl font-black text-slate-800 dark:text-white">Settle Proforma → Invoice Asli</h3>
-                                <p className="text-xs text-slate-400">{settleTarget.proforma_no} • {settleTarget.invoices?.map(i => i.dealer_name).join(', ')} • Total Proforma: {formatCurrency(settleTarget.total_nominal)}</p>
+                                <h3 className="text-xl font-black text-stone-800 dark:text-white">Settle Proforma → Invoice Asli</h3>
+                                <p className="text-xs text-stone-400">{settleTarget.proforma_no} • {settleTarget.invoices?.map(i => i.dealer_name).join(', ')} • Total Proforma: {formatCurrency(settleTarget.total_nominal)}</p>
                             </div>
-                            <button onClick={() => setShowSettle(false)} className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-white/[0.05]">✕</button>
+                            <button onClick={() => setShowSettle(false)} className="p-2 rounded-xl text-stone-400 hover:text-stone-600 hover:bg-stone-100 dark:hover:bg-white/[0.05]">✕</button>
                         </div>
                         {settleError && (
                             <div className="px-4 py-3 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm">{settleError}</div>
@@ -3538,7 +3538,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         <div className="overflow-x-auto">
                             <table className="w-full text-xs">
                                 <thead>
-                                    <tr className="text-left text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-white/60 dark:border-white/10">
+                                    <tr className="text-left text-[10px] font-black uppercase tracking-wider text-stone-400 border-b border-white/60 dark:border-white/10">
                                         <th className="px-2 py-2">#</th>
                                         <th className="px-2 py-2">No Invoice Asli *</th>
                                         <th className="px-2 py-2">Tgl Invoice *</th>
@@ -3555,8 +3555,8 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     {settleRows.map((r, i) => {
                                         const total = rowTotal(r);
                                         return (
-                                            <tr key={i} className="border-b border-slate-50 dark:border-slate-800">
-                                                <td className="px-2 py-2 text-slate-400">{i + 1}</td>
+                                            <tr key={i} className="border-b border-stone-50 dark:border-white/[0.06]">
+                                                <td className="px-2 py-2 text-stone-400">{i + 1}</td>
                                                 <td className="px-2 py-2">
                                                     <input className={inputCls + ' min-w-[140px]'} placeholder={t("invoice.placeNoInvoice")} value={r.no_invoice} onChange={e => updateSettleRow(i, { no_invoice: e.target.value })} />
                                                 </td>
@@ -3581,7 +3581,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                 <td className="px-2 py-2 text-right font-bold text-teal-600 dark:text-teal-400 whitespace-nowrap">{formatCurrency(total)}</td>
                                                 <td className="px-2 py-2 text-center">
                                                     {settleRows.length > 1 && (
-                                                        <button onClick={() => setSettleRows(prev => prev.filter((_, j) => j !== i))} className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-white/[0.05]" title="Hapus baris">
+                                                        <button onClick={() => setSettleRows(prev => prev.filter((_, j) => j !== i))} className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-white/[0.05]" title="Hapus baris">
                                                             <Trash2 size={14} />
                                                         </button>
                                                     )}
@@ -3596,23 +3596,23 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         <div className="flex flex-wrap items-center justify-between gap-3">
                             <button
                                 onClick={() => setSettleRows(prev => [...prev, { ...blankSettleRow(null), no_faktur: settleTarget.proforma_no || '' }])}
-                                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-600 dark:text-white/70 text-xs font-semibold hover:bg-slate-200"
+                                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-600 dark:text-white/70 text-xs font-semibold hover:bg-stone-200"
                             >
                                 <Plus size={14} /> Tambah Invoice Asli
                             </button>
-                            <div className="text-xs text-slate-500 space-x-3">
-                                <span>Total Proforma: <b className="text-slate-800 dark:text-white">{formatCurrency(round2((settleTarget?.invoices || []).filter(i => !(i.pp_type === 'pelunasan')).reduce((s, i) => s + (parseFloat(i.total_invoice) || 0), 0)))}</b></span>
+                            <div className="text-xs text-stone-500 space-x-3">
+                                <span>Total Proforma: <b className="text-stone-800 dark:text-white">{formatCurrency(round2((settleTarget?.invoices || []).filter(i => !(i.pp_type === 'pelunasan')).reduce((s, i) => s + (parseFloat(i.total_invoice) || 0), 0)))}</b></span>
                                 <span>Total Settle: <b className={Math.abs(round2(settleRows.reduce((s, x) => s + rowTotal(x), 0)) - round2((settleTarget?.invoices || []).filter(i => !(i.pp_type === 'pelunasan')).reduce((s, i) => s + (parseFloat(i.total_invoice) || 0), 0))) <= 0.01 ? 'text-teal-600 dark:text-teal-400' : 'text-red-600'}>{formatCurrency(round2(settleRows.reduce((s, x) => s + rowTotal(x), 0)))}</b></span>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <div>
-                                <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">Tanggal Settle</label>
+                                <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">Tanggal Settle</label>
                                 <input type="date" className={inputCls} value={settleTglSet} onChange={e => setSettleTglSet(e.target.value)} />
                             </div>
                             <div className="md:col-span-2">
-                                <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">Catatan</label>
+                                <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">Catatan</label>
                                 <Textarea rows={1} value={settleNotes} onChange={e => setSettleNotes(e.target.value)} />
                             </div>
                         </div>
@@ -3626,7 +3626,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <button onClick={handleSaveDraft} disabled={savingDraft || settling} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 hover:bg-amber-100 dark:hover:bg-amber-500/20 text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed">
                                 <Save size={16} /> {savingDraft ? 'Menyimpan...' : 'Simpan Draft'}
                             </button>
-                            <button onClick={() => setShowSettle(false)} disabled={settling || savingDraft} className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-600 dark:text-white/70 text-sm font-semibold">Batal</button>
+                            <button onClick={() => setShowSettle(false)} disabled={settling || savingDraft} className="px-4 py-2.5 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-600 dark:text-white/70 text-sm font-semibold">Batal</button>
                              <button onClick={handleSettle} disabled={settling || savingDraft} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold shadow-lg shadow-teal-500/25 disabled:opacity-60 disabled:cursor-not-allowed">
                                 <HandCoins size={16} /> {settling ? 'Menyetel...' : 'Settle'}
                             </button>
@@ -3642,10 +3642,10 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-4xl my-8 p-6 space-y-5" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center justify-between">
                             <div>
-                                <h3 className="text-xl font-black text-slate-800 dark:text-white">{editInvoiceId ? `Edit Invoice #${editInvoiceId}` : 'Buat Invoice'}</h3>
-                                <p className="text-xs text-slate-400">Lengkapi data dealer dan daftar barang</p>
+                                <h3 className="text-xl font-black text-stone-800 dark:text-white">{editInvoiceId ? `Edit Invoice #${editInvoiceId}` : 'Buat Invoice'}</h3>
+                                <p className="text-xs text-stone-400">Lengkapi data dealer dan daftar barang</p>
                             </div>
-                            <button onClick={() => setShowNewInvoice(false)} className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-white/[0.05]">✕</button>
+                            <button onClick={() => setShowNewInvoice(false)} className="p-2 rounded-xl text-stone-400 hover:text-stone-600 hover:bg-stone-100 dark:hover:bg-white/[0.05]">✕</button>
                         </div>
 
                         {invError && (
@@ -3654,7 +3654,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">Nama Dealer *</label>
+                                <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">Nama Dealer *</label>
                                 <SearchAutocomplete
                                     value={dealers.find(d => Number(d.id) === Number(invForm.dealer_id))?.nama || ''}
                                     options={dealers}
@@ -3666,15 +3666,15 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 />
                             </div>
                             <div>
-                                <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">No. PO *</label>
+                                <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">No. PO *</label>
                                 <input className={inputCls} value={invForm.no_po} onChange={e => setInvForm({ ...invForm, no_po: e.target.value })} />
                             </div>
                             <div>
-                                <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">Tgl. PO *</label>
+                                <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">Tgl. PO *</label>
                                 <input type="date" className={inputCls} value={invForm.tgl_po} onChange={e => setInvForm({ ...invForm, tgl_po: e.target.value })} />
                             </div>
                             <div>
-                                <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">Tipe Invoice *</label>
+                                <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">Tipe Invoice *</label>
                                 <select className={inputCls} value={invForm.tipe} onChange={e => {
                                     const tipe = e.target.value;
                                     setInvForm(prev => ({
@@ -3686,16 +3686,16 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 }}>
                                     {Object.entries(TIPE_MAP).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
                                 </select>
-                                <p className="text-[10px] text-slate-400 mt-1">{TIPE_MAP[invForm.tipe]?.desc}</p>
+                                <p className="text-[10px] text-stone-400 mt-1">{TIPE_MAP[invForm.tipe]?.desc}</p>
                             </div>
                             <div>
-                                <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">Tgl. Transaksi *</label>
+                                <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">Tgl. Transaksi *</label>
                                 <input type="date" className={inputCls} value={invForm.tgl_transaksi} onChange={e => setInvForm({ ...invForm, tgl_transaksi: e.target.value })} />
                             </div>
                             {invForm.tipe === 'PP' ? (
                                 <>
                                     <div>
-                                        <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">Opsi Partial Payment *</label>
+                                        <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">Opsi Partial Payment *</label>
                                         <select className={inputCls} value={invForm.pp_type || 'dp'} onChange={e => {
                                             const ppType = e.target.value;
                                             setInvForm(prev => ({
@@ -3707,7 +3707,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             <option value="dp">{t("opt.dp")}</option>
                                             <option value="pelunasan">{t("opt.pelunasan")}</option>
                                         </select>
-                                        <p className="text-[10px] text-slate-400 mt-1">
+                                        <p className="text-[10px] text-stone-400 mt-1">
                                             {invForm.pp_type === 'pelunasan'
                                                 ? 'Pilih PO DP sebagai referensi pelunasan — data otomatis ditarik.'
                                                 : 'Input nilai penuh & DP; sisanya dihitung otomatis.'}
@@ -3717,7 +3717,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     {invForm.pp_type === 'pelunasan' ? (
                                         <>
                                             <div>
-                                                <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">{t("invoice.refPoDp")}</label>
+                                                <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">{t("invoice.refPoDp")}</label>
                                                 <select
                                                     className={inputCls}
                                                     value={invForm.pelunasan_of_id || ''}
@@ -3762,22 +3762,22 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                 );
                                             })()}
                                             <div>
-                                                <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">Total Invoice (Full Amount) — sama dengan DP *</label>
-                                                <MoneyInput className={inputCls + ' bg-slate-100 dark:bg-[#111] cursor-not-allowed'} placeholder="0" value={invForm.total_invoice} onChange={() => {}} />
-                                                <p className="text-[10px] text-slate-400 mt-1">{t("invoice.pelunasanHelp")}</p>
+                                                <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">Total Invoice (Full Amount) — sama dengan DP *</label>
+                                                <MoneyInput className={inputCls + ' bg-stone-100 dark:bg-[#111] cursor-not-allowed'} placeholder="0" value={invForm.total_invoice} onChange={() => {}} />
+                                                <p className="text-[10px] text-stone-400 mt-1">{t("invoice.pelunasanHelp")}</p>
                                             </div>
                                         </>
                                     ) : (
                                         <div>
-                                            <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">Total Invoice (Full Amount) *</label>
+                                            <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">Total Invoice (Full Amount) *</label>
                                             <MoneyInput className={inputCls} placeholder="0" value={invForm.total_invoice} onChange={v => { totalTouchedRef.current = true; setInvForm(prev => ({ ...prev, total_invoice: v })); }} />
-                                            <p className="text-[10px] text-slate-400 mt-1">{t("invoice.dpHelp")}</p>
+                                            <p className="text-[10px] text-stone-400 mt-1">{t("invoice.dpHelp")}</p>
                 </div>
             )}
 
 
                                     <div>
-                                        <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">{invForm.pp_type === 'pelunasan' ? 'Uang Masuk (Pelunasan) *' : 'Uang Masuk (DP) *'}</label>
+                                        <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">{invForm.pp_type === 'pelunasan' ? 'Uang Masuk (Pelunasan) *' : 'Uang Masuk (DP) *'}</label>
                                         <MoneyInput
                                             className={inputCls}
                                             placeholder="0"
@@ -3793,35 +3793,35 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         />
                                     </div>
                                     <div>
-                                        <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">Tgl. Uang Masuk *</label>
+                                        <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">Tgl. Uang Masuk *</label>
                                         <input type="date" className={inputCls} value={invForm.tgl_uang_masuk} onChange={e => setInvForm({ ...invForm, tgl_uang_masuk: e.target.value })} />
                                     </div>
                                     <div>
-                                        <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">PPN Rate (%)</label>
+                                        <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">PPN Rate (%)</label>
                                         <input type="number" step="1" min="0" max="100" className={inputCls + ' text-center tabular-nums'} value={Math.round((parseFloat(invForm.ppn_rate) || 0.11) * 100)} onChange={e => {
                                             const pct = parseFloat(e.target.value) || 0;
                                             setInvForm(prev => ({ ...prev, ppn_rate: Math.min(100, Math.max(0, pct)) / 100 }));
                                         }} />
-                                        <p className="text-[10px] text-slate-400 mt-1">PPN: {formatCurrency(ppnVal)}</p>
+                                        <p className="text-[10px] text-stone-400 mt-1">PPN: {formatCurrency(ppnVal)}</p>
                                     </div>
                                 </>
                             ) : (
                                 <>
                                     <div>
-                                        <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">{invForm.tipe === 'PF' ? 'Uang Masuk (Opsional)' : 'Uang Masuk *'}</label>
+                                        <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">{invForm.tipe === 'PF' ? 'Uang Masuk (Opsional)' : 'Uang Masuk *'}</label>
                                         <MoneyInput className={inputCls} placeholder="0" value={invForm.uang_masuk} onChange={v => setInvForm({ ...invForm, uang_masuk: v })} />
                                     </div>
                                     <div>
-                                        <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">{invForm.tipe === 'PF' ? 'Tgl. Uang Masuk (Opsional)' : 'Tgl. Uang Masuk *'}</label>
+                                        <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">{invForm.tipe === 'PF' ? 'Tgl. Uang Masuk (Opsional)' : 'Tgl. Uang Masuk *'}</label>
                                         <input type="date" className={inputCls} value={invForm.tgl_uang_masuk} onChange={e => setInvForm({ ...invForm, tgl_uang_masuk: e.target.value })} />
                                     </div>
                                     <div>
-                                        <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">PPN Rate (%)</label>
+                                        <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">PPN Rate (%)</label>
                                         <input type="number" step="1" min="0" max="100" className={inputCls + ' text-center tabular-nums'} value={Math.round((parseFloat(invForm.ppn_rate) || 0.11) * 100)} onChange={e => {
                                             const pct = parseFloat(e.target.value) || 0;
                                             setInvForm(prev => ({ ...prev, ppn_rate: Math.min(100, Math.max(0, pct)) / 100 }));
                                         }} />
-                                        <p className="text-[10px] text-slate-400 mt-1">PPN: {formatCurrency(ppnVal)}</p>
+                                        <p className="text-[10px] text-stone-400 mt-1">PPN: {formatCurrency(ppnVal)}</p>
                                     </div>
                                 </>
                             )}
@@ -3830,13 +3830,13 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         {/* Items */}
                         <div>
                             <div className="flex items-center justify-between mb-2">
-                                <label className="text-xs font-bold text-slate-500 dark:text-white/40">Daftar Barang *</label>
+                                <label className="text-xs font-bold text-stone-500 dark:text-white/40">Daftar Barang *</label>
                                 <button onClick={addRow} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold hover:bg-blue-100 dark:hover:bg-blue-500/20">
                                     <Plus size={13} /> Tambah Barang
                                 </button>
                             </div>
-                            <div className="rounded-xl border border-slate-200 dark:border-white/[0.06]">
-                                <div className="grid grid-cols-14 gap-2 px-3 py-2 bg-slate-100 dark:bg-[#0d0d0d] text-[10px] font-bold text-slate-500 dark:text-white/40 uppercase tracking-wide border-b border-slate-200 dark:border-white/[0.06] rounded-t-xl">
+                            <div className="rounded-xl border border-stone-200 dark:border-white/[0.06]">
+                                <div className="grid grid-cols-14 gap-2 px-3 py-2 bg-stone-100 dark:bg-[#0d0d0d] text-[10px] font-bold text-stone-500 dark:text-white/40 uppercase tracking-wide border-b border-stone-200 dark:border-white/[0.06] rounded-t-xl">
                                     <div className="col-span-3">Model</div>
                                     <div className="col-span-3">Item Description</div>
                                     <div className="col-span-1 text-center">Qty</div>
@@ -3868,7 +3868,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             <div className="col-span-2">
                                                 <MoneyInput className={inputCls + ' h-[38px] text-right tabular-nums'} placeholder={t("invoice.placePrice")} value={row.harga} onChange={v => updateRow(idx, { harga: v })} />
                                             </div>
-                                            <div className="col-span-2 h-[38px] flex items-center justify-end text-right font-bold text-sm text-slate-800 dark:text-white tabular-nums whitespace-nowrap">
+                                            <div className="col-span-2 h-[38px] flex items-center justify-end text-right font-bold text-sm text-stone-800 dark:text-white tabular-nums whitespace-nowrap">
                                                 {formatCurrency((parseFloat(row.harga) || 0) * (parseInt(row.qty) || 0))}
                                             </div>
                                             <div className="col-span-2 h-[38px] flex items-center justify-end pr-1">
@@ -3886,7 +3886,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                 />
                                             </div>
                                             <div className="col-span-1 h-[38px] flex items-center justify-end">
-                                                <button onClick={() => removeRow(idx)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-white/[0.05]"><Trash2 size={14} /></button>
+                                                <button onClick={() => removeRow(idx)} className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-white/[0.05]"><Trash2 size={14} /></button>
                                             </div>
                                         </div>
                                     ))}
@@ -3895,34 +3895,34 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         </div>
 
                         {/* Summary */}
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 bg-slate-50 dark:bg-[#0d0d0d]/50 rounded-2xl p-4 items-stretch">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 bg-stone-50 dark:bg-[#0d0d0d]/50 rounded-2xl p-4 items-stretch">
                             <div className="flex flex-col gap-1.5 min-w-0">
-                                <label className="text-[10px] font-bold text-slate-400 uppercase truncate">Subtotal</label>
-                                <div className="min-h-[38px] flex items-center font-bold text-slate-800 dark:text-white text-sm tabular-nums">{formatCurrency(subtotalAll)}</div>
-                                <div className="h-[12px] text-[9px] text-slate-400 truncate">Total seluruh barang</div>
+                                <label className="text-[10px] font-bold text-stone-400 uppercase truncate">Subtotal</label>
+                                <div className="min-h-[38px] flex items-center font-bold text-stone-800 dark:text-white text-sm tabular-nums">{formatCurrency(subtotalAll)}</div>
+                                <div className="h-[12px] text-[9px] text-stone-400 truncate">Total seluruh barang</div>
                             </div>
                             <div className="flex flex-col gap-1.5 min-w-0">
-                                <label className="text-[10px] font-bold text-slate-400 uppercase truncate">Total PPN</label>
+                                <label className="text-[10px] font-bold text-stone-400 uppercase truncate">Total PPN</label>
                                 <MoneyInput
-                                    className="w-full rounded-lg border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-2 h-[38px] text-sm font-bold text-blue-600 dark:text-blue-400 tabular-nums"
+                                    className="w-full rounded-lg border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-2 h-[38px] text-sm font-bold text-blue-600 dark:text-blue-400 tabular-nums"
                                     placeholder="0"
                                     value={invForm.ppn_custom ? (invForm.ppn_amount || '') : ppnVal || ''}
                                     onChange={v => setInvForm(prev => ({ ...prev, ppn_custom: true, ppn_amount: v }))}
                                 />
-                                <div className="h-[12px] text-[9px] text-slate-400 truncate">{invForm.ppn_custom ? 'Custom override' : 'Auto dari item'}</div>
+                                <div className="h-[12px] text-[9px] text-stone-400 truncate">{invForm.ppn_custom ? 'Custom override' : 'Auto dari item'}</div>
                             </div>
                             <div className="flex flex-col gap-1.5 min-w-0">
-                                <label className="text-[10px] font-bold text-slate-400 uppercase truncate">Diskon</label>
-                                <MoneyInput className="w-full rounded-lg border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-2 h-[38px] text-xs text-slate-800 dark:text-white tabular-nums" placeholder="0" value={invForm.diskon} onChange={v => setInvForm(prev => ({ ...prev, diskon: v }))} />
-                                <div className="h-[12px] text-[9px] text-slate-400 truncate">Potongan harga</div>
+                                <label className="text-[10px] font-bold text-stone-400 uppercase truncate">Diskon</label>
+                                <MoneyInput className="w-full rounded-lg border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-2 h-[38px] text-xs text-stone-800 dark:text-white tabular-nums" placeholder="0" value={invForm.diskon} onChange={v => setInvForm(prev => ({ ...prev, diskon: v }))} />
+                                <div className="h-[12px] text-[9px] text-stone-400 truncate">Potongan harga</div>
                             </div>
                             <div className="flex flex-col gap-1.5 min-w-0">
-                                <label className="text-[10px] font-bold text-slate-400 uppercase truncate">Materai</label>
-                                <MoneyInput className="w-full rounded-lg border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-2 h-[38px] text-xs text-slate-800 dark:text-white tabular-nums" placeholder="0" value={invForm.materai} onChange={v => setInvForm(prev => ({ ...prev, materai: v }))} />
-                                <div className="h-[12px] text-[9px] text-slate-400 truncate">Biaya materai</div>
+                                <label className="text-[10px] font-bold text-stone-400 uppercase truncate">Materai</label>
+                                <MoneyInput className="w-full rounded-lg border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-2 h-[38px] text-xs text-stone-800 dark:text-white tabular-nums" placeholder="0" value={invForm.materai} onChange={v => setInvForm(prev => ({ ...prev, materai: v }))} />
+                                <div className="h-[12px] text-[9px] text-stone-400 truncate">Biaya materai</div>
                             </div>
                             <div className="flex flex-col gap-1.5 min-w-0">
-                                <label className="text-[10px] font-bold text-slate-400 uppercase truncate">Total Invoice {invForm.tipe === 'PP' ? '(Full Amount) *' : '*'}</label>
+                                <label className="text-[10px] font-bold text-stone-400 uppercase truncate">Total Invoice {invForm.tipe === 'PP' ? '(Full Amount) *' : '*'}</label>
                                 <div className="h-[38px] flex items-center">
                                     <MoneyInput
                                         className="w-full rounded-lg border border-emerald-200 dark:border-emerald-800 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-2 h-[38px] text-sm font-black text-emerald-600 dark:text-emerald-400 tabular-nums"
@@ -3934,7 +3934,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         }}
                                     />
                                 </div>
-                                <div className="h-[12px] text-[9px] text-slate-400 truncate" title="Otomatis dari barang, bisa disesuaikan jika ada selisih pembulatan">Auto dari barang • bisa disesuaikan (pembulatan)</div>
+                                <div className="h-[12px] text-[9px] text-stone-400 truncate" title="Otomatis dari barang, bisa disesuaikan jika ada selisih pembulatan">Auto dari barang • bisa disesuaikan (pembulatan)</div>
                             </div>
                             {invForm.tipe === 'PP' && (() => {
                                 const uangMasukNow = parseFloat(invForm.uang_masuk) || 0;
@@ -3952,18 +3952,18 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 const lunas = sisaVal <= 0.01;
                                 return (
                                     <div className="flex flex-col gap-1.5 min-w-0">
-                                        <label className="text-[10px] font-bold text-slate-400 uppercase truncate">Sisa (Yang Harus Dilunasi)</label>
+                                        <label className="text-[10px] font-bold text-stone-400 uppercase truncate">Sisa (Yang Harus Dilunasi)</label>
                                         <div className={`h-[38px] flex items-center text-sm font-black tabular-nums whitespace-nowrap ${lunas ? 'text-teal-600 dark:text-teal-400' : 'text-amber-600 dark:text-amber-400'}`}>
                                             {lunas ? 'LUNAS' : formatCurrency(sisaVal)}
                                         </div>
-                                        <div className="h-[12px] text-[9px] text-slate-400 truncate" title={sisaLabel}>{sisaLabel}</div>
+                                        <div className="h-[12px] text-[9px] text-stone-400 truncate" title={sisaLabel}>{sisaLabel}</div>
                                     </div>
                                 );
                             })()}
                         </div>
 
                         <div className="flex items-center justify-end gap-2 pt-2">
-                            <button onClick={() => setShowNewInvoice(false)} disabled={savingInvoice} className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-600 dark:text-white/70 text-sm font-semibold">Batal</button>
+                            <button onClick={() => setShowNewInvoice(false)} disabled={savingInvoice} className="px-4 py-2.5 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-600 dark:text-white/70 text-sm font-semibold">Batal</button>
                             <button onClick={handleCreateInvoice} disabled={savingInvoice} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold shadow-lg shadow-emerald-500/25 disabled:opacity-60 disabled:cursor-not-allowed">
                                 <CheckCircle2 size={16} /> {savingInvoice ? 'Menyimpan...' : (editInvoiceId ? 'Update Invoice' : 'Simpan Invoice')}
                              </button>
@@ -3978,25 +3978,25 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                 <div className="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto" onClick={() => setShowProforma(false)}>
                     <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-2xl my-8 p-6 space-y-5" onClick={e => e.stopPropagation()}>
                         <div>
-                            <h3 className="text-xl font-black text-slate-800 dark:text-white">{proformaResubmit ? 'Submit Ulang Proforma' : 'Ajukan No Proforma'}</h3>
-                            <p className="text-xs text-slate-400">{proformaResubmit ? 'Perbaiki data & lampiran yang salah, lalu ajukan kembali' : 'Lampirkan dokumen pendukung untuk invoice terpilih'}</p>
+                            <h3 className="text-xl font-black text-stone-800 dark:text-white">{proformaResubmit ? 'Submit Ulang Proforma' : 'Ajukan No Proforma'}</h3>
+                            <p className="text-xs text-stone-400">{proformaResubmit ? 'Perbaiki data & lampiran yang salah, lalu ajukan kembali' : 'Lampirkan dokumen pendukung untuk invoice terpilih'}</p>
                         </div>
                         <div className="space-y-2">
                             {(() => {
                                 const sels = (proformaForm.invoice_ids || []).map(id =>
                                     filteredInvoices.find(i => i.id === id) || invoices.find(i => i.id === id)
                                 ).filter(Boolean);
-                                if (!sels.length) return <div className="text-sm text-slate-400">Invoice tidak ditemukan.</div>;
+                                if (!sels.length) return <div className="text-sm text-stone-400">Invoice tidak ditemukan.</div>;
                                 return sels.map(sel => (
                                     <div key={sel.id} className="p-3 rounded-xl border border-blue-200 dark:border-blue-500/30 bg-blue-50 dark:bg-blue-500/10">
-                                        <div className="text-sm font-semibold text-slate-800 dark:text-white">#{sel.id} • {sel.dealer_name}</div>
-                                        <div className="text-xs text-slate-400">{sel.no_po} • {formatCurrency(sel.total_invoice)}</div>
+                                        <div className="text-sm font-semibold text-stone-800 dark:text-white">#{sel.id} • {sel.dealer_name}</div>
+                                        <div className="text-xs text-stone-400">{sel.no_po} • {formatCurrency(sel.total_invoice)}</div>
                                     </div>
                                 ));
                             })()}
                         </div>
                         <div>
-                            <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">Lampiran Dokumen Pendukung <span className="text-red-500">*</span></label>
+                            <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">Lampiran Dokumen Pendukung <span className="text-red-500">*</span></label>
                             {(proformaForm.attachments || []).length > 0 && (
                                 <div className="mb-2 flex flex-wrap gap-2">
                                     {(proformaForm.attachments || []).map((f, i) => (
@@ -4010,7 +4010,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 </div>
                             )}
                             <input ref={fileInputRef} type="file" multiple className="hidden" onChange={e => setProformaFiles([...e.target.files])} />
-                            <button onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-dashed border-slate-300 dark:border-white/[0.08] text-slate-500 dark:text-white/70 text-sm w-full justify-center hover:border-blue-400 hover:text-blue-500">
+                            <button onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-dashed border-stone-300 dark:border-white/[0.08] text-stone-500 dark:text-white/70 text-sm w-full justify-center hover:border-blue-400 hover:text-blue-500">
                                 <Upload size={16} /> {proformaFiles.length ? `${proformaFiles.length} file dipilih` : 'Pilih File Pendukung'}
                             </button>
                             {proformaFiles.length > 0 && (
@@ -4022,7 +4022,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             )}
                         </div>
                         <div className="flex items-center justify-end gap-2">
-                            <button onClick={() => setShowProforma(false)} className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-600 dark:text-white/70 text-sm font-semibold">Batal</button>
+                            <button onClick={() => setShowProforma(false)} className="px-4 py-2.5 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-600 dark:text-white/70 text-sm font-semibold">Batal</button>
                             <button onClick={handleNewProforma} disabled={savingProforma} className="flex items-center gap-2 px-5 py-2.5 rounded-xl gradient-bg hover:opacity-95 text-white text-sm font-bold shadow-lg shadow-blue-500/25 disabled:opacity-60 disabled:cursor-not-allowed">
                                 <FileSignature size={16} /> {savingProforma ? 'Mengirim...' : proformaResubmit ? 'Ajukan Ulang' : 'Ajukan'}
                             </button>
@@ -4037,24 +4037,24 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                 <div className="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto" onClick={() => setShowTax(false)}>
                     <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-lg my-8 p-6 space-y-5" onClick={e => e.stopPropagation()}>
                         <div>
-                            <h3 className="text-xl font-black text-slate-800 dark:text-white">Faktur Pajak</h3>
-                            <p className="text-xs text-slate-400">Invoice #{taxTarget.id} • {taxTarget.proforma_no} • {taxTarget.dealer_name}</p>
+                            <h3 className="text-xl font-black text-stone-800 dark:text-white">Faktur Pajak</h3>
+                            <p className="text-xs text-stone-400">Invoice #{taxTarget.id} • {taxTarget.proforma_no} • {taxTarget.dealer_name}</p>
                         </div>
                         <div>
-                            <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">No. Faktur Pajak *</label>
+                            <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">No. Faktur Pajak *</label>
                             <input className={inputCls} inputMode="numeric" maxLength={17} placeholder="17 digit angka" value={taxForm.faktur_pajak_no}
                                 onChange={e => setTaxForm({ ...taxForm, faktur_pajak_no: e.target.value.replace(/\D/g, '') })} />
-                            <p className="text-[10px] text-slate-400 mt-1">Wajib 17 digit angka</p>
+                            <p className="text-[10px] text-stone-400 mt-1">Wajib 17 digit angka</p>
                         </div>
                         <div>
-                            <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">File Faktur Pajak <span className="text-red-500">*</span></label>
+                            <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">File Faktur Pajak <span className="text-red-500">*</span></label>
                             <input ref={taxFileRef} type="file" className="hidden" onChange={e => setTaxForm({ ...taxForm, file: e.target.files[0] })} />
-                            <button onClick={() => taxFileRef.current?.click()} className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-dashed border-slate-300 dark:border-white/[0.08] text-slate-500 dark:text-white/70 text-sm w-full justify-center hover:border-blue-400 hover:text-blue-500">
+                            <button onClick={() => taxFileRef.current?.click()} className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-dashed border-stone-300 dark:border-white/[0.08] text-stone-500 dark:text-white/70 text-sm w-full justify-center hover:border-blue-400 hover:text-blue-500">
                                 <Upload size={16} /> {taxForm.file ? taxForm.file.name : 'Pilih File Faktur Pajak'}
                             </button>
                         </div>
                          <div className="flex items-center justify-end gap-2">
-                            <button onClick={() => setShowTax(false)} className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-600 dark:text-white/70 text-sm font-semibold">Batal</button>
+                            <button onClick={() => setShowTax(false)} className="px-4 py-2.5 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-600 dark:text-white/70 text-sm font-semibold">Batal</button>
                             <button onClick={handleTax} disabled={savingTax} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold shadow-lg shadow-blue-500/25 disabled:opacity-60 disabled:cursor-not-allowed">
                                 <FileText size={16} /> {savingTax ? 'Menyimpan...' : 'Simpan Faktur Pajak'}
                             </button>
@@ -4069,22 +4069,22 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                 <div className="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto" onClick={() => setShowTaxRequest(false)}>
                     <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-lg my-8 p-6 space-y-5" onClick={e => e.stopPropagation()}>
                         <div>
-                            <h3 className="text-xl font-black text-slate-800 dark:text-white">Ajukan Faktur Pajak</h3>
-                            <p className="text-xs text-slate-400">Invoice #{taxRequestTarget.id} • {taxRequestTarget.proforma_no} • {taxRequestTarget.dealer_name}</p>
+                            <h3 className="text-xl font-black text-stone-800 dark:text-white">Ajukan Faktur Pajak</h3>
+                            <p className="text-xs text-stone-400">Invoice #{taxRequestTarget.id} • {taxRequestTarget.proforma_no} • {taxRequestTarget.dealer_name}</p>
                         </div>
                         <div>
-                            <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">Lampiran Pendukung <span className="text-red-500">*</span></label>
+                            <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">Lampiran Pendukung <span className="text-red-500">*</span></label>
                             <input ref={taxRequestFileRef} type="file" multiple className="hidden" onChange={e => setTaxRequestFiles([...(e.target.files || [])])} />
-                            <button onClick={() => taxRequestFileRef.current?.click()} className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-dashed border-slate-300 dark:border-white/[0.08] text-slate-500 dark:text-white/70 text-sm w-full justify-center hover:border-orange-400 hover:text-orange-500">
+                            <button onClick={() => taxRequestFileRef.current?.click()} className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-dashed border-stone-300 dark:border-white/[0.08] text-stone-500 dark:text-white/70 text-sm w-full justify-center hover:border-orange-400 hover:text-orange-500">
                                 <Upload size={16} /> {taxRequestFiles.length ? `${taxRequestFiles.length} file dipilih` : 'Pilih File Lampiran'}
                             </button>
                         </div>
                         <div>
-                            <label className="text-xs font-bold text-slate-500 dark:text-white/40 mb-1 block">Catatan (opsional)</label>
+                            <label className="text-xs font-bold text-stone-500 dark:text-white/40 mb-1 block">Catatan (opsional)</label>
                             <Textarea rows={2} value={taxRequestNotes} onChange={e => setTaxRequestNotes(e.target.value)} placeholder="Catatan untuk bagian tax..." />
                         </div>
                         <div className="flex items-center justify-end gap-2">
-                            <button onClick={() => setShowTaxRequest(false)} className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-600 dark:text-white/70 text-sm font-semibold">Batal</button>
+                            <button onClick={() => setShowTaxRequest(false)} className="px-4 py-2.5 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-600 dark:text-white/70 text-sm font-semibold">Batal</button>
                             <button onClick={() => handleSubmitTax(taxRequestTarget.id)} disabled={savingTaxRequest} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-sm font-bold shadow-lg shadow-orange-500/25 disabled:opacity-60 disabled:cursor-not-allowed">
                                 <Upload size={16} /> {savingTaxRequest ? 'Mengirim...' : 'Ajukan ke Tax'}
                             </button>
@@ -4117,10 +4117,10 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     <Trash2 size={24} />
                                 </div>
                                 <div>
-                                    <h3 className="text-base font-black text-slate-800 dark:text-white leading-tight">
+                                    <h3 className="text-base font-black text-stone-800 dark:text-white leading-tight">
                                         {deleteTarget.type === 'proforma' ? 'Hapus Proforma?' : 'Hapus Invoice?'}
                                     </h3>
-                                    <p className="text-xs text-slate-400 mt-0.5">
+                                    <p className="text-xs text-stone-400 mt-0.5">
                                         {deleteTarget.type === 'proforma'
                                             ? `Proforma ${deleteTarget.item.proforma_no || '#' + deleteTarget.item.id} • ${(deleteTarget.item.invoices || []).length} invoice`
                                             : `Invoice #${deleteTarget.item.id} • ${deleteTarget.item.dealer_name || '-'}`}
@@ -4148,7 +4148,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <div className="flex items-center justify-end gap-2.5 pt-1">
                                 <button
                                     onClick={() => setDeleteTarget(null)}
-                                    className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-600 dark:text-white/70 text-xs font-bold hover:bg-slate-200 dark:hover:bg-white/[0.06] transition-colors"
+                                    className="px-4 py-2.5 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-600 dark:text-white/70 text-xs font-bold hover:bg-stone-200 dark:hover:bg-white/[0.06] transition-colors"
                                 >
                                     Batal
                                 </button>
@@ -4188,10 +4188,10 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     <Trash2 size={24} />
                                 </div>
                                 <div>
-                                    <h3 className="text-base font-black text-slate-800 dark:text-white leading-tight">
+                                    <h3 className="text-base font-black text-stone-800 dark:text-white leading-tight">
                                         {permTarget.type === 'proforma' ? 'Hapus Permanen Proforma?' : 'Hapus Permanen Invoice?'}
                                     </h3>
-                                    <p className="text-xs text-slate-400 mt-0.5">
+                                    <p className="text-xs text-stone-400 mt-0.5">
                                         {permTarget.type === 'proforma'
                                             ? `Proforma ${permTarget.item.proforma_no || '#' + permTarget.item.id} • ${(permTarget.item.invoices || []).length} invoice`
                                             : `Invoice #${permTarget.item.id} • ${permTarget.item.dealer_name || '-'}`}
@@ -4210,7 +4210,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <div className="flex items-center justify-end gap-2.5 pt-1">
                                 <button
                                     onClick={() => setPermTarget(null)}
-                                    className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-600 dark:text-white/70 text-xs font-bold hover:bg-slate-200 dark:hover:bg-white/[0.06] transition-colors"
+                                    className="px-4 py-2.5 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-600 dark:text-white/70 text-xs font-bold hover:bg-stone-200 dark:hover:bg-white/[0.06] transition-colors"
                                 >
                                     Batal
                                 </button>
@@ -4250,24 +4250,24 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     <Ban size={24} />
                                 </div>
                                 <div>
-                                    <h3 className="text-base font-black text-slate-800 dark:text-white leading-tight">Konfirmasi Pembatalan Invoice</h3>
-                                    <p className="text-xs text-slate-400 mt-0.5">Invoice #{cancelTarget.id} • {cancelTarget.dealer_name || '-'}</p>
+                                    <h3 className="text-base font-black text-stone-800 dark:text-white leading-tight">Konfirmasi Pembatalan Invoice</h3>
+                                    <p className="text-xs text-stone-400 mt-0.5">Invoice #{cancelTarget.id} • {cancelTarget.dealer_name || '-'}</p>
                                 </div>
                             </div>
 
-                            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#0d0d0d]/50 border border-white/60 dark:border-white/10 text-xs text-slate-600 dark:text-white/70 space-y-2">
+                            <div className="p-3.5 rounded-2xl bg-stone-50 dark:bg-[#0d0d0d]/50 border border-white/60 dark:border-white/10 text-xs text-stone-600 dark:text-white/70 space-y-2">
                                 <p>Apakah Anda yakin ingin membatalkan invoice ini?</p>
-                                <ul className="list-disc list-inside text-[11px] text-slate-500 space-y-1 font-medium">
+                                <ul className="list-disc list-inside text-[11px] text-stone-500 space-y-1 font-medium">
                                     <li>Data akan tetap tersimpan dalam riwayat (history).</li>
-                                    {cancelTarget.no_po && <li>No. PO akan diubah menjadi unik, mis. <code className="px-1 py-0.5 rounded bg-slate-200 dark:bg-[#111] font-mono font-bold text-red-600 dark:text-red-400">{cancelTarget.no_po.replace(/_batal\d*$/, '')}_batal001</code> (ditambah nomor urut otomatis).</li>}
-                                    {cancelTarget.proforma_no && <li>No. Proforma akan diubah menjadi unik, mis. <code className="px-1 py-0.5 rounded bg-slate-200 dark:bg-[#111] font-mono font-bold text-red-600 dark:text-red-400">{cancelTarget.proforma_no.replace(/_batal\d*$/, '')}_batal001</code>.</li>}
+                                    {cancelTarget.no_po && <li>No. PO akan diubah menjadi unik, mis. <code className="px-1 py-0.5 rounded bg-stone-200 dark:bg-[#111] font-mono font-bold text-red-600 dark:text-red-400">{cancelTarget.no_po.replace(/_batal\d*$/, '')}_batal001</code> (ditambah nomor urut otomatis).</li>}
+                                    {cancelTarget.proforma_no && <li>No. Proforma akan diubah menjadi unik, mis. <code className="px-1 py-0.5 rounded bg-stone-200 dark:bg-[#111] font-mono font-bold text-red-600 dark:text-red-400">{cancelTarget.proforma_no.replace(/_batal\d*$/, '')}_batal001</code>.</li>}
                                 </ul>
                             </div>
 
                             <div className="flex items-center justify-end gap-2.5 pt-1">
                                 <button 
                                     onClick={() => setCancelTarget(null)} 
-                                    className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-600 dark:text-white/70 text-xs font-bold hover:bg-slate-200 dark:hover:bg-white/[0.06] transition-colors"
+                                    className="px-4 py-2.5 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-600 dark:text-white/70 text-xs font-bold hover:bg-stone-200 dark:hover:bg-white/[0.06] transition-colors"
                                 >
                                     Batal
                                 </button>
@@ -4307,14 +4307,14 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     <Trash2 size={24} />
                                 </div>
                                 <div>
-                                    <h3 className="text-base font-black text-slate-800 dark:text-white leading-tight">Hapus Invoice Pengganti?</h3>
-                                    <p className="text-xs text-slate-400 mt-0.5">Invoice #{deleteReplTarget.id} • {deleteReplTarget.no_invoice || '-'} • {deleteReplTarget.dealer_name || '-'}</p>
+                                    <h3 className="text-base font-black text-stone-800 dark:text-white leading-tight">Hapus Invoice Pengganti?</h3>
+                                    <p className="text-xs text-stone-400 mt-0.5">Invoice #{deleteReplTarget.id} • {deleteReplTarget.no_invoice || '-'} • {deleteReplTarget.dealer_name || '-'}</p>
                                 </div>
                             </div>
 
-                            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#0d0d0d]/50 border border-white/60 dark:border-white/10 text-xs text-slate-600 dark:text-white/70 space-y-2">
+                            <div className="p-3.5 rounded-2xl bg-stone-50 dark:bg-[#0d0d0d]/50 border border-white/60 dark:border-white/10 text-xs text-stone-600 dark:text-white/70 space-y-2">
                                 <p>Apakah Anda yakin ingin menghapus invoice pengganti ini?</p>
-                                <ul className="list-disc list-inside text-[11px] text-slate-500 space-y-1 font-medium">
+                                <ul className="list-disc list-inside text-[11px] text-stone-500 space-y-1 font-medium">
                                     <li>{t("invoice.delReplaceWarning")} <b>{deleteReplTarget.no_invoice || '#' + deleteReplTarget.id}</b> akan dihapus permanen beserta item barangnya.</li>
                                     <li>Invoice asal <b>#{deleteReplTarget.rejected_from_id}</b> akan kembali ke status <b className="text-rose-500">rejected</b> tanpa pengganti, dan bisa dibuat ulang lewat menu <b>"Input Data Baru"</b>.</li>
                                 </ul>
@@ -4323,7 +4323,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <div className="flex items-center justify-end gap-2.5 pt-1">
                                 <button 
                                     onClick={() => setDeleteReplTarget(null)} 
-                                    className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-600 dark:text-white/70 text-xs font-bold hover:bg-slate-200 dark:hover:bg-white/[0.06] transition-colors"
+                                    className="px-4 py-2.5 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-600 dark:text-white/70 text-xs font-bold hover:bg-stone-200 dark:hover:bg-white/[0.06] transition-colors"
                                 >
                                     Batal
                                 </button>
@@ -4398,7 +4398,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                 reject: { title: 'Reject Proforma', icon: <XCircle size={20} className="text-red-600" />, accent: 'bg-red-500', confirm: 'Ya, Tolak', noteRequired: false, noteLabel: 'Alasan penolakan', notePlaceholder: 'Alasan (opsional)...' },
                                 sendback_tax: { title: 'Sendback Tax Request', icon: <RefreshCw size={20} className="text-rose-600" />, accent: 'bg-rose-500', confirm: 'Kirim Balik', noteRequired: true, noteLabel: 'Alasan sendback *', notePlaceholder: 'Jelaskan perbaikan yang diperlukan...' },
                                 reject_tax: { title: 'Reject Tax Request', icon: <XCircle size={20} className="text-red-600" />, accent: 'bg-red-500', confirm: 'Ya, Tolak', noteRequired: true, noteLabel: 'Alasan reject *', notePlaceholder: 'Jelaskan alasan penolakan...' },
-                            }[type] || { title: type, icon: <CheckCircle2 size={20} className="text-slate-600" />, accent: 'bg-slate-500', confirm: 'Simpan', noteRequired: false, noteLabel: '', notePlaceholder: '' };
+                            }[type] || { title: type, icon: <CheckCircle2 size={20} className="text-stone-600" />, accent: 'bg-stone-500', confirm: 'Simpan', noteRequired: false, noteLabel: '', notePlaceholder: '' };
                             const dealer = p?.dealer_name || (p?.invoices?.[0]?.dealer_name) || '-';
                             const po = p?.no_po || (p?.invoices?.[0]?.no_po) || '-';
                             const total = p?.total_invoice != null ? p.total_invoice : (p?.total_nominal != null ? p.total_nominal : (p?.invoices?.[0]?.total_invoice));
@@ -4410,36 +4410,36 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     <div className="px-6 py-5">
                                         <div className="flex items-start justify-between gap-3">
                                             <div className="flex items-center gap-3">
-                                                <div className="p-3 rounded-2xl bg-slate-100 dark:bg-[#0d0d0d]">{config.icon}</div>
+                                                <div className="p-3 rounded-2xl bg-stone-100 dark:bg-[#0d0d0d]">{config.icon}</div>
                                                 <div>
-                                                    <h3 className="font-black text-lg text-slate-800 dark:text-white leading-tight">{config.title}</h3>
-                                                    <p className="text-xs text-slate-400 mt-0.5">{isTax ? 'Mengembalikan request faktur pajak ke requester' : 'Konfirmasi tindakan untuk proforma ini'}</p>
+                                                    <h3 className="font-black text-lg text-stone-800 dark:text-white leading-tight">{config.title}</h3>
+                                                    <p className="text-xs text-stone-400 mt-0.5">{isTax ? 'Mengembalikan request faktur pajak ke requester' : 'Konfirmasi tindakan untuk proforma ini'}</p>
                                                 </div>
                                             </div>
-                                            <button onClick={() => setActionModal(null)} className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.05] hover:text-slate-600 dark:hover:text-slate-200">
+                                            <button onClick={() => setActionModal(null)} className="p-1.5 rounded-lg text-stone-400 hover:bg-stone-100 dark:hover:bg-white/[0.05] hover:text-stone-600 dark:hover:text-white/80">
                                                 <X size={18} />
                                             </button>
                                         </div>
 
-                                        <div className="mt-5 space-y-2.5 rounded-2xl bg-slate-50 dark:bg-[#0d0d0d]/50 border border-white/60 dark:border-white/10 p-4 text-sm">
-                                            <div className="flex justify-between gap-3"><span className="text-xs text-slate-400 shrink-0">No Proforma</span><span className="font-semibold text-slate-700 dark:text-slate-200 text-right">{proformaNo}</span></div>
-                                            <div className="flex justify-between gap-3"><span className="text-xs text-slate-400 shrink-0">Dealer</span><span className="font-semibold text-slate-700 dark:text-slate-200 text-right truncate max-w-[220px]">{dealer}</span></div>
-                                            <div className="flex justify-between gap-3"><span className="text-xs text-slate-400 shrink-0">No. PO</span><span className="font-semibold text-slate-700 dark:text-slate-200 text-right">{po}</span></div>
-                                            <div className="flex justify-between gap-3"><span className="text-xs text-slate-400 shrink-0">Total</span><span className="font-black text-slate-800 dark:text-white tabular-nums text-right">{formatCurrency(total)}</span></div>
-                                            <div className="flex justify-between gap-3"><span className="text-xs text-slate-400 shrink-0">Diajukan oleh</span><span className="font-semibold text-slate-700 dark:text-slate-200 text-right">{p?.requested_by || (p?._proforma?.requested_by) || '-'}</span></div>
-                                            {invCount > 1 && <div className="flex justify-between gap-3"><span className="text-xs text-slate-400 shrink-0">Invoice</span><span className="font-semibold text-slate-700 dark:text-slate-200 text-right">{invCount} invoice</span></div>}
+                                        <div className="mt-5 space-y-2.5 rounded-2xl bg-stone-50 dark:bg-[#0d0d0d]/50 border border-white/60 dark:border-white/10 p-4 text-sm">
+                                            <div className="flex justify-between gap-3"><span className="text-xs text-stone-400 shrink-0">No Proforma</span><span className="font-semibold text-stone-700 dark:text-white/80 text-right">{proformaNo}</span></div>
+                                            <div className="flex justify-between gap-3"><span className="text-xs text-stone-400 shrink-0">Dealer</span><span className="font-semibold text-stone-700 dark:text-white/80 text-right truncate max-w-[220px]">{dealer}</span></div>
+                                            <div className="flex justify-between gap-3"><span className="text-xs text-stone-400 shrink-0">No. PO</span><span className="font-semibold text-stone-700 dark:text-white/80 text-right">{po}</span></div>
+                                            <div className="flex justify-between gap-3"><span className="text-xs text-stone-400 shrink-0">Total</span><span className="font-black text-stone-800 dark:text-white tabular-nums text-right">{formatCurrency(total)}</span></div>
+                                            <div className="flex justify-between gap-3"><span className="text-xs text-stone-400 shrink-0">Diajukan oleh</span><span className="font-semibold text-stone-700 dark:text-white/80 text-right">{p?.requested_by || (p?._proforma?.requested_by) || '-'}</span></div>
+                                            {invCount > 1 && <div className="flex justify-between gap-3"><span className="text-xs text-stone-400 shrink-0">Invoice</span><span className="font-semibold text-stone-700 dark:text-white/80 text-right">{invCount} invoice</span></div>}
                                         </div>
 
                                         {config.noteLabel && (
                                             <div className="mt-4">
-                                                <label className="block text-xs font-bold text-slate-600 dark:text-white/40 mb-1">{config.noteLabel}</label>
+                                                <label className="block text-xs font-bold text-stone-600 dark:text-white/40 mb-1">{config.noteLabel}</label>
                                                 <Textarea
                                                     autoFocus
                                                     rows={3}
                                                     value={actionModal.notes || ''}
                                                     onChange={e => setActionModal({ ...actionModal, notes: e.target.value })}
                                                     placeholder={config.notePlaceholder}
-                                                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 resize-none"
+                                                    className="w-full px-3 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl text-sm text-stone-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 resize-none"
                                                 />
                                             </div>
                                         )}
@@ -4448,7 +4448,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             <button
                                                 onClick={() => setActionModal(null)}
                                                 disabled={actionModalSaving}
-                                                className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-[#0d0d0d] text-slate-600 dark:text-white/70 text-sm font-semibold hover:bg-slate-200 dark:hover:bg-white/[0.06] disabled:opacity-50"
+                                                className="px-4 py-2.5 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-600 dark:text-white/70 text-sm font-semibold hover:bg-stone-200 dark:hover:bg-white/[0.06] disabled:opacity-50"
                                             >
                                                 Batal
                                             </button>
@@ -4488,7 +4488,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             const rowBusy = actionId === inv?.id;
                             const itemCls = 'w-full flex items-center gap-2.5 px-3 py-2 text-sm text-left rounded-xl transition-colors disabled:opacity-40 disabled:cursor-not-allowed';
                             const ActionBtn = ({ disabled, loading, icon, label, onClick }) => (
-                                <button type="button" disabled={disabled} onClick={onClick} className={`${itemCls} text-slate-600 dark:text-white/70 hover:bg-slate-100 dark:hover:bg-white/[0.06]`}>
+                                <button type="button" disabled={disabled} onClick={onClick} className={`${itemCls} text-stone-600 dark:text-white/70 hover:bg-stone-100 dark:hover:bg-white/[0.06]`}>
                                     {loading ? <RefreshCw size={15} className="animate-spin" /> : icon}
                                     {label}
                                 </button>
@@ -4501,9 +4501,9 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             );
                             return (
                                 <div className="py-0.5 space-y-0.5">
-                                    <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">#{inv?.id} • {inv?.dealer_name || '-'}</div>
+                                    <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-stone-400">#{inv?.id} • {inv?.dealer_name || '-'}</div>
 
-                                    <button type="button" onClick={() => { setActionMenu(null); openDetail(inv); }} className={`${itemCls} text-slate-600 dark:text-white/70 hover:bg-slate-100 dark:hover:bg-white/[0.06]`}>
+                                    <button type="button" onClick={() => { setActionMenu(null); openDetail(inv); }} className={`${itemCls} text-stone-600 dark:text-white/70 hover:bg-stone-100 dark:hover:bg-white/[0.06]`}>
                                         <Eye size={15} /> Lihat Detail
                                     </button>
 
@@ -4583,14 +4583,14 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                     {(inv?.proforma_no || prof?.proforma_no) && (
                                         <>
                                             {/* Toggle Digital Sign — pakai TTD digital jika atasan tidak ada */}
-                                            <div className="flex items-center justify-between gap-3 px-3 py-2 text-[13px] font-semibold text-slate-600 dark:text-white/70" title="Aktifkan untuk menempelkan TTD digital di atas garis SHOGO DATE pada PDF">
+                                            <div className="flex items-center justify-between gap-3 px-3 py-2 text-[13px] font-semibold text-stone-600 dark:text-white/70" title="Aktifkan untuk menempelkan TTD digital di atas garis SHOGO DATE pada PDF">
                                                 <span className="flex items-center gap-2"><PenLine size={15} className={digitalSign ? 'text-blue-600 dark:text-blue-400' : ''} /> Digital Sign</span>
                                                 <button
                                                     type="button"
                                                     role="switch"
                                                     aria-checked={digitalSign}
                                                     onClick={toggleDigitalSign}
-                                                    className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${digitalSign ? 'bg-blue-600' : 'bg-slate-300 dark:bg-slate-600'}`}
+                                                    className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${digitalSign ? 'bg-blue-600' : 'bg-stone-300 dark:bg-[#1a1a1a]'}`}
                                                 >
                                                     <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${digitalSign ? 'translate-x-[19px]' : 'translate-x-[3px]'}`} />
                                                 </button>
@@ -4599,7 +4599,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         </>
                                     )}
 
-                                    <button type="button" onClick={() => { setActionMenu(null); openAudit(inv); }} className={`${itemCls} text-slate-600 dark:text-white/70 hover:bg-slate-100 dark:hover:bg-white/[0.06]`}>
+                                    <button type="button" onClick={() => { setActionMenu(null); openAudit(inv); }} className={`${itemCls} text-stone-600 dark:text-white/70 hover:bg-stone-100 dark:hover:bg-white/[0.06]`}>
                                         <History size={15} /> Riwayat / Audit
                                     </button>
 

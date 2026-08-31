@@ -97,15 +97,15 @@ export default function TaxObjectForm({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
                 <Card className={`relative ${showObjectDropdown ? 'z-30' : 'z-10'}`}>
-                    <div className="flex justify-between items-center mb-6 border-b pb-2 dark:border-gray-700">
-                        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                    <div className="flex justify-between items-center mb-6 border-b pb-2 dark:border-stone-700">
+                        <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-200 flex items-center gap-2">
                             <User size={20} className="text-blue-600" /> Data Subjek & Objek Pajak
                         </h3>
                         <div className="flex gap-2">
-                            <button onClick={handleDownloadMasterTemplate} className="text-xs flex items-center gap-1 text-gray-500 hover:text-blue-600 transition-colors">
+                            <button onClick={handleDownloadMasterTemplate} className="text-xs flex items-center gap-1 text-stone-500 hover:text-blue-600 transition-colors">
                                 <Download size={14} /> Template Master
                             </button>
-                            {canCreate && <button onClick={() => masterFileInputRef.current.click()} className="text-xs flex items-center gap-1 text-gray-500 hover:text-blue-600 transition-colors">
+                            {canCreate && <button onClick={() => masterFileInputRef.current.click()} className="text-xs flex items-center gap-1 text-stone-500 hover:text-blue-600 transition-colors">
                                 <Upload size={14} /> Import Master
                             </button>}
                             <input type="file" ref={masterFileInputRef} onChange={handleImportMaster} accept=".xlsx, .xls" className="hidden" />
@@ -114,27 +114,27 @@ export default function TaxObjectForm({
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Jenis Identitas</label>
-                            <select name="idType" value={formData.idType} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white">
+                            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">Jenis Identitas</label>
+                            <select name="idType" value={formData.idType} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white">
                                 <option value="NPWP">NPWP</option>
                                 <option value="KTP">KTP (NIK)</option>
                             </select>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nomor Identitas</label>
-                            <input type="text" name="identityNumber" value={formData.identityNumber} onChange={handleInputChange} disabled={isReadOnly} maxLength={16} placeholder="16 digit angka" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" />
+                            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">Nomor Identitas</label>
+                            <input type="text" name="identityNumber" value={formData.identityNumber} onChange={handleInputChange} disabled={isReadOnly} maxLength={16} placeholder="16 digit angka" className="w-full px-4 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" />
                         </div>
                         <div className="md:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Wajib Pajak</label>
-                            <input type="text" name="name" value={formData.name} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" placeholder="Nama Lengkap / Badan Usaha" />
+                            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">Nama Wajib Pajak</label>
+                            <input type="text" name="name" value={formData.name} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" placeholder="Nama Lengkap / Badan Usaha" />
                         </div>
                         <div className="md:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Wajib Pajak</label>
-                            <input type="email" name="email" value={formData.email} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" placeholder="contoh@email.com" />
+                            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">Email Wajib Pajak</label>
+                            <input type="email" name="email" value={formData.email} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" placeholder="contoh@email.com" />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Jenis Pajak</label>
-                            <select name="taxType" value={formData.taxType} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white">
+                            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">Jenis Pajak</label>
+                            <select name="taxType" value={formData.taxType} onChange={handleInputChange} disabled={isReadOnly} className="w-full px-4 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white">
                                 <option value="23" disabled={formData.idType === 'KTP'}>PPh 23 {formData.idType === 'KTP' ? '(Hanya NPWP)' : ''}</option>
                                 <option value="4(2)">PPh 4(2)</option>
                                 <option value="21">PPh 21</option>
@@ -142,24 +142,24 @@ export default function TaxObjectForm({
                             </select>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kode Objek Pajak</label>
-                            <input type="text" name="taxObjectCode" value={formData.taxObjectCode} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-gray-50 dark:bg-[#0d0d0d] outline-none dark:text-gray-300 cursor-not-allowed" placeholder="Auto-fill" readOnly />
+                            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">Kode Objek Pajak</label>
+                            <input type="text" name="taxObjectCode" value={formData.taxObjectCode} className="w-full px-4 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-stone-50 dark:bg-[#0d0d0d] outline-none dark:text-stone-300 cursor-not-allowed" placeholder="Auto-fill" readOnly />
                         </div>
                         <div className="md:col-span-2 relative">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Objek Pajak (Cari & Pilih)</label>
-                            <input type="text" name="taxObjectName" value={formData.taxObjectName} onChange={(e) => { if (isReadOnly) return; handleInputChange(e); setShowObjectDropdown(true); }} onFocus={() => !isReadOnly && setShowObjectDropdown(true)} onBlur={() => setTimeout(() => setShowObjectDropdown(false), 200)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" placeholder="Ketik untuk mencari..." autoComplete="off" />
+                            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">Nama Objek Pajak (Cari & Pilih)</label>
+                            <input type="text" name="taxObjectName" value={formData.taxObjectName} onChange={(e) => { if (isReadOnly) return; handleInputChange(e); setShowObjectDropdown(true); }} onFocus={() => !isReadOnly && setShowObjectDropdown(true)} onBlur={() => setTimeout(() => setShowObjectDropdown(false), 200)} className="w-full px-4 py-2.5 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white" placeholder="Ketik untuk mencari..." autoComplete="off" />
                             {showObjectDropdown && (
-                                <div className="absolute z-50 w-full mt-1 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-gray-200 dark:border-white/[0.06] rounded-xl shadow-xl max-h-60 overflow-y-auto">
+                                <div className="absolute z-50 w-full mt-1 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06] rounded-xl shadow-xl max-h-60 overflow-y-auto">
                                     {masterData.filter(item => String(item.tax_type) === String(formData.taxType) && ((item.name || '').toLowerCase().includes((formData.taxObjectName || '').toLowerCase()) || (item.code || '').toLowerCase().includes((formData.taxObjectName || '').toLowerCase()))).map((item) => (
-                                        <button key={item.id} className="w-full text-left px-4 py-3 hover:bg-blue-50 dark:hover:bg-white/[0.06] transition-colors border-b border-gray-100 dark:border-white/[0.06] last:border-0" onClick={() => {
+                                        <button key={item.id} className="w-full text-left px-4 py-3 hover:bg-blue-50 dark:hover:bg-white/[0.06] transition-colors border-b border-stone-100 dark:border-white/[0.06] last:border-0" onClick={() => {
                                             const isPph21 = String(item.tax_type) === '21';
                                             setFormData(prev => ({ ...prev, taxObjectName: item.name, taxObjectCode: item.code, taxType: item.tax_type, isPph21BukanPegawai: isPph21, usePpn: !isPph21 }));
                                             setCalcData(prev => ({ ...prev, rate: item.rate ?? prev.rate, isPph21BukanPegawai: isPph21, usePpn: !isPph21 }));
                                             setShowObjectDropdown(false);
                                         }}>
-                                            <div className="font-medium text-gray-800 dark:text-gray-200">{item.name}</div>
-                                            <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
-                                                <span className="bg-gray-100 dark:bg-[#0d0d0d] px-1.5 py-0.5 rounded font-mono">{item.code}</span>
+                                            <div className="font-medium text-stone-800 dark:text-stone-200">{item.name}</div>
+                                            <div className="flex items-center gap-2 text-xs text-stone-500 mt-1">
+                                                <span className="bg-stone-100 dark:bg-[#0d0d0d] px-1.5 py-0.5 rounded font-mono">{item.code}</span>
                                                 <span className="text-blue-500 font-medium">PPh {item.tax_type}</span>
                                                 {item.rate !== undefined && <span className="bg-blue-100 dark:bg-blue-900/40 px-1.5 py-0.5 rounded text-blue-700 dark:text-blue-300 font-bold ml-auto">{item.rate}%</span>}
                                             </div>
@@ -185,7 +185,7 @@ export default function TaxObjectForm({
                 />
 
                 {!isReadOnly && <div className="flex justify-end gap-3">
-                    {editingId && <button onClick={() => { setEditingId(null); setFormData({ idType: 'NPWP', identityNumber: '', name: '', email: '', taxType: '23', taxObjectCode: '', taxObjectName: '', markupMode: 'none', isPph21BukanPegawai: false, usePpn: true }); setCalcData({ dpp: 0, rate: 0, pph: 0, ppn: 0, totalPayable: 0, discount: 0, dppNet: 0, markupMode: 'none', isPph21BukanPegawai: false, usePpn: true }); }} className="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-xl transition-all">Batal Edit</button>}
+                    {editingId && <button onClick={() => { setEditingId(null); setFormData({ idType: 'NPWP', identityNumber: '', name: '', email: '', taxType: '23', taxObjectCode: '', taxObjectName: '', markupMode: 'none', isPph21BukanPegawai: false, usePpn: true }); setCalcData({ dpp: 0, rate: 0, pph: 0, ppn: 0, totalPayable: 0, discount: 0, dppNet: 0, markupMode: 'none', isPph21BukanPegawai: false, usePpn: true }); }} className="px-6 py-3 bg-stone-500 hover:bg-stone-600 text-white font-bold rounded-xl transition-all">Batal Edit</button>}
                     <button onClick={handleSave} disabled={isLoading || !formData.identityNumber || !formData.name} className="px-6 py-3 bg-blue-600 hover:opacity-95 text-white font-bold rounded-xl flex items-center gap-2 shadow-lg transition-all disabled:opacity-50">
                         <Save size={20} /> {isLoading ? 'Menyimpan...' : editingId ? 'Update Data' : 'Simpan Data to Database WP'}
                     </button>
@@ -193,34 +193,34 @@ export default function TaxObjectForm({
             </div>
 
             <div className="space-y-6">
-                <Card className="bg-slate-50 dark:bg-[#0d0d0d] border-dashed border-2 border-slate-200 dark:border-white/[0.06] h-full flex flex-col justify-center items-center text-center p-8 text-gray-500">
-                    <FileText size={48} className="mb-4 text-slate-300" />
+                <Card className="bg-stone-50 dark:bg-[#0d0d0d] border-dashed border-2 border-stone-200 dark:border-white/[0.06] h-full flex flex-col justify-center items-center text-center p-8 text-stone-500">
+                    <FileText size={48} className="mb-4 text-stone-300" />
                     <p className="font-medium">Summary Data</p>
                     {(calcData.dpp > 0 || formData.name) && (
-                        <div className="w-full text-left bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl p-4 rounded-lg shadow-sm border border-gray-100 dark:border-white/[0.06] text-sm space-y-2 mt-4">
-                            <div className="flex justify-between"><span className="text-gray-500">Nama:</span><span className="font-medium">{formData.name || '-'}</span></div>
-                            <div className="flex justify-between"><span className="text-gray-500">Jenis:</span><span className="font-medium">PPh {formData.taxType}</span></div>
-                            <div className="flex justify-between"><span className="text-gray-500">Total Diterima:</span><span className="font-bold text-emerald-600">{formatCurrency(calcData.totalPayable)}</span></div>
-                            <div className="flex justify-between border-t border-gray-100 dark:border-white/[0.06] pt-2 mt-1">
-                                <span className="text-gray-500">DPP + PPN:</span>
+                        <div className="w-full text-left bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl p-4 rounded-lg shadow-sm border border-stone-100 dark:border-white/[0.06] text-sm space-y-2 mt-4">
+                            <div className="flex justify-between"><span className="text-stone-500">Nama:</span><span className="font-medium">{formData.name || '-'}</span></div>
+                            <div className="flex justify-between"><span className="text-stone-500">Jenis:</span><span className="font-medium">PPh {formData.taxType}</span></div>
+                            <div className="flex justify-between"><span className="text-stone-500">Total Diterima:</span><span className="font-bold text-emerald-600">{formatCurrency(calcData.totalPayable)}</span></div>
+                            <div className="flex justify-between border-t border-stone-100 dark:border-white/[0.06] pt-2 mt-1">
+                                <span className="text-stone-500">DPP + PPN:</span>
                                 <span className="font-bold text-blue-600">{formatCurrency((calcData.calculationDpp || 0) + (calcData.ppn || 0))}</span>
                             </div>
                             <div className="flex justify-between">
-                                <span className="text-gray-500">DPP - PPh:</span>
+                                <span className="text-stone-500">DPP - PPh:</span>
                                 <span className="font-bold text-rose-600">{formatCurrency((calcData.calculationDpp || 0) - (calcData.pph || 0))}</span>
                             </div>
                             {calcData.markupMode !== 'none' && (
                                 <div className="flex justify-between">
-                                    <span className="text-gray-500">Gross Up:</span>
+                                    <span className="text-stone-500">Gross Up:</span>
                                     <span className="font-bold text-blue-600 uppercase">{calcData.markupMode}</span>
                                 </div>
                             )}
                             {calcData.breakdown && calcData.breakdown.length > 0 && (
-                                <div className="mt-4 pt-3 border-t border-dashed border-gray-200 dark:border-white/[0.06]">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Detail Penjumlah:</p>
+                                <div className="mt-4 pt-3 border-t border-dashed border-stone-200 dark:border-white/[0.06]">
+                                    <p className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em] mb-3">Detail Penjumlah:</p>
                                     <div className="space-y-2">
                                         {calcData.breakdown.map((item, i) => (
-                                            <div key={i} className="bg-slate-50 dark:bg-[#0d0d0d]/50 p-2 rounded-lg text-[11px]">
+                                            <div key={i} className="bg-stone-50 dark:bg-[#0d0d0d]/50 p-2 rounded-lg text-[11px]">
                                                 <div className="flex justify-between font-bold">
                                                     <span>Item {i + 1}</span>
                                                     <span>{formatCurrency(item.value)}</span>

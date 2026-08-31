@@ -81,8 +81,8 @@ export default function TaxAnalytics({ taxSummaries = [], taxAudits = [] }) {
                         <TrendingUp size={20} className="text-blue-600 dark:text-blue-400" />
                     </div>
                     <div>
-                        <h3 className="font-bold text-gray-900 dark:text-white">Tren Perpajakan</h3>
-                        <p className="text-xs text-gray-500">PPh Terutang vs PPN Netto (KB/LB)</p>
+                        <h3 className="font-bold text-stone-900 dark:text-white">Tren Perpajakan</h3>
+                        <p className="text-xs text-stone-500">PPh Terutang vs PPN Netto (KB/LB)</p>
                     </div>
                 </div>
                 <div className="h-[300px] w-full relative">
@@ -120,8 +120,8 @@ export default function TaxAnalytics({ taxSummaries = [], taxAudits = [] }) {
                         <Activity size={20} className="text-emerald-600 dark:text-emerald-400" />
                     </div>
                     <div>
-                        <h3 className="font-bold text-gray-900 dark:text-white">Status Pemeriksaan</h3>
-                        <p className="text-xs text-gray-500">Distribusi status audit pajak berjalan</p>
+                        <h3 className="font-bold text-stone-900 dark:text-white">Status Pemeriksaan</h3>
+                        <p className="text-xs text-stone-500">Distribusi status audit pajak berjalan</p>
                     </div>
                 </div>
                 <div className="h-[300px] w-full flex items-center justify-center relative">
@@ -146,7 +146,7 @@ export default function TaxAnalytics({ taxSummaries = [], taxAudits = [] }) {
                             </PieChart>
                         </ResponsiveContainer>
                     ) : (
-                        <div className="text-center text-gray-400">
+                        <div className="text-center text-stone-400">
                             <p>Belum ada data audit.</p>
                         </div>
                     )}
@@ -160,8 +160,8 @@ export default function TaxAnalytics({ taxSummaries = [], taxAudits = [] }) {
                         <FileBarChart size={20} className="text-blue-600 dark:text-blue-400" />
                     </div>
                     <div>
-                        <h3 className="font-bold text-gray-900 dark:text-white">Komparasi PPN Bulanan</h3>
-                        <p className="text-xs text-gray-500">Perbandingan PPN Masukan (Input) vs Keluaran (Output)</p>
+                        <h3 className="font-bold text-stone-900 dark:text-white">Komparasi PPN Bulanan</h3>
+                        <p className="text-xs text-stone-500">Perbandingan PPN Masukan (Input) vs Keluaran (Output)</p>
                     </div>
                 </div>
                 <div className="h-[250px] w-full relative">

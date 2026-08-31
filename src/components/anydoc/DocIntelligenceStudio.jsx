@@ -217,9 +217,9 @@ export default function DocIntelligenceStudio({ files, results, isDarkMode, onUp
     const fail = (results || []).length - ok;
 
     const dark = isDarkMode;
-    const card = `rounded-2xl border ${dark ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`;
-    const label = `text-[10px] font-black uppercase tracking-widest ${dark ? 'text-white/40' : 'text-slate-400'}`;
-    const inp = `w-full px-2 py-1 rounded-lg text-[11px] border outline-none transition-colors ${dark ? 'bg-white/5 border-white/10 text-white focus:border-cyan-500/60' : 'bg-white border-slate-200 text-slate-700 focus:border-cyan-400'}`;
+    const card = `rounded-2xl border ${dark ? 'bg-white/5 border-white/10' : 'bg-white border-stone-200 shadow-sm'}`;
+    const label = `text-[10px] font-black uppercase tracking-widest ${dark ? 'text-white/40' : 'text-stone-400'}`;
+    const inp = `w-full px-2 py-1 rounded-lg text-[11px] border outline-none transition-colors ${dark ? 'bg-white/5 border-white/10 text-white focus:border-cyan-500/60' : 'bg-white border-stone-200 text-stone-700 focus:border-cyan-400'}`;
     const chipBase = `inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-bold border transition-all`;
 
     return (
@@ -231,8 +231,8 @@ export default function DocIntelligenceStudio({ files, results, isDarkMode, onUp
                         <Scan size={15} className="text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className={`text-xs font-bold ${dark ? 'text-white' : 'text-slate-700'}`}>AI Document Intelligence</p>
-                        <p className={`text-[10px] ${dark ? 'text-white/40' : 'text-slate-400'}`}>
+                        <p className={`text-xs font-bold ${dark ? 'text-white' : 'text-stone-700'}`}>AI Document Intelligence</p>
+                        <p className={`text-[10px] ${dark ? 'text-white/40' : 'text-stone-400'}`}>
                             {ok} berhasil • {fail} gagal • klik field untuk menyorot posisinya di dokumen
                         </p>
                     </div>
@@ -252,7 +252,7 @@ export default function DocIntelligenceStudio({ files, results, isDarkMode, onUp
                         <button key={i} onClick={() => { setActiveIdx(i); setPageNum(1); setActiveKey(null); setDocIdx(0); }}
                             className={`${chipBase} flex-shrink-0 max-w-[220px] ${activeIdx === i
                                 ? dark ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-300' : 'bg-cyan-50 border-cyan-300 text-cyan-700'
-                                : dark ? 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'}`}>
+                                : dark ? 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10' : 'bg-white border-stone-200 text-stone-500 hover:bg-stone-50'}`}>
                             {r?.success ? <CheckCircle2 size={12} className={dark ? 'text-emerald-300' : 'text-emerald-500'} /> : <AlertCircle size={12} className="text-rose-500" />}
                             <span className="truncate">{r?.filename || `File ${i + 1}`}</span>
                             {r?.documents?.length > 1 && (
@@ -265,14 +265,14 @@ export default function DocIntelligenceStudio({ files, results, isDarkMode, onUp
                 {/* Chips dokumen (PDF bulk: 1 file = banyak nota retur) */}
                 {hasDocs && (
                     <div className="flex gap-1.5 mt-2 overflow-x-auto pb-1 border-t pt-2.5" style={{ borderColor: dark ? 'rgba(255,255,255,0.08)' : 'rgba(226,232,240,1)' }}>
-                        <span className={`text-[9px] font-black uppercase tracking-widest self-center flex-shrink-0 ${dark ? 'text-white/30' : 'text-slate-400'}`}>Dokumen</span>
+                        <span className={`text-[9px] font-black uppercase tracking-widest self-center flex-shrink-0 ${dark ? 'text-white/30' : 'text-stone-400'}`}>Dokumen</span>
                         {docs.map((d, i) => (
                             <button key={i} onClick={() => { setDocIdx(i); setPageNum(d.pageStart || 1); setActiveKey(null); }}
                                 className={`${chipBase} flex-shrink-0 max-w-[240px] ${curDocIdx === i
                                     ? dark ? 'bg-blue-500/25 border-blue-500/50 text-blue-200' : 'bg-blue-50 border-blue-300 text-blue-700'
-                                    : dark ? 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'}`}>
+                                    : dark ? 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10' : 'bg-white border-stone-200 text-stone-500 hover:bg-stone-50'}`}>
                                 <span className="truncate">#{i + 1}{d.value ? ` • ${d.value}` : ''}</span>
-                                <span className={`text-[9px] flex-shrink-0 ${dark ? 'text-white/30' : 'text-slate-400'}`}>
+                                <span className={`text-[9px] flex-shrink-0 ${dark ? 'text-white/30' : 'text-stone-400'}`}>
                                     {d.pageStart === d.pageEnd ? `hal ${d.pageStart}` : `hal ${d.pageStart}-${d.pageEnd}`}
                                 </span>
                             </button>
@@ -297,33 +297,33 @@ export default function DocIntelligenceStudio({ files, results, isDarkMode, onUp
             {!result || !result.success ? (
                 <div className={`rounded-2xl border-2 border-dashed p-10 text-center ${dark ? 'border-rose-500/30 bg-rose-500/5' : 'border-rose-200 bg-rose-50/40'}`}>
                     <AlertCircle size={28} className="mx-auto mb-2 text-rose-500" />
-                    <p className={`text-sm font-bold ${dark ? 'text-white/80' : 'text-slate-600'}`}>{result?.error || 'Tidak ada hasil untuk file ini.'}</p>
+                    <p className={`text-sm font-bold ${dark ? 'text-white/80' : 'text-stone-600'}`}>{result?.error || 'Tidak ada hasil untuk file ini.'}</p>
                 </div>
             ) : (
                 <div className="grid lg:grid-cols-[minmax(0,1fr)_360px] gap-4 items-start">
                     {/* ── Dokumen + overlay ── */}
                     <div className={card + ' overflow-hidden'}>
                         {/* kontrol halaman & zoom */}
-                        <div className={`flex items-center gap-2 px-3 py-2 border-b ${dark ? 'border-white/10' : 'border-slate-100'}`}>
+                        <div className={`flex items-center gap-2 px-3 py-2 border-b ${dark ? 'border-white/10' : 'border-stone-100'}`}>
                             <div className="flex items-center gap-1">
                                 <button onClick={() => setPageNum(p => Math.max(1, p - 1))} disabled={pageNum <= 1}
-                                    className={`p-1.5 rounded-lg transition-colors ${dark ? 'hover:bg-white/10 text-white/60 disabled:opacity-20' : 'hover:bg-slate-100 text-slate-500 disabled:opacity-20'}`}><ChevronLeft size={14} /></button>
-                                <span className={`text-[11px] font-bold min-w-[52px] text-center ${dark ? 'text-white/70' : 'text-slate-600'}`}>{pageNum} / {pdfDoc?.numPages || result.pages || 1}</span>
+                                    className={`p-1.5 rounded-lg transition-colors ${dark ? 'hover:bg-white/10 text-white/60 disabled:opacity-20' : 'hover:bg-stone-100 text-stone-500 disabled:opacity-20'}`}><ChevronLeft size={14} /></button>
+                                <span className={`text-[11px] font-bold min-w-[52px] text-center ${dark ? 'text-white/70' : 'text-stone-600'}`}>{pageNum} / {pdfDoc?.numPages || result.pages || 1}</span>
                                 <button onClick={() => setPageNum(p => Math.min(pdfDoc?.numPages || result.pages || 1, p + 1))} disabled={pageNum >= (pdfDoc?.numPages || result.pages || 1)}
-                                    className={`p-1.5 rounded-lg transition-colors ${dark ? 'hover:bg-white/10 text-white/60 disabled:opacity-20' : 'hover:bg-slate-100 text-slate-500 disabled:opacity-20'}`}><ChevronRight size={14} /></button>
+                                    className={`p-1.5 rounded-lg transition-colors ${dark ? 'hover:bg-white/10 text-white/60 disabled:opacity-20' : 'hover:bg-stone-100 text-stone-500 disabled:opacity-20'}`}><ChevronRight size={14} /></button>
                             </div>
                             <div className="flex items-center gap-1 ml-auto">
-                                <button onClick={() => setScale(s => Math.max(0.5, s - 0.2))} className={`p-1.5 rounded-lg ${dark ? 'hover:bg-white/10 text-white/60' : 'hover:bg-slate-100 text-slate-500'}`}><ZoomOut size={14} /></button>
-                                <span className={`text-[10px] font-bold min-w-[42px] text-center ${dark ? 'text-white/40' : 'text-slate-400'}`}>{Math.round(scale * 100)}%</span>
-                                <button onClick={() => setScale(s => Math.min(3, s + 0.2))} className={`p-1.5 rounded-lg ${dark ? 'hover:bg-white/10 text-white/60' : 'hover:bg-slate-100 text-slate-500'}`}><ZoomIn size={14} /></button>
+                                <button onClick={() => setScale(s => Math.max(0.5, s - 0.2))} className={`p-1.5 rounded-lg ${dark ? 'hover:bg-white/10 text-white/60' : 'hover:bg-stone-100 text-stone-500'}`}><ZoomOut size={14} /></button>
+                                <span className={`text-[10px] font-bold min-w-[42px] text-center ${dark ? 'text-white/40' : 'text-stone-400'}`}>{Math.round(scale * 100)}%</span>
+                                <button onClick={() => setScale(s => Math.min(3, s + 0.2))} className={`p-1.5 rounded-lg ${dark ? 'hover:bg-white/10 text-white/60' : 'hover:bg-stone-100 text-stone-500'}`}><ZoomIn size={14} /></button>
                             </div>
                         </div>
 
-                        <div ref={canvasWrapRef} className={`overflow-auto p-4 flex justify-center ${dark ? 'bg-[#0b0e1a]' : 'bg-slate-100'}`} style={{ maxHeight: '70vh' }}>
+                        <div ref={canvasWrapRef} className={`overflow-auto p-4 flex justify-center ${dark ? 'bg-[#0b0e1a]' : 'bg-stone-100'}`} style={{ maxHeight: '70vh' }}>
                             {loading && (
                                 <div className="py-16 flex flex-col items-center gap-2">
                                     <Loader2 size={24} className="animate-spin text-cyan-500" />
-                                    <p className={`text-xs font-bold ${dark ? 'text-white/50' : 'text-slate-400'}`}>Memuat dokumen…</p>
+                                    <p className={`text-xs font-bold ${dark ? 'text-white/50' : 'text-stone-400'}`}>Memuat dokumen…</p>
                                 </div>
                             )}
                             {!loading && /\.pdf$/i.test(file?.name || '') && pageDims && (
@@ -386,7 +386,7 @@ export default function DocIntelligenceStudio({ files, results, isDarkMode, onUp
                                 </div>
                             )}
                             {!loading && !/\.pdf$/i.test(file?.name || '') && (
-                                <div className={`py-12 text-center text-xs ${dark ? 'text-white/40' : 'text-slate-400'}`}>
+                                <div className={`py-12 text-center text-xs ${dark ? 'text-white/40' : 'text-stone-400'}`}>
                                     Preview visual hanya untuk PDF — data tetap bisa diperiksa di panel Field / Tabel.
                                 </div>
                             )}
@@ -395,17 +395,17 @@ export default function DocIntelligenceStudio({ files, results, isDarkMode, onUp
 
                     {/* ── Panel Field / Tabel (ala Azure) ── */}
                     <div className="space-y-3">
-                        <div className={`inline-flex p-1 rounded-xl border gap-1 ${dark ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-sm'}`}>
+                        <div className={`inline-flex p-1 rounded-xl border gap-1 ${dark ? 'bg-white/5 border-white/10' : 'bg-white border-stone-200 shadow-sm'}`}>
                             <button onClick={() => setTab('fields')}
                                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[11px] font-bold transition-all ${tab === 'fields'
                                     ? dark ? 'bg-cyan-500/20 text-cyan-300' : 'bg-cyan-50 text-cyan-700'
-                                    : dark ? 'text-white/50 hover:text-white/90' : 'text-slate-500 hover:text-slate-800'}`}>
+                                    : dark ? 'text-white/50 hover:text-white/90' : 'text-stone-500 hover:text-stone-800'}`}>
                                 <ListChecks size={13} /> Field ({regions.length})
                             </button>
                             <button onClick={() => setTab('table')}
                                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[11px] font-bold transition-all ${tab === 'table'
                                     ? dark ? 'bg-cyan-500/20 text-cyan-300' : 'bg-cyan-50 text-cyan-700'
-                                    : dark ? 'text-white/50 hover:text-white/90' : 'text-slate-500 hover:text-slate-800'}`}>
+                                    : dark ? 'text-white/50 hover:text-white/90' : 'text-stone-500 hover:text-stone-800'}`}>
                                 <Table2 size={13} /> Tabel ({doc.items?.length || 0})
                             </button>
                         </div>
@@ -414,12 +414,12 @@ export default function DocIntelligenceStudio({ files, results, isDarkMode, onUp
                             <div className={card + ' p-3'}>
                                 <div className="flex items-center justify-between mb-2">
                                     <p className={label + ' mb-0'}>Field Terdeteksi</p>
-                                    <span className={`text-[9px] ${dark ? 'text-white/30' : 'text-slate-300'}`}>
+                                    <span className={`text-[9px] ${dark ? 'text-white/30' : 'text-stone-300'}`}>
                                         <span className="text-emerald-500">●</span> ≥90% <span className="text-amber-500 mx-1">●</span> 70-89% <span className="text-rose-500 mx-1">●</span> &lt;70%
                                     </span>
                                 </div>
                                 {pageRegions.length === 0 && (
-                                    <p className={`text-[11px] italic ${dark ? 'text-white/30' : 'text-slate-300'}`}>Tidak ada field terdeteksi di halaman ini.</p>
+                                    <p className={`text-[11px] italic ${dark ? 'text-white/30' : 'text-stone-300'}`}>Tidak ada field terdeteksi di halaman ini.</p>
                                 )}
                                 <div className="space-y-1.5 max-h-[52vh] overflow-y-auto pr-1">
                                     {pageRegions.map((r, i) => {
@@ -434,20 +434,20 @@ export default function DocIntelligenceStudio({ files, results, isDarkMode, onUp
                                                 onMouseLeave={() => setHoverKey(null)}
                                                 className={`rounded-xl border p-2.5 cursor-pointer transition-all ${isActive
                                                     ? dark ? 'bg-cyan-500/10 border-cyan-500/40' : 'bg-cyan-50 border-cyan-300'
-                                                    : dark ? 'bg-white/5 border-white/10 hover:border-white/25' : 'bg-slate-50 border-slate-100 hover:border-slate-300'}`}>
+                                                    : dark ? 'bg-white/5 border-white/10 hover:border-white/25' : 'bg-stone-50 border-stone-100 hover:border-stone-300'}`}>
                                                 <div className="flex items-center gap-1.5 mb-1.5">
                                                     <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: color }} />
-                                                    <span className={`text-[10px] font-bold uppercase tracking-wider flex-1 truncate ${dark ? 'text-white/60' : 'text-slate-400'}`}>{r.label}</span>
+                                                    <span className={`text-[10px] font-bold uppercase tracking-wider flex-1 truncate ${dark ? 'text-white/60' : 'text-stone-400'}`}>{r.label}</span>
                                                     <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full`} style={{ background: `${c}22`, color: c }}>{fmtConf(r.confidence)}</span>
                                                 </div>
                                                 <input value={val} onClick={e => e.stopPropagation()}
                                                     onChange={e => setFieldValue(r.key, e.target.value)}
                                                     className={inp} />
                                                 <div className="flex items-center gap-1.5 mt-1.5">
-                                                    <div className="h-1 flex-1 rounded-full bg-slate-500/20 overflow-hidden">
+                                                    <div className="h-1 flex-1 rounded-full bg-stone-500/20 overflow-hidden">
                                                         <div className="h-full rounded-full transition-all" style={{ width: fmtConf(r.confidence), background: c }} />
                                                     </div>
-                                                    <span className={`text-[9px] ${dark ? 'text-white/30' : 'text-slate-400'}`}>{confLabel(r.confidence)} • hal {r.page}</span>
+                                                    <span className={`text-[9px] ${dark ? 'text-white/30' : 'text-stone-400'}`}>{confLabel(r.confidence)} • hal {r.page}</span>
                                                 </div>
                                             </div>
                                         );
@@ -464,30 +464,30 @@ export default function DocIntelligenceStudio({ files, results, isDarkMode, onUp
 
                         {tab === 'table' && (
                             <div className={card + ' overflow-hidden'}>
-                                <div className={`px-3 py-2 border-b flex items-center gap-1.5 ${dark ? 'border-white/10' : 'border-slate-100'}`}>
+                                <div className={`px-3 py-2 border-b flex items-center gap-1.5 ${dark ? 'border-white/10' : 'border-stone-100'}`}>
                                     <Table2 size={13} className={dark ? 'text-cyan-300' : 'text-cyan-600'} />
-                                    <span className={`text-[10px] font-black uppercase tracking-widest ${dark ? 'text-white/40' : 'text-slate-400'}`}>
+                                    <span className={`text-[10px] font-black uppercase tracking-widest ${dark ? 'text-white/40' : 'text-stone-400'}`}>
                                         Item Barang {table?.found ? `• hal ${table.page}` : '— tidak terdeteksi'}
                                     </span>
                                 </div>
                                 <div className="overflow-x-auto max-h-[52vh]">
                                     <table className="w-full text-left text-[11px]">
                                         <thead>
-                                            <tr className={`border-b ${dark ? 'border-white/10' : 'border-slate-100'}`}>
-                                                <th className={`px-2.5 py-2 text-[9px] font-black uppercase ${dark ? 'text-white/40' : 'text-slate-400'}`}>No</th>
+                                            <tr className={`border-b ${dark ? 'border-white/10' : 'border-stone-100'}`}>
+                                                <th className={`px-2.5 py-2 text-[9px] font-black uppercase ${dark ? 'text-white/40' : 'text-stone-400'}`}>No</th>
                                                 {(table?.columns || []).map((c, i) => (
-                                                    <th key={i} className={`px-2.5 py-2 text-[9px] font-black uppercase whitespace-nowrap ${dark ? 'text-white/40' : 'text-slate-400'}`}>{c.label}</th>
+                                                    <th key={i} className={`px-2.5 py-2 text-[9px] font-black uppercase whitespace-nowrap ${dark ? 'text-white/40' : 'text-stone-400'}`}>{c.label}</th>
                                                 ))}
                                                 {(table?.columns || []).length === 0 && (doc.items?.[0] ? Object.keys(doc.items[0]) : []).map((k, i) => (
-                                                    <th key={i} className={`px-2.5 py-2 text-[9px] font-black uppercase whitespace-nowrap ${dark ? 'text-white/40' : 'text-slate-400'}`}>{k}</th>
+                                                    <th key={i} className={`px-2.5 py-2 text-[9px] font-black uppercase whitespace-nowrap ${dark ? 'text-white/40' : 'text-stone-400'}`}>{k}</th>
                                                 ))}
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {(doc.items || []).map((it, ii) => (
                                                 <tr key={ii} onClick={() => onSelectRow(ii)}
-                                                    className={`border-b cursor-pointer transition-colors ${dark ? 'border-white/5 hover:bg-cyan-500/5' : 'border-slate-50 hover:bg-cyan-50/60'}`}>
-                                                    <td className={`px-2.5 py-1.5 ${dark ? 'text-white/40' : 'text-slate-400'}`}>{ii + 1}</td>
+                                                    className={`border-b cursor-pointer transition-colors ${dark ? 'border-white/5 hover:bg-cyan-500/5' : 'border-stone-50 hover:bg-cyan-50/60'}`}>
+                                                    <td className={`px-2.5 py-1.5 ${dark ? 'text-white/40' : 'text-stone-400'}`}>{ii + 1}</td>
                                                     {(table?.columns || []).map((c, ci) => (
                                                         <td key={ci} className="px-1.5 py-1 min-w-[90px]">
                                                             <input value={it?.[c.key] ?? ''} onClick={e => e.stopPropagation()}
@@ -505,13 +505,13 @@ export default function DocIntelligenceStudio({ files, results, isDarkMode, onUp
                                                 </tr>
                                             ))}
                                             {(doc.items || []).length === 0 && (
-                                                <tr><td colSpan={99} className={`px-3 py-3 text-center ${dark ? 'text-white/30' : 'text-slate-400'}`}>Tidak ada baris item.</td></tr>
+                                                <tr><td colSpan={99} className={`px-3 py-3 text-center ${dark ? 'text-white/30' : 'text-stone-400'}`}>Tidak ada baris item.</td></tr>
                                             )}
                                         </tbody>
                                     </table>
                                 </div>
                                 {table?.found && (
-                                    <div className={`px-3 py-2 border-t flex items-center gap-1.5 text-[10px] ${dark ? 'border-white/10 text-white/40' : 'border-slate-100 text-slate-400'}`}>
+                                    <div className={`px-3 py-2 border-t flex items-center gap-1.5 text-[10px] ${dark ? 'border-white/10 text-white/40' : 'border-stone-100 text-stone-400'}`}>
                                         <Layers size={11} /> {table.columns.length} kolom • {(table.rowYs || []).length} baris terdeteksi
                                     </div>
                                 )}

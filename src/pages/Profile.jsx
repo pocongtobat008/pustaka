@@ -113,11 +113,11 @@ export default function Profile({ currentUser, onUpdateProfile }) {
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2 border-b border-blue-100 dark:border-blue-900/30">
                 <div>
-                    <h2 className="text-2xl font-black text-slate-800 dark:text-white flex items-center gap-3">
+                    <h2 className="text-2xl font-black text-stone-800 dark:text-white flex items-center gap-3">
                         <User className="text-blue-500" size={32} />
                         {text.pageTitle}
                     </h2>
-                    <p className="text-gray-500 dark:text-white/40 mt-2 font-medium">
+                    <p className="text-stone-500 dark:text-white/40 mt-2 font-medium">
                         {text.pageSubtitle}
                     </p>
                 </div>
@@ -164,17 +164,17 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                             <h3 className="mt-4 font-bold text-xl text-[#2B3674] dark:text-white text-center">
                                 {currentUser?.name}
                             </h3>
-                            <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mt-1">
+                            <p className="text-xs text-stone-500 uppercase tracking-widest font-bold mt-1">
                                 {currentUser?.role}
                             </p>
 
                             <div className="mt-6 w-full space-y-3">
-                                <div className="flex items-center justify-between text-sm p-3 bg-white/70 dark:bg-[#0d0d0d]/50 backdrop-blur-xl rounded-xl border border-gray-100 dark:border-white/[0.06]">
-                                    <span className="text-gray-500 dark:text-white/40">{text.username}</span>
+                                <div className="flex items-center justify-between text-sm p-3 bg-white/70 dark:bg-[#0d0d0d]/50 backdrop-blur-xl rounded-xl border border-stone-100 dark:border-white/[0.06]">
+                                    <span className="text-stone-500 dark:text-white/40">{text.username}</span>
                                     <span className="font-bold dark:text-white">{currentUser?.username}</span>
                                 </div>
-                                <div className="flex items-center justify-between text-sm p-3 bg-white/70 dark:bg-[#0d0d0d]/50 backdrop-blur-xl rounded-xl border border-gray-100 dark:border-white/[0.06]">
-                                    <span className="text-gray-500 dark:text-white/40">{text.department}</span>
+                                <div className="flex items-center justify-between text-sm p-3 bg-white/70 dark:bg-[#0d0d0d]/50 backdrop-blur-xl rounded-xl border border-stone-100 dark:border-white/[0.06]">
+                                    <span className="text-stone-500 dark:text-white/40">{text.department}</span>
                                     <span className="font-bold dark:text-white">{currentUser?.department || '-'}</span>
                                 </div>
                             </div>
@@ -186,7 +186,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                 <div className="md:col-span-2 space-y-6">
                     {/* Basic Info */}
                     <Card className="p-8">
-                        <div className="flex items-center gap-3 mb-8 border-b border-gray-50 dark:border-slate-800 pb-4">
+                        <div className="flex items-center gap-3 mb-8 border-b border-stone-50 dark:border-white/[0.06] pb-4">
                             <div className="p-2.5 bg-blue-50 dark:bg-blue-900/30 rounded-xl text-blue-600">
                                 <User size={20} />
                             </div>
@@ -203,11 +203,11 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                                         type="text"
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
-                                        className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-[#0d0d0d]/50 backdrop-blur-xl border border-gray-200 dark:border-white/[0.06] rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all dark:text-white font-semibold"
+                                        className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-[#0d0d0d]/50 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06] rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all dark:text-white font-semibold"
                                         placeholder={text.fullNamePlaceholder}
                                         required
                                     />
-                                    <User className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" size={20} />
+                                    <User className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-blue-500 transition-colors" size={20} />
                                 </div>
                             </div>
                         </div>
@@ -215,7 +215,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
 
                     {/* Security Info */}
                     <Card className="p-8">
-                        <div className="flex items-center gap-3 mb-8 border-b border-gray-50 dark:border-slate-800 pb-4">
+                        <div className="flex items-center gap-3 mb-8 border-b border-stone-50 dark:border-white/[0.06] pb-4">
                             <div className="p-2.5 bg-amber-50 dark:bg-amber-900/30 rounded-xl text-amber-600">
                                 <Lock size={20} />
                             </div>
@@ -239,11 +239,11 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                                         type="password"
                                         value={currentPassword}
                                         onChange={(e) => setCurrentPassword(e.target.value)}
-                                        className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-[#0d0d0d]/50 backdrop-blur-xl border border-gray-200 dark:border-white/[0.06] rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all dark:text-white font-semibold"
+                                        className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-[#0d0d0d]/50 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06] rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all dark:text-white font-semibold"
                                         placeholder="••••••••"
                                         required={newPassword.length > 0}
                                     />
-                                    <Lock className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" size={20} />
+                                    <Lock className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-blue-500 transition-colors" size={20} />
                                 </div>
                             </div>
 
@@ -257,7 +257,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                                             type="password"
                                             value={newPassword}
                                             onChange={(e) => setNewPassword(e.target.value)}
-                                            className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-[#0d0d0d]/50 backdrop-blur-xl border border-gray-200 dark:border-white/[0.06] rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all dark:text-white font-semibold"
+                                            className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-[#0d0d0d]/50 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06] rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all dark:text-white font-semibold"
                                             placeholder="••••••••"
                                         />
                                     </div>
@@ -271,7 +271,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                                             type="password"
                                             value={confirmPassword}
                                             onChange={(e) => setConfirmPassword(e.target.value)}
-                                            className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-[#0d0d0d]/50 backdrop-blur-xl border border-gray-200 dark:border-white/[0.06] rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all dark:text-white font-semibold"
+                                            className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-[#0d0d0d]/50 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06] rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all dark:text-white font-semibold"
                                             placeholder="••••••••"
                                         />
                                     </div>
