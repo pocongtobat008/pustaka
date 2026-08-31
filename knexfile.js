@@ -20,6 +20,13 @@ export default {
                 ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false
             };
         })(),
+        pool: {
+            min: 2,
+            max: 20,
+            acquireTimeoutMillis: 30000,
+            idleTimeoutMillis: 60000,
+            propagateCreateError: false
+        },
         migrations: {
             directory: './server/migrations',
             tableName: 'knex_migrations'

@@ -2,6 +2,32 @@ import { knex } from '../db.js';
 import { findCachedReply, saveToCache } from './agentCache.js';
 import brain from './brainService.js';
 
+// ── Concurrency limiter: batasi jumlah LLM call bersamaan ──
+// Agar AI request tidak menghabiskan semua koneksi DB & CPU
+const MAX_CONCURRENT_LLM = 2;
+let activeLLMCalls = 0;
+const llmWaitQueue = [];
+function acquireLLMSemaphore() {
+    return new Promise((resolve) => {
+        const tryAcquire = () => {
+            if (activeLLMCalls < MAX_CONCURRENT_LLM) {
+                activeLLMCalls++;
+                resolve();
+            } else {
+                llmWaitQueue.push(tryAcquire);
+            }
+        };
+        tryAcquire();
+    });
+}
+function releaseLLMSemaphore() {
+    activeLLMCalls--;
+    if (llmWaitQueue.length > 0) {
+        const next = llmWaitQueue.shift();
+        next();
+    }
+}
+
 // ── Self-improvement: log learning asynchronously (fire & forget) ──
 function logLearning(sessionId, message, reply, toolCalls) {
     import('./selfImprovement.js').then(({ logInteraction }) => {
@@ -914,8 +940,8 @@ export function sanitizeApiKey(key) {
 }
 
 const LLM_TIMEOUT_MS = 75000; // timeout agar model yang menggantung (silent drop) tidak membekukan agent
-const MAX_429_RETRIES = 3; // maksimal retry saat kena rate limit
-const BASE_429_DELAY_MS = 2000; // delay awal 2 detik, doubling setiap retry
+const MAX_429_RETRIES = 2; // maksimal retry saat kena rate limit (kurangi agar tidak block lama)
+const BASE_429_DELAY_MS = 1500; // delay awal 1.5 detik, doubling setiap retry
 
 // Helper: extract retry-after header atau fallback ke delayManual
 function getRetryDelayMs(res, attempt) {
@@ -928,6 +954,7 @@ function getRetryDelayMs(res, attempt) {
 }
 
 export async function callLLM(messages, tools, settings, opts = {}) {
+  await acquireLLMSemaphore();
   const { stream = false, onToken = null, onReasoning = null, signal = null, maxTokens = null, timeoutMs = null } = opts;
   const url = (settings.base_url || '').replace(/\/+$/, '') + '/chat/completions';
   const apiKey = sanitizeApiKey(settings.api_key);
@@ -992,6 +1019,7 @@ export async function callLLM(messages, tools, settings, opts = {}) {
     throw e;
   } finally {
     clearTimeout(timer);
+    releaseLLMSemaphore();
   }
     if (!res.ok) {
         const errText = consumedErr !== null ? consumedErr : await res.text().catch(() => '');
