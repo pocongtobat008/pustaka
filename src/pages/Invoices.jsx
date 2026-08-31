@@ -1175,7 +1175,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
         const notes = (actionModal.notes || '').trim();
         if (type === 'sendback' && !notes) return toast?.error?.('Alasan sendback wajib diisi');
         if (type === 'sendback_tax' && !notes) return toast?.error?.('Alasan sendback wajib diisi');
-        if (type === 'reject_tax' && !notes) return toast?.error?.('Alasan reject wajib diisi');
+
         if (actionId) return;
         setActionId(p?.id);
         setActionModalSaving(true);
@@ -1183,18 +1183,14 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
             if (type === 'approve') {
                 const row = await invoiceService.approveProforma(p.id);
                 toast?.success?.(`Disetujui. No Proforma: ${row.proforma_no}`);
-            } else if (type === 'reject') {
-                await invoiceService.rejectProforma(p.id, notes);
-                toast?.success?.('Proforma ditolak');
+
             } else if (type === 'sendback') {
                 await invoiceService.sendbackProforma(p.id, notes);
                 toast?.success?.('Proforma dikembalikan ke requester');
             } else if (type === 'sendback_tax') {
                 await invoiceService.sendbackTax(p.id, notes);
                 toast?.success?.('Tax request dikembalikan ke requester');
-            } else if (type === 'reject_tax') {
-                await invoiceService.rejectTax(p.id, notes);
-                toast?.success?.('Tax request ditolak');
+
             }
             setActionModal(null);
             loadAll();
@@ -2582,11 +2578,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                             <RefreshCw size={15} /> {actionId === p.id ? 'Mengirim...' : 'Sendback'}
                                         </button>
                                     )}
-                                    {perms.can_reject && (
-                                        <button onClick={() => openActionModal('reject', p)} disabled={actionId === p.id} className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-600 hover:bg-red-100 dark:hover:bg-red-500/20 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
-                                            <XCircle size={15} /> {actionId === p.id ? 'Menolak...' : 'Reject'}
-                                        </button>
-                                    )}
+
                                 </div>
                             )}
                             {p.status !== 'pending' && (
@@ -2708,11 +2700,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                                                 <RefreshCw size={13} /> Sendback
                                                             </button>
                                                         )}
-                                                        {perms.can_tax && (
-                                                            <button onClick={() => openActionModal('reject_tax', inv)} disabled={actionId === inv.id} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 dark:bg-red-500/10 text-red-600 hover:bg-red-100 dark:hover:bg-red-500/20 text-xs font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-colors" title="Reject tax request">
-                                                                <XCircle size={13} /> Reject
-                                                            </button>
-                                                        )}
+
                                                     </div>
                                                 )}
                                             </div>
@@ -4371,7 +4359,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                 formatCurrency={formatCurrency}
             />
 
-            {/* ── Modal Aksi Proforma (Approve / Sendback / Reject) ── */}
+            {/* ── Modal Aksi Proforma (Approve / Sendback) ── */}
             {actionModal && createPortal(
                 <motion.div
                     initial={{ opacity: 0 }}
@@ -4391,13 +4379,13 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                         {(() => {
                             const type = actionModal.type;
                             const p = actionModal.p;
-                            const isTax = type === 'sendback_tax' || type === 'reject_tax';
+                            const isTax = type === 'sendback_tax';
                             const config = {
                                 approve: { title: 'Approve Proforma', icon: <CheckCircle2 size={20} className="text-emerald-600" />, accent: 'bg-emerald-500', confirm: 'Ya, Approve', noteRequired: false, noteLabel: '', notePlaceholder: '' },
                                 sendback: { title: 'Sendback Proforma', icon: <RefreshCw size={20} className="text-amber-600" />, accent: 'bg-amber-500', confirm: 'Kirim Balik', noteRequired: true, noteLabel: 'Alasan sendback *', notePlaceholder: 'Jelaskan perbaikan yang diperlukan...' },
-                                reject: { title: 'Reject Proforma', icon: <XCircle size={20} className="text-red-600" />, accent: 'bg-red-500', confirm: 'Ya, Tolak', noteRequired: false, noteLabel: 'Alasan penolakan', notePlaceholder: 'Alasan (opsional)...' },
+
                                 sendback_tax: { title: 'Sendback Tax Request', icon: <RefreshCw size={20} className="text-rose-600" />, accent: 'bg-rose-500', confirm: 'Kirim Balik', noteRequired: true, noteLabel: 'Alasan sendback *', notePlaceholder: 'Jelaskan perbaikan yang diperlukan...' },
-                                reject_tax: { title: 'Reject Tax Request', icon: <XCircle size={20} className="text-red-600" />, accent: 'bg-red-500', confirm: 'Ya, Tolak', noteRequired: true, noteLabel: 'Alasan reject *', notePlaceholder: 'Jelaskan alasan penolakan...' },
+
                             }[type] || { title: type, icon: <CheckCircle2 size={20} className="text-stone-600" />, accent: 'bg-stone-500', confirm: 'Simpan', noteRequired: false, noteLabel: '', notePlaceholder: '' };
                             const dealer = p?.dealer_name || (p?.invoices?.[0]?.dealer_name) || '-';
                             const po = p?.no_po || (p?.invoices?.[0]?.no_po) || '-';
@@ -4507,7 +4495,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         <Eye size={15} /> Lihat Detail
                                     </button>
 
-                                    {perms.can_edit && !inv?.proforma_no && (!['settled', 'cancelled', 'rejected'].includes(st) || isAdmin) && (
+                                    {isAdmin && (
                                         <button type="button" onClick={() => { setActionMenu(null); openEditInvoice(inv); }} className={`${itemCls} text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-500/10`}>
                                             <Pencil size={15} /> Edit Invoice
                                         </button>
@@ -4565,11 +4553,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                                         </button>
                                     )}
 
-                                    {perms.can_tax && ['proforma', 'tax_requested', 'sent_back_tax'].includes(st) && (
-                                        <button type="button" onClick={() => { setActionMenu(null); openActionModal('reject_tax', inv); }} className={`${itemCls} text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10`}>
-                                            <XCircle size={15} /> Reject Tax
-                                        </button>
-                                    )}
+
 
                                     {perms.can_settle && prof && ['proforma', 'tax', 'settled'].includes(st) && (
                                         <button type="button" onClick={() => { setActionMenu(null); openSettle(prof); }} className={`${itemCls} text-teal-600 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-500/10`}>
