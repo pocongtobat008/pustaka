@@ -1794,20 +1794,22 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
     const summary = useMemo(() => {
         const now = Date.now();
         const day = 86400000;
-        // Gunakan data filtered agar summary = jumlah baris di tabel
-        const fInvs = filteredInvoices || [];
+        // ── Gunakan rootInvoiceRows (exclude pelunasan) agar match jumlah baris tabel ──
+        const rootInvs = rootInvoiceRows || [];
+        const allInvs = filteredInvoices || [];
         const fProfs = filteredProformas || [];
         const aged = fProfs.filter(p => {
             const at = p.requested_at ? new Date(p.requested_at).getTime() : null;
             return at && p.status === 'approved' && (now - at) > 30 * day;
         });
         const pendingTax = fProfs.filter(p => p.status === 'approved' && (p.invoices || []).some(inv => inv.status === 'tax_requested'));
-        const totalInvoiceNominal = fInvs.reduce((s, i) => s + (parseFloat(i.total_invoice) || 0), 0);
+        const totalInvoiceNominal = rootInvs.reduce((s, i) => s + (parseFloat(i.total_invoice) || 0), 0);
         const totalSettled = fProfs.filter(p => p.status === 'settled').reduce((s, p) => s + (parseFloat(p.settled_amount) || 0), 0);
         const pendingProforma = fProfs.filter(p => p.status === 'pending');
         const sentBackProforma = fProfs.filter(p => p.status === 'sent_back');
         return {
-            totalInvoice: fInvs.length,
+            totalInvoice: rootInvs.length,
+            totalInvoiceAll: allInvs.length,
             totalProforma: fProfs.length,
             totalApproved: fProfs.filter(p => p.status === 'approved').length,
             totalSettled: fProfs.filter(p => p.status === 'settled').length,
@@ -1820,7 +1822,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
             nominalSettled: totalSettled,
             totalNominal: fProfs.reduce((s, p) => s + (parseFloat(p.total_nominal) || 0), 0),
         };
-    }, [filteredInvoices, filteredProformas]);
+    }, [rootInvoiceRows, filteredInvoices, filteredProformas]);
 
     // ── Notifikasi penting (ringkasan yang perlu tindakan) ──
     const actionSummary = useMemo(() => {
@@ -2122,13 +2124,37 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
     return (
         <div className="p-4 md:p-6 space-y-4">
 
-            {/* ── Dashboard Cards (di atas tab) ── */}
-            <SummaryRow cards={[
-                { title: 'Total Invoice', value: summary.totalInvoice.toLocaleString('id-ID'), icon: Receipt, gradient: 'from-blue-600 to-blue-700', subtext: `${formatCurrency(summary.nominalInvoice)} • ${summary.sentBackProforma} sent back`, valueClass: 'text-2xl' },
-                { title: 'Proforma', value: summary.totalProforma.toLocaleString('id-ID'), icon: FileSignature, gradient: 'from-amber-500 to-orange-600', subtext: `${summary.totalApproved} approved • ${summary.pendingProforma} pending • ${formatCurrency(summary.totalNominal)}`, valueClass: 'text-2xl' },
-                { title: 'Menunggu Tax', value: summary.pendingTax.toLocaleString('id-ID'), icon: FileText, gradient: 'from-blue-600 to-blue-700', subtext: 'Proforma perlu faktur pajak — segera lampirkan', valueClass: 'text-2xl' },
-                { title: 'Settled', value: summary.totalSettled.toLocaleString('id-ID'), icon: HandCoins, gradient: 'from-teal-500 to-emerald-700', subtext: `${formatCurrency(summary.nominalSettled)} • selesai di-settle`, valueClass: 'text-2xl' },
-            ]} />
+            {/* ── Summary Cards (contextual per tab aktif) ── */}
+            {tab === 'dashboard' && (
+                <SummaryRow cards={[
+                    { title: 'Total Invoice', value: summary.totalInvoice.toLocaleString('id-ID'), icon: Receipt, gradient: 'from-blue-600 to-blue-700', subtext: `${formatCurrency(summary.nominalInvoice)} • ${summary.sentBackProforma} sent back`, valueClass: 'text-2xl' },
+                    { title: 'Proforma', value: summary.totalProforma.toLocaleString('id-ID'), icon: FileSignature, gradient: 'from-amber-500 to-orange-600', subtext: `${summary.totalApproved} approved • ${summary.pendingProforma} pending • ${formatCurrency(summary.totalNominal)}`, valueClass: 'text-2xl' },
+                    { title: 'Menunggu Tax', value: summary.pendingTax.toLocaleString('id-ID'), icon: FileText, gradient: 'from-blue-600 to-blue-700', subtext: 'Proforma perlu faktur pajak — segera lampirkan', valueClass: 'text-2xl' },
+                    { title: 'Settled', value: summary.totalSettled.toLocaleString('id-ID'), icon: HandCoins, gradient: 'from-teal-500 to-emerald-700', subtext: `${formatCurrency(summary.nominalSettled)} • selesai di-settle`, valueClass: 'text-2xl' },
+                ]} />
+            )}
+            {tab === 'invoice' && (
+                <SummaryRow cards={[
+                    { title: 'Total Invoice', value: summary.totalInvoice.toLocaleString('id-ID'), icon: Receipt, gradient: 'from-blue-600 to-blue-700', subtext: `${formatCurrency(summary.nominalInvoice)}`, valueClass: 'text-2xl' },
+                    { title: 'Sent Back', value: summary.sentBackProforma.toLocaleString('id-ID'), icon: RotateCcw, gradient: 'from-amber-500 to-orange-600', subtext: 'Invoice dikembalikan', valueClass: 'text-2xl' },
+                    { title: 'Settled', value: summary.totalSettled.toLocaleString('id-ID'), icon: HandCoins, gradient: 'from-teal-500 to-emerald-700', subtext: `${formatCurrency(summary.nominalSettled)} total settle`, valueClass: 'text-2xl' },
+                ]} />
+            )}
+            {tab === 'proforma' && (
+                <SummaryRow cards={[
+                    { title: 'Total Proforma', value: summary.totalProforma.toLocaleString('id-ID'), icon: FileSignature, gradient: 'from-amber-500 to-orange-600', subtext: `${formatCurrency(summary.totalNominal)}`, valueClass: 'text-2xl' },
+                    { title: 'Approved', value: summary.totalApproved.toLocaleString('id-ID'), icon: CheckCircle2, gradient: 'from-blue-600 to-blue-700', subtext: 'Proforma disetujui', valueClass: 'text-2xl' },
+                    { title: 'Pending', value: summary.pendingProforma.toLocaleString('id-ID'), icon: Clock, gradient: 'from-purple-500 to-purple-700', subtext: 'Menunggu approval', valueClass: 'text-2xl' },
+                    { title: 'Settled', value: summary.totalSettled.toLocaleString('id-ID'), icon: HandCoins, gradient: 'from-teal-500 to-emerald-700', subtext: `${formatCurrency(summary.nominalSettled)}`, valueClass: 'text-2xl' },
+                ]} />
+            )}
+            {tab === 'tax' && (
+                <SummaryRow cards={[
+                    { title: 'Menunggu Tax', value: summary.pendingTax.toLocaleString('id-ID'), icon: FileText, gradient: 'from-blue-600 to-blue-700', subtext: 'Proforma perlu faktur pajak', valueClass: 'text-2xl' },
+                    { title: 'Approved', value: summary.totalApproved.toLocaleString('id-ID'), icon: CheckCircle2, gradient: 'from-amber-500 to-orange-600', subtext: 'Proforma siap input pajak', valueClass: 'text-2xl' },
+                    { title: 'Settled', value: summary.totalSettled.toLocaleString('id-ID'), icon: HandCoins, gradient: 'from-teal-500 to-emerald-700', subtext: `${formatCurrency(summary.nominalSettled)}`, valueClass: 'text-2xl' },
+                ]} />
+            )}
 
             {/* Notifikasi penting (1 baris ringkasan yang perlu tindakan) */}
             {actionSummary.length > 0 && (
@@ -2411,7 +2437,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                             <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600"><Receipt size={16} /></div>
                             <div>
                                 <h3 className="font-bold text-stone-800 dark:text-white">Daftar Invoice</h3>
-                                <div className="text-[11px] text-stone-400">{filteredInvoices.length} data</div>
+                                <div className="text-[11px] text-stone-400">{rootInvoiceRows.length} data</div>
                             </div>
                         </div>
                         <div className="flex items-center gap-2 flex-wrap">
@@ -2435,7 +2461,7 @@ const Invoices = ({ currentUser, hasPermission, toast }) => {
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 px-4 py-3 border-t border-stone-200 dark:border-white/[0.06]">
                         <div className="flex flex-col gap-0.5">
                             <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400">Jumlah Data</span>
-                            <span className="text-sm font-bold text-stone-700 dark:text-white/80 tabular-nums">{filteredInvoices.length} invoice</span>
+                            <span className="text-sm font-bold text-stone-700 dark:text-white/80 tabular-nums">{rootInvoiceRows.length} invoice</span>
                         </div>
                         <div className="flex flex-col gap-0.5">
                             <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400">Total Invoice</span>
