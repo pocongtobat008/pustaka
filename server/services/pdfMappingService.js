@@ -297,6 +297,71 @@ export function applyFieldRule(pagesLines, field) {
     return locateFieldValue(pagesLines, field)?.value || '';
 }
 
+// ── Pattern-based assignment untuk PDF scanned/OCR ──
+// Fallback ketika boundary-based assignment gagal (terlalu banyak item masuk 1 kolom).
+// Mengenali pola umum: [MODEL] DESKRIPSI QTY HARGA DISC TAX AMOUNT
+function assignByPattern(items, cols, groupBy) {
+    const cells = {};
+    for (const c of cols) cells[c.key] = '';
+    if (groupBy) cells[groupBy.key] = '';
+    const sorted = [...items].sort((a, b) => a.x - b.x);
+    const words = sorted.map(it => it.str);
+    const text = words.join(' ');
+    // Deteksi pattern: angka dengan format ribuan (1,234,567.89)
+    const moneyRe = /^\d{1,5}(?:,\d{3})*\.\d{2}$/;
+    const pctRe = /^\d+\.\d+%$/;
+    // Deteksi model code: [XXX] atau huruf+angka
+    const modelRe = /^\[.*?\]$/;
+
+    // Cari所有 angka uang dalam baris
+    const moneyIdxs = [];
+    const pctIdxs = [];
+    for (let i = 0; i < words.length; i++) {
+        // Handle "Rp" prefix: buang "Rp" lalu test regex
+        const w = words[i].replace(/^Rp/i, '');
+        if (moneyRe.test(w)) moneyIdxs.push(i);
+        if (pctRe.test(words[i])) pctIdxs.push(i);
+    }
+
+    if (moneyIdxs.length >= 2) {
+        // Pattern PO: ... QTY HARGA DISC_PCT TAX_TYPE AMOUNT
+        // Angka uang terakhir = amount, sebelumnya = unit_price
+        const amountIdx = moneyIdxs[moneyIdxs.length - 1];
+        const priceIdx = moneyIdxs.length >= 2 ? moneyIdxs[moneyIdxs.length - 2] : -1;
+        // Qty = angka tunggal sebelum unit_price (bukan uang)
+        let qtyIdx = -1;
+        if (priceIdx > 0) {
+            for (let i = priceIdx - 1; i >= 0; i--) {
+                if (/^\d+$/.test(words[i]) && parseInt(words[i]) < 1000) {
+                    qtyIdx = i; break;
+                }
+                if (modelRe.test(words[i])) break;
+            }
+        }
+        // Description = semua kata dari awal sampai sebelum qty
+        const descEnd = qtyIdx > 0 ? qtyIdx : (priceIdx > 0 ? priceIdx : words.length);
+        const descWords = words.slice(0, descEnd);
+        // Discount = kata persentase
+        const discWord = pctIdxs.length > 0 ? words[pctIdxs[0]] : '';
+        // Tax = kata "PPN" atau "TAX"
+        const taxIdx = words.findIndex(w => norm(w) === 'ppn' || norm(w) === 'tax');
+        const taxWord = taxIdx >= 0 ? words[taxIdx] : '';
+
+        // Map ke kolom berdasarkan urutan
+        const colKeys = cols.map(c => c.key);
+        if (colKeys.includes('model') || colKeys.includes('description')) {
+            const descKey = colKeys.find(k => k === 'model' || k === 'description');
+            cells[descKey] = descWords.join(' ');
+        }
+        if (colKeys.includes('qty') && qtyIdx >= 0) cells['qty'] = words[qtyIdx];
+        if (colKeys.includes('unit_price') && priceIdx >= 0) cells['unit_price'] = words[priceIdx];
+        if (colKeys.includes('discount')) cells['discount'] = discWord;
+        if (colKeys.includes('tax')) cells['tax'] = taxWord;
+        if (colKeys.includes('amount') && amountIdx >= 0) cells['amount'] = words[amountIdx].replace(/^Rp/i, '');
+    }
+    return cells;
+}
+
 // ── Parsing tabel dinamis dari baris berposisi ──
 // tableDef: { columns: [{key, label}], terminator?: string[], groupBy?: {key, label, pattern} }
 // groupBy = kolom yang nilainya ada pada baris DI ATAS baris data (mis. no faktur di atas item),
@@ -337,16 +402,36 @@ export function extractTable(pagesLines, tableDef) {
         for (let i = 0; i < lines.length; i++) {
             const l = lines[i];
             const items = mergedHeaderItems(pg, l);
+            // Untuk multi-word label (mis. "Unit Price"), cek pasangan/consecutive items
+            // yang gabungannya match. Simpan posisi item PERTAMA sebagai x kolom.
+            const sortedItems = [...items].sort((a, b) => a.x - b.x);
             const matched = [];
             for (const c of cols) {
                 const nc = norm(c.label || c.key);
                 if (!nc) continue;
-                const it = items.find(ix => {
+                let best = null;
+                // Coba single item match
+                for (const ix of sortedItems) {
                     const nit = norm(ix.str);
-                    if (!nit) return false; // item kosong (mis. ":") jangan ikut cocok
-                    return nit.includes(nc) || nc.includes(nit);
-                });
-                matched.push({ col: c, item: it || null });
+                    if (nit && (nit.includes(nc) || nc.includes(nit))) {
+                        best = ix; break;
+                    }
+                }
+                // Jika tidak cocok, coba 2-3 consecutive items digabung
+                if (!best) {
+                    for (let wi = 0; wi < sortedItems.length - 1; wi++) {
+                        for (let wj = wi + 1; wj < Math.min(wi + 4, sortedItems.length); wj++) {
+                            const wStr = sortedItems.slice(wi, wj + 1).map(x => x.str).join(' ');
+                            if (norm(wStr).includes(nc) || nc.includes(norm(wStr))) {
+                                best = sortedItems[wi]; // x = item pertama
+                                best = { ...best, w: (sortedItems[wj].x + (sortedItems[wj].w || 0)) - best.x };
+                                break;
+                            }
+                        }
+                        if (best) break;
+                    }
+                }
+                matched.push({ col: c, item: best });
             }
             const hitCount = matched.filter(m => m.item).length;
             if (hitCount >= Math.max(2, Math.ceil(cols.length * 0.6))) {
@@ -464,29 +549,35 @@ export function extractTable(pagesLines, tableDef) {
     // x=72), sehingga item nama yang sempit (mis. "CAM, FUEL" w=41) pusatnya jatuh ke kiri boundary
     // dan salah masuk kolom NO. Solusi: cari CELAH TERBESAR antar pusat item pada zona antar label
     // header → boundary yang benar (data-driven).
-    const computeDataBoundary = (c0, c1) => {
-        const z0 = c0.x - 20, z1 = c1.x + 20;
-        const centers = [];
-        for (const pr of pendingRows) {
-            for (const it of pr.items) {
-                if (CURRENCY_TOKENS.has(norm(it.str))) continue;
-                const cx = it.x + (it.w || 0) / 2;
-                if (cx >= z0 && cx <= z1) centers.push(cx);
+    // ── Hybrid boundary: header anchor + nearest data gap ──
+    const sortedColXs = [...colXs].sort((a, b) => a.x - b.x);
+    const allCenters = [];
+    for (const pr of pendingRows) {
+        for (const it of pr.items) {
+            if (CURRENCY_TOKENS.has(norm(it.str))) continue;
+            allCenters.push(it.x + (it.w || 0) / 2);
+        }
+    }
+    allCenters.sort((a, b) => a - b);
+    const allGaps = [];
+    for (let i = 1; i < allCenters.length; i++) {
+        const gap = allCenters[i] - allCenters[i - 1];
+        if (gap >= 8) allGaps.push({ gap, pos: (allCenters[i] + allCenters[i - 1]) / 2 });
+    }
+    allGaps.sort((a, b) => a.pos - b.pos);
+    // Untuk setiap boundary: cari gap TERDEKAT ke midpoint header.
+    // Tolerance 200pt untuk PDF scanned/OCR.
+    const boundaries = sortedColXs.map((c, i) => {
+        if (i === sortedColXs.length - 1) return Infinity;
+        const headerMid = ((c.x + (c.w || 0)) + sortedColXs[i + 1].x) / 2;
+        let best = null;
+        for (const g of allGaps) {
+            const dist = Math.abs(g.pos - headerMid);
+            if (dist < 200 && (!best || dist < Math.abs(best.pos - headerMid))) {
+                best = g;
             }
         }
-        centers.sort((a, b) => a - b);
-        let best = null;
-        for (let i = 1; i < centers.length; i++) {
-            const gap = centers[i] - centers[i - 1];
-            if (gap >= 10 && (!best || gap > best.gap)) best = { gap, b: (centers[i] + centers[i - 1]) / 2 };
-        }
-        return best ? best.b : null;
-    };
-    const boundaries = colXs.map((c, i) => {
-        if (i === colXs.length - 1) return Infinity;
-        const d = computeDataBoundary(colXs[i], colXs[i + 1]);
-        // Fallback: titik tengah tepi kanan header i → tepi kiri header i+1
-        return d != null ? d : (c.x + c.w + colXs[i + 1].x) / 2;
+        return best ? best.pos : headerMid;
     });
 
     const assign = (items, groupVal) => {
@@ -497,19 +588,30 @@ export function extractTable(pagesLines, tableDef) {
             // Token mata uang berdiri sendiri (IDR/Rp) bukan isi sel
             if (CURRENCY_TOKENS.has(norm(it.str))) continue;
             // Lewati item di kiri kolom pertama (biasanya nomor urut baris / teks pinggir)
-            if (it.x + it.w < colXs[0].x - 15) continue;
+            if (it.x + it.w < sortedColXs[0].x - 15) continue;
             let ci = 0;
-            for (let i = 0; i < colXs.length; i++) {
-                if (it.x + it.w / 2 <= boundaries[i] || i === colXs.length - 1) { ci = i; break; }
+            for (let i = 0; i < sortedColXs.length; i++) {
+                if (it.x + it.w / 2 <= boundaries[i] || i === sortedColXs.length - 1) { ci = i; break; }
             }
-            const key = colXs[ci].key;
+            const key = sortedColXs[ci].key;
             cells[key] = cells[key] ? cells[key] + ' ' + it.str : it.str;
         }
         return cells;
     };
 
     for (const pr of pendingRows) {
-        const cells = assign(pr.items, pr.groupVal);
+        let cells = assign(pr.items, pr.groupVal);
+        // Fallback pattern: trigger jika qty kosong, qty non-numeric, atau terlalu sedikit kolom
+        const filledCols = Object.values(cells).filter(v => v).length;
+        const hasQty = cells['qty'] || cells['Qty'];
+        const qtyIsNum = hasQty && /^\d+$/.test(String(hasQty).trim());
+        if ((filledCols <= 2 || !hasQty || !qtyIsNum) && pr.items.length >= 5) {
+            const patternCells = assignByPattern(pr.items, cols, groupBy);
+            const patFilled = Object.values(patternCells).filter(v => v).length;
+            const patQtyOk = patternCells['qty'] && /^\d+$/.test(String(patternCells['qty']).trim());
+            // Pakai pattern jika: lebih banyak kolom terisi, ATAU qty lebih baik (numeric vs non-numeric)
+            if (patFilled >= filledCols || (patQtyOk && !qtyIsNum)) cells = patternCells;
+        }
         if (Object.values(cells).some(v => v)) {
             rows.push(cells);
             rowYs.push(pr.y);
