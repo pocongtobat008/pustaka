@@ -41,7 +41,78 @@ export async function extractPdfItems(buffer) {
     } finally {
         try { await doc.destroy(); } catch { /* ignore */ }
     }
+
+    // ── OCR fallback: jika semua halaman kosong (PDF scanned), gunakan tesseract ──
+    const totalItems = pages.reduce((s, pg) => s + pg.items.length, 0);
+    if (totalItems === 0 && pages.length > 0) {
+        console.log('[pdfMapping] PDF scanned — fallback OCR (tesseract) ...');
+        return await extractPdfItemsOcr(buffer, pages);
+    }
     return pages;
+}
+
+// ── OCR fallback untuk PDF scanned: pdftoppm + tesseract → item berposisi sintetis ──
+async function extractPdfItemsOcr(buffer, originalPages) {
+    const os = await import('os');
+    const fs = await import('fs/promises');
+    const pathMod = await import('path');
+    const { execSync } = await import('child_process');
+
+    let tmpDir = null;
+    try {
+        tmpDir = await fs.mkdtemp(pathMod.join(os.default.tmpdir(), 'ocr-map-'));
+        const tmpPdf = pathMod.join(tmpDir, 'input.pdf');
+        await fs.writeFile(tmpPdf, buffer);
+
+        execSync(`pdftoppm -png -r 300 "${tmpPdf}" "${tmpDir}/page"`, { timeout: 60000 });
+
+        const pngFiles = (await fs.readdir(tmpDir)).filter(f => f.endsWith('.png')).sort();
+        if (pngFiles.length === 0) return originalPages;
+
+        const Tesseract = (await import('tesseract.js')).default;
+        const worker = await Tesseract.createWorker('ind+eng');
+        const pages = [];
+
+        for (let i = 0; i < pngFiles.length; i++) {
+            const imgPath = pathMod.join(tmpDir, pngFiles[i]);
+            const result = await worker.recognize(imgPath);
+            const origPage = originalPages[i] || { page: i + 1, width: 595, height: 842, items: [] };
+            const text = (result.data.text || '').trim();
+
+            // Parse text → synthetic items dengan posisi baris
+            const lines = text.split('\n').filter(l => l.trim());
+            const pageH = origPage.height || 842;
+            const lineH = pageH / Math.max(lines.length + 1, 2);
+            const items = [];
+
+            for (let li = 0; li < lines.length; li++) {
+                const lineText = lines[li].trim();
+                if (!lineText) continue;
+                // Pisahkan setiap token kata
+                const words = lineText.split(/\s+/).filter(Boolean);
+                let xPos = 20; // margin kiri
+                for (const word of words) {
+                    const wordW = Math.max(word.length * 4, 20); // estimasi lebar
+                    items.push({
+                        str: word,
+                        x: Math.round(xPos),
+                        y: Math.round(pageH - (li + 1) * lineH),
+                        w: Math.round(wordW),
+                    });
+                    xPos += wordW + 4;
+                }
+            }
+            console.log(`[pdfMapping] OCR page ${i + 1}: ${items.length} words (from ${lines.length} lines)`);
+            pages.push({ page: i + 1, width: origPage.width, height: origPage.height, items });
+        }
+        await worker.terminate();
+        return pages;
+    } catch (err) {
+        console.error('[pdfMapping] OCR fallback error:', err.message);
+        return originalPages;
+    } finally {
+        if (tmpDir) await fs.rm(tmpDir, { recursive: true }).catch(() => {});
+    }
 }
 
 // ── Kelompokkan item menjadi baris teks per halaman (atas → bawah) ──
@@ -357,8 +428,20 @@ export function extractTable(pagesLines, tableDef) {
         const t = lineText(l).trim();
         if (!t) continue;
         const nt = norm(t);
-        // berhenti pada baris total/summary
-        if (termWords.some(w => w && nt.includes(w))) break;
+        // berhenti pada baris total/summary — tapi JANGAN berhenti jika terminator muncul
+        // di tengah baris data (mis. "0.00% PPN" di baris item). Hanya berhenti jika
+        // terminator ada di awal baris ATAU baris hampir seluruhnya berisi terminator.
+        const isTermLine = termWords.some(w => {
+            if (!w || !nt.includes(w)) return false;
+            const termIdx = nt.indexOf(w);
+            // Terminator di awal baris → pasti baris summary
+            if (termIdx < 8) return true;
+            // Terminator di tengah → cek apakah baris ini mirip summary
+            // (pendek, berisi angka rupiah besar, tidak model YANMAR)
+            if (t.length < 60 && !nt.includes('yanmar') && !nt.includes('diesel') && !nt.includes('engine')) return true;
+            return false;
+        });
+        if (isTermLine) break;
         // baris grup (mis. no faktur di atas data) → set nilai grup, bukan baris data
         if (isGroupLine(t)) {
             currentGroup = t.replace(/^['’]+/, '').trim();
