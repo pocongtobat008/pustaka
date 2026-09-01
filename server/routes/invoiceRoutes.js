@@ -2191,7 +2191,12 @@ router.get('/:id/pdf', async (req, res) => {
         const { getActiveTemplate, buildContext, compileHtml, buildPdfShell, renderHtmlToPdf } = await import('../services/pdfTemplateService.js');
         const tpl = await getActiveTemplate('proforma');
         if (tpl) {
-            let html = compileHtml(tpl.html, buildContext(invoice, items));
+            // Untuk pelunasan, fetch parent DP invoice untuk mengisi kolom DP di PDF
+            let parentInvoice = null;
+            if (invoice.pp_type === 'pelunasan' && invoice.pelunasan_of_id) {
+                parentInvoice = await knex('proforma_invoices').where('id', invoice.pelunasan_of_id).first();
+            }
+            let html = compileHtml(tpl.html, buildContext(invoice, items, parentInvoice));
             if (String(req.query.digital_sign || '') === '1') {
                 const signUri = getDigitalSignDataUri();
                 if (signUri) html = injectDigitalSign(html, signUri);
@@ -2284,7 +2289,27 @@ router.get('/:id/pdf', async (req, res) => {
         }
         page.drawText('TOTAL INVOICE', { x: totalsX - 40, y, size: 11, font: fontBold });
         page.drawText(money(invoice.total_invoice), { x: totalsX + 80, y, size: 11, font: fontBold });
-        y -= 20;
+        y -= 16;
+
+        // ── Kolom DP & Pelunasan (PP type) ──
+        if (invoice.pp_type === 'dp') {
+            page.drawText('DP', { x: totalsX, y, size: 9, font: fontBold });
+            page.drawText(money(invoice.uang_masuk), { x: totalsX + 80, y, size: 9, font: fontBold });
+            y -= 14;
+        } else if (invoice.pp_type === 'pelunasan') {
+            let parentDp = round2(invoice.total_invoice - invoice.uang_masuk);
+            if (invoice.pelunasan_of_id) {
+                const parentInv = await knex('proforma_invoices').where('id', invoice.pelunasan_of_id).first();
+                if (parentInv) parentDp = round2(parentInv.uang_masuk);
+            }
+            page.drawText('DP', { x: totalsX, y, size: 9, font: fontBold });
+            page.drawText(money(parentDp), { x: totalsX + 80, y, size: 9, font: fontBold });
+            y -= 14;
+            page.drawText('PELUNASAN', { x: totalsX - 20, y, size: 9, font: fontBold });
+            page.drawText(money(invoice.uang_masuk), { x: totalsX + 80, y, size: 9, font: fontBold });
+            y -= 14;
+        }
+        y -= 6;
 
         page.drawText(`Uang Masuk: ${money(invoice.uang_masuk)}`, { x: 50, y, size: 10, font: fontBold });
         y -= 18;

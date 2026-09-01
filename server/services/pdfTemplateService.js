@@ -82,10 +82,25 @@ export async function getActiveTemplate(docType = 'proforma') {
     return row || null;
 }
 
-export function buildContext(invoice, items) {
+export function buildContext(invoice, items, parentInvoice = null) {
     const totalInvoice = round2(invoice.total_invoice);
     const uangMasuk = round2(invoice.uang_masuk);
     const ppTypeLabel = invoice.pp_type === 'pelunasan' ? 'Pelunasan' : (invoice.pp_type === 'dp' ? 'DP' : '');
+
+    // ── Hitung nilai DP & Pelunasan untuk kolom PDF ──
+    let dpVal = '';
+    let pelunasanVal = '';
+    if (invoice.pp_type === 'dp') {
+        // DP type: tampilkan uang_masuk sebagai DP, sisa sebagai pelunasan kosong
+        dpVal = formatRupiah(uangMasuk);
+        pelunasanVal = '';
+    } else if (invoice.pp_type === 'pelunasan') {
+        // Pelunasan type: DP dari parent, pelunasan = uang masuk saat ini
+        const parentDp = parentInvoice ? round2(parentInvoice.uang_masuk) : round2(totalInvoice - uangMasuk);
+        dpVal = formatRupiah(parentDp);
+        pelunasanVal = formatRupiah(uangMasuk);
+    }
+
     return {
         id: invoice.id,
         proforma_no: invoice.proforma_no || '',
@@ -118,6 +133,10 @@ export function buildContext(invoice, items) {
         uang_masuk_raw: uangMasuk,
         sisa: formatRupiah(totalInvoice - uangMasuk),
         sisa_raw: round2(totalInvoice - uangMasuk),
+        dp: dpVal,
+        dp_raw: invoice.pp_type === 'dp' ? uangMasuk : (invoice.pp_type === 'pelunasan' && parentInvoice ? round2(parentInvoice.uang_masuk) : 0),
+        pelunasan: pelunasanVal,
+        pelunasan_raw: invoice.pp_type === 'pelunasan' ? uangMasuk : 0,
         created_by: invoice.created_by || '',
         created_at: dateId(invoice.created_at),
         item_count: items.length,
@@ -212,7 +231,12 @@ export async function renderInvoicePdf(invoiceId, docType = 'proforma') {
     const items = await knex('proforma_invoice_items').where('invoice_id', invoiceId).orderBy('id', 'asc');
     const tpl = await getActiveTemplate(docType);
     if (!tpl) throw new Error('TIDAK_ADA_TEMPLATE');
-    const context = buildContext(invoice, items);
+    // Untuk pelunasan, fetch parent DP invoice
+    let parentInvoice = null;
+    if (invoice.pp_type === 'pelunasan' && invoice.pelunasan_of_id) {
+        parentInvoice = await knex('proforma_invoices').where('id', invoice.pelunasan_of_id).first();
+    }
+    const context = buildContext(invoice, items, parentInvoice);
     const html = compileHtml(tpl.html, context);
     const shell = buildPdfShell(html, tpl.css);
     return renderHtmlToPdf(shell);
