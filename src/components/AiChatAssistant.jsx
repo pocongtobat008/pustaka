@@ -6,7 +6,6 @@ import {
     ChevronDown, Bot, User, Eye, TrendingUp, BarChart3, AlertCircle, CheckCircle2, Zap,
     History, Trash2, Plus, Brain, Play, Copy
 } from 'lucide-react';
-import { SemanticAnalyzer, isTaxQuery, getResponseTemplate } from '../utils/semanticAnalyzer.js';
 
 const getApiUrl = () => {
     if (window.location.protocol === 'file:') {
