@@ -52,6 +52,7 @@ const GuideAssistant = ({ message, isExplaining, onClick }) => (
 
 
 const PustakaLandingPage = ({ onClose }) => {
+    const { t } = useLanguage();
     if (typeof document === 'undefined') return null;
     return createPortal(
         <motion.div
