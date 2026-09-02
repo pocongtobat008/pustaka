@@ -1432,8 +1432,8 @@ export default function TemplateMapper({ isDarkMode, defaultView = 'train', lock
                                         </div>
                                         <div className="max-h-[300px] overflow-y-auto">
                                         {exportHistory.map(x => {
-                                            const t = x.created_at ? new Date(x.created_at) : null;
-                                            const dateStr = t && !isNaN(t) ? t.toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : '';
+                                            const createdDt = x.created_at ? new Date(x.created_at) : null;
+                                            const dateStr = createdDt && !isNaN(createdDt) ? createdDt.toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : '';
                                             return (
                                                 <div key={x.id} className={`group flex items-center gap-2.5 px-4 py-2.5 border-b last:border-b-0 ${isDarkMode ? 'border-white/5 hover:bg-white/5' : 'border-stone-50 hover:bg-stone-50'}`}>
                                                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${isDarkMode ? 'bg-emerald-500/10 text-emerald-300' : 'bg-emerald-50 text-emerald-600'}`}>
