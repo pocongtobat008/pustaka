@@ -2439,6 +2439,18 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                             </button>
                                         </>
                                     )}
+
+                                    {!isPending && isAdmin && (
+                                        <>
+                                            <div className="my-1.5 border-t border-white/60 dark:border-white/10" />
+                                            <button type="button"
+                                                disabled={deletingId === item.id}
+                                                onClick={() => { setActionMenu(null); handleDelete(item.id, label); }}
+                                                className={`${itemCls} text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10`}>
+                                                {deletingId === item.id ? <Loader2 size={15} className="animate-spin" /> : <Trash2 size={15} />} {text.delete}
+                                            </button>
+                                        </>
+                                    )}
                                 </div>
                             );
                         })()}
