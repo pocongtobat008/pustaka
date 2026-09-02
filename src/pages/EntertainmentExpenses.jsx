@@ -1466,7 +1466,7 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                     <select value={form.jenis_usaha}
                                         onChange={e => setForm(p => ({ ...p, jenis_usaha: e.target.value, custom_jenis_usaha: '' }))}
                                         className={`w-full px-3 py-2.5 rounded-xl border ${errors.jenis_usaha ? 'border-red-500' : 'border-stone-200 dark:border-white/[0.08]'} bg-white dark:bg-[#111] text-sm focus:ring-2 focus:ring-blue-500`}>
-                                        <option value="">t('entertain.selectBusinessType')</option>
+                                        <option value="">{t('entertain.selectBusinessType')}</option>
                                         {JENIS_USAHA_OPTIONS.map(j => <option key={j} value={j}>{j}</option>)}
                                     </select>
                                     {errors.jenis_usaha && <p className="text-red-500 text-xs mt-1">{errors.jenis_usaha}</p>}
@@ -2102,24 +2102,26 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                 )}
             </AnimatePresence>
             , document.body)}
-            {/* Preview Modal */}
+            {/* Preview — slide-in-from-right drawer (same as Form) */}
             {createPortal(
             <AnimatePresence>
                 {showPreview && previewData && (
+                    <>
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-                        onClick={() => setShowPreview(false)}>
-                        <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }}
-                            className="bg-white/95 dark:bg-[#0d0d0d]/80 backdrop-blur-xl rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-white/70 dark:border-white/10"
-                            onClick={e => e.stopPropagation()}>
-                            <div className="bg-gradient-to-r from-blue-600 to-blue-600 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+                        className="fixed inset-0 z-[70] bg-[#0a0a0a]/50 backdrop-blur-sm"
+                        onClick={() => setShowPreview(false)} />
+                    <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
+                        transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+                        className="fixed top-0 right-0 z-[71] h-full w-full max-w-[600px] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl shadow-2xl flex flex-col"
+                        onClick={e => e.stopPropagation()}>
+                            <div className="bg-gradient-to-r from-blue-600 to-blue-600 px-6 py-4 flex items-center justify-between shrink-0">
                                 <h3 className="text-white font-bold text-lg">{text.previewTitle}</h3>
                                 <button onClick={() => setShowPreview(false)}
                                     className="p-1.5 text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition-colors">
                                     <X size={20} />
                                 </button>
                             </div>
-                            <div className="p-5 md:p-6 space-y-4">
+                            <div className="flex-1 overflow-y-auto p-5 md:p-6 space-y-4">
                                 {/* Info header: ref + status + tipe entry */}
                                 <div className="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-[#111]/40 rounded-2xl px-4 py-3.5 border border-stone-200 dark:border-white/[0.08] shadow-sm">
                                     <div className="min-w-0">
@@ -2265,9 +2267,10 @@ export default function EntertainmentExpenses({ currentUser, toast: toastProp })
                                         className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed">
                                         {previewExporting === 'excel' ? <Loader2 size={16} className="animate-spin" /> : <FileSpreadsheet size={16} />} {text.exportExcelBtn}
                                     </button>
-                                </div>                                </div>
+                                </div>
+                            </div>
                         </motion.div>
-                    </motion.div>
+                    </>
                 )}
             </AnimatePresence>
             , document.body)}
