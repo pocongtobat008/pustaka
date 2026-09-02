@@ -23,10 +23,8 @@ const num = (v) => { const n = parseFloat(v); return isNaN(n) ? 0 : n; };
 
 // Bangun rantai riwayat reject: mundur lewat rejected_from_id, maju lewat replacement_id
 export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, invoiceService, proformas, invoices, onNavigate, digitalSign, onToggleDigitalSign }) => {
-    if (!detailTarget) return null;
-
-    const prof = (proformas || []).find(p => (p.invoices || []).some(inv => Number(inv.id) === Number(detailTarget.id))) || null;
-    const rejectChain = buildRejectChain(detailTarget, invoices);
+    const prof = (proformas || []).find(p => (p.invoices || []).some(inv => Number(inv.id) === Number(detailTarget?.id))) || null;
+    const rejectChain = detailTarget ? buildRejectChain(detailTarget, invoices) : [];
 
     const [settledRows, setSettledRows] = useState(null);
     const [pdfBusy, setPdfBusy] = useState(null);
@@ -45,6 +43,8 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
         return () => { alive = false; };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open, detailTarget?.id, prof?.id]);
+
+    if (!detailTarget) return null;
 
     const settledTotal = (settledRows || []).reduce((s, x) => s + num(x.total_invoice), 0);
     const nominalProforma = num(prof?.total_nominal) || num(detailTarget.total_invoice);

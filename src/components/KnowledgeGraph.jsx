@@ -186,7 +186,8 @@ export default function KnowledgeGraph({ data, height = 520 }) {
 
             {/* Detail panel */}
             {(selected || hover) && (() => {
-                const n = simRef.current.byId?.[(selected || {}).id] || simRef.current.byId?.[hover];
+                const byId = simRef.current?.byId;
+                const n = byId?.[(selected || {}).id] || byId?.[hover];
                 if (!n) return null;
                 return (
                     <div className="text-xs bg-white dark:bg-[#0d0d0d] border dark:border-white/[0.06]/50 rounded-lg p-3">
