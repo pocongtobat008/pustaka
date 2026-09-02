@@ -1215,7 +1215,7 @@ export default function Documents({
                                         );
                                     }
 
-                                    const Row = ({ index, style, allItems, activeMenuId, setActiveMenuId, handleViewDoc, handleDownload, handleOpenMoveModal, handleOpenCopyModal, handleDeleteDoc, getStatusLabel, getStatusStyle, isMatch, searchQuery }) => {
+                                    const Row = ({ index, style, allItems, activeMenuId, setActiveMenuId, handleViewDoc, handleDownload, handleDeleteDoc, searchQuery }) => {
                                         const item = allItems[index];
 
                                         if (item.isFolder) {
@@ -1381,7 +1381,7 @@ export default function Documents({
                                                         rowHeight={72}
                                                         overscanCount={5}
                                                         rowComponent={Row}
-                                                        rowProps={{ allItems, activeMenuId, setActiveMenuId, handleViewDoc, handleDownload, handleOpenMoveModal, handleOpenCopyModal, handleDeleteDoc, getStatusLabel, getStatusStyle, isMatch, searchQuery }}
+                                                        rowProps={{ allItems, activeMenuId, setActiveMenuId, handleViewDoc, handleDownload, handleDeleteDoc, searchQuery }}
                                                         style={{ height, width }}
                                                     />
                                                 )}

@@ -11,6 +11,7 @@ import TaxFileDetailModal from '../components/modals/TaxFileDetailModal';
 import TaxUploadModal from '../components/modals/TaxUploadModal';
 import { useToast, ToastContainer } from '../components/ui/Toast';
 import { useLanguage } from '../contexts/LanguageContext';
+import { parseApiError } from '../utils/errorHandler';
 
 // ... (code)
 
