@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     FileCheck, Plus, Search, Clock, CheckCircle2, XCircle, User,
     Building2, Paperclip, Send, ChevronRight, MoreVertical,

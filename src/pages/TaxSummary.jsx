@@ -9,7 +9,6 @@ import {
     Tooltip, Legend, ResponsiveContainer, AreaChart, Area, ComposedChart, PieChart, Pie, Cell
 } from 'recharts';
 import * as XLSX from 'xlsx';
-import { api } from '../api';
 import { parseApiError } from '../utils/errorHandler';
 import { Card, SummaryRow } from '../components/ui/Card';
 import { useLanguage } from '../contexts/LanguageContext';
