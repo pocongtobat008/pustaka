@@ -48,7 +48,7 @@ function OrdnerInput({ editingItem, newOrdner, setNewOrdner, addOrdner }) {
     );
 }
 
-function InvoiceInput({ newInvoice, setNewInvoice, invoiceFileInputRef, handleInvoiceFileSelect, addInvoice, ord, editingItem }) {
+function InvoiceInput({ newInvoice, invoiceFileInputRef, handleInvoiceFileSelect, addInvoice, ord, editingItem }) {
     const [local, setLocal] = useState({
         invoiceNo: '', vendor: '', paymentDate: '', taxInvoiceNo: '', specialNote: '', file: null, fileName: '', rawFile: null, isProcessing: false
     });

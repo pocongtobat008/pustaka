@@ -391,7 +391,7 @@ const ComparisonTab = ({ sortedSummaries, config, onCopy, isEnglish }) => {
 };
 
 
-export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, setModalTab, setIsModalOpen, config, saveConfig, handleDeleteRecord, handleRenameTaxType, onRefresh, onImport, onCopy }) {
+export default function TaxSummary({ taxSummaries, hasPermission, setTaxForm, setModalTab, setIsModalOpen, config, saveConfig, handleDeleteRecord, handleRenameTaxType, onImport, onCopy }) {
     const { language, t } = useLanguage();
     const isEnglish = language === 'en';
     const [activeTab, setActiveTab] = useState('pph'); // pph, ppn, comparison

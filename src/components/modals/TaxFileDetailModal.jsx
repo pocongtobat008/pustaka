@@ -12,7 +12,7 @@ export default function TaxFileDetailModal({
     handleSecureDownload,
     api
 }) {
-    const { t, isEnglish } = useLanguage();
+    const { t } = useLanguage();
     return (
         <Modal
             isOpen={isOpen}

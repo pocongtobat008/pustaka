@@ -8,10 +8,9 @@ export default function TaxUploadModal({
     onClose,
     uploadForm,
     setUploadForm,
-    handleConfirmUpload,
-    isUploadingFile
+    handleConfirmUpload
 }) {
-    const { t, isEnglish } = useLanguage();
+    const { t } = useLanguage();
     return (
         <Modal
             isOpen={isOpen}

@@ -14,7 +14,7 @@ export const Card = ({ children, className = '', onClick, ...rest }) => (
 // Props: title, value, subtext, icon, colorClass (ikon bg, backward-compatible),
 //        gradient (gradient ikon), valueClass (ukuran angka), valuePrefix (mis. "Rp "),
 //        action (node tambahan di kanan, mis. tombol salin).
-export const SummaryCard = ({ title, value, subtext, icon: Icon, colorClass, gradient, valueClass = 'text-xl', valuePrefix = '', className = '', action }) => (
+export const SummaryCard = ({ title, value, subtext, icon: Icon, colorClass, valueClass = 'text-xl', valuePrefix = '', className = '', action }) => (
     <div
         className={`group relative bg-white/50 dark:bg-white/[0.03] border border-stone-200/60 dark:border-white/[0.06] rounded-2xl px-5 py-4 flex items-center gap-4 transition-all duration-200 hover:border-blue-300/50 dark:hover:border-blue-400/20 hover:shadow-md hover:shadow-blue-500/[0.04] ${className}`}
     >

@@ -163,8 +163,8 @@ const ChipEditor = ({ items, onChange, placeholder, isDarkMode, accent = 'blue' 
     );
 };
 
-export default function AnyDoc({ isDarkMode, currentUser }) {
-    const { t, isEnglish } = useLanguage();
+export default function AnyDoc({ isDarkMode }) {
+    const { t } = useLanguage();
     const [file, setFile] = useState(null);
     const [dragOver, setDragOver] = useState(false);
     const [converting, setConverting] = useState(false);

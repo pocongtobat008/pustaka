@@ -9,7 +9,7 @@ export default function ExternalInventoryTable({
     onRestoreExternal,
     hasPermission
 }) {
-    const { t, isEnglish } = useLanguage();
+    const { t } = useLanguage();
     return (
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
             <div className="bg-white dark:bg-[#0d0d0d] rounded-xl border border-stone-200 dark:border-white/[0.06] overflow-hidden">

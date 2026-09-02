@@ -14,7 +14,7 @@ export default function TaxObjectForm({
     handleSave, onCopy,
     hasPermission, isLoading, setIsLoading
 }) {
-    const { t, isEnglish } = useLanguage();
+    const { t } = useLanguage();
     const [showObjectDropdown, setShowObjectDropdown] = useState(false);
     const masterFileInputRef = useRef(null);
 

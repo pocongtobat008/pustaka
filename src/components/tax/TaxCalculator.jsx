@@ -17,7 +17,7 @@ export default function TaxCalculator({
     onCopy,
     isReadOnly = false
 }) {
-    const { t, isEnglish } = useLanguage();
+    const { t } = useLanguage();
     const [dpp, setDpp] = useState(initialDpp || '');
     const [rate, setRate] = useState(initialRate || '');
     const [discount, setDiscount] = useState(initialDiscount || '');

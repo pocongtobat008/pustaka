@@ -189,7 +189,7 @@ const ToolCard = ({ tool, active, onClick, isDarkMode }) => {
 };
 
 export default function AiPdfTools({ isDarkMode, currentUser }) {
-    const { t, isEnglish } = useLanguage();
+    const { t } = useLanguage();
     const [activeTool, setActiveTool] = useState('convert');
     const [files, setFiles] = useState([]);
     const [form, setForm] = useState({ quality: 'medium', mode: 'all', pages: '', language: 'eng', password: '', autoRotate: true, perPage: false });

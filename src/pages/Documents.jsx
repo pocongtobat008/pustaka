@@ -92,7 +92,6 @@ export default function Documents({
     const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
     const [activeMenuId, setActiveMenuId] = useState(null); // ID of the document whose menu is open
     const [activeFolderMenuId, setActiveFolderMenuId] = useState(null); // ID of the folder whose menu is open
-    const [menuLocation, setMenuLocation] = useState({ top: null, bottom: null, right: 0 }); // Coordinates for fixed menu positioning
 
     const [statusFilter, setStatusFilter] = useState('all'); // all, active, removed, external, moved, renamed
 

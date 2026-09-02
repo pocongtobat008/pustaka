@@ -4,7 +4,7 @@ import Modal from '../common/Modal';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 export default function ExternalTransferModal({ isOpen, onClose, externalDate, setExternalDate, handleExternalTransfer }) {
-    const { t, isEnglish } = useLanguage();
+    const { t } = useLanguage();
   return (
     <Modal
       isOpen={isOpen}
