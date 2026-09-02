@@ -4,7 +4,6 @@ import { API_URL } from '../services/apiClient';
 
 const WarehouseMap = ({ inventory, onSelectInfo }) => {
     const [hotItems, setHotItems] = useState([]);
-    const [viewMode, setViewMode] = useState('2D'); // 2D or List
 
     useEffect(() => {
         // Fetch predictive analytics

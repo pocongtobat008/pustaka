@@ -61,15 +61,10 @@ export default function Dashboard({
     handleDownloadInvoice,
     taxSummaries = [],
     taxAudits = [],
-    users = [],
-    departments = [],
     externalItems = [],
-    folders = [],
-    todayWork,
     currentUser,
     onOpenLanding,
     ocrStats = {},
-    inventory = [] // Prop baru
 }) {
     // Language Context
     const { language, t } = useLanguage();
