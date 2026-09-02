@@ -52,8 +52,8 @@ const calculateProgress = (issues) => {
     return Math.round(total / issues.length);
 };
 
-export default function JobDueDate({ currentUser, users, departments, hasPermission, isDarkMode, onCopy }) {
-    const { language, t } = useLanguage();
+export default function JobDueDate({ currentUser, users, departments, hasPermission }) {
+    const { language } = useLanguage();
     const isEnglish = language === 'en';
     const dateLocale = isEnglish ? enUS : id;
     const text = isEnglish

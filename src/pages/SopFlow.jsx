@@ -12,7 +12,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { getFullUrl } from '../utils/urlHelper';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const SopViewer = ({ flow, onClose, text, getFullUrl }) => {
+const SopViewer = ({ flow, onClose, text }) => {
     if (typeof document === 'undefined' || !flow) return null;
 
     return createPortal(

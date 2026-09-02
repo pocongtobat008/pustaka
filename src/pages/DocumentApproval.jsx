@@ -13,8 +13,8 @@ import { getFullUrl } from '../utils/urlHelper';
 import { db as api } from '../services/database';
 import { useLanguage } from '../contexts/LanguageContext';
 
-export default function DocumentApproval({ approvals = [], users = [], departments = [], currentUser, onRefresh, hasPermission, flows = [], syncApprovalFolder }) {
-    const { language, t } = useLanguage();
+export default function DocumentApproval({ approvals = [] = [], departments = [], currentUser, onRefresh, flows = [], syncApprovalFolder }) {
+    const { language } = useLanguage();
     const isEnglish = language === 'en';
     const dateLocale = isEnglish ? 'en-US' : 'id-ID';
     const text = isEnglish

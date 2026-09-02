@@ -146,8 +146,8 @@ const FIELD_REFERENCE = [
     ]},
 ];
 
-export default function PdfTemplateDesigner({ currentUser, hasPermission, toast }) {
-    const { language, t } = useLanguage();
+export default function PdfTemplateDesigner({ currentUser, toast }) {
+    const { language } = useLanguage();
     const isEnglish = language === 'en';
     const text = isEnglish ? {
         title: 'PDF Template Designer',

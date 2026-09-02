@@ -4,7 +4,7 @@ import { Card, SummaryRow } from '../components/ui/Card';
 import { systemService } from '../services/systemService';
 import { useLanguage } from '../contexts/LanguageContext';
 
-export default function SystemLogs({ isDarkMode }) {
+export default function SystemLogs() {
     const { language } = useLanguage();
     const isEnglish = language === 'en';
     const text = isEnglish

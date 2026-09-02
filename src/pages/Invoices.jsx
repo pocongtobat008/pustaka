@@ -330,8 +330,8 @@ function parseJsonArray(str) {
 }
 
 
-const Invoices = ({ currentUser, hasPermission, toast }) => {
-    const { t, isEnglish } = useLanguage();
+const Invoices = ({ currentUser, toast }) => {
+    const { t } = useLanguage();
     const [tab, setTab] = useState('dashboard');
 
     const [dashSearch, setDashSearch] = useState('');
