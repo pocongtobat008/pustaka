@@ -1673,8 +1673,8 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                                 {history.length > 0 && (
                                     <div className="max-h-[280px] overflow-y-auto">
                                         {history.map(x => {
-                                            const t = x.created_at ? new Date(x.created_at) : null;
-                                            const dateStr = t && !isNaN(t) ? t.toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : '';
+                                            const createdDt = x.created_at ? new Date(x.created_at) : null;
+                                            const dateStr = createdDt && !isNaN(createdDt) ? createdDt.toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : '';
                                             return (
                                                 <div key={x.id} className={`flex items-center gap-2.5 px-4 py-2.5 border-b last:border-b-0 ${isDarkMode ? 'border-white/5 hover:bg-white/5' : 'border-stone-50 hover:bg-stone-50'}`}>
                                                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${isDarkMode ? 'bg-blue-500/10 text-blue-300' : 'bg-blue-50 text-blue-600'}`}>
