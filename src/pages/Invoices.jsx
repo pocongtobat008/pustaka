@@ -3678,10 +3678,10 @@ const Invoices = ({ currentUser, toast }) => {
             {/* ── New Invoice Modal ── */}
             {showNewInvoice && createPortal(
                 <div className="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto" onClick={() => setShowNewInvoice(false)}>
-                    <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-7xl my-8 p-6 space-y-5" onClick={e => e.stopPropagation()}>
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <h3 className="text-xl font-black text-stone-800 dark:text-white">{editInvoiceId ? `Edit Invoice #${editInvoiceId}` : 'Buat Invoice'}</h3>
+                    <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-7xl my-8 p-4 sm:p-6 space-y-5" onClick={e => e.stopPropagation()}>
+                        <div className="flex items-center justify-between gap-3">
+                            <div className="min-w-0">
+                                <h3 className="text-xl font-black text-stone-800 dark:text-white truncate">{editInvoiceId ? `Edit Invoice #${editInvoiceId}` : 'Buat Invoice'}</h3>
                                 <p className="text-xs text-stone-400">Lengkapi data dealer dan daftar barang</p>
                             </div>
                             <button onClick={() => setShowNewInvoice(false)} className="p-2 rounded-xl text-stone-400 hover:text-stone-600 hover:bg-stone-100 dark:hover:bg-white/[0.05]">✕</button>
@@ -3874,18 +3874,21 @@ const Invoices = ({ currentUser, toast }) => {
                                     <Plus size={13} /> Tambah Barang
                                 </button>
                             </div>
-                            <div className="rounded-xl border border-stone-200 dark:border-white/[0.06]">
-                                <div className="grid grid-cols-16 gap-2 px-3 py-2 bg-stone-100 dark:bg-[#0d0d0d] text-[10px] font-bold text-stone-500 dark:text-white/40 uppercase tracking-wide border-b border-stone-200 dark:border-white/[0.06] rounded-t-xl">
-                                    <div className="col-span-3">Model</div>
-                                    <div className="col-span-3">Item Description</div>
-                                    <div className="col-span-1 text-center">Qty</div>
-                                    <div className="col-span-2 text-right">Harga</div>
-                                    <div className="col-span-2 text-right">Subtotal</div>
-                                    <div className="col-span-2 text-right">PPN</div>
-                                    <div className="col-span-2 text-right">Total</div>
-                                    <div className="col-span-1"></div>
-                                </div>
-                                <div className="divide-y divide-slate-100 dark:divide-slate-800">
+                            <div className="rounded-xl border border-stone-200 dark:border-white/[0.06] overflow-hidden">
+                                {/* Scroll horizontal khusus tabel item agar tetap nyaman di layar kecil */}
+                                <div className="overflow-x-auto custom-scrollbar">
+                                    <div className="min-w-[1024px]">
+                                        <div className="grid grid-cols-16 gap-2 px-3 py-2 bg-stone-100 dark:bg-[#0d0d0d] text-[10px] font-bold text-stone-500 dark:text-white/40 uppercase tracking-wide border-b border-stone-200 dark:border-white/[0.06]">
+                                            <div className="col-span-3">Model</div>
+                                            <div className="col-span-3">Item Description</div>
+                                            <div className="col-span-1 text-center">Qty</div>
+                                            <div className="col-span-2 text-right">Harga</div>
+                                            <div className="col-span-2 text-right">Subtotal</div>
+                                            <div className="col-span-2 text-right">PPN</div>
+                                            <div className="col-span-2 text-right">Total</div>
+                                            <div className="col-span-1"></div>
+                                        </div>
+                                        <div className="divide-y divide-slate-100 dark:divide-slate-800">
                                     {invRows.map((row, idx) => (
                                         <div key={idx} className="grid grid-cols-16 gap-1.5 px-3 py-2 items-center">
                                             <div className="col-span-3">
@@ -3933,12 +3936,14 @@ const Invoices = ({ currentUser, toast }) => {
                                             </div>
                                         </div>
                                     ))}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Summary */}
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 bg-stone-50 dark:bg-[#0d0d0d]/50 rounded-2xl p-4 items-stretch">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 bg-stone-50 dark:bg-[#0d0d0d]/50 rounded-2xl p-4 items-stretch">
                             <div className="flex flex-col gap-1.5 min-w-0">
                                 <label className="text-[10px] font-bold text-stone-400 uppercase truncate">Subtotal</label>
                                 <div className="min-h-[38px] flex items-center font-bold text-stone-800 dark:text-white text-sm tabular-nums">{formatCurrency(subtotalAll)}</div>
