@@ -1299,6 +1299,9 @@ router.put('/:id', async (req, res) => {
     }
 });
 
+// ── Helpers cascade pelunasan (DP dihapus → pelunasan anak ikut, supaya tidak jadi yatim) ──
+const dpIdsFrom = (rows) => rows.filter(r => r?.tipe === 'PP' && r?.pp_type !== 'pelunasan').map(r => r.id);
+
 // ─── Soft delete Proforma + invoice-nya (dipindah ke Sampah, bisa di-restore) ──
 router.delete('/proforma/:id', async (req, res) => {
     try {
@@ -1313,15 +1316,25 @@ router.delete('/proforma/:id', async (req, res) => {
         const who = getUsername(req);
         const now = new Date();
         const invIds = Array.isArray(proforma.invoice_ids) ? proforma.invoice_ids : [];
+        const dpRows = await knex('proforma_invoices').whereIn('id', invIds);
         await knex('proforma_invoices')
             .whereIn('id', invIds)
             .whereNull('deleted_at')
             .update({ deleted_at: now, deleted_by: who });
+        // Cascade: pelunasan anak dari DP yang terhapus ikut dipindah ke Sampah
+        let cascaded = [];
+        const dpIds = dpIdsFrom(dpRows);
+        if (dpIds.length) {
+            cascaded = await knex('proforma_invoices').whereIn('pelunasan_of_id', dpIds).whereNotIn('id', invIds).whereNull('deleted_at').pluck('id');
+            if (cascaded.length) {
+                await knex('proforma_invoices').whereIn('id', cascaded).update({ deleted_at: now, deleted_by: who });
+            }
+        }
         await knex('proforma_requests').where('id', id).update({ deleted_at: now, deleted_by: who });
 
-        await systemLog(who, 'Hapus Proforma (Sampah)', `Proforma #${id} (${proforma.proforma_no || '-'}) + ${invIds.length} invoice dipindah ke Sampah`,
+        await systemLog(who, 'Hapus Proforma (Sampah)', `Proforma #${id} (${proforma.proforma_no || '-'}) + ${invIds.length} invoice${cascaded.length ? ' + ' + cascaded.length + ' pelunasan' : ''} dipindah ke Sampah`,
             { status: proforma.status, total: proforma.total_nominal }, null);
-        res.json({ ok: true, deletedInvoices: invIds.length });
+        res.json({ ok: true, deletedInvoices: invIds.length + cascaded.length });
     } catch (err) {
         res.status(500).json({ error: 'Gagal hapus proforma', details: [err.message] });
     }
@@ -1337,13 +1350,23 @@ router.post('/proforma/:id/restore', async (req, res) => {
         if (!proforma.deleted_at) return res.status(400).json({ error: 'Proforma tidak berada di Sampah' });
 
         const invIds = Array.isArray(proforma.invoice_ids) ? proforma.invoice_ids : [];
+        const dpRows = await knex('proforma_invoices').whereIn('id', invIds);
         await knex('proforma_invoices')
             .whereIn('id', invIds)
             .update({ deleted_at: null, deleted_by: null });
+        // Cascade: pelunasan anak dari DP ikut dikembalikan
+        let cascaded = [];
+        const dpIds = dpIdsFrom(dpRows);
+        if (dpIds.length) {
+            cascaded = await knex('proforma_invoices').whereIn('pelunasan_of_id', dpIds).whereNotIn('id', invIds).pluck('id');
+            if (cascaded.length) {
+                await knex('proforma_invoices').whereIn('id', cascaded).update({ deleted_at: null, deleted_by: null });
+            }
+        }
         await knex('proforma_requests').where('id', id).update({ deleted_at: null, deleted_by: null });
 
-        await systemLog(getUsername(req), 'Restore Proforma', `Proforma #${id} (${proforma.proforma_no || '-'}) + ${invIds.length} invoice dikembalikan dari Sampah`, null, null);
-        res.json({ ok: true, restoredInvoices: invIds.length });
+        await systemLog(getUsername(req), 'Restore Proforma', `Proforma #${id} (${proforma.proforma_no || '-'}) + ${invIds.length} invoice${cascaded.length ? ' + ' + cascaded.length + ' pelunasan' : ''} dikembalikan dari Sampah`, null, null);
+        res.json({ ok: true, restoredInvoices: invIds.length + cascaded.length });
     } catch (err) {
         res.status(500).json({ error: 'Gagal restore proforma', details: [err.message] });
     }
@@ -1363,6 +1386,14 @@ router.delete('/proforma/:id/permanent', async (req, res) => {
             const inv = await knex('proforma_invoices').where('id', invId).first();
             if (inv?.rejected_from_id) {
                 await knex('proforma_invoices').where('id', inv.rejected_from_id).update({ replacement_id: null });
+            }
+            // Cascade: pelunasan anak dari DP ikut dihapus permanen
+            if (inv?.tipe === 'PP' && inv?.pp_type !== 'pelunasan') {
+                const childIds = await knex('proforma_invoices').where('pelunasan_of_id', invId).pluck('id');
+                for (const cid of childIds) {
+                    await knex('proforma_invoice_items').where('invoice_id', cid).del();
+                    await knex('proforma_invoices').where('id', cid).del();
+                }
             }
             await knex('proforma_invoice_items').where('invoice_id', invId).del();
             await knex('proforma_invoices').where('id', invId).del();
@@ -1388,10 +1419,18 @@ router.delete('/:id', async (req, res) => {
         if (inv.deleted_at) return res.status(400).json({ error: 'Invoice sudah ada di Sampah' });
 
         const who = getUsername(req);
-        await knex('proforma_invoices').where('id', id).update({ deleted_at: new Date(), deleted_by: who });
-        await systemLog(who, 'Hapus Invoice (Sampah)', `Invoice #${id}${inv.no_invoice ? ' (' + inv.no_invoice + ')' : ''} dipindah ke Sampah`,
+        const now = new Date();
+        // Cascade: hapus DP → pelunasan anak ikut ke Sampah
+        const childIds = (inv.tipe === 'PP' && inv.pp_type !== 'pelunasan')
+            ? await knex('proforma_invoices').where('pelunasan_of_id', inv.id).whereNull('deleted_at').pluck('id')
+            : [];
+        await knex('proforma_invoices').where('id', id).update({ deleted_at: now, deleted_by: who });
+        if (childIds.length) {
+            await knex('proforma_invoices').whereIn('id', childIds).update({ deleted_at: now, deleted_by: who });
+        }
+        await systemLog(who, 'Hapus Invoice (Sampah)', `Invoice #${id}${inv.no_invoice ? ' (' + inv.no_invoice + ')' : ''}${childIds.length ? ' + ' + childIds.length + ' pelunasan' : ''} dipindah ke Sampah`,
             { status: inv.status, no_po: inv.no_po, total: inv.total_invoice }, null);
-        res.json({ ok: true });
+        res.json({ ok: true, deletedChildren: childIds.length });
     } catch (err) {
         res.status(500).json({ error: 'Gagal hapus invoice', details: [err.message] });
     }
@@ -1406,9 +1445,16 @@ router.post('/:id/restore', async (req, res) => {
         if (!inv) return res.status(404).json({ error: 'Invoice tidak ditemukan' });
         if (!inv.deleted_at) return res.status(400).json({ error: 'Invoice tidak berada di Sampah' });
 
+        // Cascade: restore DP → pelunasan anak ikut dikembalikan
+        const childIds = (inv.tipe === 'PP' && inv.pp_type !== 'pelunasan')
+            ? await knex('proforma_invoices').where('pelunasan_of_id', inv.id).pluck('id')
+            : [];
         await knex('proforma_invoices').where('id', id).update({ deleted_at: null, deleted_by: null });
-        await systemLog(getUsername(req), 'Restore Invoice', `Invoice #${id}${inv.no_invoice ? ' (' + inv.no_invoice + ')' : ''} dikembalikan dari Sampah`, null, null);
-        res.json({ ok: true });
+        if (childIds.length) {
+            await knex('proforma_invoices').whereIn('id', childIds).update({ deleted_at: null, deleted_by: null });
+        }
+        await systemLog(getUsername(req), 'Restore Invoice', `Invoice #${id}${inv.no_invoice ? ' (' + inv.no_invoice + ')' : ''}${childIds.length ? ' + ' + childIds.length + ' pelunasan' : ''} dikembalikan dari Sampah`, null, null);
+        res.json({ ok: true, restoredChildren: childIds.length });
     } catch (err) {
         res.status(500).json({ error: 'Gagal restore invoice', details: [err.message] });
     }
@@ -1443,10 +1489,18 @@ router.delete('/:id/permanent', async (req, res) => {
         if (inv.rejected_from_id) {
             await knex('proforma_invoices').where('id', inv.rejected_from_id).update({ replacement_id: null });
         }
+        // Cascade: pelunasan anak dari DP ikut dihapus permanen
+        const childIds = (inv.tipe === 'PP' && inv.pp_type !== 'pelunasan')
+            ? await knex('proforma_invoices').where('pelunasan_of_id', inv.id).pluck('id')
+            : [];
+        for (const cid of childIds) {
+            await knex('proforma_invoice_items').where('invoice_id', cid).del();
+            await knex('proforma_invoices').where('id', cid).del();
+        }
         await knex('proforma_invoice_items').where('invoice_id', id).del();
         await knex('proforma_invoices').where('id', id).del();
 
-        await systemLog(getUsername(req), 'Hapus Permanen Invoice', `Invoice #${id}${inv.no_invoice ? ' (' + inv.no_invoice + ')' : ''} dihapus permanen dari Sampah`, null, null);
+        await systemLog(getUsername(req), 'Hapus Permanen Invoice', `Invoice #${id}${inv.no_invoice ? ' (' + inv.no_invoice + ')' : ''}${childIds.length ? ' + ' + childIds.length + ' pelunasan' : ''} dihapus permanen dari Sampah`, null, null);
         res.json({ ok: true });
     } catch (err) {
         res.status(500).json({ error: 'Gagal hapus permanen invoice', details: [err.message] });
