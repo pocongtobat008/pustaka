@@ -106,6 +106,7 @@ function InvoiceInput({ newInvoice, invoiceFileInputRef, handleInvoiceFileSelect
 }
 
 export default function InventoryModals({
+    isEnglish,
     modalTab, setModalTab,
     selectedSlotId, selectedExternalItem, inventory,
     boxForm, setBoxForm, hasPermission,
@@ -573,7 +574,7 @@ export default function InventoryModals({
                                         {isGeneratingPreview ? (
                                             <div className="flex flex-col items-center gap-3">
                                                 <RefreshCw size={32} className="text-blue-500 animate-spin" />
-                                                <p className="text-[10px] font-bold text-stone-500 animate-pulse uppercase tracking-widest text-center">Menyiapkan Preview...</p>
+                                                <p className="text-[10px] font-bold text-stone-500 animate-pulse uppercase tracking-widest text-center">{isEnglish ? 'Preparing Preview...' : 'Menyiapkan Preview...'}</p>
                                             </div>
                                         ) : (typeof selectedInvoice.file === 'string' && (selectedInvoice.file.match(/.(jpg|jpeg|png|webp)$/i) || selectedInvoice.file.startsWith('data:image'))) ? (
                                             <img src={getFullUrl(selectedInvoice.file)} alt="Invoice Preview" className="max-w-full mx-auto" />

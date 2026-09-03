@@ -7,6 +7,7 @@ import {
 const PdfViewer = lazy(() => import('../ui/PdfViewer'));
 
 export default function DocumentViewerModal({
+    isEnglish,
     modalTab,
     viewDocData,
     handleDownload,
@@ -37,12 +38,12 @@ export default function DocumentViewerModal({
 
             {/* FILE PREVIEW SECTION */}
             <div className="border-t border-stone-200 dark:border-white/[0.06] pt-4">
-                <h4 className="font-bold mb-2 dark:text-white flex items-center gap-2"><Eye size={16} /> Preview Dokumen</h4>
+                <h4 className="font-bold mb-2 dark:text-white flex items-center gap-2"><Eye size={16} /> {isEnglish ? 'Document Preview' : 'Preview Dokumen'}</h4>
                 <div className="bg-white dark:bg-[#0d0d0d] rounded-xl border border-stone-200 dark:border-white/[0.06] overflow-hidden min-h-[300px] max-h-[600px] overflow-y-auto shadow-inner flex items-center justify-center relative">
                     {isGeneratingPreview ? (
                         <div className="flex flex-col items-center gap-3">
                             <RefreshCw size={32} className="text-blue-500 animate-spin" />
-                            <p className="text-[10px] font-bold text-stone-500 animate-pulse uppercase tracking-widest text-center">Menyiapkan Preview...</p>
+                            <p className="text-[10px] font-bold text-stone-500 animate-pulse uppercase tracking-widest text-center">{isEnglish ? 'Preparing Preview...' : 'Menyiapkan Preview...'}</p>
                         </div>
                     ) : String(viewDocData?.type || '').toLowerCase().includes('image') ? (
                         <img src={viewDocData?.fileData || viewDocData?.file_data || viewDocData?.filedata || getFullUrl(viewDocData?.url) || undefined} alt="Preview" className="max-w-full mx-auto" onError={(e) => { e.target.style.display = 'none'; }} />

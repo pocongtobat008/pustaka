@@ -9,13 +9,34 @@ import { translateIdToEn, containsIndonesian } from '../i18n/autoTranslate';
 const ATTRS = ['placeholder', 'title', 'aria-label', 'alt'];
 const SKIP_TAGS = new Set(['SCRIPT', 'STYLE', 'CODE', 'PRE', 'KBD', 'SAMP', 'TEXTAREA', 'NOSCRIPT', 'IFRAME', 'CANVAS', 'SVG']);
 
+// Tag yang berisi DATA USER (nilai dari database / input user) — tidak boleh diterjemahkan,
+// agar nama dokumen, nama dealer, keterangan, dst. tetap asli saat bahasa EN.
+const DATA_TAGS = new Set(['TD', 'OPTION']);
+
+// Elemen data: sel tabel, opsi dropdown, baris/kolom ber-atribut data-*, dan elemen yang
+// menduplikasi teksnya ke tooltip title (pola umum sel data: <div title={item.nama}>{item.nama}</div>).
+function isDataElement(el) {
+  if (!el) return false;
+  if (DATA_TAGS.has(el.nodeName)) return true;
+  for (const a of ['data-id', 'data-index', 'data-row', 'data-key', 'data-name', 'data-value']) {
+    if (el.hasAttribute?.(a)) return true;
+  }
+  if (el.title && el.textContent) {
+    const t = el.title.replace(/\s+/g, ' ').trim().toLowerCase();
+    const c = el.textContent.replace(/\s+/g, ' ').trim().toLowerCase();
+    if (t && c && t === c) return true;
+  }
+  return !!el.closest?.('td, option, [data-id], [data-index], [data-row], [data-key], [data-name], [data-value]');
+}
+
 function isSkippedElement(el) {
   return (
     !el ||
     SKIP_TAGS.has(el.nodeName) ||
     el.isContentEditable ||
     el.hasAttribute?.('data-noi18n') ||
-    !!el.closest?.('[data-noi18n]')
+    !!el.closest?.('[data-noi18n]') ||
+    isDataElement(el)
   );
 }
 
@@ -52,6 +73,12 @@ export default function AutoTranslateLayer() {
       if (!el.hasAttribute(attr)) continue;
       const cur = el.getAttribute(attr);
       if (!cur || !containsIndonesian(cur)) continue;
+      // Tooltip title yang sama persis dengan teks elemen = data user (title={doc.title}); jangan diterjemahkan
+      if (attr === 'title' && el.textContent) {
+        const t = cur.replace(/\s+/g, ' ').trim().toLowerCase();
+        const c = el.textContent.replace(/\s+/g, ' ').trim().toLowerCase();
+        if (t && c && t === c) continue;
+      }
       if (!origAttr.current.has(el)) origAttr.current.set(el, {});
       const store = origAttr.current.get(el);
       if (!(attr in store)) store[attr] = cur;

@@ -2100,7 +2100,7 @@ export default function App() {
 
     let totalImported = 0;
     let totalSkipped = 0;
-    const tid = toast.loading(`Menyiapkan import ${files.length} file...`);
+    const tid = toast.loading(isEnglish ? `Preparing import of ${files.length} file(s)...` : `Menyiapkan import ${files.length} file...`);
 
     for (const file of files) {
       await new Promise((resolve) => {
@@ -2761,7 +2761,7 @@ export default function App() {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
 
-    const tid = toast.loading(`Menyiapkan upload ${files.length} dokumen...`);
+    const tid = toast.loading(isEnglish ? `Preparing upload of ${files.length} document(s)...` : `Menyiapkan upload ${files.length} dokumen...`);
     let successCount = 0;
 
     for (const file of files) {
@@ -4287,6 +4287,7 @@ export default function App() {
           <OcrQueueModal ocrStats={ocrStats} API_BASE={API_BASE} toast={toast} />
         )}
         <DocumentViewerModal
+          isEnglish={isEnglish}
           modalTab={modalTab}
           viewDocData={viewDocData}
           handleDownload={handleDownload}
@@ -4299,6 +4300,7 @@ export default function App() {
 
 
         <InventoryModals
+          isEnglish={isEnglish}
           modalTab={modalTab} setModalTab={setModalTab}
           selectedSlotId={selectedSlotId} selectedExternalItem={selectedExternalItem} inventory={inventory}
           inventoryIssues={inventoryIssues}
