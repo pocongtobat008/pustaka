@@ -4551,6 +4551,13 @@ const Invoices = ({ currentUser, toast }) => {
                                 <div className="py-0.5 space-y-0.5">
                                     <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-stone-400">#{inv?.id} • {inv?.dealer_name || '-'}</div>
 
+                                    {st === 'sent_back_tax' && (inv?.tax_request_notes || inv?.tax_reject_notes || inv?.sendback_notes) && (
+                                        <div className="mx-2 my-1 px-2.5 py-2 rounded-lg bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20">
+                                            <div className="text-[9px] font-black uppercase tracking-wider text-rose-500 dark:text-rose-400 mb-0.5">Alasan sendback tax</div>
+                                            <div className="text-[11px] leading-snug text-rose-700 dark:text-rose-300 whitespace-pre-wrap">{inv?.tax_request_notes || inv?.tax_reject_notes || inv?.sendback_notes}</div>
+                                        </div>
+                                    )}
+
                                     <button type="button" onClick={() => { setActionMenu(null); openDetail(inv); }} className={`${itemCls} text-stone-600 dark:text-white/70 hover:bg-stone-100 dark:hover:bg-white/[0.06]`}>
                                         <Eye size={15} /> Lihat Detail
                                     </button>
@@ -4598,18 +4605,6 @@ const Invoices = ({ currentUser, toast }) => {
                                     {perms.can_tax_request && ['proforma', 'sent_back_tax'].includes(st) && (
                                         <button type="button" onClick={() => { setActionMenu(null); openTaxRequest(inv); }} className={`${itemCls} text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-500/10`}>
                                             <FileText size={15} /> {st === 'proforma' ? 'Ajukan Faktur Pajak' : 'Ajukan Ulang Faktur Pajak'}
-                                        </button>
-                                    )}
-
-                                    {perms.can_tax && ['proforma', 'tax_requested', 'sent_back_tax'].includes(st) && (
-                                        <button type="button" onClick={() => { setActionMenu(null); openTax(inv); }} className={`${itemCls} text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10`}>
-                                            <FileText size={15} /> Lampirkan Faktur Pajak
-                                        </button>
-                                    )}
-
-                                    {perms.can_tax_sendback && st === 'tax_requested' && (
-                                        <button type="button" onClick={() => { setActionMenu(null); openActionModal('sendback_tax', inv); }} className={`${itemCls} text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10`}>
-                                            <RefreshCw size={15} /> Sendback Tax
                                         </button>
                                     )}
 
