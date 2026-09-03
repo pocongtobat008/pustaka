@@ -603,7 +603,11 @@ router.get('/export-excel', async (req, res) => {
         if (!perms.can_view_invoice && !perms.can_view_dashboard) {
             return res.status(403).json({ error: 'Anda tidak memiliki akses export data invoice', details: [] });
         }
-        const invoices = await knex('proforma_invoices').orderBy('id', 'asc');
+        // Filter opsional ?status=... (mis. settled) — hanya data aktif (soft-delete tidak ikut)
+        const { status } = req.query || {};
+        let invQuery = knex('proforma_invoices').whereNull('deleted_at');
+        if (status) invQuery = invQuery.where('status', String(status));
+        const invoices = await invQuery.orderBy('id', 'asc');
         const items = await knex('proforma_invoice_items').orderBy('invoice_id', 'asc').orderBy('id', 'asc');
         // No invoice asli baru dibuat saat settle (tabel settled_invoices), bukan di proforma_invoices.
         const settledRows = await knex('settled_invoices').select('source_invoice_id', 'no_invoice', 'tgl_invoice').orderBy('id', 'asc');
@@ -664,15 +668,18 @@ router.get('/export-excel', async (req, res) => {
 
         const itemHeaders = ['ID Invoice', 'No Invoice Asli', 'No PO', 'Dealer', 'No Proforma', 'Model', 'Deskripsi', 'Harga', 'Qty', 'Subtotal'];
         const invById = new Map(invoices.map(i => [i.id, i]));
-        const itemRows = items.map(it => {
-            const inv = invById.get(it.invoice_id) || {};
-            const settledFor = settledBySrc.get(Number(it.invoice_id)) || [];
-            const noInvoiceAsli = settledFor.map(s => s.no_invoice).filter(Boolean).join(', ');
-            return [
-                it.invoice_id, noInvoiceAsli || fmt(inv.no_invoice), fmt(inv.no_po), fmt(inv.dealer_name), fmt(inv.proforma_no),
-                fmt(it.model), fmt(it.item_description), num(it.harga), it.qty ?? 1, num(it.subtotal),
-            ];
-        });
+        // Hanya item milik invoice yang ikut diekspor (penting saat filter status aktif)
+        const itemRows = items
+            .filter(it => invById.has(Number(it.invoice_id)))
+            .map(it => {
+                const inv = invById.get(Number(it.invoice_id)) || {};
+                const settledFor = settledBySrc.get(Number(it.invoice_id)) || [];
+                const noInvoiceAsli = settledFor.map(s => s.no_invoice).filter(Boolean).join(', ');
+                return [
+                    it.invoice_id, noInvoiceAsli || fmt(inv.no_invoice), fmt(inv.no_po), fmt(inv.dealer_name), fmt(inv.proforma_no),
+                    fmt(it.model), fmt(it.item_description), num(it.harga), it.qty ?? 1, num(it.subtotal),
+                ];
+            });
 
         const wb = XLSX.utils.book_new();
         const ws1 = XLSX.utils.aoa_to_sheet([invHeaders, ...invRows]);
@@ -685,8 +692,9 @@ router.get('/export-excel', async (req, res) => {
 
         const buf = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
         const dateStr = new Date().toISOString().slice(0, 10);
+        const baseName = status ? `data_invoice_${status}` : 'data_invoice';
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.setHeader('Content-Disposition', `attachment; filename="data_invoice_${dateStr}.xlsx"`);
+        res.setHeader('Content-Disposition', `attachment; filename="${baseName}_${dateStr}.xlsx"`);
         res.send(buf);
     } catch (err) {
         res.status(500).json({ error: 'Gagal export Excel', details: [err.message] });

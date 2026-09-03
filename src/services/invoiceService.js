@@ -454,15 +454,17 @@ export const invoiceService = {
         return apiClient.fetchJson(`${API_URL}/invoices/flow/email-templates/${encodeURIComponent(event)}`, { method: 'DELETE' });
     },
 
-    async exportExcel() {
-        const response = await fetch(`${API_URL}/invoices/export-excel`, { credentials: 'include' });
+    async exportExcel(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        const response = await fetch(`${API_URL}/invoices/export-excel${query ? '?' + query : ''}`, { credentials: 'include' });
         if (!response.ok) throw new Error('Gagal export Excel');
         const blob = await response.blob();
         const dateStr = new Date().toISOString().slice(0, 10);
+        const baseName = params.status ? `data_invoice_${params.status}` : 'data_invoice';
         const urlObj = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = urlObj;
-        a.download = `data_invoice_${dateStr}.xlsx`;
+        a.download = `${baseName}_${dateStr}.xlsx`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
