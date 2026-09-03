@@ -78,6 +78,13 @@ export const STATUS_MAP = {
     cancelled: { label: 'Dibatalkan', cls: 'bg-stone-200 text-stone-600 dark:bg-stone-500/10 dark:text-white/40 line-through' },
 };
 
+// Opsi filter status lengkap (tetap, tidak bergantung data yang sedang tampil) —
+// mencakup Settled agar data yang sudah di-settle mudah dicari & diekspor.
+export const INVOICE_STATUS_OPTIONS = [
+    'submitted', 'proforma', 'sent_back', 'rejected',
+    'tax_requested', 'sent_back_tax', 'tax', 'settled', 'cancelled',
+].map(k => ({ value: k, label: STATUS_MAP[k]?.label || k }));
+
 export const TIPE_MAP = {
     CBD: { label: 'CBD (Cash by Delivery)', desc: 'Uang masuk = total invoice (harus balance)' },
     PP: { label: 'PP (Partial Payment)', desc: 'Uang masuk sebagai DP, pelunasan menyusul' },
@@ -338,6 +345,7 @@ const Invoices = ({ currentUser, toast }) => {
     const [dashDealer, setDashDealer] = useState('');
     const [dashStatus, setDashStatus] = useState('');
     const [exporting, setExporting] = useState(false);
+    const [exportingSettle, setExportingSettle] = useState(false);
     const [actionId, setActionId] = useState(null);
     const [duplicatingId, setDuplicatingId] = useState(null);
     const [savingInvoice, setSavingInvoice] = useState(false);
@@ -528,6 +536,20 @@ const Invoices = ({ currentUser, toast }) => {
             toast?.error?.('Gagal export Excel: ' + e.message);
         } finally {
             setExporting(false);
+        }
+    };
+
+    // Export khusus invoice berstatus Settled (beserta detail item-nya)
+    const handleExportExcelSettle = async () => {
+        setExportingSettle(true);
+        try {
+            await invoiceService.exportExcel({ status: 'settled' });
+            const settledCount = (invoices || []).filter(i => i.status === 'settled').length;
+            toast?.success?.(`Export ${settledCount} invoice settled berhasil`);
+        } catch (e) {
+            toast?.error?.('Gagal export Excel Settle: ' + e.message);
+        } finally {
+            setExportingSettle(false);
         }
     };
 
@@ -1855,11 +1877,6 @@ const Invoices = ({ currentUser, toast }) => {
         [invoices]
     );
 
-    const dashStatusOptions = useMemo(() =>
-        [...new Set((invoices || []).map(i => i.status).filter(Boolean))].map(s => ({ value: s, label: STATUS_MAP[s]?.label || s })),
-        [invoices]
-    );
-
     const dashFiltered = useMemo(() => {
         const q = dashSearch.trim().toLowerCase();
         let rows = dashRows;
@@ -2392,7 +2409,7 @@ const Invoices = ({ currentUser, toast }) => {
                                 </select>
                                 <select aria-label="Status" value={dashStatus} onChange={e => setDashStatus(e.target.value)} className="rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-stone-600 dark:text-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     <option value="">{t("opt.allStatus")}</option>
-                                    {dashStatusOptions.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                                    {INVOICE_STATUS_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                                 </select>
                                 {(dashSearch || dashDealer || dashStatus) && (
                                     <button onClick={() => { setDashSearch(''); setDashDealer(''); setDashStatus(''); }} className="px-3 py-2 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-500 hover:text-red-600 text-sm font-semibold">Reset</button>
@@ -2465,9 +2482,31 @@ const Invoices = ({ currentUser, toast }) => {
                         <div className="flex items-center gap-2 flex-wrap">
                             <select aria-label="Status Invoice" value={invStatus} onChange={e => setInvStatus(e.target.value)} className="rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl px-3 py-2 text-sm text-stone-600 dark:text-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="">{t("opt.allStatus")}</option>
-                                {dashStatusOptions.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                                {INVOICE_STATUS_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                             </select>
                             {invStatus && <button onClick={() => setInvStatus('')} className="px-3 py-2 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-500 hover:text-red-600 text-sm font-semibold">Reset</button>}
+                            {(perms.can_view_invoice || perms.can_view_dashboard) && (
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={handleExportExcel}
+                                        disabled={exporting || exportingSettle}
+                                        title="Export semua invoice + detail item ke Excel"
+                                        className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold transition-all ${(exporting || exportingSettle) ? 'bg-stone-100 dark:bg-[#0d0d0d] text-stone-400 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/25'}`}
+                                    >
+                                        <FileSpreadsheet size={15} className={exporting ? 'animate-pulse' : ''} />
+                                        {exporting ? 'Exporting...' : 'Export Excel'}
+                                    </button>
+                                    <button
+                                        onClick={handleExportExcelSettle}
+                                        disabled={exporting || exportingSettle}
+                                        title="Export khusus invoice berstatus Settled + detail item"
+                                        className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold transition-all ${(exporting || exportingSettle) ? 'bg-stone-100 dark:bg-[#0d0d0d] text-stone-400 cursor-not-allowed' : 'bg-teal-600 hover:bg-teal-700 text-white shadow-lg shadow-teal-500/25'}`}
+                                    >
+                                        <FileSpreadsheet size={15} className={exportingSettle ? 'animate-pulse' : ''} />
+                                        {exportingSettle ? 'Exporting...' : 'Export Settle'}
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                         <div className="overflow-auto max-h-[600px] custom-scrollbar" onScroll={() => setActionMenu(null)}>
