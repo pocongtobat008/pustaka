@@ -4595,9 +4595,9 @@ const Invoices = ({ currentUser, toast }) => {
                                         </button>
                                     )}
 
-                                    {perms.can_tax_request && st === 'proforma' && (
+                                    {perms.can_tax_request && ['proforma', 'sent_back_tax'].includes(st) && (
                                         <button type="button" onClick={() => { setActionMenu(null); openTaxRequest(inv); }} className={`${itemCls} text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-500/10`}>
-                                            <FileText size={15} /> Ajukan Faktur Pajak
+                                            <FileText size={15} /> {st === 'proforma' ? 'Ajukan Faktur Pajak' : 'Ajukan Ulang Faktur Pajak'}
                                         </button>
                                     )}
 
