@@ -1338,8 +1338,8 @@ export default function AiChatAssistant({
 
                         {/* Semantic search moved into chat input (search button) */}
 
-                        {/* Messages */}
-                        <div className="flex-1 overflow-y-auto px-4 py-3 space-y-4 custom-scrollbar">
+                        {/* Messages — konten chat (AI & pengguna) tidak diterjemahkan otomatis */}
+                        <div data-noi18n className="flex-1 overflow-y-auto px-4 py-3 space-y-4 custom-scrollbar">
                             {messages.map((msg, i) => (
                                 <div key={i} className={`flex gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                     {msg.role === 'assistant' && (
