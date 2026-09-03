@@ -3678,7 +3678,7 @@ const Invoices = ({ currentUser, toast }) => {
             {/* ── New Invoice Modal ── */}
             {showNewInvoice && createPortal(
                 <div className="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto" onClick={() => setShowNewInvoice(false)}>
-                    <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-4xl my-8 p-6 space-y-5" onClick={e => e.stopPropagation()}>
+                    <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-7xl my-8 p-6 space-y-5" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="text-xl font-black text-stone-800 dark:text-white">{editInvoiceId ? `Edit Invoice #${editInvoiceId}` : 'Buat Invoice'}</h3>
@@ -3875,18 +3875,19 @@ const Invoices = ({ currentUser, toast }) => {
                                 </button>
                             </div>
                             <div className="rounded-xl border border-stone-200 dark:border-white/[0.06]">
-                                <div className="grid grid-cols-14 gap-2 px-3 py-2 bg-stone-100 dark:bg-[#0d0d0d] text-[10px] font-bold text-stone-500 dark:text-white/40 uppercase tracking-wide border-b border-stone-200 dark:border-white/[0.06] rounded-t-xl">
+                                <div className="grid grid-cols-16 gap-2 px-3 py-2 bg-stone-100 dark:bg-[#0d0d0d] text-[10px] font-bold text-stone-500 dark:text-white/40 uppercase tracking-wide border-b border-stone-200 dark:border-white/[0.06] rounded-t-xl">
                                     <div className="col-span-3">Model</div>
                                     <div className="col-span-3">Item Description</div>
                                     <div className="col-span-1 text-center">Qty</div>
                                     <div className="col-span-2 text-right">Harga</div>
                                     <div className="col-span-2 text-right">Subtotal</div>
                                     <div className="col-span-2 text-right">PPN</div>
+                                    <div className="col-span-2 text-right">Total</div>
                                     <div className="col-span-1"></div>
                                 </div>
                                 <div className="divide-y divide-slate-100 dark:divide-slate-800">
                                     {invRows.map((row, idx) => (
-                                        <div key={idx} className="grid grid-cols-14 gap-1.5 px-3 py-2 items-center">
+                                        <div key={idx} className="grid grid-cols-16 gap-1.5 px-3 py-2 items-center">
                                             <div className="col-span-3">
                                                 <SearchAutocomplete
                                                     value={row.model}
@@ -3923,6 +3924,9 @@ const Invoices = ({ currentUser, toast }) => {
                                                         updateRow(idx, { ppn_override: raw ? Number(raw) : '' });
                                                     }}
                                                 />
+                                            </div>
+                                            <div className="col-span-2 h-[38px] flex items-center justify-end text-right font-black text-[13px] text-emerald-600 dark:text-emerald-400 tabular-nums whitespace-nowrap" title="Total = Subtotal + PPN">
+                                                {formatCurrency(((parseFloat(row.harga) || 0) * (parseInt(row.qty) || 0)) + (ppnPerItem[idx] || 0))}
                                             </div>
                                             <div className="col-span-1 h-[38px] flex items-center justify-end">
                                                 <button onClick={() => removeRow(idx)} className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-white/[0.05]"><Trash2 size={14} /></button>
