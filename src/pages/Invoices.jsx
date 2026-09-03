@@ -2060,9 +2060,25 @@ const Invoices = ({ currentUser, toast }) => {
         });
     };
 
+    // ── Ringkasan dashboard: selalu mencerminkan Tabel Dashboard yang aktif (bukan seluruh DB) ──
+    // Total Invoice & nominal dari baris root (exclude pelunasan), Uang Masuk dari semua baris
+    // tersaring (termasuk pelunasan) — persis sama dengan footer tabel dashboard.
+    const dashSummary = useMemo(() => {
+        const roots = dashRootRows || [];
+        const all = dashFiltered || [];
+        const nominalInvoice = roots.reduce((s, r) => s + (parseFloat(r.total_invoice) || 0), 0);
+        const uangMasuk = all.reduce((s, r) => s + (parseFloat(r.uang_masuk) || 0), 0);
+        return {
+            totalInvoice: roots.length,
+            nominalInvoice,
+            uangMasuk,
+            sisa: nominalInvoice - uangMasuk,
+        };
+    }, [dashFiltered, dashRootRows]);
+
     const dashStatusDist = useMemo(() => {
         const map = {};
-        (invoices || []).forEach(i => {
+        (dashFiltered || []).forEach(i => {
             const key = STATUS_MAP[i.status]?.label || i.status || 'unknown';
             map[key] = (map[key] || 0) + 1;
         });
@@ -2074,21 +2090,25 @@ const Invoices = ({ currentUser, toast }) => {
             if (rest > 0) entries.push({ name: 'Lainnya', value: rest });
         }
         return entries;
-    }, [invoices]);
+    }, [dashFiltered]);
 
     const CHART_COLORS = ['#6366f1', '#f59e0b', '#ef4444', '#f97316', '#8b5cf6', '#10b981', '#94a3b8', '#3b82f6'];
 
     const dashMonthly = useMemo(() => {
         const map = {};
-        (invoices || []).forEach(i => {
+        (dashFiltered || []).forEach(i => {
             const d = String(i.tgl_transaksi || i.created_at || '').slice(0, 7);
             if (!/^\d{4}-\d{2}$/.test(d)) return;
             map[d] = map[d] || { month: d, invoice: 0, masuk: 0, settled: 0 };
             map[d].invoice += Number(i.total_invoice) || 0;
             map[d].masuk += Number(i.uang_masuk) || 0;
         });
+        // Settled hanya dari proforma yang invoicenya tampil di tabel dashboard aktif
+        const visibleIds = new Set((dashFiltered || []).map(i => Number(i.id)));
         (proformas || []).forEach(p => {
             if (p.status !== 'settled') return;
+            const linked = (p.invoices || []).some(inv => visibleIds.has(Number(inv.id)));
+            if (!linked) return;
             const d = String(p.settled_at || '').slice(0, 7);
             if (!/^\d{4}-\d{2}$/.test(d)) return;
             map[d] = map[d] || { month: d, invoice: 0, masuk: 0, settled: 0 };
@@ -2096,17 +2116,17 @@ const Invoices = ({ currentUser, toast }) => {
         });
         return Object.entries(map).sort((a, b) => a[0].localeCompare(b[0])).slice(-6)
             .map(([k, v]) => ({ ...v, month: `${k.slice(5)}/${k.slice(2, 4)}` }));
-    }, [invoices, proformas]);
+    }, [dashFiltered, proformas]);
 
     const dashDealerTop = useMemo(() => {
         const map = {};
-        (invoices || []).forEach(i => {
+        (dashRootRows || []).forEach(i => {
             const n = i.dealer_name || 'Unknown';
             map[n] = (map[n] || 0) + (Number(i.total_invoice) || 0);
         });
         return Object.entries(map).map(([name, value]) => ({ name, value }))
             .sort((a, b) => b.value - a.value).slice(0, 6);
-    }, [invoices]);
+    }, [dashRootRows]);
 
     const renderTabBtn = (id, icon, label) => (
         <button
@@ -2127,7 +2147,7 @@ const Invoices = ({ currentUser, toast }) => {
             {/* ── Summary Cards (contextual per tab aktif) ── */}
             {tab === 'dashboard' && (
                 <SummaryRow cards={[
-                    { title: 'Total Invoice', value: summary.totalInvoice.toLocaleString('id-ID'), icon: Receipt, gradient: 'from-blue-600 to-blue-700', subtext: `${formatCurrency(summary.nominalInvoice)} • ${summary.sentBackProforma} sent back`, valueClass: 'text-2xl' },
+                    { title: 'Total Invoice', value: dashSummary.totalInvoice.toLocaleString('id-ID'), icon: Receipt, gradient: 'from-blue-600 to-blue-700', subtext: `${formatCurrency(dashSummary.nominalInvoice)} • Masuk ${formatCurrency(dashSummary.uangMasuk)} • Sisa ${formatCurrency(dashSummary.sisa)}`, valueClass: 'text-2xl' },
                     { title: 'Proforma', value: summary.totalProforma.toLocaleString('id-ID'), icon: FileSignature, gradient: 'from-amber-500 to-orange-600', subtext: `${summary.totalApproved} approved • ${summary.pendingProforma} pending • ${formatCurrency(summary.totalNominal)}`, valueClass: 'text-2xl' },
                     { title: 'Menunggu Tax', value: summary.pendingTax.toLocaleString('id-ID'), icon: FileText, gradient: 'from-blue-600 to-blue-700', subtext: 'Proforma perlu faktur pajak — segera lampirkan', valueClass: 'text-2xl' },
                     { title: 'Settled', value: summary.totalSettled.toLocaleString('id-ID'), icon: HandCoins, gradient: 'from-teal-500 to-emerald-700', subtext: `${formatCurrency(summary.nominalSettled)} • selesai di-settle`, valueClass: 'text-2xl' },
@@ -2332,17 +2352,19 @@ const Invoices = ({ currentUser, toast }) => {
                         </div>
 
                         {/* Quick stats */}
-                        <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-6 gap-3">
                             {[
-                                { label: 'Total Invoice', val: summary.totalInvoice.toLocaleString('id-ID'), sub: formatCurrency(summary.nominalInvoice), icon: <Receipt size={16} />, cls: 'from-blue-600 to-blue-700', w: 'text-blue-100' },
-                                { label: 'Proforma', val: summary.totalProforma.toLocaleString('id-ID'), sub: `${summary.totalApproved} approved • ${summary.pendingProforma} pending`, icon: <FileSignature size={16} />, cls: 'from-amber-500 to-orange-600', w: 'text-amber-100' },
-                                { label: 'Menunggu Tax', val: summary.pendingTax.toLocaleString('id-ID'), sub: 'perlu faktur pajak', icon: <FileText size={16} />, cls: 'from-blue-600 to-blue-700', w: 'text-blue-100' },
-                                { label: 'Settled', val: summary.totalSettled.toLocaleString('id-ID'), sub: formatCurrency(summary.nominalSettled), icon: <HandCoins size={16} />, cls: 'from-teal-500 to-emerald-700', w: 'text-teal-100' },
+                                { label: 'Total Invoice', val: dashSummary.totalInvoice.toLocaleString('id-ID'), sub: formatCurrency(dashSummary.nominalInvoice), icon: <Receipt size={16} />, cls: 'from-blue-600 to-blue-700', w: 'text-blue-100' },
+                                { label: 'Uang Masuk', val: formatCurrency(dashSummary.uangMasuk), sub: 'diterima', icon: <HandCoins size={16} />, cls: 'from-emerald-600 to-teal-700', w: 'text-emerald-100', vc: 'text-base whitespace-nowrap' },
+                                { label: 'Sisa', val: formatCurrency(dashSummary.sisa), sub: 'belum dibayar', icon: <Clock size={16} />, cls: 'from-amber-500 to-orange-600', w: 'text-amber-100', vc: 'text-base whitespace-nowrap' },
+                                { label: 'Proforma', val: summary.totalProforma.toLocaleString('id-ID'), sub: `${summary.totalApproved} approved • ${summary.pendingProforma} pending`, icon: <FileSignature size={16} />, cls: 'from-indigo-500 to-indigo-700', w: 'text-indigo-100' },
+                                { label: 'Menunggu Tax', val: summary.pendingTax.toLocaleString('id-ID'), sub: 'perlu faktur pajak', icon: <FileText size={16} />, cls: 'from-sky-500 to-blue-700', w: 'text-sky-100' },
+                                { label: 'Settled', val: summary.totalSettled.toLocaleString('id-ID'), sub: formatCurrency(summary.nominalSettled), icon: <CheckCircle2 size={16} />, cls: 'from-teal-500 to-emerald-700', w: 'text-teal-100' },
                             ].map((c, i) => (
                                 <div key={i} className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${c.cls} text-white p-4 shadow-lg`}>
                                     <div className="absolute -right-3 -top-3 opacity-15">{c.icon}</div>
                                     <div className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-widest ${c.w}`}>{c.icon} {c.label}</div>
-                                    <div className="text-2xl font-black mt-2 leading-none">{c.val}</div>
+                                    <div className={`${c.vc || 'text-2xl'} font-black mt-2 leading-none`}>{c.val}</div>
                                     <div className={`text-[10px] font-semibold ${c.w} mt-1.5`}>{c.sub}</div>
                                 </div>
                             ))}
