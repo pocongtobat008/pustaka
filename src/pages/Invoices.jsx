@@ -4569,7 +4569,9 @@ const Invoices = ({ currentUser, toast }) => {
                         {(() => {
                             const inv = actionMenu.inv;
                             const st = inv?.status;
-                            const prof = inv?._proforma;
+                            // Invoices-tab rows are raw API data (no _proforma); resolve the
+                            // proforma from state so Settle works there, not only on dashboard.
+                            const prof = inv?._proforma || findProformaByInvoice(inv?.id);
                             const invPdfBusy = pdfBusyId === `invoice:${inv?.id}`;
                             const reqPdfBusy = pdfBusyId === `request:${inv?.id}`;
                             const rowBusy = actionId === inv?.id;
@@ -4649,7 +4651,7 @@ const Invoices = ({ currentUser, toast }) => {
 
 
 
-                                    {perms.can_settle && prof && ['tax', 'settled'].includes(st) && inv?.faktur_pajak_file && (
+                                    {perms.can_settle && prof && (st === 'tax' ? !!inv?.faktur_pajak_file : ['settled'].includes(st)) && (
                                         <button type="button" onClick={() => { setActionMenu(null); openSettle(prof); }} className={`${itemCls} text-teal-600 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-500/10`}>
                                             <HandCoins size={15} /> Settle Proforma
                                         </button>
