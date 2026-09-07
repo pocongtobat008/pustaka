@@ -4649,7 +4649,7 @@ const Invoices = ({ currentUser, toast }) => {
 
 
 
-                                    {perms.can_settle && prof && ['proforma', 'tax', 'settled'].includes(st) && (
+                                    {perms.can_settle && prof && ['tax', 'settled'].includes(st) && inv?.faktur_pajak_file && (
                                         <button type="button" onClick={() => { setActionMenu(null); openSettle(prof); }} className={`${itemCls} text-teal-600 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-500/10`}>
                                             <HandCoins size={15} /> Settle Proforma
                                         </button>
