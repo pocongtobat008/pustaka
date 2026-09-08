@@ -11,7 +11,7 @@ import {
     Landmark, Package, ShieldCheck, HandCoins, X, Save, LayoutDashboard,
     ArrowUpDown, ArrowUp, ArrowDown, Download, History, Filter, Ban, Megaphone,
     FileSpreadsheet, Mail, Workflow, ArrowRight, Power, ChevronUp, ChevronDown, ChevronRight, Sparkles,
-    Eye, Users, AtSign, MoreVertical, FileDown, Settings2, Trophy, TrendingUp, RotateCcw, PenLine
+    Eye, Users, AtSign, MoreVertical, FileDown, Settings2, Trophy, TrendingUp, RotateCcw, PenLine, Copy, Info
 } from 'lucide-react';
 import {
     ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip,
@@ -1230,13 +1230,34 @@ const Invoices = ({ currentUser, toast }) => {
         tgl_invoice: src?.tgl_transaksi || '',
         no_faktur: '',
         dpp: src?.subtotal != null ? Number(src.subtotal) : '',
-        ppn: src?.subtotal != null ? round2(Number(src.subtotal) * 0.11) : '',
+        // PPN diambil dari total invoice (total − dpp) agar balance dengan proforma;
+        // fallback 11% hanya jika total tidak tersedia.
+        ppn: src?.total_invoice != null && src?.subtotal != null
+            ? round2(Number(src.total_invoice) - Number(src.subtotal))
+            : (src?.subtotal != null ? round2(Number(src.subtotal) * 0.11) : ''),
         materai: src?.materai != null ? Number(src.materai) : '',
         diskon: src?.diskon != null ? Number(src.diskon) : '',
         tgl_settle: '',
     });
 
     const rowTotal = (r) => round2((parseFloat(r.dpp) || 0) + (parseFloat(r.ppn) || 0) + (parseFloat(r.materai) || 0) - (parseFloat(r.diskon) || 0));
+
+    // Total settle dengan dedup: baris satu grup PP (DP+Pelunasan) berbagi 1 No
+    // Invoice Asli = 1 invoice fisik → dihitung sekali per nomor; baris DP dipakai
+    // sebagai wakil total grup (independen urutan baris).
+    const dedupeSettleTotal = (rows) => {
+        const srcMap = new Map((settleTarget?.invoices || []).map(i => [Number(i.id), i]));
+        const isPel = (r) => (srcMap.get(Number(r.source_invoice_id)) || {}).pp_type === 'pelunasan';
+        const byNo = new Map();
+        for (const r of rows) {
+            const k = String(r.no_invoice || '').trim();
+            if (!k) continue;
+            const prev = byNo.get(k);
+            if (prev == null) byNo.set(k, r);
+            else if (isPel(prev) && !isPel(r)) byNo.set(k, r);
+        }
+        return round2([...byNo.values()].reduce((s, r) => s + rowTotal(r), 0));
+    };
 
     const hydrateDraftRows = (rows, p) => {
         // Tiap proforma berisi invoice sendiri-sendiri (DP & pelunasan terpisah).
@@ -1281,15 +1302,39 @@ const Invoices = ({ currentUser, toast }) => {
         }
     };
 
+    // Kelompokkan baris settle yang masih satu grup PP (DP + pelunasan-nya):
+    // source_invoice_id yang terhubung via pelunasan_of_id dianggap satu kesatuan.
+    const settleGroupKeyOf = (srcId) => {
+        if (srcId == null) return `x${srcId}`;
+        const id = Number(srcId);
+        const inv = (settleTarget?.invoices || []).find(i => Number(i.id) === id);
+        const root = inv?.tipe === 'PP' && inv?.pp_type === 'pelunasan' && inv?.pelunasan_of_id ? Number(inv.pelunasan_of_id) : id;
+        return `pp${root}`;
+    };
+
     const updateSettleRow = (idx, patch) => {
-        setSettleRows(prev => prev.map((r, i) => {
-            if (i !== idx) return r;
-            const next = { ...r, ...patch };
-            if (patch.dpp != null && !patch.ppn && !patch.ppn_manual) {
-                next.ppn = round2((parseFloat(next.dpp) || 0) * 0.11);
-            }
-            return next;
-        }));
+        setSettleRows(prev => {
+            const key = settleGroupKeyOf(prev[idx]?.source_invoice_id);
+            const mirror = ['no_invoice', 'tgl_invoice', 'no_faktur'].some(f => patch[f] !== undefined);
+            return prev.map((r, i) => {
+                if (i !== idx) {
+                    // Mirror identitas invoice ke semua baris satu grup PP (DP ↔ Pelunasan)
+                    if (mirror && key && settleGroupKeyOf(r.source_invoice_id) === key) {
+                        const m = { ...r };
+                        for (const f of ['no_invoice', 'tgl_invoice', 'no_faktur']) {
+                            if (patch[f] !== undefined) m[f] = patch[f];
+                        }
+                        return m;
+                    }
+                    return r;
+                }
+                const next = { ...r, ...patch };
+                if (patch.dpp != null && !patch.ppn && !patch.ppn_manual) {
+                    next.ppn = round2((parseFloat(next.dpp) || 0) * 0.11);
+                }
+                return next;
+            });
+        });
     };
 
     const handleSettle = async () => {
@@ -1300,11 +1345,17 @@ const Invoices = ({ currentUser, toast }) => {
             if (!String(r.tgl_invoice || '').trim()) return setSettleError(`Baris #${i + 1}: Tanggal invoice wajib diisi`);
             if (!((parseFloat(r.dpp) || 0) >= 0)) return setSettleError(`Baris #${i + 1}: DPP wajib diisi`);
         }
-        const total = settleRows.reduce((s, r) => s + rowTotal(r), 0);
-        // Nominal per-invoice: PP pakai uang_masuk, CBD/PF pakai total_invoice.
+        // Baris satu grup PP (DP+Pelunasan) berbagi 1 No Invoice Asli = 1 invoice fisik
+        // → total dihitung sekali per nomor agar balance dengan total proforma.
+        const total = dedupeSettleTotal(settleRows);
+        // Nominal per-invoice: PP pakai uang_masuk (DP), CBD/PF pakai total_invoice.
+        // PP pelunasan DIKECUALIKAN: baris settle pelunasan = 1 no invoice asli yang
+        // sama dengan DP-nya (total settle dedup per nomor), jadi tidak dijumlah dobel.
         const target = round2((settleTarget?.invoices || [])
             .filter(i => i.status !== 'cancelled')
-            .reduce((s, i) => s + (i.tipe === 'PP' ? (parseFloat(i.uang_masuk) || 0) : (parseFloat(i.total_invoice) || 0)), 0));
+            .reduce((s, i) => s + (i.tipe === 'PP'
+                ? (i.pp_type === 'pelunasan' ? 0 : (parseFloat(i.uang_masuk) || 0))
+                : (parseFloat(i.total_invoice) || 0)), 0));
         if (Math.abs(round2(total) - target) > 0.01) {
             return setSettleError(`Total invoice asli harus balance dengan total proforma (${formatCurrency(target)}). Saat ini ${formatCurrency(round2(total))}`);
         }
@@ -3613,12 +3664,22 @@ const Invoices = ({ currentUser, toast }) => {
                             <div className="px-4 py-3 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm">{settleError}</div>
                         )}
 
+                        {(settleTarget?.invoices || []).some(i => i.tipe === 'PP') && (
+                            <div className="flex items-start gap-2 px-3 py-2.5 rounded-xl bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 text-blue-700 dark:text-blue-300 text-xs">
+                                <Info size={14} className="mt-0.5 shrink-0" />
+                                <span>
+                                    Tipe <b>PP (DP + Pelunasan)</b> adalah 1 kesatuan: mengisi <b>No Invoice Asli</b> pada baris DP otomatis mengisi baris Pelunasan dengan nomor & data yang sama.
+                                </span>
+                            </div>
+                        )}
+
                         <div className="overflow-x-auto">
                             <table className="w-full text-xs">
                                 <thead>
                                     <tr className="text-left text-[10px] font-black uppercase tracking-wider text-stone-400 border-b border-white/60 dark:border-white/10">
                                         <th className="px-2 py-2">#</th>
-                                        <th className="px-2 py-2">No Invoice Asli *</th>
+                                        <th className="px-2 py-2">Tipe</th>
+                                        <th className="px-2 py-2">No Invoice Asli (1 grup PP = 1 No) *</th>
                                         <th className="px-2 py-2">Tgl Invoice *</th>
                                         <th className="px-2 py-2">No Faktur (auto proforma)</th>
                                         <th className="px-2 py-2 text-right">DPP *</th>
@@ -3636,7 +3697,40 @@ const Invoices = ({ currentUser, toast }) => {
                                             <tr key={i} className="border-b border-stone-50 dark:border-white/[0.06]">
                                                 <td className="px-2 py-2 text-stone-400">{i + 1}</td>
                                                 <td className="px-2 py-2">
-                                                    <input className={inputCls + ' min-w-[140px]'} placeholder={t("invoice.placeNoInvoice")} value={r.no_invoice} onChange={e => updateSettleRow(i, { no_invoice: e.target.value })} />
+                                                    {(() => {
+                                                        const src = (settleTarget?.invoices || []).find(x => Number(x.id) === Number(r.source_invoice_id));
+                                                        const isPl = src?.tipe === 'PP' && src?.pp_type === 'pelunasan';
+                                                        const isDp = src?.tipe === 'PP' && !(src?.pp_type === 'pelunasan');
+                                                        if (!isPl && !isDp) return <span className="text-[10px] text-stone-400">—</span>;
+                                                        return (
+                                                            <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-black ${isDp ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-300' : 'bg-teal-100 text-teal-700 dark:bg-teal-500/15 dark:text-teal-300'}`}>
+                                                                {isDp ? 'DP' : 'PL'}
+                                                            </span>
+                                                        );
+                                                    })()}
+                                                </td>
+                                                <td className="px-2 py-2">
+                                                    <div className="flex items-center gap-1">
+                                                        <input className={inputCls + ' min-w-[140px]'} placeholder={t("invoice.placeNoInvoice")} value={r.no_invoice} onChange={e => updateSettleRow(i, { no_invoice: e.target.value })} />
+                                                        {(() => {
+                                                            const src = (settleTarget?.invoices || []).find(x => Number(x.id) === Number(r.source_invoice_id));
+                                                            const isDp = src?.tipe === 'PP' && !(src?.pp_type === 'pelunasan');
+                                                            if (!isDp) return null;
+                                                            return (
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        const key = settleGroupKeyOf(r.source_invoice_id);
+                                                                        setSettleRows(prev => prev.map(rr => settleGroupKeyOf(rr.source_invoice_id) === key ? { ...rr, no_invoice: r.no_invoice, tgl_invoice: r.tgl_invoice, no_faktur: r.no_faktur } : rr));
+                                                                    }}
+                                                                    className="p-1.5 rounded-lg text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 shrink-0"
+                                                                    title="Salin No/Tgl/Faktur ke baris Pelunasan satu grup"
+                                                                >
+                                                                    <Copy size={13} />
+                                                                </button>
+                                                            );
+                                                        })()}
+                                                    </div>
                                                 </td>
                                                 <td className="px-2 py-2">
                                                     <input type="date" className={inputCls + ' min-w-[140px]'} value={r.tgl_invoice} onChange={e => updateSettleRow(i, { tgl_invoice: e.target.value })} />
@@ -3680,7 +3774,7 @@ const Invoices = ({ currentUser, toast }) => {
                             </button>
                             <div className="text-xs text-stone-500 space-x-3">
                                 <span>Total Proforma: <b className="text-stone-800 dark:text-white">{formatCurrency(round2((settleTarget?.invoices || []).filter(i => !(i.pp_type === 'pelunasan')).reduce((s, i) => s + (parseFloat(i.total_invoice) || 0), 0)))}</b></span>
-                                <span>Total Settle: <b className={Math.abs(round2(settleRows.reduce((s, x) => s + rowTotal(x), 0)) - round2((settleTarget?.invoices || []).filter(i => !(i.pp_type === 'pelunasan')).reduce((s, i) => s + (parseFloat(i.total_invoice) || 0), 0))) <= 0.01 ? 'text-teal-600 dark:text-teal-400' : 'text-red-600'}>{formatCurrency(round2(settleRows.reduce((s, x) => s + rowTotal(x), 0)))}</b></span>
+                                <span>Total Settle: <b className={Math.abs(dedupeSettleTotal(settleRows) - round2((settleTarget?.invoices || []).filter(i => !(i.pp_type === 'pelunasan')).reduce((s, i) => s + (parseFloat(i.total_invoice) || 0), 0))) <= 0.01 ? 'text-teal-600 dark:text-teal-400' : 'text-red-600'}>{formatCurrency(dedupeSettleTotal(settleRows))}</b></span>
                             </div>
                         </div>
 

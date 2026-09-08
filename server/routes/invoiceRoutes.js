@@ -647,8 +647,10 @@ router.get('/export-excel', async (req, res) => {
         ];
         const invRows = invoices.map(inv => {
             const settledFor = settledBySrc.get(Number(inv.id)) || [];
-            const noInvoiceAsli = settledFor.map(s => s.no_invoice).filter(Boolean).join(', ');
-            const tglInvoiceAsli = settledFor.map(s => dt(s.tgl_invoice)).filter(Boolean).join(', ');
+            // Grup PP (DP+pelunasan) berbagi 1 no → dedup agar tidak tampil dobel
+            const uniqNos = [...new Set(settledFor.map(s => String(s.no_invoice || '').trim()).filter(Boolean))];
+            const noInvoiceAsli = uniqNos.join(', ');
+            const tglInvoiceAsli = [...new Set(settledFor.map(s => dt(s.tgl_invoice)).filter(Boolean))].join(', ');
             return [
                 inv.id, noInvoiceAsli, tglInvoiceAsli, fmt(inv.no_invoice), inv.rejected_from_id ?? '', inv.replacement_id ?? '',
                 fmt(inv.no_po), dt(inv.tgl_po), fmt(inv.tipe), dt(inv.tgl_transaksi),
@@ -674,7 +676,7 @@ router.get('/export-excel', async (req, res) => {
             .map(it => {
                 const inv = invById.get(Number(it.invoice_id)) || {};
                 const settledFor = settledBySrc.get(Number(it.invoice_id)) || [];
-                const noInvoiceAsli = settledFor.map(s => s.no_invoice).filter(Boolean).join(', ');
+                const noInvoiceAsli = [...new Set(settledFor.map(s => String(s.no_invoice || '').trim()).filter(Boolean))].join(', ');
                 return [
                     it.invoice_id, noInvoiceAsli || fmt(inv.no_invoice), fmt(inv.no_po), fmt(inv.dealer_name), fmt(inv.proforma_no),
                     fmt(it.model), fmt(it.item_description), num(it.harga), it.qty ?? 1, num(it.subtotal),
@@ -2087,12 +2089,18 @@ router.post('/proforma/:id/settle', async (req, res) => {
         const srcById = Object.fromEntries(sourceInvoices.map(i => [Number(i.id), i]));
         const now = new Date();
 
+        // PP (DP + Pelunasan) adalah 1 kesatuan → baris settle satu grup PP boleh
+        // berbagi 1 No Invoice Asli yang sama (nomor sama ditolak hanya antar grup berbeda).
+        const ppGroupSingle = sourceInvoices.length > 0
+            && sourceInvoices.every(i => i.tipe === 'PP')
+            && (await expandPpGroupIds(knex, sourceInvoices.map(i => i.id))).length === sourceInvoices.length;
+
         const settled = [];
         for (const [idx, r] of rows.entries()) {
             const noInvoice = String(r.no_invoice || '').trim();
             if (!noInvoice) return res.status(400).json({ error: `Baris #${idx + 1}: No invoice wajib diisi`, details: [] });
             const dup = settled.some(s => String(s.no_invoice) === noInvoice);
-            if (dup) return res.status(400).json({ error: `Baris #${idx + 1}: No invoice ${noInvoice} duplikat`, details: [] });
+            if (dup && !ppGroupSingle) return res.status(400).json({ error: `Baris #${idx + 1}: No invoice ${noInvoice} duplikat`, details: [] });
 
             const subtotal = round2(r.subtotal ?? r.dpp);
             const ppn = round2(r.ppn);
@@ -2135,12 +2143,47 @@ router.post('/proforma/:id/settle', async (req, res) => {
             });
         }
 
-        const grandTotal = round2(settled.reduce((s, x) => s + x.total_invoice, 0));
-        // Nominal per-invoice: PP pakai uang_masuk, CBD/PF pakai total_invoice.
-        const totalNominal = round2(sourceInvoices.reduce((s, i) => {
-            if (i.tipe === 'PP') return s + round2(i.uang_masuk);
-            return s + round2(i.total_invoice);
-        }, 0));
+        // Baris satu grup PP berbagi 1 No Invoice Asli = 1 invoice fisik →
+        // total dihitung SEKALI per nomor; baris DP (bukan pelunasan) dipakai
+        // sebagai wakil total grup (independen urutan baris).
+        const srcByIdAll = new Map(sourceInvoices.map(i => [Number(i.id), i]));
+        const isPelRow = (s) => (srcByIdAll.get(Number(s.source_invoice_id)) || {}).pp_type === 'pelunasan';
+        const byNo = new Map();
+        for (const s of settled) {
+            const k = String(s.no_invoice || '').trim();
+            if (!k) { continue; }
+            const prev = byNo.get(k);
+            if (prev == null) byNo.set(k, s);
+            else if (isPelRow(prev) && !isPelRow(s)) byNo.set(k, s); // prefer baris DP
+        }
+        const grandTotal = round2([...byNo.values()].reduce((s, x) => s + x.total_invoice, 0));
+        // Batas balance:
+        // - Proforma berisi grup PP LENGKAP (DP + pelunasan-nya) = 1 invoice fisik
+        //   → dihitung SEKALI sebesar full amount DP (total_invoice), bukan dobel.
+        // - Selain itu aturan lama: PP pakai uang_masuk, CBD/PF pakai total_invoice.
+        const _ppRoots = new Map();
+        for (const i of sourceInvoices) {
+            if (i.tipe !== 'PP') continue;
+            const rid = (i.pp_type === 'pelunasan' && i.pelunasan_of_id) ? Number(i.pelunasan_of_id) : Number(i.id);
+            if (!_ppRoots.has(rid)) _ppRoots.set(rid, { root: null, pels: [] });
+            const g = _ppRoots.get(rid);
+            if (i.pp_type === 'pelunasan') g.pels.push(i); else g.root = i;
+        }
+        let _nominalAcc = 0;
+        for (const i of sourceInvoices) {
+            if (i.tipe === 'PP') {
+                if (i.pp_type === 'pelunasan') continue; // dihitung via grup di bawah
+                const g = _ppRoots.get(Number(i.id));
+                if (g && g.pels.length) { _nominalAcc += round2(i.total_invoice); continue; } // grup lengkap → full amount sekali
+                _nominalAcc += round2(i.uang_masuk);
+                continue;
+            }
+            _nominalAcc += round2(i.total_invoice);
+        }
+        for (const g of _ppRoots.values()) {
+            if (!g.root) _nominalAcc += g.pels.reduce((s, x) => s + round2(x.uang_masuk), 0); // pelunasan tanpa DP di proforma ini
+        }
+        const totalNominal = round2(_nominalAcc);
         if (Math.abs(grandTotal - totalNominal) > 0.01) {
             return res.status(400).json({
                 error: 'Total invoice asli harus balance dengan total proforma',
