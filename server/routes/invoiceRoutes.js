@@ -2008,6 +2008,30 @@ router.get('/settled/by-source/:invoiceId', async (req, res) => {
     }
 });
 
+// Detail settle milik SELURUH GRUP PP dari satu invoice — DP & pelunasan selalu
+// menampilkan data yang sama, termasuk data lama yang barisnya belum di-mirror
+// ke semua anggota (baris diambil dari siapa pun anggota grup yang punya).
+router.get('/settled/by-group/:invoiceId', async (req, res) => {
+    try {
+        const inv = await knex('proforma_invoices').where('id', Number(req.params.invoiceId)).first();
+        if (!inv) return res.status(404).json({ error: 'Invoice tidak ditemukan' });
+        let memberIds = [Number(inv.id)];
+        if (inv.tipe === 'PP') {
+            const rootId = inv.pp_type === 'pelunasan' && inv.pelunasan_of_id ? Number(inv.pelunasan_of_id) : Number(inv.id);
+            const members = await knex('proforma_invoices')
+                .where((q) => q.where('id', rootId).orWhere('pelunasan_of_id', rootId))
+                .whereNot('status', 'cancelled');
+            memberIds = members.map(m => Number(m.id));
+        }
+        const rows = await knex('settled_invoices')
+            .whereIn('source_invoice_id', memberIds)
+            .orderBy('id', 'asc');
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: 'Gagal mengambil detail settle grup', details: [err.message] });
+    }
+});
+
 // ─── Settle Draft (simpan data partial, belum balance) ──────────────────────
 router.get('/proforma/settle/drafts', async (req, res) => {
     try {

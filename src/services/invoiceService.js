@@ -283,6 +283,12 @@ export const invoiceService = {
         return apiClient.fetchJson(`${API_URL}/invoices/settled/by-source/${invoiceId}`);
     },
 
+    // Detail settle seluruh grup PP dari satu invoice — DP & pelunasan selalu
+    // menampilkan data yang sama, termasuk data lama yang belum di-mirror.
+    async getSettledByGroup(invoiceId) {
+        return apiClient.fetchJson(`${API_URL}/invoices/settled/by-group/${invoiceId}`);
+    },
+
     async getSettleDrafts() {
         return apiClient.fetchJson(`${API_URL}/invoices/proforma/settle/drafts`);
     },
