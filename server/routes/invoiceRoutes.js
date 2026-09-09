@@ -2143,47 +2143,17 @@ router.post('/proforma/:id/settle', async (req, res) => {
             });
         }
 
-        // Baris satu grup PP berbagi 1 No Invoice Asli = 1 invoice fisik →
-        // total dihitung SEKALI per nomor; baris DP (bukan pelunasan) dipakai
-        // sebagai wakil total grup (independen urutan baris).
-        const srcByIdAll = new Map(sourceInvoices.map(i => [Number(i.id), i]));
-        const isPelRow = (s) => (srcByIdAll.get(Number(s.source_invoice_id)) || {}).pp_type === 'pelunasan';
-        const byNo = new Map();
-        for (const s of settled) {
-            const k = String(s.no_invoice || '').trim();
-            if (!k) { continue; }
-            const prev = byNo.get(k);
-            if (prev == null) byNo.set(k, s);
-            else if (isPelRow(prev) && !isPelRow(s)) byNo.set(k, s); // prefer baris DP
-        }
-        const grandTotal = round2([...byNo.values()].reduce((s, x) => s + x.total_invoice, 0));
-        // Batas balance:
-        // - Proforma berisi grup PP LENGKAP (DP + pelunasan-nya) = 1 invoice fisik
-        //   → dihitung SEKALI sebesar full amount DP (total_invoice), bukan dobel.
-        // - Selain itu aturan lama: PP pakai uang_masuk, CBD/PF pakai total_invoice.
-        const _ppRoots = new Map();
-        for (const i of sourceInvoices) {
-            if (i.tipe !== 'PP') continue;
-            const rid = (i.pp_type === 'pelunasan' && i.pelunasan_of_id) ? Number(i.pelunasan_of_id) : Number(i.id);
-            if (!_ppRoots.has(rid)) _ppRoots.set(rid, { root: null, pels: [] });
-            const g = _ppRoots.get(rid);
-            if (i.pp_type === 'pelunasan') g.pels.push(i); else g.root = i;
-        }
-        let _nominalAcc = 0;
-        for (const i of sourceInvoices) {
-            if (i.tipe === 'PP') {
-                if (i.pp_type === 'pelunasan') continue; // dihitung via grup di bawah
-                const g = _ppRoots.get(Number(i.id));
-                if (g && g.pels.length) { _nominalAcc += round2(i.total_invoice); continue; } // grup lengkap → full amount sekali
-                _nominalAcc += round2(i.uang_masuk);
-                continue;
-            }
-            _nominalAcc += round2(i.total_invoice);
-        }
-        for (const g of _ppRoots.values()) {
-            if (!g.root) _nominalAcc += g.pels.reduce((s, x) => s + round2(x.uang_masuk), 0); // pelunasan tanpa DP di proforma ini
-        }
-        const totalNominal = round2(_nominalAcc);
+        // ── Batas balance: SESUAI TOTAL PROFORMA (total uang masuk) ──
+        // Sederhana & konsisten dengan nominal proforma: tidak peduli jenis
+        // invoice (PP DP / PP pelunasan / CBD / PF), target settle = total_nominal
+        // proforma itu sendiri (= jumlah uang masuk seluruh barisnya).
+        // Tipe PP (DP & pelunasan) adalah 1 kesatuan → boleh berbagi 1 No Invoice
+        // Asli (constraint unique sudah dilepas via migration); pelunasan tidak
+        // dihitung dobel karena total settle di-dedup per No Invoice Asli.
+        const grandTotal = round2([...new Map(
+            settled.map(s => [String(s.no_invoice || '').trim() || `__row_${s.source_invoice_id ?? Math.random()}`, s])
+        ).values()].reduce((s, x) => s + x.total_invoice, 0));
+        const totalNominal = round2(Number(p.total_nominal) || 0);
         if (Math.abs(grandTotal - totalNominal) > 0.01) {
             return res.status(400).json({
                 error: 'Total invoice asli harus balance dengan total proforma',

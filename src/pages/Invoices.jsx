@@ -1243,18 +1243,14 @@ const Invoices = ({ currentUser, toast }) => {
     const rowTotal = (r) => round2((parseFloat(r.dpp) || 0) + (parseFloat(r.ppn) || 0) + (parseFloat(r.materai) || 0) - (parseFloat(r.diskon) || 0));
 
     // Total settle dengan dedup: baris satu grup PP (DP+Pelunasan) berbagi 1 No
-    // Invoice Asli = 1 invoice fisik → dihitung sekali per nomor; baris DP dipakai
-    // sebagai wakil total grup (independen urutan baris).
+    // Invoice Asli = 1 invoice fisik → dihitung sekali per nomor (nilai baris
+    // identik, jadi independen urutan baris mana yang dipakai).
     const dedupeSettleTotal = (rows) => {
-        const srcMap = new Map((settleTarget?.invoices || []).map(i => [Number(i.id), i]));
-        const isPel = (r) => (srcMap.get(Number(r.source_invoice_id)) || {}).pp_type === 'pelunasan';
         const byNo = new Map();
         for (const r of rows) {
             const k = String(r.no_invoice || '').trim();
             if (!k) continue;
-            const prev = byNo.get(k);
-            if (prev == null) byNo.set(k, r);
-            else if (isPel(prev) && !isPel(r)) byNo.set(k, r);
+            if (!byNo.has(k)) byNo.set(k, r);
         }
         return round2([...byNo.values()].reduce((s, r) => s + rowTotal(r), 0));
     };
@@ -1346,16 +1342,11 @@ const Invoices = ({ currentUser, toast }) => {
             if (!((parseFloat(r.dpp) || 0) >= 0)) return setSettleError(`Baris #${i + 1}: DPP wajib diisi`);
         }
         // Baris satu grup PP (DP+Pelunasan) berbagi 1 No Invoice Asli = 1 invoice fisik
-        // → total dihitung sekali per nomor agar balance dengan total proforma.
+        // → total dihitung sekali per nomor agar tidak dobel.
         const total = dedupeSettleTotal(settleRows);
-        // Nominal per-invoice: PP pakai uang_masuk (DP), CBD/PF pakai total_invoice.
-        // PP pelunasan DIKECUALIKAN: baris settle pelunasan = 1 no invoice asli yang
-        // sama dengan DP-nya (total settle dedup per nomor), jadi tidak dijumlah dobel.
-        const target = round2((settleTarget?.invoices || [])
-            .filter(i => i.status !== 'cancelled')
-            .reduce((s, i) => s + (i.tipe === 'PP'
-                ? (i.pp_type === 'pelunasan' ? 0 : (parseFloat(i.uang_masuk) || 0))
-                : (parseFloat(i.total_invoice) || 0)), 0));
+        // Target balance = total proforma (total_nominal) apa adanya — sama dengan
+        // total uang masuk seluruh baris — tanpa memandang tipe DP/pelunasan/CBD/PF.
+        const target = round2(Number(settleTarget?.total_nominal) || 0);
         if (Math.abs(round2(total) - target) > 0.01) {
             return setSettleError(`Total invoice asli harus balance dengan total proforma (${formatCurrency(target)}). Saat ini ${formatCurrency(round2(total))}`);
         }
@@ -3773,8 +3764,8 @@ const Invoices = ({ currentUser, toast }) => {
                                 <Plus size={14} /> Tambah Invoice Asli
                             </button>
                             <div className="text-xs text-stone-500 space-x-3">
-                                <span>Total Proforma: <b className="text-stone-800 dark:text-white">{formatCurrency(round2((settleTarget?.invoices || []).filter(i => !(i.pp_type === 'pelunasan')).reduce((s, i) => s + (parseFloat(i.total_invoice) || 0), 0)))}</b></span>
-                                <span>Total Settle: <b className={Math.abs(dedupeSettleTotal(settleRows) - round2((settleTarget?.invoices || []).filter(i => !(i.pp_type === 'pelunasan')).reduce((s, i) => s + (parseFloat(i.total_invoice) || 0), 0))) <= 0.01 ? 'text-teal-600 dark:text-teal-400' : 'text-red-600'}>{formatCurrency(dedupeSettleTotal(settleRows))}</b></span>
+                                <span>Total Proforma: <b className="text-stone-800 dark:text-white">{formatCurrency(round2(Number(settleTarget?.total_nominal) || 0))}</b></span>
+                                <span>Total Settle: <b className={Math.abs(dedupeSettleTotal(settleRows) - round2(Number(settleTarget?.total_nominal) || 0)) <= 0.01 ? 'text-teal-600 dark:text-teal-400' : 'text-red-600'}>{formatCurrency(dedupeSettleTotal(settleRows))}</b></span>
                             </div>
                         </div>
 
