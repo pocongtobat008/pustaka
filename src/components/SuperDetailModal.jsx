@@ -43,9 +43,10 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
         let alive = true;
         if (open && detailTarget?.id && (prof?.status === 'settled' || detailTarget?.status === 'settled')) {
             setSettledRows(null);
-            // Ambil detail settle milik invoice ini (grup PP: DP & pelunasan sama-sama
-            // punya baris settled dengan nomor sama — tidak tergantung proforma).
-            invoiceService.getSettledBySource(detailTarget.id)
+            // Ambil detail settle SELURUH GRUP PP invoice ini — DP & pelunasan selalu
+            // menampilkan data yang sama persis, termasuk data lama yang barisnya
+            // belum di-mirror ke semua anggota grup.
+            invoiceService.getSettledByGroup(detailTarget.id)
                 .then(r => { if (alive) setSettledRows(Array.isArray(r) ? r : (r?.data || [])); })
                 .catch(() => { if (alive) setSettledRows([]); });
         } else {
@@ -428,7 +429,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
                                             <div className="px-3 py-2 rounded-xl bg-white dark:bg-[#0d0d0d]/70 border border-teal-100 dark:border-teal-500/20">
                                                 <div className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase">Jumlah Invoice</div>
-                                                <div className="font-black text-lg text-stone-800 dark:text-white tabular-nums">{settledRows == null ? '...' : (settledRows.length || 0)} <span className="text-xs font-semibold text-stone-400">invoice</span></div>
+                                                <div className="font-black text-lg text-stone-800 dark:text-white tabular-nums">{settledRows == null ? '...' : (dedupSettled.length || 0)} <span className="text-xs font-semibold text-stone-400">invoice</span></div>
                                             </div>
                                             <div className="px-3 py-2 rounded-xl bg-white dark:bg-[#0d0d0d]/70 border border-teal-100 dark:border-teal-500/20">
                                                 <div className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase">Total Settle</div>
@@ -480,7 +481,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                         {/* Settled invoice list */}
                                         {settledRows == null ? (
                                             <div className="text-center text-xs text-stone-400 py-3 animate-pulse">Memuat detail invoice settled...</div>
-                                        ) : settledRows.length === 0 ? (
+                                        ) : dedupSettled.length === 0 ? (
                                             <div className="text-center text-xs text-stone-400 py-3">Belum ada data invoice settled</div>
                                         ) : (
                                             <div className="rounded-xl overflow-hidden border border-teal-100 dark:border-teal-500/20 bg-white dark:bg-[#0d0d0d]/70">
@@ -498,7 +499,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            {settledRows.map((s, i) => {
+                                                            {dedupSettled.map((s, i) => {
                                                                 const srcInv = (invoices || []).find(inv => Number(inv.id) === Number(s.source_invoice_id));
                                                                 const isDp = srcInv?.tipe === 'PP' && !(srcInv?.pp_type === 'pelunasan');
                                                                 const isPl = srcInv?.tipe === 'PP' && srcInv?.pp_type === 'pelunasan';
