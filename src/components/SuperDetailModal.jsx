@@ -61,6 +61,12 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
     const sisaTagihan = Math.max(0, nominalProforma - uangMasuk);
     const isBalance = settledRows != null && Math.abs(settledTotal - nominalProforma) < 0.01;
 
+    // No Invoice Asli bersama untuk grup PP (DP & Pelunasan berbagi 1 nomor)
+    const settledNoOf = (invId) => (settledRows || []).find(s => Number(s.source_invoice_id) === Number(invId))?.no_invoice || '';
+    const sharedNoInvoice = ppRootId != null
+        ? (settledNoOf(detailId) || ppSiblings.map(s => settledNoOf(s.id)).find(Boolean) || '')
+        : '';
+
     const handleExportPdf = async (kind) => {
         if (pdfBusy) return;
         setPdfBusy(kind);
@@ -112,6 +118,11 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/20 text-white text-[10px] font-black backdrop-blur-sm">
                                                     <Link2 size={10} /> Partial Payment: {detailTarget.pp_type === 'pelunasan' ? 'Pelunasan' : 'DP'}
                                                 </span>
+                                                {sharedNoInvoice && (
+                                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white text-stone-900 text-[11px] font-black tracking-wide shadow-sm" title="No Invoice Asli bersama untuk DP & Pelunasan">
+                                                        <FileText size={11} className="text-blue-600" /> {sharedNoInvoice}
+                                                    </span>
+                                                )}
                                                 {ppSiblings.map(sib => (
                                                     <button key={sib.id} type="button" onClick={() => onNavigate && onNavigate(sib)} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white text-blue-600 text-[10px] font-black hover:bg-blue-50 transition-colors">
                                                         #{sib.id} {sib.pp_type === 'pelunasan' ? 'Pelunasan' : 'DP'} →
@@ -213,6 +224,12 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                         <div className="flex justify-between items-center"><span className="text-stone-500 text-xs">Nama:</span><span className="font-semibold text-stone-800 dark:text-white text-right">{detailTarget.dealer_name || '-'}</span></div>
                                         <div className="flex justify-between items-center"><span className="text-stone-500 text-xs">NPWP:</span><span className="font-mono text-stone-700 dark:text-white/70 text-right">{detailTarget.dealer_npwp || '-'}</span></div>
                                         <div className="flex justify-between items-center"><span className="text-stone-500 text-xs">No. PO:</span><span className="font-semibold text-stone-800 dark:text-white text-right">{detailTarget.no_po || '-'}</span></div>
+                                        {sharedNoInvoice && (
+                                            <div className="flex justify-between items-center pt-1.5 mt-1.5 border-t border-stone-100 dark:border-white/[0.06]">
+                                                <span className="text-stone-500 text-xs flex items-center gap-1"><Link2 size={11} className="text-blue-500" /> No Invoice Asli (DP &amp; PL):</span>
+                                                <span className="font-bold text-blue-600 dark:text-blue-300 text-right">{sharedNoInvoice}</span>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                                 <div className="px-4 py-3 rounded-xl gradient-bg-soft border border-stone-100 dark:border-white/[0.06]">
