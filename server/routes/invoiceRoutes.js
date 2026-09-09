@@ -1995,6 +1995,19 @@ router.get('/proforma/:id/settled', async (req, res) => {
     }
 });
 
+// Detail settle milik SATU invoice sumber — dipakai modal detail DP maupun
+// pelunasan (grup PP di-mirror sehingga keduanya punya baris dengan nomor sama).
+router.get('/settled/by-source/:invoiceId', async (req, res) => {
+    try {
+        const rows = await knex('settled_invoices')
+            .where('source_invoice_id', Number(req.params.invoiceId))
+            .orderBy('id', 'asc');
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: 'Gagal mengambil detail settle', details: [err.message] });
+    }
+});
+
 // ─── Settle Draft (simpan data partial, belum balance) ──────────────────────
 router.get('/proforma/settle/drafts', async (req, res) => {
     try {
@@ -2222,12 +2235,82 @@ router.post('/proforma/:id/settle', async (req, res) => {
             return res.status(400).json({ error: 'No invoice sudah digunakan', details: existingNo.map(x => x.no_invoice) });
         }
 
+        // ── Mirror baris settle ke seluruh anggota grup PP (DP + semua pelunasan) ──
+        // Grup PP = 1 kesatuan: setiap anggota mendapat baris settled_invoices dengan
+        // No Invoice Asli yang sama → detail settle & export Excel tampil di DP
+        // maupun pelunasan. Anggota yang sudah settled/cancelled tidak ditimpa.
+        const ppRootsTouched = new Set();
+        for (const s of settled) {
+            const sid = s.source_invoice_id != null ? Number(s.source_invoice_id) : null;
+            if (sid == null || !srcById[sid] || srcById[sid].tipe !== 'PP') continue;
+            const inv = srcById[sid];
+            ppRootsTouched.add(inv.pp_type === 'pelunasan' && inv.pelunasan_of_id ? Number(inv.pelunasan_of_id) : sid);
+        }
+        const toInsert = [];
+        for (const s of settled) {
+            const sid = s.source_invoice_id != null ? Number(s.source_invoice_id) : null;
+            const isPp = sid != null && srcById[sid]?.tipe === 'PP';
+            if (!isPp) toInsert.push({ row: s, itemsFrom: sid });
+        }
+        if (ppRootsTouched.size) {
+            const roots = [...ppRootsTouched];
+            const memberRows = await knex('proforma_invoices')
+                .where((q) => q.whereIn('id', roots).orWhereIn('pelunasan_of_id', roots))
+                .whereNotIn('status', ['cancelled', 'settled']);
+            const membersByRoot = new Map();
+            for (const m of memberRows) {
+                const root = m.pp_type === 'pelunasan' && m.pelunasan_of_id ? Number(m.pelunasan_of_id) : Number(m.id);
+                if (!ppRootsTouched.has(root)) continue;
+                if (!membersByRoot.has(root)) membersByRoot.set(root, []);
+                membersByRoot.get(root).push(m);
+            }
+            const rowsByRoot = new Map();
+            for (const s of settled) {
+                const sid = s.source_invoice_id != null ? Number(s.source_invoice_id) : null;
+                if (sid == null) continue;
+                const inv = srcById[sid];
+                if (!inv || inv.tipe !== 'PP') continue;
+                const root = inv.pp_type === 'pelunasan' && inv.pelunasan_of_id ? Number(inv.pelunasan_of_id) : sid;
+                if (!rowsByRoot.has(root)) rowsByRoot.set(root, []);
+                rowsByRoot.get(root).push({ row: s, itemsFrom: sid });
+            }
+            for (const [root, rrows] of rowsByRoot.entries()) {
+                const nos = new Set(rrows.map(x => String(x.row.no_invoice || '').trim()));
+                const members = membersByRoot.get(root) || [];
+                if (nos.size !== 1) {
+                    // Nomor berbeda antar baris satu grup → biarkan apa adanya (tidak ambigu)
+                    for (const x of rrows) toInsert.push(x);
+                    continue;
+                }
+                for (const m of members) {
+                    const existing = rrows.find(x => Number(x.itemsFrom) === Number(m.id));
+                    if (existing) { toInsert.push(existing); continue; }
+                    const base = rrows[0].row;
+                    toInsert.push({
+                        row: {
+                            ...base,
+                            source_invoice_id: Number(m.id),
+                            dealer_id: m.dealer_id ?? base.dealer_id,
+                            dealer_name: m.dealer_name ?? base.dealer_name,
+                            dealer_npwp: m.dealer_npwp ?? base.dealer_npwp,
+                            dealer_alamat: m.dealer_alamat ?? base.dealer_alamat,
+                            no_po: m.no_po ?? base.no_po,
+                            tgl_po: m.tgl_po ?? base.tgl_po,
+                            uang_masuk: m.uang_masuk ?? base.uang_masuk,
+                            tgl_uang_masuk: m.tgl_uang_masuk ?? base.tgl_uang_masuk,
+                        },
+                        itemsFrom: rrows[0].itemsFrom,
+                    });
+                }
+            }
+        }
+
         const trx = await knex.transaction();
         try {
-            for (const s of settled) {
+            for (const { row: s, itemsFrom } of toInsert) {
                 const [{ id: sid }] = await trx('settled_invoices').insert(s).returning('id');
-                if (s.source_invoice_id) {
-                    const items = await trx('proforma_invoice_items').where('invoice_id', s.source_invoice_id).orderBy('id', 'asc');
+                if (itemsFrom) {
+                    const items = await trx('proforma_invoice_items').where('invoice_id', itemsFrom).orderBy('id', 'asc');
                     for (const it of items) {
                         await trx('settled_invoice_items').insert({
                             settled_invoice_id: sid,
@@ -2247,12 +2330,14 @@ router.post('/proforma/:id/settle', async (req, res) => {
                 settled_at: now,
                 notes: req.body?.notes || p.notes || '',
             });
-            await trx('proforma_invoices').whereIn('id', sourceIds).update({ status: 'settled', updated_at: now });
-            // Anggota grup PP di luar proforma (mis. pelunasan yang DP-nya di sini)
-            // juga di-settle supaya statusnya ikut terkunci.
-            if (externalPpIds.length) {
-                await trx('proforma_invoices').whereIn('id', externalPpIds).update({ status: 'settled', updated_at: now });
-            }
+            // Semua invoice tersentuh (anggota proforma + anggota grup PP luar
+            // proforma yang di-mirror) di-settle supaya statusnya terkunci.
+            const touchedIds = [...new Set([
+                ...sourceIds,
+                ...externalPpIds,
+                ...toInsert.map(x => Number(x.row.source_invoice_id)).filter(v => Number.isFinite(v) && v > 0),
+            ])];
+            await trx('proforma_invoices').whereIn('id', touchedIds).update({ status: 'settled', updated_at: now });
             await trx.commit();
         } catch (e) {
             await trx.rollback();

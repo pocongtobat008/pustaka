@@ -41,9 +41,11 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
     useEffect(() => { setPdfBusy(null); setPdfError(null); }, [open, detailTarget?.id]);
     useEffect(() => {
         let alive = true;
-        if (open && prof?.status === 'settled' && prof?.id) {
+        if (open && detailTarget?.id && (prof?.status === 'settled' || detailTarget?.status === 'settled')) {
             setSettledRows(null);
-            invoiceService.getSettledInvoices(prof.id)
+            // Ambil detail settle milik invoice ini (grup PP: DP & pelunasan sama-sama
+            // punya baris settled dengan nomor sama — tidak tergantung proforma).
+            invoiceService.getSettledBySource(detailTarget.id)
                 .then(r => { if (alive) setSettledRows(Array.isArray(r) ? r : (r?.data || [])); })
                 .catch(() => { if (alive) setSettledRows([]); });
         } else {
@@ -51,7 +53,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
         }
         return () => { alive = false; };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [open, detailTarget?.id, prof?.id]);
+    }, [open, detailTarget?.id, detailTarget?.status, prof?.id, prof?.status]);
 
     if (!detailTarget) return null;
 
@@ -59,6 +61,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
     // non-PP = total_nominal proforma. Konsisten dengan computeSettleTarget BE.
     const profInvoices = prof?.invoices || [];
     const allPp = profInvoices.length > 0 && profInvoices.every(i => i.tipe === 'PP');
+    const isPpInvoice = detailTarget?.tipe === 'PP';
     let targetSettle = num(prof?.total_nominal);
     if (allPp) {
         const rootIds = new Set(profInvoices.filter(i => !(i.pp_type === 'pelunasan')).map(i => Number(i.id)));
@@ -72,6 +75,16 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
             }
         }
         targetSettle = Math.round(targetSettle * 100) / 100;
+    } else if (isPpInvoice && !prof) {
+        // Invoice PP tanpa proforma di state (mis. pelunasan luar proforma):
+        // target = uang grup dari invoice aktif — DP: uang DP + semua pelunasannya;
+        // pelunasan: uang DP root-nya + semua pelunasan (termasuk dirinya).
+        const root = isPpInvoice && detailTarget.pp_type === 'pelunasan'
+            ? (invoices || []).find(x => Number(x.id) === Number(detailTarget.pelunasan_of_id))
+            : detailTarget;
+        const rootId = root ? Number(root.id) : (detailTarget.pp_type === 'pelunasan' ? Number(detailTarget.pelunasan_of_id) : Number(detailTarget.id));
+        const pels = (invoices || []).filter(x => x.tipe === 'PP' && x.pp_type === 'pelunasan' && Number(x.pelunasan_of_id) === rootId);
+        targetSettle = Math.round((num(root?.uang_masuk) + pels.reduce((s, x) => s + num(x.uang_masuk), 0)) * 100) / 100;
     }
     // Total settle di-dedup per No Invoice Asli (DP & pelunasan berbagi 1 nomor)
     const seenNo = new Set();
@@ -399,8 +412,8 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                 );
                             })()}
 
-                            {/* ── Detail Settle ── */}
-                            {prof?.status === 'settled' && (
+                            {/* ── Detail Settle (muncul di DP maupun Pelunasan grup PP) ── */}
+                            {(prof?.status === 'settled' || detailTarget?.status === 'settled') && (
                                 <div className="rounded-2xl overflow-hidden border border-teal-200 dark:border-teal-500/20 shadow-sm">
                                     <div className="px-4 py-3 bg-gradient-to-r from-teal-500 to-emerald-600 flex items-center justify-between">
                                         <h4 className="text-xs font-black text-white uppercase tracking-wider flex items-center gap-1.5">
