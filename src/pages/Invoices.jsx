@@ -1317,7 +1317,10 @@ const Invoices = ({ currentUser, toast }) => {
     // Kelompokkan baris settle yang masih satu grup PP (DP + pelunasan-nya):
     // source_invoice_id yang terhubung via pelunasan_of_id dianggap satu kesatuan.
     const settleGroupKeyOf = (srcId) => {
-        if (srcId == null) return `x${srcId}`;
+        // Baris kosong (Tambah Invoice Asli tanpa sumber) TIDAK punya grup —
+        // setiap baris berdiri sendiri agar edit di baris ke-3/4 dst tidak
+        // ikut mengubah baris kosong lainnya.
+        if (srcId == null) return null;
         const id = Number(srcId);
         const inv = (settleTarget?.invoices || []).find(i => Number(i.id) === id);
         const root = inv?.tipe === 'PP' && inv?.pp_type === 'pelunasan' && inv?.pelunasan_of_id ? Number(inv.pelunasan_of_id) : id;
