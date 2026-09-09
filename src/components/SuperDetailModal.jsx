@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Receipt, HandCoins, FileText, Clock, FileSignature, CheckCircle2, RefreshCw, Upload, ImagePlus, Printer, XCircle, Ban, Scale, History, PenLine } from 'lucide-react';
+import { X, Receipt, HandCoins, FileText, Clock, FileSignature, CheckCircle2, RefreshCw, Upload, ImagePlus, Printer, XCircle, Ban, Scale, History, PenLine, Link2 } from 'lucide-react';
 import { STATUS_MAP, TIPE_MAP } from '../pages/Invoices';
 import { API_URL } from '../services/apiClient';
 import { buildRejectChain } from '../utils/invoiceChain';
@@ -29,6 +29,15 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
     const [settledRows, setSettledRows] = useState(null);
     const [pdfBusy, setPdfBusy] = useState(null);
     const [pdfError, setPdfError] = useState(null);
+    // Grup PP (DP + pelunasan-nya) dari invoice aktif — untuk cross-link detail
+    const detailId = Number(detailTarget?.id);
+    const ppRootId = detailTarget?.tipe === 'PP' && detailTarget?.pp_type === 'pelunasan' && detailTarget?.pelunasan_of_id
+        ? Number(detailTarget.pelunasan_of_id)
+        : (detailTarget?.tipe === 'PP' ? detailId : null);
+    const ppSiblings = ppRootId != null
+        ? (invoices || []).filter(i => i.tipe === 'PP' && Number(i.id) !== detailId
+            && (Number(i.id) === ppRootId || Number(i.pelunasan_of_id) === ppRootId))
+        : [];
     useEffect(() => { setPdfBusy(null); setPdfError(null); }, [open, detailTarget?.id]);
     useEffect(() => {
         let alive = true;
@@ -98,6 +107,18 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                     <div>
                                         <h3 className="text-lg sm:text-xl font-black text-white leading-tight">Detail Invoice #{detailTarget.id}</h3>
                                         <p className="text-xs text-white/80 mt-0.5">{detailTarget.dealer_name || '-'} • {detailTarget.no_po || '-'}</p>
+                                        {ppRootId != null && (
+                                            <div className="flex items-center flex-wrap gap-1.5 mt-2">
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/20 text-white text-[10px] font-black backdrop-blur-sm">
+                                                    <Link2 size={10} /> Partial Payment: {detailTarget.pp_type === 'pelunasan' ? 'Pelunasan' : 'DP'}
+                                                </span>
+                                                {ppSiblings.map(sib => (
+                                                    <button key={sib.id} type="button" onClick={() => onNavigate && onNavigate(sib)} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white text-blue-600 text-[10px] font-black hover:bg-blue-50 transition-colors">
+                                                        #{sib.id} {sib.pp_type === 'pelunasan' ? 'Pelunasan' : 'DP'} →
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                                 <button onClick={onClose} className="shrink-0 w-9 h-9 rounded-xl bg-white/15 hover:bg-white/25 backdrop-blur-sm flex items-center justify-center text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white/50">
@@ -408,7 +429,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                             <div className="rounded-xl overflow-hidden border border-teal-100 dark:border-teal-500/20 bg-white dark:bg-[#0d0d0d]/70">
                                                 <div className="px-3 py-2 gradient-bg-soft border-b border-stone-100 dark:border-white/[0.06] text-[10px] font-black text-stone-500 uppercase tracking-wider">Invoice Asli Hasil Settle</div>
                                                 <div className="overflow-x-auto custom-scrollbar">
-                                                    <table className="w-full text-xs min-w-[480px]">
+                                                    <table className="w-full text-xs min-w-[560px]">
                                                         <thead>
                                                             <tr className="text-[9px] font-black uppercase tracking-wider text-stone-400 border-b border-stone-100 dark:border-white/[0.06]">
                                                                 <th className="px-3 py-2 text-left">No. Invoice</th>
@@ -416,22 +437,40 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                                                 <th className="px-3 py-2 text-right">DPP</th>
                                                                 <th className="px-3 py-2 text-right">PPN</th>
                                                                 <th className="px-3 py-2 text-right">Total</th>
+                                                                <th className="px-3 py-2 text-center">Grup PP</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            {settledRows.map((s, i) => (
+                                                            {settledRows.map((s, i) => {
+                                                                const srcInv = (invoices || []).find(inv => Number(inv.id) === Number(s.source_invoice_id));
+                                                                const isDp = srcInv?.tipe === 'PP' && !(srcInv?.pp_type === 'pelunasan');
+                                                                const isPl = srcInv?.tipe === 'PP' && srcInv?.pp_type === 'pelunasan';
+                                                                return (
                                                                 <tr key={i} className="border-b border-stone-50 dark:border-white/[0.06]/50 last:border-0">
-                                                                    <td className="px-3 py-2 font-bold text-teal-700 dark:text-teal-300 tabular-nums whitespace-nowrap">{s.no_invoice || '-'}</td>
+                                                                    <td className="px-3 py-2 font-bold text-teal-700 dark:text-teal-300 tabular-nums whitespace-nowrap">
+                                                                        {s.no_invoice || '-'}
+                                                                        {isDp && <span className="ml-1.5 px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-300 text-[9px] font-black">DP</span>}
+                                                                        {isPl && <span className="ml-1.5 px-1.5 py-0.5 rounded bg-teal-100 text-teal-700 dark:bg-teal-500/15 dark:text-teal-300 text-[9px] font-black">PL</span>}
+                                                                        {s.tgl_invoice && <span className="block text-[9px] font-normal text-stone-400">Tgl: {String(s.tgl_invoice).slice(0, 10)}</span>}
+                                                                    </td>
                                                                     <td className="px-3 py-2 text-stone-500">{s.tgl_invoice || '-'}</td>
                                                                     <td className="px-3 py-2 text-right text-stone-700 dark:text-white/70 tabular-nums">{formatCurrency(s.subtotal)}</td>
                                                                     <td className="px-3 py-2 text-right text-stone-700 dark:text-white/70 tabular-nums">{formatCurrency(s.ppn)}</td>
                                                                     <td className="px-3 py-2 text-right font-bold text-stone-800 dark:text-white tabular-nums">{formatCurrency(s.total_invoice)}</td>
+                                                                    <td className="px-3 py-2 text-center">
+                                                                        {(isDp || isPl) && ppRootId != null && ppSiblings.length > 0 && onNavigate ? (
+                                                                            <button type="button" onClick={() => onNavigate(ppSiblings[0])} className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-300 text-[10px] font-bold hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-colors">
+                                                                                <Link2 size={11} /> {ppSiblings[0].pp_type === 'pelunasan' ? 'Lihat Pelunasan' : 'Lihat DP'}
+                                                                            </button>
+                                                                        ) : <span className="text-stone-300 text-[10px]">—</span>}
+                                                                    </td>
                                                                 </tr>
-                                                            ))}
+                                                                );
+                                                            })}
                                                         </tbody>
                                                         <tfoot>
                                                             <tr className="bg-teal-50/60 dark:bg-teal-500/10">
-                                                                <td className="px-3 py-2 font-black text-stone-600 dark:text-white/70" colSpan={4}>Total</td>
+                                                                <td className="px-3 py-2 font-black text-stone-600 dark:text-white/70" colSpan={5}>Total</td>
                                                                 <td className="px-3 py-2 text-right font-black text-teal-700 dark:text-teal-300 tabular-nums">{formatCurrency(settledTotal)}</td>
                                                             </tr>
                                                         </tfoot>
