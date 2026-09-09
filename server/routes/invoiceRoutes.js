@@ -610,7 +610,7 @@ router.get('/export-excel', async (req, res) => {
         const invoices = await invQuery.orderBy('id', 'asc');
         const items = await knex('proforma_invoice_items').orderBy('invoice_id', 'asc').orderBy('id', 'asc');
         // No invoice asli baru dibuat saat settle (tabel settled_invoices), bukan di proforma_invoices.
-        const settledRows = await knex('settled_invoices').select('source_invoice_id', 'no_invoice', 'tgl_invoice').orderBy('id', 'asc');
+        const settledRows = await knex('settled_invoices').select('source_invoice_id', 'no_invoice', 'tgl_invoice', 'tgl_settle', 'subtotal', 'ppn', 'diskon', 'materai', 'total_invoice', 'faktur_pajak_no').orderBy('id', 'asc');
         const settledBySrc = new Map();
         for (const s of settledRows) {
             if (s.source_invoice_id == null) continue;
@@ -633,10 +633,10 @@ router.get('/export-excel', async (req, res) => {
         const dt = (v) => (v == null || v === '' ? '' : String(v instanceof Date ? v.toISOString() : v).slice(0, 10));
 
         const invHeaders = [
-            'ID', 'No Invoice Asli', 'Tgl Invoice Asli', 'No Invoice Revisi', 'Reject Dari ID', 'Replacement ID', 'No PO', 'Tgl PO', 'Tipe', 'Tgl Transaksi',
+            'ID', 'No Invoice Asli', 'Tgl Invoice Asli', 'Tgl Settle', 'No Invoice Revisi', 'Reject Dari ID', 'Replacement ID', 'No PO', 'Tgl PO', 'Tipe', 'Tgl Transaksi',
             'No Proforma', 'No Faktur Pajak',
             'Dealer', 'NPWP Dealer', 'Alamat Dealer',
-            'Subtotal', 'PPN Rate', 'PPN', 'Diskon', 'Materai', 'Total Invoice',
+            'DPP', 'PPN Rate', 'PPN', 'Diskon', 'Materai', 'Total Invoice',
             'Uang Masuk', 'Tgl Uang Masuk', 'Sisa',
             'Status', 'Tipe PP', 'Pelunasan Dari ID', 'Jumlah Item',
             'Tax Requested At', 'Tax Requested By',
@@ -645,51 +645,90 @@ router.get('/export-excel', async (req, res) => {
             'Dibatalkan At', 'Dibatalkan Oleh',
             'Dibuat Oleh', 'Dibuat At', 'Diupdate At',
         ];
-        const invRows = invoices.map(inv => {
+        // Per-line per invoice asli: invoice dengan N baris settle (mirror grup PP)
+        // menghasilkan N baris — No/Tgl Invoice/Tgl Settle/DPP/PPN/Total diambil dari
+        // input form settle (settled_invoices). Tanpa settle → 1 baris kolom kosong.
+        const invRows = [];
+        for (const inv of invoices) {
             const settledFor = settledBySrc.get(Number(inv.id)) || [];
-            // Grup PP (DP+pelunasan) berbagi 1 no → dedup agar tidak tampil dobel
-            const uniqNos = [...new Set(settledFor.map(s => String(s.no_invoice || '').trim()).filter(Boolean))];
-            const noInvoiceAsli = uniqNos.join(', ');
-            const tglInvoiceAsli = [...new Set(settledFor.map(s => dt(s.tgl_invoice)).filter(Boolean))].join(', ');
-            return [
-                inv.id, noInvoiceAsli, tglInvoiceAsli, fmt(inv.no_invoice), inv.rejected_from_id ?? '', inv.replacement_id ?? '',
-                fmt(inv.no_po), dt(inv.tgl_po), fmt(inv.tipe), dt(inv.tgl_transaksi),
-                fmt(inv.proforma_no), fmt(inv.faktur_pajak_no),
-                fmt(inv.dealer_name), fmt(inv.dealer_npwp), fmt(inv.dealer_alamat),
-                num(inv.subtotal), inv.ppn_rate == null ? '' : num(inv.ppn_rate), num(inv.ppn), num(inv.diskon), num(inv.materai), num(inv.total_invoice),
-                num(inv.uang_masuk), dt(inv.tgl_uang_masuk), num(num(inv.total_invoice) - num(inv.uang_masuk)),
-                STATUS_LABEL[inv.status] || fmt(inv.status), fmt(inv.pp_type), inv.pelunasan_of_id ?? '',
-                (itemsByInv.get(inv.id) || []).length,
-                dt(inv.tax_requested_at), fmt(inv.tax_requested_by),
-                dt(inv.tax_approved_at), fmt(inv.tax_approved_by),
-                dt(inv.tax_sendback_at), fmt(inv.tax_sendback_by),
-                dt(inv.cancelled_at), fmt(inv.cancelled_by),
-                fmt(inv.created_by), dt(inv.created_at), dt(inv.updated_at),
-            ];
-        });
-
-        const itemHeaders = ['ID Invoice', 'No Invoice Asli', 'No PO', 'Dealer', 'No Proforma', 'Model', 'Deskripsi', 'Harga', 'Qty', 'Subtotal'];
-        const invById = new Map(invoices.map(i => [i.id, i]));
-        // Hanya item milik invoice yang ikut diekspor (penting saat filter status aktif)
-        const itemRows = items
-            .filter(it => invById.has(Number(it.invoice_id)))
-            .map(it => {
-                const inv = invById.get(Number(it.invoice_id)) || {};
-                const settledFor = settledBySrc.get(Number(it.invoice_id)) || [];
-                const noInvoiceAsli = [...new Set(settledFor.map(s => String(s.no_invoice || '').trim()).filter(Boolean))].join(', ');
+            const buildRow = (s) => {
+                const dpp = s ? num(s.subtotal) : num(inv.subtotal);
+                const ppn = s ? num(s.ppn) : num(inv.ppn);
+                const diskon = s ? num(s.diskon) : num(inv.diskon);
+                const materai = s ? num(s.materai) : num(inv.materai);
+                const totalInv = s ? num(s.total_invoice) : num(inv.total_invoice);
                 return [
-                    it.invoice_id, noInvoiceAsli || fmt(inv.no_invoice), fmt(inv.no_po), fmt(inv.dealer_name), fmt(inv.proforma_no),
-                    fmt(it.model), fmt(it.item_description), num(it.harga), it.qty ?? 1, num(it.subtotal),
+                    inv.id, s ? String(s.no_invoice || '') : '', s ? dt(s.tgl_invoice) : '', s ? dt(s.tgl_settle) : '',
+                    fmt(inv.no_invoice), inv.rejected_from_id ?? '', inv.replacement_id ?? '',
+                    fmt(inv.no_po), dt(inv.tgl_po), fmt(inv.tipe), dt(inv.tgl_transaksi),
+                    fmt(inv.proforma_no), s ? (fmt(s.faktur_pajak_no) || fmt(inv.faktur_pajak_no)) : fmt(inv.faktur_pajak_no),
+                    fmt(inv.dealer_name), fmt(inv.dealer_npwp), fmt(inv.dealer_alamat),
+                    dpp, inv.ppn_rate == null ? '' : num(inv.ppn_rate), ppn, diskon, materai, totalInv,
+                    num(inv.uang_masuk), dt(inv.tgl_uang_masuk), num(num(inv.total_invoice) - num(inv.uang_masuk)),
+                    STATUS_LABEL[inv.status] || fmt(inv.status), fmt(inv.pp_type), inv.pelunasan_of_id ?? '',
+                    (itemsByInv.get(inv.id) || []).length,
+                    dt(inv.tax_requested_at), fmt(inv.tax_requested_by),
+                    dt(inv.tax_approved_at), fmt(inv.tax_approved_by),
+                    dt(inv.tax_sendback_at), fmt(inv.tax_sendback_by),
+                    dt(inv.cancelled_at), fmt(inv.cancelled_by),
+                    fmt(inv.created_by), dt(inv.created_at), dt(inv.updated_at),
                 ];
-            });
+            };
+            if (settledFor.length) for (const s of settledFor) invRows.push(buildRow(s));
+            else invRows.push(buildRow(null));
+        }
+
+        const itemHeaders = ['ID Invoice', 'No Invoice Asli', 'Tgl Invoice Asli', 'Tgl Settle', 'No PO', 'Dealer', 'No Proforma', 'Model', 'Deskripsi', 'Harga', 'Qty', 'Subtotal'];
+        const invById = new Map(invoices.map(i => [i.id, i]));
+        // Anggota pelunasan grup PP tidak punya item sendiri → replikasi item DP
+        // (root-nya) agar sheet Item tampil sama di DP maupun pelunasan.
+        const ppInvExport = invoices.filter(i => i.tipe === 'PP');
+        const ppRootsExport = [...new Set(ppInvExport.map(i => i.pp_type === 'pelunasan' && i.pelunasan_of_id ? Number(i.pelunasan_of_id) : Number(i.id)))];
+        const ppMembersExport = ppRootsExport.length
+            ? await knex('proforma_invoices').where((q) => q.whereIn('id', ppRootsExport).orWhereIn('pelunasan_of_id', ppRootsExport)).whereNull('deleted_at')
+            : [];
+        const itemsByInvArr = new Map();
+        for (const it of items) {
+            if (!itemsByInvArr.has(Number(it.invoice_id))) itemsByInvArr.set(Number(it.invoice_id), []);
+            itemsByInvArr.get(Number(it.invoice_id)).push(it);
+        }
+        const effItems = [...items];
+        for (const m of ppMembersExport) {
+            const mid = Number(m.id);
+            if ((itemsByInvArr.get(mid) || []).length) continue; // punya item sendiri
+            const root = m.pp_type === 'pelunasan' && m.pelunasan_of_id ? Number(m.pelunasan_of_id) : mid;
+            if (root === mid) continue;
+            for (const rootItem of (itemsByInvArr.get(root) || [])) {
+                effItems.push({ ...rootItem, id: `virtual_${rootItem.id}_${mid}`, invoice_id: mid });
+            }
+        }
+        // Per-line per invoice asli: item dengan N baris settle (mirror grup PP)
+        // menghasilkan N baris — sama seperti sheet Data Invoice.
+        const itemRows = [];
+        for (const it of effItems) {
+            if (!invById.has(Number(it.invoice_id))) continue; // hanya item invoice yang diekspor
+            const inv = invById.get(Number(it.invoice_id)) || {};
+            const settledFor = settledBySrc.get(Number(it.invoice_id)) || [];
+            const base = [
+                fmt(inv.no_po), fmt(inv.dealer_name), fmt(inv.proforma_no),
+                fmt(it.model), fmt(it.item_description), num(it.harga), it.qty ?? 1, num(it.subtotal),
+            ];
+            if (settledFor.length) {
+                for (const s of settledFor) {
+                    itemRows.push([it.invoice_id, String(s.no_invoice || ''), dt(s.tgl_invoice), dt(s.tgl_settle), ...base]);
+                }
+            } else {
+                itemRows.push([it.invoice_id, '', '', '', ...base]);
+            }
+        }
 
         const wb = XLSX.utils.book_new();
         const ws1 = XLSX.utils.aoa_to_sheet([invHeaders, ...invRows]);
-        ws1['!cols'] = invHeaders.map((_, i) => ({ wch: i === 14 ? 42 : i === 3 ? 16 : i === 12 ? 30 : 18 }));
+        ws1['!cols'] = invHeaders.map((_, i) => ({ wch: i === 15 ? 42 : i === 13 ? 30 : i === 1 ? 20 : 18 }));
         XLSX.utils.book_append_sheet(wb, ws1, 'Data Invoice');
 
         const ws2 = XLSX.utils.aoa_to_sheet([itemHeaders, ...itemRows]);
-        ws2['!cols'] = itemHeaders.map((_, i) => ({ wch: i === 6 ? 42 : i === 3 ? 30 : i === 1 ? 18 : 14 }));
+        ws2['!cols'] = itemHeaders.map((_, i) => ({ wch: i === 8 ? 42 : i === 5 ? 30 : i === 1 ? 20 : 14 }));
         XLSX.utils.book_append_sheet(wb, ws2, 'Item Barang');
 
         const buf = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
@@ -2372,7 +2411,9 @@ router.post('/proforma/:id/settle', async (req, res) => {
                         no_po: m.no_po ?? s.no_po,
                         tgl_po: m.tgl_po ?? s.tgl_po,
                     },
-                    itemsFrom: sid || Number(m.id),
+                    // Item barang grup PP selalu ada di DP (root) — arahkan ke root
+                    // agar baris mirror bersumber dari baris kosong/PL tetap dapat item.
+                    itemsFrom: inv && Number(inv.pp_type) !== 'pelunasan' ? sid : Number(m.pp_type === 'pelunasan' && m.pelunasan_of_id ? m.pelunasan_of_id : m.id),
                 });
             }
         }
