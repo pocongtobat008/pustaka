@@ -1245,17 +1245,34 @@ const Invoices = ({ currentUser, toast }) => {
 
     const rowTotal = (r) => round2((parseFloat(r.dpp) || 0) + (parseFloat(r.ppn) || 0) + (parseFloat(r.materai) || 0) - (parseFloat(r.diskon) || 0));
 
-    // Total settle dengan dedup: baris satu grup PP (DP+Pelunasan) berbagi 1 No
-    // Invoice Asli = 1 invoice fisik → dihitung sekali per nomor (nilai baris
-    // identik, jadi independen urutan baris mana yang dipakai).
+    // Total settle: baris satu grup PP (DP+Pelunasan) berbagi 1 No Invoice Asli
+    // → dihitung SEKALI per (grup PP + nomor). Baris kosong (tanpa sumber) pada
+    // proforma PP ikut dide-dup per nomor (satu nomor = satu invoice asli); pada
+    // proforma non-PP tiap baris SELALU dihitung masing-masing — baris ke-4 dst
+    // tidak boleh hilang dari total.
     const dedupeSettleTotal = (rows) => {
-        const byNo = new Map();
-        for (const r of rows) {
-            const k = String(r.no_invoice || '').trim();
-            if (!k) continue;
-            if (!byNo.has(k)) byNo.set(k, r);
-        }
-        return round2([...byNo.values()].reduce((s, r) => s + rowTotal(r), 0));
+        const srcMap = new Map((settleTarget?.invoices || []).map(i => [Number(i.id), i]));
+        const proformaIsPp = (settleTarget?.invoices || []).some(i => i.tipe === 'PP');
+        const seen = new Set();
+        let total = 0;
+        rows.forEach((r, idx) => {
+            const no = String(r.no_invoice || '').trim();
+            const sid = Number(r.source_invoice_id);
+            const inv = Number.isFinite(sid) && sid > 0 ? srcMap.get(sid) : null;
+            let key;
+            if (inv?.tipe === 'PP') {
+                const root = inv.pp_type === 'pelunasan' && inv.pelunasan_of_id ? Number(inv.pelunasan_of_id) : sid;
+                key = `pp_${root}|${no}`;
+            } else if (!inv && proformaIsPp) {
+                key = `blank|${no}`; // baris kosong pada proforma PP: satu nomor = 1 invoice asli
+            } else {
+                key = `__row_${idx}`; // non-PP: tiap baris dihitung
+            }
+            if (seen.has(key)) return;
+            seen.add(key);
+            total += rowTotal(r);
+        });
+        return round2(total);
     };
 
     const hydrateDraftRows = (rows, p) => {
@@ -1268,6 +1285,13 @@ const Invoices = ({ currentUser, toast }) => {
                 && dpRoots.includes(Number(i.pelunasan_of_id))
                 && !srcs.some(s => Number(s.id) === Number(i.id)));
             srcs = [...srcs, ...externalPels];
+        }
+        // Prefill 1 baris per DP: baris pelunasan tidak perlu diinput — backend
+        // me-mirror setiap baris invoice asli ke seluruh anggota grup PP (DP +
+        // semua pelunasan), jadi pelunasan otomatis dapat baris yang sama.
+        // Pelunasan tetap di-prefill hanya jika proforma tidak punya DP sama sekali.
+        if (srcs.some(s => s && s.tipe === 'PP' && !(s.pp_type === 'pelunasan'))) {
+            srcs = srcs.filter(s => s && !(s.tipe === 'PP' && s.pp_type === 'pelunasan'));
         }
         if (!srcs.length) srcs = p.invoices?.length ? p.invoices : [null];
         if (Array.isArray(rows) && rows.length) {

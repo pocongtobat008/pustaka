@@ -2193,12 +2193,16 @@ router.post('/proforma/:id/settle', async (req, res) => {
             ppGroupSingle = groupInvRows.every(i => i.tipe === 'PP') && rootCount <= 1;
         }
 
+        // Proforma PP = 1 kesatuan: nomor sama dalam 1 submission berarti invoice
+        // asli yang sama (dide-dup untuk total), bukan duplikat yang ditolak.
+        const isPpProforma = sourceInvoices.some(i => i.tipe === 'PP');
+
         const settled = [];
         for (const [idx, r] of rows.entries()) {
             const noInvoice = String(r.no_invoice || '').trim();
             if (!noInvoice) return res.status(400).json({ error: `Baris #${idx + 1}: No invoice wajib diisi`, details: [] });
             const dup = settled.some(s => String(s.no_invoice) === noInvoice);
-            if (dup && !ppGroupSingle) return res.status(400).json({ error: `Baris #${idx + 1}: No invoice ${noInvoice} duplikat`, details: [] });
+            if (dup && !isPpProforma && !ppGroupSingle) return res.status(400).json({ error: `Baris #${idx + 1}: No invoice ${noInvoice} duplikat`, details: [] });
 
             const subtotal = round2(r.subtotal ?? r.dpp);
             const ppn = round2(r.ppn);
@@ -2242,12 +2246,30 @@ router.post('/proforma/:id/settle', async (req, res) => {
         }
 
         // ── Batas balance: TOTAL UANG YANG HARUS TER-SETTLE ──
-        // Tipe PP (DP + Pelunasan) = 1 kesatuan → target = total uang masuk seluruh
-        // grup (DP + semua pelunasan), bukan uang DP saja / pelunasan saja. Non-PP
-        // = total_nominal proforma. Total settle di-dedup per No Invoice Asli.
-        const grandTotal = round2([...new Map(
-            settled.map(s => [String(s.no_invoice || '').trim() || `__row_${s.source_invoice_id ?? Math.random()}`, s])
-        ).values()].reduce((s, x) => s + x.total_invoice, 0));
+        // Dedup identik dengan frontend: baris PP dihitung sekali per (grup + nomor),
+        // baris kosong pada proforma PP dihitung sekali per nomor (satu nomor = 1
+        // invoice asli), non-PP SELALU dihitung masing-masing per baris.
+        let grandTotal;
+        if (isPpProforma) {
+            const byKeyG = new Map();
+            for (const [gi, s] of settled.entries()) {
+                const sid = s.source_invoice_id != null ? Number(s.source_invoice_id) : null;
+                const inv = sid != null ? srcById[sid] : null;
+                let k;
+                if (inv?.tipe === 'PP') {
+                    const root = inv.pp_type === 'pelunasan' && inv.pelunasan_of_id ? Number(inv.pelunasan_of_id) : sid;
+                    k = `pp_${root}|${String(s.no_invoice || '').trim()}`;
+                } else if (sid == null) {
+                    k = `blank|${String(s.no_invoice || '').trim()}`;
+                } else {
+                    k = `__row_${gi}`;
+                }
+                if (!byKeyG.has(k)) byKeyG.set(k, s);
+            }
+            grandTotal = round2([...byKeyG.values()].reduce((s, x) => s + x.total_invoice, 0));
+        } else {
+            grandTotal = round2(settled.reduce((s, x) => s + x.total_invoice, 0));
+        }
         const totalNominal = (await computeSettleTarget(p)).target;
         if (Math.abs(grandTotal - totalNominal) > 0.01) {
             return res.status(400).json({
@@ -2266,6 +2288,12 @@ router.post('/proforma/:id/settle', async (req, res) => {
             const inv = sid != null ? srcById[sid] : null;
             if (inv?.tipe === 'PP') ppRootsFix.add(inv.pp_type === 'pelunasan' && inv.pelunasan_of_id ? Number(inv.pelunasan_of_id) : sid);
         }
+        if (isPpProforma && !ppRootsFix.size) {
+            // Proforma PP dengan baris kosong (tanpa sumber): pakai grup PP proforma
+            for (const i of sourceInvoices) {
+                if (i.tipe === 'PP') ppRootsFix.add(i.pp_type === 'pelunasan' && i.pelunasan_of_id ? Number(i.pelunasan_of_id) : Number(i.id));
+            }
+        }
         if (ppRootsFix.size) {
             const rootArr = [...ppRootsFix];
             const grpMembers = await knex('proforma_invoices')
@@ -2281,8 +2309,10 @@ router.post('/proforma/:id/settle', async (req, res) => {
             for (const s of settled) {
                 const sid = s.source_invoice_id != null ? Number(s.source_invoice_id) : null;
                 const inv = sid != null ? srcById[sid] : null;
-                if (!inv || inv.tipe !== 'PP') continue;
-                const root = inv.pp_type === 'pelunasan' && inv.pelunasan_of_id ? Number(inv.pelunasan_of_id) : sid;
+                let root = null;
+                if (inv?.tipe === 'PP') root = inv.pp_type === 'pelunasan' && inv.pelunasan_of_id ? Number(inv.pelunasan_of_id) : sid;
+                else if (isPpProforma && ppRootsFix.size) root = [...ppRootsFix][0]; // baris kosong pada proforma PP
+                else continue;
                 const members = grpByRoot.get(root) || [];
                 if (!members.length) continue;
                 s.uang_masuk = round2(members.reduce((acc, m) => acc + (Number(m.uang_masuk) || 0), 0));
@@ -2299,75 +2329,51 @@ router.post('/proforma/:id/settle', async (req, res) => {
         }
 
         // ── Mirror baris settle ke seluruh anggota grup PP (DP + semua pelunasan) ──
-        // Grup PP = 1 kesatuan: setiap anggota mendapat baris settled_invoices dengan
-        // No Invoice Asli yang sama → detail settle & export Excel tampil di DP
-        // maupun pelunasan. Anggota yang sudah settled/cancelled tidak ditimpa.
-        const ppRootsTouched = new Set();
-        for (const s of settled) {
-            const sid = s.source_invoice_id != null ? Number(s.source_invoice_id) : null;
-            if (sid == null || !srcById[sid] || srcById[sid].tipe !== 'PP') continue;
-            const inv = srcById[sid];
-            ppRootsTouched.add(inv.pp_type === 'pelunasan' && inv.pelunasan_of_id ? Number(inv.pelunasan_of_id) : sid);
+        // Setiap baris "invoice asli" (input pengguna, TERMASUK baris kosong tanpa
+        // sumber) di-copy ke SEMUA anggota grup PP yang tersentuh dengan data sama
+        // persis: 5 invoice asli → 5 baris di DP + 5 baris di pelunasan. Detail
+        // settle & export Excel kini menampilkan semua invoice asli di kedua sisi.
+        const ppRootsTouched = new Set(ppRootsFix);
+        const allPpMembers = ppRootsTouched.size
+            ? await knex('proforma_invoices')
+                .where((q) => q.whereIn('id', [...ppRootsTouched]).orWhereIn('pelunasan_of_id', [...ppRootsTouched]))
+                // Saat re-settle anggota grup sudah 'settled' — tetap diikutkan agar
+                // baris mirror dibuat ulang untuk semua anggota (grup PP hanya bisa
+                // di-settle lewat 1 proforma, jadi aman).
+                .whereNotIn('status', ['cancelled'])
+            : [];
+        const membersByRoot = new Map();
+        for (const m of allPpMembers) {
+            const root = m.pp_type === 'pelunasan' && m.pelunasan_of_id ? Number(m.pelunasan_of_id) : Number(m.id);
+            if (!ppRootsTouched.has(root)) continue;
+            if (!membersByRoot.has(root)) membersByRoot.set(root, []);
+            membersByRoot.get(root).push(m);
         }
         const toInsert = [];
         for (const s of settled) {
             const sid = s.source_invoice_id != null ? Number(s.source_invoice_id) : null;
-            const isPp = sid != null && srcById[sid]?.tipe === 'PP';
-            if (!isPp) toInsert.push({ row: s, itemsFrom: sid });
-        }
-        if (ppRootsTouched.size) {
-            const roots = [...ppRootsTouched];
-            const memberRows = await knex('proforma_invoices')
-                .where((q) => q.whereIn('id', roots).orWhereIn('pelunasan_of_id', roots))
-                // Saat re-settle, anggota grup sudah 'settled' — tetap diikutkan
-                // agar baris mirror yang baru dibuat ulang untuk semua anggota
-                // (grup PP hanya bisa di-settle lewat 1 proforma, jadi aman).
-                .whereNotIn('status', ['cancelled']);
-            const membersByRoot = new Map();
-            for (const m of memberRows) {
-                const root = m.pp_type === 'pelunasan' && m.pelunasan_of_id ? Number(m.pelunasan_of_id) : Number(m.id);
-                if (!ppRootsTouched.has(root)) continue;
-                if (!membersByRoot.has(root)) membersByRoot.set(root, []);
-                membersByRoot.get(root).push(m);
-            }
-            const rowsByRoot = new Map();
-            for (const s of settled) {
-                const sid = s.source_invoice_id != null ? Number(s.source_invoice_id) : null;
-                if (sid == null) continue;
-                const inv = srcById[sid];
-                if (!inv || inv.tipe !== 'PP') continue;
-                const root = inv.pp_type === 'pelunasan' && inv.pelunasan_of_id ? Number(inv.pelunasan_of_id) : sid;
-                if (!rowsByRoot.has(root)) rowsByRoot.set(root, []);
-                rowsByRoot.get(root).push({ row: s, itemsFrom: sid });
-            }
-            for (const [root, rrows] of rowsByRoot.entries()) {
-                const nos = new Set(rrows.map(x => String(x.row.no_invoice || '').trim()));
-                const members = membersByRoot.get(root) || [];
-                if (nos.size !== 1) {
-                    // Nomor berbeda antar baris satu grup → biarkan apa adanya (tidak ambigu)
-                    for (const x of rrows) toInsert.push(x);
-                    continue;
-                }
-                for (const m of members) {
-                    const existing = rrows.find(x => Number(x.itemsFrom) === Number(m.id));
-                    if (existing) { toInsert.push(existing); continue; }
-                    const base = rrows[0].row;
-                    toInsert.push({
-                        row: {
-                            ...base,
-                            source_invoice_id: Number(m.id),
-                            dealer_id: m.dealer_id ?? base.dealer_id,
-                            dealer_name: m.dealer_name ?? base.dealer_name,
-                            dealer_npwp: m.dealer_npwp ?? base.dealer_npwp,
-                            dealer_alamat: m.dealer_alamat ?? base.dealer_alamat,
-                            no_po: m.no_po ?? base.no_po,
-                            tgl_po: m.tgl_po ?? base.tgl_po,
-                            uang_masuk: m.uang_masuk ?? base.uang_masuk,
-                            tgl_uang_masuk: m.tgl_uang_masuk ?? base.tgl_uang_masuk,
-                        },
-                        itemsFrom: rrows[0].itemsFrom,
-                    });
-                }
+            const inv = sid != null ? srcById[sid] : null;
+            const root = inv?.tipe === 'PP'
+                ? (inv.pp_type === 'pelunasan' && inv.pelunasan_of_id ? Number(inv.pelunasan_of_id) : sid)
+                : (isPpProforma && ppRootsTouched.size ? [...ppRootsTouched][0] : null);
+            const members = root != null ? (membersByRoot.get(root) || []) : [];
+            if (!members.length) { toInsert.push({ row: s, itemsFrom: sid }); continue; }
+            // 1 invoice asli → 1 baris per anggota grup PP, data sama persis.
+            for (const m of members) {
+                toInsert.push({
+                    row: {
+                        ...s,
+                        source_invoice_id: Number(m.id),
+                        tipe: m.tipe ?? s.tipe,
+                        dealer_id: m.dealer_id ?? s.dealer_id,
+                        dealer_name: m.dealer_name ?? s.dealer_name,
+                        dealer_npwp: m.dealer_npwp ?? s.dealer_npwp,
+                        dealer_alamat: m.dealer_alamat ?? s.dealer_alamat,
+                        no_po: m.no_po ?? s.no_po,
+                        tgl_po: m.tgl_po ?? s.tgl_po,
+                    },
+                    itemsFrom: sid || Number(m.id),
+                });
             }
         }
 
