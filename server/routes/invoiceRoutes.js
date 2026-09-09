@@ -2159,7 +2159,9 @@ router.post('/proforma/:id/settle', async (req, res) => {
         const { id } = req.params;
         const p = await knex('proforma_requests').where('id', id).first();
         if (!p) return res.status(404).json({ error: 'Proforma tidak ditemukan' });
-        if (p.status !== 'approved') return res.status(400).json({ error: 'Hanya proforma approved yang bisa di-settle', details: [] });
+        // Approved = settle pertama; settled = settle ulang untuk revisi data
+        // (data settle lama proforma ini dibersihkan lalu diganti yang baru).
+        if (!['approved', 'settled'].includes(p.status)) return res.status(400).json({ error: 'Hanya proforma approved atau settled yang bisa di-settle', details: [] });
 
         const rows = Array.isArray(req.body?.invoices) ? req.body.invoices : [];
         if (!rows.length) return res.status(400).json({ error: 'Minimal satu invoice asli wajib diisi', details: [] });
@@ -2289,7 +2291,9 @@ router.post('/proforma/:id/settle', async (req, res) => {
             }
         }
 
-        const existingNo = await knex('settled_invoices').whereIn('no_invoice', settled.map(s => s.no_invoice)).select('no_invoice');
+        const existingNo = await knex('settled_invoices').whereIn('no_invoice', settled.map(s => s.no_invoice))
+            .whereNot('proforma_id', Number(p.id)) // nomor milik proforma ini sendiri diperbolehkan (kasus re-settle)
+            .select('no_invoice');
         if (existingNo.length) {
             return res.status(400).json({ error: 'No invoice sudah digunakan', details: existingNo.map(x => x.no_invoice) });
         }
@@ -2315,7 +2319,10 @@ router.post('/proforma/:id/settle', async (req, res) => {
             const roots = [...ppRootsTouched];
             const memberRows = await knex('proforma_invoices')
                 .where((q) => q.whereIn('id', roots).orWhereIn('pelunasan_of_id', roots))
-                .whereNotIn('status', ['cancelled', 'settled']);
+                // Saat re-settle, anggota grup sudah 'settled' — tetap diikutkan
+                // agar baris mirror yang baru dibuat ulang untuk semua anggota
+                // (grup PP hanya bisa di-settle lewat 1 proforma, jadi aman).
+                .whereNotIn('status', ['cancelled']);
             const membersByRoot = new Map();
             for (const m of memberRows) {
                 const root = m.pp_type === 'pelunasan' && m.pelunasan_of_id ? Number(m.pelunasan_of_id) : Number(m.id);
@@ -2366,6 +2373,23 @@ router.post('/proforma/:id/settle', async (req, res) => {
 
         const trx = await knex.transaction();
         try {
+            // Re-settle (revisi): bersihkan data settle lama proforma ini dulu
+            // (baris mirror grup PP juga ikut, dicari lewat semua anggota grup).
+            if (p.status === 'settled') {
+                const grpIds = ppRootsFix.size ? [...new Set([
+                    ...sourceIds,
+                    ...(await expandPpGroupIds(knex, sourceIds)),
+                ])] : sourceIds;
+                const oldIds = (await trx('settled_invoices').where('proforma_id', Number(p.id)).select('id')).map(x => x.id);
+                const oldMirrorIds = grpIds.length
+                    ? (await trx('settled_invoices').whereIn('source_invoice_id', grpIds).select('id')).map(x => x.id)
+                    : [];
+                const delIds = [...new Set([...oldIds, ...oldMirrorIds])];
+                if (delIds.length) {
+                    await trx('settled_invoice_items').whereIn('settled_invoice_id', delIds).del();
+                    await trx('settled_invoices').whereIn('id', delIds).del();
+                }
+            }
             for (const { row: s, itemsFrom } of toInsert) {
                 const [{ id: sid }] = await trx('settled_invoices').insert(s).returning('id');
                 if (itemsFrom) {
