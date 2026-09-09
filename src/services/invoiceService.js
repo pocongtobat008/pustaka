@@ -278,6 +278,11 @@ export const invoiceService = {
         return apiClient.fetchJson(`${API_URL}/invoices/proforma/${proformaId}/settled`);
     },
 
+    // Detail settle milik satu invoice sumber (DP & pelunasan grup PP sama-sama punya)
+    async getSettledBySource(invoiceId) {
+        return apiClient.fetchJson(`${API_URL}/invoices/settled/by-source/${invoiceId}`);
+    },
+
     async getSettleDrafts() {
         return apiClient.fetchJson(`${API_URL}/invoices/proforma/settle/drafts`);
     },
