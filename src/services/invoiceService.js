@@ -269,6 +269,11 @@ export const invoiceService = {
         return apiClient.fetchJson(`${API_URL}/invoices/proforma/${id}/settle/draft`);
     },
 
+    // Target settle: total uang yang harus ter-settle (grup PP = uang DP + semua pelunasan)
+    async getSettleTarget(id) {
+        return apiClient.fetchJson(`${API_URL}/invoices/proforma/${id}/settle-target`);
+    },
+
     async getSettledInvoices(proformaId) {
         return apiClient.fetchJson(`${API_URL}/invoices/proforma/${proformaId}/settled`);
     },

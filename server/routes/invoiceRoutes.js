@@ -2068,10 +2068,53 @@ router.delete('/proforma/:id/settle/draft', async (req, res) => {
     }
 });
 
-// ─── Settle Proforma ────────────────────────────────────────────────────────
+// Target settle untuk proforma: "uang yang harus ter-settle keseluruhan".
+// Tipe PP (DP + Pelunasan) = 1 kesatuan → target = TOTAL uang masuk seluruh grup
+// (uang DP + semua uang pelunasan), BUKAN uang DP saja atau pelunasan saja —
+// sekalipun pelunasan tidak ikut dalam proforma ini. Non-PP (CBD/PF) = total_invoice.
+const computeSettleTarget = async (proforma) => {
+    const sourceIds = parseJsonArraySafeStr(proforma.invoice_ids);
+    const sourceInvoices = sourceIds.length ? await knex('proforma_invoices').whereIn('id', sourceIds) : [];
+    const isPp = sourceInvoices.length > 0 && sourceInvoices.every(i => i.tipe === 'PP');
+    if (!isPp) {
+        return { target: round2(Number(proforma.total_nominal) || 0), isPp };
+    }
+    let target = 0;
+    for (const inv of sourceInvoices) {
+        // Untuk tiap DP: total grup = uang DP + seluruh uang pelunasan yang terhubung
+        if (!(inv.pp_type === 'pelunasan')) {
+            const pels = await knex('proforma_invoices').where('pelunasan_of_id', inv.id).select('uang_masuk');
+            target += round2(Number(inv.uang_masuk) || 0) + pels.reduce((s, x) => s + (Number(x.uang_masuk) || 0), 0);
+        }
+    }
+    // Pelunasan yang tidak terhubung ke DP mana pun dalam proforma ini (DP-nya di
+    // proforma lain) → tetap dihitung uang masuknya, bukan 0.
+    const rootIds = new Set(sourceInvoices.filter(i => !(i.pp_type === 'pelunasan')).map(i => Number(i.id)));
+    for (const inv of sourceInvoices) {
+        if (inv.pp_type === 'pelunasan' && inv.pelunasan_of_id && !rootIds.has(Number(inv.pelunasan_of_id))) {
+            target += round2(Number(inv.uang_masuk) || 0);
+        }
+    }
+    return { target: round2(target), isPp };
+};
+
+// GET target settle — dipakai frontend untuk precheck & footer yang konsisten
+router.get('/proforma/:id/settle-target', async (req, res) => {
+    try {
+        const p = await knex('proforma_requests').where('id', Number(req.params.id)).first();
+        if (!p) return res.status(404).json({ error: 'Proforma tidak ditemukan' });
+        const { target, isPp } = await computeSettleTarget(p);
+        res.json({ target, isPp });
+    } catch (err) {
+        res.status(500).json({ error: 'Gagal menghitung target settle', details: [err.message] });
+    }
+});
+
+// ─── Settle Proforma ─────────────────────────────────────────────────────────
 // 1 proforma bisa di-settle menjadi 1 atau lebih invoice asli (settled_invoices).
 // Setiap baris: no_invoice, tgl_invoice, no faktur (auto proforma_no), DPP, PPn, materai, diskon, tgl_settle.
-// Total semua baris harus balance dengan total_nominal proforma.
+// Total semua baris (dedup per No Invoice Asli) harus balance dengan target settle
+// = total uang masuk yang harus ter-settle keseluruhan (grup PP dihitung DP+pelunasan).
 router.post('/proforma/:id/settle', async (req, res) => {
     try {
         const perms = await getUserInvoicePerms(req.authUser);
@@ -2089,11 +2132,27 @@ router.post('/proforma/:id/settle', async (req, res) => {
         const srcById = Object.fromEntries(sourceInvoices.map(i => [Number(i.id), i]));
         const now = new Date();
 
-        // PP (DP + Pelunasan) adalah 1 kesatuan → baris settle satu grup PP boleh
-        // berbagi 1 No Invoice Asli yang sama (nomor sama ditolak hanya antar grup berbeda).
-        const ppGroupSingle = sourceInvoices.length > 0
-            && sourceInvoices.every(i => i.tipe === 'PP')
-            && (await expandPpGroupIds(knex, sourceInvoices.map(i => i.id))).length === sourceInvoices.length;
+        // PP (DP + Pelunasan) = 1 kesatuan. Anggota grup yang TIDAK ikut dalam
+        // proforma (mis. pelunasan dengan DP-nya di proforma ini) tetap sah
+        // dipakai sebagai sumber baris settle → metadata dealer/tipe tetap benar.
+        const rowSrcIds = rows.map(r => Number(r.source_invoice_id)).filter(v => Number.isFinite(v) && v > 0);
+        const ppExpandedIds = sourceInvoices.some(i => i.tipe === 'PP')
+            ? await expandPpGroupIds(knex, sourceInvoices.map(i => i.id))
+            : [];
+        const externalPpIds = ppExpandedIds.filter(x => !srcById[x]);
+        if (externalPpIds.length) {
+            const externalPpRows = await knex('proforma_invoices').whereIn('id', externalPpIds);
+            for (const e of externalPpRows) srcById[Number(e.id)] = e;
+        }
+
+        // Baris settle satu grup PP tunggal (hanya 1 DP root) → boleh berbagi
+        // 1 No Invoice Asli yang sama (nomor sama ditolak hanya antar grup berbeda).
+        let ppGroupSingle = false;
+        if (rowSrcIds.length > 0 && rowSrcIds.every(id => srcById[id]?.tipe === 'PP')) {
+            const groupInvRows = await knex('proforma_invoices').whereIn('id', await expandPpGroupIds(knex, rowSrcIds));
+            const rootCount = new Set(groupInvRows.filter(i => !(i.pp_type === 'pelunasan')).map(i => Number(i.id))).size;
+            ppGroupSingle = groupInvRows.every(i => i.tipe === 'PP') && rootCount <= 1;
+        }
 
         const settled = [];
         for (const [idx, r] of rows.entries()) {
@@ -2143,17 +2202,14 @@ router.post('/proforma/:id/settle', async (req, res) => {
             });
         }
 
-        // ── Batas balance: SESUAI TOTAL PROFORMA (total uang masuk) ──
-        // Sederhana & konsisten dengan nominal proforma: tidak peduli jenis
-        // invoice (PP DP / PP pelunasan / CBD / PF), target settle = total_nominal
-        // proforma itu sendiri (= jumlah uang masuk seluruh barisnya).
-        // Tipe PP (DP & pelunasan) adalah 1 kesatuan → boleh berbagi 1 No Invoice
-        // Asli (constraint unique sudah dilepas via migration); pelunasan tidak
-        // dihitung dobel karena total settle di-dedup per No Invoice Asli.
+        // ── Batas balance: TOTAL UANG YANG HARUS TER-SETTLE ──
+        // Tipe PP (DP + Pelunasan) = 1 kesatuan → target = total uang masuk seluruh
+        // grup (DP + semua pelunasan), bukan uang DP saja / pelunasan saja. Non-PP
+        // = total_nominal proforma. Total settle di-dedup per No Invoice Asli.
         const grandTotal = round2([...new Map(
             settled.map(s => [String(s.no_invoice || '').trim() || `__row_${s.source_invoice_id ?? Math.random()}`, s])
         ).values()].reduce((s, x) => s + x.total_invoice, 0));
-        const totalNominal = round2(Number(p.total_nominal) || 0);
+        const totalNominal = (await computeSettleTarget(p)).target;
         if (Math.abs(grandTotal - totalNominal) > 0.01) {
             return res.status(400).json({
                 error: 'Total invoice asli harus balance dengan total proforma',
@@ -2192,6 +2248,11 @@ router.post('/proforma/:id/settle', async (req, res) => {
                 notes: req.body?.notes || p.notes || '',
             });
             await trx('proforma_invoices').whereIn('id', sourceIds).update({ status: 'settled', updated_at: now });
+            // Anggota grup PP di luar proforma (mis. pelunasan yang DP-nya di sini)
+            // juga di-settle supaya statusnya ikut terkunci.
+            if (externalPpIds.length) {
+                await trx('proforma_invoices').whereIn('id', externalPpIds).update({ status: 'settled', updated_at: now });
+            }
             await trx.commit();
         } catch (e) {
             await trx.rollback();
