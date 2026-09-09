@@ -55,11 +55,38 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
 
     if (!detailTarget) return null;
 
-    const settledTotal = (settledRows || []).reduce((s, x) => s + num(x.total_invoice), 0);
+    // Target settle: grup PP dihitung DP + semua pelunasan-nya (bukan DP saja);
+    // non-PP = total_nominal proforma. Konsisten dengan computeSettleTarget BE.
+    const profInvoices = prof?.invoices || [];
+    const allPp = profInvoices.length > 0 && profInvoices.every(i => i.tipe === 'PP');
+    let targetSettle = num(prof?.total_nominal);
+    if (allPp) {
+        const rootIds = new Set(profInvoices.filter(i => !(i.pp_type === 'pelunasan')).map(i => Number(i.id)));
+        targetSettle = 0;
+        for (const i of profInvoices) {
+            if (!(i.pp_type === 'pelunasan')) {
+                const pels = (invoices || []).filter(x => x.tipe === 'PP' && x.pp_type === 'pelunasan' && Number(x.pelunasan_of_id) === Number(i.id));
+                targetSettle += num(i.uang_masuk) + pels.reduce((s, x) => s + num(x.uang_masuk), 0);
+            } else if (i.pelunasan_of_id && !rootIds.has(Number(i.pelunasan_of_id))) {
+                targetSettle += num(i.uang_masuk); // pelunasan tanpa DP di proforma ini
+            }
+        }
+        targetSettle = Math.round(targetSettle * 100) / 100;
+    }
+    // Total settle di-dedup per No Invoice Asli (DP & pelunasan berbagi 1 nomor)
+    const seenNo = new Set();
+    const dedupSettled = [];
+    for (const s of (settledRows || [])) {
+        const k = String(s.no_invoice || '').trim() || `__row_${s.id}`;
+        if (seenNo.has(k)) continue;
+        seenNo.add(k);
+        dedupSettled.push(s);
+    }
+    const settledTotal = dedupSettled.reduce((s, x) => s + num(x.total_invoice), 0);
     const nominalProforma = num(prof?.total_nominal) || num(detailTarget.total_invoice);
     const uangMasuk = num(detailTarget.uang_masuk);
     const sisaTagihan = Math.max(0, nominalProforma - uangMasuk);
-    const isBalance = settledRows != null && Math.abs(settledTotal - nominalProforma) < 0.01;
+    const isBalance = settledRows != null && Math.abs(settledTotal - targetSettle) < 0.01;
 
     // No Invoice Asli bersama untuk grup PP (DP & Pelunasan berbagi 1 nomor)
     const settledNoOf = (invId) => (settledRows || []).find(s => Number(s.source_invoice_id) === Number(invId))?.no_invoice || '';
@@ -413,8 +440,8 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                             </div>
                                             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
                                                 <div className="flex justify-between md:flex-col md:gap-0.5">
-                                                    <span className="text-[10px] text-stone-500 uppercase">Nominal Proforma</span>
-                                                    <span className="font-bold text-stone-800 dark:text-white tabular-nums">{formatCurrency(nominalProforma)}</span>
+                                                    <span className="text-[10px] text-stone-500 uppercase">{allPp ? 'Total Harus Settle (DP+PL)' : 'Nominal Proforma'}</span>
+                                                    <span className="font-bold text-stone-800 dark:text-white tabular-nums">{formatCurrency(targetSettle)}</span>
                                                 </div>
                                                 <div className="flex justify-between md:flex-col md:gap-0.5">
                                                     <span className="text-[10px] text-stone-500 uppercase">Total Settle</span>
@@ -432,7 +459,7 @@ export const SuperDetailModal = ({ open, onClose, detailTarget, formatCurrency, 
                                             {settledRows != null && (
                                                 <div className={`mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black ${isBalance ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300' : 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-300'}`}>
                                                     {isBalance ? <CheckCircle2 size={11} /> : <XCircle size={11} />}
-                                                    {isBalance ? 'Balance — total settle sesuai nominal proforma' : `Selisih ${formatCurrency(Math.abs(settledTotal - nominalProforma))}`}
+                                                    {isBalance ? (allPp ? 'Balance — total settle sesuai uang masuk grup PP (DP + Pelunasan)' : 'Balance — total settle sesuai nominal proforma') : `Selisih ${formatCurrency(Math.abs(settledTotal - targetSettle))}`}
                                                 </div>
                                             )}
                                         </div>

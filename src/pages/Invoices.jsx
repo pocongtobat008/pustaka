@@ -460,6 +460,9 @@ const Invoices = ({ currentUser, toast }) => {
     const [settleTglSet, setSettleTglSet] = useState('');
     const [settleDraftAt, setSettleDraftAt] = useState(null);
     const [settleError, setSettleError] = useState(null);
+    // Target settle dari server: grup PP = uang DP + semua pelunasan (bukan DP saja);
+    // null = belum termuat (fallback ke total_nominal proforma).
+    const [settleTargetAmt, setSettleTargetAmt] = useState(null);
     const [settleDraftIds, setSettleDraftIds] = useState(new Set());
     const [cancelTarget, setCancelTarget] = useState(null);
     const [deleteReplTarget, setDeleteReplTarget] = useState(null);
@@ -1256,8 +1259,16 @@ const Invoices = ({ currentUser, toast }) => {
     };
 
     const hydrateDraftRows = (rows, p) => {
-        // Tiap proforma berisi invoice sendiri-sendiri (DP & pelunasan terpisah).
+        // Grup PP = 1 kesatuan: pelunasan yang DP-nya ada di proforma ini ikut
+        // ditampilkan sebagai baris settle, sekalipun bukan anggota proforma.
         let srcs = (p.invoices || []).filter(i => i.status !== 'cancelled');
+        const dpRoots = srcs.filter(i => i.tipe === 'PP' && !(i.pp_type === 'pelunasan')).map(i => Number(i.id));
+        if (dpRoots.length) {
+            const externalPels = (invoices || []).filter(i => i.tipe === 'PP' && i.pp_type === 'pelunasan'
+                && dpRoots.includes(Number(i.pelunasan_of_id))
+                && !srcs.some(s => Number(s.id) === Number(i.id)));
+            srcs = [...srcs, ...externalPels];
+        }
         if (!srcs.length) srcs = p.invoices?.length ? p.invoices : [null];
         if (Array.isArray(rows) && rows.length) {
             return rows.map(d => ({
@@ -1282,7 +1293,12 @@ const Invoices = ({ currentUser, toast }) => {
         setSettleTglSet(new Date().toISOString().slice(0, 10));
         setSettleError(null);
         setSettleDraftAt(null);
+        setSettleTargetAmt(null);
         setShowSettle(true);
+        // Target resmi dari server: grup PP = uang DP + semua pelunasan-nya
+        invoiceService.getSettleTarget(p.id)
+            .then(r => setSettleTargetAmt(Number(r?.target) || 0))
+            .catch(() => setSettleTargetAmt(round2(Number(p.total_nominal) || 0)));
         try {
             const draft = await invoiceService.getSettleDraft(p.id).catch(() => null);
             if (draft?.rows) {
@@ -1344,9 +1360,9 @@ const Invoices = ({ currentUser, toast }) => {
         // Baris satu grup PP (DP+Pelunasan) berbagi 1 No Invoice Asli = 1 invoice fisik
         // → total dihitung sekali per nomor agar tidak dobel.
         const total = dedupeSettleTotal(settleRows);
-        // Target balance = total proforma (total_nominal) apa adanya — sama dengan
-        // total uang masuk seluruh baris — tanpa memandang tipe DP/pelunasan/CBD/PF.
-        const target = round2(Number(settleTarget?.total_nominal) || 0);
+        // Target = total uang yang harus ter-settle (grup PP = uang DP + semua pelunasan);
+        // fallback total_nominal proforma jika target server belum termuat.
+        const target = settleTargetAmt != null ? settleTargetAmt : round2(Number(settleTarget?.total_nominal) || 0);
         if (Math.abs(round2(total) - target) > 0.01) {
             return setSettleError(`Total invoice asli harus balance dengan total proforma (${formatCurrency(target)}). Saat ini ${formatCurrency(round2(total))}`);
         }
@@ -3764,8 +3780,8 @@ const Invoices = ({ currentUser, toast }) => {
                                 <Plus size={14} /> Tambah Invoice Asli
                             </button>
                             <div className="text-xs text-stone-500 space-x-3">
-                                <span>Total Proforma: <b className="text-stone-800 dark:text-white">{formatCurrency(round2(Number(settleTarget?.total_nominal) || 0))}</b></span>
-                                <span>Total Settle: <b className={Math.abs(dedupeSettleTotal(settleRows) - round2(Number(settleTarget?.total_nominal) || 0)) <= 0.01 ? 'text-teal-600 dark:text-teal-400' : 'text-red-600'}>{formatCurrency(dedupeSettleTotal(settleRows))}</b></span>
+                                <span>Total Harus Settle: <b className="text-stone-800 dark:text-white">{formatCurrency(settleTargetAmt != null ? settleTargetAmt : round2(Number(settleTarget?.total_nominal) || 0))}</b></span>
+                                <span>Total Settle: <b className={Math.abs(dedupeSettleTotal(settleRows) - (settleTargetAmt != null ? settleTargetAmt : round2(Number(settleTarget?.total_nominal) || 0))) <= 0.01 ? 'text-teal-600 dark:text-teal-400' : 'text-red-600'}>{formatCurrency(dedupeSettleTotal(settleRows))}</b></span>
                             </div>
                         </div>
 
