@@ -2500,15 +2500,26 @@ const Invoices = ({ currentUser, toast }) => {
                                     <button onClick={() => { setDashSearch(''); setDashDealer(''); setDashStatus(''); }} className="px-3 py-2 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-500 hover:text-red-600 text-sm font-semibold">Reset</button>
                                 )}
                                 {(perms.can_view_invoice || perms.can_view_dashboard) && (
-                                    <button
-                                        onClick={handleExportExcel}
-                                        disabled={exporting}
-                                        title={t("invoice.exportAll")}
-                                        className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold transition-all ${exporting ? 'bg-stone-100 dark:bg-[#0d0d0d] text-stone-400 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/25'}`}
-                                    >
-                                        <FileSpreadsheet size={15} className={exporting ? 'animate-pulse' : ''} />
-                                        {exporting ? 'Exporting...' : 'Export Excel'}
-                                    </button>
+                                    <>
+                                        <button
+                                            onClick={handleExportExcel}
+                                            disabled={exporting}
+                                            title={t("invoice.exportAll")}
+                                            className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold transition-all ${exporting ? 'bg-stone-100 dark:bg-[#0d0d0d] text-stone-400 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/25'}`}
+                                        >
+                                            <FileSpreadsheet size={15} className={exporting ? 'animate-pulse' : ''} />
+                                            {exporting ? 'Exporting...' : 'Export Excel'}
+                                        </button>
+                                        <button
+                                            onClick={handleExportExcelSettle}
+                                            disabled={exporting || exportingSettle}
+                                            title="Export khusus invoice berstatus Settled + detail item"
+                                            className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold transition-all ${(exporting || exportingSettle) ? 'bg-stone-100 dark:bg-[#0d0d0d] text-stone-400 cursor-not-allowed' : 'bg-teal-600 hover:bg-teal-700 text-white shadow-lg shadow-teal-500/25'}`}
+                                        >
+                                            <FileSpreadsheet size={15} className={exportingSettle ? 'animate-pulse' : ''} />
+                                            {exportingSettle ? 'Exporting...' : 'Export Settle'}
+                                        </button>
+                                    </>
                                 )}
                             </div>
                         </div>
