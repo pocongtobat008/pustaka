@@ -2230,6 +2230,41 @@ router.post('/proforma/:id/settle', async (req, res) => {
             });
         }
 
+        // ── Grup PP = 1 kesatuan: data baris settle SEMUA ANGGOTA SAMA PERSIS ──
+        // Uang masuk pada tiap baris = TOTAL uang masuk seluruh grup (DP + semua
+        // pelunasan), bukan uang DP atau pelunasan saja; tgl uang masuk = tanggal
+        // pembayaran pertama grup. Tidak terpengaruh baris bersumber dari DP/PPL.
+        const ppRootsFix = new Set();
+        for (const s of settled) {
+            const sid = s.source_invoice_id != null ? Number(s.source_invoice_id) : null;
+            const inv = sid != null ? srcById[sid] : null;
+            if (inv?.tipe === 'PP') ppRootsFix.add(inv.pp_type === 'pelunasan' && inv.pelunasan_of_id ? Number(inv.pelunasan_of_id) : sid);
+        }
+        if (ppRootsFix.size) {
+            const rootArr = [...ppRootsFix];
+            const grpMembers = await knex('proforma_invoices')
+                .where((q) => q.whereIn('id', rootArr).orWhereIn('pelunasan_of_id', rootArr))
+                .whereNot('status', 'cancelled');
+            const grpByRoot = new Map();
+            for (const m of grpMembers) {
+                const root = m.pp_type === 'pelunasan' && m.pelunasan_of_id ? Number(m.pelunasan_of_id) : Number(m.id);
+                if (!ppRootsFix.has(root)) continue;
+                if (!grpByRoot.has(root)) grpByRoot.set(root, []);
+                grpByRoot.get(root).push(m);
+            }
+            for (const s of settled) {
+                const sid = s.source_invoice_id != null ? Number(s.source_invoice_id) : null;
+                const inv = sid != null ? srcById[sid] : null;
+                if (!inv || inv.tipe !== 'PP') continue;
+                const root = inv.pp_type === 'pelunasan' && inv.pelunasan_of_id ? Number(inv.pelunasan_of_id) : sid;
+                const members = grpByRoot.get(root) || [];
+                if (!members.length) continue;
+                s.uang_masuk = round2(members.reduce((acc, m) => acc + (Number(m.uang_masuk) || 0), 0));
+                const dates = members.map(m => m.tgl_uang_masuk).filter(Boolean).map(String).sort();
+                if (dates.length) s.tgl_uang_masuk = dates[0];
+            }
+        }
+
         const existingNo = await knex('settled_invoices').whereIn('no_invoice', settled.map(s => s.no_invoice)).select('no_invoice');
         if (existingNo.length) {
             return res.status(400).json({ error: 'No invoice sudah digunakan', details: existingNo.map(x => x.no_invoice) });
