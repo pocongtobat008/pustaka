@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { User, FileKey, AlertCircle, ShieldCheck, Zap, ArrowRight, BookOpen, Sun, Moon, Globe, Eye, EyeOff } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { APP_NAME_DISPLAY, IS_DEV } from '../config/appEnv';
 import { useAppStore } from '../store/useAppStore';
 
 export default function Login({ onLogin }) {
@@ -24,7 +25,7 @@ export default function Login({ onLogin }) {
             submit: 'Sign In',
             or: 'or',
             guest: 'Guest Access (Read-Only)',
-            version: '©2026 Pustaka Enterprise • v1.0.0',
+            version: IS_DEV ? '©2026 Pustaka DEV • ENVIRONMENT DEVELOPMENT' : '©2026 Pustaka Enterprise • v1.0.0',
         }
         : {
             titleMain: 'Solusi Satu\nManajemen Sistem Terpadu',
@@ -39,7 +40,7 @@ export default function Login({ onLogin }) {
             submit: 'Masuk',
             or: 'Atau',
             guest: 'Akses Tamu (Read-Only)',
-            version: '©2026 Pustaka Enterprise • v1.0.0',
+            version: IS_DEV ? '©2026 Pustaka DEV • LINGKUNGAN DEVELOPMENT' : '©2026 Pustaka Enterprise • v1.0.0',
         };
 
     const handleSubmit = (e) => {
@@ -80,7 +81,8 @@ export default function Login({ onLogin }) {
                             <div className="p-1.5 xl:p-2 bg-white/20 backdrop-blur-md rounded-lg xl:rounded-xl border border-white/25 shadow-lg">
                                 <BookOpen className="text-white w-5 h-5 xl:w-6 xl:h-6" />
                             </div>
-                            <span className="text-xl xl:text-2xl font-black text-white tracking-tighter">Pustaka</span>
+                            <span className="text-xl xl:text-2xl font-black text-white tracking-tighter">{APP_NAME_DISPLAY}</span>
+                            {IS_DEV && <span className="ml-1 inline-flex items-center px-2 py-0.5 rounded bg-red-500 text-white text-[10px] font-black uppercase tracking-wider">Dev</span>}
                         </div>
 
                         <h1 className="text-3xl lg:text-4xl xl:text-5xl font-black text-white leading-tight mb-4 xl:mb-6">

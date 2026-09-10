@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { APP_NAME_DISPLAY, IS_DEV } from '../../config/appEnv';
 import {
     LayoutDashboard,
     Grid3x3,
@@ -237,7 +238,7 @@ const Sidebar = ({
     };
 
     const sidebarRootClass = [
-        'cf-sidebar fixed inset-y-0 left-0 z-[40] md:static md:z-0',
+        'cf-sidebar fixed inset-y-0 left-0 z-[40] md:static md:z-0' + (IS_DEV ? ' env-dev' : ''),
         'flex flex-col overflow-hidden',
         'transition-all duration-300',
         'bg-[#FAF5EE] dark:bg-[#0a0a0a]',
@@ -267,8 +268,14 @@ const Sidebar = ({
                             (showLabels ? 'opacity-100 w-auto' : 'opacity-0 w-0 pointer-events-none')
                         }
                     >
-                        <div className="font-extrabold text-sm text-stone-800 dark:text-white leading-tight">Pustaka</div>
-                        <div className="text-[10px] text-stone-400 dark:text-white/30 leading-tight">v1.0.0</div>
+                        <div className="font-extrabold text-sm text-stone-800 dark:text-white leading-tight">{APP_NAME_DISPLAY}</div>
+                        <div className="text-[10px] text-stone-400 dark:text-white/30 leading-tight">
+                            {IS_DEV ? (
+                                <span className="font-black tracking-wide">v1.0.0 · <span className="text-red-600 dark:text-red-400">DEVELOPMENT</span></span>
+                            ) : (
+                                <span>v1.0.0</span>
+                            )}
+                        </div>
                     </div>
                 </div>
 

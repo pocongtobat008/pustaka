@@ -612,3 +612,16 @@ input::-webkit-contacts-auto-fill-button {
     display: none !important;
   }
 }
+
+/* ── ENV indicator: garis merah di atas layar saat berjalan di DEV (tidak ada di prod) ── */
+.env-dev-root::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #dc2626, #f97316, #dc2626);
+    z-index: 9999;
+    pointer-events: none;
+}

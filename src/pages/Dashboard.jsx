@@ -44,6 +44,7 @@ import QueueStatus from '../components/ui/QueueStatus';
 import WarehouseMap from '../components/WarehouseMap';
 import TaxAnalytics from '../components/TaxAnalytics';
 import { API_URL } from '../services/database';
+import { APP_NAME_DISPLAY, IS_DEV } from '../config/appEnv';
 import { parseApiError } from '../utils/errorHandler';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -396,7 +397,7 @@ export default function Dashboard({
                             {getGreeting()}, <span className="text-blue-600">{currentUser?.name?.split(' ')[0] || 'User'}</span>
                         </h1>
                         <p className="text-lg text-stone-500 dark:text-white/40 font-medium max-w-xl leading-relaxed">
-                            {text.welcome}<span className="font-bold text-blue-500">Pustaka</span>. {text.makeProductive}
+                            {text.welcome}<span className={IS_DEV ? 'font-bold text-red-500' : 'font-bold text-blue-500'}>{APP_NAME_DISPLAY}</span>. {text.makeProductive}
                         </p>
                     </div>
 
