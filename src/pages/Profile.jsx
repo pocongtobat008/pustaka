@@ -29,6 +29,8 @@ export default function Profile({ currentUser, onUpdateProfile }) {
             newPassword: 'New Password',
             confirmNewPassword: 'Confirm New Password',
             saveChanges: 'Save Changes',
+            emailLabel: 'Email',
+            optional: 'optional',
         }
         : {
             mismatch: 'Konfirmasi password tidak cocok',
@@ -51,9 +53,12 @@ export default function Profile({ currentUser, onUpdateProfile }) {
             newPassword: 'Password Baru',
             confirmNewPassword: 'Konfirmasi Password Baru',
             saveChanges: 'Simpan Perubahan',
+            emailLabel: 'Email',
+            optional: 'opsional',
         };
 
     const [name, setName] = useState(currentUser?.name || '');
+    const [email, setEmail] = useState(currentUser?.email || '');
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -80,6 +85,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                 },
                 body: JSON.stringify({
                     name,
+                    email,
                     currentPassword: newPassword ? currentPassword : null,
                     newPassword: newPassword || null
                 })
@@ -131,7 +137,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
             <SummaryRow cards={[
                 { title: isEnglish ? 'Role' : 'Peran', value: currentUser?.role || '-', icon: ShieldCheck, gradient: 'from-blue-500 to-blue-600', valueClass: 'text-lg' },
                 { title: isEnglish ? 'Department' : 'Departemen', value: currentUser?.department || '-', icon: Building2, gradient: 'from-sky-500 to-blue-600', valueClass: 'text-lg' },
-                { title: isEnglish ? 'Username' : 'Username', value: currentUser?.username || '-', icon: AtSign, gradient: 'from-blue-500 to-fuchsia-600', valueClass: 'text-lg' },
+                { title: isEnglish ? 'Email' : 'Email', value: currentUser?.email || '-', icon: AtSign, gradient: 'from-blue-500 to-fuchsia-600', valueClass: 'text-lg' },
                 { title: isEnglish ? 'Account Status' : 'Status Akun', value: isEnglish ? 'Active' : 'Aktif', icon: BadgeCheck, gradient: 'from-emerald-500 to-teal-600', valueClass: 'text-lg' },
             ]} />
 
@@ -177,6 +183,10 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                                     <span className="text-stone-500 dark:text-white/40">{text.department}</span>
                                     <span className="font-bold dark:text-white">{currentUser?.department || '-'}</span>
                                 </div>
+                                <div className="flex items-center justify-between text-sm p-3 bg-white/70 dark:bg-[#0d0d0d]/50 backdrop-blur-xl rounded-xl border border-stone-100 dark:border-white/[0.06]">
+                                    <span className="text-stone-500 dark:text-white/40">{text.emailLabel}</span>
+                                    <span className="font-bold dark:text-white truncate max-w-[140px]" title={currentUser?.email || ''}>{currentUser?.email || '-'}</span>
+                                </div>
                             </div>
                         </div>
                     </Card>
@@ -208,6 +218,21 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                                         required
                                     />
                                     <User className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-blue-500 transition-colors" size={20} />
+                                </div>
+                            </div>
+                            <div className="group">
+                                <label className="block text-sm font-bold text-[#A3AED0] dark:text-white/40 mb-2 transition-colors group-focus-within:text-blue-500 uppercase tracking-wider">
+                                    {text.emailLabel} <span className="text-stone-300 dark:text-white/20 normal-case text-xs">({text.optional})</span>
+                                </label>
+                                <div className="relative group-focus-within:scale-[1.01] transition-transform duration-300">
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        className="w-full pl-4 pr-10 py-4 bg-white/60 dark:bg-[#0d0d0d]/50 backdrop-blur-xl border border-stone-200 dark:border-white/[0.06] rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all dark:text-white font-semibold"
+                                        placeholder="email@contoh.com"
+                                    />
+                                    <AtSign className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-blue-500 transition-colors" size={20} />
                                 </div>
                             </div>
                         </div>

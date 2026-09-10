@@ -79,6 +79,7 @@ export const userUpdateSchema = z.object({
 
 export const profileUpdateSchema = z.object({
     name: z.string().min(1, 'name is required').optional(),
+    email: z.string().optional(),
     password: z.string().min(1, 'password cannot be empty').optional(),
     currentPassword: z.string().min(1, 'currentPassword cannot be empty').optional()
 }).refine((data) => !(data.password && !data.currentPassword), {
