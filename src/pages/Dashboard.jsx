@@ -36,7 +36,7 @@ const MOTIVATION_QUOTES = {
     'Disiplin adalah memilih antara apa yang kamu inginkan sekarang dan yang paling kamu inginkan.'
   ]
 };
-import { Grid3x3, ScanLine, History, PieChart, FileText, FileDigit, ChevronDown, ChevronUp, ArrowRight, ArrowUpRight, Package, Truck, Boxes, Download, X, CheckCircle2, FileSearch, FolderOpen, Users, Sparkles, Clock, Eye, Info, MessageSquare, BookOpen, FileCheck, ClipboardCheck, ChevronLeft, ChevronRight, User, RefreshCw } from 'lucide-react';
+import { Grid3x3, ScanLine, History, PieChart, FileText, FileDigit, ChevronDown, ChevronUp, ArrowRight, Package, Truck, Boxes, Download, X, CheckCircle2, FolderOpen, Sparkles, Clock, Eye, MessageSquare, BookOpen, FileCheck, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
 import { Card, SummaryRow } from '../components/ui/Card';
 import { Card as ShadCard, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
 import { Badge } from '../components/ui/badge';
@@ -630,11 +630,11 @@ export default function Dashboard({
                 )}
             </div>
 
-            {/* ===== BENTO GRID DASHBOARD ===== */}
-            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-5 auto-rows-min">
+            {/* ===== DASHBOARD CARD GRID ===== */}
+            <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 sm:gap-5">
 
-                {/* 1. Main Storage Command Center - Jumbo Bento Card */}
-                <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }} viewport={{ once: true }} className="md:col-span-4 lg:col-span-4 lg:row-span-2 group">
+                {/* 1. Main Storage Command Center - Wide Card (spans 4 cols) */}
+                <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }} viewport={{ once: true }} className="lg:col-span-4 group">
                     <ShadCard className="h-full relative overflow-hidden border-stone-200/50 bg-white/60 dark:bg-[#0d0d0d]/40 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-500 flex flex-col justify-between">
                         <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-[80px] group-hover:bg-blue-500/20 transition-all duration-700" />
                         <CardHeader className="pb-2">
@@ -666,16 +666,13 @@ export default function Dashboard({
                                 <button onClick={() => setActiveTab('documents')} className="flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-xs font-bold text-stone-700 transition-all hover:bg-stone-50 dark:border-white/[0.06] dark:bg-[#0d0d0d] dark:text-white/80 dark:hover:bg-white/[0.06] active:scale-95">
                                     {text.viewDocuments}
                                 </button>
-                                <button onClick={() => setActiveTab('tax-summary')} className="flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-xs font-bold text-stone-700 transition-all hover:bg-stone-50 dark:border-white/[0.06] dark:bg-[#0d0d0d] dark:text-white/80 dark:hover:bg-white/[0.06] active:scale-95">
-                                    {text.taxSummaryTab}
-                                </button>
                             </div>
                         </CardContent>
                     </ShadCard>
                 </motion.div>
 
-                {/* 2. OCR Pipeline - Tall Bento Card */}
-                <motion.div initial={{ opacity: 0, x: 16 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.1 }} viewport={{ once: true }} className="md:col-span-2 lg:col-span-2 lg:row-span-2">
+                {/* 2. OCR Pipeline - Tall Card (spans 2 cols, same height as Storage) */}
+                <motion.div initial={{ opacity: 0, x: 16 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.1 }} viewport={{ once: true }} className="lg:col-span-2 group">
                     <ShadCard className="h-full bg-gradient-to-b from-slate-900 to-slate-950 text-white border-0 shadow-xl flex flex-col justify-between">
                         <CardHeader className="pb-0">
                             <div className="flex items-center justify-between">
@@ -707,17 +704,17 @@ export default function Dashboard({
                     </ShadCard>
                 </motion.div>
 
-                {/* 4. Recent Docs - Compact List */}
-                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} viewport={{ once: true }} className="md:col-span-2 lg:col-span-3">
-                    <ShadCard className="h-full border-stone-200/60 bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-md hover:shadow-lg transition-shadow">
+                {/* 3. Recent Documents - Card (spans 2 cols) */}
+                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }} viewport={{ once: true }} className="lg:col-span-2 group">
+                    <ShadCard className="h-full border-stone-200/60 bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-md hover:shadow-lg transition-shadow flex flex-col">
                         <CardHeader className="pb-3 flex flex-row items-center justify-between">
                             <CardTitle className="flex items-center gap-2 text-base font-bold"><FileText className="text-blue-500" size={18} /> {text.recentDocs}</CardTitle>
                             <button onClick={() => setActiveTab('documents')} className="text-xs font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 transition-colors">Lihat Semua</button>
                         </CardHeader>
-                        <CardContent className="space-y-3 pb-6">
-                            {docList.slice(0, 3).map((doc) => (
-                                <button key={doc.id} onClick={() => handleViewDoc(doc)} className="group flex w-full items-center gap-3 rounded-2xl border border-transparent hover:border-stone-200 bg-transparent hover:bg-white p-2 text-left transition-all dark:hover:border-white/[0.1] dark:hover:bg-white/[0.05] shadow-none hover:shadow-sm">
-                                    <div className="rounded-xl bg-stone-100 p-2.5 text-stone-500 group-hover:bg-blue-50 group-hover:text-blue-600 dark:bg-[#0d0d0d] dark:text-white/40 dark:group-hover:bg-blue-900/30 dark:group-hover:text-blue-400 transition-colors">
+                        <CardContent className="flex-1 space-y-3 pb-2 overflow-y-auto">
+                            {docList.slice(0, 4).map((doc) => (
+                                <button key={doc.id} onClick={() => handleViewDoc(doc)} className="group flex w-full items-center gap-3 rounded-xl border border-transparent hover:border-stone-200 bg-transparent hover:bg-white p-2.5 text-left transition-all dark:hover:border-white/[0.1] dark:hover:bg-white/[0.05] shadow-none hover:shadow-sm">
+                                    <div className="rounded-xl bg-stone-100 p-2.5 text-stone-500 group-hover:bg-blue-50 group-hover:text-blue-600 dark:bg-[#0d0d0d] dark:text-white/40 dark:group-hover:bg-blue-900/30 dark:group-hover:text-blue-400 transition-colors flex-shrink-0">
                                         {doc.type?.includes('pdf') ? <FileDigit size={18} /> : <FileText size={18} />}
                                     </div>
                                     <div className="min-w-0 flex-1">
@@ -730,105 +727,95 @@ export default function Dashboard({
                         </CardContent>
                     </ShadCard>
                 </motion.div>
-            </div>
 
-
-
-            <div className="grid grid-cols-1 gap-6">
-                <QueueStatus />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card>
-                    <h3 className="font-bold mb-4 text-stone-900 dark:text-white flex items-center gap-2">
-                        <PieChart size={20} className="text-blue-500" /> {text.storageDistribution}
-                    </h3>
-                    <div className="space-y-4">
-                        <div className="w-full bg-stone-100 dark:bg-[#0d0d0d] rounded-full h-6 overflow-hidden flex shadow-inner">
-                            <div className="bg-emerald-500 h-full transition-all duration-500" style={{ width: `${((stats?.stored || 0) / (TOTAL_SLOTS || 1)) * 100}%` }} title={`Tersimpan: ${stats?.stored || 0}`}></div>
-                            <div className="bg-amber-500 h-full transition-all duration-500" style={{ width: `${((stats?.borrowed || 0) / (TOTAL_SLOTS || 1)) * 100}%` }} title={`Dipinjam: ${stats?.borrowed || 0}`}></div>
-                            <div className="bg-blue-500 h-full transition-all duration-500" style={{ width: `${((stats?.audit || 0) / (TOTAL_SLOTS || 1)) * 100}%` }} title={`Audit: ${stats?.audit || 0}`}></div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4 text-sm">
-                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500"></div><span className="text-stone-600 dark:text-white/40">{text.stored} ({stats?.stored || 0})</span></div>
-                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-amber-500"></div><span className="text-stone-600 dark:text-white/40">{text.borrowed} ({stats?.borrowed || 0})</span></div>
-                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-blue-500"></div><span className="text-stone-600 dark:text-white/40">{text.audit} ({stats?.audit || 0})</span></div>
-                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-stone-200 dark:bg-[#111]"></div><span className="text-stone-600 dark:text-white/40">{text.empty} ({stats?.empty || 0})</span></div>
-                        </div>
-                    </div>
-                </Card>
-
-                <Card>
-                    <h3 className="font-bold mb-4 text-stone-900 dark:text-white flex items-center gap-2">
-                        <FileText size={20} className="text-blue-500" /> {text.recentDocs}
-                    </h3>
-                    <div className="space-y-3">
-                        {docList.slice(0, 3).map(doc => (
-                            <div key={doc.id} className="flex items-center gap-3 p-2 hover:bg-stone-50 dark:hover:bg-white/[0.05] rounded-lg transition-colors cursor-pointer" onClick={() => handleViewDoc(doc)}>
-                                <div className="w-10 h-10 rounded bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-500">
-                                    {doc.type?.includes('pdf') ? <FileDigit size={20} /> : <FileText size={20} />}
+                {/* 4. Storage Distribution - Card (spans 3 cols) */}
+                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} viewport={{ once: true }} className="lg:col-span-3 group">
+                    <ShadCard className="h-full border-stone-200/60 bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-md hover:shadow-lg transition-shadow flex flex-col">
+                        <CardHeader className="pb-4">
+                            <CardTitle className="flex items-center gap-2 text-base font-bold"><PieChart className="text-blue-500" size={18} /> {text.storageDistribution}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="flex-1 flex flex-col justify-center">
+                            <div className="space-y-4">
+                                <div className="w-full bg-stone-100 dark:bg-[#0d0d0d] rounded-full h-7 overflow-hidden flex shadow-inner">
+                                    <div className="bg-emerald-500 h-full transition-all duration-500" style={{ width: `${Math.min(100, ((stats?.stored || 0) / (TOTAL_SLOTS || 1)) * 100)}%` }} title={`Tersimpan: ${stats?.stored || 0}`}></div>
+                                    <div className="bg-amber-500 h-full transition-all duration-500" style={{ width: `${Math.min(100, ((stats?.borrowed || 0) / (TOTAL_SLOTS || 1)) * 100)}%` }} title={`Dipinjam: ${stats?.borrowed || 0}`}></div>
+                                    <div className="bg-blue-500 h-full transition-all duration-500" style={{ width: `${Math.min(100, ((stats?.audit || 0) / (TOTAL_SLOTS || 1)) * 100)}%` }} title={`Audit: ${stats?.audit || 0}`}></div>
                                 </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="font-medium text-stone-900 dark:text-white truncate text-sm">{doc.title}</div>
-                                    <div className="text-xs text-stone-500 dark:text-white/40">{new Date(doc.uploadDate).toLocaleDateString()} • {doc.size}</div>
+                                <div className="grid grid-cols-4 gap-4 text-sm">
+                                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500"></div><span className="text-stone-600 dark:text-white/40">{text.stored} ({stats?.stored || 0})</span></div>
+                                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-amber-500"></div><span className="text-stone-600 dark:text-white/40">{text.borrowed} ({stats?.borrowed || 0})</span></div>
+                                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-blue-500"></div><span className="text-stone-600 dark:text-white/40">{text.audit} ({stats?.audit || 0})</span></div>
+                                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-stone-200 dark:bg-[#111]"></div><span className="text-stone-600 dark:text-white/40">{text.empty} ({stats?.empty || 0})</span></div>
                                 </div>
                             </div>
-                        ))}
-                        {docList.length === 0 && <p className="text-sm text-stone-500 italic">{text.noDocuments}</p>}
-                    </div>
-                </Card>
+                        </CardContent>
+                    </ShadCard>
+                </motion.div>
+
+                {/* 5. Queue Status - Card (spans 3 cols) */}
+                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.4 }} viewport={{ once: true }} className="lg:col-span-3 group">
+                    <QueueStatus />
+                </motion.div>
             </div>
 
-            <Card className="max-h-[400px] overflow-y-auto relative p-0 sm:p-0" tabIndex={0} aria-label={text.auditLog}>
-                <div className="sticky top-0 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl z-10 p-6 pb-2 border-b border-white/20 dark:border-white/10">
-                    <h3 className="font-bold text-stone-900 dark:text-white flex items-center gap-2">
-                        <History size={20} className="text-blue-500" /> {text.auditLog}
-                    </h3>
-                </div>
-                <div className="p-6 pt-2 space-y-3">
-                    {logs.map(log => (
-                        <div key={log.id} className="border-b border-stone-100 dark:border-white/[0.06] pb-2">
-                            <div
-                                className="flex justify-between text-sm cursor-pointer hover:bg-stone-50 dark:hover:bg-white/[0.05]/50 p-2 rounded-lg transition-colors"
-                                onClick={() => toggleLog(log.id)}
-                            >
-                                <div>
-                                    <div className="flex items-center gap-2">
-                                        <span className="font-semibold text-blue-600 dark:text-blue-400">{log.action}</span>
-                                        {log.oldValue && <span className="text-[10px] bg-amber-100 text-amber-600 px-1.5 py-0.5 rounded border border-amber-200">{text.auditBadge}</span>}
+            {/* Activity Log - Full width card at bottom */}
+            <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.5 }} viewport={{ once: true }}>
+                <ShadCard className="border-stone-200/60 bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-md hover:shadow-lg transition-shadow">
+                    <CardHeader className="pb-4">
+                        <CardTitle className="flex items-center gap-2 text-base font-bold"><History className="text-blue-500" size={18} /> {text.auditLog}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-2">
+                        <div className="max-h-[350px] overflow-y-auto space-y-2">
+                            {logs.map(log => (
+                                <div key={log.id} className="border-b border-stone-100 dark:border-white/[0.06] pb-2 last:border-b-0">
+                                    <div
+                                        className="flex justify-between text-sm cursor-pointer hover:bg-stone-50 dark:hover:bg-white/[0.05]/50 p-3 rounded-lg transition-colors"
+                                        onClick={() => toggleLog(log.id)}
+                                    >
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-2 flex-wrap">
+                                                <span className="font-semibold text-blue-600 dark:text-blue-400">{log.action}</span>
+                                                {log.oldValue && <span className="text-[10px] bg-amber-100 text-amber-600 px-1.5 py-0.5 rounded border border-amber-200">{text.auditBadge}</span>}
+                                            </div>
+                                            <p className="text-stone-500 mt-0.5">{log.details}</p>
+                                            <div className="text-[10px] text-stone-400 flex items-center gap-1 mt-1">
+                                                <span>{log.user || text.system}</span> • <span>{new Date(log.timestamp).toLocaleString()}</span>
+                                            </div>
+                                        </div>
+                                        <div className="text-stone-400 flex items-center flex-shrink-0 ml-3">
+                                            {expandedLogId === log.id ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                                        </div>
                                     </div>
-                                    <p className="text-stone-500">{log.details}</p>
-                                    <div className="text-[10px] text-stone-400 flex items-center gap-1 mt-1">
-                                        <span>{log.user || text.system}</span> • <span>{new Date(log.timestamp).toLocaleString()}</span>
-                                    </div>
-                                </div>
-                                <div className="text-stone-400 flex items-center">
-                                    {expandedLogId === log.id ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                                </div>
-                            </div>
 
-                            {expandedLogId === log.id && (log.oldValue || log.newValue) && (
-                                <div className="mt-2 text-xs bg-stone-50 dark:bg-[#0d0d0d]/50 p-3 rounded-lg border border-stone-200 dark:border-white/[0.06] font-mono animate-in slide-in-from-top-1">
-                                    <div className="grid grid-cols-1 gap-2">
-                                        {log.oldValue && (
-                                            <div className="bg-red-50 dark:bg-red-900/10 p-2 rounded border border-red-100 dark:border-red-900/20 text-red-700 dark:text-red-400 overflow-x-auto">
-                                                <div className="font-bold mb-1 border-b border-red-200 dark:border-red-900/30 pb-1">{text.before}</div>
-                                                <pre className="whitespace-pre-wrap">{log.oldValue.startsWith('{') ? JSON.stringify(JSON.parse(log.oldValue), null, 2) : log.oldValue}</pre>
+                                    {expandedLogId === log.id && (log.oldValue || log.newValue) && (
+                                        <div className="mt-2 text-xs bg-stone-50 dark:bg-[#0d0d0d]/50 p-3 rounded-lg border border-stone-200 dark:border-white/[0.06] font-mono animate-in slide-in-from-top-1">
+                                            <div className="grid grid-cols-1 gap-2">
+                                                {log.oldValue && (
+                                                    <div className="bg-red-50 dark:bg-red-900/10 p-2 rounded border border-red-100 dark:border-red-900/20 text-red-700 dark:text-red-400 overflow-x-auto">
+                                                        <div className="font-bold mb-1 border-b border-red-200 dark:border-red-900/30 pb-1">{text.before}</div>
+                                                        <pre className="whitespace-pre-wrap">{log.oldValue.startsWith('{') ? JSON.stringify(JSON.parse(log.oldValue), null, 2) : log.oldValue}</pre>
+                                                    </div>
+                                                )}
+                                                {log.newValue && (
+                                                    <div className="bg-emerald-50 dark:bg-emerald-900/10 p-2 rounded border border-emerald-100 dark:border-emerald-900/20 text-emerald-700 dark:text-emerald-400 overflow-x-auto">
+                                                        <div className="font-bold mb-1 border-b border-emerald-200 dark:border-emerald-900/30 pb-1">{text.after}</div>
+                                                        <pre className="whitespace-pre-wrap">{log.newValue.startsWith('{') ? JSON.stringify(JSON.parse(log.newValue), null, 2) : log.newValue}</pre>
+                                                    </div>
+                                                )}
                                             </div>
-                                        )}
-                                        {log.newValue && (
-                                            <div className="bg-emerald-50 dark:bg-emerald-900/10 p-2 rounded border border-emerald-100 dark:border-emerald-900/20 text-emerald-700 dark:text-emerald-400 overflow-x-auto">
-                                                <div className="font-bold mb-1 border-b border-emerald-200 dark:border-emerald-900/30 pb-1">{text.after}</div>
-                                                <pre className="whitespace-pre-wrap">{log.newValue.startsWith('{') ? JSON.stringify(JSON.parse(log.newValue), null, 2) : log.newValue}</pre>
-                                            </div>
-                                        )}
-                                    </div>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                            {logs.length === 0 && (
+                                <div className="text-center py-8">
+                                    <p className="text-sm text-stone-400 italic">{text.noActivity}</p>
                                 </div>
                             )}
                         </div>
-                    ))}
-                </div>
-            </Card>
+                    </CardContent>
+                </ShadCard>
+            </motion.div>
         </div>
     );
 }
