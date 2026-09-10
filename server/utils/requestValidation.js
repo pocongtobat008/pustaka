@@ -64,7 +64,8 @@ export const userCreateSchema = z.object({
     password: z.string().min(1, 'password is required'),
     name: z.string().min(1, 'name is required'),
     role: z.string().min(1, 'role is required'),
-    department: z.string().optional()
+    department: z.string().optional(),
+    email: z.string().optional()
 }).passthrough();
 
 export const userUpdateSchema = z.object({
@@ -72,7 +73,8 @@ export const userUpdateSchema = z.object({
     password: z.preprocess((v) => (v === '' || v == null ? undefined : v), z.string().min(1).optional()),
     name: z.string().min(1).optional(),
     role: z.string().min(1).optional(),
-    department: z.string().optional()
+    department: z.string().optional(),
+    email: z.string().optional()
 }).passthrough();
 
 export const profileUpdateSchema = z.object({

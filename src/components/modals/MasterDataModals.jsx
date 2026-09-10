@@ -47,6 +47,16 @@ export default function MasterDataModals({
                             placeholder="Nama lengkap user"
                         />
                     </div>
+                    <div>
+                        <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1.5 uppercase tracking-wider">Email <span className="text-stone-300 dark:text-white/20 normal-case">(opsional)</span></label>
+                        <input
+                            type="email"
+                            value={userForm.email || ''}
+                            onChange={e => setUserForm({ ...userForm, email: e.target.value })}
+                            className="w-full px-4 py-3 border-0 bg-white/50 dark:bg-[#0d0d0d]/50 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white shadow-inner placeholder:text-stone-400 font-bold"
+                            placeholder="email@contoh.com"
+                        />
+                    </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-xs font-bold text-stone-500 dark:text-white/40 mb-1.5 uppercase tracking-wider">Role</label>

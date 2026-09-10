@@ -451,7 +451,7 @@ export default function App() {
   const [masterTab, setMasterTab] = useState('users');
   const [editingRole, setEditingRole] = useState(null);
   const [roleForm, setRoleForm] = useState({ name: '', permissions: {} });
-  const [userForm, setUserForm] = useState({ id: null, username: '', password: '', name: '', role: 'staff', department: '' });
+  const [userForm, setUserForm] = useState({ id: null, username: '', password: '', name: '', role: 'staff', department: '', email: '' });
   const [deptForm, setDeptForm] = useState({ id: null, name: '' });
 
   const [showTaxForm, setShowTaxForm] = useState(false);
@@ -2447,7 +2447,7 @@ export default function App() {
   // --- MASTER DATA HANDLERS ---
 
   const handleCreateUser = () => {
-    setUserForm({ id: null, username: '', password: '', name: '', role: 'staff', department: '' });
+    setUserForm({ id: null, username: '', password: '', name: '', role: 'staff', department: '', email: '' });
     setModalTab('user-create');
     setIsModalOpen(true);
   };
