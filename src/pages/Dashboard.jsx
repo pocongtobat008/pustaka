@@ -36,13 +36,12 @@ const MOTIVATION_QUOTES = {
     'Disiplin adalah memilih antara apa yang kamu inginkan sekarang dan yang paling kamu inginkan.'
   ]
 };
-import { Grid3x3, ScanLine, History, PieChart, FileText, FileDigit, ChevronDown, ChevronUp, ArrowRight, ArrowUpRight, Package, Truck, Boxes, FileBarChart, Download, X, CheckCircle2, FileSearch, FolderOpen, Users, Sparkles, Clock, Eye, Info, MessageSquare, BookOpen, FileCheck, ClipboardCheck, ChevronLeft, ChevronRight, User, RefreshCw } from 'lucide-react';
+import { Grid3x3, ScanLine, History, PieChart, FileText, FileDigit, ChevronDown, ChevronUp, ArrowRight, ArrowUpRight, Package, Truck, Boxes, Download, X, CheckCircle2, FileSearch, FolderOpen, Users, Sparkles, Clock, Eye, Info, MessageSquare, BookOpen, FileCheck, ClipboardCheck, ChevronLeft, ChevronRight, User, RefreshCw } from 'lucide-react';
 import { Card, SummaryRow } from '../components/ui/Card';
 import { Card as ShadCard, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
 import { Badge } from '../components/ui/badge';
 import QueueStatus from '../components/ui/QueueStatus';
 import WarehouseMap from '../components/WarehouseMap';
-import TaxAnalytics from '../components/TaxAnalytics';
 import { API_URL } from '../services/database';
 import { APP_NAME_DISPLAY, IS_DEV } from '../config/appEnv';
 import { parseApiError } from '../utils/errorHandler';
@@ -60,8 +59,7 @@ export default function Dashboard({
     setActiveInvTab,
     handleDownload,
     handleDownloadInvoice,
-    taxSummaries = [],
-    taxAudits = [],
+
     externalItems = [],
     currentUser,
     onOpenLanding,
@@ -105,11 +103,6 @@ export default function Dashboard({
             available: 'Available',
             openInventory: 'Open Inventory',
             viewDocuments: 'View Documents',
-            taxSummaryTab: 'Tax Summary',
-            taxControl: 'Tax Control',
-            taxControlDesc: 'Audit status and compliance reporting.',
-            auditRunning: 'Active Audits',
-            taxSummaryCount: 'Tax Summary',
             ocrPipeline: 'OCR Pipeline',
             ocrDesc: 'Real-time OCR queue.',
             ocrActive: 'Active',
@@ -174,11 +167,6 @@ export default function Dashboard({
             available: 'Available',
             openInventory: 'Buka Inventory',
             viewDocuments: 'Lihat Documents',
-            taxSummaryTab: 'Tax Summary',
-            taxControl: 'Tax Control',
-            taxControlDesc: 'Status audit dan laporan kepatuhan.',
-            auditRunning: 'Audit Berjalan',
-            taxSummaryCount: 'Tax Summary',
             ocrPipeline: 'OCR Pipeline',
             ocrDesc: 'Antrian OCR realtime.',
             ocrActive: 'Aktif',
@@ -217,8 +205,6 @@ export default function Dashboard({
     const docList = Array.isArray(propDocList) ? propDocList : [];
     const logs = Array.isArray(propLogs) ? propLogs : [];
     const docStats = propDocStats || { totalSizeMB: 0, totalDocs: 0, totalRevisions: 0 };
-    const safeTaxSummaries = Array.isArray(taxSummaries) ? taxSummaries : [];
-    const safeTaxAudits = Array.isArray(taxAudits) ? taxAudits : [];
 
     const [expandedLogId, setExpandedLogId] = useState(null);
     const [semanticQuery, setSemanticQuery] = useState('');
@@ -364,10 +350,9 @@ export default function Dashboard({
             failed,
             usedSlots,
             totalSlots,
-            occupancyPercent: Number(((usedSlots / totalSlots) * 100).toFixed(0)),
-            activeAudits: (Array.isArray(taxAudits) ? taxAudits.filter(a => a.status !== 'Selesai').length : 0)
+            occupancyPercent: Number(((usedSlots / totalSlots) * 100).toFixed(0))
         };
-    }, [ocrStats, stats, TOTAL_SLOTS, taxAudits]);
+    }, [ocrStats, stats, TOTAL_SLOTS]);
 
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
@@ -493,21 +478,16 @@ export default function Dashboard({
                                         <div className={`p-2 rounded-lg 
                                             ${doc.matchType === 'invoice' ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400' :
                                                 doc.matchType === 'external_item' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400' :
-                                                    doc.matchType === 'tax_summary' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
-                                                        doc.matchType === 'tax_monitoring' ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400' :
-                                                            doc.matchType === 'approval' ? 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400' :
-                                                                doc.matchType === 'pustaka' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
-                                                                    doc.matchType === 'note' ? 'bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400' :
-                                                                        doc.matchType === 'tax_object' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
-                                                                            doc.matchType === 'inventory' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
-                                                                                'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'}`}>
+                                                    doc.matchType === 'approval' ? 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400' :
+                                                        doc.matchType === 'pustaka' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
+                                                            doc.matchType === 'note' ? 'bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400' :
+                                                                doc.matchType === 'inventory' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
+                                                                    'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'}`}>
                                             {doc.matchType === 'invoice' ? <Package size={20} /> :
                                                 doc.matchType === 'external_item' ? <Truck size={20} /> :
-                                                    doc.matchType === 'tax_summary' ? <FileBarChart size={20} /> :
-                                                        doc.matchType === 'tax_monitoring' ? <ClipboardCheck size={20} /> : doc.matchType === 'approval' ? <FileCheck size={20} /> : doc.matchType === 'pustaka' ? <BookOpen size={20} /> : doc.matchType === 'note' ? <MessageSquare size={20} /> :
-                                                            doc.matchType === 'tax_object' ? <User size={20} /> :
-                                                                doc.matchType === 'inventory' ? <Grid3x3 size={20} /> :
-                                                                    (doc.type?.includes('pdf') ? <FileDigit size={20} /> : <FileText size={20} />)}
+                                                    doc.matchType === 'approval' ? <FileCheck size={20} /> : doc.matchType === 'pustaka' ? <BookOpen size={20} /> : doc.matchType === 'note' ? <MessageSquare size={20} /> :
+                                                        doc.matchType === 'inventory' ? <Grid3x3 size={20} /> :
+                                                            (doc.type?.includes('pdf') ? <FileDigit size={20} /> : <FileText size={20} />)}
                                         </div>
                                         <span className={`text-xs font-bold px-2 py-1 rounded-full ${doc.score > 0.3 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-stone-100 text-stone-600 dark:bg-[#0d0d0d] dark:text-white/40'}`}>
                                             {(doc.score * 100).toFixed(0)}% Match
@@ -561,16 +541,10 @@ export default function Dashboard({
                                                 } else if (doc.matchType === 'external_item') {
                                                     setActiveTab('inventory');
                                                     setActiveInvTab('external');
-                                                } else if (doc.matchType === 'tax_summary') {
-                                                    setActiveTab('tax-summary');
-                                                } else if (doc.matchType === 'tax_monitoring') {
-                                                    setActiveTab('tax-monitoring');
                                                 } else if (doc.matchType === 'approval') {
                                                     setActiveTab('approvals');
                                                 } else if (doc.matchType === 'pustaka') {
                                                     setActiveTab('pustaka');
-                                                } else if (doc.matchType === 'tax_object') {
-                                                    setActiveTab('tax-calculation');
                                                 } else if (doc.matchType === 'note') {
                                                     if (doc.parentType === 'audit') {
                                                         setActiveTab('tax-monitoring');
@@ -588,24 +562,19 @@ export default function Dashboard({
                                             className={`w-full text-[10px] py-1 rounded-lg transition-colors font-bold flex items-center justify-center gap-1 uppercase tracking-wider
                                                 ${doc.matchType === 'invoice' ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 hover:bg-amber-100' :
                                                     doc.matchType === 'external_item' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 hover:bg-emerald-100' :
-                                                        doc.matchType === 'tax_summary' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 hover:bg-blue-100' :
-                                                            doc.matchType === 'tax_monitoring' ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 hover:bg-orange-100' :
-                                                                doc.matchType === 'approval' ? 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 hover:bg-rose-100' :
-                                                                    doc.matchType === 'pustaka' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 hover:bg-blue-100' :
-                                                                        doc.matchType === 'tax_object' ? 'bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400' :
-                                                                            doc.matchType === 'inventory' ? 'bg-stone-50 dark:bg-[#0d0d0d]/30 hover:bg-stone-100 dark:hover:bg-[#0a0a0a]/50 text-stone-600 dark:text-white/40' :
-                                                                                'bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400'}`}
+                                                        doc.matchType === 'approval' ? 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 hover:bg-rose-100' :
+                                                            doc.matchType === 'pustaka' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 hover:bg-blue-100' :
+                                                                doc.matchType === 'note' ? 'bg-teal-50 dark:bg-teal-900/20 text-teal-600 hover:bg-teal-100' :
+                                                                    doc.matchType === 'inventory' ? 'bg-stone-50 dark:bg-[#0d0d0d]/30 hover:bg-stone-100 dark:hover:bg-[#0a0a0a]/50 text-stone-600 dark:text-white/40' :
+                                                                        'bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400'}`}
                                         >
                                             {doc.matchType === 'invoice' ? `📦 ${doc.folderName}` :
                                                 doc.matchType === 'external_item' ? `🚚 ${doc.folderName}` :
-                                                    doc.matchType === 'tax_summary' ? `📊 ${doc.folderName}` :
-                                                        doc.matchType === 'tax_monitoring' ? `🔍 ${doc.folderName || text.pemeriksaan}` :
-                                                            doc.matchType === 'note' ? `💬 ${doc.folderName || text.diskusi}` :
-                                                                doc.matchType === 'approval' ? `✅ ${doc.folderName || text.approval}` :
-                                                                    doc.matchType === 'pustaka' ? `📚 ${doc.folderName || text.pustaka}` :
-                                                                        doc.matchType === 'tax_object' ? `👥 ${doc.folderName || text.databaseWp}` :
-                                                                            doc.matchType === 'inventory' ? `📦 internal: ${doc.size || 'Slot'}` :
-                                                                                `📂 ${doc.folderName || 'General'}`}
+                                                    doc.matchType === 'approval' ? `✅ ${doc.folderName || text.approval}` :
+                                                        doc.matchType === 'note' ? `💬 ${doc.folderName || text.diskusi}` :
+                                                            doc.matchType === 'pustaka' ? `📚 ${doc.folderName || text.pustaka}` :
+                                                                doc.matchType === 'inventory' ? `📦 internal: ${doc.size || 'Slot'}` :
+                                                                    `📂 ${doc.folderName || 'General'}`}
                                         </button>
                                     </div>
                                 </div>
@@ -738,33 +707,6 @@ export default function Dashboard({
                     </ShadCard>
                 </motion.div>
 
-                {/* 3. Tax Control - Wide Bento Card */}
-                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }} viewport={{ once: true }} className="md:col-span-2 lg:col-span-3">
-                    <ShadCard className="h-full border-stone-200/60 bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-md hover:shadow-lg transition-shadow">
-                        <CardHeader className="pb-4">
-                            <CardTitle className="flex items-center gap-2 text-base font-bold"><FileSearch className="text-amber-500" size={18} /> {text.taxControl}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="rounded-2xl border border-amber-100 bg-amber-50/50 p-4 dark:border-amber-900/30 dark:bg-amber-950/20 group hover:bg-amber-50 dark:hover:bg-amber-900/30 transition-colors cursor-pointer" onClick={() => setActiveTab('tax-monitoring')}>
-                                    <p className="text-[11px] font-bold text-amber-700/80 dark:text-amber-400/80 uppercase tracking-wider mb-2">{text.auditRunning}</p>
-                                    <div className="flex items-center justify-between">
-                                        <p className="text-3xl font-black text-amber-800 dark:text-amber-300">{bentoStats.activeAudits}</p>
-                                        <ArrowUpRight className="text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity" size={20} />
-                                    </div>
-                                </div>
-                                <div className="rounded-2xl border border-blue-100 bg-blue-50/50 p-4 dark:border-blue-900/30 dark:bg-blue-950/20 group hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors cursor-pointer" onClick={() => setActiveTab('tax-summary')}>
-                                    <p className="text-[11px] font-bold text-blue-700/80 dark:text-blue-400/80 uppercase tracking-wider mb-2">{text.taxSummaryCount}</p>
-                                    <div className="flex items-center justify-between">
-                                        <p className="text-3xl font-black text-blue-800 dark:text-blue-300">{taxSummaries?.length || 0}</p>
-                                        <ArrowUpRight className="text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" size={20} />
-                                    </div>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </ShadCard>
-                </motion.div>
-
                 {/* 4. Recent Docs - Compact List */}
                 <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} viewport={{ once: true }} className="md:col-span-2 lg:col-span-3">
                     <ShadCard className="h-full border-stone-200/60 bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-md hover:shadow-lg transition-shadow">
@@ -790,10 +732,7 @@ export default function Dashboard({
                 </motion.div>
             </div>
 
-            {/* TAX ANALYTICS VISUALIZATION */}
-            <div className="grid grid-cols-1 gap-6">
-                <TaxAnalytics taxSummaries={taxSummaries} taxAudits={taxAudits} />
-            </div>
+
 
             <div className="grid grid-cols-1 gap-6">
                 <QueueStatus />
