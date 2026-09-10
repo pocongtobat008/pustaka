@@ -45,8 +45,8 @@ export default function QueueStatus() {
     }
 
     return (
-        <div className="h-full flex flex-col">
-            <div className="flex items-center justify-between mb-4 relative z-10">
+        <div className="h-full bg-white/50 dark:bg-[#0d0d0d]/50 backdrop-blur-md rounded-xl border border-white/20 shadow-lg flex flex-col">
+            <div className="p-4 flex items-center justify-between mb-2 relative z-10">
                 <h2 className="text-base font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-600 dark:from-blue-400 dark:to-blue-400 flex items-center gap-2">
                     <ScanLine className="text-blue-500" size={16} /> Antrian OCR
                 </h2>
@@ -63,7 +63,7 @@ export default function QueueStatus() {
                 </div>
             ) : null}
 
-            <div className="flex-1 space-y-3 max-h-[350px] overflow-y-auto pr-1 custom-scrollbar relative z-10">
+            <div className="flex-1 space-y-3 max-h-[320px] overflow-y-auto pr-1 custom-scrollbar">
                 {/* ACTIVE JOBS */}
                 {queue.active.map(job => (
                     <div key={job.id} className="p-3 bg-blue-50/50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800/50 animate-pulse-slow">
