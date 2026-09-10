@@ -347,6 +347,112 @@
   }
 }
 
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE TABLE — horizontal scroll on mobile
+   ═══════════════════════════════════════════════════════════ */
+@layer components {
+  .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .table-scroll::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .table-scroll::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.3);
+    border-radius: 2px;
+  }
+
+  .dark .table-scroll::-webkit-scrollbar-thumb {
+    background: rgba(71, 85, 105, 0.4);
+  }
+
+  /* Touch-friendly hit targets for mobile */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Mobile-optimized card layout */
+  .mobile-card-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 640px) {
+    .mobile-card-stack {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .mobile-card-stack {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE LAYOUT HELPERS
+   ═══════════════════════════════════════════════════════════ */
+@layer utilities {
+  /* Safe area for mobile notch/home indicator */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  /* Prevent text overflow on mobile */
+  .text-truncate-mobile {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+
+  /* Hide on specific breakpoints */
+  .hidden-mobile {
+    display: block;
+  }
+
+  .hidden-tablet {
+    display: block;
+  }
+
+  @media (max-width: 767px) {
+    .hidden-mobile {
+      display: none !important;
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .hidden-tablet {
+      display: none !important;
+    }
+  }
+
+  /* Mobile font scaling */
+  @media (max-width: 640px) {
+    .text-responsive-lg {
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .text-responsive-xl {
+      font-size: 1.125rem;
+      line-height: 1.4;
+    }
+  }
+}
+
 /* Glass Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -498,4 +604,11 @@ input::-webkit-contacts-auto-fill-button {
 .group:hover .saas-tooltip {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
+}
+
+/* Hide tooltips on mobile (no hover) */
+@media (max-width: 767px) {
+  .saas-tooltip {
+    display: none !important;
+  }
 }

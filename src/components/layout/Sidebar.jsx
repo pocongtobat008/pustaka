@@ -237,7 +237,7 @@ const Sidebar = ({
     };
 
     const sidebarRootClass = [
-        'cf-sidebar fixed inset-y-0 left-0 z-50 md:static md:z-0',
+        'cf-sidebar fixed inset-y-0 left-0 z-[40] md:static md:z-0',
         'flex flex-col overflow-hidden',
         'transition-all duration-300',
         'bg-[#FAF5EE] dark:bg-[#0a0a0a]',
@@ -246,12 +246,12 @@ const Sidebar = ({
         isRail ? 'cf-rail' : 'cf-expanded',
     ].filter(Boolean).join(' ');
 
-    // Mobile positioning
-    const mobileBase = isRail ? '-translate-x-full md:translate-x-0' : 'translate-x-0';
+    // Mobile: show only when expanded (not rail)
+    const isMobileOpen = !isRail;
 
     return (
         <aside
-            className={sidebarRootClass + ' ' + mobileBase}
+            className={sidebarRootClass + (isMobileOpen ? ' mobile-open' : '')}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
