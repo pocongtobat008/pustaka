@@ -180,7 +180,7 @@ export const updateProfile = async (req, res) => {
         const data = validateRequestBody(profileUpdateSchema, req, res);
         if (!data) return;
 
-        const { name, password, currentPassword } = data;
+        const { name, email, password, currentPassword } = data;
 
         const user = await knex('users').where('id', id).first();
         if (!user) return res.status(404).json({ error: "User not found" });
@@ -194,6 +194,7 @@ export const updateProfile = async (req, res) => {
 
         const updateData = {};
         if (name !== undefined) updateData.name = name;
+        if (email !== undefined) updateData.email = email;
         if (password) {
             updateData.password = await bcrypt.hash(password, 10);
         }
