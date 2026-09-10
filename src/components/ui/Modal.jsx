@@ -36,12 +36,12 @@ export const Modal = ({ isOpen, onClose, title, children, size = 'max-w-4xl', hi
     const modalContent = (
         <div
             data-app-modal="true"
-            className={`fixed inset-0 z-[1000] flex p-4 overflow-y-auto ${center ? 'items-center justify-center' : 'items-start justify-center sm:items-center'} bg-black/50 backdrop-blur-md animate-in fade-in duration-200`}
+            className={`fixed inset-0 z-[1000] flex p-2 sm:p-4 overflow-y-auto ${center ? 'items-center justify-center' : 'items-start justify-center sm:items-center'} bg-black/50 backdrop-blur-md animate-in fade-in duration-200`}
             onClick={onClose}
         >
             <div
                 onClick={(e) => e.stopPropagation()}
-                className={`my-6 glass-card w-full ${size} ${noPadding ? 'overflow-hidden' : 'max-h-[92vh] overflow-y-auto'} rounded-3xl shadow-2xl animate-in zoom-in-95 duration-200 sm:my-0`}
+                className={`my-4 sm:my-6 glass-card w-full ${size} ${noPadding ? 'overflow-hidden' : 'max-h-[88vh] sm:max-h-[92vh] overflow-y-auto'} rounded-2xl sm:rounded-3xl shadow-2xl animate-in zoom-in-95 duration-200 sm:my-0`}
             >
                 {!hideHeader && (
                     <div className="flex justify-between items-center p-6 border-b border-white/20 dark:border-white/10 sticky top-0 bg-white/70 dark:bg-[#0d0d0d]/70 backdrop-blur-xl z-10">

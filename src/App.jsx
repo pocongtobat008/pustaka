@@ -3702,13 +3702,13 @@ export default function App() {
       {/* MOBILE OVERLAY */}
       {!isSidebarCollapsed && (
         <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-20 md:hidden animate-in fade-in duration-300"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[35] md:hidden animate-in fade-in duration-300"
           onClick={() => setIsSidebarCollapsed(true)}
         />
       )}
 
       {/* MOBILE HEADER — glass contextual */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-[#FAF5EE]/70 dark:bg-[#0a0a0a]/70 backdrop-blur-xl border-b border-white/30 dark:border-white/10 flex items-center justify-between px-4 z-20">
+      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-[#FAF5EE]/70 dark:bg-[#0a0a0a]/70 backdrop-blur-xl border-b border-white/30 dark:border-white/10 flex items-center justify-between px-4 z-[45]">
         <div className="flex items-center gap-2 min-w-0">
           <div className="cf-logo-orb w-9 h-9 rounded-xl flex items-center justify-center shadow-lg shrink-0">
             <BookOpen className="text-white" size={18} />

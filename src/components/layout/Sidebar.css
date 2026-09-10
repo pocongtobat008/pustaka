@@ -304,7 +304,7 @@
         left: 0;
         top: 0;
         bottom: 0;
-        z-index: 1000 !important;
+        z-index: 40 !important;
         background: rgba(250, 245, 238, 0.92);
         border-radius: 0 22px 22px 0;
         box-shadow: 8px 0 30px -8px rgba(100, 80, 50, 0.2) !important;
@@ -331,5 +331,28 @@
     .cf-sidebar .cf-app-name {
         opacity: 1 !important;
         pointer-events: auto !important;
+    }
+
+    /* Hide desktop-only elements on mobile */
+    .cf-sidebar .cf-lock-btn {
+        display: none !important;
+    }
+}
+
+/* ── Tablet (768–1024px): sidebar is static, not floating ── */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .cf-sidebar {
+        width: 260px !important;
+        position: static !important;
+        border-radius: 20px !important;
+    }
+
+    /* Always expanded on tablet, no rail mode */
+    .cf-rail {
+        width: 260px !important;
+    }
+
+    .cf-rail:hover {
+        width: 260px !important;
     }
 }
