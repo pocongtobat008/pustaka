@@ -672,31 +672,33 @@ export default function Dashboard({
                 </motion.div>
 
                 <motion.div initial={{ opacity: 0, x: 16 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.1 }} viewport={{ once: true }} className="lg:col-span-4 group">
-                    <ShadCard className="h-full bg-gradient-to-b from-slate-900 to-slate-950 text-white border-0 shadow-xl flex flex-col justify-between">
-                        <CardHeader className="pb-0">
+                    <ShadCard className="h-full bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 text-white border border-slate-700/50 shadow-xl flex flex-col">
+                        <CardHeader className="pb-3 pt-4">
                             <div className="flex items-center justify-between">
-                                <CardTitle className="flex items-center gap-2 text-lg font-bold"><ScanLine className="text-blue-400" size={20} /> Pipeline OCR</CardTitle>
+                                <CardTitle className="flex items-center gap-2 text-base font-bold"><ScanLine className="text-blue-400" size={18} /> {text.ocrPipeline}</CardTitle>
                                 {bentoStats.active > 0 && <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>}
                             </div>
-                            <CardDescription className="text-stone-400 font-medium">{text.ocrDesc}</CardDescription>
+                            <CardDescription className="text-stone-400 text-xs font-medium">{text.ocrDesc}</CardDescription>
                         </CardHeader>
-                        <CardContent className="mt-6 flex-1 flex flex-col justify-end space-y-3">
-                            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 flex items-center justify-between border border-white/5">
-                                <span className="text-sm font-semibold text-stone-300">{text.ocrActive}</span>
-                                <span className="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-400">{bentoStats.active}</span>
-                            </div>
-                            <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 flex items-center justify-between border border-white/5">
-                                <span className="text-sm font-semibold text-stone-400">{text.ocrWaiting}</span>
-                                <span className="text-lg font-bold text-stone-300">{bentoStats.waiting}</span>
-                            </div>
-                            <div className="grid grid-cols-2 gap-3 mt-2">
-                                <div className="bg-emerald-500/10 rounded-2xl p-3 border border-emerald-500/20">
-                                    <p className="text-[10px] text-emerald-400/80 uppercase font-bold text-center mb-1">{text.ocrSuccess}</p>
-                                    <p className="text-lg text-emerald-400 font-black text-center">{bentoStats.completed}</p>
+                        <CardContent className="flex-1 flex flex-col justify-center space-y-4 pt-2 pb-4">
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="bg-white/10 rounded-xl p-4 border border-white/10 text-center">
+                                    <p className="text-[10px] text-stone-400 uppercase font-bold tracking-wider mb-1">{text.ocrActive}</p>
+                                    <p className="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-500">{bentoStats.active}</p>
                                 </div>
-                                <div className="bg-rose-500/10 rounded-2xl p-3 border border-rose-500/20">
+                                <div className="bg-white/[0.05] rounded-xl p-4 border border-white/5 text-center">
+                                    <p className="text-[10px] text-stone-500 uppercase font-bold tracking-wider mb-1">{text.ocrWaiting}</p>
+                                    <p className="text-2xl font-bold text-stone-300">{bentoStats.waiting}</p>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="bg-emerald-500/10 rounded-xl p-3 border border-emerald-500/20">
+                                    <p className="text-[10px] text-emerald-400/80 uppercase font-bold text-center mb-1">{text.ocrSuccess}</p>
+                                    <p className="text-xl text-emerald-400 font-black text-center">{bentoStats.completed}</p>
+                                </div>
+                                <div className="bg-rose-500/10 rounded-xl p-3 border border-rose-500/20">
                                     <p className="text-[10px] text-rose-400/80 uppercase font-bold text-center mb-1">{text.ocrFailed}</p>
-                                    <p className="text-lg text-rose-400 font-black text-center">{bentoStats.failed}</p>
+                                    <p className="text-xl text-rose-400 font-black text-center">{bentoStats.failed}</p>
                                 </div>
                             </div>
                         </CardContent>
