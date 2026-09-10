@@ -145,12 +145,12 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                 </div>
             )}
 
-            <form onSubmit={handleSaveProfile} className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <form onSubmit={handleSaveProfile} className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
                 {/* Profile Overview Card */}
                 <div className="md:col-span-1 space-y-6">
                     <Card className="overflow-hidden">
                         <div className="relative h-24 bg-gradient-to-r from-blue-600 to-blue-400"></div>
-                        <div className="px-6 pb-8 -mt-12 flex flex-col items-center">
+                        <div className="px-4 sm:px-6 pb-6 sm:pb-8 -mt-10 sm:-mt-12 flex flex-col items-center">
                             <div className="relative group">
                                 <div className="w-24 h-24 rounded-full bg-white dark:bg-[#111C44] p-1 shadow-xl border-4 border-white dark:border-[#111C44] relative overflow-hidden">
                                     <div className="w-full h-full rounded-full bg-blue-50 dark:bg-blue-900 shadow-inner flex items-center justify-center">
@@ -185,7 +185,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                 {/* Edit Form Section */}
                 <div className="md:col-span-2 space-y-6">
                     {/* Basic Info */}
-                    <Card className="p-8">
+                    <Card className="p-4 sm:p-6 lg:p-8">
                         <div className="flex items-center gap-3 mb-8 border-b border-stone-50 dark:border-white/[0.06] pb-4">
                             <div className="p-2.5 bg-blue-50 dark:bg-blue-900/30 rounded-xl text-blue-600">
                                 <User size={20} />
@@ -214,7 +214,7 @@ export default function Profile({ currentUser, onUpdateProfile }) {
                     </Card>
 
                     {/* Security Info */}
-                    <Card className="p-8">
+                    <Card className="p-4 sm:p-6 lg:p-8">
                         <div className="flex items-center gap-3 mb-8 border-b border-stone-50 dark:border-white/[0.06] pb-4">
                             <div className="p-2.5 bg-amber-50 dark:bg-amber-900/30 rounded-xl text-amber-600">
                                 <Lock size={20} />

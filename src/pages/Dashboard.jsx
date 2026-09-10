@@ -371,7 +371,7 @@ export default function Dashboard({
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             {/* STARTUP STYLE GREETING SECTION */}
-            <div className="relative overflow-hidden bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white/40 dark:border-white/10 shadow-2xl shadow-blue-500/10 group">
+            <div className="relative overflow-hidden bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-[2rem] sm:rounded-[2.5rem] p-4 sm:p-6 lg:p-8 border border-white/40 dark:border-white/10 shadow-2xl shadow-blue-500/10 group">
                 <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all duration-700 pointer-events-none"></div>
                 <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all duration-700 pointer-events-none"></div>
 
@@ -392,7 +392,7 @@ export default function Dashboard({
                                 <ArrowRight size={14} className="relative z-10 group-hover:translate-x-1 transition-transform" />
                             </button>
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-black text-[#2B3674] dark:text-white tracking-tight">
+                        <h1 className="text-2xl sm:text-3xl md:text-5xl font-black text-[#2B3674] dark:text-white tracking-tight">
                             {getGreeting()}, <span className="text-blue-600">{currentUser?.name?.split(' ')[0] || 'User'}</span>
                         </h1>
                         <p className="text-lg text-stone-500 dark:text-white/40 font-medium max-w-xl leading-relaxed">
@@ -427,7 +427,7 @@ export default function Dashboard({
             </div>
 
             {/* 🔍 SEMANTIC SEARCH BAR */}
-            <div className="bg-white/50 dark:bg-[#0d0d0d]/50 backdrop-blur-xl p-6 rounded-3xl border border-white/20 shadow-xl shadow-blue-500/5 relative overflow-hidden group">
+            <div className="bg-white/50 dark:bg-[#0d0d0d]/50 backdrop-blur-xl p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-white/20 shadow-xl shadow-blue-500/5 relative overflow-hidden group">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
 
                 <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-600 dark:from-blue-400 dark:to-blue-400 mb-4 flex items-center gap-2">
@@ -661,7 +661,7 @@ export default function Dashboard({
             </div>
 
             {/* ===== BENTO GRID DASHBOARD ===== */}
-            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-5 auto-rows-min">
+            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-5 auto-rows-min">
 
                 {/* 1. Main Storage Command Center - Jumbo Bento Card */}
                 <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }} viewport={{ once: true }} className="md:col-span-4 lg:col-span-4 lg:row-span-2 group">
