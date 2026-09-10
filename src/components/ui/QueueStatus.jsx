@@ -37,15 +37,15 @@ export default function QueueStatus() {
 
     if (loading && !queue.total) {
         return (
-            <div className="flex flex-col items-center justify-center p-6 bg-white/50 dark:bg-[#0d0d0d]/50 backdrop-blur-md border border-white/20 shadow-lg h-full rounded-xl">
+            <div className="flex flex-col items-center justify-center p-6 text-stone-500">
                 <Loader2 className="w-5 h-5 animate-spin text-blue-500 mb-2" />
-                <span className="text-xs font-bold text-stone-500">Memuat Antrian OCR...</span>
+                <span className="text-xs font-bold">Memuat Antrian OCR...</span>
             </div>
         );
     }
 
     return (
-        <div className="h-full bg-white/50 dark:bg-[#0d0d0d]/50 backdrop-blur-md border border-white/20 shadow-lg rounded-xl flex flex-col overflow-hidden">
+        <div className="flex flex-col">
             <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
                 <h2 className="text-base font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-600 dark:from-blue-400 dark:to-blue-400 flex items-center gap-2">
                     <ScanLine className="text-blue-500" size={16} /> Antrian OCR
@@ -113,9 +113,9 @@ export default function QueueStatus() {
                 ))}
 
                 {queue.total === 0 && !loading && (
-                    <div className="flex flex-col items-center justify-center py-8 text-center">
-                        <div className="p-3 bg-stone-50 dark:bg-white/5 rounded-lg mb-3 text-stone-300">
-                            <CheckCircle2 size={28} />
+                    <div className="flex flex-col items-center justify-center py-6 text-center">
+                        <div className="p-3 bg-stone-50 dark:bg-white/5 rounded-lg mb-2 text-stone-300">
+                            <CheckCircle2 size={24} />
                         </div>
                         <p className="text-sm font-bold text-stone-600 dark:text-white/40">Semua Beres!</p>
                         <p className="text-[10px] text-stone-400 mt-0.5 uppercase tracking-widest font-medium">Tidak ada antrian OCR aktif</p>

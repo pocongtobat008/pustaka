@@ -752,7 +752,11 @@ export default function Dashboard({
                     </ShadCard>
                 </motion.div>
 
-                <QueueStatus />
+                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.4 }} viewport={{ once: true }} className="lg:col-span-4">
+                    <ShadCard className="h-full border-stone-200/60 bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-md hover:shadow-lg transition-shadow overflow-hidden">
+                        <QueueStatus />
+                    </ShadCard>
+                </motion.div>
 
                 {/* ROW 3: Activity Log - Full width (12 cols) */}
                 <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.5 }} viewport={{ once: true }} className="lg:col-span-12">
