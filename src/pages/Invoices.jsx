@@ -2651,7 +2651,7 @@ const Invoices = ({ currentUser, toast }) => {
                     </div>
                     <div className="grid grid-cols-1 gap-4">
                     {filteredProformas.length === 0 && (
-                        <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-10 text-center text-stone-400 border border-white/60 dark:border-white/10">
+                        <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-6 sm:p-8 lg:p-10 text-center text-stone-400 border border-white/60 dark:border-white/10">
                             Belum ada pengajuan proforma
                         </div>
                     )}
@@ -2795,7 +2795,7 @@ const Invoices = ({ currentUser, toast }) => {
                         </div>
                     </div>
                     {taxItems.length === 0 && (
-                        <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-10 text-center text-stone-400 border border-white/60 dark:border-white/10">
+                        <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-6 sm:p-8 lg:p-10 text-center text-stone-400 border border-white/60 dark:border-white/10">
                             Belum ada data proforma
                         </div>
                     )}
@@ -2973,18 +2973,18 @@ const Invoices = ({ currentUser, toast }) => {
                         const filteredCount = (showInv ? fInv.length : 0) + (showProf ? fProf.length : 0);
 
                         if (trashLoading) return (
-                            <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-10 text-center text-stone-400 border border-white/60 dark:border-white/10">
+                            <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-6 sm:p-8 lg:p-10 text-center text-stone-400 border border-white/60 dark:border-white/10">
                                 Memuat Sampah...
                             </div>
                         );
                         if (!trashData || (trashData.invoices?.length === 0 && trashData.proformas?.length === 0)) return (
-                            <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-10 text-center text-stone-400 border border-white/60 dark:border-white/10">
+                            <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-6 sm:p-8 lg:p-10 text-center text-stone-400 border border-white/60 dark:border-white/10">
                                 <Trash2 size={32} className="mx-auto mb-2 opacity-40" />
                                 Sampah kosong
                             </div>
                         );
                         if (filteredCount === 0) return (
-                            <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-10 text-center text-stone-400 border border-white/60 dark:border-white/10">
+                            <div className="bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl rounded-2xl p-6 sm:p-8 lg:p-10 text-center text-stone-400 border border-white/60 dark:border-white/10">
                                 <Search size={28} className="mx-auto mb-2 opacity-40" />
                                 Tidak ada hasil untuk "{trashSearch}"
                             </div>

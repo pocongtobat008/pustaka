@@ -137,7 +137,7 @@ const NotificationBell = ({ onOpenChannel, variant = 'floating' }) => {
                             initial={{ opacity: 0, y: 10, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                            className="absolute right-0 mt-4 w-80 bg-white/90 dark:bg-[#0d0d0d]/95 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-stone-100 dark:border-white/5 overflow-hidden z-50"
+                            className="absolute right-0 mt-4 w-80 max-w-[calc(100vw-2rem)] bg-white/90 dark:bg-[#0d0d0d]/95 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-stone-100 dark:border-white/5 overflow-hidden z-50"
                         >
                             <div className="p-6 border-b border-stone-50 dark:border-white/5 flex justify-between items-center">
                                 <h3 className="font-black text-stone-800 dark:text-white uppercase tracking-tight text-sm">Pusat Notifikasi</h3>

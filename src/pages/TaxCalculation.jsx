@@ -647,7 +647,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
             {/* IMPORT LOADING OVERLAY */}
             {isImporting && (
                 <div className="fixed inset-0 z-[200] bg-[#0a0a0a]/60 backdrop-blur-sm flex items-center justify-center animate-in fade-in duration-300">
-                    <div className="bg-white/95 dark:bg-[#0d0d0d]/95 backdrop-blur-xl p-10 rounded-[3rem] shadow-2xl flex flex-col items-center max-w-sm text-center border border-blue-100 dark:border-blue-900/50">
+                    <div className="bg-white/95 dark:bg-[#0d0d0d]/95 backdrop-blur-xl p-6 sm:p-8 lg:p-10 rounded-[2rem] sm:rounded-[3rem] shadow-2xl flex flex-col items-center max-w-sm text-center border border-blue-100 dark:border-blue-900/50">
                         <div className="relative mb-8">
                             <div className="w-24 h-24 border-4 border-blue-100 dark:border-blue-900/30 rounded-full"></div>
                             <div className="w-24 h-24 border-4 border-blue-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>

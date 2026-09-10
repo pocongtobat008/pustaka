@@ -689,7 +689,7 @@ export default function Book({ hasPermission }) {
     };
 
     const renderImportTab = () => (
-        <div className="p-8 max-w-xl mx-auto">
+        <div className="p-4 sm:p-6 lg:p-8 max-w-xl mx-auto">
             <div className="text-center mb-8">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-xl">
                     <FileSpreadsheet size={28} className="text-white" />
