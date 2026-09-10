@@ -36,13 +36,12 @@ const MOTIVATION_QUOTES = {
     'Disiplin adalah memilih antara apa yang kamu inginkan sekarang dan yang paling kamu inginkan.'
   ]
 };
-import { Grid3x3, ScanLine, History, PieChart, FileText, FileDigit, ChevronDown, ChevronUp, ArrowRight, ArrowUpRight, Package, Truck, Boxes, FileBarChart, Download, X, CheckCircle2, FileSearch, FolderOpen, Users, Sparkles, Clock, Eye, Info, MessageSquare, BookOpen, FileCheck, ClipboardCheck, ChevronLeft, ChevronRight, User, RefreshCw } from 'lucide-react';
+import { Grid3x3, ScanLine, History, PieChart, FileText, FileDigit, ChevronDown, ChevronUp, ArrowRight, Package, Truck, Boxes, Download, X, CheckCircle2, FolderOpen, Sparkles, Clock, Eye, MessageSquare, BookOpen, FileCheck, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
 import { Card, SummaryRow } from '../components/ui/Card';
 import { Card as ShadCard, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
 import { Badge } from '../components/ui/badge';
 import QueueStatus from '../components/ui/QueueStatus';
 import WarehouseMap from '../components/WarehouseMap';
-import TaxAnalytics from '../components/TaxAnalytics';
 import { API_URL } from '../services/database';
 import { APP_NAME_DISPLAY, IS_DEV } from '../config/appEnv';
 import { parseApiError } from '../utils/errorHandler';
@@ -60,8 +59,7 @@ export default function Dashboard({
     setActiveInvTab,
     handleDownload,
     handleDownloadInvoice,
-    taxSummaries = [],
-    taxAudits = [],
+
     externalItems = [],
     currentUser,
     onOpenLanding,
@@ -105,11 +103,6 @@ export default function Dashboard({
             available: 'Available',
             openInventory: 'Open Inventory',
             viewDocuments: 'View Documents',
-            taxSummaryTab: 'Tax Summary',
-            taxControl: 'Tax Control',
-            taxControlDesc: 'Audit status and compliance reporting.',
-            auditRunning: 'Active Audits',
-            taxSummaryCount: 'Tax Summary',
             ocrPipeline: 'OCR Pipeline',
             ocrDesc: 'Real-time OCR queue.',
             ocrActive: 'Active',
@@ -174,11 +167,6 @@ export default function Dashboard({
             available: 'Available',
             openInventory: 'Buka Inventory',
             viewDocuments: 'Lihat Documents',
-            taxSummaryTab: 'Tax Summary',
-            taxControl: 'Tax Control',
-            taxControlDesc: 'Status audit dan laporan kepatuhan.',
-            auditRunning: 'Audit Berjalan',
-            taxSummaryCount: 'Tax Summary',
             ocrPipeline: 'OCR Pipeline',
             ocrDesc: 'Antrian OCR realtime.',
             ocrActive: 'Aktif',
@@ -217,8 +205,6 @@ export default function Dashboard({
     const docList = Array.isArray(propDocList) ? propDocList : [];
     const logs = Array.isArray(propLogs) ? propLogs : [];
     const docStats = propDocStats || { totalSizeMB: 0, totalDocs: 0, totalRevisions: 0 };
-    const safeTaxSummaries = Array.isArray(taxSummaries) ? taxSummaries : [];
-    const safeTaxAudits = Array.isArray(taxAudits) ? taxAudits : [];
 
     const [expandedLogId, setExpandedLogId] = useState(null);
     const [semanticQuery, setSemanticQuery] = useState('');
@@ -364,10 +350,9 @@ export default function Dashboard({
             failed,
             usedSlots,
             totalSlots,
-            occupancyPercent: Number(((usedSlots / totalSlots) * 100).toFixed(0)),
-            activeAudits: (Array.isArray(taxAudits) ? taxAudits.filter(a => a.status !== 'Selesai').length : 0)
+            occupancyPercent: Number(((usedSlots / totalSlots) * 100).toFixed(0))
         };
-    }, [ocrStats, stats, TOTAL_SLOTS, taxAudits]);
+    }, [ocrStats, stats, TOTAL_SLOTS]);
 
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
@@ -493,21 +478,16 @@ export default function Dashboard({
                                         <div className={`p-2 rounded-lg 
                                             ${doc.matchType === 'invoice' ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400' :
                                                 doc.matchType === 'external_item' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400' :
-                                                    doc.matchType === 'tax_summary' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
-                                                        doc.matchType === 'tax_monitoring' ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400' :
-                                                            doc.matchType === 'approval' ? 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400' :
-                                                                doc.matchType === 'pustaka' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
-                                                                    doc.matchType === 'note' ? 'bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400' :
-                                                                        doc.matchType === 'tax_object' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
-                                                                            doc.matchType === 'inventory' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
-                                                                                'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'}`}>
+                                                    doc.matchType === 'approval' ? 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400' :
+                                                        doc.matchType === 'pustaka' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
+                                                            doc.matchType === 'note' ? 'bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400' :
+                                                                doc.matchType === 'inventory' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
+                                                                    'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'}`}>
                                             {doc.matchType === 'invoice' ? <Package size={20} /> :
                                                 doc.matchType === 'external_item' ? <Truck size={20} /> :
-                                                    doc.matchType === 'tax_summary' ? <FileBarChart size={20} /> :
-                                                        doc.matchType === 'tax_monitoring' ? <ClipboardCheck size={20} /> : doc.matchType === 'approval' ? <FileCheck size={20} /> : doc.matchType === 'pustaka' ? <BookOpen size={20} /> : doc.matchType === 'note' ? <MessageSquare size={20} /> :
-                                                            doc.matchType === 'tax_object' ? <User size={20} /> :
-                                                                doc.matchType === 'inventory' ? <Grid3x3 size={20} /> :
-                                                                    (doc.type?.includes('pdf') ? <FileDigit size={20} /> : <FileText size={20} />)}
+                                                    doc.matchType === 'approval' ? <FileCheck size={20} /> : doc.matchType === 'pustaka' ? <BookOpen size={20} /> : doc.matchType === 'note' ? <MessageSquare size={20} /> :
+                                                        doc.matchType === 'inventory' ? <Grid3x3 size={20} /> :
+                                                            (doc.type?.includes('pdf') ? <FileDigit size={20} /> : <FileText size={20} />)}
                                         </div>
                                         <span className={`text-xs font-bold px-2 py-1 rounded-full ${doc.score > 0.3 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-stone-100 text-stone-600 dark:bg-[#0d0d0d] dark:text-white/40'}`}>
                                             {(doc.score * 100).toFixed(0)}% Match
@@ -561,16 +541,10 @@ export default function Dashboard({
                                                 } else if (doc.matchType === 'external_item') {
                                                     setActiveTab('inventory');
                                                     setActiveInvTab('external');
-                                                } else if (doc.matchType === 'tax_summary') {
-                                                    setActiveTab('tax-summary');
-                                                } else if (doc.matchType === 'tax_monitoring') {
-                                                    setActiveTab('tax-monitoring');
                                                 } else if (doc.matchType === 'approval') {
                                                     setActiveTab('approvals');
                                                 } else if (doc.matchType === 'pustaka') {
                                                     setActiveTab('pustaka');
-                                                } else if (doc.matchType === 'tax_object') {
-                                                    setActiveTab('tax-calculation');
                                                 } else if (doc.matchType === 'note') {
                                                     if (doc.parentType === 'audit') {
                                                         setActiveTab('tax-monitoring');
@@ -588,24 +562,19 @@ export default function Dashboard({
                                             className={`w-full text-[10px] py-1 rounded-lg transition-colors font-bold flex items-center justify-center gap-1 uppercase tracking-wider
                                                 ${doc.matchType === 'invoice' ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 hover:bg-amber-100' :
                                                     doc.matchType === 'external_item' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 hover:bg-emerald-100' :
-                                                        doc.matchType === 'tax_summary' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 hover:bg-blue-100' :
-                                                            doc.matchType === 'tax_monitoring' ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 hover:bg-orange-100' :
-                                                                doc.matchType === 'approval' ? 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 hover:bg-rose-100' :
-                                                                    doc.matchType === 'pustaka' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 hover:bg-blue-100' :
-                                                                        doc.matchType === 'tax_object' ? 'bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400' :
-                                                                            doc.matchType === 'inventory' ? 'bg-stone-50 dark:bg-[#0d0d0d]/30 hover:bg-stone-100 dark:hover:bg-[#0a0a0a]/50 text-stone-600 dark:text-white/40' :
-                                                                                'bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400'}`}
+                                                        doc.matchType === 'approval' ? 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 hover:bg-rose-100' :
+                                                            doc.matchType === 'pustaka' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 hover:bg-blue-100' :
+                                                                doc.matchType === 'note' ? 'bg-teal-50 dark:bg-teal-900/20 text-teal-600 hover:bg-teal-100' :
+                                                                    doc.matchType === 'inventory' ? 'bg-stone-50 dark:bg-[#0d0d0d]/30 hover:bg-stone-100 dark:hover:bg-[#0a0a0a]/50 text-stone-600 dark:text-white/40' :
+                                                                        'bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400'}`}
                                         >
                                             {doc.matchType === 'invoice' ? `📦 ${doc.folderName}` :
                                                 doc.matchType === 'external_item' ? `🚚 ${doc.folderName}` :
-                                                    doc.matchType === 'tax_summary' ? `📊 ${doc.folderName}` :
-                                                        doc.matchType === 'tax_monitoring' ? `🔍 ${doc.folderName || text.pemeriksaan}` :
-                                                            doc.matchType === 'note' ? `💬 ${doc.folderName || text.diskusi}` :
-                                                                doc.matchType === 'approval' ? `✅ ${doc.folderName || text.approval}` :
-                                                                    doc.matchType === 'pustaka' ? `📚 ${doc.folderName || text.pustaka}` :
-                                                                        doc.matchType === 'tax_object' ? `👥 ${doc.folderName || text.databaseWp}` :
-                                                                            doc.matchType === 'inventory' ? `📦 internal: ${doc.size || 'Slot'}` :
-                                                                                `📂 ${doc.folderName || 'General'}`}
+                                                    doc.matchType === 'approval' ? `✅ ${doc.folderName || text.approval}` :
+                                                        doc.matchType === 'note' ? `💬 ${doc.folderName || text.diskusi}` :
+                                                            doc.matchType === 'pustaka' ? `📚 ${doc.folderName || text.pustaka}` :
+                                                                doc.matchType === 'inventory' ? `📦 internal: ${doc.size || 'Slot'}` :
+                                                                    `📂 ${doc.folderName || 'General'}`}
                                         </button>
                                     </div>
                                 </div>
@@ -661,11 +630,11 @@ export default function Dashboard({
                 )}
             </div>
 
-            {/* ===== BENTO GRID DASHBOARD ===== */}
-            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-5 auto-rows-min">
+            {/* ===== DASHBOARD CARD GRID ===== */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
 
-                {/* 1. Main Storage Command Center - Jumbo Bento Card */}
-                <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }} viewport={{ once: true }} className="md:col-span-4 lg:col-span-4 lg:row-span-2 group">
+                {/* ROW 1: Storage Command Center (8 cols) + OCR Pipeline (4 cols) */}
+                <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }} viewport={{ once: true }} className="lg:col-span-8 group">
                     <ShadCard className="h-full relative overflow-hidden border-stone-200/50 bg-white/60 dark:bg-[#0d0d0d]/40 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-500 flex flex-col justify-between">
                         <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-[80px] group-hover:bg-blue-500/20 transition-all duration-700" />
                         <CardHeader className="pb-2">
@@ -697,85 +666,56 @@ export default function Dashboard({
                                 <button onClick={() => setActiveTab('documents')} className="flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-xs font-bold text-stone-700 transition-all hover:bg-stone-50 dark:border-white/[0.06] dark:bg-[#0d0d0d] dark:text-white/80 dark:hover:bg-white/[0.06] active:scale-95">
                                     {text.viewDocuments}
                                 </button>
-                                <button onClick={() => setActiveTab('tax-summary')} className="flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-xs font-bold text-stone-700 transition-all hover:bg-stone-50 dark:border-white/[0.06] dark:bg-[#0d0d0d] dark:text-white/80 dark:hover:bg-white/[0.06] active:scale-95">
-                                    {text.taxSummaryTab}
-                                </button>
                             </div>
                         </CardContent>
                     </ShadCard>
                 </motion.div>
 
-                {/* 2. OCR Pipeline - Tall Bento Card */}
-                <motion.div initial={{ opacity: 0, x: 16 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.1 }} viewport={{ once: true }} className="md:col-span-2 lg:col-span-2 lg:row-span-2">
-                    <ShadCard className="h-full bg-gradient-to-b from-slate-900 to-slate-950 text-white border-0 shadow-xl flex flex-col justify-between">
-                        <CardHeader className="pb-0">
+                <motion.div initial={{ opacity: 0, x: 16 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.1 }} viewport={{ once: true }} className="lg:col-span-4 group">
+                    <ShadCard className="h-full bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 text-white border border-slate-700/50 shadow-xl flex flex-col">
+                        <CardHeader className="pb-3 pt-4">
                             <div className="flex items-center justify-between">
-                                <CardTitle className="flex items-center gap-2 text-lg font-bold"><ScanLine className="text-blue-400" size={20} /> Pipeline OCR</CardTitle>
+                                <CardTitle className="flex items-center gap-2 text-base font-bold"><ScanLine className="text-blue-400" size={18} /> {text.ocrPipeline}</CardTitle>
                                 {bentoStats.active > 0 && <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>}
                             </div>
-                            <CardDescription className="text-stone-400 font-medium">{text.ocrDesc}</CardDescription>
+                            <CardDescription className="text-stone-400 text-xs font-medium">{text.ocrDesc}</CardDescription>
                         </CardHeader>
-                        <CardContent className="mt-6 flex-1 flex flex-col justify-end space-y-3">
-                            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 flex items-center justify-between border border-white/5">
-                                <span className="text-sm font-semibold text-stone-300">{text.ocrActive}</span>
-                                <span className="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-400">{bentoStats.active}</span>
+                        <CardContent className="flex-1 flex flex-col justify-center space-y-4 pt-2 pb-4">
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="bg-white/10 rounded-xl p-4 border border-white/10 text-center">
+                                    <p className="text-[10px] text-stone-400 uppercase font-bold tracking-wider mb-1">{text.ocrActive}</p>
+                                    <p className="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-500">{bentoStats.active}</p>
+                                </div>
+                                <div className="bg-white/[0.05] rounded-xl p-4 border border-white/5 text-center">
+                                    <p className="text-[10px] text-stone-500 uppercase font-bold tracking-wider mb-1">{text.ocrWaiting}</p>
+                                    <p className="text-2xl font-bold text-stone-300">{bentoStats.waiting}</p>
+                                </div>
                             </div>
-                            <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 flex items-center justify-between border border-white/5">
-                                <span className="text-sm font-semibold text-stone-400">{text.ocrWaiting}</span>
-                                <span className="text-lg font-bold text-stone-300">{bentoStats.waiting}</span>
-                            </div>
-                            <div className="grid grid-cols-2 gap-3 mt-2">
-                                <div className="bg-emerald-500/10 rounded-2xl p-3 border border-emerald-500/20">
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="bg-emerald-500/10 rounded-xl p-3 border border-emerald-500/20">
                                     <p className="text-[10px] text-emerald-400/80 uppercase font-bold text-center mb-1">{text.ocrSuccess}</p>
-                                    <p className="text-lg text-emerald-400 font-black text-center">{bentoStats.completed}</p>
+                                    <p className="text-xl text-emerald-400 font-black text-center">{bentoStats.completed}</p>
                                 </div>
-                                <div className="bg-rose-500/10 rounded-2xl p-3 border border-rose-500/20">
+                                <div className="bg-rose-500/10 rounded-xl p-3 border border-rose-500/20">
                                     <p className="text-[10px] text-rose-400/80 uppercase font-bold text-center mb-1">{text.ocrFailed}</p>
-                                    <p className="text-lg text-rose-400 font-black text-center">{bentoStats.failed}</p>
+                                    <p className="text-xl text-rose-400 font-black text-center">{bentoStats.failed}</p>
                                 </div>
                             </div>
                         </CardContent>
                     </ShadCard>
                 </motion.div>
 
-                {/* 3. Tax Control - Wide Bento Card */}
-                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }} viewport={{ once: true }} className="md:col-span-2 lg:col-span-3">
-                    <ShadCard className="h-full border-stone-200/60 bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-md hover:shadow-lg transition-shadow">
-                        <CardHeader className="pb-4">
-                            <CardTitle className="flex items-center gap-2 text-base font-bold"><FileSearch className="text-amber-500" size={18} /> {text.taxControl}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="rounded-2xl border border-amber-100 bg-amber-50/50 p-4 dark:border-amber-900/30 dark:bg-amber-950/20 group hover:bg-amber-50 dark:hover:bg-amber-900/30 transition-colors cursor-pointer" onClick={() => setActiveTab('tax-monitoring')}>
-                                    <p className="text-[11px] font-bold text-amber-700/80 dark:text-amber-400/80 uppercase tracking-wider mb-2">{text.auditRunning}</p>
-                                    <div className="flex items-center justify-between">
-                                        <p className="text-3xl font-black text-amber-800 dark:text-amber-300">{bentoStats.activeAudits}</p>
-                                        <ArrowUpRight className="text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity" size={20} />
-                                    </div>
-                                </div>
-                                <div className="rounded-2xl border border-blue-100 bg-blue-50/50 p-4 dark:border-blue-900/30 dark:bg-blue-950/20 group hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors cursor-pointer" onClick={() => setActiveTab('tax-summary')}>
-                                    <p className="text-[11px] font-bold text-blue-700/80 dark:text-blue-400/80 uppercase tracking-wider mb-2">{text.taxSummaryCount}</p>
-                                    <div className="flex items-center justify-between">
-                                        <p className="text-3xl font-black text-blue-800 dark:text-blue-300">{taxSummaries?.length || 0}</p>
-                                        <ArrowUpRight className="text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" size={20} />
-                                    </div>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </ShadCard>
-                </motion.div>
-
-                {/* 4. Recent Docs - Compact List */}
-                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} viewport={{ once: true }} className="md:col-span-2 lg:col-span-3">
-                    <ShadCard className="h-full border-stone-200/60 bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-md hover:shadow-lg transition-shadow">
+                {/* ROW 2: Recent Documents (4 cols) + Storage Distribution (4 cols) + Queue Status (4 cols) */}
+                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }} viewport={{ once: true }} className="lg:col-span-4 group">
+                    <ShadCard className="h-full border-stone-200/60 bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-md hover:shadow-lg transition-shadow flex flex-col">
                         <CardHeader className="pb-3 flex flex-row items-center justify-between">
                             <CardTitle className="flex items-center gap-2 text-base font-bold"><FileText className="text-blue-500" size={18} /> {text.recentDocs}</CardTitle>
                             <button onClick={() => setActiveTab('documents')} className="text-xs font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 transition-colors">Lihat Semua</button>
                         </CardHeader>
-                        <CardContent className="space-y-3 pb-6">
-                            {docList.slice(0, 3).map((doc) => (
-                                <button key={doc.id} onClick={() => handleViewDoc(doc)} className="group flex w-full items-center gap-3 rounded-2xl border border-transparent hover:border-stone-200 bg-transparent hover:bg-white p-2 text-left transition-all dark:hover:border-white/[0.1] dark:hover:bg-white/[0.05] shadow-none hover:shadow-sm">
-                                    <div className="rounded-xl bg-stone-100 p-2.5 text-stone-500 group-hover:bg-blue-50 group-hover:text-blue-600 dark:bg-[#0d0d0d] dark:text-white/40 dark:group-hover:bg-blue-900/30 dark:group-hover:text-blue-400 transition-colors">
+                        <CardContent className="flex-1 space-y-2.5 pb-2 overflow-y-auto">
+                            {docList.slice(0, 4).map((doc) => (
+                                <button key={doc.id} onClick={() => handleViewDoc(doc)} className="group flex w-full items-center gap-3 rounded-xl border border-transparent hover:border-stone-200 bg-transparent hover:bg-white p-2.5 text-left transition-all dark:hover:border-white/[0.1] dark:hover:bg-white/[0.05] shadow-none hover:shadow-sm">
+                                    <div className="rounded-xl bg-stone-100 p-2.5 text-stone-500 group-hover:bg-blue-50 group-hover:text-blue-600 dark:bg-[#0d0d0d] dark:text-white/40 dark:group-hover:bg-blue-900/30 dark:group-hover:text-blue-400 transition-colors flex-shrink-0">
                                         {doc.type?.includes('pdf') ? <FileDigit size={18} /> : <FileText size={18} />}
                                     </div>
                                     <div className="min-w-0 flex-1">
@@ -788,108 +728,95 @@ export default function Dashboard({
                         </CardContent>
                     </ShadCard>
                 </motion.div>
-            </div>
 
-            {/* TAX ANALYTICS VISUALIZATION */}
-            <div className="grid grid-cols-1 gap-6">
-                <TaxAnalytics taxSummaries={taxSummaries} taxAudits={taxAudits} />
-            </div>
-
-            <div className="grid grid-cols-1 gap-6">
-                <QueueStatus />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card>
-                    <h3 className="font-bold mb-4 text-stone-900 dark:text-white flex items-center gap-2">
-                        <PieChart size={20} className="text-blue-500" /> {text.storageDistribution}
-                    </h3>
-                    <div className="space-y-4">
-                        <div className="w-full bg-stone-100 dark:bg-[#0d0d0d] rounded-full h-6 overflow-hidden flex shadow-inner">
-                            <div className="bg-emerald-500 h-full transition-all duration-500" style={{ width: `${((stats?.stored || 0) / (TOTAL_SLOTS || 1)) * 100}%` }} title={`Tersimpan: ${stats?.stored || 0}`}></div>
-                            <div className="bg-amber-500 h-full transition-all duration-500" style={{ width: `${((stats?.borrowed || 0) / (TOTAL_SLOTS || 1)) * 100}%` }} title={`Dipinjam: ${stats?.borrowed || 0}`}></div>
-                            <div className="bg-blue-500 h-full transition-all duration-500" style={{ width: `${((stats?.audit || 0) / (TOTAL_SLOTS || 1)) * 100}%` }} title={`Audit: ${stats?.audit || 0}`}></div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4 text-sm">
-                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500"></div><span className="text-stone-600 dark:text-white/40">{text.stored} ({stats?.stored || 0})</span></div>
-                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-amber-500"></div><span className="text-stone-600 dark:text-white/40">{text.borrowed} ({stats?.borrowed || 0})</span></div>
-                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-blue-500"></div><span className="text-stone-600 dark:text-white/40">{text.audit} ({stats?.audit || 0})</span></div>
-                            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-stone-200 dark:bg-[#111]"></div><span className="text-stone-600 dark:text-white/40">{text.empty} ({stats?.empty || 0})</span></div>
-                        </div>
-                    </div>
-                </Card>
-
-                <Card>
-                    <h3 className="font-bold mb-4 text-stone-900 dark:text-white flex items-center gap-2">
-                        <FileText size={20} className="text-blue-500" /> {text.recentDocs}
-                    </h3>
-                    <div className="space-y-3">
-                        {docList.slice(0, 3).map(doc => (
-                            <div key={doc.id} className="flex items-center gap-3 p-2 hover:bg-stone-50 dark:hover:bg-white/[0.05] rounded-lg transition-colors cursor-pointer" onClick={() => handleViewDoc(doc)}>
-                                <div className="w-10 h-10 rounded bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-500">
-                                    {doc.type?.includes('pdf') ? <FileDigit size={20} /> : <FileText size={20} />}
+                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} viewport={{ once: true }} className="lg:col-span-4 group">
+                    <ShadCard className="h-full border-stone-200/60 bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-md hover:shadow-lg transition-shadow flex flex-col">
+                        <CardHeader className="pb-4">
+                            <CardTitle className="flex items-center gap-2 text-base font-bold"><PieChart className="text-blue-500" size={18} /> {text.storageDistribution}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="flex-1 flex flex-col justify-center">
+                            <div className="space-y-4">
+                                <div className="w-full bg-stone-100 dark:bg-[#0d0d0d] rounded-full h-7 overflow-hidden flex shadow-inner">
+                                    <div className="bg-emerald-500 h-full transition-all duration-500" style={{ width: `${Math.min(100, ((stats?.stored || 0) / (TOTAL_SLOTS || 1)) * 100)}%` }} title={`Tersimpan: ${stats?.stored || 0}`}></div>
+                                    <div className="bg-amber-500 h-full transition-all duration-500" style={{ width: `${Math.min(100, ((stats?.borrowed || 0) / (TOTAL_SLOTS || 1)) * 100)}%` }} title={`Dipinjam: ${stats?.borrowed || 0}`}></div>
+                                    <div className="bg-blue-500 h-full transition-all duration-500" style={{ width: `${Math.min(100, ((stats?.audit || 0) / (TOTAL_SLOTS || 1)) * 100)}%` }} title={`Audit: ${stats?.audit || 0}`}></div>
                                 </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="font-medium text-stone-900 dark:text-white truncate text-sm">{doc.title}</div>
-                                    <div className="text-xs text-stone-500 dark:text-white/40">{new Date(doc.uploadDate).toLocaleDateString()} • {doc.size}</div>
+                                <div className="grid grid-cols-2 gap-4 text-sm">
+                                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500"></div><span className="text-stone-600 dark:text-white/40">{text.stored} ({stats?.stored || 0})</span></div>
+                                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-amber-500"></div><span className="text-stone-600 dark:text-white/40">{text.borrowed} ({stats?.borrowed || 0})</span></div>
+                                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-blue-500"></div><span className="text-stone-600 dark:text-white/40">{text.audit} ({stats?.audit || 0})</span></div>
+                                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-stone-200 dark:bg-[#111]"></div><span className="text-stone-600 dark:text-white/40">{text.empty} ({stats?.empty || 0})</span></div>
                                 </div>
                             </div>
-                        ))}
-                        {docList.length === 0 && <p className="text-sm text-stone-500 italic">{text.noDocuments}</p>}
-                    </div>
-                </Card>
-            </div>
+                        </CardContent>
+                    </ShadCard>
+                </motion.div>
 
-            <Card className="max-h-[400px] overflow-y-auto relative p-0 sm:p-0" tabIndex={0} aria-label={text.auditLog}>
-                <div className="sticky top-0 bg-white/70 dark:bg-[#0d0d0d]/60 backdrop-blur-xl z-10 p-6 pb-2 border-b border-white/20 dark:border-white/10">
-                    <h3 className="font-bold text-stone-900 dark:text-white flex items-center gap-2">
-                        <History size={20} className="text-blue-500" /> {text.auditLog}
-                    </h3>
-                </div>
-                <div className="p-6 pt-2 space-y-3">
-                    {logs.map(log => (
-                        <div key={log.id} className="border-b border-stone-100 dark:border-white/[0.06] pb-2">
-                            <div
-                                className="flex justify-between text-sm cursor-pointer hover:bg-stone-50 dark:hover:bg-white/[0.05]/50 p-2 rounded-lg transition-colors"
-                                onClick={() => toggleLog(log.id)}
-                            >
-                                <div>
-                                    <div className="flex items-center gap-2">
-                                        <span className="font-semibold text-blue-600 dark:text-blue-400">{log.action}</span>
-                                        {log.oldValue && <span className="text-[10px] bg-amber-100 text-amber-600 px-1.5 py-0.5 rounded border border-amber-200">{text.auditBadge}</span>}
-                                    </div>
-                                    <p className="text-stone-500">{log.details}</p>
-                                    <div className="text-[10px] text-stone-400 flex items-center gap-1 mt-1">
-                                        <span>{log.user || text.system}</span> • <span>{new Date(log.timestamp).toLocaleString()}</span>
-                                    </div>
-                                </div>
-                                <div className="text-stone-400 flex items-center">
-                                    {expandedLogId === log.id ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                                </div>
-                            </div>
+                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.4 }} viewport={{ once: true }} className="lg:col-span-4">
+                    <ShadCard className="h-full border-stone-200/60 bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-md hover:shadow-lg transition-shadow overflow-hidden">
+                        <QueueStatus />
+                    </ShadCard>
+                </motion.div>
 
-                            {expandedLogId === log.id && (log.oldValue || log.newValue) && (
-                                <div className="mt-2 text-xs bg-stone-50 dark:bg-[#0d0d0d]/50 p-3 rounded-lg border border-stone-200 dark:border-white/[0.06] font-mono animate-in slide-in-from-top-1">
-                                    <div className="grid grid-cols-1 gap-2">
-                                        {log.oldValue && (
-                                            <div className="bg-red-50 dark:bg-red-900/10 p-2 rounded border border-red-100 dark:border-red-900/20 text-red-700 dark:text-red-400 overflow-x-auto">
-                                                <div className="font-bold mb-1 border-b border-red-200 dark:border-red-900/30 pb-1">{text.before}</div>
-                                                <pre className="whitespace-pre-wrap">{log.oldValue.startsWith('{') ? JSON.stringify(JSON.parse(log.oldValue), null, 2) : log.oldValue}</pre>
+                {/* ROW 3: Activity Log - Full width (12 cols) */}
+                <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.5 }} viewport={{ once: true }} className="lg:col-span-12">
+                    <ShadCard className="border-stone-200/60 bg-white/60 dark:bg-[#0d0d0d]/60 backdrop-blur-md hover:shadow-lg transition-shadow">
+                        <CardHeader className="pb-4">
+                            <CardTitle className="flex items-center gap-2 text-base font-bold"><History className="text-blue-500" size={18} /> {text.auditLog}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="pt-2">
+                            <div className="max-h-[350px] overflow-y-auto space-y-2">
+                                {logs.map(log => (
+                                    <div key={log.id} className="border-b border-stone-100 dark:border-white/[0.06] pb-2 last:border-b-0">
+                                        <div
+                                            className="flex justify-between text-sm cursor-pointer hover:bg-stone-50 dark:hover:bg-white/[0.05]/50 p-3 rounded-lg transition-colors"
+                                            onClick={() => toggleLog(log.id)}
+                                        >
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center gap-2 flex-wrap">
+                                                    <span className="font-semibold text-blue-600 dark:text-blue-400">{log.action}</span>
+                                                    {log.oldValue && <span className="text-[10px] bg-amber-100 text-amber-600 px-1.5 py-0.5 rounded border border-amber-200">{text.auditBadge}</span>}
+                                                </div>
+                                                <p className="text-stone-500 mt-0.5">{log.details}</p>
+                                                <div className="text-[10px] text-stone-400 flex items-center gap-1 mt-1">
+                                                    <span>{log.user || text.system}</span> • <span>{new Date(log.timestamp).toLocaleString()}</span>
+                                                </div>
                                             </div>
-                                        )}
-                                        {log.newValue && (
-                                            <div className="bg-emerald-50 dark:bg-emerald-900/10 p-2 rounded border border-emerald-100 dark:border-emerald-900/20 text-emerald-700 dark:text-emerald-400 overflow-x-auto">
-                                                <div className="font-bold mb-1 border-b border-emerald-200 dark:border-emerald-900/30 pb-1">{text.after}</div>
-                                                <pre className="whitespace-pre-wrap">{log.newValue.startsWith('{') ? JSON.stringify(JSON.parse(log.newValue), null, 2) : log.newValue}</pre>
+                                            <div className="text-stone-400 flex items-center flex-shrink-0 ml-3">
+                                                {expandedLogId === log.id ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                                            </div>
+                                        </div>
+
+                                        {expandedLogId === log.id && (log.oldValue || log.newValue) && (
+                                            <div className="mt-2 text-xs bg-stone-50 dark:bg-[#0d0d0d]/50 p-3 rounded-lg border border-stone-200 dark:border-white/[0.06] font-mono animate-in slide-in-from-top-1">
+                                                <div className="grid grid-cols-1 gap-2">
+                                                    {log.oldValue && (
+                                                        <div className="bg-red-50 dark:bg-red-900/10 p-2 rounded border border-red-100 dark:border-red-900/20 text-red-700 dark:text-red-400 overflow-x-auto">
+                                                            <div className="font-bold mb-1 border-b border-red-200 dark:border-red-900/30 pb-1">{text.before}</div>
+                                                            <pre className="whitespace-pre-wrap">{log.oldValue.startsWith('{') ? JSON.stringify(JSON.parse(log.oldValue), null, 2) : log.oldValue}</pre>
+                                                        </div>
+                                                    )}
+                                                    {log.newValue && (
+                                                        <div className="bg-emerald-50 dark:bg-emerald-900/10 p-2 rounded border border-emerald-100 dark:border-emerald-900/20 text-emerald-700 dark:text-emerald-400 overflow-x-auto">
+                                                            <div className="font-bold mb-1 border-b border-emerald-200 dark:border-emerald-900/30 pb-1">{text.after}</div>
+                                                            <pre className="whitespace-pre-wrap">{log.newValue.startsWith('{') ? JSON.stringify(JSON.parse(log.newValue), null, 2) : log.newValue}</pre>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
                                         )}
                                     </div>
-                                </div>
-                            )}
-                        </div>
-                    ))}
-                </div>
-            </Card>
+                                ))}
+                                {logs.length === 0 && (
+                                    <div className="text-center py-8">
+                                        <p className="text-sm text-stone-400 italic">{text.noActivity}</p>
+                                    </div>
+                                )}
+                            </div>
+                        </CardContent>
+                    </ShadCard>
+                </motion.div>
+            </div>
         </div>
     );
 }
