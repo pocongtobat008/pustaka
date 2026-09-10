@@ -956,6 +956,8 @@ export default function MasterData({
     const groupedUsers = useMemo(() => {
         const filtered = users.filter(u =>
             u.name.toLowerCase().includes(userSearchQuery.toLowerCase()) ||
+            (u.username || '').toLowerCase().includes(userSearchQuery.toLowerCase()) ||
+            (u.email || '').toLowerCase().includes(userSearchQuery.toLowerCase()) ||
             (u.department || '').toLowerCase().includes(userSearchQuery.toLowerCase())
         );
         return filtered.reduce((acc, user) => {
@@ -1147,6 +1149,9 @@ export default function MasterData({
                                                                 <span className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-md">{u.role}</span>
                                                                 <span className="text-[10px] font-bold text-stone-400 uppercase">@{u.username}</span>
                                                             </div>
+                                                            {u.email && (
+                                                                <div className="text-[10px] text-stone-400 dark:text-white/30 mt-0.5 truncate max-w-[180px]">{u.email}</div>
+                                                            )}
                                                         </div>
                                                     </div>
                                                     <div className="flex gap-1 opacity-0 group-hover/user:opacity-100 transition-all">

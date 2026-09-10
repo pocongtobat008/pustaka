@@ -106,15 +106,12 @@ export const createUser = async (req, res) => {
         const data = validateRequestBody(userCreateSchema, req, res);
         if (!data) return;
 
-        const { username, password, name, role, department } = data;
+        const { username, password, name, role, department, email } = data;
         const hashedPassword = await bcrypt.hash(password, 10);
-        const [dbRes] = await knex('users').insert({
-            username,
-            password: hashedPassword,
-            name,
-            role,
-            department
-        }).returning('id');
+        const insertData = { username, password: hashedPassword, name, role };
+        if (department) insertData.department = department;
+        if (email) insertData.email = email;
+        const [dbRes] = await knex('users').insert(insertData).returning('id');
 
         const id = typeof dbRes === 'object' ? dbRes.id : dbRes;
         await systemLog('Admin', "Create User", `Created user: ${username}`);
@@ -131,13 +128,14 @@ export const updateUser = async (req, res) => {
         const data = validateRequestBody(userUpdateSchema, req, res);
         if (!data) return;
 
-        const { username, password, name, role, department } = data;
+        const { username, password, name, role, department, email } = data;
         const updateData = {};
 
         if (username !== undefined) updateData.username = username;
         if (name !== undefined) updateData.name = name;
         if (role !== undefined) updateData.role = role;
         if (department !== undefined) updateData.department = department;
+        if (email !== undefined) updateData.email = email;
 
         if (password) {
             updateData.password = await bcrypt.hash(password, 10);
