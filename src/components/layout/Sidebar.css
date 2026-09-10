@@ -86,6 +86,22 @@
     box-shadow: 0 4px 18px rgba(29, 78, 216, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
+/* ── Environment DEV: logo orb & aksen jadi MERAH agar mudah dibedakan dari prod ── */
+.env-dev .cf-logo-orb {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 55%, #f97316 100%);
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.env-dev .cf-search-trigger {
+    background: rgba(254, 226, 226, 0.85);
+    box-shadow: inset 2px 2px 5px rgba(220, 100, 100, 0.25), inset -2px -2px 5px rgba(255, 255, 255, 0.9);
+}
+
+.dark .env-dev .cf-search-trigger {
+    background: rgba(60, 20, 20, 0.7);
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.4), inset -2px -2px 5px rgba(248, 113, 113, 0.08);
+}
+
 /* ── Search trigger: neumorphic inset ── */
 .cf-search-trigger {
     background: rgba(240, 233, 220, 0.85);

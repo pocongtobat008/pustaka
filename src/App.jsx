@@ -1,6 +1,7 @@
 ﻿import React, { useState, useEffect, useMemo, useRef, useCallback, Suspense, lazy } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { db as api, API_URL } from './services/database';
+import { APP_NAME_DISPLAY, IS_DEV } from './config/appEnv';
 import { TOTAL_SLOTS, getStatusStyle } from './utils/constants'; // Import constants
 import { checkPermission, APP_MODULES } from './utils/permissions';
 import { parseApiError } from './utils/errorHandler';
@@ -698,12 +699,15 @@ export default function App() {
 
   // Favicon & Title Effect
   useEffect(() => {
-    document.title = "Pustaka - Sistem Manajemen Terpadu";
+    document.title = IS_DEV
+      ? "Pustaka DEV — [ENVIRONMENT DEVELOPMENT]"
+      : "Pustaka - Sistem Manajemen Terpadu";
     const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
     link.type = 'image/svg+xml';
     link.rel = 'shortcut icon';
-    // Menggunakan SVG BookOpen dari Lucide dengan warna Indigo (#4318FF)
-    link.href = `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%234318FF%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z%22/><path d=%22M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z%22/></svg>`;
+    // Favicon BookOpen Lucide — indigo untuk PROD, MERAH untuk DEV
+    const favColor = IS_DEV ? '%23DC2626' : '%234318FF';
+    link.href = `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22${favColor}%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z%22/><path d=%22M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z%22/></svg>`;
     document.getElementsByTagName('head')[0].appendChild(link);
   }, []);
 
@@ -3682,7 +3686,7 @@ export default function App() {
   );
 
   return (
-    <div className="flex h-screen overflow-hidden p-3 gap-3 md:gap-4 md:p-4 selection:bg-blue-500/30 selection:text-blue-600">
+    <div className={"flex h-screen overflow-hidden p-3 gap-3 md:gap-4 md:p-4 selection:bg-blue-500/30 selection:text-blue-600" + (IS_DEV ? ' env-dev-root' : '')}>
 
       {/* FLOATING SIDEBAR */}
       <Sidebar
@@ -3714,7 +3718,7 @@ export default function App() {
             <BookOpen className="text-white" size={18} />
           </div>
           <div className="min-w-0">
-            <span className="block font-extrabold text-[15px] dark:text-white tracking-tight leading-tight">Pustaka</span>
+            <span className="block font-extrabold text-[15px] dark:text-white tracking-tight leading-tight">{APP_NAME_DISPLAY}{IS_DEV && <span className="ml-1.5 align-middle inline-flex items-center px-1.5 py-0.5 rounded bg-red-500 text-white text-[9px] font-black uppercase tracking-wider">Dev</span>}</span>
             <span className="block text-[10px] text-stone-400 truncate max-w-[150px]">
               {tabTextMap[activeTab]?.subtitle || ''}
             </span>
@@ -3742,7 +3746,7 @@ export default function App() {
             {/* Kiri: breadcrumb kontekstual + judul halaman aktif */}
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5 text-[11px] font-bold text-stone-400 dark:text-white/40 mb-0.5">
-                <span>Pustaka</span>
+                <span className={IS_DEV ? 'text-red-500 dark:text-red-400' : ''}>{APP_NAME_DISPLAY}</span>
                 <ChevronRight size={11} className="text-blue-400" />
                 <span className="gradient-text truncate">
                   {tabTextMap[activeTab]?.subtitle || (isEnglish ? 'Digital Info & Services Center' : 'Pusat Informasi & Layanan Digital')}

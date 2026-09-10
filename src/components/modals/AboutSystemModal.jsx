@@ -1,4 +1,5 @@
 import React from 'react';
+import { APP_NAME_DISPLAY, IS_DEV } from '../../config/appEnv';
 import {
     BookOpen,
     LayoutDashboard,
@@ -119,9 +120,10 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
                     <BookOpen size={24} className="text-white" strokeWidth={2.4} />
                 </div>
                 <div>
-                    <div className="text-2xl font-black text-stone-800 dark:text-white tracking-tight">Pustaka</div>
+                    <div className="text-2xl font-black text-stone-800 dark:text-white tracking-tight">{APP_NAME_DISPLAY}</div>
                     <div className="text-xs font-bold text-stone-400 dark:text-white/30">
                         {text.version} 1.0.0 • Document OS
+                        {IS_DEV && <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded bg-red-500 text-white text-[9px] font-black uppercase tracking-wider">Development</span>}
                     </div>
                 </div>
                 <span className="ml-auto neo-chip px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-blue-500 dark:text-blue-300">
