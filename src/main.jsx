@@ -26,17 +26,18 @@ try {
     if (isDev) splashEl?.classList.add('env-dev');
 } catch { /* abaikan jika localStorage tidak tersedia */ }
 
-// Tagline splash — seragam dengan form login: Akurat. Patuh. Terintegrasi.
-if (statusEl || splashEl) {
-    const taglineEl = document.getElementById('splash-tagline');
-    if (taglineEl) taglineEl.textContent = isEnglish ? 'Accurate · Compliant · Integrated' : 'Akurat · Patuh · Terintegrasi';
-}
-
 // ── Fake progress per modul: bar tipis berjalan sambil lazy chunk dimuat ──
 // Tahap mengikuti urutan boot nyata: JS shell → provider → modul → data.
 const isEnglish = (() => {
     try { return (localStorage.getItem('app-language') || 'id') === 'en'; } catch { return false; }
 })();
+
+// Tagline splash — seragam dengan form login: Akurat. Patuh. Terintegrasi.
+// (diletakkan SETELAH deklarasi isEnglish agar tidak kena TDZ)
+if (splashEl) {
+    const taglineEl = document.getElementById('splash-tagline');
+    if (taglineEl) taglineEl.textContent = isEnglish ? 'Accurate · Compliant · Integrated' : 'Akurat · Patuh · Terintegrasi';
+}
 const STAGES = isEnglish
     ? [
         'Initializing e-FinTaxDoc…',
