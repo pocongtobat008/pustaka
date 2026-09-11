@@ -5,16 +5,142 @@
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
-    <meta name="theme-color" content="#0B1437" />
+    <meta name="theme-color" content="#FAF5EE" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="e-FinTaxDoc — Platform terpadu Finance, Tax & Document: invoice, pajak, dokumen, AI document intelligence, dan entertainment expenses dalam satu platform." />
     <title>e-FinTaxDoc — Smart Finance, Tax & Document Platform</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+      /* ── Splash Screen e-FinTaxDoc (pre-React, tampil instan) ── */
+      #app-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        background:
+          radial-gradient(60% 50% at 20% 0%, rgba(67, 24, 255, 0.08), transparent 70%),
+          radial-gradient(60% 50% at 85% 100%, rgba(6, 182, 212, 0.07), transparent 70%),
+          #FAF5EE;
+        font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+        transition: opacity .45s ease, visibility .45s ease;
+      }
+      #app-splash.env-dev {
+        background:
+          radial-gradient(60% 50% at 20% 0%, rgba(220, 38, 38, 0.10), transparent 70%),
+          radial-gradient(60% 50% at 85% 100%, rgba(249, 115, 22, 0.08), transparent 70%),
+          #FAF5EE;
+      }
+      html.dark #app-splash {
+        background:
+          radial-gradient(60% 50% at 20% 0%, rgba(99, 102, 241, 0.14), transparent 70%),
+          radial-gradient(60% 50% at 85% 100%, rgba(6, 182, 212, 0.10), transparent 70%),
+          #0a0a0a;
+      }
+      html.dark #app-splash.env-dev {
+        background:
+          radial-gradient(60% 50% at 20% 0%, rgba(220, 38, 38, 0.16), transparent 70%),
+          radial-gradient(60% 50% at 85% 100%, rgba(249, 115, 22, 0.10), transparent 70%),
+          #0a0a0a;
+      }
+      .splash-orb {
+        width: 72px;
+        height: 72px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #06b6d4 100%);
+        box-shadow: 0 10px 30px rgba(29, 78, 216, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+        animation: splash-pop .55s cubic-bezier(.2, .9, .3, 1.4) both;
+      }
+      #app-splash.env-dev .splash-orb {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 55%, #f97316 100%);
+        box-shadow: 0 10px 30px rgba(220, 38, 38, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      }
+      .splash-orb svg { animation: splash-float 2.2s ease-in-out infinite; }
+      .splash-name {
+        font-size: 26px;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        color: #1c1917;
+        animation: splash-rise .5s ease .12s both;
+      }
+      .splash-name .accent { color: #4318FF; }
+      html.dark .splash-name { color: #fafafa; }
+      html.dark .splash-name .accent { color: #a5b4fc; }
+      .splash-tagline {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .18em;
+        text-transform: uppercase;
+        color: #a8a29e;
+        animation: splash-rise .5s ease .22s both;
+      }
+      .splash-dev-badge {
+        display: none;
+        padding: 3px 10px;
+        border-radius: 999px;
+        background: #ef4444;
+        color: #fff;
+        font-size: 9px;
+        font-weight: 900;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+        animation: splash-rise .5s ease .28s both;
+      }
+      #app-splash.env-dev .splash-dev-badge { display: inline-block; }
+      .splash-bar {
+        width: 148px;
+        height: 4px;
+        margin-top: 6px;
+        border-radius: 999px;
+        background: rgba(28, 25, 23, 0.08);
+        overflow: hidden;
+      }
+      html.dark .splash-bar { background: rgba(255, 255, 255, 0.08); }
+      .splash-bar::after {
+        content: '';
+        display: block;
+        height: 100%;
+        width: 40%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #4318FF, #06b6d4);
+        animation: splash-load 1.1s ease-in-out infinite;
+      }
+      #app-splash.env-dev .splash-bar::after { background: linear-gradient(90deg, #dc2626, #f97316); }
+      #app-splash.splash-hide { opacity: 0; visibility: hidden; pointer-events: none; }
+      @keyframes splash-pop { from { opacity: 0; transform: scale(.7); } to { opacity: 1; transform: scale(1); } }
+      @keyframes splash-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+      @keyframes splash-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes splash-load { 0% { transform: translateX(-110%); } 100% { transform: translateX(380%); } }
+      @media (prefers-reduced-motion: reduce) {
+        .splash-orb, .splash-orb svg, .splash-name, .splash-tagline, .splash-dev-badge { animation: none; }
+        .splash-bar::after { animation-duration: 2s; }
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
+
+    <!-- Splash: digambar sebelum React mount; dihapus oleh main.jsx -->
+    <div id="app-splash">
+      <div class="splash-orb">
+        <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="butt" stroke-linejoin="miter">
+          <path d="M10 3v16M4.5 3H10M4.5 11H10M4.5 19H10M10 3h9.5M10 11h6M3.5 22.5h17"/>
+        </svg>
+      </div>
+      <div class="splash-name">e-Fin<span class="accent">Tax</span>Doc</div>
+      <div class="splash-tagline">Finance · Tax · Document</div>
+      <div class="splash-dev-badge">Development</div>
+      <div class="splash-bar"></div>
+    </div>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
