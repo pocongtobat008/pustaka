@@ -139,6 +139,62 @@
         .splash-orb, .splash-orb svg, .splash-name, .splash-tagline, .splash-dev-badge { animation: none; }
         .splash-fill::after { animation-duration: 2s; }
       }
+
+      /* ── Layar error pre-React (module gagal dimuat/crash sebelum mount) ── */
+      .boot-fatal {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        text-align: center;
+        padding: 32px;
+        max-width: 420px;
+        color: #1c1917;
+        font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+      }
+      html.dark .boot-fatal { color: #fafafa; }
+      .boot-fatal .boot-emoji { font-size: 40px; }
+      .boot-fatal h1 { font-size: 18px; font-weight: 800; margin: 0; }
+      .boot-fatal p { font-size: 13px; color: #78716c; margin: 0; max-width: 360px; }
+      html.dark .boot-fatal p { color: rgba(255,255,255,.45); }
+      .boot-fatal code {
+        font-size: 11px;
+        background: rgba(28,25,23,.06);
+        border-radius: 8px;
+        padding: 8px 12px;
+        max-width: 380px;
+        word-break: break-all;
+        display: none;
+        text-align: left;
+        color: #b91c1c;
+      }
+      html.dark .boot-fatal code { background: rgba(255,255,255,.06); color: #fca5a5; }
+      .boot-fatal code.visible { display: block; }
+      .boot-fatal .boot-actions { display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap; justify-content: center; }
+      .boot-fatal button {
+        padding: 10px 22px;
+        border: none;
+        border-radius: 12px;
+        font-weight: 800;
+        font-size: 13px;
+        cursor: pointer;
+        color: #fff;
+        background: linear-gradient(135deg, #4318FF, #6366f1);
+        box-shadow: 0 8px 20px rgba(67, 24, 255, 0.30);
+        transition: transform .15s ease, filter .15s ease;
+      }
+      .boot-fatal button:hover { transform: translateY(-1px); filter: brightness(1.08); }
+      .boot-fatal button.ghost {
+        background: transparent;
+        color: #4318FF;
+        box-shadow: none;
+        border: 1.5px solid rgba(67, 24, 255, .35);
+      }
+      html.dark .boot-fatal button.ghost { color: #a5b4fc; border-color: rgba(165, 180, 252, .4); }
+      /* Dev environment: aksen merah */
+      #app-splash.env-dev ~ .boot-fatal button,
+      body.env-dev-marker .boot-fatal button { background: linear-gradient(135deg, #dc2626, #f97316); box-shadow: 0 8px 20px rgba(220,38,38,.35); }
     </style>
   </head>
   <body>
@@ -157,6 +213,88 @@
       <div class="splash-bar"><div class="splash-fill" id="splash-fill"></div></div>
       <div class="splash-status" id="splash-status"></div>
     </div>
+
+    <script>
+      // ── Sinkron tema & DEV sejak awal (dipindah dari main.jsx agar splash
+      //    dan layar error selalu tampil dengan tema benar walau module crash) ──
+      (function () {
+        try {
+          var savedTheme = localStorage.getItem('archive_theme');
+          if (savedTheme === 'dark' || (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+          }
+          // Deteksi dev di inline script: dev server (port 5173/5174-preview dev)
+          // dan hostname lokal. Prod bundle menimpa via flag jika perlu.
+          var h = window.location.hostname;
+          var isLocal = h === 'localhost' || h === '127.0.0.1' || h === '0.0.0.0';
+          if (isLocal && (window.location.port === '5173' || window.location.port === '5175')) {
+            var sp = document.getElementById('app-splash');
+            if (sp) sp.classList.add('env-dev');
+          }
+        } catch (e) { /* ignore */ }
+
+        // ── Guard pre-React: watchdog splash ──
+        // Jika aplikasi tidak mengucapkan "saya hidup" dalam 20 detik (module gagal
+        // dimuat / crash sebelum mount), tampilkan layar error dengan aksi perbaikan
+        // — bukan splash yang berputar selamanya.
+        var BOOT_TIMEOUT_MS = 20000;
+        var booted = false;
+        window.__APP_BOOTED__ = function () {
+          booted = true;
+        };
+        window.__APP_IS_BOOTED__ = function () { return booted; };
+        function showFatal(errText) {
+          var sp = document.getElementById('app-splash');
+          if (sp) sp.remove();
+          var root = document.getElementById('root');
+          var el = document.createElement('div');
+          el.className = 'boot-fatal';
+          var lang = 'id';
+          try { lang = (localStorage.getItem('app-language') || 'id') === 'en' ? 'en' : 'id'; } catch (e) {}
+          var t = lang === 'en'
+            ? { title: 'Application failed to load', desc: 'An error occurred while starting e-FinTaxDoc. Try a hard reload; if it persists, clear the cached bundle. The error detail can be expanded for reporting.', retry: 'Hard Reload', clear: 'Clear Cache & Reload', detail: 'Show error detail' }
+            : { title: 'Aplikasi gagal dimuat', desc: 'Terjadi error saat memulai e-FinTaxDoc. Coba muat ulang penuh; jika masih, bersihkan bundle cache. Detail error bisa dibuka untuk dilaporkan.', retry: 'Muat Ulang', clear: 'Bersihkan Cache & Muat', detail: 'Lihat detail error' };
+          el.innerHTML =
+            '<div class="boot-emoji">🛠️</div>' +
+            '<h1>' + t.title + '</h1>' +
+            '<p>' + t.desc + '</p>' +
+            '<code id="boot-err-detail"></code>' +
+            '<div class="boot-actions">' +
+            '<button id="boot-retry">' + t.retry + '</button>' +
+            '<button id="boot-clear" class="ghost">' + t.clear + '</button>' +
+            '</div>';
+          if (root && root.parentNode) root.parentNode.insertBefore(el, root);
+          if (errText) {
+            var code = el.querySelector('#boot-err-detail');
+            if (code) code.textContent = String(errText).slice(0, 600);
+          }
+          el.querySelector('#boot-retry').addEventListener('click', function () {
+            window.location.reload(true);
+          });
+          el.querySelector('#boot-clear').addEventListener('click', function () {
+            try {
+              if (window.caches && caches.keys) {
+                caches.keys().then(function (keys) {
+                  keys.forEach(function (k) { caches.delete(k); });
+                  window.location.reload(true);
+                });
+              } else {
+                window.location.reload(true);
+              }
+            } catch (e) { window.location.reload(true); }
+          });
+          el.querySelector('#boot-err-detail').addEventListener('click', function () {
+            this.classList.toggle('visible');
+          });
+        }
+        window.__BOOT_FATAL__ = showFatal;
+        setTimeout(function () {
+          if (!booted) {
+            showFatal(null);
+          }
+        }, BOOT_TIMEOUT_MS);
+      })();
+    </script>
 
     <script type="module" src="/src/main.jsx"></script>
   </body>
