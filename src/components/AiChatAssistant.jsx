@@ -627,7 +627,7 @@ export default function AiChatAssistant({
     const [messages, setMessages] = useState([
         {
             role: 'assistant',
-            text: 'Halo! 👋 Saya asisten AI Pustaka Sistem. Tanyakan apa saja tentang dokumen, invoice, atau arsip Anda.',
+            text: 'Halo! 👋 Saya asisten AI e-FinTaxDoc. Tanyakan apa saja tentang dokumen, invoice, atau arsip Anda.',
             results: []
         }
     ]);
@@ -675,7 +675,7 @@ export default function AiChatAssistant({
                 }));
                 setMessages(mapped.length > 0 ? mapped : [{
                     role: 'assistant',
-                    text: 'Halo! 👋 Saya asisten AI Pustaka Sistem. Tanyakan apa saja tentang dokumen, invoice, atau arsip Anda.',
+                    text: 'Halo! 👋 Saya asisten AI e-FinTaxDoc. Tanyakan apa saja tentang dokumen, invoice, atau arsip Anda.',
                     results: []
                 }]);
                 setSessionId(sid);
@@ -701,7 +701,7 @@ export default function AiChatAssistant({
                 setSessionTitle('AI Agent Report');
                 setMessages([{
                     role: 'assistant',
-                    text: 'Halo! 👋 Saya asisten AI Pustaka Sistem. Tanyakan apa saja tentang dokumen, invoice, atau arsip Anda.',
+                    text: 'Halo! 👋 Saya asisten AI e-FinTaxDoc. Tanyakan apa saja tentang dokumen, invoice, atau arsip Anda.',
                     results: []
                 }]);
                 setShowSidebar(false);
@@ -719,7 +719,7 @@ export default function AiChatAssistant({
                 setSessionId(null);
                 setMessages([{
                     role: 'assistant',
-                    text: 'Halo! 👋 Saya asisten AI Pustaka Sistem. Tanyakan apa saja tentang dokumen, invoice, atau arsip Anda.',
+                    text: 'Halo! 👋 Saya asisten AI e-FinTaxDoc. Tanyakan apa saja tentang dokumen, invoice, atau arsip Anda.',
                     results: []
                 }]);
             }

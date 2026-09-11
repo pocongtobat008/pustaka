@@ -5,8 +5,8 @@
 // Override opsional via env: VITE_APP_ENV=development|production.
 //
 // Dipakai untuk membedakan tampilan DEV vs PROD:
-//   - DEV  → nama "Pustaka DEV" + aksen merah (logo, badge, favicon)
-//   - PROD → nama "Pustaka" + tema normal
+//   - DEV  → nama "e-FinTaxDoc DEV" + aksen merah (logo, badge, favicon)
+//   - PROD → nama "e-FinTaxDoc" + tema normal
 
 const envOverride = (import.meta.env.VITE_APP_ENV || '').trim().toLowerCase();
 
@@ -14,8 +14,8 @@ export const IS_DEV = envOverride
     ? (envOverride === 'development' || envOverride === 'dev')
     : Boolean(import.meta.env.DEV);
 
-export const APP_NAME = 'Pustaka';
-export const APP_NAME_DISPLAY = IS_DEV ? 'Pustaka DEV' : 'Pustaka';
+export const APP_NAME = 'e-FinTaxDoc';
+export const APP_NAME_DISPLAY = IS_DEV ? 'e-FinTaxDoc DEV' : 'e-FinTaxDoc';
 export const APP_VERSION = 'v1.0.0';
 
 // Kelas Tailwind untuk badge/tanda DEV (merah mencolok)

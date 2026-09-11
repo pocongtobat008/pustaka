@@ -2,6 +2,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { db as api, API_URL } from './services/database';
 import { APP_NAME_DISPLAY, IS_DEV } from './config/appEnv';
+import LogoMark from './components/common/LogoMark';
 import { TOTAL_SLOTS, getStatusStyle } from './utils/constants'; // Import constants
 import { checkPermission, APP_MODULES } from './utils/permissions';
 import { parseApiError } from './utils/errorHandler';
@@ -700,14 +701,14 @@ export default function App() {
   // Favicon & Title Effect
   useEffect(() => {
     document.title = IS_DEV
-      ? "Pustaka DEV — [ENVIRONMENT DEVELOPMENT]"
-      : "Pustaka - Sistem Manajemen Terpadu";
+      ? `${APP_NAME_DISPLAY} — [ENVIRONMENT DEVELOPMENT]`
+      : "e-FinTaxDoc — Smart Finance, Tax & Document Platform";
     const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
     link.type = 'image/svg+xml';
     link.rel = 'shortcut icon';
-    // Favicon BookOpen Lucide — indigo untuk PROD, MERAH untuk DEV
+    // Favicon glyph e-FinTaxDoc (E+F — identik dengan LogoMark) — indigo PROD, MERAH DEV
     const favColor = IS_DEV ? '%23DC2626' : '%234318FF';
-    link.href = `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22${favColor}%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z%22/><path d=%22M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z%22/></svg>`;
+    link.href = `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22${favColor}%22 stroke-width=%222.2%22 stroke-linecap=%22butt%22 stroke-linejoin=%22miter%22><path d=%22M10 3v16M4.5 3H10M4.5 11H10M4.5 19H10M10 3h9.5M10 11h6M3.5 22.5h17%22/></svg>`;
     document.getElementsByTagName('head')[0].appendChild(link);
   }, []);
 
@@ -3668,7 +3669,7 @@ export default function App() {
 
   if (isLoading) {
     return (
-      <div className="h-screen w-screen flex items-center justify-center bg-[#eef1f8] dark:bg-[#0b1437]">
+      <div className="h-screen w-screen flex items-center justify-center bg-[#FAF5EE] dark:bg-[#0a0a0a]">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
           <p className="text-stone-500 dark:text-white/40 font-medium">{commandTextMap.labels.loading}</p>
@@ -3715,7 +3716,7 @@ export default function App() {
       <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-[#FAF5EE]/70 dark:bg-[#0a0a0a]/70 backdrop-blur-xl border-b border-white/30 dark:border-white/10 flex items-center justify-between px-4 z-[45]">
         <div className="flex items-center gap-2 min-w-0">
           <div className="cf-logo-orb w-9 h-9 rounded-xl flex items-center justify-center shadow-lg shrink-0">
-            <BookOpen className="text-white" size={18} />
+            <LogoMark size={18} color="#ffffff" />
           </div>
           <div className="min-w-0">
             <span className="block font-extrabold text-[15px] dark:text-white tracking-tight leading-tight">{APP_NAME_DISPLAY}{IS_DEV && <span className="ml-1.5 align-middle inline-flex items-center px-1.5 py-0.5 rounded bg-red-500 text-white text-[9px] font-black uppercase tracking-wider">Dev</span>}</span>
@@ -3753,7 +3754,7 @@ export default function App() {
                 </span>
               </div>
               <h1 className="text-lg xl:text-xl font-extrabold text-stone-800 dark:text-white leading-tight truncate">
-                {tabTextMap[activeTab]?.title || 'Pustaka'}
+                {tabTextMap[activeTab]?.title || 'e-FinTaxDoc'}
               </h1>
             </div>
 

@@ -351,7 +351,7 @@ export default function WorkflowViewer({ nodes = [], edges = [], accentColor, cu
     };
 
     return (
-        <div className="w-full h-full bg-stone-50 dark:bg-[#0B1437] relative">
+        <div className="w-full h-full bg-stone-50 dark:bg-[#0a0a0a] relative">
             <ReactFlow
                 nodes={processedNodes}
                 edges={processedEdges}

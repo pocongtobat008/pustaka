@@ -123,7 +123,7 @@ export default function ComponentShowcase() {
             {/* ── 6. Dark Mode Preview (forced-dark) ── */}
             <section>
                 <div className={sectionTitle}>{t('6. Dark Mode Preview (forced-dark)', '6. Pratinjau Mode Gelap (paksa dark)')}</div>
-                <div className="dark bg-[#0b1437] rounded-3xl p-6 border border-white/10 space-y-5">
+                <div className="dark bg-[#0a0a0a] rounded-3xl p-6 border border-white/10 space-y-5">
                     <SummaryRow cards={[
                         { title: t('Total Invoice', 'Total Invoice'), value: '27', icon: FileText, gradient: 'from-blue-600 to-blue-700', subtext: t('Rp 1.240.000.000', 'Rp 1.240.000.000'), valueClass: 'text-2xl' },
                         { title: t('Proforma', 'Proforma'), value: '18', icon: CheckCircle2, gradient: 'from-amber-500 to-orange-600', subtext: t('5 approved', '5 disetujui'), valueClass: 'text-2xl' },
