@@ -15,7 +15,7 @@ export default function Login({ onLogin }) {
     const text = isEnglish
         ? {
             titleMain: 'One Platform for\nFinance, Tax & Documents',
-            titleAccent: 'Powered by Smart AI',
+            titleAccent: 'Accurate. Compliant. Integrated.',
             subtitle: 'Smart document intelligence, tax compliance and finance workflows in one unified workspace.',
             security: 'Enterprise Security',
             ocr: 'AI Powered OCR',
@@ -30,7 +30,7 @@ export default function Login({ onLogin }) {
         }
         : {
             titleMain: 'Satu Platform untuk\nKeuangan, Pajak & Dokumen',
-            titleAccent: 'digerakkan AI Cerdas',
+            titleAccent: 'Akurat. Patuh. Terintegrasi.',
             subtitle: 'Kecerdasan dokumen, kepatuhan pajak, dan alur keuangan dalam satu ruang kerja terpadu.',
             security: 'Keamanan Enterprise',
             ocr: 'OCR Bertenaga AI',
