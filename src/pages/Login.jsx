@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { User, FileKey, AlertCircle, ShieldCheck, Zap, ArrowRight, BookOpen, Sun, Moon, Globe, Eye, EyeOff } from 'lucide-react';
+import { User, FileKey, AlertCircle, ShieldCheck, Zap, ArrowRight, Sun, Moon, Globe, Eye, EyeOff } from 'lucide-react';
+import LogoMark from '../components/common/LogoMark';
 import { useLanguage } from '../contexts/LanguageContext';
 import { APP_NAME_DISPLAY, IS_DEV } from '../config/appEnv';
 import { useAppStore } from '../store/useAppStore';
@@ -13,9 +14,9 @@ export default function Login({ onLogin }) {
 
     const text = isEnglish
         ? {
-            titleMain: 'One Unified\nSystem Management Solution',
-            titleAccent: 'for Integrated Operations',
-            subtitle: 'Smart integration of digital systems to support efficient corporate operations.',
+            titleMain: 'One Platform for\nFinance, Tax & Documents',
+            titleAccent: 'Powered by Smart AI',
+            subtitle: 'Smart document intelligence, tax compliance and finance workflows in one unified workspace.',
             security: 'Enterprise Security',
             ocr: 'AI Powered OCR',
             welcome: 'Welcome Back',
@@ -28,9 +29,9 @@ export default function Login({ onLogin }) {
             version: IS_DEV ? '©2026 e-FinTaxDoc DEV • ENVIRONMENT DEVELOPMENT' : '©2026 e-FinTaxDoc Enterprise • v1.0.0',
         }
         : {
-            titleMain: 'Solusi Satu\nManajemen Sistem Terpadu',
-            titleAccent: 'untuk Operasional Terintegrasi',
-            subtitle: 'Integrasi cerdas sistem digital untuk operasional korporat yang efisien.',
+            titleMain: 'Satu Platform untuk\nKeuangan, Pajak & Dokumen',
+            titleAccent: 'digerakkan AI Cerdas',
+            subtitle: 'Kecerdasan dokumen, kepatuhan pajak, dan alur keuangan dalam satu ruang kerja terpadu.',
             security: 'Keamanan Enterprise',
             ocr: 'OCR Bertenaga AI',
             welcome: 'Selamat Datang',
@@ -79,7 +80,7 @@ export default function Login({ onLogin }) {
                     <div className="relative z-10">
                         <div className="flex items-center gap-2 xl:gap-3 mb-4 xl:mb-8">
                             <div className="p-1.5 xl:p-2 bg-white/20 backdrop-blur-md rounded-lg xl:rounded-xl border border-white/25 shadow-lg">
-                                <BookOpen className="text-white w-5 h-5 xl:w-6 xl:h-6" />
+                                <LogoMark size={24} color="#ffffff" />
                             </div>
                             <span className="text-xl xl:text-2xl font-black text-white tracking-tighter">{APP_NAME_DISPLAY}</span>
                             {IS_DEV && <span className="ml-1 inline-flex items-center px-2 py-0.5 rounded bg-red-500 text-white text-[10px] font-black uppercase tracking-wider">Dev</span>}
@@ -127,10 +128,9 @@ export default function Login({ onLogin }) {
 
                 {/* Right Side: Login Form */}
                 <div className="p-5 sm:p-8 xl:p-12 flex flex-col justify-center">
-                    <div className="lg:hidden flex justify-center mb-4 xl:mb-8">
-                        <div className="cf-logo-orb w-12 h-12 xl:w-16 xl:h-16 rounded-2xl flex items-center justify-center shadow-2xl">
-                            <BookOpen className="text-white w-6 h-6 xl:w-8 xl:h-8" />
-                        </div>
+                    <div className="lg:hidden flex justify-center mb-4 xl:mb-8">                            <div className="cf-logo-orb w-12 h-12 xl:w-16 xl:h-16 rounded-2xl flex items-center justify-center shadow-2xl">
+                                <LogoMark size={30} color="#ffffff" />
+                            </div>
                     </div>
 
                     <div className="mb-4 xl:mb-10 relative">

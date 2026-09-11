@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { APP_NAME_DISPLAY, IS_DEV } from '../../config/appEnv';
+import LogoMark from '../common/LogoMark';
 import {
     LayoutDashboard,
     Grid3x3,
@@ -260,7 +261,7 @@ const Sidebar = ({
             <div className={'h-16 flex items-center px-3 shrink-0 relative ' + (isRail && !showLabels ? 'border-b border-stone-200/5 dark:border-white/3' : 'border-b border-stone-200/30 dark:border-white/5')}>
                 <div className="flex items-center gap-2">
                     <div className={'cf-logo-orb w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all ' + (showLabels ? 'shadow-lg scale-100' : 'shadow-none scale-95')}>
-                        <BookOpen size={16} className="text-white" strokeWidth={2.4} />
+                        <LogoMark size={16} color="#ffffff" strokeWidth={2.4} />
                     </div>
                     <div
                         className={
