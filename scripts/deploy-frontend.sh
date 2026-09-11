@@ -8,11 +8,9 @@
 #
 # Solusi:
 #   1. Build ke folder sementara (.dist-next) — dist/ lama TIDAK disentuh.
-#   2. Sync ke dist/ dengan rsync --delete-delay: file lama dihapus 15 detik
-#      SETELAH file baru tersalin — sesi terbuka sempat lazy-load chunk
-#      lama yang masih dirujuk bundle lamanya.
-#   3. index.html baru menimpa yang lama paling awal → pengunjung baru
-#      langsung dapat bundle baru.
+#   2. Salin file baru ke dist/ TANPA menghapus (chunk lama tetap ada).
+#   3. Tunggu 15 detik (grace period untuk sesi terbuka lazy-load chunk
+#      lama), lalu hapus chunk basi agar dist/ persis build baru.
 #
 # Pemakaian:  bash scripts/deploy-frontend.sh
 # ═══════════════════════════════════════════════════════════════════════
@@ -20,20 +18,36 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
+GRACE_SECONDS=15
 
-echo "▶ [1/4] Build ke folder sementara (.dist-next)…"
+echo "▶ [1/5] Build ke folder sementara (.dist-next)…"
 rm -rf .dist-next
 npx vite build --outDir .dist-next --emptyOutDir
 
-echo "▶ [2/4] Sync ke dist/ (file lama dihapus dengan delay 15s)…"
+echo "▶ [2/5] Salin file baru ke dist/ (chunk lama TIDAK dihapus dulu)…"
 mkdir -p dist
-# -t pertahankan timestamp; --delete-delay hapus ekstra SETELAH transfer
-rsync -a --delete-delay --delete-delay=15s .dist-next/ dist/
+rsync -a .dist-next/ dist/
 
-echo "▶ [3/4] Bersihkan folder sementara…"
+echo "▶ [3/5] Catat chunk basi (ada di dist tapi tidak di build baru)…"
+OBSOLETE="$ROOT/.obsolete-chunks.txt"
+(cd dist/assets && ls | sort) > "$ROOT/.old-list.txt" 2>/dev/null || true
+(cd .dist-next/assets && ls | sort) > "$ROOT/.new-list.txt" 2>/dev/null || true
+comm -23 "$ROOT/.old-list.txt" "$ROOT/.new-list.txt" > "$OBSOLETE" || true
+rm -f "$ROOT/.old-list.txt" "$ROOT/.new-list.txt"
+OBS_COUNT=$(wc -l < "$OBSOLETE" | tr -d ' ')
+echo "   → $OBS_COUNT chunk basi akan dihapus setelah grace ${GRACE_SECONDS}s"
+
+echo "▶ [4/5] Grace period ${GRACE_SECONDS}s untuk sesi browser terbuka…"
+sleep "$GRACE_SECONDS"
+if [ -s "$OBSOLETE" ]; then
+  (cd dist/assets && while IFS= read -r f; do rm -f -- "$f"; done < "$OBSOLETE")
+fi
+rm -f "$OBSOLETE"
+# Pastikan dist/ persis sama dengan build baru (hapus folder basi sisa, dsb.)
+rsync -a --delete .dist-next/ dist/
 rm -rf .dist-next
 
-echo "▶ [4/4] Restart backend (PM2)…"
+echo "▶ [5/5] Restart backend (PM2)…"
 pm2 restart archive-backend >/dev/null 2>&1 || true
 sleep 3
 
