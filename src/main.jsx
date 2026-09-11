@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.jsx'
 import { LanguageProvider } from './contexts/LanguageContext'
 import AutoTranslateLayer from './components/AutoTranslateLayer'
+import ErrorBoundary from './components/ErrorBoundary'
 
 // ── Splash screen (index.html #app-splash) ──
 const SPLASH_MIN_MS = 900;
@@ -81,12 +82,18 @@ const removeSplash = () => {
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <LanguageProvider>
-      <AutoTranslateLayer />
-      <App />
-    </LanguageProvider>
+    <ErrorBoundary>
+      <LanguageProvider>
+        <AutoTranslateLayer />
+        <App />
+      </LanguageProvider>
+    </ErrorBoundary>
   </StrictMode>,
 )
+
+// Tandai boot sukses — mematikan watchdog pre-React (index.html) yang akan
+// menampilkan layar error bila aplikasi gagal mount dalam 20 detik.
+if (typeof window.__APP_BOOTED__ === 'function') window.__APP_BOOTED__();
 
 // Pastikan splash tampil minimal 900ms agar animasinya terlihat natural,
 // lalu fade-out setelah konten aplikasi benar-benar tergambar.
@@ -94,3 +101,21 @@ requestAnimationFrame(() => requestAnimationFrame(() => {
     const elapsed = Date.now() - splashShownAt;
     setTimeout(removeSplash, Math.max(0, SPLASH_MIN_MS - elapsed));
 }))
+
+// ── Lapisan 2: error runtime sebelum boot selesai → layar fatal pre-React ──
+// Error modul (import gagal, TDZ, dsb.) biasanya terjadi sebelum baris ini
+// sempat dieksekusi — kasus itu ditangani watchdog 20 detik di index.html.
+// Listener ini menangkap error yang terjadi SETELAH modul dievaluasi namun
+// SEBELUM __APP_BOOTED__() dipanggil (mis. error sinkron saat render awal).
+window.addEventListener('error', (e) => {
+    if (window.__BOOT_FATAL__ && !document.querySelector('.boot-fatal') && !window.__APP_IS_BOOTED__()) {
+        const msg = (e && (e.message || (e.error && e.error.message))) || 'Unknown error';
+        window.__BOOT_FATAL__(msg);
+    }
+});
+window.addEventListener('unhandledrejection', (e) => {
+    if (window.__BOOT_FATAL__ && !document.querySelector('.boot-fatal') && !window.__APP_IS_BOOTED__()) {
+        const msg = (e && (e.reason && (e.reason.message || String(e.reason)))) || 'Unknown promise rejection';
+        window.__BOOT_FATAL__(msg);
+    }
+});
