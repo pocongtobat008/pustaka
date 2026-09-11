@@ -1,5 +1,5 @@
-﻿import React, { useState, useEffect, useMemo, useRef, useCallback, Suspense, lazy } from 'react';
-import { lazyPage } from './utils/lazyPage';
+﻿﻿import React, { useState, useEffect, useMemo, useRef, useCallback, Suspense, lazy } from 'react';
+import { lazyPage } from './utils/lazyPage.jsx';
 import { motion, AnimatePresence } from 'framer-motion';
 import { db as api, API_URL } from './services/database';
 import { APP_NAME_DISPLAY, IS_DEV } from './config/appEnv';
