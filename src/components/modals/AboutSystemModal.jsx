@@ -24,6 +24,7 @@ import {
     Info,
 } from 'lucide-react';
 import Modal from '../common/Modal';
+import LogoMark from '../common/LogoMark';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 /**
@@ -117,12 +118,12 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
             {/* Header brand */}
             <div className="flex items-center gap-4 mb-6">
                 <div className="cf-logo-orb w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl shrink-0">
-                    <BookOpen size={24} className="text-white" strokeWidth={2.4} />
+                    <LogoMark size={24} color="#ffffff" strokeWidth={2.4} />
                 </div>
                 <div>
                     <div className="text-2xl font-black text-stone-800 dark:text-white tracking-tight">{APP_NAME_DISPLAY}</div>
                     <div className="text-xs font-bold text-stone-400 dark:text-white/30">
-                        {text.version} 1.0.0 • Document OS
+                        {text.version} 1.0.0 • Smart Finance, Tax & Document Platform
                         {IS_DEV && <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded bg-red-500 text-white text-[9px] font-black uppercase tracking-wider">Development</span>}
                     </div>
                 </div>
