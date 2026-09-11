@@ -1,24 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import path from 'node:path'
+import path from 'path'
 
-// Target API backend - bisa di-override via env VITE_API_TARGET (dev: http://127.0.0.1:5006)
-const apiTarget = process.env.VITE_API_TARGET || 'http://127.0.0.1:5005';
-import { fileURLToPath } from 'node:url'
+const apiTarget = process.env.API_PROXY_TARGET || 'http://127.0.0.1:5005'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-// https://vite.dev/config/
-
-// ── Keamanan: teruskan IP asli klien ke backend agar rate limiting (anti-DDoS/bruteforce) akurat ──
-const forwardClientIP = (proxy) => {
-  proxy.on('proxyReq', (proxyReq, req) => {
-    const ip = req.socket?.remoteAddress || '';
-    if (ip) proxyReq.setHeader('X-Forwarded-For', ip);
-  });
-};
-
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   resolve: {
@@ -26,40 +12,29 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  optimizeDeps: {
-    include: ['react-window', 'react-virtualized-auto-sizer']
-  },
+  // Mode dev-server (dipakai di pustaka-dev)
   server: {
-    host: true, // Izinkan akses dari network
-    allowedHosts: [
-      "pustaka.izal.my.id"
-    ],
+    host: true,
+    port: 5173,
+    allowedHosts: ['pustaka-dev.izal.my.id'],
     proxy: {
-      '/api': {
-        target: apiTarget,
-        changeOrigin: true,
-        secure: false,
-        configure: forwardClientIP,
-      },
-      '/uploads': {
-        target: apiTarget,
-        changeOrigin: true,
-        secure: false,
-        configure: forwardClientIP,
-      },
-      '/socket.io': {
-        target: apiTarget,
-        ws: true,
-        changeOrigin: true,
-        secure: false,
-      }
+      '/api': { target: apiTarget, changeOrigin: true, secure: false, configure: forwardClientIP },
+      '/uploads': { target: apiTarget, changeOrigin: true, secure: false, configure: forwardClientIP },
+      '/socket.io': { target: apiTarget, ws: true, changeOrigin: true, secure: false }
     }
   },
   // Mode preview (produksi statis: vite build + vite preview)
-  // Proxy sama seperti dev-server agar /api, /uploads, /socket.io tetap jalan
   preview: {
     host: true,
+    port: 5174,
     allowedHosts: ["pustaka.izal.my.id"],
+    // ── Cache header anti stale-chunk ──
+    // index.html: selalu revalidasi → pengunjung dapat bundle terbaru.
+    // Chunk ber-hash: immutable → efisien, dan hash berubah saat isi berubah.
+    headers: {
+      '/': [{ key: 'Cache-Control', value: 'no-cache' }],
+      '/assets/**': [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+    },
     proxy: {
       '/api': { target: apiTarget, changeOrigin: true, secure: false, configure: forwardClientIP },
       '/uploads': { target: apiTarget, changeOrigin: true, secure: false, configure: forwardClientIP },
@@ -67,3 +42,10 @@ export default defineConfig({
     }
   }
 })
+
+function forwardClientIP(proxyCtx) {
+  proxyCtx.on('proxyReq', (proxyReq, req) => {
+    const ip = req.socket?.remoteAddress || ''
+    if (ip) proxyReq.setHeader('X-Forwarded-For', ip.replace(/^::ffff:/, ''))
+  })
+}
