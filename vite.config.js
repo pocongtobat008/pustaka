@@ -28,13 +28,6 @@ export default defineConfig({
     host: true,
     port: 5174,
     allowedHosts: ["pustaka.izal.my.id"],
-    // ── Cache header anti stale-chunk ──
-    // index.html: selalu revalidasi → pengunjung dapat bundle terbaru.
-    // Chunk ber-hash: immutable → efisien, dan hash berubah saat isi berubah.
-    headers: {
-      '/': [{ key: 'Cache-Control', value: 'no-cache' }],
-      '/assets/**': [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
-    },
     proxy: {
       '/api': { target: apiTarget, changeOrigin: true, secure: false, configure: forwardClientIP },
       '/uploads': { target: apiTarget, changeOrigin: true, secure: false, configure: forwardClientIP },
