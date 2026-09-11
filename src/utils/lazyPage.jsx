@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react';
+import LoadingFallback from '../components/common/LoadingFallback';
 
 /**
  * lazyPage — lazy import yang tahan stale chunk & kegagalan jaringan sesaat.
@@ -20,6 +21,8 @@ import React, { Suspense } from 'react';
 
 const RELOAD_FLAG = 'lazy_page_reloaded';
 const RELOAD_GUARD_MS = 30000;
+const RELOAD_COUNT_KEY = 'lazy_page_reload_count';
+const MAX_RELOADS = 2;
 
 // Retry ladder: jeda sebelum percobaan ulang ke-i (index 0 = percobaan pertama)
 const RETRY_DELAYS_MS = [0, 800, 2000, 4000];
@@ -48,12 +51,25 @@ function alreadyReloadedRecently() {
 }
 export { alreadyReloadedRecently };
 
+function getReloadCount() {
+    try { return Number(sessionStorage.getItem(RELOAD_COUNT_KEY) || 0); } catch { return 0; }
+}
+
+function incrementReloadCount() {
+    try { sessionStorage.setItem(RELOAD_COUNT_KEY, String(getReloadCount() + 1)); } catch { /* ignore */ }
+}
+
+function hasExceededMaxReloads() {
+    return getReloadCount() >= MAX_RELOADS;
+}
+
 function markReloaded() {
     try { sessionStorage.setItem(RELOAD_FLAG, String(Date.now())); } catch { /* ignore */ }
 }
 
 export function reloadForNewBundle() {
     markReloaded();
+    incrementReloadCount();
     window.location.reload();
 }
 
@@ -91,13 +107,8 @@ export function lazyPage(loader) {
     const LazyComp = React.lazy(() =>
         importWithRetry(loader).catch(async (err) => {
             if (!isStaleChunkError(err)) throw err;
-            // Semua retry gagal → chunk lama kemungkinan sudah tidak ada di
-            // server → reload sekali untuk mengambil bundle baru.
-            if (!alreadyReloadedRecently()) {
+            if (!alreadyReloadedRecently() && !hasExceededMaxReloads()) {
                 reloadForNewBundle();
-                // Reload sedang berjalan — jangan resolve/reject. Jaringan
-                // pengaman: jika 5 detik masih di halaman (reload diblok),
-                // reject agar ErrorBoundary menampilkan UI pemulihan.
                 await new Promise((_, rej) => setTimeout(() => rej(err), 5000));
             }
             throw err;
@@ -107,7 +118,7 @@ export function lazyPage(loader) {
     // Wrapper Suspense + guard error khusus chunk
     return function LazyPageWrapper(props) {
         return (
-            <Suspense fallback={null}>
+            <Suspense fallback={<LoadingFallback />}>
                 <LazyChunkGuard LazyComp={LazyComp} componentProps={props} />
             </Suspense>
         );
@@ -127,9 +138,7 @@ class _LazyGuard extends React.Component {
         return { failed: true, err };
     }
     componentDidCatch(err) {
-        // Jaring pengaman terakhir di level halaman: jika sampai di sini
-        // dan belum pernah reload, coba pulihkan sekali sebelum menampilkan UI.
-        if (isStaleChunkError(err) && !alreadyReloadedRecently()) {
+        if (isStaleChunkError(err) && !alreadyReloadedRecently() && !hasExceededMaxReloads()) {
             reloadForNewBundle();
         }
     }

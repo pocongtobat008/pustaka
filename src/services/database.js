@@ -21,6 +21,7 @@ export const db = {
             });
             if (!response.ok) throw new Error('Gagal mengambil data');
             const data = await response.json();
+            if (!Array.isArray(data)) throw new Error('Format data tidak valid');
 
             return data.map(slot => {
                 const rawBoxData = slot.box_data || slot.boxData || slot.boxdata;
@@ -288,6 +289,7 @@ export const db = {
             });
             if (!response.ok) throw new Error('Gagal mengambil data');
             const data = await response.json();
+            if (!Array.isArray(data)) throw new Error('Format data tidak valid');
             return data.map(item => ({
                 ...item,
                 id: String(item.id),
@@ -713,6 +715,7 @@ export const db = {
                 credentials: 'include'
             });
             const data = await response.json();
+            if (!Array.isArray(data)) return [];
             return data.map(item => ({
                 ...item,
                 boxData: typeof item.boxData === 'string' ? JSON.parse(item.boxData) : (item.boxData || {}),

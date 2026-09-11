@@ -16,7 +16,7 @@ export default defineConfig({
   server: {
     host: true,
     port: 5173,
-    allowedHosts: ['pustaka-dev.izal.my.id'],
+    allowedHosts: ['pustaka-dev.izal.my.id', 'localhost', '127.0.0.1'],
     proxy: {
       '/api': { target: apiTarget, changeOrigin: true, secure: false, configure: forwardClientIP },
       '/uploads': { target: apiTarget, changeOrigin: true, secure: false, configure: forwardClientIP },
@@ -27,7 +27,12 @@ export default defineConfig({
   preview: {
     host: true,
     port: 5174,
-    allowedHosts: ["pustaka.izal.my.id"],
+    allowedHosts: true,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, HEAD',
+      'Access-Control-Allow-Headers': '*',
+    },
     proxy: {
       '/api': { target: apiTarget, changeOrigin: true, secure: false, configure: forwardClientIP },
       '/uploads': { target: apiTarget, changeOrigin: true, secure: false, configure: forwardClientIP },

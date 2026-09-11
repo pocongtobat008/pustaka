@@ -90,7 +90,7 @@ app.use(helmet({
 // Berlaku untuk SEMUA request /api. IP diambil dari X-Forwarded-For yang diisi Vite proxy.
 const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 menit
-    limit: 600,               // maks 600 request per IP per jendela
+    limit: 2000,              // maks 2000 request per IP per jendela (termasuk polling)
     standardHeaders: true,    // X-RateLimit-* headers
     legacyHeaders: false,
     skip: (req) => req.path === '/api/health',

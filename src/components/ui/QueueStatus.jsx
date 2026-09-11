@@ -31,7 +31,7 @@ export default function QueueStatus() {
 
     useEffect(() => {
         fetchQueue();
-        const interval = setInterval(fetchQueue, 3000); // Polling every 3s
+        const interval = setInterval(fetchQueue, 5000); // Polling every 5s (reduced from 3s)
         return () => clearInterval(interval);
     }, []);
 
