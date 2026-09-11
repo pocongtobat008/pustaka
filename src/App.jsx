@@ -3669,7 +3669,7 @@ export default function App() {
 
   if (isLoading) {
     return (
-      <div className="h-screen w-screen flex items-center justify-center bg-[#eef1f8] dark:bg-[#0b1437]">
+      <div className="h-screen w-screen flex items-center justify-center bg-[#FAF5EE] dark:bg-[#0a0a0a]">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
           <p className="text-stone-500 dark:text-white/40 font-medium">{commandTextMap.labels.loading}</p>

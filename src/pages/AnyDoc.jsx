@@ -5,7 +5,7 @@ import * as XLSX from 'xlsx';
 import {
     UploadCloud, FileText, FileSpreadsheet, File as FileIcon, Copy, Check, Download,
     Archive, Brain, Loader2, X, History, Sparkles, AlertCircle, CheckCircle2, Eye,
-    FileCode2, Trash2, Clock, BookOpen, Plus, ListChecks, Table2, ChevronDown, ChevronRight,
+    FileCode2, Trash2, Clock, Plus, ListChecks, Table2, ChevronDown, ChevronRight,
 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 

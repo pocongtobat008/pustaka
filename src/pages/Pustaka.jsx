@@ -59,7 +59,7 @@ const PustakaLandingPage = ({ onClose }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] bg-stone-50/80 dark:bg-[#0B1437]/90 backdrop-blur-xl overflow-y-auto custom-scrollbar p-6 md:p-12 text-stone-900 dark:text-white"
+            className="fixed inset-0 z-[9999] bg-stone-50/80 dark:bg-[#0a0a0a]/90 backdrop-blur-xl overflow-y-auto custom-scrollbar p-6 md:p-12 text-stone-900 dark:text-white"
         >
             <div className="max-w-5xl mx-auto">
                 <div className="flex justify-end mb-8">

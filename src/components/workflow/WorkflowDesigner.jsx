@@ -436,7 +436,7 @@ export default function WorkflowDesigner({ initialNodes = [], initialEdges = [],
                     connectionMode="loose"
                     deleteKeyCode="Delete"
                     fitView
-                    className="bg-stone-50 dark:bg-[#0B1437]"
+                    className="bg-stone-50 dark:bg-[#0a0a0a]"
                 >
                     <Background color="#94a3b8" gap={20} size={1} />
                     <Controls />
