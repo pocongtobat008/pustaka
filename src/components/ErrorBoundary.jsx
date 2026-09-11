@@ -1,4 +1,5 @@
 import React from 'react';
+import { shouldAutoReload, reloadForNewBundle, alreadyReloadedRecently } from '../utils/lazyPage';
 
 /**
  * ErrorBoundary — lapisan 3 pengaman crash.
@@ -6,6 +7,10 @@ import React from 'react';
  * Menangkap error render di dalam tree React (perubahan state/props,
  * undefined access di komponen, dsb.) dan menampilkan layar fallback
  * bergaya e-FinTaxDoc dengan aksi pemulihan — bukan white screen.
+ *
+ * Khusus stale chunk: boundary mencoba AUTO-RECOVERY sekali (reload) sebelum
+ * menampilkan fallback UI — karena hampir selalu berarti deploy baru terjadi
+ * dan chunk halaman yang diminta sudah berganti hash.
  *
  * Catatan: error saat evaluasi modul (import gagal, TDZ) terjadi SEBELUM
  * boundary ini ada; kasus itu ditangani guard pre-React di index.html
@@ -25,6 +30,13 @@ class ErrorBoundary extends React.Component {
         this.setState({ info });
         // eslint-disable-next-line no-console
         console.error('[ErrorBoundary]', error, info && info.componentStack);
+        // ── Auto-recovery untuk stale chunk ──
+        // LazyPage sudah mencoba retry 4x; jika error chunk mencapai boundary
+        // berarti semua gagal. Reload sekali (dicegah loop 30 detik) — jika
+        // reload tidak terjadi (diblok), fallback UI tampil sebagai jaring.
+        if (shouldAutoReload(error) && !alreadyReloadedRecently()) {
+            reloadForNewBundle();
+        }
     }
 
     handleReload = () => {

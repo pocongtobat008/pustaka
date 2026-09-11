@@ -1,25 +1,28 @@
 import React, { Suspense } from 'react';
 
 /**
- * lazyPage — lazy import yang tahan stale chunk.
+ * lazyPage — lazy import yang tahan stale chunk & kegagalan jaringan sesaat.
  *
- * Masalah yang diselesaikan: saat build baru di-deploy (dist dikosongkan lalu
- * diisi ulang selama ~30 detik), sesi browser yang terbuka masih memegang
- * bundle lama dan bisa gagal memuat chunk halaman yang hash-nya sudah berganti
- * → "Failed to fetch dynamically imported module".
+ * Skenario yang ditangani:
+ *  1. Jendela deploy (dist sedang diisi build baru) → chunk sempat 404.
+ *  2. Restart/restart-detik vite preview atau hiccup jaringan LAN → fetch
+ *     in-flight gagal ("Failed to fetch dynamically imported module").
+ *  3. Chunk lama benar-benar sudah dihapus pasca beberapa deploy.
  *
- * Solusi berlapis:
- * 1. RETRY — tunggu 800ms lalu coba import ulang (menutup jendela deploy yang
- *    sedang berlangsung; file baru biasanya sudah lengkap).
- * 2. AUTO-RELOAD SEKALI — jika retry gagal dan aplikasi sudah pernah boot
- *    (chunk lama benar-benar sudah tidak ada di server), reload penuh sekali
- *    agar browser mengambil index.html baru. Reload kedua dicegah via
- *    sessionStorage, sehingga tidak terjadi loop reload.
- * 3. FALLBACK UI — bila semua gagal, tampilkan layar "Halaman tidak dapat
- *    dimuat" dengan tombol Muat Ulang manual (bukan crash diam-diam).
+ * Strategi (paling murah → paling mahal):
+ *  A. RETRY BERTINGKAT — 4 percobaan (0ms/800ms/2s/4s). Mayoritas kegagalan
+ *     sesaat pulih di sini TANPA reload dan TANPA user sadar apa pun.
+ *  B. AUTO-RELOAD SEKALI — hanya jika semua retry gagal DAN error khas chunk
+ *     (bukan error app). Dicegah loop via sessionStorage (berlaku 30 detik).
+ *  C. FALLBACK UI — jika reload juga tidak membantu, tampilkan layar
+ *     "Halaman gagal dimuat" dengan tombol Muat Ulang manual.
  */
 
 const RELOAD_FLAG = 'lazy_page_reloaded';
+const RELOAD_GUARD_MS = 30000;
+
+// Retry ladder: jeda sebelum percobaan ulang ke-i (index 0 = percobaan pertama)
+const RETRY_DELAYS_MS = [0, 800, 2000, 4000];
 
 function isStaleChunkError(err) {
     const msg = String((err && (err.message || err)) || '');
@@ -28,20 +31,22 @@ function isStaleChunkError(err) {
         msg.includes('error loading dynamically imported module') ||
         msg.includes('Importing a module script failed') ||
         msg.includes('Loading chunk') ||
-        msg.includes('Loading CSS chunk')
+        msg.includes('Loading CSS chunk') ||
+        msg.includes('dynamically imported module') ||
+        msg.includes('NetworkError') ||
+        msg.includes('fetch failed')
     );
 }
 
 function alreadyReloadedRecently() {
     try {
         const at = Number(sessionStorage.getItem(RELOAD_FLAG) || 0);
-        // Anggap reload berlaku 15 detik — mencegah loop reload jika server
-        // memang bermasalah (bukan sekadar deploy).
-        return at > 0 && Date.now() - at < 15000;
+        return at > 0 && Date.now() - at < RELOAD_GUARD_MS;
     } catch {
         return false;
     }
 }
+export { alreadyReloadedRecently };
 
 function markReloaded() {
     try { sessionStorage.setItem(RELOAD_FLAG, String(Date.now())); } catch { /* ignore */ }
@@ -52,32 +57,54 @@ export function reloadForNewBundle() {
     window.location.reload();
 }
 
+/** True jika error khas chunk yang layak auto-reload (bukan error aplikasi). */
+export function shouldAutoReload(err) {
+    return isStaleChunkError(err);
+}
+
+/**
+ * Coba import berkali-kali sesuai RETRY_DELAYS_MS.
+ * Melempar error terakhir jika semua percobaan gagal.
+ */
+async function importWithRetry(loader) {
+    let lastErr;
+    for (let i = 0; i < RETRY_DELAYS_MS.length; i++) {
+        if (RETRY_DELAYS_MS[i] > 0) {
+            await new Promise((r) => setTimeout(r, RETRY_DELAYS_MS[i]));
+        }
+        try {
+            return await loader();
+        } catch (err) {
+            lastErr = err;
+            // Error non-chunk (bug aplikasi) → jangan buang waktu retry
+            if (!isStaleChunkError(err)) throw err;
+        }
+    }
+    throw lastErr;
+}
+
 /**
  * Buat komponen lazy dengan ketahanan stale chunk.
  * Pemakaian: const Documents = lazyPage(() => import('./pages/Documents'));
  */
 export function lazyPage(loader) {
     const LazyComp = React.lazy(() =>
-        loader().catch(async (err) => {
+        importWithRetry(loader).catch(async (err) => {
             if (!isStaleChunkError(err)) throw err;
-            // Percobaan 2: tunggu sebentar (kemungkinan sedang deploy), lalu ulang
-            await new Promise((r) => setTimeout(r, 800));
-            try {
-                return await loader();
-            } catch (err2) {
-                if (!isStaleChunkError(err2)) throw err2;
-                // Chunk lama benar-benar hilang → reload sekali untuk ambil bundle baru
-                if (!alreadyReloadedRecently()) {
-                    reloadForNewBundle();
-                    // Beri waktu reload berjalan — jangan resolve/reject lagi
-                    return new Promise(() => {});
-                }
-                throw err2;
+            // Semua retry gagal → chunk lama kemungkinan sudah tidak ada di
+            // server → reload sekali untuk mengambil bundle baru.
+            if (!alreadyReloadedRecently()) {
+                reloadForNewBundle();
+                // Reload sedang berjalan — jangan resolve/reject. Jaringan
+                // pengaman: jika 5 detik masih di halaman (reload diblok),
+                // reject agar ErrorBoundary menampilkan UI pemulihan.
+                await new Promise((_, rej) => setTimeout(() => rej(err), 5000));
             }
+            throw err;
         })
     );
 
-    // Wrapper Suspense + fallback error khusus stale chunk
+    // Wrapper Suspense + guard error khusus chunk
     return function LazyPageWrapper(props) {
         return (
             <Suspense fallback={null}>
@@ -88,18 +115,20 @@ export function lazyPage(loader) {
 }
 
 /**
- * Guard tampilan: menangkap reject dari komponen lazy pada fase render
- * lewat error boundary mini di sekitar LazyComp.
+ * Guard tampilan: fallback UI lokal jika komponen lazy tetap gagal
+ * setelah semua upaya pemulihan.
  */
 class _LazyGuard extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { failed: false };
+        this.state = { failed: false, err: null };
     }
-    static getDerivedStateFromError() {
-        return { failed: true };
+    static getDerivedStateFromError(err) {
+        return { failed: true, err };
     }
     componentDidCatch(err) {
+        // Jaring pengaman terakhir di level halaman: jika sampai di sini
+        // dan belum pernah reload, coba pulihkan sekali sebelum menampilkan UI.
         if (isStaleChunkError(err) && !alreadyReloadedRecently()) {
             reloadForNewBundle();
         }
