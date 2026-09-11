@@ -603,6 +603,11 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
 
     useEffect(() => { loadHistory(); }, [loadHistory]);
 
+    // Muat ulang riwayat setiap kali panel dibuka (agar data selalu fresh)
+    useEffect(() => {
+        if (showHistory) loadHistory();
+    }, [showHistory, loadHistory]);
+
     const downloadHistFile = async (row) => {
         try {
             const res = await fetch(row.downloadUrl, { credentials: 'include' });
@@ -1636,9 +1641,12 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
 
                     {/* ── Riwayat hasil AI PDF Tools ── */}
                     <div className={`rounded-2xl border overflow-hidden ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/70 backdrop-blur-xl border-stone-200 shadow-sm'}`}>
-                        <button
+                        <div
+                            role="button"
+                            tabIndex={0}
                             onClick={() => setShowHistory(s => !s)}
-                            className={`w-full flex items-center gap-2.5 px-4 py-3 text-left transition-colors ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-stone-50'}`}
+                            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowHistory(s => !s); } }}
+                            className={`w-full flex items-center gap-2.5 px-4 py-3 text-left transition-colors cursor-pointer select-none ${isDarkMode ? 'hover:bg-white/5' : 'hover:bg-stone-50'}`}
                         >
                             <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isDarkMode ? 'bg-blue-500/15 text-blue-300' : 'bg-blue-100 text-blue-600'}`}>
                                 <History size={15} />
@@ -1661,11 +1669,24 @@ export default function AiPdfTools({ isDarkMode, currentUser }) {
                             <span className={`transition-transform ${showHistory ? 'rotate-180' : ''}`}>
                                 <ChevronDown size={15} className={isDarkMode ? 'text-white/40' : 'text-stone-400'} />
                             </span>
-                        </button>
+                        </div>
 
                         {showHistory && (
                             <div className={`border-t ${isDarkMode ? 'border-white/10' : 'border-stone-100'}`}>
-                                {history.length === 0 && (
+                                {historyBusy && history.length === 0 && (
+                                    <div className="px-4 py-4 space-y-2.5">
+                                        {[1, 2, 3].map(i => (
+                                            <div key={i} className="flex items-center gap-2.5 animate-pulse">
+                                                <div className={`w-8 h-8 rounded-lg ${isDarkMode ? 'bg-white/10' : 'bg-stone-200'}`} />
+                                                <div className="flex-1 space-y-1.5">
+                                                    <div className={`h-2.5 w-3/4 rounded ${isDarkMode ? 'bg-white/10' : 'bg-stone-200'}`} />
+                                                    <div className={`h-2 w-1/2 rounded ${isDarkMode ? 'bg-white/5' : 'bg-stone-100'}`} />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                                {!historyBusy && history.length === 0 && (
                                     <p className={`px-4 py-4 text-[11px] italic ${isDarkMode ? 'text-white/30' : 'text-stone-400'}`}>
                                         Belum ada hasil tersimpan. Proses file apa pun — hasil otomatis tersimpan di sini untuk diunduh ulang.
                                     </p>

@@ -1,4 +1,4 @@
-﻿﻿import React, { useState, useEffect, useMemo, useRef, useCallback, Suspense, lazy } from 'react';
+﻿import React, { useState, useEffect, useMemo, useRef, useCallback, Suspense, lazy } from 'react';
 import { lazyPage } from './utils/lazyPage.jsx';
 import { motion, AnimatePresence } from 'framer-motion';
 import { db as api, API_URL } from './services/database';
@@ -568,18 +568,27 @@ export default function App() {
 
     const initData = async () => {
       setIsLoading(true);
+      // Batch 1 — core data (parallel)
       await Promise.all([
         fetchDocs(),
         fetchFolders(),
+        fetchInventory(),
+      ]);
+      // Batch 2 — secondary data (stagger to avoid rate limit)
+      await new Promise(r => setTimeout(r, 100));
+      await Promise.all([
         fetchLogs(),
         fetchTaxAudits(),
         fetchApprovals(),
-        fetchInventory(),
         api.getTaxSummaries().then(setTaxSummaries),
+      ]);
+      // Batch 3 — reference data
+      await new Promise(r => setTimeout(r, 100));
+      await Promise.all([
         api.getUsers().then(setUsers),
         api.getRoles().then(setRoles),
         api.getDepartments().then(setDepartments),
-        api.getApprovalFlows().then(setFlows) // Fetch flows on init
+        api.getApprovalFlows().then(setFlows),
       ]);
       // Initialize OCR completion count
       try {

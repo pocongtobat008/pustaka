@@ -27,7 +27,12 @@ export default defineConfig({
   preview: {
     host: true,
     port: 5174,
-    allowedHosts: ["pustaka.izal.my.id"],
+    allowedHosts: true,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, HEAD',
+      'Access-Control-Allow-Headers': '*',
+    },
     proxy: {
       '/api': { target: apiTarget, changeOrigin: true, secure: false, configure: forwardClientIP },
       '/uploads': { target: apiTarget, changeOrigin: true, secure: false, configure: forwardClientIP },

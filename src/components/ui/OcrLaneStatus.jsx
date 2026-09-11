@@ -19,7 +19,7 @@ export default function OcrLaneStatus({ API_BASE }) {
       } catch (e) { /* ignore */ }
     }
     fetchLanes();
-    const id = setInterval(fetchLanes, 3000);
+    const id = setInterval(fetchLanes, 5000);
     return () => { mounted = false; clearInterval(id); };
   }, [API_BASE]);
 

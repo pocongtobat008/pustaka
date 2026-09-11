@@ -612,7 +612,7 @@ export default function Documents({
                         {currentFolderId && (
                             <>
                                 <ChevronRight size={16} className="text-stone-400" />
-                                <span className="font-bold text-stone-700 dark:text-white">{folders.find(f => String(f.id) === String(currentFolderId))?.name || (isEnglish ? 'Unknown' : 'Unknown')}</span>
+                                <span className="font-bold text-stone-700 dark:text-white">{(folders || []).find(f => String(f.id) === String(currentFolderId))?.name || (isEnglish ? 'Unknown' : 'Unknown')}</span>
                             </>
                         )}
                     </div>
@@ -1589,7 +1589,7 @@ export default function Documents({
                         <button
                             onClick={() => {
                                 if (folderForm.id) {
-                                    handleEditFolder(null, folders.find(f => f.id === folderForm.id), folderForm);
+                                    handleEditFolder(null, (folders || []).find(f => f.id === folderForm.id), folderForm);
                                 } else {
                                     handleCreateFolder(folderForm);
                                 }
