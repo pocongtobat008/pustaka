@@ -50,6 +50,7 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
             ],
             featuresTitle: 'Feature Summary',
             featuresSubtitle: 'Complete modules available in e-FinTaxDoc',
+            tagline: 'Accurate. Compliant. Integrated.',
             featureList: [
                 { icon: LayoutDashboard, label: 'Executive Dashboard' },
                 { icon: Grid3x3, label: 'Archive & Rack Management' },
@@ -88,6 +89,7 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
             ],
             featuresTitle: 'Ringkasan Fitur',
             featuresSubtitle: 'Modul lengkap yang tersedia di e-FinTaxDoc',
+            tagline: 'Akurat. Patuh. Terintegrasi.',
             featureList: [
                 { icon: LayoutDashboard, label: 'Dashboard Ikhtisar' },
                 { icon: Grid3x3, label: 'Manajemen Rak & Arsip' },
@@ -123,7 +125,7 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
                 <div>
                     <div className="text-2xl font-black text-stone-800 dark:text-white tracking-tight">{APP_NAME_DISPLAY}</div>
                     <div className="text-xs font-bold text-stone-400 dark:text-white/30">
-                        {text.version} 1.0.0 • Smart Finance, Tax & Document Platform
+                        {text.version} 1.0.0 • {text.tagline}
                         {IS_DEV && <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded bg-red-500 text-white text-[9px] font-black uppercase tracking-wider">Development</span>}
                     </div>
                 </div>
