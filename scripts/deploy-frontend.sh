@@ -50,13 +50,31 @@ echo "▶ [4/5] Catat chunk basi untuk dihapus di deploy berikutnya…"
 (cd .dist-next/assets && ls | sort) > "$ROOT/.new-list.txt" 2>/dev/null || true
 comm -23 "$ROOT/.old-list.txt" "$ROOT/.new-list.txt" > "$ROOT/.obsolete-next.txt" || true
 rm -f "$ROOT/.old-list.txt" "$ROOT/.new-list.txt"
-OBS_COUNT=$(wc -l < "$ROOT/.obsolete-next.txt" | tr -d ' ')
-if [ "$OBS_COUNT" -gt 0 ]; then
-  cp "$ROOT/.obsolete-next.txt" "$ROOT/$MANIFEST"
-  echo "   → $OBS_COUNT chunk basi dipertahankan di /assets/ sampai deploy berikutnya"
+
+# Entry bundle (index-*.js) TIDAK perlu retensi: sesi lama tidak pernah
+# me-fetch ulang entry bundle — yang perlu dipertahankan hanya chunk halaman
+# (lazy import). Hapus entry basi SEKARANG, sisanya (chunk halaman) masuk
+# manifest retensi untuk dihapus di deploy berikutnya.
+OBS_COUNT=0
+RETAINED=0
+if [ -s "$ROOT/.obsolete-next.txt" ]; then
+  while IFS= read -r f; do
+    case "$f" in
+      index-*)
+        rm -f -- "dist/assets/$f" "dist/assets/${f%.js}.css"
+        ;;
+      *)
+        echo "$f" >> "$ROOT/$MANIFEST"
+        RETAINED=$((RETAINED + 1))
+        ;;
+    esac
+  done < "$ROOT/.obsolete-next.txt"
+fi
+rm -f "$ROOT/.obsolete-next.txt"
+if [ "$RETAINED" -gt 0 ]; then
+  echo "   → $RETAINED chunk halaman lama dipertahankan di /assets/ sampai deploy berikutnya"
 else
-  rm -f "$ROOT/.obsolete-next.txt"
-  echo "   → tidak ada chunk basi"
+  echo "   → tidak ada chunk halaman basi yang perlu diretensi"
 fi
 rm -rf .dist-next
 
