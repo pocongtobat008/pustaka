@@ -1,7 +1,7 @@
 {
-  "name": "Pustaka — Smart Compliance & Archive",
-  "short_name": "Pustaka",
-  "description": "Sistem Manajemen & Arsip Digital Terpadu: invoice, pajak, dokumen, AI document intelligence, dan entertainment expenses dalam satu platform.",
+  "name": "e-FinTaxDoc — Smart Finance, Tax & Document Platform",
+  "short_name": "e-FinTaxDoc",
+  "description": "Platform terpadu Finance, Tax & Document: invoice, pajak, dokumen, AI document intelligence, dan entertainment expenses dalam satu platform.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

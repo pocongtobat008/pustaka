@@ -36,8 +36,8 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
 
     const text = isEnglish
         ? {
-            aboutTitle: 'About Pustaka',
-            aboutDesc: 'Pustaka is a unified document, archive & information management platform. Combining secure digital storage, AI-powered OCR and document intelligence, tax compliance tools, and enterprise workflow features in one modern workspace.',
+            aboutTitle: 'About e-FinTaxDoc',
+            aboutDesc: 'e-FinTaxDoc is a unified finance, tax & document management platform. Combining secure digital storage, AI-powered OCR and document intelligence, tax compliance tools, and enterprise workflow features in one modern workspace.',
             visionTitle: 'Vision',
             visionDesc: 'To be the trusted, intelligent, and secure unified platform for document, archive and information management — supporting efficient, compliant and transparent corporate operations.',
             missionTitle: 'Mission',
@@ -48,7 +48,7 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
                 'Deliver a modern, fast and reliable user experience.',
             ],
             featuresTitle: 'Feature Summary',
-            featuresSubtitle: 'Complete modules available in Pustaka',
+            featuresSubtitle: 'Complete modules available in e-FinTaxDoc',
             featureList: [
                 { icon: LayoutDashboard, label: 'Executive Dashboard' },
                 { icon: Grid3x3, label: 'Archive & Rack Management' },
@@ -74,8 +74,8 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
             close: 'Close',
         }
         : {
-            aboutTitle: 'Tentang Pustaka',
-            aboutDesc: 'Pustaka adalah platform manajemen dokumen, arsip & informasi yang terpadu. Menggabungkan penyimpanan digital yang aman, OCR dan document intelligence bertenaga AI, perangkat kepatuhan pajak, serta fitur alur kerja enterprise dalam satu ruang kerja modern.',
+            aboutTitle: 'Tentang e-FinTaxDoc',
+            aboutDesc: 'e-FinTaxDoc adalah platform terpadu untuk keuangan, pajak & dokumen. Menggabungkan penyimpanan digital yang aman, OCR dan document intelligence bertenaga AI, perangkat kepatuhan pajak, serta fitur alur kerja enterprise dalam satu ruang kerja modern.',
             visionTitle: 'Visi',
             visionDesc: 'Menjadi platform terpadu manajemen dokumen, arsip & informasi yang andal, cerdas, dan aman — mendukung operasional perusahaan yang efisien, patuh, dan transparan.',
             missionTitle: 'Misi',
@@ -86,7 +86,7 @@ const AboutSystemModal = ({ isOpen, onClose }) => {
                 'Menghadirkan pengalaman pengguna yang modern, cepat, dan andal.',
             ],
             featuresTitle: 'Ringkasan Fitur',
-            featuresSubtitle: 'Modul lengkap yang tersedia di Pustaka',
+            featuresSubtitle: 'Modul lengkap yang tersedia di e-FinTaxDoc',
             featureList: [
                 { icon: LayoutDashboard, label: 'Dashboard Ikhtisar' },
                 { icon: Grid3x3, label: 'Manajemen Rak & Arsip' },

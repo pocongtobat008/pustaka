@@ -700,8 +700,8 @@ export default function App() {
   // Favicon & Title Effect
   useEffect(() => {
     document.title = IS_DEV
-      ? "Pustaka DEV — [ENVIRONMENT DEVELOPMENT]"
-      : "Pustaka - Sistem Manajemen Terpadu";
+      ? `${APP_NAME_DISPLAY} — [ENVIRONMENT DEVELOPMENT]`
+      : "e-FinTaxDoc — Smart Finance, Tax & Document Platform";
     const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
     link.type = 'image/svg+xml';
     link.rel = 'shortcut icon';
@@ -3753,7 +3753,7 @@ export default function App() {
                 </span>
               </div>
               <h1 className="text-lg xl:text-xl font-extrabold text-stone-800 dark:text-white leading-tight truncate">
-                {tabTextMap[activeTab]?.title || 'Pustaka'}
+                {tabTextMap[activeTab]?.title || 'e-FinTaxDoc'}
               </h1>
             </div>
 

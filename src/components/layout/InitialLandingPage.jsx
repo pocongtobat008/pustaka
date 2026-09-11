@@ -6,7 +6,7 @@ const InitialLandingPage = ({ onClose, language = 'id' }) => {
   const en = language === 'en';
   const t = {
     badge: en ? 'The Future of Knowledge' : 'Masa Depan Pengetahuan',
-    title1: en ? 'Pustaka System' : 'Sistem Pustaka',
+    title1: en ? 'e-FinTaxDoc System' : 'Sistem e-FinTaxDoc',
     title2: en ? 'Integrated' : 'Terintegrasi',
     subtitle: en
       ? 'A secure, accurate, and easy-to-use knowledge and document management hub.'

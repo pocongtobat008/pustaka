@@ -25,7 +25,7 @@ export default function Login({ onLogin }) {
             submit: 'Sign In',
             or: 'or',
             guest: 'Guest Access (Read-Only)',
-            version: IS_DEV ? '©2026 Pustaka DEV • ENVIRONMENT DEVELOPMENT' : '©2026 Pustaka Enterprise • v1.0.0',
+            version: IS_DEV ? '©2026 e-FinTaxDoc DEV • ENVIRONMENT DEVELOPMENT' : '©2026 e-FinTaxDoc Enterprise • v1.0.0',
         }
         : {
             titleMain: 'Solusi Satu\nManajemen Sistem Terpadu',
@@ -40,7 +40,7 @@ export default function Login({ onLogin }) {
             submit: 'Masuk',
             or: 'Atau',
             guest: 'Akses Tamu (Read-Only)',
-            version: IS_DEV ? '©2026 Pustaka DEV • LINGKUNGAN DEVELOPMENT' : '©2026 Pustaka Enterprise • v1.0.0',
+            version: IS_DEV ? '©2026 e-FinTaxDoc DEV • LINGKUNGAN DEVELOPMENT' : '©2026 e-FinTaxDoc Enterprise • v1.0.0',
         };
 
     const handleSubmit = (e) => {
