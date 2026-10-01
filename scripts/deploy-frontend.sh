@@ -2,94 +2,83 @@
 # ═══════════════════════════════════════════════════════════════════════
 # deploy-frontend.sh — Deploy FE produksi TANPA jendela 404 stale chunk.
 #
-# Masalah yang diselesaikan: `vite build` mengosongkan dist/ di awal build
-# (~30-40 detik). Selama jendela itu, sesi browser yang terbuka gagal
-# lazy-load chunk → "Failed to fetch dynamically imported module".
+# Akar masalah "Failed to fetch dynamically imported module":
+#   1. `vite build` mengosongkan dist/ → chunk generasi lama hilang.
+#   2. Sesi browser yang masih terbuka (memegang index.html lama) meminta
+#      chunk lama yang sudah terhapus.
+#   3. `vite preview` TIDAK mengembalikan 404 untuk file hilang — ia
+#      mengembalikan index.html (text/html, HTTP 200). Browser lalu gagal
+#      karena mengharapkan modul JS tetapi menerima HTML.
 #
-# Solusi — retensi chunk generasi sebelumnya DI PATH ASLINYA:
-#   1. Build ke folder sementara (.dist-next) — dist/ lama TIDAK disentuh.
-#   2. Hapus chunk yang diarsipkan deploy SEBELUMNYA (retensi 1 siklus
-#      penuh berakhir) sesuai dist/.obsolete-manifest.txt.
-#   3. Salin build baru ke dist/ — chunk generasi lama tetap ada di
-#      /assets/ sehingga sesi terbuka tetap bisa lazy-load.
-#   4. Chunk basi (ada di assets, tidak di build baru) dicatat ke
-#      dist/.obsolete-manifest.txt dan DIBIARKAN di tempatnya — dihapus
-#      oleh deploy berikutnya.
-#
-# Hasil: setiap chunk tersedia minimal satu interval deploy penuh di URL
-# aslinya. Tidak ada jendela 404, tidak ada path aneh.
+# Solusi — RETENSI ASET BERBASIS UMUR (bukan lagi manifest 1 siklus):
+#   • Nama file aset di-hash (content-addressed) → tidak pernah bentrok,
+#     jadi aman menumpuk beberapa generasi di /assets/.
+#   • Build ke folder sementara → dist/ lama tidak pernah kosong.
+#   • Salin aset baru secara ADD-ONLY (tanpa --delete).
+#   • File non-aset (index.html, manifest, ikon) ditimpa build terbaru.
+#   • Pangkas HANYA aset yang tidak lagi ada di build saat ini DAN lebih tua
+#     dari RETAIN_DAYS hari → sesi lama tetap bisa memuat chunk-nya jauh
+#     lebih lama daripada skema 1-siklus sebelumnya.
 #
 # Pemakaian:  bash scripts/deploy-frontend.sh
+#             RETAIN_DAYS=60 bash scripts/deploy-frontend.sh   # opsional
 # ═══════════════════════════════════════════════════════════════════════
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
-MANIFEST="dist/.obsolete-manifest.txt"
 
-echo "▶ [1/5] Build ke folder sementara (.dist-next)…"
-rm -rf .dist-next
-npx vite build --outDir .dist-next --emptyOutDir
+STAGE=".dist-next"
+RETAIN_DAYS="${RETAIN_DAYS:-30}"
 
-echo "▶ [2/5] Hapus chunk arsip deploy sebelumnya (retensi berakhir)…"
-if [ -f "$MANIFEST" ]; then
-  PREV_COUNT=$(wc -l < "$MANIFEST" | tr -d ' ')
-  (cd dist/assets && while IFS= read -r f; do rm -f -- "$f"; done < "$ROOT/$MANIFEST")
-  rm -f "$MANIFEST"
-  echo "   → $PREV_COUNT chunk generasi lama dihapus"
-else
-  echo "   → tidak ada arsip (deploy pertama dengan skema ini)"
+echo "▶ [1/6] Build ke folder sementara ($STAGE)…"
+rm -rf "$STAGE"
+npx vite build --outDir "$STAGE" --emptyOutDir
+
+if [ ! -f "$STAGE/index.html" ]; then
+  echo "❌ Build gagal: $STAGE/index.html tidak ada" >&2
+  exit 1
 fi
 
-echo "▶ [3/5] Salin build baru ke dist/ (chunk lama tetap di /assets/)…"
-mkdir -p dist
-rsync -a .dist-next/ dist/
-
-echo "▶ [4/5] Catat chunk basi untuk dihapus di deploy berikutnya…"
-(cd dist/assets && ls | sort) > "$ROOT/.old-list.txt" 2>/dev/null || true
-(cd .dist-next/assets && ls | sort) > "$ROOT/.new-list.txt" 2>/dev/null || true
-comm -23 "$ROOT/.old-list.txt" "$ROOT/.new-list.txt" > "$ROOT/.obsolete-next.txt" || true
-rm -f "$ROOT/.old-list.txt" "$ROOT/.new-list.txt"
-
-# Entry bundle (index-*.js) TIDAK perlu retensi: sesi lama tidak pernah
-# me-fetch ulang entry bundle — yang perlu dipertahankan hanya chunk halaman
-# (lazy import). Hapus entry basi SEKARANG, sisanya (chunk halaman) masuk
-# manifest retensi untuk dihapus di deploy berikutnya.
-OBS_COUNT=0
-RETAINED=0
-if [ -s "$ROOT/.obsolete-next.txt" ]; then
-  while IFS= read -r f; do
-    case "$f" in
-      index-*)
-        rm -f -- "dist/assets/$f" "dist/assets/${f%.js}.css"
-        ;;
-      *)
-        echo "$f" >> "$ROOT/$MANIFEST"
-        RETAINED=$((RETAINED + 1))
-        ;;
-    esac
-  done < "$ROOT/.obsolete-next.txt"
+# Catat entry lama (untuk verifikasi retensi di akhir)
+OLD_ENTRY=""
+if [ -f dist/index.html ]; then
+  OLD_ENTRY=$(grep -o 'index-[^"]*\.js' dist/index.html | head -1 || true)
 fi
-rm -f "$ROOT/.obsolete-next.txt"
-if [ "$RETAINED" -gt 0 ]; then
-  echo "   → $RETAINED chunk halaman lama dipertahankan di /assets/ sampai deploy berikutnya"
-else
-  echo "   → tidak ada chunk halaman basi yang perlu diretensi"
-fi
-rm -rf .dist-next
 
-echo "▶ [5/5] Restart PM2 (backend + frontend preview)…"
+echo "▶ [2/6] Salin aset baru (add-only, tanpa hapus)…"
+mkdir -p dist/assets
+rsync -a "$STAGE/assets/" dist/assets/
+
+echo "▶ [3/6] Sinkronkan file non-aset (index.html, manifest, ikon)…"
+rsync -a --exclude 'assets/' "$STAGE/" dist/
+
+echo "▶ [4/6] Pangkas chunk basi yang lebih tua dari ${RETAIN_DAYS} hari…"
+BEFORE=$(find dist/assets -type f | wc -l | tr -d ' ')
+find dist/assets -type f -mtime +"$RETAIN_DAYS" -delete
+AFTER=$(find dist/assets -type f | wc -l | tr -d ' ')
+echo "   → aset: $BEFORE → $AFTER file (dipangkas $((BEFORE - AFTER)))"
+
+echo "▶ [5/6] Restart PM2 (backend + frontend preview)…"
 pm2 restart archive-backend >/dev/null 2>&1 || true
 pm2 restart archive-frontend >/dev/null 2>&1 || true
 sleep 5
 
-# Verifikasi
+echo "▶ [6/6] Verifikasi…"
 BUNDLE=$(grep -o 'index-[^"]*\.js' dist/index.html | head -1)
-if [ -f "dist/assets/$BUNDLE" ]; then
-  echo "✅ Deploy selesai — bundle aktif: $BUNDLE"
-  echo "   Chunk generasi lama yang dipertahankan: $OBS_COUNT"
-else
-  echo "❌ Bundle aktif TIDAK ditemukan di dist/assets!" >&2
+if [ ! -f "dist/assets/$BUNDLE" ]; then
+  echo "❌ Bundle aktif TIDAK ditemukan di dist/assets: $BUNDLE" >&2
   exit 1
 fi
-curl -s -o /dev/null -w "FE HTTP %{http_code}\n" http://127.0.0.1:5174/ || true
+echo "✅ Deploy selesai — bundle aktif: $BUNDLE"
+
+# Pastikan entry lama (jika ada) MASIH ada sebagai file nyata → sesi lama aman.
+if [ -n "$OLD_ENTRY" ] && [ "$OLD_ENTRY" != "$BUNDLE" ]; then
+  if [ -f "dist/assets/$OLD_ENTRY" ]; then
+    echo "   ✅ entry generasi sebelumnya diretensi: $OLD_ENTRY"
+  else
+    echo "   ℹ️  entry lama tidak ada (tidak ada sesi yang bergantung padanya)"
+  fi
+fi
+
+curl -s -o /dev/null -w "   FE HTTP %{http_code}\n" http://127.0.0.1:5174/ || true
