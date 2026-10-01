@@ -13,16 +13,21 @@ import LoadingFallback from '../components/common/LoadingFallback';
  * Strategi (paling murah → paling mahal):
  *  A. RETRY BERTINGKAT — 4 percobaan (0ms/800ms/2s/4s). Mayoritas kegagalan
  *     sesaat pulih di sini TANPA reload dan TANPA user sadar apa pun.
- *  B. AUTO-RELOAD SEKALI — hanya jika semua retry gagal DAN error khas chunk
- *     (bukan error app). Dicegah loop via sessionStorage (berlaku 30 detik).
+ *  B. AUTO-RELOAD — hanya jika semua retry gagal DAN error khas chunk (bukan
+ *     error app). Anggaran reload memakai jendela 2 menit (maks 2x) sehingga
+ *     sesi lama tetap bisa pulih, namun tetap dibatasi agar tidak loop.
  *  C. FALLBACK UI — jika reload juga tidak membantu, tampilkan layar
  *     "Halaman gagal dimuat" dengan tombol Muat Ulang manual.
  */
 
-const RELOAD_FLAG = 'lazy_page_reloaded';
-const RELOAD_GUARD_MS = 30000;
-const RELOAD_COUNT_KEY = 'lazy_page_reload_count';
-const MAX_RELOADS = 2;
+// Anggaran reload memakai JENDELA WAKTU (sliding window), bukan counter abadi.
+// Sebelumnya counter `lazy_page_reload_count` tidak pernah di-reset sehingga
+// tab yang berumur panjang kehabisan anggaran dan TIDAK BISA pulih sendiri lagi
+// — penyebab utama error terus muncul di sesi lama.
+const RELOAD_TIMES_KEY = 'lazy_page_reload_times';
+const RELOAD_GUARD_MS = 30000;   // jeda minimum antar auto-reload (anti-loop)
+const RELOAD_WINDOW_MS = 120000; // jendela hitung reload (2 menit)
+const MAX_RELOADS = 2;           // maksimum auto-reload dalam jendela di atas
 
 // Retry ladder: jeda sebelum percobaan ulang ke-i (index 0 = percobaan pertama)
 const RETRY_DELAYS_MS = [0, 800, 2000, 4000];
@@ -33,6 +38,8 @@ function isStaleChunkError(err) {
         msg.includes('Failed to fetch dynamically imported module') ||
         msg.includes('error loading dynamically imported module') ||
         msg.includes('Importing a module script failed') ||
+        msg.includes('Failed to load module script') ||
+        msg.includes('MIME type') ||
         msg.includes('Loading chunk') ||
         msg.includes('Loading CSS chunk') ||
         msg.includes('dynamically imported module') ||
@@ -41,35 +48,45 @@ function isStaleChunkError(err) {
     );
 }
 
-function alreadyReloadedRecently() {
+function getReloadTimes() {
     try {
-        const at = Number(sessionStorage.getItem(RELOAD_FLAG) || 0);
-        return at > 0 && Date.now() - at < RELOAD_GUARD_MS;
+        const raw = JSON.parse(sessionStorage.getItem(RELOAD_TIMES_KEY) || '[]');
+        if (!Array.isArray(raw)) return [];
+        const now = Date.now();
+        return raw.filter((t) => typeof t === 'number' && now - t < RELOAD_WINDOW_MS);
     } catch {
-        return false;
+        return [];
     }
+}
+
+function alreadyReloadedRecently() {
+    const times = getReloadTimes();
+    const last = times.length ? times[times.length - 1] : 0;
+    return last > 0 && Date.now() - last < RELOAD_GUARD_MS;
 }
 export { alreadyReloadedRecently };
 
-function getReloadCount() {
-    try { return Number(sessionStorage.getItem(RELOAD_COUNT_KEY) || 0); } catch { return 0; }
-}
-
-function incrementReloadCount() {
-    try { sessionStorage.setItem(RELOAD_COUNT_KEY, String(getReloadCount() + 1)); } catch { /* ignore */ }
-}
-
 function hasExceededMaxReloads() {
-    return getReloadCount() >= MAX_RELOADS;
+    return getReloadTimes().length >= MAX_RELOADS;
 }
 
 function markReloaded() {
-    try { sessionStorage.setItem(RELOAD_FLAG, String(Date.now())); } catch { /* ignore */ }
+    const times = getReloadTimes();
+    times.push(Date.now());
+    try { sessionStorage.setItem(RELOAD_TIMES_KEY, JSON.stringify(times)); } catch { /* ignore */ }
+}
+
+/**
+ * Reset anggaran reload. Dipanggil setiap kali sebuah chunk halaman BERHASIL
+ * dimuat — menandakan sesi ini sehat, sehingga jatah auto-reload dikembalikan
+ * dan sesi berumur panjang bisa pulih berkali-kali dari stale chunk.
+ */
+export function clearReloadBudget() {
+    try { sessionStorage.removeItem(RELOAD_TIMES_KEY); } catch { /* ignore */ }
 }
 
 export function reloadForNewBundle() {
     markReloaded();
-    incrementReloadCount();
     window.location.reload();
 }
 
@@ -89,7 +106,13 @@ async function importWithRetry(loader) {
             await new Promise((r) => setTimeout(r, RETRY_DELAYS_MS[i]));
         }
         try {
-            return await loader();
+            const mod = await loader();
+            // Chunk berhasil dimuat → sesi ini sehat, kembalikan anggaran reload.
+            // Ini titik reset yang tepat: bila aplikasi memang rusak permanen,
+            // import tidak akan pernah sukses sehingga anggaran TIDAK direset
+            // (mencegah loop), sementara sesi sehat bebas pulih berkali-kali.
+            clearReloadBudget();
+            return mod;
         } catch (err) {
             lastErr = err;
             // Error non-chunk (bug aplikasi) → jangan buang waktu retry
