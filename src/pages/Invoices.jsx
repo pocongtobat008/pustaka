@@ -54,15 +54,17 @@ const formatCurrency = (val) => {
 
 const parseCurrency = (val) => {
     if (val === null || val === undefined) return '';
-    const num = parseFlexNumber(val);
-    return num === 0 ? '' : String(num);
+    const s = String(val).trim();
+    if (s === '') return '';
+    // Nilai 0 dipertahankan sebagai '0' (mis. barang gratis), bukan dikosongkan.
+    return String(parseFlexNumber(s));
 };
 
 const formatRupiahInput = (val) => {
     const s = String(val ?? '').trim();
     if (!s) return '';
+    // 0 tetap ditampilkan sebagai "0" agar harga barang gratis terlihat jelas.
     const num = parseFlexNumber(s);
-    if (!num) return '';
     return num.toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 };
 
@@ -1088,7 +1090,7 @@ const Invoices = ({ currentUser, toast }) => {
         if (!invForm.tgl_transaksi) return setInvError('Tgl. Transaksi wajib diisi');
         if (!invRows.length || !invRows.some(r => r.model)) return setInvError('Minimal satu barang dengan model terisi');
         if (invRows.some(r => r.model && !(parseInt(r.qty) > 0))) return setInvError('Qty semua barang harus lebih dari 0');
-        if (invRows.some(r => r.model && !(parseFloat(r.harga) > 0))) return setInvError('Harga semua barang harus lebih dari 0');
+        if (invRows.some(r => r.model && (r.harga === '' || r.harga == null || Number.isNaN(parseFloat(r.harga)) || parseFloat(r.harga) < 0))) return setInvError('Harga barang wajib diisi (boleh 0 untuk barang gratis)');
         if (!(totalInvoice > 0)) return setInvError('Total invoice wajib diisi dan lebih dari 0');
 
         const uangMasuk = parseFloat(invForm.uang_masuk) || 0;

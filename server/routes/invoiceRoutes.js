@@ -1086,7 +1086,7 @@ router.post('/', async (req, res) => {
         for (const it of items) {
             if (!it.model) return res.status(400).json({ error: 'Model barang wajib diisi', details: [] });
             if (!(it.qty > 0)) return res.status(400).json({ error: 'Qty harus lebih dari 0', details: [`Item ${it.model}`] });
-            if (!(it.harga > 0)) return res.status(400).json({ error: 'Harga barang wajib diisi', details: [`Item ${it.model}`] });
+            if (it.harga === '' || it.harga == null || Number.isNaN(Number(it.harga)) || Number(it.harga) < 0) return res.status(400).json({ error: 'Harga barang wajib diisi', details: [`Item ${it.model}`] });
         }
         if (!no_po) return res.status(400).json({ error: 'No. PO wajib diisi', details: [] });
         if (!tgl_po) return res.status(400).json({ error: 'Tgl. PO wajib diisi', details: [] });
@@ -1229,7 +1229,7 @@ router.put('/:id', async (req, res) => {
         for (const it of items) {
             if (!it.model) return res.status(400).json({ error: 'Model barang wajib diisi', details: [] });
             if (!(it.qty > 0)) return res.status(400).json({ error: 'Qty harus lebih dari 0', details: [`Item ${it.model}`] });
-            if (!(it.harga > 0)) return res.status(400).json({ error: 'Harga barang wajib diisi', details: [`Item ${it.model}`] });
+            if (it.harga === '' || it.harga == null || Number.isNaN(Number(it.harga)) || Number(it.harga) < 0) return res.status(400).json({ error: 'Harga barang wajib diisi', details: [`Item ${it.model}`] });
         }
         if (!no_po) return res.status(400).json({ error: 'No. PO wajib diisi', details: [] });
         if (!tgl_po) return res.status(400).json({ error: 'Tgl. PO wajib diisi', details: [] });
