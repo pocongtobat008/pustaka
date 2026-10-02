@@ -1216,16 +1216,26 @@ router.put('/:id', async (req, res) => {
         if (!inv) return res.status(404).json({ error: 'Invoice tidak ditemukan' });
         const isAdmin = ['admin', 'superadmin'].includes(String(req.authUser?.role || '').toLowerCase());
         // Admin: hanya submitted/settled (seperti sebelumnya). Selain admin: boleh
-        // edit selama invoice belum punya No Proforma (proforma belum di-approve).
+        // edit selama invoice belum punya No Proforma DAN belum masuk pengajuan
+        // proforma yang masih menunggu approval (pending).
         const hasProformaNo = !!(inv.proforma_no && String(inv.proforma_no).trim());
+        let inPendingProforma = false;
+        if (!isAdmin) {
+            const pendingReqs = await knex('proforma_requests')
+                .where('status', 'pending')
+                .whereNull('deleted_at');
+            inPendingProforma = pendingReqs.some(p => parseJsonArraySafeStr(p.invoice_ids).map(Number).includes(Number(id)));
+        }
         const statusEditable = isAdmin
             ? (inv.status === 'submitted' || inv.status === 'settled')
-            : !hasProformaNo;
+            : (!hasProformaNo && !inPendingProforma);
         if (!statusEditable) {
             return res.status(400).json({
                 error: isAdmin
                     ? 'Hanya invoice submitted/settled yang bisa diedit'
-                    : 'Invoice sudah memiliki No Proforma, tidak bisa diedit',
+                    : (inPendingProforma
+                        ? 'Invoice sedang menunggu approval proforma, tidak bisa diedit'
+                        : 'Invoice sudah memiliki No Proforma, tidak bisa diedit'),
                 details: [],
             });
         }
