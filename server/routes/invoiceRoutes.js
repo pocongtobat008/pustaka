@@ -1215,7 +1215,20 @@ router.put('/:id', async (req, res) => {
         const inv = await knex('proforma_invoices').where('id', id).first();
         if (!inv) return res.status(404).json({ error: 'Invoice tidak ditemukan' });
         const isAdmin = ['admin', 'superadmin'].includes(String(req.authUser?.role || '').toLowerCase());
-        if (inv.status !== 'submitted' && !(isAdmin && inv.status === 'settled')) return res.status(400).json({ error: isAdmin ? 'Hanya invoice submitted/settled yang bisa diedit' : 'Hanya invoice status submitted yang bisa diedit', details: [] });
+        // Admin: hanya submitted/settled (seperti sebelumnya). Selain admin: boleh
+        // edit selama invoice belum punya No Proforma (proforma belum di-approve).
+        const hasProformaNo = !!(inv.proforma_no && String(inv.proforma_no).trim());
+        const statusEditable = isAdmin
+            ? (inv.status === 'submitted' || inv.status === 'settled')
+            : !hasProformaNo;
+        if (!statusEditable) {
+            return res.status(400).json({
+                error: isAdmin
+                    ? 'Hanya invoice submitted/settled yang bisa diedit'
+                    : 'Invoice sudah memiliki No Proforma, tidak bisa diedit',
+                details: [],
+            });
+        }
 
         const b = req.body || {};
         const {
