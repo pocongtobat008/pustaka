@@ -4745,11 +4745,34 @@ const Invoices = ({ currentUser, toast }) => {
                                     </button>
 
                                     {(() => {
-                                        // Admin bebas edit; selain admin boleh edit selama invoice
-                                        // belum punya No Proforma (proforma belum di-approve).
+                                        // Admin bebas edit (kecuali status bukan submitted/settled);
+                                        // selain admin boleh edit selama belum ada No Proforma DAN
+                                        // tidak sedang menunggu approval proforma (pending).
+                                        // Bila tidak boleh, tombol tetap DITAMPILKAN namun disabled
+                                        // disertai alasan agar tidak membingungkan.
                                         const hasProformaNo = !!(inv?.proforma_no || prof?.proforma_no);
-                                        const canEditInvoice = isAdmin || (perms.can_edit && !hasProformaNo);
-                                        if (!canEditInvoice) return null;
+                                        const inPendingProforma = proformaBlockedInvoiceIds.has(Number(inv?.id));
+                                        let editDisabledReason = '';
+                                        if (isAdmin) {
+                                            if (!['submitted', 'settled'].includes(st)) editDisabledReason = 'Hanya invoice submitted/settled yang bisa diedit';
+                                        } else if (!perms.can_edit) {
+                                            editDisabledReason = 'Anda tidak memiliki akses edit invoice';
+                                        } else if (inPendingProforma) {
+                                            editDisabledReason = 'Invoice sedang menunggu approval proforma, tidak bisa diedit';
+                                        } else if (hasProformaNo) {
+                                            editDisabledReason = 'Invoice sudah memiliki No Proforma, tidak bisa diedit';
+                                        }
+                                        if (editDisabledReason) {
+                                            return (
+                                                <div role="menuitem" aria-disabled="true" title={editDisabledReason} className={`${itemCls} text-stone-400 dark:text-white/30 cursor-not-allowed`}>
+                                                    <Pencil size={15} />
+                                                    <span className="flex flex-col items-start">
+                                                        <span>Edit Invoice</span>
+                                                        <span className="text-[10px] font-normal leading-tight">{editDisabledReason}</span>
+                                                    </span>
+                                                </div>
+                                            );
+                                        }
                                         return (
                                             <button type="button" onClick={() => { setActionMenu(null); openEditInvoice(inv); }} className={`${itemCls} text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-500/10`}>
                                                 <Pencil size={15} /> Edit Invoice
