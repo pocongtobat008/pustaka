@@ -4744,11 +4744,18 @@ const Invoices = ({ currentUser, toast }) => {
                                         <Eye size={15} /> Lihat Detail
                                     </button>
 
-                                    {isAdmin && (
-                                        <button type="button" onClick={() => { setActionMenu(null); openEditInvoice(inv); }} className={`${itemCls} text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-500/10`}>
-                                            <Pencil size={15} /> Edit Invoice
-                                        </button>
-                                    )}
+                                    {(() => {
+                                        // Admin bebas edit; selain admin boleh edit selama invoice
+                                        // belum punya No Proforma (proforma belum di-approve).
+                                        const hasProformaNo = !!(inv?.proforma_no || prof?.proforma_no);
+                                        const canEditInvoice = isAdmin || (perms.can_edit && !hasProformaNo);
+                                        if (!canEditInvoice) return null;
+                                        return (
+                                            <button type="button" onClick={() => { setActionMenu(null); openEditInvoice(inv); }} className={`${itemCls} text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-500/10`}>
+                                                <Pencil size={15} /> Edit Invoice
+                                            </button>
+                                        );
+                                    })()}
 
                                     {perms.can_edit && st === 'rejected' && (() => {
                                         const repl = inv?.replacement_id ? (invoices || []).find(i => Number(i.id) === Number(inv.replacement_id)) : null;
