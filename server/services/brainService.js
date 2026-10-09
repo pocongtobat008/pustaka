@@ -19,12 +19,28 @@ function getClient() {
 
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
+// Timeout wajib: otak 1MBrain bisa lambat/macet (DB besar, event-loop terblokir).
+// Tanpa batas waktu, setiap panggilan AI Agent menggantung menunggu otak →
+// pengguna melihat "tidak ada respons". Panggilan yang lewat batas dianggap gagal
+// dan agent lanjut tanpa konteks memori.
+const BRAIN_TIMEOUT_MS = Math.max(500, parseInt(process.env.ONEMBRAIN_TIMEOUT_MS || '3000', 10));
+
+function withTimeout(promise, label = 'brain call', ms = BRAIN_TIMEOUT_MS) {
+  let timer;
+  return Promise.race([
+    Promise.resolve(promise).finally(() => clearTimeout(timer)),
+    new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error(`${label} timeout setelah ${ms}ms`)), ms);
+    }),
+  ]);
+}
+
 async function rememberWithRetry(content, input) {
   let attempts = 0;
   // eslint-disable-next-line no-constant-condition
   while (true) {
     try {
-      return await getClient().remember(input);
+      return await withTimeout(getClient().remember(input), 'remember');
     } catch (err) {
       const status = err?.details?.status || err?.status || err?.response?.status;
       attempts++;
@@ -53,7 +69,7 @@ export async function recall(query, { limit = 8, type = null, maxHops = 2, agent
     const opts = { query, limit, maxHops };
     if (type) opts.type = type;
     if (agentId) opts.agentId = agentId;
-    const results = await getClient().recall(opts);
+    const results = await withTimeout(getClient().recall(opts), 'recall');
     return results || [];
   } catch (err) {
     console.warn(`[BrainService] recall failed: ${err.message}`);
@@ -63,7 +79,7 @@ export async function recall(query, { limit = 8, type = null, maxHops = 2, agent
 
 export async function forget(memoryId, { agentId } = {}) {
   try {
-    return await getClient().forget(memoryId, { agentId });
+    return await withTimeout(getClient().forget(memoryId, { agentId }), 'forget');
   } catch (err) {
     console.warn(`[BrainService] forget failed: ${err.message}`);
     return false;
@@ -72,7 +88,7 @@ export async function forget(memoryId, { agentId } = {}) {
 
 export async function associate(sourceId, targetId, { strength = 0.5, relationType = 'relates_to', agentId } = {}) {
   try {
-    return await getClient().associate(sourceId, { targetId, strength, origin: 'explicit', relationType, agentId });
+    return await withTimeout(getClient().associate(sourceId, { targetId, strength, origin: 'explicit', relationType, agentId }), 'associate');
   } catch (err) {
     console.warn(`[BrainService] associate failed: ${err.message}`);
     return false;
@@ -114,14 +130,14 @@ export async function buildContext(query, { limit = 6, agentId } = {}) {
 
 export async function ingestMarkdown(title, markdown, { url = null, tags = [], confidenceThreshold = 0.4, agentId } = {}) {
   try {
-    const result = await getClient().ingestMarkdown({
+    const result = await withTimeout(getClient().ingestMarkdown({
       title,
       url: url || `doc://training/${title.replace(/\s+/g, '-').toLowerCase()}`,
       markdown,
       agentId,
       confidenceThreshold,
       deduplicate: true,
-    });
+    }), 'ingestMarkdown');
     return result;
   } catch (err) {
     console.warn(`[BrainService] ingestMarkdown failed: ${err.message}`);
@@ -131,7 +147,7 @@ export async function ingestMarkdown(title, markdown, { url = null, tags = [], c
 
 export async function ingestUrl(url, { agentId } = {}) {
   try {
-    return await getClient().ingestUrl(url, { agentId });
+    return await withTimeout(getClient().ingestUrl(url, { agentId }), 'ingestUrl');
   } catch (err) {
     console.warn(`[BrainService] ingestUrl failed: ${err.message}`);
     return { storedCount: 0, error: err.message };
@@ -140,7 +156,7 @@ export async function ingestUrl(url, { agentId } = {}) {
 
 export async function consolidate({ dryRun = false, clusterStrategy = 'hybrid', agentId } = {}) {
   try {
-    return await getClient().consolidate({ dryRun, clusterStrategy, agentId });
+    return await withTimeout(getClient().consolidate({ dryRun, clusterStrategy, agentId }), 'consolidate');
   } catch (err) {
     console.warn(`[BrainService] consolidate failed: ${err.message}`);
     return null;
@@ -149,7 +165,7 @@ export async function consolidate({ dryRun = false, clusterStrategy = 'hybrid', 
 
 export async function getHealth() {
   try {
-    const res = await fetch(`${ONEMBRAIN_API_URL}/health`);
+    const res = await fetch(`${ONEMBRAIN_API_URL}/health`, { signal: AbortSignal.timeout(BRAIN_TIMEOUT_MS) });
     return res.ok ? await res.json() : null;
   } catch {
     return null;
@@ -158,7 +174,7 @@ export async function getHealth() {
 
 export async function getStats(agentId) {
   try {
-    const res = await fetch(`${ONEMBRAIN_API_URL}/health`);
+    const res = await fetch(`${ONEMBRAIN_API_URL}/health`, { signal: AbortSignal.timeout(BRAIN_TIMEOUT_MS) });
     if (!res.ok) return { status: 'error', error: 'Health check failed' };
     const health = await res.json();
     return {
@@ -184,6 +200,7 @@ export async function listMemories({ limit = 50, offset = 0, agentId } = {}) {
           'x-api-key': ONEMBRAIN_API_KEY,
           'x-agent-id': agent,
         },
+        signal: AbortSignal.timeout(BRAIN_TIMEOUT_MS),
       },
     );
     if (!res.ok) return { memories: [], associations: [], total: 0 };
@@ -203,6 +220,7 @@ export async function getNetworkData({ agentId } = {}) {
         'x-api-key': ONEMBRAIN_API_KEY,
         'x-agent-id': agent,
       },
+      signal: AbortSignal.timeout(BRAIN_TIMEOUT_MS),
     });
     if (!res.ok) return { nodes: [], edges: [], stats: { nodes: 0, edges: 0 } };
     const json = await res.json();

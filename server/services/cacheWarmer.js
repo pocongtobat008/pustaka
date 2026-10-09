@@ -141,8 +141,9 @@ export async function runCacheWarmer(embedFn = null) {
 // ── Re-embed documents changed since last warm ──
 async function reembedDocuments(embedFn, since) {
     if (!embedFn) return 0;
+    // Catatan: tabel documents tidak punya kolom updated_at — jangan filter
+    // dengan kolom yang tidak ada (menyebabkan seluruh siklus cache warm gagal).
     let query = knex('documents').select('id', 'title', 'ocrContent');
-    if (since) query = query.where('updated_at', '>', since);
     const docs = await query.limit(200);
     let count = 0;
     for (const d of docs) {
@@ -162,13 +163,15 @@ async function reembedDocuments(embedFn, since) {
 // ── Re-embed invoices changed since last warm ──
 async function reembedInvoices(embedFn, since) {
     if (!embedFn) return 0;
-    let query = knex('invoices').select('id', 'vendor', 'invoice_no', 'tax_invoice_no', 'ocr_content', 'ocrContent');
-    if (since) query = query.where('updated_at', '>', since);
+    // Catatan: tabel invoices hanya punya kolom ocr_content (bukan ocrContent) dan
+    // tidak punya updated_at. Referensi kolom yang tidak ada membuat seluruh siklus
+    // cache warm gagal setiap saat.
+    let query = knex('invoices').select('id', 'vendor', 'invoice_no', 'tax_invoice_no', 'ocr_content');
     const invoices = await query.limit(200);
     let count = 0;
     for (const inv of invoices) {
         try {
-            const text = inv.ocr_content || inv.ocrContent || '';
+            const text = inv.ocr_content || '';
             const combined = `${inv.vendor || ''} ${inv.invoice_no || ''} ${inv.tax_invoice_no || ''} ${text}`.trim();
             if (combined.length < 5) continue;
             const v = await embedFn(combined);

@@ -144,16 +144,16 @@ function buildTools(userContext = null) {
             type: 'function',
             function: {
                 name: 'search_invoices',
-                description: 'Cari invoice/faktur berdasarkan vendor, nomor invoice, atau nomor faktur pajak.',
-                parameters: { type: 'object', properties: { query: { type: 'string', description: 'Kata kunci pencarian' }, limit: { type: 'integer', description: 'Jumlah hasil (default 15)' } }, required: ['query'] }
+                description: 'Cari invoice/proforma berdasarkan vendor, nomor invoice, nomor proforma, atau nomor faktur pajak. Untuk pertanyaan periode (mis. "agustus 2026") isi month (1-12) dan/atau year; filter memakai kolom tanggal tgl_transaksi.',
+                parameters: { type: 'object', properties: { query: { type: 'string', description: 'Kata kunci pencarian (vendor/nomor); boleh dikosongkan bila memakai month/year' }, limit: { type: 'integer', description: 'Jumlah hasil (default 15)' }, month: { type: 'integer', description: 'Bulan 1-12 (mis. agustus = 8)' }, year: { type: 'integer', description: 'Tahun 4 digit (mis. 2026)' } }, required: [] }
             }
         },
         {
             type: 'function',
             function: {
                 name: 'list_invoices',
-                description: 'Tampilkan daftar semua invoice terbaru.',
-                parameters: { type: 'object', properties: { limit: { type: 'integer', description: 'Jumlah hasil (default 15)' } }, required: [] }
+                description: 'Tampilkan daftar invoice/proforma terbaru, bisa difilter periode. Untuk "invoice agustus 2026" isi month (1-12) dan year.',
+                parameters: { type: 'object', properties: { limit: { type: 'integer', description: 'Jumlah hasil (default 15)' }, month: { type: 'integer', description: 'Bulan 1-12 (mis. agustus = 8)' }, year: { type: 'integer', description: 'Tahun 4 digit (mis. 2026)' } }, required: [] }
             }
         },
         {
@@ -432,6 +432,100 @@ function resolveLimit(args, defaultVal = TOOL_RESULT_ROWS) {
     return Number.isFinite(n) ? Math.min(Math.max(n, 1), 50) : defaultVal;
 }
 
+// Invoice/proforma tersimpan di tabel proforma_invoices (kolom no_invoice,
+// dealer_name, faktur_pajak_no, tgl_transaksi). Dijadikan alias agar output tool
+// tetap memakai nama generik (vendor/invoice_no/tax_invoice_no/payment_date).
+const INVOICE_COLS = [
+    'id',
+    'no_invoice as invoice_no',
+    'proforma_no',
+    'dealer_name as vendor',
+    'faktur_pajak_no as tax_invoice_no',
+    'tgl_transaksi as payment_date',
+    'total_invoice',
+    'status',
+];
+
+// ── Deteksi periode (bulan/tahun) dari teks bahasa Indonesia ──
+// Invoice memakai kolom tanggal tgl_transaksi; tanpa ini query seperti
+// "invoice agustus 2026" tidak punya cara memfilter secara tanggal.
+const MONTHS_ID = {
+    januari: 1, jan: 1,
+    februari: 2, feb: 2,
+    maret: 3, mar: 3,
+    april: 4, apr: 4,
+    mei: 5,
+    juni: 6, jun: 6,
+    juli: 7, jul: 7,
+    agustus: 8, agu: 8, ags: 8, aug: 8,
+    september: 9, sep: 9, sept: 9,
+    oktober: 10, okt: 10,
+    november: 11, nov: 11,
+    desember: 12, des: 12,
+};
+
+// Kata generik yang tidak boleh dipakai sebagai filter ILIKE invoice
+// (query "invoice proforma agustus 2026" tidak boleh mencari frasa utuh itu).
+const INVOICE_GENERIC_WORDS = new Set([
+    'invoice', 'invoices', 'proforma', 'faktur', 'pajak', 'tagihan', 'nota',
+    'bulan', 'periode', 'tanggal', 'tgl', 'data', 'cari', 'carikan', 'tampilkan',
+    'lihat', 'daftar', 'list', 'semua', 'seluruh', 'untuk', 'pada', 'di', 'yang',
+]);
+
+// Mengembalikan { start, end, month, year } (start inklusif, end eksklusif) bila
+// teks memuat nama bulan Indonesia (opsional dengan tahun), atau format
+// YYYY-MM / MM/YYYY. Mengembalikan null bila tidak ada periode yang jelas.
+function parseDateRange(text, explicitMonth = null, explicitYear = null) {
+    const t = String(text || '').toLowerCase();
+    const em = parseInt(explicitMonth, 10);
+    const ey = parseInt(explicitYear, 10);
+    let month = Number.isFinite(em) && em >= 1 && em <= 12 ? em : null;
+    let year = Number.isFinite(ey) && ey > 2000 && ey < 2100 ? ey : null;
+
+    if (!month) {
+        for (const [name, num] of Object.entries(MONTHS_ID)) {
+            if (new RegExp(`(^|[^a-z])${name}([^a-z]|$)`).test(t)) { month = num; break; }
+        }
+    }
+    if (!year) {
+        const ym = t.match(/(?:^|[^0-9])(20\d{2})[-/](\d{1,2})(?![0-9])/);   // 2026-08
+        const my = t.match(/(?:^|[^0-9])(\d{1,2})[-/](20\d{2})(?![0-9])/);   // 08/2026
+        if (ym) { year = parseInt(ym[1], 10); if (!month) month = parseInt(ym[2], 10); }
+        else if (my) { year = parseInt(my[2], 10); if (!month) month = parseInt(my[1], 10); }
+    }
+    // "agustus 2026": ambil tahun hanya bila bulan sudah terdeteksi,
+    // supaya angka yang kebetulan muncul di nomor invoice tidak dianggap tahun.
+    if (month && !year) {
+        const y = t.match(/(?:^|[^0-9])(20\d{2})(?![0-9])/);
+        if (y) year = parseInt(y[1], 10);
+    }
+    if (!month) return null;
+    if (month < 1 || month > 12) return null;
+    if (!year) year = new Date().getFullYear();
+    const start = `${year}-${String(month).padStart(2, '0')}-01`;
+    const end = month === 12
+        ? `${year + 1}-01-01`
+        : `${year}-${String(month + 1).padStart(2, '0')}-01`;
+    return { start, end, month, year };
+}
+
+// Saring kata kunci invoice: buang kata generik, nama bulan, dan tahun.
+function invoiceKeyword(text) {
+    return String(text || '')
+        .toLowerCase()
+        .replace(/[^\w\s]/g, ' ')
+        .split(/\s+/)
+        .filter(w => w && !INVOICE_GENERIC_WORDS.has(w) && !MONTHS_ID[w] && !/^(20\d{2})$/.test(w))
+        .join(' ')
+        .trim();
+}
+
+// Terapkan filter periode (tgl_transaksi) ke query invoice.
+function applyInvoicePeriod(query, range) {
+    if (!range) return query;
+    return query.where('tgl_transaksi', '>=', range.start).where('tgl_transaksi', '<', range.end);
+}
+
 async function executeTool(name, args = {}, userContext = agentUserRef) {
     const q = String(args.query || '').trim().slice(0, 120);
     try {
@@ -456,22 +550,42 @@ async function executeTool(name, args = {}, userContext = agentUserRef) {
             }
             case 'search_invoices': {
                 const limit = resolveLimit(args, TOOL_RESULT_ROWS);
-                const rows = await knex('invoices')
-                    .select('id', 'vendor', 'invoice_no', 'tax_invoice_no', 'payment_date')
-                    .where('vendor', 'ilike', `%${q}%`)
-                    .orWhere('invoice_no', 'ilike', `%${q}%`)
-                    .orWhere('tax_invoice_no', 'ilike', `%${q}%`)
-                    .orderBy('id', 'desc')
-                    .limit(limit);
-                return { count: rows.length, total: rows.length, rows: formatRowsCompact(rows, limit) };
+                const range = parseDateRange(q, args.month, args.year);
+                const kw = invoiceKeyword(q);
+                let query = knex('proforma_invoices').select(INVOICE_COLS).whereNull('deleted_at');
+                query = applyInvoicePeriod(query, range);
+                if (kw) {
+                    // Cocokkan per kata (OR antar kata & kolom) supaya "vendor PHONA"
+                    // tetap menemukan dealer_name "CV. PHONA RAYA MACHINERY".
+                    const parts = kw.split(/\s+/).filter(Boolean);
+                    query = query.where(function () {
+                        for (const w of parts) {
+                            this.orWhere('dealer_name', 'ilike', `%${w}%`)
+                                .orWhere('no_invoice', 'ilike', `%${w}%`)
+                                .orWhere('proforma_no', 'ilike', `%${w}%`)
+                                .orWhere('faktur_pajak_no', 'ilike', `%${w}%`);
+                        }
+                    });
+                }
+                const rows = await query.orderByRaw('tgl_transaksi DESC NULLS LAST').orderBy('id', 'desc').limit(limit);
+                return {
+                    count: rows.length, total: rows.length,
+                    ...(range ? { period: `${range.year}-${String(range.month).padStart(2, '0')}` } : {}),
+                    ...(kw ? { keyword: kw } : {}),
+                    rows: formatRowsCompact(rows, limit),
+                };
             }
             case 'list_invoices': {
                 const limit = resolveLimit(args, TOOL_RESULT_ROWS_LIST);
-                const rows = await knex('invoices')
-                    .select('id', 'vendor', 'invoice_no', 'tax_invoice_no', 'payment_date')
-                    .orderBy('id', 'desc')
-                    .limit(limit);
-                return { count: rows.length, total: rows.length, rows: formatRowsCompact(rows, limit) };
+                const range = parseDateRange(q, args.month, args.year);
+                let query = knex('proforma_invoices').select(INVOICE_COLS).whereNull('deleted_at');
+                query = applyInvoicePeriod(query, range);
+                const rows = await query.orderByRaw('tgl_transaksi DESC NULLS LAST').orderBy('id', 'desc').limit(limit);
+                return {
+                    count: rows.length, total: rows.length,
+                    ...(range ? { period: `${range.year}-${String(range.month).padStart(2, '0')}` } : {}),
+                    rows: formatRowsCompact(rows, limit),
+                };
             }
             case 'search_tax_wp': {
                 const limit = resolveLimit(args, TOOL_RESULT_ROWS);
@@ -574,12 +688,13 @@ async function executeTool(name, args = {}, userContext = agentUserRef) {
             case 'get_invoice_detail': {
                 const id = Number(args.id);
                 if (!id) return { error: 'id wajib diisi' };
-                const row = await knex('invoices').where('id', id).first();
+                const row = await knex('proforma_invoices').where('id', id).first();
                 if (!row) return { error: 'invoice tidak ditemukan' };
                 return {
-                    id: row.id, vendor: row.vendor, invoice_no: row.invoice_no,
-                    tax_invoice_no: row.tax_invoice_no, payment_date: row.payment_date,
-                    special_note: row.special_note, ocr_content: (row.ocr_content || '').slice(0, OCR_SNIPPET)
+                    id: row.id, vendor: row.dealer_name, invoice_no: row.no_invoice,
+                    proforma_no: row.proforma_no, tax_invoice_no: row.faktur_pajak_no,
+                    transaction_date: row.tgl_transaksi, total: row.total_invoice,
+                    status: row.status, tipe: row.tipe, dealer_npwp: row.dealer_npwp,
                 };
             }
             // ── NEW: Aggregate tools ──
@@ -857,7 +972,7 @@ SEBELUM menggunakan tool apapun, Anda WAJIB memanggil \`search_training_docs\` d
 
 Database:
 - documents (id, title, type, uploadDate, size, folderId, ocrContent)
-- invoices (id, vendor, invoice_no, tax_invoice_no, payment_date, ocr_content)
+- proforma_invoices (id, no_invoice, proforma_no, dealer_name, dealer_npwp, faktur_pajak_no, tgl_transaksi [tanggal transaksi], total_invoice, status, tipe) — invoice/proforma. Filter periode (tanggal) pakai kolom tgl_transaksi via parameter month/year pada search_invoices/list_invoices.
 - inventory (id, box_id, status, rack, shelf, position, box_data), inventory_items (id, box_id, invoice_no, vendor, date, amount, ocr_content)
 - external_items (id, boxId, destination, sentDate, sender)
 - boxes (id, inventory_id, box_id)
@@ -1146,6 +1261,26 @@ async function callLLMWithTools(messages, settings, track = [], maxRounds = 6, u
         const reply = (choice?.content || '').trim();
         if (reply) return reply;
     }
+
+    // Ronde tool habis tapi model belum pernah menulis jawaban (mis. ia terus
+    // memanggil tool). Paksa satu panggilan terakhir TANPA tool: semua hasil tool
+    // sudah ada di `messages`, jadi model bisa menyusun jawaban dari situ.
+    // Ini mencegah jatuh ke pesan fallback "Tidak dapat menghasilkan laporan...".
+    try {
+        const finalMsgs = [
+            ...messages,
+            { role: 'system', content: 'BATAS PEMANGGILAN TOOL SUDAH HABIS. JANGAN memanggil tool lagi. Susun jawaban final sekarang dalam Markdown berdasarkan data & hasil tool yang sudah ada di percakapan di atas. Jika data tidak cukup, jelaskan dengan jujur apa yang ditemukan dan apa yang tidak ada — jangan mengarang.' },
+        ];
+        const finalData = await callLLMWithFallback(finalMsgs, [], settings, { ...opts, signal });
+        const finalReply = (finalData?.choices?.[0]?.message?.content || '').trim();
+        if (finalReply) {
+            console.log('[AI Agent] Batas tool habis — jawaban disusun ulang tanpa tool.');
+            return finalReply;
+        }
+    } catch (e) {
+        if (e.name === 'AbortError' || signal?.aborted) throw e;
+        console.warn(`[AI Agent] Sintesis akhir tanpa tool gagal: ${String(e?.message).slice(0, 140)}`);
+    }
     return '';
 }
 
@@ -1327,13 +1462,26 @@ async function searchDatabaseDirect(query) {
         })(),
         (async () => {
             try {
-                const rows = await knex('invoices')
-                    .select('id', 'vendor', 'invoice_no', 'tax_invoice_no', 'payment_date')
-                    .where(function () { keywordWhere(this, 'vendor', keywords); })
-                    .orWhere(function () { keywordWhere(this, 'invoice_no', keywords); })
-                    .orWhere(function () { keywordWhere(this, 'tax_invoice_no', keywords); })
-                    .orderBy('id', 'desc')
-                    .limit(5);
+                // Periode (mis. "agustus 2026") difilter lewat tgl_transaksi; kata
+                // generik seperti "invoice"/"proforma" dibuang agar tidak mencocokkan
+                // frasa utuh yang tidak ada di kolom mana pun.
+                const range = parseDateRange(q);
+                const kw = invoiceKeyword(q);
+                if (!range && !kw) return;
+                let query = knex('proforma_invoices').select(INVOICE_COLS).whereNull('deleted_at');
+                query = applyInvoicePeriod(query, range);
+                if (kw) {
+                    const parts = kw.split(/\s+/).filter(Boolean);
+                    query = query.where(function () {
+                        for (const w of parts) {
+                            this.orWhere('dealer_name', 'ilike', `%${w}%`)
+                                .orWhere('no_invoice', 'ilike', `%${w}%`)
+                                .orWhere('proforma_no', 'ilike', `%${w}%`)
+                                .orWhere('faktur_pajak_no', 'ilike', `%${w}%`);
+                        }
+                    });
+                }
+                const rows = await query.orderByRaw('tgl_transaksi DESC NULLS LAST').orderBy('id', 'desc').limit(20);
                 if (rows.length) results.invoices = rows;
             } catch (e) {}
         })(),
