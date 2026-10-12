@@ -2057,14 +2057,42 @@ router.get('/proforma/:id/settled', async (req, res) => {
     }
 });
 
+// Baris settle TANPA invoice sumber (mis. baris "Tambah Invoice Asli" yang
+// diinput manual) tetap milik proforma yang bersangkutan. Kalau tidak diikutkan,
+// barisnya tersimpan di DB tapi hilang dari Detail Settle → status balance di UI
+// hanya menjumlah baris yang punya sumber sehingga selalu terlihat TIDAK BALANCE.
+const fetchOrphanSettledRows = async (rows, extraProformaNos = []) => {
+    const noSet = new Set(rows.map(r => r.proforma_no).filter(Boolean));
+    for (const n of extraProformaNos) if (n) noSet.add(n);
+    const idSet = new Set(rows.map(r => Number(r.proforma_id)).filter(v => Number.isFinite(v) && v > 0));
+    if (!noSet.size && !idSet.size) return [];
+    return knex('settled_invoices')
+        .whereNull('source_invoice_id')
+        .where((q) => {
+            if (noSet.size) q.orWhereIn('proforma_no', [...noSet]);
+            if (idSet.size) q.orWhereIn('proforma_id', [...idSet]);
+        })
+        .orderBy('id', 'asc');
+};
+
+// Gabungkan baris ber-sumber dengan baris yatim (tanpa duplikat), urut per id.
+const mergeSettledRows = (rows, orphans) => {
+    const seen = new Set(rows.map(r => Number(r.id)));
+    return [...rows, ...orphans.filter(o => !seen.has(Number(o.id)))]
+        .sort((a, b) => Number(a.id) - Number(b.id));
+};
+
 // Detail settle milik SATU invoice sumber — dipakai modal detail DP maupun
 // pelunasan (grup PP di-mirror sehingga keduanya punya baris dengan nomor sama).
 router.get('/settled/by-source/:invoiceId', async (req, res) => {
     try {
+        const invoiceId = Number(req.params.invoiceId);
         const rows = await knex('settled_invoices')
-            .where('source_invoice_id', Number(req.params.invoiceId))
+            .where('source_invoice_id', invoiceId)
             .orderBy('id', 'asc');
-        res.json(rows);
+        const inv = await knex('proforma_invoices').where('id', invoiceId).first();
+        const orphans = await fetchOrphanSettledRows(rows, [inv?.proforma_no]);
+        res.json(mergeSettledRows(rows, orphans));
     } catch (err) {
         res.status(500).json({ error: 'Gagal mengambil detail settle', details: [err.message] });
     }
@@ -2084,11 +2112,27 @@ router.get('/settled/by-group/:invoiceId', async (req, res) => {
                 .where((q) => q.where('id', rootId).orWhere('pelunasan_of_id', rootId))
                 .whereNot('status', 'cancelled');
             memberIds = members.map(m => Number(m.id));
+        } else if (inv.proforma_no) {
+            // Proforma non-PP bisa memuat >1 invoice (mis. CBD 3 invoice dalam 1
+            // proforma). Target balance dihitung dari nominal SELURUH proforma,
+            // jadi baris settle harus diambil untuk semua invoice se-proforma —
+            // kalau hanya 1 invoice, Detail Settle selalu terlihat TIDAK BALANCE.
+            const sib = await knex('proforma_invoices')
+                .where('proforma_no', inv.proforma_no)
+                .whereNot('status', 'cancelled')
+                .select('id');
+            if (sib.length > 1) memberIds = sib.map(s => Number(s.id));
         }
         const rows = await knex('settled_invoices')
             .whereIn('source_invoice_id', memberIds)
             .orderBy('id', 'asc');
-        res.json(rows);
+        // Baris yatim milik proforma anggota grup (mis. proforma pelunasan yang
+        // terpisah dari proforma DP) juga ikut, agar detail kedua sisi konsisten.
+        const memberProfNos = (await knex('proforma_invoices')
+            .whereIn('id', memberIds)
+            .select('proforma_no')).map(m => m.proforma_no);
+        const orphans = await fetchOrphanSettledRows(rows, memberProfNos);
+        res.json(mergeSettledRows(rows, orphans));
     } catch (err) {
         res.status(500).json({ error: 'Gagal mengambil detail settle grup', details: [err.message] });
     }
@@ -2259,6 +2303,18 @@ router.post('/proforma/:id/settle', async (req, res) => {
         // asli yang sama (dide-dup untuk total), bukan duplikat yang ditolak.
         const isPpProforma = sourceInvoices.some(i => i.tipe === 'PP');
 
+        // Baris "Tambah Invoice Asli" (tanpa sumber) pada proforma non-PP tidak
+        // punya pemilik → tersimpan tapi tak pernah tampil di Detail Settle,
+        // export Excel, maupun listing (semua query memakai source_invoice_id),
+        // sehingga status balance hanya menghitung sebagian baris. Ikat baris
+        // tanpa sumber ke invoice pertama proforma ini agar selalu terlacak.
+        // Proforma PP tidak perlu: baris kosongnya di-mirror ke seluruh anggota
+        // grup PP di bawah, jadi sudah punya sumber.
+        const fallbackSrc = !isPpProforma
+            ? (sourceInvoices.filter(i => i.status !== 'cancelled')
+                .reduce((min, i) => (min === null || Number(i.id) < Number(min.id) ? i : min), null))
+            : null;
+
         const settled = [];
         for (const [idx, r] of rows.entries()) {
             const noInvoice = String(r.no_invoice || '').trim();
@@ -2276,7 +2332,7 @@ router.post('/proforma/:id/settle', async (req, res) => {
             const totalInvoice = round2(subtotal + ppn - diskon + materai);
             if (!(subtotal >= 0)) return res.status(400).json({ error: `Baris #${idx + 1}: DPP wajib diisi`, details: [] });
 
-            const src = srcById[Number(r.source_invoice_id)] || null;
+            const src = srcById[Number(r.source_invoice_id)] || fallbackSrc;
             settled.push({
                 no_invoice: noInvoice,
                 proforma_id: Number(p.id),

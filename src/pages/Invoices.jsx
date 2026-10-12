@@ -461,6 +461,9 @@ const Invoices = ({ currentUser, toast }) => {
     const [settleNotes, setSettleNotes] = useState('');
     const [settleTglSet, setSettleTglSet] = useState('');
     const [settleDraftAt, setSettleDraftAt] = useState(null);
+    // Baris form berasal dari data settle yang sudah tersimpan (settle partial/
+    // kurang, atau revisi) — bukan dari draft.
+    const [settleFromSaved, setSettleFromSaved] = useState(false);
     const [settleError, setSettleError] = useState(null);
     // Target settle dari server: grup PP = uang DP + semua pelunasan (bukan DP saja);
     // null = belum termuat (fallback ke total_nominal proforma).
@@ -1277,10 +1280,14 @@ const Invoices = ({ currentUser, toast }) => {
         return round2(total);
     };
 
-    const hydrateDraftRows = (rows, p) => {
-        // Grup PP = 1 kesatuan: pelunasan yang DP-nya ada di proforma ini ikut
-        // ditampilkan sebagai baris settle, sekalipun bukan anggota proforma.
-        let srcs = (p.invoices || []).filter(i => i.status !== 'cancelled');
+    // Invoice sumber yang menghasilkan baris settle untuk satu proforma.
+    // Grup PP = 1 kesatuan: pelunasan yang DP-nya ada di proforma ini ikut
+    // dipertimbangkan, sekalipun bukan anggota proforma. Baris pelunasan tidak
+    // perlu diinput — backend me-mirror baris invoice asli ke seluruh anggota
+    // grup PP, jadi pelunasan otomatis dapat baris yang sama. Pelunasan tetap
+    // dipakai sebagai sumber hanya jika proforma tidak punya DP sama sekali.
+    const settleSrcsFor = (p) => {
+        let srcs = (p?.invoices || []).filter(i => i.status !== 'cancelled');
         const dpRoots = srcs.filter(i => i.tipe === 'PP' && !(i.pp_type === 'pelunasan')).map(i => Number(i.id));
         if (dpRoots.length) {
             const externalPels = (invoices || []).filter(i => i.tipe === 'PP' && i.pp_type === 'pelunasan'
@@ -1288,14 +1295,15 @@ const Invoices = ({ currentUser, toast }) => {
                 && !srcs.some(s => Number(s.id) === Number(i.id)));
             srcs = [...srcs, ...externalPels];
         }
-        // Prefill 1 baris per DP: baris pelunasan tidak perlu diinput — backend
-        // me-mirror setiap baris invoice asli ke seluruh anggota grup PP (DP +
-        // semua pelunasan), jadi pelunasan otomatis dapat baris yang sama.
-        // Pelunasan tetap di-prefill hanya jika proforma tidak punya DP sama sekali.
         if (srcs.some(s => s && s.tipe === 'PP' && !(s.pp_type === 'pelunasan'))) {
             srcs = srcs.filter(s => s && !(s.tipe === 'PP' && s.pp_type === 'pelunasan'));
         }
-        if (!srcs.length) srcs = p.invoices?.length ? p.invoices : [null];
+        if (!srcs.length) srcs = p?.invoices?.length ? p.invoices : [null];
+        return srcs;
+    };
+
+    const hydrateDraftRows = (rows, p) => {
+        const srcs = settleSrcsFor(p);
         if (Array.isArray(rows) && rows.length) {
             return rows.map(d => ({
                 source_invoice_id: d.source_invoice_id ?? null,
@@ -1312,6 +1320,39 @@ const Invoices = ({ currentUser, toast }) => {
         return srcs.map(s => ({ ...blankSettleRow(s), no_faktur: p.proforma_no || '' }));
     };
 
+    // Tarik kembali data settle yang SUDAH tersimpan ke form (dipakai saat settle
+    // dibuka ulang: settle partial/kurang, atau revisi data settle). Satu baris
+    // per No Invoice Asli — dedup-nya sama dengan perhitungan total, sehingga
+    // sisa yang belum ter-settle cukup ditambah tanpa mengetik ulang semuanya.
+    const rowsFromSettled = (settled, p) => {
+        if (!Array.isArray(settled) || !settled.length) return [];
+        const srcIds = new Set(settleSrcsFor(p).filter(Boolean).map(s => Number(s.id)));
+        const groups = new Map();
+        for (const s of settled) {
+            const key = String(s.no_invoice || '').trim() || `__row_${s.id}`;
+            if (!groups.has(key)) groups.set(key, []);
+            groups.get(key).push(s);
+        }
+        return [...groups.values()].map(rows => {
+            // Grup PP punya baris kembar (DP + pelunasan) dengan nomor sama —
+            // pakai baris bersumber invoice proforma ini (DP) bila ada, supaya
+            // tidak dobel dan nomornya tetap terikat ke invoice yang benar.
+            const own = rows.find(r => srcIds.has(Number(r.source_invoice_id)));
+            const pick = own || rows[0];
+            return {
+                source_invoice_id: own ? Number(own.source_invoice_id) : null,
+                no_invoice: pick.no_invoice || '',
+                tgl_invoice: String(pick.tgl_invoice || '').slice(0, 10),
+                no_faktur: pick.faktur_pajak_no || p.proforma_no || '',
+                dpp: pick.subtotal != null ? Number(pick.subtotal) : '',
+                ppn: pick.ppn != null ? Number(pick.ppn) : '',
+                materai: pick.materai != null ? Number(pick.materai) : '',
+                diskon: pick.diskon != null ? Number(pick.diskon) : '',
+                tgl_settle: String(pick.tgl_settle || '').slice(0, 10),
+            };
+        });
+    };
+
     const openSettle = async (p) => {
         setSettleTarget(p);
         setSettleRows([]);
@@ -1319,6 +1360,7 @@ const Invoices = ({ currentUser, toast }) => {
         setSettleTglSet(new Date().toISOString().slice(0, 10));
         setSettleError(null);
         setSettleDraftAt(null);
+        setSettleFromSaved(false);
         setSettleTargetAmt(null);
         setShowSettle(true);
         // Target resmi dari server: grup PP = uang DP + semua pelunasan-nya
@@ -1333,7 +1375,17 @@ const Invoices = ({ currentUser, toast }) => {
                 if (draft.tgl_settle) setSettleTglSet(draft.tgl_settle);
                 if (draft.updated_at) setSettleDraftAt(draft.updated_at);
             } else {
-                setSettleRows(hydrateDraftRows(null, p));
+                // Tanpa draft: kalau settle sudah pernah tersimpan (settle partial
+                // yang belum lengkap, atau mau direvisi), barisnya dimuat ulang —
+                // tidak perlu input ulang seluruh invoice asli dari nol.
+                const settled = await invoiceService.getSettledInvoices(p.id).catch(() => []);
+                const saved = rowsFromSettled(settled, p);
+                if (saved.length) {
+                    setSettleRows(saved);
+                    setSettleFromSaved(true);
+                } else {
+                    setSettleRows(hydrateDraftRows(null, p));
+                }
             }
         } catch {
             setSettleRows(hydrateDraftRows(null, p));
@@ -3711,6 +3763,15 @@ const Invoices = ({ currentUser, toast }) => {
                             <div className="px-4 py-3 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm">{settleError}</div>
                         )}
 
+                        {settleFromSaved && !settleDraftAt && (
+                            <div className="flex items-start gap-2 px-3 py-2.5 rounded-xl bg-teal-50 dark:bg-teal-500/10 border border-teal-200 dark:border-teal-500/20 text-teal-700 dark:text-teal-300 text-xs">
+                                <Info size={14} className="mt-0.5 shrink-0" />
+                                <span>
+                                    Data settle yang sudah tersimpan dimuat ulang (No Invoice Asli, tanggal, dan nominal). Tidak perlu input ulang — cukup tambah/sesuaikan baris yang belum masuk, lalu klik <b>Settle</b>.
+                                </span>
+                            </div>
+                        )}
+
                         {(settleTarget?.invoices || []).some(i => i.tipe === 'PP') && (
                             <div className="flex items-start gap-2 px-3 py-2.5 rounded-xl bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 text-blue-700 dark:text-blue-300 text-xs">
                                 <Info size={14} className="mt-0.5 shrink-0" />
@@ -3842,9 +3903,11 @@ const Invoices = ({ currentUser, toast }) => {
                                     Draft tersimpan • {new Date(settleDraftAt).toLocaleString('id-ID')}
                                 </div>
                             )}
-                            <button onClick={handleSaveDraft} disabled={savingDraft || settling} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 hover:bg-amber-100 dark:hover:bg-amber-500/20 text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed">
-                                <Save size={16} /> {savingDraft ? 'Menyimpan...' : 'Simpan Draft'}
-                            </button>
+                            {settleTarget.status !== 'settled' && (
+                                <button onClick={handleSaveDraft} disabled={savingDraft || settling} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 hover:bg-amber-100 dark:hover:bg-amber-500/20 text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <Save size={16} /> {savingDraft ? 'Menyimpan...' : 'Simpan Draft'}
+                                </button>
+                            )}
                             <button onClick={() => setShowSettle(false)} disabled={settling || savingDraft} className="px-4 py-2.5 rounded-xl bg-stone-100 dark:bg-[#0d0d0d] text-stone-600 dark:text-white/70 text-sm font-semibold">Batal</button>
                              <button onClick={handleSettle} disabled={settling || savingDraft} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold shadow-lg shadow-teal-500/25 disabled:opacity-60 disabled:cursor-not-allowed">
                                 <HandCoins size={16} /> {settling ? 'Menyetel...' : 'Settle'}
