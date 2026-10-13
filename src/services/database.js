@@ -1320,6 +1320,7 @@ export const db = {
             taxType: item.tax_type || item.taxType || '23',
             taxObjectCode: item.tax_object_code || item.taxObjectCode || item.code || item.kode_objek || '',
             taxObjectName: item.tax_object_name || item.taxObjectName || item.nama_objek || '',
+            dppNonTax: Number(item.dpp_non_tax ?? item.dppNonTax ?? 0) || 0,
             markupMode: item.markup_mode || item.markupMode,
             isPph21BukanPegawai: !!(item.is_pph21_bukan_pegawai || item.isPph21BukanPegawai),
             usePpn: item.use_ppn !== undefined ? !!item.use_ppn : (item.usePpn !== undefined ? !!item.usePpn : true)
@@ -1346,6 +1347,7 @@ export const db = {
                 is_pph21_bukan_pegawai: !!data.isPph21BukanPegawai,
                 use_ppn: data.usePpn !== undefined ? !!data.usePpn : true,
                 dpp: parseFloat(data.dpp || 0),
+                dpp_non_tax: parseFloat(data.dppNonTax || 0),
                 discount: parseFloat(data.discount || 0),
                 dpp_net: parseFloat(data.dppNet || 0),
                 pph: parseFloat(data.pph || 0),

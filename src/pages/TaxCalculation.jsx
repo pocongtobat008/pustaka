@@ -92,6 +92,9 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
             nonEmployee: 'Non Employee',
             summaryBooked: 'Total Booked',
             summaryReceived: 'Total Received',
+            summaryDppTax: 'DPP Tax',
+            summaryDppNonTax: 'DPP Non Tax',
+            summaryDiscount: 'Discount',
         }
         : {
             validatingRequired: 'Nomor Identitas dan Nama Wajib Pajak wajib diisi!',
@@ -167,11 +170,14 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
             nonEmployee: 'Bukan Pegawai',
             summaryBooked: 'Total Dibukukan',
             summaryReceived: 'Total Diterima',
+            summaryDppTax: 'DPP Pajak',
+            summaryDppNonTax: 'DPP Non Pajak',
+            summaryDiscount: 'Diskon',
         };
     const [activeTab, setActiveTab] = useState('simulation'); // 'simulation', 'object', 'database', 'master'
     const [isLoading, setIsLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
-    const [calcData, setCalcData] = useState({ dpp: 0, rate: 0, pph: 0, ppn: 0, totalPayable: 0, discount: 0, dppNet: 0, markupMode: 'none', isPph21BukanPegawai: false, usePpn: true });
+    const [calcData, setCalcData] = useState({ dpp: 0, dppNonTax: 0, rate: 0, pph: 0, ppn: 0, totalPayable: 0, discount: 0, dppNet: 0, markupMode: 'none', isPph21BukanPegawai: false, usePpn: true });
     const [ppnRate, setPpnRate] = useState(11);
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 15;
@@ -382,8 +388,8 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
 
     const handleDownloadWpTemplate = () => {
         const ws = XLSX.utils.json_to_sheet([
-            { "Nama WP": "PT. Contoh Maju", "Jenis Identitas": "NPWP", "Nomor Identitas": "1234567890123456", "Email": "admin@contoh.com", "Jenis Pajak": "23", "Kode Objek": "23-100-01", "Nama Objek": "Sewa Alat", "Gross Up": "none", "Bukan Pegawai": 0, "Gunakan PPN": 1 },
-            { "Nama WP": "Budi Santoso", "Jenis Identitas": "KTP", "Nomor Identitas": "3201234567890001", "Email": "budi@email.com", "Jenis Pajak": "21", "Kode Objek": "21-100-01", "Nama Objek": "Upah Harian", "Gross Up": "gross", "Bukan Pegawai": 1, "Gunakan PPN": 0 }
+            { "Nama WP": "PT. Contoh Maju", "Jenis Identitas": "NPWP", "Nomor Identitas": "1234567890123456", "Email": "admin@contoh.com", "Jenis Pajak": "23", "Kode Objek": "23-100-01", "Nama Objek": "Sewa Alat", "DPP Non Tax": 0, "Gross Up": "none", "Bukan Pegawai": 0, "Gunakan PPN": 1 },
+            { "Nama WP": "Budi Santoso", "Jenis Identitas": "KTP", "Nomor Identitas": "3201234567890001", "Email": "budi@email.com", "Jenis Pajak": "21", "Kode Objek": "21-100-01", "Nama Objek": "Upah Harian", "DPP Non Tax": 0, "Gross Up": "gross", "Bukan Pegawai": 1, "Gunakan PPN": 0 }
         ]);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Database WP");
@@ -419,6 +425,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
             const payload = {
                 ...formData, // formData already has markupMode, isPph21BukanPegawai, usePpn
                 dpp: calcData.dpp,
+                dppNonTax: calcData.dppNonTax || 0,
                 rate: calcData.rate,
                 pph: calcData.pph,
                 ppn: calcData.ppn,
@@ -456,7 +463,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                     isPph21BukanPegawai: false,
                     usePpn: true
                 });
-                setCalcData({ dpp: 0, rate: 0, pph: 0, ppn: 0, totalPayable: 0, discount: 0, dppNet: 0, markupMode: 'none', isPph21BukanPegawai: false, usePpn: true });
+                setCalcData({ dpp: 0, dppNonTax: 0, rate: 0, pph: 0, ppn: 0, totalPayable: 0, discount: 0, dppNet: 0, markupMode: 'none', isPph21BukanPegawai: false, usePpn: true });
                 setActiveTab('database');
             }
         } catch (error) {
@@ -485,6 +492,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
         });
         setCalcData({
             dpp: item.dpp,
+            dppNonTax: item.dpp_non_tax ?? item.dppNonTax ?? 0,
             rate: item.rate,
             pph: item.pph,
             ppn: item.ppn || (!!item.use_ppn ? (((11 / 12) * (item.dpp - (item.discount || 0))) * ((item.ppnRate || 11) / 100)) : 0),
@@ -717,6 +725,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                     <TaxCalculator
                         onCalculate={setCalcData}
                         onCopy={onCopy}
+                        initialDppNonTax={calcData.dppNonTax || ''}
                         initialRate={calcData.rate}
                         initialIsPph21BukanPegawai={calcData.isPph21BukanPegawai}
                         initialUsePpn={calcData.usePpn}
@@ -997,6 +1006,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                             title={text.taxCalculation}
                             onCalculate={setCalcData}
                             initialDpp={calcData.dpp || ''}
+                            initialDppNonTax={calcData.dppNonTax || ''}
                             initialRate={calcData.rate || ''}
                             initialDiscount={calcData.discount || ''}
                             initialMarkupMode={calcData.markupMode}
@@ -1024,7 +1034,7 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                             isPph21BukanPegawai: false,
                                             usePpn: true
                                         });
-                                        setCalcData({ dpp: 0, rate: 0, pph: 0, ppn: 0, totalPayable: 0, discount: 0, dppNet: 0, markupMode: 'none', isPph21BukanPegawai: false, usePpn: true });
+                                        setCalcData({ dpp: 0, dppNonTax: 0, rate: 0, pph: 0, ppn: 0, totalPayable: 0, discount: 0, dppNet: 0, markupMode: 'none', isPph21BukanPegawai: false, usePpn: true });
                                     }}
                                     className="px-6 py-3 gradient-bg text-white font-bold rounded-xl shadow-lg shadow-blue-500/25 transition-all hover:opacity-90"
                                 >
@@ -1066,6 +1076,18 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         <span className="font-medium">{calcData.rate}%</span>
                                     </div>
                                     <div className="flex justify-between">
+                                        <span className="text-stone-500">{text.summaryDppTax}:</span>
+                                        <span className="font-medium">{formatCurrency(calcData.calculationDpp || calcData.dpp || 0)}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-stone-500">{text.summaryDppNonTax}:</span>
+                                        <span className="font-medium">{formatCurrency(calcData.dppNonTax || 0)}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-stone-500">{text.summaryDiscount}:</span>
+                                        <span className="font-medium">-{formatCurrency(calcData.discount || 0)}</span>
+                                    </div>
+                                    <div className="flex justify-between">
                                         <span className="text-stone-500">{text.summaryGrossUp}:</span>
                                         <span className={`font-bold uppercase ${calcData.markupMode !== 'none' ? 'text-blue-600' : 'text-stone-500'}`}>
                                             {calcData.markupMode}
@@ -1088,12 +1110,12 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                         <span className="font-bold text-emerald-600">{formatCurrency(calcData.totalPayable)}</span>
                                     </div>
                                     <div className="flex justify-between border-t border-stone-100 dark:border-white/[0.06] pt-2 mt-1">
-                                    <span className="text-stone-500">DPP + PPN ({ppnRate}%):</span>
-                                        <span className="font-bold text-blue-600">{formatCurrency((calcData.calculationDpp || 0) + (calcData.ppn || 0))}</span>
+                                    <span className="text-stone-500">DPP Tax + DPP Non Tax + PPN ({ppnRate}%) - Diskon:</span>
+                                        <span className="font-bold text-blue-600">{formatCurrency((calcData.calculationDpp || 0) + (calcData.dppNonTax || 0) + (calcData.ppn || 0) - (calcData.discount || 0))}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-stone-500">DPP - PPh:</span>
-                                        <span className="font-bold text-rose-600">{formatCurrency((calcData.calculationDpp || 0) - (calcData.pph || 0))}</span>
+                                        <span className="text-stone-500">DPP Tax + DPP Non Tax - PPh - Diskon:</span>
+                                        <span className="font-bold text-rose-600">{formatCurrency((calcData.calculationDpp || 0) + (calcData.dppNonTax || 0) - (calcData.pph || 0) - (calcData.discount || 0))}</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-stone-500">Gunakan PPN:</span>
@@ -1128,6 +1150,16 @@ export default function TaxCalculation({ onCopy, hasPermission }) {
                                                         </div>
                                                     </div>
                                                 ))}
+
+                                                {(calcData.dppNonTax || 0) > 0 && (
+                                                    <div className="bg-stone-100 dark:bg-[#0d0d0d]/50 p-3 rounded-xl border border-stone-200 dark:border-white/[0.06] text-[11px] animate-in slide-in-from-bottom-2">
+                                                        <div className="flex justify-between font-black text-stone-700 dark:text-stone-200">
+                                                            <span className="uppercase tracking-wider">{text.summaryDppNonTax}</span>
+                                                            <span>+{formatCurrency(calcData.dppNonTax || 0)}</span>
+                                                        </div>
+                                                        <p className="mt-1 text-[10px] text-stone-500 dark:text-stone-400">Masuk total tagihan, tanpa PPh/PPN.</p>
+                                                    </div>
+                                                )}
 
                                                 {/* Total Breakdown Row */}
                                                 <div className="bg-blue-600 dark:bg-blue-500 p-3 rounded-xl border border-blue-400 text-[11px] text-white shadow-lg mt-2 animate-in slide-in-from-bottom-2">
