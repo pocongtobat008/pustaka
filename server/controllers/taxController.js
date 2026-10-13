@@ -711,6 +711,7 @@ export const importTaxWp = async (req, res) => {
             tax_object_code: item.tax_object_code || item.taxObjectCode,
             tax_object_name: item.tax_object_name || item.taxObjectName,
             dpp: item.dpp || 0,
+            dpp_non_tax: item.dpp_non_tax || item.dppNonTax || item['DPP Non Tax'] || 0,
             rate: item.rate || 0,
             pph: item.pph || 0,
             ppn: item.ppn || 0,

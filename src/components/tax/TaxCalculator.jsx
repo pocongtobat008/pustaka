@@ -8,6 +8,7 @@ export default function TaxCalculator({
     onCalculate,
     className = "",
     initialDpp = '',
+    initialDppNonTax = '',
     initialRate = '',
     initialDiscount = '',
     initialMarkupMode = 'none',
@@ -19,6 +20,7 @@ export default function TaxCalculator({
 }) {
     const { t } = useLanguage();
     const [dpp, setDpp] = useState(initialDpp || '');
+    const [dppNonTax, setDppNonTax] = useState(initialDppNonTax || '');
     const [rate, setRate] = useState(initialRate || '');
     const [discount, setDiscount] = useState(initialDiscount || '');
     const [markupMode, setMarkupMode] = useState(initialMarkupMode);
@@ -40,12 +42,15 @@ export default function TaxCalculator({
     const [displayTotalDibukukan, setDisplayTotalDibukukan] = useState(0);
 
     // Track last values emitted to prevent feedback loops overwriting manual input
-    const lastEmitted = useRef({ dpp: initialDpp, rate: initialRate, calculationDpp: 0, totalDibukukan: 0 });
+    const lastEmitted = useRef({ dpp: initialDpp, dppNonTax: initialDppNonTax, rate: initialRate, calculationDpp: 0, totalDibukukan: 0 });
 
     useEffect(() => {
         // Only sync from props if they actually changed for reasons other than our own calculation
         if (initialDpp !== undefined && initialDpp !== '' && String(initialDpp) !== String(lastEmitted.current.dpp)) {
             setDpp(initialDpp);
+        }
+        if (initialDppNonTax !== undefined && initialDppNonTax !== '' && String(initialDppNonTax) !== String(lastEmitted.current.dppNonTax)) {
+            setDppNonTax(initialDppNonTax);
         }
         if (initialRate !== undefined && initialRate !== '' && String(initialRate) !== String(lastEmitted.current.rate)) {
             setRate(initialRate);
@@ -65,7 +70,7 @@ export default function TaxCalculator({
         if (initialPpnRate !== undefined && initialPpnRate !== ppnRate) {
             setPpnRate(initialPpnRate);
         }
-    }, [initialDpp, initialRate, initialDiscount, initialMarkupMode, initialIsPph21BukanPegawai, initialUsePpn, initialPpnRate]);
+    }, [initialDpp, initialDppNonTax, initialRate, initialDiscount, initialMarkupMode, initialIsPph21BukanPegawai, initialUsePpn, initialPpnRate]);
 
     useEffect(() => {
         let dppValue = 0;
@@ -92,6 +97,7 @@ export default function TaxCalculator({
 
         const rateValue = parseFloat(rate) || 0;
         const discountValue = parseFloat(discount.toString().replace(/\./g, '')) || 0;
+        const dppNonTaxValue = parseFloat(dppNonTax.toString().replace(/\./g, '')) || 0;
         const ppnRateMultiplier = ppnRate / 100;
         const pphRateFactor = rateValue / 100;
 
@@ -129,13 +135,13 @@ export default function TaxCalculator({
             const effectiveUsePpn = usePpn || markupMode === 'ppn';
             for (let i = 0; i < 40; i++) {
                 let mid = (low + high) / 2;
-                let dppTax = 0.5 * (mid - discountValue);
+                let dppTax = 0.5 * mid;
                 if (dppTax < 0) dppTax = 0;
                 let midPph = calculateProgressivePph(dppTax);
 
                 let midPpn = 0;
                 if (effectiveUsePpn) {
-                    midPpn = Math.ceil((mid - discountValue) * (ppnRate / 100));
+                    midPpn = Math.ceil(mid * (ppnRate / 100));
                 }
 
                 let currentNet = 0;
@@ -190,17 +196,18 @@ export default function TaxCalculator({
         }
 
         const dppNet = calculationDpp - discountValue;
+        const taxableBase = calculationDpp;
         let calculatedPph = 0;
 
         if (isPph21BukanPegawai) {
-            const dppTax = 0.5 * (calculationDpp - discountValue);
+            const dppTax = 0.5 * taxableBase;
             calculatedPph = calculateProgressivePph(dppTax > 0 ? dppTax : 0);
         } else {
-            calculatedPph = Math.ceil(calculationDpp * pphRateFactor);
+            calculatedPph = Math.ceil(taxableBase * pphRateFactor);
         }
 
-        const calculatedPpn = effectiveUsePpn ? Math.ceil(dppNet * ppnRateMultiplier) : 0;
-        const calculatedTotal = Math.ceil((calculationDpp - discountValue) + calculatedPpn - calculatedPph);
+        const calculatedPpn = effectiveUsePpn ? Math.ceil(taxableBase * ppnRateMultiplier) : 0;
+        const calculatedTotal = Math.ceil(taxableBase + dppNonTaxValue + calculatedPpn - calculatedPph - discountValue);
         const totalDibukukan = Math.ceil(calculatedTotal + calculatedPph);
 
         setPph(calculatedPph);
@@ -216,11 +223,12 @@ export default function TaxCalculator({
         setDisplayTotalDibukukan(totalDibukukan);
 
         // Update guard ref before emitting
-        lastEmitted.current = { dpp: dppValue, rate: rateValue, discount: discountValue, dppNet: dppNet, markupMode: markupMode, isPph21BukanPegawai, usePpn, totalDibukukan, calculationDpp };
+        lastEmitted.current = { dpp: dppValue, dppNonTax: dppNonTaxValue, rate: rateValue, discount: discountValue, dppNet: dppNet, markupMode: markupMode, isPph21BukanPegawai, usePpn, totalDibukukan, calculationDpp };
 
         if (onCalculate) {
             onCalculate({
                 dpp: dppValue,
+                dppNonTax: dppNonTaxValue,
                 rate: rateValue,
                 pph: calculatedPph,
                 ppn: calculatedPpn,
@@ -236,7 +244,7 @@ export default function TaxCalculator({
                 totalBreakdown: totalBreakdown
             });
         }
-    }, [dpp, rate, discount, markupMode, isPph21BukanPegawai, usePpn, isCalcMode, onCalculate, ppnRate]);
+    }, [dpp, dppNonTax, rate, discount, markupMode, isPph21BukanPegawai, usePpn, isCalcMode, onCalculate, ppnRate]);
 
     const getPph21Breakdown = (val) => {
         if (val === undefined || val === null) return { dppTax: 0, brackets: [], totalTax: 0 };
@@ -287,6 +295,7 @@ export default function TaxCalculator({
 
     const handleReset = () => {
         setDpp('');
+        setDppNonTax('');
         setRate('');
         setDiscount('');
         setPph(0);
@@ -315,11 +324,18 @@ export default function TaxCalculator({
     };
 
     const handleKeyDown = (e) => {
-        if (isCalcMode && e.key === 'Enter') {
+        if (isCalcMode && e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             evaluateExpression();
         }
     };
+
+    const handleDppNonTaxChange = (e) => {
+        const cleanVal = e.target.value.replace(/\./g, '').replace(/[^0-9]/g, '');
+        setDppNonTax(cleanVal);
+    };
+
+    const parseRupiahInput = (val) => parseFloat(String(val ?? '').replace(/\./g, '')) || 0;
 
     const formatDisplayValue = (val) => {
         if (!val) return '';
@@ -405,7 +421,7 @@ export default function TaxCalculator({
                 <div>
                     <div className="flex justify-between items-center mb-1">
                         <label className="block text-sm font-medium text-stone-700 dark:text-white/70">
-                            Dasar Pengenaan Pajak (DPP)
+                            Dasar Pengenaan Pajak (DPP) Tax
                         </label>
                         {!isReadOnly && (
                             <button
@@ -419,21 +435,51 @@ export default function TaxCalculator({
                     </div>
                     <div className="relative">
                         {!isCalcMode && <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 dark:text-white/40 font-medium">Rp</span>}
-                        <input
-                            type="text"
-                            value={isCalcMode ? dpp : formatDisplayValue(dpp)}
-                            onChange={handleDppChange}
-                            onKeyDown={handleKeyDown}
-                            disabled={isReadOnly}
-                            className={`w-full ${isCalcMode ? 'pl-4 font-mono text-blue-600 dark:text-blue-400' : 'pl-10'} pr-4 py-3 rounded-xl border ${isCalcMode ? 'border-blue-300 dark:border-blue-800 ring-2 ring-blue-500/20' : 'border-stone-200 dark:border-white/[0.06]'} bg-white dark:bg-[#0d0d0d] focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-stone-100 dark:disabled:bg-[#0d0d0d] disabled:cursor-not-allowed`}
-                            placeholder={isCalcMode ? "Ketik rumus lalu ENTER" : "0"}
-                        />
+                        {isCalcMode ? (
+                            <textarea
+                                value={dpp}
+                                onChange={handleDppChange}
+                                onKeyDown={handleKeyDown}
+                                disabled={isReadOnly}
+                                rows={Math.min(6, Math.max(3, String(dpp || '').split('\n').length + Math.floor(String(dpp || '').length / 48)))}
+                                className="w-full min-h-[84px] pl-4 pr-24 py-3 rounded-xl border border-blue-300 dark:border-blue-800 ring-2 ring-blue-500/20 bg-white dark:bg-[#0d0d0d] focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-stone-100 dark:disabled:bg-[#0d0d0d] disabled:cursor-not-allowed font-mono text-blue-600 dark:text-blue-400 whitespace-pre-wrap break-words leading-relaxed resize-y"
+                                placeholder="Ketik rumus lalu ENTER"
+                            />
+                        ) : (
+                            <input
+                                type="text"
+                                value={formatDisplayValue(dpp)}
+                                onChange={handleDppChange}
+                                onKeyDown={handleKeyDown}
+                                disabled={isReadOnly}
+                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white dark:bg-[#0d0d0d] focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-stone-100 dark:disabled:bg-[#0d0d0d] disabled:cursor-not-allowed"
+                                placeholder="0"
+                            />
+                        )}
                         {isCalcMode && !isReadOnly && (
-                            <button onClick={evaluateExpression} className="absolute right-2 top-1/2 -translate-y-1/2 text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg font-bold hover:bg-blue-700 transition-colors">
+                            <button onClick={evaluateExpression} className="absolute right-2 top-3 text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg font-bold hover:bg-blue-700 transition-colors">
                                 HITUNG
                             </button>
                         )}
                     </div>
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+                        DPP Non Tax
+                    </label>
+                    <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 dark:text-white/40 font-medium">Rp</span>
+                        <input
+                            type="text"
+                            value={formatDisplayValue(dppNonTax)}
+                            onChange={handleDppNonTaxChange}
+                            disabled={isReadOnly}
+                            className="w-full pl-10 pr-4 py-3 rounded-xl border border-stone-200 dark:border-white/[0.06] bg-white dark:bg-[#0d0d0d] focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white disabled:bg-stone-100 dark:disabled:bg-[#0d0d0d] disabled:cursor-not-allowed"
+                            placeholder="0"
+                        />
+                    </div>
+                    <p className="mt-1 text-[11px] text-stone-500 dark:text-stone-400">Masuk perhitungan buku, tidak kena PPh/PPN.</p>
                 </div>
 
                 {isPph21BukanPegawai && (
@@ -599,15 +645,25 @@ export default function TaxCalculator({
                 </div>
 
                 <div className="pt-4 border-t dark:border-stone-700 space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
                         <div className="p-4 bg-stone-50 dark:bg-[#0d0d0d]/20 rounded-xl border border-stone-100 dark:border-white/[0.06]">
                             <div className="flex justify-between items-center mb-1">
-                                <span className="text-[10px] font-bold text-stone-500 dark:text-white/40 uppercase tracking-wider">DPP Net</span>
+                                <span className="text-[10px] font-bold text-stone-500 dark:text-white/40 uppercase tracking-wider">DPP Tax Net</span>
                                 <button onClick={() => copyToClipboard(dppNet, 'dppNet')} className="text-stone-400 hover:text-stone-600 transition-colors">
                                     {copied === 'dppNet' ? <Check size={14} /> : <Copy size={14} />}
                                 </button>
                             </div>
                             <p className="text-lg font-black text-stone-700 dark:text-white/70">{formatCurrency(dppNet)}</p>
+                        </div>
+
+                        <div className="p-4 bg-stone-50 dark:bg-[#0d0d0d]/20 rounded-xl border border-stone-100 dark:border-white/[0.06]">
+                            <div className="flex justify-between items-center mb-1">
+                                <span className="text-[10px] font-bold text-stone-500 dark:text-white/40 uppercase tracking-wider">DPP Non Tax</span>
+                                <button onClick={() => copyToClipboard(dppNonTax, 'dppNonTax')} className="text-stone-400 hover:text-stone-600 transition-colors">
+                                    {copied === 'dppNonTax' ? <Check size={14} /> : <Copy size={14} />}
+                                </button>
+                            </div>
+                            <p className="text-lg font-black text-stone-700 dark:text-white/70">{formatCurrency(parseRupiahInput(dppNonTax))}</p>
                         </div>
 
                         <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
@@ -669,8 +725,15 @@ export default function TaxCalculator({
                             </div>
                         )}
 
-                        <p className="text-[10px] text-blue-100/60 mt-4 font-medium italic">
-                            Rumus: {isPph21BukanPegawai ? '(50% x Bruto) x Progresif Pasal 17' : `(DPP - Potongan) + PPN ${ppnRate}% - PPh Terutang (Rounding Up)`}
+                        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 text-[11px] font-medium text-white/80">
+                            <div className="flex justify-between"><span>DPP Tax</span><span>+{formatCurrency(displayGross)}</span></div>
+                            <div className="flex justify-between"><span>DPP Non Tax</span><span>+{formatCurrency(parseRupiahInput(dppNonTax))}</span></div>
+                            <div className="flex justify-between"><span>PPN ({ppnRate}%)</span><span>+{formatCurrency(displayPpn)}</span></div>
+                            <div className="flex justify-between"><span>PPh</span><span>-{formatCurrency(displayPph)}</span></div>
+                            <div className="flex justify-between"><span>Potongan</span><span>-{formatCurrency(parseRupiahInput(discount))}</span></div>
+                        </div>
+                        <p className="text-[10px] text-blue-100/60 mt-2 font-medium italic">
+                            Rumus: {isPph21BukanPegawai ? '(50% x Bruto) x Progresif Pasal 17 + DPP Non Tax - Potongan' : `DPP Tax + DPP Non Tax + PPN ${ppnRate}% - PPh Terutang - Potongan (Rounding Up)`}
                         </p>
                         {markupMode !== 'none' && (
                             <p className="text-[10px] text-blue-200 mt-1 font-bold">

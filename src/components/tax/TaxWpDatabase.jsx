@@ -22,8 +22,8 @@ export default function TaxWpDatabase({
     const paginatedData = filteredData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
 
     const handleDownloadDatabaseTemplate = () => {
-        const headers = ["id_type", "identity_number", "name", "email", "tax_type", "tax_object_code", "tax_object_name", "markup_mode", "is_pph21_bukan_pegawai", "use_ppn", "dpp", "rate", "discount"];
-        const data = [["NPWP", "1234567890123456", "PT. Contoh", "finance@contoh.com", "23", "24-104-01", "Jasa Teknik", "none", 0, 1, 1000000, 2, 0]];
+        const headers = ["id_type", "identity_number", "name", "email", "tax_type", "tax_object_code", "tax_object_name", "markup_mode", "is_pph21_bukan_pegawai", "use_ppn", "dpp", "dpp_non_tax", "rate", "discount"];
+        const data = [["NPWP", "1234567890123456", "PT. Contoh", "finance@contoh.com", "23", "24-104-01", "Jasa Teknik", "none", 0, 1, 1000000, 0, 2, 0]];
         const ws = XLSX.utils.aoa_to_sheet([headers, ...data]);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Template WP");
